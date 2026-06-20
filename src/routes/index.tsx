@@ -52,8 +52,13 @@ function Index() {
     } catch { /* ignore */ }
   }, []);
 
+  const TEN_MIN = 10 * 60 * 1000;
+  const THIRTY_MIN = 30 * 60 * 1000;
+
   const tournament = useQuery({
     queryKey: ["wc_tournament", year],
+    staleTime: TEN_MIN,
+    gcTime: THIRTY_MIN,
     queryFn: async (): Promise<WCTournament | null> => {
       const { data, error } = await supabase
         .from("wc_tournaments").select("*").eq("year", year).maybeSingle();
@@ -64,6 +69,8 @@ function Index() {
 
   const matches = useQuery({
     queryKey: ["wc_matches", year],
+    staleTime: TEN_MIN,
+    gcTime: THIRTY_MIN,
     queryFn: async (): Promise<WCMatch[]> => {
       const { data, error } = await supabase
         .from("wc_matches").select("*").eq("tournament_year", year)
@@ -75,6 +82,8 @@ function Index() {
 
   const groups = useQuery({
     queryKey: ["wc_groups", year],
+    staleTime: TEN_MIN,
+    gcTime: THIRTY_MIN,
     queryFn: async (): Promise<WCGroup[]> => {
       const { data, error } = await supabase
         .from("wc_groups").select("*").eq("tournament_year", year);
@@ -82,6 +91,7 @@ function Index() {
       return (data ?? []) as WCGroup[];
     },
   });
+
 
   // Merge group-stage fixtures from bundled dataset (DB only has knockout rows).
   const allMatches = useMemo<WCMatch[]>(() => {
