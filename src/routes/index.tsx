@@ -485,7 +485,7 @@ function BracketSideColumn({
   onDismissHint?: () => void;
 }) {
   return (
-    <div className="wc-col shrink-0 w-[210px] flex flex-col">
+    <div className="wc-col flex-1 min-w-0 max-w-[200px] flex flex-col">
       <RoundLabel round={round} />
       <div className="flex-1 flex flex-col justify-around gap-4">
         {matches.map((m, i) => (
