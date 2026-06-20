@@ -80,7 +80,9 @@ function Index() {
     },
   });
 
-  // CRITICAL: pair purely by match_number ordering, not by team names.
+  // Pair by bracket continuity: R16 sorted by match_number defines slots.
+  // Each later round is positioned so its teams align with the prior round's
+  // winners (since match_number doesn't always match bracket order).
   const grouped = useMemo(() => {
     const buckets: Record<string, WCMatch[]> = {};
     for (const m of matches.data ?? []) {
@@ -90,8 +92,46 @@ function Index() {
     }
     const sortByNum = (a: WCMatch, b: WCMatch) =>
       (a.match_number ?? 0) - (b.match_number ?? 0);
-    for (const k of Object.keys(buckets)) buckets[k].sort(sortByNum);
-    return buckets as Partial<Record<RoundKey, WCMatch[]>>;
+
+    // Start with R16 sorted by match_number.
+    const r16 = (buckets.round_of_16 ?? []).slice().sort(sortByNum);
+
+    // Align next round so each match's teams come from the prior pair (i, i+1).
+    const alignNext = (prev: WCMatch[], next: WCMatch[]): WCMatch[] => {
+      if (next.length === 0) return next;
+      const slots: (WCMatch | undefined)[] = new Array(Math.ceil(prev.length / 2));
+      const remaining = next.slice();
+      for (let i = 0; i < prev.length; i += 2) {
+        const teams = new Set<string>();
+        [prev[i], prev[i + 1]].forEach((p) => {
+          if (!p) return;
+          teams.add(p.home_team);
+          teams.add(p.away_team);
+        });
+        const idx = remaining.findIndex(
+          (m) => teams.has(m.home_team) || teams.has(m.away_team),
+        );
+        if (idx !== -1) {
+          slots[i / 2] = remaining[idx];
+          remaining.splice(idx, 1);
+        }
+      }
+      // Append any unmatched (shouldn't happen) preserving original order.
+      const out = slots.filter(Boolean) as WCMatch[];
+      return [...out, ...remaining];
+    };
+
+    const qf = alignNext(r16, (buckets.quarter_final ?? []).slice().sort(sortByNum));
+    const sf = alignNext(qf, (buckets.semi_final ?? []).slice().sort(sortByNum));
+    const fn = alignNext(sf, (buckets.final ?? []).slice().sort(sortByNum));
+
+    return {
+      round_of_16: r16,
+      quarter_final: qf,
+      semi_final: sf,
+      final: fn,
+      third_place: (buckets.third_place ?? []).slice().sort(sortByNum),
+    } as Partial<Record<RoundKey, WCMatch[]>>;
   }, [matches.data]);
 
   const knockoutRounds: RoundKey[] = useMemo(() => {
