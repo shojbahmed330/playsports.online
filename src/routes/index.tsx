@@ -8,6 +8,7 @@ import { GroupStage } from "@/components/wc/GroupStage";
 import { MatchCard, type RoundKey } from "@/components/wc/MatchCard";
 import { MatchModal } from "@/components/wc/MatchModal";
 import groupMatchesData from "@/data/wc_group_matches.json";
+import { toast } from "sonner";
 
 const GROUP_MATCHES_BY_YEAR = groupMatchesData as Record<string, WCMatch[]>;
 
@@ -52,8 +53,13 @@ function Index() {
     } catch { /* ignore */ }
   }, []);
 
+  const TEN_MIN = 10 * 60 * 1000;
+  const THIRTY_MIN = 30 * 60 * 1000;
+
   const tournament = useQuery({
     queryKey: ["wc_tournament", year],
+    staleTime: TEN_MIN,
+    gcTime: THIRTY_MIN,
     queryFn: async (): Promise<WCTournament | null> => {
       const { data, error } = await supabase
         .from("wc_tournaments").select("*").eq("year", year).maybeSingle();
@@ -64,6 +70,8 @@ function Index() {
 
   const matches = useQuery({
     queryKey: ["wc_matches", year],
+    staleTime: TEN_MIN,
+    gcTime: THIRTY_MIN,
     queryFn: async (): Promise<WCMatch[]> => {
       const { data, error } = await supabase
         .from("wc_matches").select("*").eq("tournament_year", year)
@@ -75,6 +83,8 @@ function Index() {
 
   const groups = useQuery({
     queryKey: ["wc_groups", year],
+    staleTime: TEN_MIN,
+    gcTime: THIRTY_MIN,
     queryFn: async (): Promise<WCGroup[]> => {
       const { data, error } = await supabase
         .from("wc_groups").select("*").eq("tournament_year", year);
@@ -82,6 +92,7 @@ function Index() {
       return (data ?? []) as WCGroup[];
     },
   });
+
 
   // Merge group-stage fixtures from bundled dataset (DB only has knockout rows).
   const allMatches = useMemo<WCMatch[]>(() => {
@@ -234,7 +245,11 @@ function Index() {
             <div className="relative">
               <select
                 value={year}
-                onChange={(e) => setYear(Number(e.target.value))}
+                onChange={(e) => {
+                  const y = Number(e.target.value);
+                  setYear(y);
+                  toast(`Viewing ${y} World Cup`, { duration: 2000 });
+                }}
                 className="appearance-none pl-6 pr-12 py-3.5 text-lg font-semibold rounded-xl bg-card border border-border ring-1 ring-gold/20 hover:ring-gold/50 focus:outline-none focus:ring-2 focus:ring-gold transition cursor-pointer min-w-[260px]"
               >
                 {WC_YEARS.slice().reverse().map((y) => (
@@ -250,10 +265,7 @@ function Index() {
       {/* CONTENT */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-14 space-y-8">
         {loading ? (
-          <div className="flex flex-col items-center justify-center py-24 text-muted-foreground">
-            <Loader2 className="size-8 text-gold animate-spin" />
-            <div className="mt-3 text-sm">Loading {year} tournament…</div>
-          </div>
+          <BracketSkeleton year={year} />
         ) : !tournament.data && allMatches.length === 0 ? (
           <EmptyState year={year} />
         ) : (
@@ -470,6 +482,36 @@ function EmptyState({ year }: { year: number }) {
       <div className="text-lg font-semibold">Tournament data coming soon for {year}</div>
       <div className="text-sm text-muted-foreground mt-1">
         We're still digitizing this edition of the archive.
+      </div>
+    </div>
+  );
+}
+
+function BracketSkeleton({ year }: { year: number }) {
+  return (
+    <div className="relative">
+      <div className="flex justify-center mb-6">
+        <div className="h-9 w-40 rounded-2xl bg-gray-900/80 animate-pulse" />
+      </div>
+      <div className="flex items-stretch justify-center gap-3" style={{ minHeight: 540 }}>
+        {[8, 4, 2, 1, 2, 4, 8].map((n, ci) => (
+          <div key={ci} className="flex-1 max-w-[200px] flex flex-col gap-3 justify-around">
+            <div className="h-5 w-24 mx-auto rounded-full bg-gray-900/80 animate-pulse mb-2" />
+            {Array.from({ length: n }).map((_, i) => (
+              <div
+                key={i}
+                className="h-16 rounded-xl bg-gray-900/70 border border-gray-800 animate-pulse"
+                style={{ animationDelay: `${(ci * 80 + i * 40)}ms` }}
+              />
+            ))}
+          </div>
+        ))}
+      </div>
+      <div className="absolute inset-0 grid place-items-center pointer-events-none">
+        <div className="flex flex-col items-center gap-2 bg-black/30 backdrop-blur-sm rounded-2xl px-6 py-4">
+          <Loader2 className="size-7 text-gold animate-spin" />
+          <div className="text-xs text-muted-foreground">Loading {year} tournament…</div>
+        </div>
       </div>
     </div>
   );

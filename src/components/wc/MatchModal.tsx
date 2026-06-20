@@ -1,10 +1,31 @@
-import { X, Play, MapPin, CalendarDays } from "lucide-react";
-import type { WCMatch } from "@/lib/supabase";
-import { useEffect } from "react";
+import { X, MapPin, CalendarDays, Pencil, Check, Loader2 } from "lucide-react";
+import { supabase, type WCMatch } from "@/lib/supabase";
+import { flagOf } from "@/lib/flags";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import { VideoPlayer, detectVideoType } from "./VideoPlayer";
+
+function winnerSide(m: WCMatch): "home" | "away" | "draw" {
+  if (m.home_score_pen != null && m.away_score_pen != null) {
+    return m.home_score_pen > m.away_score_pen ? "home" : "away";
+  }
+  const h = m.home_score ?? 0, a = m.away_score ?? 0;
+  if (h > a) return "home";
+  if (a > h) return "away";
+  return "draw";
+}
 
 export function MatchModal({ match, onClose }: { match: WCMatch | null; onClose: () => void }) {
+  const [editing, setEditing] = useState(false);
+  const [input, setInput] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [localUrl, setLocalUrl] = useState<string | null>(null);
+
   useEffect(() => {
     if (!match) return;
+    setEditing(false);
+    setInput(match.video_url ?? "");
+    setLocalUrl(match.video_url ?? null);
     const h = (e: KeyboardEvent) => e.key === "Escape" && onClose();
     window.addEventListener("keydown", h);
     return () => window.removeEventListener("keydown", h);
@@ -12,9 +33,29 @@ export function MatchModal({ match, onClose }: { match: WCMatch | null; onClose:
 
   if (!match) return null;
   const hasPen = match.home_score_pen != null && match.away_score_pen != null;
+  const win = winnerSide(match);
   const date = match.match_date
-    ? new Date(match.match_date).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })
+    ? new Date(match.match_date).toLocaleDateString("en-GB", { year: "numeric", month: "long", day: "numeric" })
     : null;
+  // Bundled (group) matches use synthetic ids >= 1_000_000 — those rows don't exist in DB.
+  const isBundled = match.id >= 1_000_000;
+
+  const save = async () => {
+    const url = input.trim() || null;
+    setSaving(true);
+    const { error } = await supabase
+      .from("wc_matches")
+      .update({ video_url: url })
+      .eq("id", match.id);
+    setSaving(false);
+    if (error) {
+      toast.error("Couldn't save video URL", { description: error.message });
+      return;
+    }
+    setLocalUrl(url);
+    setEditing(false);
+    toast.success("Video URL saved!");
+  };
 
   return (
     <div
@@ -23,63 +64,121 @@ export function MatchModal({ match, onClose }: { match: WCMatch | null; onClose:
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-2xl rounded-2xl border border-border bg-card shadow-2xl overflow-hidden"
+        className="relative w-full max-w-[560px] rounded-2xl border border-gray-800 bg-gray-950 shadow-2xl overflow-hidden"
       >
-        <button
-          onClick={onClose}
-          className="absolute top-3 right-3 z-10 size-8 grid place-items-center rounded-full bg-background/80 hover:bg-background border border-border"
-          aria-label="Close"
-        >
-          <X className="size-4" />
-        </button>
-
-        <div className="p-6 border-b border-border">
-          <div className="text-xs uppercase tracking-[0.2em] text-gold font-semibold">
+        {/* Header */}
+        <div className="flex items-center justify-between px-5 pt-4">
+          <span className="bg-gradient-to-r from-amber-500 to-amber-600 text-black font-bold text-[10px] uppercase tracking-widest rounded-full px-3 py-1">
             {match.round} · {match.tournament_year}
-          </div>
-          <div className="mt-4 grid grid-cols-[1fr_auto_1fr] items-center gap-4">
-            <div className="text-right">
-              <div className="text-lg sm:text-xl font-bold truncate">{match.home_team}</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl sm:text-4xl font-extrabold tabular-nums">
-                {match.home_score ?? "-"} <span className="text-muted-foreground">:</span> {match.away_score ?? "-"}
-              </div>
-              {hasPen && (
-                <div className="text-xs text-muted-foreground mt-1">
-                  ({match.home_score_pen} - {match.away_score_pen} on penalties)
-                </div>
-              )}
-            </div>
-            <div className="text-left">
-              <div className="text-lg sm:text-xl font-bold truncate">{match.away_team}</div>
-            </div>
-          </div>
-          <div className="flex flex-wrap gap-x-5 gap-y-1 justify-center mt-5 text-xs text-muted-foreground">
-            {(match.stadium || match.city) && (
-              <span className="flex items-center gap-1.5">
-                <MapPin className="size-3.5" />
-                {[match.stadium, match.city].filter(Boolean).join(", ")}
+          </span>
+          <button
+            onClick={onClose}
+            className="size-8 grid place-items-center rounded-full bg-gray-900 hover:bg-gray-800 border border-gray-800"
+            aria-label="Close"
+          >
+            <X className="size-4" />
+          </button>
+        </div>
+
+        <div className="px-6 pt-5 pb-2">
+          {/* Score row */}
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex-1 flex items-center gap-2 min-w-0">
+              <span className="text-2xl shrink-0">{flagOf(match.home_team)}</span>
+              <span className={`truncate text-base sm:text-lg font-semibold ${win === "home" ? "text-amber-400" : "text-gray-300"}`}>
+                {match.home_team}
               </span>
-            )}
+            </div>
+            <div className="text-5xl font-black text-amber-400 tabular-nums whitespace-nowrap">
+              {match.home_score ?? "-"} <span className="text-gray-600">-</span> {match.away_score ?? "-"}
+            </div>
+            <div className="flex-1 flex items-center gap-2 min-w-0 justify-end">
+              <span className={`truncate text-base sm:text-lg font-semibold text-right ${win === "away" ? "text-amber-400" : "text-gray-300"}`}>
+                {match.away_team}
+              </span>
+              <span className="text-2xl shrink-0">{flagOf(match.away_team)}</span>
+            </div>
+          </div>
+
+          {hasPen && (
+            <div className="text-center text-sm text-amber-600 mt-2">
+              ({match.home_score_pen} - {match.away_score_pen} on penalties)
+            </div>
+          )}
+
+          {/* Info rows */}
+          <div className="mt-5 flex flex-col gap-1.5 text-sm text-gray-400">
             {date && (
-              <span className="flex items-center gap-1.5">
-                <CalendarDays className="size-3.5" />
-                {date}
-              </span>
+              <div className="flex items-center gap-2">
+                <CalendarDays className="size-4 text-gray-500" />
+                <span>{date}</span>
+              </div>
+            )}
+            {(match.stadium || match.city) && (
+              <div className="flex items-center gap-2">
+                <MapPin className="size-4 text-gray-500" />
+                <span>{[match.stadium, match.city].filter(Boolean).join(", ")}</span>
+              </div>
             )}
           </div>
         </div>
 
-        <div className="p-6">
-          <div className="aspect-video rounded-xl bg-background border border-border grid place-items-center">
-            <div className="text-center">
-              <div className="size-14 rounded-full bg-gold/15 grid place-items-center mx-auto">
-                <Play className="size-6 text-gold ml-0.5" fill="currentColor" />
-              </div>
-              <div className="mt-3 text-sm text-muted-foreground">Match footage coming soon</div>
+        {/* Video */}
+        <div className="px-6 pt-4">
+          <VideoPlayer videoUrl={localUrl} matchTitle={`${match.home_team} vs ${match.away_team}`} />
+        </div>
+
+        {/* Admin URL editor */}
+        <div className="px-6 pt-3">
+          {!editing ? (
+            <button
+              onClick={() => setEditing(true)}
+              disabled={isBundled}
+              title={isBundled ? "This match isn't in the database yet" : ""}
+              className="text-xs text-gray-500 hover:text-amber-400 inline-flex items-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              <Pencil className="size-3.5" />
+              {localUrl ? "Edit video URL" : "Add video URL"}
+              {isBundled && <span className="text-gray-600">(unavailable)</span>}
+            </button>
+          ) : (
+            <div className="flex gap-2">
+              <input
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder="https://youtube.com/watch?v=…"
+                className="flex-1 px-3 py-2 text-sm rounded-lg bg-gray-900 border border-gray-800 focus:border-amber-500 focus:outline-none"
+              />
+              <button
+                onClick={save}
+                disabled={saving}
+                className="px-3 py-2 text-sm rounded-lg bg-amber-500 hover:bg-amber-400 text-black font-semibold inline-flex items-center gap-1.5 disabled:opacity-60"
+              >
+                {saving ? <Loader2 className="size-3.5 animate-spin" /> : <Check className="size-3.5" />}
+                Save
+              </button>
+              <button
+                onClick={() => { setEditing(false); setInput(localUrl ?? ""); }}
+                className="px-3 py-2 text-sm rounded-lg bg-gray-800 hover:bg-gray-700"
+              >
+                Cancel
+              </button>
             </div>
-          </div>
+          )}
+          {input && editing && (
+            <div className="text-[10px] text-gray-600 mt-1.5">
+              Detected: {detectVideoType(input) ?? "unknown"}
+            </div>
+          )}
+        </div>
+
+        <div className="p-6 pt-4">
+          <button
+            onClick={onClose}
+            className="w-full bg-gray-800 hover:bg-gray-700 rounded-lg py-2.5 text-sm font-medium"
+          >
+            Close
+          </button>
         </div>
       </div>
     </div>
