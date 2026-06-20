@@ -527,7 +527,7 @@ function SymmetricBracket({
 
   return (
     <div
-      className="flex items-stretch justify-center gap-4 min-w-max mx-auto"
+      className="flex items-stretch justify-center gap-2 lg:gap-3 w-full mx-auto"
       style={{ minHeight: 760 }}
     >
       {r16L.length > 0 && (
