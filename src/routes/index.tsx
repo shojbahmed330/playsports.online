@@ -214,6 +214,14 @@ function Index() {
                 {l}
               </a>
             ))}
+            {isAdmin && (
+              <Link
+                to="/admin"
+                className="ml-1 px-3 py-1.5 rounded-md text-emerald-300 hover:text-emerald-200 hover:bg-emerald-500/10 transition-colors inline-flex items-center gap-1.5"
+              >
+                <ShieldCheck className="size-3.5" /> Admin
+              </Link>
+            )}
           </nav>
         </div>
       </header>
