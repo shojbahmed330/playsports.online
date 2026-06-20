@@ -12,14 +12,18 @@ const GROUP_ACCENT: Record<string, { bar: string; grad: string; ring: string }> 
   G: { bar: "bg-pink-500",   grad: "from-pink-600 to-pink-500",     ring: "ring-pink-500/30" },
   H: { bar: "bg-orange-500", grad: "from-orange-600 to-orange-500", ring: "ring-orange-500/30" },
 };
+const NUM_TO_LETTER: Record<string, string> = { "1": "A", "2": "B", "3": "C", "4": "D", "5": "E", "6": "F", "7": "G", "8": "H" };
 
 function groupLetterOf(name: string): string {
-  return name.toUpperCase().replace(/^GROUP\s*/, "").trim();
+  const raw = name.toUpperCase().replace(/^GROUP\s*/, "").trim();
+  return NUM_TO_LETTER[raw] ?? raw;
 }
 
 function matchGroupLetter(round: string): string | null {
-  const m = round.toUpperCase().match(/GROUP\s*([A-H])/);
-  return m ? m[1] : null;
+  const m = round.toUpperCase().match(/GROUP\s*([A-H0-9]+)/);
+  if (!m) return null;
+  const tok = m[1];
+  return NUM_TO_LETTER[tok] ?? tok;
 }
 
 export function GroupStage({
