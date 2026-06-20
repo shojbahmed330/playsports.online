@@ -269,8 +269,6 @@ function Index() {
         ) : !tournament.data && allMatches.length === 0 ? (
           <EmptyState year={year} />
         ) : (
-          <EmptyState year={year} />
-        ) : (
           <>
             {tournament.data && <TournamentInfoCard t={tournament.data} />}
 
