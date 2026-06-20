@@ -7,6 +7,9 @@ import { TournamentInfoCard } from "@/components/wc/TournamentInfoCard";
 import { GroupStage } from "@/components/wc/GroupStage";
 import { MatchCard, type RoundKey } from "@/components/wc/MatchCard";
 import { MatchModal } from "@/components/wc/MatchModal";
+import groupMatchesData from "@/data/wc_group_matches.json";
+
+const GROUP_MATCHES_BY_YEAR = groupMatchesData as Record<string, WCMatch[]>;
 
 export const Route = createFileRoute("/")({
   head: () => ({
