@@ -80,9 +80,8 @@ function Index() {
     },
   });
 
-  // Pair by bracket continuity: R16 sorted by match_number defines slots.
-  // Each later round is positioned so its teams align with the prior round's
-  // winners (since match_number doesn't always match bracket order).
+  // Build the bracket backwards from the final so each visual slot follows the
+  // actual winner path instead of chronological match_number order.
   const grouped = useMemo(() => {
     const buckets: Record<string, WCMatch[]> = {};
     for (const m of matches.data ?? []) {
@@ -93,37 +92,52 @@ function Index() {
     const sortByNum = (a: WCMatch, b: WCMatch) =>
       (a.match_number ?? 0) - (b.match_number ?? 0);
 
-    // Start with R16 sorted by match_number.
-    const r16 = (buckets.round_of_16 ?? []).slice().sort(sortByNum);
-
-    // Align next round so each match's teams come from the prior pair (i, i+1).
-    const alignNext = (prev: WCMatch[], next: WCMatch[]): WCMatch[] => {
-      if (next.length === 0) return next;
-      const slots: (WCMatch | undefined)[] = new Array(Math.ceil(prev.length / 2));
-      const remaining = next.slice();
-      for (let i = 0; i < prev.length; i += 2) {
-        const teams = new Set<string>();
-        [prev[i], prev[i + 1]].forEach((p) => {
-          if (!p) return;
-          teams.add(p.home_team);
-          teams.add(p.away_team);
-        });
-        const idx = remaining.findIndex(
-          (m) => teams.has(m.home_team) || teams.has(m.away_team),
-        );
-        if (idx !== -1) {
-          slots[i / 2] = remaining[idx];
-          remaining.splice(idx, 1);
-        }
+    const normalizeTeam = (team: string) => team.trim().toLowerCase();
+    const winnerTeam = (m: WCMatch): string | null => {
+      if (m.home_score_pen != null && m.away_score_pen != null) {
+        return m.home_score_pen > m.away_score_pen ? m.home_team : m.away_team;
       }
-      // Append any unmatched (shouldn't happen) preserving original order.
-      const out = slots.filter(Boolean) as WCMatch[];
-      return [...out, ...remaining];
+      if ((m.home_score ?? 0) > (m.away_score ?? 0)) return m.home_team;
+      if ((m.away_score ?? 0) > (m.home_score ?? 0)) return m.away_team;
+      return null;
+    };
+    const containsTeam = (m: WCMatch, team: string) =>
+      normalizeTeam(m.home_team) === team || normalizeTeam(m.away_team) === team;
+
+    const orderFeeders = (nextRound: WCMatch[], feederRound: WCMatch[]): WCMatch[] => {
+      if (nextRound.length === 0 || feederRound.length === 0) return feederRound;
+      const remaining = feederRound.slice();
+      const ordered: WCMatch[] = [];
+
+      const takeFeederFor = (teamName: string) => {
+        const team = normalizeTeam(teamName);
+        let idx = remaining.findIndex((m) => normalizeTeam(winnerTeam(m) ?? "") === team);
+        if (idx === -1) idx = remaining.findIndex((m) => containsTeam(m, team));
+        if (idx === -1) return null;
+        const [match] = remaining.splice(idx, 1);
+        return match;
+      };
+
+      for (const nextMatch of nextRound) {
+        const homeFeeder = takeFeederFor(nextMatch.home_team);
+        const awayFeeder = takeFeederFor(nextMatch.away_team);
+        if (homeFeeder) ordered.push(homeFeeder);
+        if (awayFeeder) ordered.push(awayFeeder);
+      }
+
+      return [...ordered, ...remaining];
     };
 
-    const qf = alignNext(r16, (buckets.quarter_final ?? []).slice().sort(sortByNum));
-    const sf = alignNext(qf, (buckets.semi_final ?? []).slice().sort(sortByNum));
-    const fn = alignNext(sf, (buckets.final ?? []).slice().sort(sortByNum));
+    const fn = (buckets.final ?? []).slice().sort(sortByNum);
+    const sf = fn.length
+      ? orderFeeders(fn, (buckets.semi_final ?? []).slice().sort(sortByNum))
+      : (buckets.semi_final ?? []).slice().sort(sortByNum);
+    const qf = sf.length
+      ? orderFeeders(sf, (buckets.quarter_final ?? []).slice().sort(sortByNum))
+      : (buckets.quarter_final ?? []).slice().sort(sortByNum);
+    const r16 = qf.length
+      ? orderFeeders(qf, (buckets.round_of_16 ?? []).slice().sort(sortByNum))
+      : (buckets.round_of_16 ?? []).slice().sort(sortByNum);
 
     return {
       round_of_16: r16,
