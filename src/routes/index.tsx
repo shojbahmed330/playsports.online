@@ -648,13 +648,13 @@ function SymmetricBracket({
       </div>
 
       {sfR.length > 0 && (
-        <BracketSideColumn round="semi_final" matches={sfR} onPick={onPick} />
+        <BracketSideColumn round="semi_final" matches={sfR} onPick={onPick} side="right" />
       )}
       {qfR.length > 0 && (
-        <BracketSideColumn round="quarter_final" matches={qfR} onPick={onPick} />
+        <BracketSideColumn round="quarter_final" matches={qfR} onPick={onPick} side="right" />
       )}
       {r16R.length > 0 && (
-        <BracketSideColumn round="round_of_16" matches={r16R} onPick={onPick} />
+        <BracketSideColumn round="round_of_16" matches={r16R} onPick={onPick} side="right" />
       )}
     </div>
   );
