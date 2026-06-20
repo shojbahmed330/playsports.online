@@ -283,7 +283,7 @@ function Index() {
 
             {tab === "groups" ? (
               <section key="groups" className="wc-tab-content">
-                <GroupStage groups={groups.data ?? []} matches={matches.data ?? []} year={year} onPick={setActiveMatch} />
+                <GroupStage groups={groups.data ?? []} matches={allMatches} year={year} onPick={setActiveMatch} />
               </section>
             ) : (
               <section key="knockout" className="wc-tab-content">
