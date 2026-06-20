@@ -43,6 +43,7 @@ const ROUND_HEADER: Record<RoundKey, { label: string; grad: string; glow: string
 };
 
 function Index() {
+  const { isAdmin } = useAuth();
   const [year, setYear] = useState<number>(2022);
   const [activeMatch, setActiveMatch] = useState<WCMatch | null>(null);
   const [tab, setTab] = useState<"groups" | "knockout">("knockout");
