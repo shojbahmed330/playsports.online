@@ -278,25 +278,14 @@ function Index() {
                   </div>
                 ) : (
                   <>
-                    {/* Desktop bracket */}
+                    {/* Desktop symmetric bracket */}
                     <div className="hidden md:block overflow-x-auto scrollbar-thin -mx-4 px-4">
-                      <div
-                        className="flex items-stretch gap-6 min-w-max mx-auto"
-                        style={{ minHeight: 760 }}
-                      >
-                        {knockoutRounds.map((r, ri) => (
-                          <BracketColumn
-                            key={r}
-                            round={r}
-                            matches={grouped[r] ?? []}
-                            extra={r === "final" ? grouped.third_place ?? [] : []}
-                            onPick={setActiveMatch}
-                            colIndex={ri}
-                            showHint={ri === 0 && !hintSeen}
-                            onDismissHint={dismissHint}
-                          />
-                        ))}
-                      </div>
+                      <SymmetricBracket
+                        grouped={grouped}
+                        onPick={setActiveMatch}
+                        showHint={!hintSeen}
+                        onDismissHint={dismissHint}
+                      />
                     </div>
 
                     {/* Mobile accordion */}
