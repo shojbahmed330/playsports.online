@@ -1,12 +1,13 @@
 import { useState, useMemo, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
-import { Trophy, Loader2, ChevronDown, Users, Swords } from "lucide-react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { Trophy, Loader2, ChevronDown, Users, Swords, ShieldCheck } from "lucide-react";
 import { supabase, WC_YEARS, type WCTournament, type WCMatch, type WCGroup } from "@/lib/supabase";
 import { TournamentInfoCard } from "@/components/wc/TournamentInfoCard";
 import { GroupStage } from "@/components/wc/GroupStage";
 import { MatchCard, type RoundKey } from "@/components/wc/MatchCard";
 import { MatchModal } from "@/components/wc/MatchModal";
+import { useAuth } from "@/hooks/use-auth";
 import groupMatchesData from "@/data/wc_group_matches.json";
 import { toast } from "sonner";
 
@@ -42,6 +43,7 @@ const ROUND_HEADER: Record<RoundKey, { label: string; grad: string; glow: string
 };
 
 function Index() {
+  const { isAdmin } = useAuth();
   const [year, setYear] = useState<number>(2022);
   const [activeMatch, setActiveMatch] = useState<WCMatch | null>(null);
   const [tab, setTab] = useState<"groups" | "knockout">("knockout");
@@ -212,6 +214,14 @@ function Index() {
                 {l}
               </a>
             ))}
+            {isAdmin && (
+              <Link
+                to="/admin"
+                className="ml-1 px-3 py-1.5 rounded-md text-emerald-300 hover:text-emerald-200 hover:bg-emerald-500/10 transition-colors inline-flex items-center gap-1.5"
+              >
+                <ShieldCheck className="size-3.5" /> Admin
+              </Link>
+            )}
           </nav>
         </div>
       </header>

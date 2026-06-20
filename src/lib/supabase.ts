@@ -5,8 +5,15 @@ const SUPABASE_URL = "https://vagqeperdsumxwukwbes.supabase.co";
 const SUPABASE_ANON_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZhZ3FlcGVyZHN1bXh3dWt3YmVzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE5NzM1NjcsImV4cCI6MjA5NzU0OTU2N30.NGV1fXknh7dqhjld8lr65tZGgEWhZ7BktzEfRshCSs4";
 
+// Session persistence enabled so admin login survives page reloads.
+// `storage: undefined` on the server avoids referencing window during SSR.
 export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-  auth: { persistSession: false, autoRefreshToken: false },
+  auth: {
+    persistSession: typeof window !== "undefined",
+    autoRefreshToken: typeof window !== "undefined",
+    storage: typeof window !== "undefined" ? window.localStorage : undefined,
+    detectSessionInUrl: typeof window !== "undefined",
+  },
 });
 
 export type WCTournament = {
@@ -39,6 +46,7 @@ export type WCGroup = {
   tournament_year: number;
   group_name: string;
   team: string;
+  position: number | null;
   played: number | null;
   won: number | null;
   drawn: number | null;
@@ -46,11 +54,11 @@ export type WCGroup = {
   goals_for: number | null;
   goals_against: number | null;
   points: number | null;
-  position: number | null;
   qualified: boolean | null;
 };
 
 export const WC_YEARS = [
-  1930, 1934, 1938, 1950, 1954, 1958, 1962, 1966, 1970, 1974, 1978, 1982, 1986,
-  1990, 1994, 1998, 2002, 2006, 2010, 2014, 2018, 2022,
+  1930, 1934, 1938, 1950, 1954, 1958, 1962, 1966, 1970, 1974,
+  1978, 1982, 1986, 1990, 1994, 1998, 2002, 2006, 2010, 2014,
+  2018, 2022,
 ];
