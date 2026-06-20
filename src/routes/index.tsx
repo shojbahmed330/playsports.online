@@ -533,20 +533,26 @@ function RoundLabel({ round }: { round: RoundKey }) {
 }
 
 function BracketSideColumn({
-  round, matches, onPick, showHint, onDismissHint,
+  round, matches, onPick, showHint, onDismissHint, side,
 }: {
   round: RoundKey;
   matches: WCMatch[];
   onPick: (m: WCMatch) => void;
   showHint?: boolean;
   onDismissHint?: () => void;
+  side?: "left" | "right";
 }) {
   return (
     <div className="wc-col flex-1 min-w-0 max-w-[200px] flex flex-col">
       <RoundLabel round={round} />
       <div className="flex-1 flex flex-col justify-around gap-4">
         {matches.map((m, i) => (
-          <div key={m.id} onClick={() => { if (showHint) onDismissHint?.(); }}>
+          <div
+            key={m.id}
+            className="wc-connect"
+            data-side={side}
+            onClick={() => { if (showHint) onDismissHint?.(); }}
+          >
             <MatchCard match={m} round={round} index={i} onClick={() => onPick(m)} />
             {showHint && i === 0 && (
               <div className="text-[10px] text-gray-600 italic mt-1 text-center">
@@ -594,13 +600,14 @@ function SymmetricBracket({
           onPick={onPick}
           showHint={showHint}
           onDismissHint={onDismissHint}
+          side="left"
         />
       )}
       {qfL.length > 0 && (
-        <BracketSideColumn round="quarter_final" matches={qfL} onPick={onPick} />
+        <BracketSideColumn round="quarter_final" matches={qfL} onPick={onPick} side="left" />
       )}
       {sfL.length > 0 && (
-        <BracketSideColumn round="semi_final" matches={sfL} onPick={onPick} />
+        <BracketSideColumn round="semi_final" matches={sfL} onPick={onPick} side="left" />
       )}
 
       <div className="wc-col flex-1 min-w-0 max-w-[240px] flex flex-col items-center">
@@ -641,13 +648,13 @@ function SymmetricBracket({
       </div>
 
       {sfR.length > 0 && (
-        <BracketSideColumn round="semi_final" matches={sfR} onPick={onPick} />
+        <BracketSideColumn round="semi_final" matches={sfR} onPick={onPick} side="right" />
       )}
       {qfR.length > 0 && (
-        <BracketSideColumn round="quarter_final" matches={qfR} onPick={onPick} />
+        <BracketSideColumn round="quarter_final" matches={qfR} onPick={onPick} side="right" />
       )}
       {r16R.length > 0 && (
-        <BracketSideColumn round="round_of_16" matches={r16R} onPick={onPick} />
+        <BracketSideColumn round="round_of_16" matches={r16R} onPick={onPick} side="right" />
       )}
     </div>
   );
