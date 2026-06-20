@@ -20,13 +20,6 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-const ROUND_KEYS = [
-  { key: "round_of_16", label: "Round of 16", match: ["round of 16", "r16"] },
-  { key: "quarter_final", label: "Quarter Final", match: ["quarter", "qf"] },
-  { key: "semi_final", label: "Semi Final", match: ["semi", "sf"] },
-  { key: "third_place", label: "3rd Place Play-off", match: ["third", "3rd"] },
-  { key: "final", label: "Final", match: ["^final$", "final"] },
-] as const;
 
 function classifyRound(round: string): string | null {
   const r = round.toLowerCase().trim();
