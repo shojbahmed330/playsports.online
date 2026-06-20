@@ -278,25 +278,14 @@ function Index() {
                   </div>
                 ) : (
                   <>
-                    {/* Desktop bracket */}
+                    {/* Desktop symmetric bracket */}
                     <div className="hidden md:block overflow-x-auto scrollbar-thin -mx-4 px-4">
-                      <div
-                        className="flex items-stretch gap-6 min-w-max mx-auto"
-                        style={{ minHeight: 760 }}
-                      >
-                        {knockoutRounds.map((r, ri) => (
-                          <BracketColumn
-                            key={r}
-                            round={r}
-                            matches={grouped[r] ?? []}
-                            extra={r === "final" ? grouped.third_place ?? [] : []}
-                            onPick={setActiveMatch}
-                            colIndex={ri}
-                            showHint={ri === 0 && !hintSeen}
-                            onDismissHint={dismissHint}
-                          />
-                        ))}
-                      </div>
+                      <SymmetricBracket
+                        grouped={grouped}
+                        onPick={setActiveMatch}
+                        showHint={!hintSeen}
+                        onDismissHint={dismissHint}
+                      />
                     </div>
 
                     {/* Mobile accordion */}
@@ -467,6 +456,142 @@ function EmptyState({ year }: { year: number }) {
       <div className="text-sm text-muted-foreground mt-1">
         We're still digitizing this edition of the archive.
       </div>
+    </div>
+  );
+}
+
+function RoundLabel({ round }: { round: RoundKey }) {
+  const meta = ROUND_HEADER[round];
+  const isFinal = round === "final";
+  return (
+    <div className="flex justify-center mb-4">
+      <span
+        className={`bg-gradient-to-r ${meta.grad} text-white font-bold text-[11px] uppercase tracking-widest
+          rounded-full px-4 py-1.5 shadow-lg ${meta.glow}`}
+      >
+        {isFinal ? "🏆 World Cup Final" : meta.label}
+      </span>
+    </div>
+  );
+}
+
+function BracketSideColumn({
+  round, matches, onPick, showHint, onDismissHint,
+}: {
+  round: RoundKey;
+  matches: WCMatch[];
+  onPick: (m: WCMatch) => void;
+  showHint?: boolean;
+  onDismissHint?: () => void;
+}) {
+  return (
+    <div className="wc-col shrink-0 w-[210px] flex flex-col">
+      <RoundLabel round={round} />
+      <div className="flex-1 flex flex-col justify-around gap-4">
+        {matches.map((m, i) => (
+          <div key={m.id} onClick={() => { if (showHint) onDismissHint?.(); }}>
+            <MatchCard match={m} round={round} index={i} onClick={() => onPick(m)} />
+            {showHint && i === 0 && (
+              <div className="text-[10px] text-gray-600 italic mt-1 text-center">
+                tap any match for details
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function SymmetricBracket({
+  grouped, onPick, showHint, onDismissHint,
+}: {
+  grouped: Partial<Record<RoundKey, WCMatch[]>>;
+  onPick: (m: WCMatch) => void;
+  showHint?: boolean;
+  onDismissHint?: () => void;
+}) {
+  const r16 = grouped.round_of_16 ?? [];
+  const qf = grouped.quarter_final ?? [];
+  const sf = grouped.semi_final ?? [];
+  const fn = grouped.final ?? [];
+  const third = grouped.third_place ?? [];
+
+  const half = (arr: WCMatch[]) => {
+    const mid = Math.ceil(arr.length / 2);
+    return [arr.slice(0, mid), arr.slice(mid)] as const;
+  };
+  const [r16L, r16R] = half(r16);
+  const [qfL, qfR] = half(qf);
+  const [sfL, sfR] = half(sf);
+
+  return (
+    <div
+      className="flex items-stretch justify-center gap-4 min-w-max mx-auto"
+      style={{ minHeight: 760 }}
+    >
+      {r16L.length > 0 && (
+        <BracketSideColumn
+          round="round_of_16"
+          matches={r16L}
+          onPick={onPick}
+          showHint={showHint}
+          onDismissHint={onDismissHint}
+        />
+      )}
+      {qfL.length > 0 && (
+        <BracketSideColumn round="quarter_final" matches={qfL} onPick={onPick} />
+      )}
+      {sfL.length > 0 && (
+        <BracketSideColumn round="semi_final" matches={sfL} onPick={onPick} />
+      )}
+
+      <div className="wc-col shrink-0 w-[260px] flex flex-col items-center">
+        <RoundLabel round="final" />
+        <div className="flex-1 flex flex-col items-center justify-center gap-6">
+          <div className="grid place-items-center">
+            <div className="size-14 rounded-full bg-gradient-to-br from-amber-400/30 to-amber-600/10 grid place-items-center ring-1 ring-amber-400/40 mb-3">
+              <Trophy className="size-7 text-amber-400" />
+            </div>
+            {fn.map((m, i) => (
+              <MatchCard
+                key={m.id}
+                match={m}
+                round="final"
+                isFinal
+                index={i}
+                onClick={() => onPick(m)}
+              />
+            ))}
+          </div>
+          {third.length > 0 && (
+            <div className="w-full">
+              <div className="text-[10px] uppercase tracking-[0.18em] text-gray-500 mb-2 text-center">
+                3rd Place Play-off
+              </div>
+              {third.map((m, i) => (
+                <MatchCard
+                  key={m.id}
+                  match={m}
+                  round="third_place"
+                  index={i}
+                  onClick={() => onPick(m)}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {sfR.length > 0 && (
+        <BracketSideColumn round="semi_final" matches={sfR} onPick={onPick} />
+      )}
+      {qfR.length > 0 && (
+        <BracketSideColumn round="quarter_final" matches={qfR} onPick={onPick} />
+      )}
+      {r16R.length > 0 && (
+        <BracketSideColumn round="round_of_16" matches={r16R} onPick={onPick} />
+      )}
     </div>
   );
 }
