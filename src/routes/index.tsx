@@ -172,9 +172,9 @@ function Index() {
 
   const teamCount = useMemo(() => {
     const s = new Set<string>();
-    (matches.data ?? []).forEach((m) => { s.add(m.home_team); s.add(m.away_team); });
+    allMatches.forEach((m) => { s.add(m.home_team); s.add(m.away_team); });
     return s.size;
-  }, [matches.data]);
+  }, [allMatches]);
 
   const dismissHint = () => {
     try { localStorage.setItem("wc_hint_seen", "1"); } catch { /* ignore */ }
