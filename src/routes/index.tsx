@@ -533,20 +533,26 @@ function RoundLabel({ round }: { round: RoundKey }) {
 }
 
 function BracketSideColumn({
-  round, matches, onPick, showHint, onDismissHint,
+  round, matches, onPick, showHint, onDismissHint, side,
 }: {
   round: RoundKey;
   matches: WCMatch[];
   onPick: (m: WCMatch) => void;
   showHint?: boolean;
   onDismissHint?: () => void;
+  side?: "left" | "right";
 }) {
   return (
     <div className="wc-col flex-1 min-w-0 max-w-[200px] flex flex-col">
       <RoundLabel round={round} />
       <div className="flex-1 flex flex-col justify-around gap-4">
         {matches.map((m, i) => (
-          <div key={m.id} onClick={() => { if (showHint) onDismissHint?.(); }}>
+          <div
+            key={m.id}
+            className="wc-connect"
+            data-side={side}
+            onClick={() => { if (showHint) onDismissHint?.(); }}
+          >
             <MatchCard match={m} round={round} index={i} onClick={() => onPick(m)} />
             {showHint && i === 0 && (
               <div className="text-[10px] text-gray-600 italic mt-1 text-center">
