@@ -487,6 +487,36 @@ function EmptyState({ year }: { year: number }) {
   );
 }
 
+function BracketSkeleton({ year }: { year: number }) {
+  return (
+    <div className="relative">
+      <div className="flex justify-center mb-6">
+        <div className="h-9 w-40 rounded-2xl bg-gray-900/80 animate-pulse" />
+      </div>
+      <div className="flex items-stretch justify-center gap-3" style={{ minHeight: 540 }}>
+        {[8, 4, 2, 1, 2, 4, 8].map((n, ci) => (
+          <div key={ci} className="flex-1 max-w-[200px] flex flex-col gap-3 justify-around">
+            <div className="h-5 w-24 mx-auto rounded-full bg-gray-900/80 animate-pulse mb-2" />
+            {Array.from({ length: n }).map((_, i) => (
+              <div
+                key={i}
+                className="h-16 rounded-xl bg-gray-900/70 border border-gray-800 animate-pulse"
+                style={{ animationDelay: `${(ci * 80 + i * 40)}ms` }}
+              />
+            ))}
+          </div>
+        ))}
+      </div>
+      <div className="absolute inset-0 grid place-items-center pointer-events-none">
+        <div className="flex flex-col items-center gap-2 bg-black/30 backdrop-blur-sm rounded-2xl px-6 py-4">
+          <Loader2 className="size-7 text-gold animate-spin" />
+          <div className="text-xs text-muted-foreground">Loading {year} tournament…</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function RoundLabel({ round }: { round: RoundKey }) {
   const meta = ROUND_HEADER[round];
   const isFinal = round === "final";
