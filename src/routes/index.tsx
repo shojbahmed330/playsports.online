@@ -83,6 +83,18 @@ function Index() {
     },
   });
 
+  // Merge group-stage fixtures from bundled dataset (DB only has knockout rows).
+  const allMatches = useMemo<WCMatch[]>(() => {
+    const dbMatches = matches.data ?? [];
+    const seen = new Set(
+      dbMatches.map((m) => `${m.home_team}|${m.away_team}|${m.round}`),
+    );
+    const groupRows = (GROUP_MATCHES_BY_YEAR[String(year)] ?? []).filter(
+      (m) => !seen.has(`${m.home_team}|${m.away_team}|${m.round}`),
+    );
+    return [...dbMatches, ...groupRows];
+  }, [matches.data, year]);
+
   // Build the bracket backwards from the final so each visual slot follows the
   // actual winner path instead of chronological match_number order.
   const grouped = useMemo(() => {
