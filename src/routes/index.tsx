@@ -265,11 +265,10 @@ function Index() {
       {/* CONTENT */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-14 space-y-8">
         {loading ? (
-          <div className="flex flex-col items-center justify-center py-24 text-muted-foreground">
-            <Loader2 className="size-8 text-gold animate-spin" />
-            <div className="mt-3 text-sm">Loading {year} tournament…</div>
-          </div>
+          <BracketSkeleton year={year} />
         ) : !tournament.data && allMatches.length === 0 ? (
+          <EmptyState year={year} />
+        ) : (
           <EmptyState year={year} />
         ) : (
           <>
