@@ -546,7 +546,7 @@ function SymmetricBracket({
         <BracketSideColumn round="semi_final" matches={sfL} onPick={onPick} />
       )}
 
-      <div className="wc-col shrink-0 w-[260px] flex flex-col items-center">
+      <div className="wc-col flex-1 min-w-0 max-w-[240px] flex flex-col items-center">
         <RoundLabel round="final" />
         <div className="flex-1 flex flex-col items-center justify-center gap-6">
           <div className="grid place-items-center">
