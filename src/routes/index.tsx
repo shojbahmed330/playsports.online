@@ -600,13 +600,14 @@ function SymmetricBracket({
           onPick={onPick}
           showHint={showHint}
           onDismissHint={onDismissHint}
+          side="left"
         />
       )}
       {qfL.length > 0 && (
-        <BracketSideColumn round="quarter_final" matches={qfL} onPick={onPick} />
+        <BracketSideColumn round="quarter_final" matches={qfL} onPick={onPick} side="left" />
       )}
       {sfL.length > 0 && (
-        <BracketSideColumn round="semi_final" matches={sfL} onPick={onPick} />
+        <BracketSideColumn round="semi_final" matches={sfL} onPick={onPick} side="left" />
       )}
 
       <div className="wc-col flex-1 min-w-0 max-w-[240px] flex flex-col items-center">
