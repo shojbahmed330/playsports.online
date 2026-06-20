@@ -32,13 +32,10 @@ function classifyRound(round: string): string | null {
   const r = round.toLowerCase().trim();
   if (r.includes("group")) return "group";
   if (r.includes("third") || r.startsWith("3rd")) return "third_place";
-  if (r === "final" || r.endsWith(" final") && !r.includes("semi") && !r.includes("quarter")) {
-    // careful: "Semi Final" / "Quarter Final" also end with final
-  }
   if (r.includes("semi")) return "semi_final";
   if (r.includes("quarter")) return "quarter_final";
   if (r.includes("16") || r.includes("round of")) return "round_of_16";
-  if (r === "final") return "final";
+  if (r === "final" || r.endsWith("final")) return "final";
   return null;
 }
 
