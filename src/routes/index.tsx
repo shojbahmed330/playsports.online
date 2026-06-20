@@ -254,7 +254,7 @@ function Index() {
             <Loader2 className="size-8 text-gold animate-spin" />
             <div className="mt-3 text-sm">Loading {year} tournament…</div>
           </div>
-        ) : !tournament.data && (matches.data ?? []).length === 0 ? (
+        ) : !tournament.data && allMatches.length === 0 ? (
           <EmptyState year={year} />
         ) : (
           <>
