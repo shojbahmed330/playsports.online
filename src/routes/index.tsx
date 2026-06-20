@@ -278,8 +278,8 @@ function Index() {
                   </div>
                 ) : (
                   <>
-                    {/* Desktop symmetric bracket */}
-                    <div className="hidden md:block overflow-x-auto scrollbar-thin -mx-4 px-4">
+                    {/* Desktop symmetric bracket — full viewport, no horizontal scroll */}
+                    <div className="hidden md:block relative left-1/2 -translate-x-1/2 w-screen px-4 lg:px-8">
                       <SymmetricBracket
                         grouped={grouped}
                         onPick={setActiveMatch}
@@ -485,7 +485,7 @@ function BracketSideColumn({
   onDismissHint?: () => void;
 }) {
   return (
-    <div className="wc-col shrink-0 w-[210px] flex flex-col">
+    <div className="wc-col flex-1 min-w-0 max-w-[200px] flex flex-col">
       <RoundLabel round={round} />
       <div className="flex-1 flex flex-col justify-around gap-4">
         {matches.map((m, i) => (
@@ -527,7 +527,7 @@ function SymmetricBracket({
 
   return (
     <div
-      className="flex items-stretch justify-center gap-4 min-w-max mx-auto"
+      className="flex items-stretch justify-center gap-2 lg:gap-3 w-full mx-auto"
       style={{ minHeight: 760 }}
     >
       {r16L.length > 0 && (
@@ -546,7 +546,7 @@ function SymmetricBracket({
         <BracketSideColumn round="semi_final" matches={sfL} onPick={onPick} />
       )}
 
-      <div className="wc-col shrink-0 w-[260px] flex flex-col items-center">
+      <div className="wc-col flex-1 min-w-0 max-w-[240px] flex flex-col items-center">
         <RoundLabel round="final" />
         <div className="flex-1 flex flex-col items-center justify-center gap-6">
           <div className="grid place-items-center">
