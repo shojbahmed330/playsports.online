@@ -245,7 +245,11 @@ function Index() {
             <div className="relative">
               <select
                 value={year}
-                onChange={(e) => setYear(Number(e.target.value))}
+                onChange={(e) => {
+                  const y = Number(e.target.value);
+                  setYear(y);
+                  toast(`Viewing ${y} World Cup`, { duration: 2000 });
+                }}
                 className="appearance-none pl-6 pr-12 py-3.5 text-lg font-semibold rounded-xl bg-card border border-border ring-1 ring-gold/20 hover:ring-gold/50 focus:outline-none focus:ring-2 focus:ring-gold transition cursor-pointer min-w-[260px]"
               >
                 {WC_YEARS.slice().reverse().map((y) => (
