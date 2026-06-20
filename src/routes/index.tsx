@@ -7,6 +7,9 @@ import { TournamentInfoCard } from "@/components/wc/TournamentInfoCard";
 import { GroupStage } from "@/components/wc/GroupStage";
 import { MatchCard, type RoundKey } from "@/components/wc/MatchCard";
 import { MatchModal } from "@/components/wc/MatchModal";
+import groupMatchesData from "@/data/wc_group_matches.json";
+
+const GROUP_MATCHES_BY_YEAR = groupMatchesData as Record<string, WCMatch[]>;
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -79,6 +82,18 @@ function Index() {
       return (data ?? []) as WCGroup[];
     },
   });
+
+  // Merge group-stage fixtures from bundled dataset (DB only has knockout rows).
+  const allMatches = useMemo<WCMatch[]>(() => {
+    const dbMatches = matches.data ?? [];
+    const seen = new Set(
+      dbMatches.map((m) => `${m.home_team}|${m.away_team}|${m.round}`),
+    );
+    const groupRows = (GROUP_MATCHES_BY_YEAR[String(year)] ?? []).filter(
+      (m) => !seen.has(`${m.home_team}|${m.away_team}|${m.round}`),
+    );
+    return [...dbMatches, ...groupRows];
+  }, [matches.data, year]);
 
   // Build the bracket backwards from the final so each visual slot follows the
   // actual winner path instead of chronological match_number order.
@@ -157,9 +172,9 @@ function Index() {
 
   const teamCount = useMemo(() => {
     const s = new Set<string>();
-    (matches.data ?? []).forEach((m) => { s.add(m.home_team); s.add(m.away_team); });
+    allMatches.forEach((m) => { s.add(m.home_team); s.add(m.away_team); });
     return s.size;
-  }, [matches.data]);
+  }, [allMatches]);
 
   const dismissHint = () => {
     try { localStorage.setItem("wc_hint_seen", "1"); } catch { /* ignore */ }
@@ -239,7 +254,7 @@ function Index() {
             <Loader2 className="size-8 text-gold animate-spin" />
             <div className="mt-3 text-sm">Loading {year} tournament…</div>
           </div>
-        ) : !tournament.data && (matches.data ?? []).length === 0 ? (
+        ) : !tournament.data && allMatches.length === 0 ? (
           <EmptyState year={year} />
         ) : (
           <>
@@ -268,7 +283,7 @@ function Index() {
 
             {tab === "groups" ? (
               <section key="groups" className="wc-tab-content">
-                <GroupStage groups={groups.data ?? []} matches={matches.data ?? []} year={year} onPick={setActiveMatch} />
+                <GroupStage groups={groups.data ?? []} matches={allMatches} year={year} onPick={setActiveMatch} />
               </section>
             ) : (
               <section key="knockout" className="wc-tab-content">
