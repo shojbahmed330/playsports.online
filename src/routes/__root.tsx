@@ -78,14 +78,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "FIFA World Cup Archive — Complete History 1930-2022" },
+      { name: "description", content: "Complete FIFA World Cup tournament history, fixtures, scores and results from 1930 to 2022. Browse every match, group stage and knockout round." },
+      { property: "og:title", content: "FIFA World Cup Archive" },
+      { property: "og:description", content: "Complete tournament history 1930-2022" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
     ],
     links: [
       {
