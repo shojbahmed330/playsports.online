@@ -278,8 +278,8 @@ function Index() {
                   </div>
                 ) : (
                   <>
-                    {/* Desktop symmetric bracket */}
-                    <div className="hidden md:block overflow-x-auto scrollbar-thin -mx-4 px-4">
+                    {/* Desktop symmetric bracket — full viewport, no horizontal scroll */}
+                    <div className="hidden md:block relative left-1/2 -translate-x-1/2 w-screen px-4 lg:px-8">
                       <SymmetricBracket
                         grouped={grouped}
                         onPick={setActiveMatch}
