@@ -264,7 +264,8 @@ function SeedFromDataset() {
         .in("tournament_year", years);
       if (error) throw error;
 
-      const idx = new Map<string, { id: number; home_team: string; away_team: string; video_url: string | null }>();
+      type Row = { id: number; home_team: string; away_team: string; video_url: string | null };
+      const idx = new Map<string, Row>();
       for (const m of data ?? []) {
         const key = `${m.tournament_year}|${[m.home_team.toLowerCase(), m.away_team.toLowerCase()].sort().join("|")}`;
         idx.set(key, m);
