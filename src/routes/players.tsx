@@ -437,6 +437,59 @@ function PlayersPage() {
   );
 }
 
+function LiveRankingsHeader() {
+  return (
+    <span className="text-xs text-gray-500 inline-flex items-center gap-1.5">
+      <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
+      Live from Sofascore
+    </span>
+  );
+}
+
+function LiveFifaRankings() {
+  const fn = useServerFn(getFifaRankings);
+  const q = useQuery({
+    queryKey: ["fifa_rankings_2026"],
+    queryFn: () => fn(),
+    staleTime: 60 * 60 * 1000,
+  });
+  if (q.isLoading) {
+    return <div className="text-xs text-gray-500 py-2">Loading…</div>;
+  }
+  const rows = q.data?.rows ?? [];
+  if (rows.length === 0) {
+    // Fallback to static snapshot when live data is unavailable
+    return (
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1.5 text-sm">
+        {fifaRankings.countries.map((c) => (
+          <div key={c.rank} className="flex items-center justify-between gap-2 py-1 border-b border-gray-800/50">
+            <div className="flex items-center gap-2 min-w-0">
+              <span className="text-xs text-gray-500 w-6 tabular-nums">#{c.rank}</span>
+              <span className="text-lg">{flagOf(c.country)}</span>
+              <span className="truncate">{c.country}</span>
+            </div>
+            <span className="text-xs text-amber-400 tabular-nums">{c.points}</span>
+          </div>
+        ))}
+      </div>
+    );
+  }
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1.5 text-sm">
+      {rows.map((r) => (
+        <div key={r.team.id} className="flex items-center justify-between gap-2 py-1 border-b border-gray-800/50">
+          <div className="flex items-center gap-2 min-w-0">
+            <span className="text-xs text-gray-500 w-6 tabular-nums">#{r.rank}</span>
+            <img src={wc2026TeamLogo(r.team.id)} alt="" className="size-4 object-contain" loading="lazy" />
+            <span className="truncate">{r.team.name}</span>
+          </div>
+          <span className="text-[10px] text-gray-500 tabular-nums">{r.group}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function ScorerRow({
   rank,
   row,
