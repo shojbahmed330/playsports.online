@@ -7,6 +7,7 @@ import { WC_YEARS } from "@/lib/supabase";
 import { AdSlot } from "@/components/ads/AdSlot";
 import goalsData from "@/data/wc_goals.json";
 import cardsData from "@/data/wc_cards.json";
+import fifaRankings from "@/data/fifa_rankings.json";
 
 type GoalRow = {
   pid: string;
