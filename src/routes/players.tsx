@@ -390,27 +390,16 @@ function PlayersPage() {
           </div>
         </section>
 
-        {/* CURRENT FIFA RANKINGS */}
+        {/* CURRENT FIFA RANKINGS — live from Sofascore */}
         <section className="space-y-4">
           <div className="flex items-baseline justify-between flex-wrap gap-2">
             <h2 className="text-xl sm:text-2xl font-bold">🏆 Current FIFA Rankings</h2>
-            <span className="text-xs text-gray-500">Updated {fifaRankings.updated}</span>
+            <LiveRankingsHeader />
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <div className="rounded-2xl border border-gray-800 bg-gray-900/60 p-4">
-              <h3 className="text-sm font-bold mb-3 text-amber-400">Men's National Teams — Top 30</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1.5 text-sm">
-                {fifaRankings.countries.map((c) => (
-                  <div key={c.rank} className="flex items-center justify-between gap-2 py-1 border-b border-gray-800/50">
-                    <div className="flex items-center gap-2 min-w-0">
-                      <span className="text-xs text-gray-500 w-6 tabular-nums">#{c.rank}</span>
-                      <span className="text-lg">{flagOf(c.country)}</span>
-                      <span className="truncate">{c.country}</span>
-                    </div>
-                    <span className="text-xs text-amber-400 tabular-nums">{c.points}</span>
-                  </div>
-                ))}
-              </div>
+              <h3 className="text-sm font-bold mb-3 text-amber-400">Men's National Teams — WC 2026 Qualifiers</h3>
+              <LiveFifaRankings />
             </div>
             <div className="rounded-2xl border border-gray-800 bg-gray-900/60 p-4">
               <h3 className="text-sm font-bold mb-3 text-amber-400">Top Current Players</h3>
