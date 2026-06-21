@@ -11,6 +11,10 @@ import { useAuth } from "@/hooks/use-auth";
 import { detectVideoType } from "@/components/wc/VideoPlayer";
 import { toast } from "sonner";
 import videoSeed from "@/data/wc_video_seed.json";
+import groupMatchesData from "@/data/wc_group_matches.json";
+
+const GROUP_MATCHES_BY_YEAR = groupMatchesData as Record<string, WCMatch[]>;
+type AdminMatch = WCMatch & { _bundled?: boolean };
 
 type SeedEntry = { year: number; teams: [string, string]; url: string; title: string };
 const TEAM_ALIASES: Record<string, string[]> = {
@@ -78,14 +82,23 @@ function AdminShell() {
 
   const matches = useQuery({
     queryKey: ["admin_wc_matches", year],
-    queryFn: async (): Promise<WCMatch[]> => {
+    queryFn: async (): Promise<AdminMatch[]> => {
       const { data, error } = await supabase
         .from("wc_matches")
         .select("*")
         .eq("tournament_year", year)
         .order("match_number", { ascending: true });
       if (error) throw error;
-      return (data ?? []) as WCMatch[];
+      const db = (data ?? []) as WCMatch[];
+      const seen = new Set(
+        db.map((m) => `${m.home_team}|${m.away_team}|${m.round}`),
+      );
+      const bundled = (GROUP_MATCHES_BY_YEAR[String(year)] ?? [])
+        .filter((m) => !seen.has(`${m.home_team}|${m.away_team}|${m.round}`))
+        .map((m) => ({ ...m, _bundled: true }) as AdminMatch);
+      return [...db, ...bundled].sort(
+        (a, b) => (a.match_number ?? 0) - (b.match_number ?? 0),
+      );
     },
   });
 
@@ -225,7 +238,8 @@ function AdminShell() {
         </div>
 
         <p className="text-[11px] text-muted-foreground text-center">
-          Group-stage rows synced from the bundled dataset are not editable here — only matches that exist in the database show up.
+          Group-stage rows from the bundled dataset are shown alongside knockout matches.
+          Saving a video URL for a bundled row inserts it into the database automatically.
         </p>
       </main>
     </div>
@@ -349,7 +363,7 @@ function SeedFromDataset() {
   );
 }
 
-function MatchRow({ match, year }: { match: WCMatch; year: number }) {
+function MatchRow({ match, year }: { match: AdminMatch; year: number }) {
   const queryClient = useQueryClient();
   const [value, setValue] = useState(match.video_url ?? "");
   const [saving, setSaving] = useState(false);
@@ -361,14 +375,28 @@ function MatchRow({ match, year }: { match: WCMatch; year: number }) {
 
   const dirty = value.trim() !== (match.video_url ?? "").trim();
   const detected = value.trim() ? detectVideoType(value.trim()) : null;
+  const isBundled = match._bundled === true;
 
   const save = async () => {
     setSaving(true);
     const newUrl = value.trim() || null;
-    const { error } = await supabase
-      .from("wc_matches")
-      .update({ video_url: newUrl })
-      .eq("id", match.id);
+    let error;
+    if (isBundled) {
+      // Bundled row not yet in DB — insert the full row with the video URL.
+      // Strip the synthetic id so Postgres assigns its own and we never collide.
+      const { _bundled: _b, id: _id, ...rest } = match;
+      void _b; void _id;
+      const res = await supabase
+        .from("wc_matches")
+        .insert({ ...rest, video_url: newUrl });
+      error = res.error;
+    } else {
+      const res = await supabase
+        .from("wc_matches")
+        .update({ video_url: newUrl })
+        .eq("id", match.id);
+      error = res.error;
+    }
     setSaving(false);
     if (error) {
       toast.error("Save failed", { description: error.message });
@@ -388,6 +416,11 @@ function MatchRow({ match, year }: { match: WCMatch; year: number }) {
         <span className="text-[10px] uppercase tracking-widest bg-gray-900 border border-gray-800 rounded px-1.5 py-0.5 text-muted-foreground shrink-0">
           {shortRound(match.round)}
         </span>
+        {isBundled && (
+          <span className="text-[9px] uppercase tracking-widest bg-amber-500/15 border border-amber-500/40 text-amber-300 rounded px-1.5 py-0.5 shrink-0" title="Not in DB yet — saving will insert it">
+            new
+          </span>
+        )}
         <span className="truncate">
           <span>{flagOf(match.home_team)}</span> {match.home_team}
           <span className="mx-1.5 text-muted-foreground tabular-nums">
