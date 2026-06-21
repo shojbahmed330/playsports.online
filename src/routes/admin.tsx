@@ -12,6 +12,7 @@ import { detectVideoType } from "@/components/wc/VideoPlayer";
 import { toast } from "sonner";
 import videoSeed from "@/data/wc_video_seed.json";
 import groupMatchesData from "@/data/wc_group_matches.json";
+import { AdSenseAdminCard } from "@/components/admin/AdSenseAdminCard";
 
 const GROUP_MATCHES_BY_YEAR = groupMatchesData as Record<string, WCMatch[]>;
 type AdminMatch = WCMatch & { _bundled?: boolean };
@@ -207,6 +208,9 @@ function AdminShell() {
           <Stat label="With video" value={stats.withVideo} tone="good" />
           <Stat label="Missing video" value={stats.missing} tone="warn" />
         </div>
+
+        {/* Google AdSense control */}
+        <AdSenseAdminCard />
 
         {/* Auto-seed from bundled YouTube dataset */}
         <SeedFromDataset />
