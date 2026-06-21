@@ -219,6 +219,12 @@ function Index() {
             >
               Players
             </Link>
+            <Link
+              to="/worldcup-2026"
+              className="px-3 py-1.5 rounded-md text-amber-300 hover:text-amber-200 hover:bg-amber-500/10 transition-colors font-medium"
+            >
+              WC 2026 🔴
+            </Link>
             {["History", "About"].map((l) => (
               <a key={l} href="#" className="px-3 py-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition-colors">
                 {l}
