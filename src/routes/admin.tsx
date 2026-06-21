@@ -273,7 +273,7 @@ function SeedFromDataset() {
 
       let updated = 0, skipped = 0, missing = 0;
       for (const entry of seed) {
-        let row: typeof idx extends Map<string, infer V> ? V | undefined : never;
+        let row: Row | undefined;
         outer: for (const v1 of teamVariants(entry.teams[0])) {
           for (const v2 of teamVariants(entry.teams[1])) {
             const key = `${entry.year}|${[v1.toLowerCase(), v2.toLowerCase()].sort().join("|")}`;
