@@ -82,14 +82,23 @@ function AdminShell() {
 
   const matches = useQuery({
     queryKey: ["admin_wc_matches", year],
-    queryFn: async (): Promise<WCMatch[]> => {
+    queryFn: async (): Promise<AdminMatch[]> => {
       const { data, error } = await supabase
         .from("wc_matches")
         .select("*")
         .eq("tournament_year", year)
         .order("match_number", { ascending: true });
       if (error) throw error;
-      return (data ?? []) as WCMatch[];
+      const db = (data ?? []) as WCMatch[];
+      const seen = new Set(
+        db.map((m) => `${m.home_team}|${m.away_team}|${m.round}`),
+      );
+      const bundled = (GROUP_MATCHES_BY_YEAR[String(year)] ?? [])
+        .filter((m) => !seen.has(`${m.home_team}|${m.away_team}|${m.round}`))
+        .map((m) => ({ ...m, _bundled: true }) as AdminMatch);
+      return [...db, ...bundled].sort(
+        (a, b) => (a.match_number ?? 0) - (b.match_number ?? 0),
+      );
     },
   });
 
