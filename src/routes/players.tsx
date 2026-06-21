@@ -7,6 +7,7 @@ import { WC_YEARS } from "@/lib/supabase";
 import { AdSlot } from "@/components/ads/AdSlot";
 import goalsData from "@/data/wc_goals.json";
 import cardsData from "@/data/wc_cards.json";
+import fifaRankings from "@/data/fifa_rankings.json";
 
 type GoalRow = {
   pid: string;
@@ -383,6 +384,49 @@ function PlayersPage() {
             {countryStats.map((c) => (
               <CountryCard key={c.country} stats={c} />
             ))}
+          </div>
+        </section>
+
+        {/* CURRENT FIFA RANKINGS */}
+        <section className="space-y-4">
+          <div className="flex items-baseline justify-between flex-wrap gap-2">
+            <h2 className="text-xl sm:text-2xl font-bold">🏆 Current FIFA Rankings</h2>
+            <span className="text-xs text-gray-500">Updated {fifaRankings.updated}</span>
+          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <div className="rounded-2xl border border-gray-800 bg-gray-900/60 p-4">
+              <h3 className="text-sm font-bold mb-3 text-amber-400">Men's National Teams — Top 30</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1.5 text-sm">
+                {fifaRankings.countries.map((c) => (
+                  <div key={c.rank} className="flex items-center justify-between gap-2 py-1 border-b border-gray-800/50">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <span className="text-xs text-gray-500 w-6 tabular-nums">#{c.rank}</span>
+                      <span className="text-lg">{flagOf(c.country)}</span>
+                      <span className="truncate">{c.country}</span>
+                    </div>
+                    <span className="text-xs text-amber-400 tabular-nums">{c.points}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="rounded-2xl border border-gray-800 bg-gray-900/60 p-4">
+              <h3 className="text-sm font-bold mb-3 text-amber-400">Top Current Players</h3>
+              <div className="space-y-1.5 text-sm">
+                {fifaRankings.players.map((p) => (
+                  <div key={p.rank} className="flex items-center justify-between gap-2 py-1 border-b border-gray-800/50">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <span className="text-xs text-gray-500 w-6 tabular-nums">#{p.rank}</span>
+                      <span className="text-lg">{flagOf(p.country)}</span>
+                      <span className="font-medium truncate">{p.name}</span>
+                    </div>
+                    <span className="text-xs text-gray-400 truncate">{p.club}</span>
+                  </div>
+                ))}
+              </div>
+              <p className="text-[10px] text-gray-500 mt-3">
+                Curated based on 2024 Ballon d'Or shortlist and recent form. FIFA does not publish an official player ranking.
+              </p>
+            </div>
           </div>
         </section>
       </main>
