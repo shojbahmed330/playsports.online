@@ -363,7 +363,7 @@ function SeedFromDataset() {
   );
 }
 
-function MatchRow({ match, year }: { match: WCMatch; year: number }) {
+function MatchRow({ match, year }: { match: AdminMatch; year: number }) {
   const queryClient = useQueryClient();
   const [value, setValue] = useState(match.video_url ?? "");
   const [saving, setSaving] = useState(false);
@@ -375,14 +375,28 @@ function MatchRow({ match, year }: { match: WCMatch; year: number }) {
 
   const dirty = value.trim() !== (match.video_url ?? "").trim();
   const detected = value.trim() ? detectVideoType(value.trim()) : null;
+  const isBundled = match._bundled === true;
 
   const save = async () => {
     setSaving(true);
     const newUrl = value.trim() || null;
-    const { error } = await supabase
-      .from("wc_matches")
-      .update({ video_url: newUrl })
-      .eq("id", match.id);
+    let error;
+    if (isBundled) {
+      // Bundled row not yet in DB — insert the full row with the video URL.
+      // Strip the synthetic id so Postgres assigns its own and we never collide.
+      const { _bundled: _b, id: _id, ...rest } = match;
+      void _b; void _id;
+      const res = await supabase
+        .from("wc_matches")
+        .insert({ ...rest, video_url: newUrl });
+      error = res.error;
+    } else {
+      const res = await supabase
+        .from("wc_matches")
+        .update({ video_url: newUrl })
+        .eq("id", match.id);
+      error = res.error;
+    }
     setSaving(false);
     if (error) {
       toast.error("Save failed", { description: error.message });
