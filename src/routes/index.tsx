@@ -210,7 +210,16 @@ function Index() {
             </div>
           </div>
           <nav className="flex items-center gap-1 sm:gap-2 text-sm">
-            {["Home", "History", "About"].map((l) => (
+            <a href="#" className="px-3 py-1.5 rounded-md text-foreground bg-accent/40 transition-colors">
+              Home
+            </a>
+            <Link
+              to="/players"
+              className="px-3 py-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+            >
+              Players
+            </Link>
+            {["History", "About"].map((l) => (
               <a key={l} href="#" className="px-3 py-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition-colors">
                 {l}
               </a>
