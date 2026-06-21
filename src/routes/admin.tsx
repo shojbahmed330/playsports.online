@@ -195,6 +195,10 @@ function AdminShell() {
           <Stat label="Missing video" value={stats.missing} tone="warn" />
         </div>
 
+        {/* Auto-seed from bundled YouTube dataset */}
+        <SeedFromDataset />
+
+
         {/* Match table */}
         <div className="rounded-2xl border border-border bg-card/40 overflow-hidden">
           {matches.isLoading ? (
