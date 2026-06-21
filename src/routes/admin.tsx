@@ -416,6 +416,11 @@ function MatchRow({ match, year }: { match: AdminMatch; year: number }) {
         <span className="text-[10px] uppercase tracking-widest bg-gray-900 border border-gray-800 rounded px-1.5 py-0.5 text-muted-foreground shrink-0">
           {shortRound(match.round)}
         </span>
+        {isBundled && (
+          <span className="text-[9px] uppercase tracking-widest bg-amber-500/15 border border-amber-500/40 text-amber-300 rounded px-1.5 py-0.5 shrink-0" title="Not in DB yet — saving will insert it">
+            new
+          </span>
+        )}
         <span className="truncate">
           <span>{flagOf(match.home_team)}</span> {match.home_team}
           <span className="mx-1.5 text-muted-foreground tabular-nums">
