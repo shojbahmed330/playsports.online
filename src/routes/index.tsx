@@ -303,6 +303,9 @@ function Index() {
               </div>
             </div>
 
+            {/* In-content ad slot between tabs and bracket/groups. */}
+            <AdSlot slot="in_content" layout="in-article" />
+
             {tab === "groups" ? (
               <section key="groups" className="wc-tab-content">
                 <GroupStage groups={groups.data ?? []} matches={allMatches} year={year} onPick={setActiveMatch} />
