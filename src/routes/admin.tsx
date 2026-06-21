@@ -238,7 +238,8 @@ function AdminShell() {
         </div>
 
         <p className="text-[11px] text-muted-foreground text-center">
-          Group-stage rows synced from the bundled dataset are not editable here — only matches that exist in the database show up.
+          Group-stage rows from the bundled dataset are shown alongside knockout matches.
+          Saving a video URL for a bundled row inserts it into the database automatically.
         </p>
       </main>
     </div>
