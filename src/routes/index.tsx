@@ -10,6 +10,7 @@ import { MatchModal } from "@/components/wc/MatchModal";
 import { useAuth } from "@/hooks/use-auth";
 import groupMatchesData from "@/data/wc_group_matches.json";
 import { toast } from "sonner";
+import { AdSlot } from "@/components/ads/AdSlot";
 
 const GROUP_MATCHES_BY_YEAR = groupMatchesData as Record<string, WCMatch[]>;
 
@@ -302,6 +303,9 @@ function Index() {
                 </TabBtn>
               </div>
             </div>
+
+            {/* In-content ad slot between tabs and bracket/groups. */}
+            <AdSlot slot="in_content" layout="in-article" />
 
             {tab === "groups" ? (
               <section key="groups" className="wc-tab-content">

@@ -12,6 +12,8 @@ import { Toaster } from "sonner";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { AdSenseLoader } from "../components/ads/AdSenseLoader";
+import { AdSlot } from "../components/ads/AdSlot";
 
 function NotFoundComponent() {
   return (
@@ -117,8 +119,13 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <AdSenseLoader />
+      {/* Site-wide top banner — shows on every route once AdSense is configured. */}
+      <AdSlot slot="header" className="px-4" />
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
+      {/* Site-wide bottom banner. */}
+      <AdSlot slot="footer" className="px-4" />
       <Toaster position="bottom-right" theme="dark" richColors />
     </QueryClientProvider>
   );
