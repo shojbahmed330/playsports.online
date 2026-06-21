@@ -3,13 +3,21 @@ import { useEffect, useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Trophy, Loader2, LogOut, Search, ChevronDown, Save, Check,
-  Filter, ExternalLink, ArrowLeft, ShieldCheck, AlertTriangle,
+  Filter, ExternalLink, ArrowLeft, ShieldCheck, AlertTriangle, Sparkles,
 } from "lucide-react";
 import { supabase, WC_YEARS, type WCMatch } from "@/lib/supabase";
 import { flagOf } from "@/lib/flags";
 import { useAuth } from "@/hooks/use-auth";
 import { detectVideoType } from "@/components/wc/VideoPlayer";
 import { toast } from "sonner";
+import videoSeed from "@/data/wc_video_seed.json";
+
+type SeedEntry = { year: number; teams: [string, string]; url: string; title: string };
+const TEAM_ALIASES: Record<string, string[]> = {
+  "South Korea": ["South Korea", "Korea Republic", "Korea, Republic of"],
+  "USA": ["United States", "USA", "United States of America"],
+};
+const teamVariants = (t: string) => TEAM_ALIASES[t] ?? [t];
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
