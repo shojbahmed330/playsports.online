@@ -11,6 +11,7 @@ import { useAuth } from "@/hooks/use-auth";
 import groupMatchesData from "@/data/wc_group_matches.json";
 import { toast } from "sonner";
 import { AdSlot } from "@/components/ads/AdSlot";
+import { Wc2026GroupsView, Wc2026KnockoutView } from "@/components/wc/Wc2026View";
 
 const GROUP_MATCHES_BY_YEAR = groupMatchesData as Record<string, WCMatch[]>;
 
@@ -219,12 +220,6 @@ function Index() {
             >
               Players
             </Link>
-            <Link
-              to="/worldcup-2026"
-              className="px-3 py-1.5 rounded-md text-amber-300 hover:text-amber-200 hover:bg-amber-500/10 transition-colors font-medium"
-            >
-              WC 2026 🔴
-            </Link>
             {["History", "About"].map((l) => (
               <a key={l} href="#" className="px-3 py-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition-colors">
                 {l}
@@ -290,7 +285,39 @@ function Index() {
 
       {/* CONTENT */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-14 space-y-8">
-        {loading ? (
+        {year === 2026 ? (
+          <>
+            <div className="flex justify-center">
+              <div className="bg-gray-800/50 rounded-full px-4 py-1 text-xs text-gray-400">
+                2026 World Cup • 48 teams • USA · Canada · Mexico •{" "}
+                <span className="text-red-300 font-semibold">Live data</span>
+              </div>
+            </div>
+
+            <div className="flex justify-center">
+              <div className="bg-gray-900 rounded-2xl p-1 inline-flex gap-1 border border-gray-800">
+                <TabBtn active={tab === "groups"} onClick={() => setTab("groups")} icon={<Users className="size-4" />}>
+                  Group Stage
+                </TabBtn>
+                <TabBtn active={tab === "knockout"} onClick={() => setTab("knockout")} icon={<Swords className="size-4" />}>
+                  Knockout & Scorers
+                </TabBtn>
+              </div>
+            </div>
+
+            <AdSlot slot="in_content" layout="in-article" />
+
+            {tab === "groups" ? (
+              <section key="groups-2026" className="wc-tab-content">
+                <Wc2026GroupsView />
+              </section>
+            ) : (
+              <section key="knockout-2026" className="wc-tab-content">
+                <Wc2026KnockoutView />
+              </section>
+            )}
+          </>
+        ) : loading ? (
           <BracketSkeleton year={year} />
         ) : !tournament.data && allMatches.length === 0 ? (
           <EmptyState year={year} />
@@ -371,6 +398,7 @@ function Index() {
           </>
         )}
       </main>
+
 
       <footer className="border-t border-border mt-10 py-8 text-center text-xs text-muted-foreground">
         FIFA World Cup Archive — Historical data 1930–2022

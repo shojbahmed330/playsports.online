@@ -1,10 +1,10 @@
 import { createServerFn } from "@tanstack/react-start";
 
-// API-Football via RapidAPI. League 1 = FIFA World Cup, season 2026.
-const HOST = "api-football-v1.p.rapidapi.com";
-const BASE = `https://${HOST}/v3`;
-const LEAGUE = 1;
-const SEASON = 2026;
+// Sofascore via RapidAPI. FIFA World Cup uniqueTournamentId = 16; 2026 seasonId = 58210.
+const HOST = "sofascore.p.rapidapi.com";
+const BASE = `https://${HOST}`;
+const TID = 16;
+const SID = 58210;
 
 // In-memory cache per warm Worker instance.
 const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
@@ -20,54 +20,105 @@ async function apiGet(path: string): Promise<unknown> {
   });
   if (!res.ok) {
     const txt = await res.text().catch(() => "");
-    throw new Error(`API-Football ${res.status}: ${txt.slice(0, 200)}`);
+    throw new Error(`Sofascore ${res.status}: ${txt.slice(0, 200)}`);
   }
   const json = await res.json();
   cache.set(path, { at: Date.now(), data: json });
   return json;
 }
 
+// ===================== FIXTURES =====================
+
 export type Wc2026Fixture = {
   id: number;
-  date: string;
-  status: string;       // NS, 1H, HT, 2H, FT, AET, PEN, PST, CANC
-  statusLong: string;
-  elapsed: number | null;
-  round: string;
+  startTs: number;          // seconds
+  status: string;           // notstarted | inprogress | finished | postponed | canceled
+  statusDesc: string;
+  minute: number | null;
+  group: string;            // "Group A" or "Round of 16", "Final", etc.
   venue: string | null;
   city: string | null;
-  home: { id: number; name: string; logo: string; goals: number | null };
-  away: { id: number; name: string; logo: string; goals: number | null };
+  home: { id: number; name: string; code: string; goals: number | null };
+  away: { id: number; name: string; code: string; goals: number | null };
 };
+
+function teamLogo(id: number) {
+  return `https://api.sofascore.app/api/v1/team/${id}/image`;
+}
+export const wc2026TeamLogo = teamLogo;
+
+function normalizeRound(tournamentName: string, roundInfo: any): string {
+  // tournament.name like "FIFA World Cup, Group A" or "FIFA World Cup, Knockout stage"
+  const m = /,\s*(.+)$/.exec(tournamentName ?? "");
+  if (m) {
+    const part = m[1].trim();
+    if (/^group/i.test(part)) return part; // "Group A"
+  }
+  const r = roundInfo?.name as string | undefined;
+  if (r) return r;
+  const code = roundInfo?.round as number | undefined;
+  if (code) {
+    if (code === 1) return "Final";
+    if (code === 2) return "Semi-Final";
+    if (code === 4) return "Quarter-Final";
+    if (code === 8) return "Round of 16";
+    if (code === 16) return "Round of 32";
+  }
+  return "Other";
+}
+
+function mapEvent(e: any): Wc2026Fixture {
+  return {
+    id: e.id,
+    startTs: e.startTimestamp,
+    status: e.status?.type ?? "notstarted",
+    statusDesc: e.status?.description ?? "",
+    minute: e.time?.currentPeriodStartTimestamp
+      ? Math.floor((Date.now() / 1000 - e.time.currentPeriodStartTimestamp) / 60)
+      : null,
+    group: normalizeRound(e.tournament?.name ?? "", e.roundInfo),
+    venue: e.venue?.stadium?.name ?? null,
+    city: e.venue?.city?.name ?? null,
+    home: {
+      id: e.homeTeam?.id,
+      name: e.homeTeam?.name ?? "",
+      code: e.homeTeam?.nameCode ?? "",
+      goals: e.homeScore?.current ?? null,
+    },
+    away: {
+      id: e.awayTeam?.id,
+      name: e.awayTeam?.name ?? "",
+      code: e.awayTeam?.nameCode ?? "",
+      goals: e.awayScore?.current ?? null,
+    },
+  };
+}
 
 export const getWc2026Fixtures = createServerFn({ method: "GET" }).handler(async () => {
   try {
-    const raw = (await apiGet(`/fixtures?league=${LEAGUE}&season=${SEASON}`)) as {
-      response?: Array<Record<string, any>>;
-    };
-    const fixtures: Wc2026Fixture[] = (raw.response ?? []).map((f) => ({
-      id: f.fixture?.id,
-      date: f.fixture?.date,
-      status: f.fixture?.status?.short ?? "NS",
-      statusLong: f.fixture?.status?.long ?? "",
-      elapsed: f.fixture?.status?.elapsed ?? null,
-      round: f.league?.round ?? "",
-      venue: f.fixture?.venue?.name ?? null,
-      city: f.fixture?.venue?.city ?? null,
-      home: {
-        id: f.teams?.home?.id,
-        name: f.teams?.home?.name ?? "",
-        logo: f.teams?.home?.logo ?? "",
-        goals: f.goals?.home ?? null,
-      },
-      away: {
-        id: f.teams?.away?.id,
-        name: f.teams?.away?.name ?? "",
-        logo: f.teams?.away?.logo ?? "",
-        goals: f.goals?.away ?? null,
-      },
-    }));
-    fixtures.sort((a, b) => a.date.localeCompare(b.date));
+    const fixtures: Wc2026Fixture[] = [];
+    const seen = new Set<number>();
+    // last matches (played) – may paginate
+    for (let p = 0; p < 6; p++) {
+      const raw = (await apiGet(
+        `/tournaments/get-last-matches?tournamentId=${TID}&seasonId=${SID}&pageIndex=${p}`,
+      )) as { events?: any[]; hasNextPage?: boolean };
+      for (const e of raw.events ?? []) {
+        if (!seen.has(e.id)) { seen.add(e.id); fixtures.push(mapEvent(e)); }
+      }
+      if (!raw.hasNextPage) break;
+    }
+    // next matches (upcoming)
+    for (let p = 0; p < 6; p++) {
+      const raw = (await apiGet(
+        `/tournaments/get-next-matches?tournamentId=${TID}&seasonId=${SID}&pageIndex=${p}`,
+      )) as { events?: any[]; hasNextPage?: boolean };
+      for (const e of raw.events ?? []) {
+        if (!seen.has(e.id)) { seen.add(e.id); fixtures.push(mapEvent(e)); }
+      }
+      if (!raw.hasNextPage) break;
+    }
+    fixtures.sort((a, b) => a.startTs - b.startTs);
     return { fixtures, error: null as string | null };
   } catch (e) {
     const msg = e instanceof Error ? e.message : "Unknown error";
@@ -75,75 +126,92 @@ export const getWc2026Fixtures = createServerFn({ method: "GET" }).handler(async
   }
 });
 
-export type Wc2026Standing = {
+// ===================== STANDINGS =====================
+
+export type Wc2026StandingRow = {
   rank: number;
-  team: { id: number; name: string; logo: string };
-  group: string;
-  points: number;
+  team: { id: number; name: string; code: string; fifaRanking: number | null };
   played: number;
   win: number;
   draw: number;
   lose: number;
   goalsFor: number;
   goalsAgainst: number;
-  goalsDiff: number;
+  goalsDiff: string;
+  points: number;
+};
+export type Wc2026Group = {
+  group: string;            // "Group A"
+  rows: Wc2026StandingRow[];
 };
 
 export const getWc2026Standings = createServerFn({ method: "GET" }).handler(async () => {
   try {
-    const raw = (await apiGet(`/standings?league=${LEAGUE}&season=${SEASON}`)) as {
-      response?: Array<{ league?: { standings?: any[][] } }>;
-    };
-    const groups = raw.response?.[0]?.league?.standings ?? [];
-    const standings: Wc2026Standing[] = [];
-    for (const g of groups) {
-      for (const row of g) {
-        standings.push({
-          rank: row.rank,
-          team: { id: row.team?.id, name: row.team?.name, logo: row.team?.logo },
-          group: row.group ?? "",
-          points: row.points ?? 0,
-          played: row.all?.played ?? 0,
-          win: row.all?.win ?? 0,
-          draw: row.all?.draw ?? 0,
-          lose: row.all?.lose ?? 0,
-          goalsFor: row.all?.goals?.for ?? 0,
-          goalsAgainst: row.all?.goals?.against ?? 0,
-          goalsDiff: row.goalsDiff ?? 0,
-        });
-      }
-    }
-    return { standings, error: null as string | null };
+    const raw = (await apiGet(
+      `/tournaments/get-standings?tournamentId=${TID}&seasonId=${SID}&type=total`,
+    )) as { standings?: any[] };
+    const groups: Wc2026Group[] = (raw.standings ?? [])
+      .filter((g: any) => /group/i.test(g.tournament?.name ?? ""))
+      .map((g: any) => {
+        const m = /,\s*(.+)$/.exec(g.tournament?.name ?? "");
+        const name = m ? m[1].trim() : g.tournament?.name ?? "Group";
+        return {
+          group: name,
+          rows: (g.rows ?? []).map((r: any) => ({
+            rank: r.position,
+            team: {
+              id: r.team?.id,
+              name: r.team?.name ?? "",
+              code: r.team?.nameCode ?? "",
+              fifaRanking: r.team?.ranking ?? null,
+            },
+            played: r.matches ?? 0,
+            win: r.wins ?? 0,
+            draw: r.draws ?? 0,
+            lose: r.losses ?? 0,
+            goalsFor: r.scoresFor ?? 0,
+            goalsAgainst: r.scoresAgainst ?? 0,
+            goalsDiff: r.scoreDiffFormatted ?? String((r.scoresFor ?? 0) - (r.scoresAgainst ?? 0)),
+            points: r.points ?? 0,
+          })),
+        };
+      });
+    groups.sort((a, b) => a.group.localeCompare(b.group));
+    return { groups, error: null as string | null };
   } catch (e) {
     const msg = e instanceof Error ? e.message : "Unknown error";
-    return { standings: [] as Wc2026Standing[], error: msg };
+    return { groups: [] as Wc2026Group[], error: msg };
   }
 });
+
+// ===================== TOP SCORERS =====================
 
 export type Wc2026Scorer = {
   rank: number;
   name: string;
-  photo: string | null;
-  team: { name: string; logo: string };
+  playerId: number;
+  team: { id: number; name: string; code: string };
   goals: number;
-  assists: number;
+  assists: number | null;
 };
 
 export const getWc2026TopScorers = createServerFn({ method: "GET" }).handler(async () => {
   try {
-    const raw = (await apiGet(`/players/topscorers?league=${LEAGUE}&season=${SEASON}`)) as {
-      response?: Array<Record<string, any>>;
-    };
-    const scorers: Wc2026Scorer[] = (raw.response ?? []).map((r, i) => ({
+    const raw = (await apiGet(
+      `/tournaments/get-top-players?tournamentId=${TID}&seasonId=${SID}&positionDetail=all`,
+    )) as { topPlayers?: { goals?: any[]; assists?: any[] } };
+    const goalsArr = raw.topPlayers?.goals ?? [];
+    const scorers: Wc2026Scorer[] = goalsArr.slice(0, 25).map((row: any, i: number) => ({
       rank: i + 1,
-      name: r.player?.name ?? "",
-      photo: r.player?.photo ?? null,
+      name: row.player?.name ?? "",
+      playerId: row.player?.id,
       team: {
-        name: r.statistics?.[0]?.team?.name ?? "",
-        logo: r.statistics?.[0]?.team?.logo ?? "",
+        id: row.team?.id,
+        name: row.team?.name ?? "",
+        code: row.team?.nameCode ?? "",
       },
-      goals: r.statistics?.[0]?.goals?.total ?? 0,
-      assists: r.statistics?.[0]?.goals?.assists ?? 0,
+      goals: row.statistics?.goals ?? 0,
+      assists: row.statistics?.assists ?? null,
     }));
     return { scorers, error: null as string | null };
   } catch (e) {
@@ -152,36 +220,48 @@ export const getWc2026TopScorers = createServerFn({ method: "GET" }).handler(asy
   }
 });
 
-export type Wc2026Event = {
-  minute: number | null;
-  team: string;
-  player: string;
-  assist: string | null;
-  type: string;      // Goal, Card, subst, Var
-  detail: string;    // Normal Goal, Yellow Card, Red Card, ...
+// ===================== FIFA RANKINGS (derived from standings) =====================
+
+export type FifaRankRow = {
+  rank: number;
+  team: { id: number; name: string; code: string };
+  group: string;
 };
 
-export const getWc2026FixtureEvents = createServerFn({ method: "GET" })
-  .inputValidator((d: { fixtureId: number }) => d)
-  .handler(async ({ data }) => {
-    try {
-      const raw = (await apiGet(`/fixtures/events?fixture=${data.fixtureId}`)) as {
-        response?: Array<Record<string, any>>;
-      };
-      const events: Wc2026Event[] = (raw.response ?? []).map((e) => ({
-        minute: e.time?.elapsed ?? null,
-        team: e.team?.name ?? "",
-        player: e.player?.name ?? "",
-        assist: e.assist?.name ?? null,
-        type: e.type ?? "",
-        detail: e.detail ?? "",
-      }));
-      return { events, error: null as string | null };
-    } catch (e) {
-      const msg = e instanceof Error ? e.message : "Unknown error";
-      return { events: [] as Wc2026Event[], error: msg };
+// Derives an "updated FIFA ranking" list from the WC 2026 standings response,
+// which embeds each team's current FIFA ranking. Zero extra API cost.
+export const getFifaRankings = createServerFn({ method: "GET" }).handler(async () => {
+  try {
+    const raw = (await apiGet(
+      `/tournaments/get-standings?tournamentId=${TID}&seasonId=${SID}&type=total`,
+    )) as { standings?: any[] };
+    const seen = new Map<number, FifaRankRow>();
+    for (const g of raw.standings ?? []) {
+      if (!/group/i.test(g.tournament?.name ?? "")) continue;
+      const m = /,\s*(.+)$/.exec(g.tournament?.name ?? "");
+      const groupName = m ? m[1].trim() : "";
+      for (const r of g.rows ?? []) {
+        const t = r.team;
+        const rk = t?.ranking;
+        if (!t || rk == null || rk === 0) continue;
+        if (!seen.has(t.id)) {
+          seen.set(t.id, {
+            rank: rk,
+            team: { id: t.id, name: t.name, code: t.nameCode ?? "" },
+            group: groupName,
+          });
+        }
+      }
     }
-  });
+    const rows = Array.from(seen.values()).sort((a, b) => a.rank - b.rank);
+    return { rows, error: null as string | null };
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : "Unknown error";
+    return { rows: [] as FifaRankRow[], error: msg };
+  }
+});
+
+// ===================== ADMIN: clear cache =====================
 
 export const clearWc2026Cache = createServerFn({ method: "POST" }).handler(async () => {
   cache.clear();
