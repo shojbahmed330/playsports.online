@@ -9,17 +9,11 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as Worldcup2026RouteImport } from './routes/worldcup-2026'
 import { Route as PlayersRouteImport } from './routes/players'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 
-const Worldcup2026Route = Worldcup2026RouteImport.update({
-  id: '/worldcup-2026',
-  path: '/worldcup-2026',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const PlayersRoute = PlayersRouteImport.update({
   id: '/players',
   path: '/players',
@@ -46,14 +40,12 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
   '/players': typeof PlayersRoute
-  '/worldcup-2026': typeof Worldcup2026Route
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
   '/players': typeof PlayersRoute
-  '/worldcup-2026': typeof Worldcup2026Route
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -61,14 +53,13 @@ export interface FileRoutesById {
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
   '/players': typeof PlayersRoute
-  '/worldcup-2026': typeof Worldcup2026Route
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/admin' | '/auth' | '/players' | '/worldcup-2026'
+  fullPaths: '/' | '/admin' | '/auth' | '/players'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/admin' | '/auth' | '/players' | '/worldcup-2026'
-  id: '__root__' | '/' | '/admin' | '/auth' | '/players' | '/worldcup-2026'
+  to: '/' | '/admin' | '/auth' | '/players'
+  id: '__root__' | '/' | '/admin' | '/auth' | '/players'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -76,18 +67,10 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRoute
   AuthRoute: typeof AuthRoute
   PlayersRoute: typeof PlayersRoute
-  Worldcup2026Route: typeof Worldcup2026Route
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/worldcup-2026': {
-      id: '/worldcup-2026'
-      path: '/worldcup-2026'
-      fullPath: '/worldcup-2026'
-      preLoaderRoute: typeof Worldcup2026RouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/players': {
       id: '/players'
       path: '/players'
@@ -124,7 +107,6 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRoute,
   AuthRoute: AuthRoute,
   PlayersRoute: PlayersRoute,
-  Worldcup2026Route: Worldcup2026Route,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
