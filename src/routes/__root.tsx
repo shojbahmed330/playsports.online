@@ -82,10 +82,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "FIFA World Cup Archive — Complete History 1930-2022" },
       { name: "description", content: "Complete FIFA World Cup tournament history, fixtures, scores and results from 1930 to 2022. Browse every match, group stage and knockout round." },
-      { property: "og:title", content: "FIFA World Cup Archive" },
-      { property: "og:description", content: "Complete tournament history 1930-2022" },
+      { property: "og:title", content: "FIFA World Cup Archive — Complete History 1930-2022" },
+      { property: "og:description", content: "Complete FIFA World Cup tournament history, fixtures, scores and results from 1930 to 2022. Browse every match, group stage and knockout round." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
+      { name: "twitter:title", content: "FIFA World Cup Archive — Complete History 1930-2022" },
+      { name: "twitter:description", content: "Complete FIFA World Cup tournament history, fixtures, scores and results from 1930 to 2022. Browse every match, group stage and knockout round." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/110e40cc-d990-48af-a996-8f46b9fd0f97/id-preview-f9e73043--3e33a21e-e132-4b69-83ee-be28f3bc4583.lovable.app-1782037338724.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/110e40cc-d990-48af-a996-8f46b9fd0f97/id-preview-f9e73043--3e33a21e-e132-4b69-83ee-be28f3bc4583.lovable.app-1782037338724.png" },
     ],
     links: [
       {
