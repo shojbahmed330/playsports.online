@@ -11,6 +11,10 @@ import { useAuth } from "@/hooks/use-auth";
 import { detectVideoType } from "@/components/wc/VideoPlayer";
 import { toast } from "sonner";
 import videoSeed from "@/data/wc_video_seed.json";
+import groupMatchesData from "@/data/wc_group_matches.json";
+
+const GROUP_MATCHES_BY_YEAR = groupMatchesData as Record<string, WCMatch[]>;
+type AdminMatch = WCMatch & { _bundled?: boolean };
 
 type SeedEntry = { year: number; teams: [string, string]; url: string; title: string };
 const TEAM_ALIASES: Record<string, string[]> = {
