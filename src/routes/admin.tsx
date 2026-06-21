@@ -3,13 +3,21 @@ import { useEffect, useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Trophy, Loader2, LogOut, Search, ChevronDown, Save, Check,
-  Filter, ExternalLink, ArrowLeft, ShieldCheck, AlertTriangle,
+  Filter, ExternalLink, ArrowLeft, ShieldCheck, AlertTriangle, Sparkles,
 } from "lucide-react";
 import { supabase, WC_YEARS, type WCMatch } from "@/lib/supabase";
 import { flagOf } from "@/lib/flags";
 import { useAuth } from "@/hooks/use-auth";
 import { detectVideoType } from "@/components/wc/VideoPlayer";
 import { toast } from "sonner";
+import videoSeed from "@/data/wc_video_seed.json";
+
+type SeedEntry = { year: number; teams: [string, string]; url: string; title: string };
+const TEAM_ALIASES: Record<string, string[]> = {
+  "South Korea": ["South Korea", "Korea Republic", "Korea, Republic of"],
+  "USA": ["United States", "USA", "United States of America"],
+};
+const teamVariants = (t: string) => TEAM_ALIASES[t] ?? [t];
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
@@ -187,6 +195,10 @@ function AdminShell() {
           <Stat label="Missing video" value={stats.missing} tone="warn" />
         </div>
 
+        {/* Auto-seed from bundled YouTube dataset */}
+        <SeedFromDataset />
+
+
         {/* Match table */}
         <div className="rounded-2xl border border-border bg-card/40 overflow-hidden">
           {matches.isLoading ? (
@@ -230,6 +242,109 @@ function Stat({ label, value, tone }: { label: string; value: number; tone: "def
     <div className={`rounded-xl border px-4 py-3 ${colors}`}>
       <div className="text-[10px] uppercase tracking-widest opacity-70">{label}</div>
       <div className="text-2xl font-bold mt-1 tabular-nums">{value}</div>
+    </div>
+  );
+}
+
+function SeedFromDataset() {
+  const queryClient = useQueryClient();
+  const [running, setRunning] = useState(false);
+  const [result, setResult] = useState<{ updated: number; skipped: number; missing: number } | null>(null);
+
+  const seed: SeedEntry[] = videoSeed as SeedEntry[];
+  const years = Array.from(new Set(seed.map((s) => s.year)));
+
+  const run = async (overwrite: boolean) => {
+    setRunning(true);
+    setResult(null);
+    try {
+      const { data, error } = await supabase
+        .from("wc_matches")
+        .select("id,tournament_year,home_team,away_team,video_url")
+        .in("tournament_year", years);
+      if (error) throw error;
+
+      type Row = { id: number; home_team: string; away_team: string; video_url: string | null };
+      const idx = new Map<string, Row>();
+      for (const m of data ?? []) {
+        const key = `${m.tournament_year}|${[m.home_team.toLowerCase(), m.away_team.toLowerCase()].sort().join("|")}`;
+        idx.set(key, m);
+      }
+
+      let updated = 0, skipped = 0, missing = 0;
+      for (const entry of seed) {
+        let row: Row | undefined;
+        outer: for (const v1 of teamVariants(entry.teams[0])) {
+          for (const v2 of teamVariants(entry.teams[1])) {
+            const key = `${entry.year}|${[v1.toLowerCase(), v2.toLowerCase()].sort().join("|")}`;
+            const hit = idx.get(key);
+            if (hit) { row = hit; break outer; }
+          }
+        }
+        if (!row) { missing++; continue; }
+        if (row.video_url && !overwrite) { skipped++; continue; }
+        const { error: upErr } = await supabase
+          .from("wc_matches")
+          .update({ video_url: entry.url })
+          .eq("id", row.id);
+        if (upErr) { missing++; continue; }
+        updated++;
+      }
+
+      setResult({ updated, skipped, missing });
+      toast.success(`Seeded ${updated} videos`, {
+        description: `${skipped} already had video, ${missing} couldn't be matched`,
+      });
+      queryClient.invalidateQueries({ queryKey: ["admin_wc_matches"] });
+      queryClient.invalidateQueries({ queryKey: ["wc_matches"] });
+    } catch (e: unknown) {
+      toast.error("Seed failed", { description: e instanceof Error ? e.message : String(e) });
+    } finally {
+      setRunning(false);
+    }
+  };
+
+  return (
+    <div className="rounded-2xl border border-amber-500/20 bg-gradient-to-br from-amber-500/5 to-transparent p-4 sm:p-5">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:justify-between">
+        <div className="flex items-start gap-3">
+          <div className="size-9 rounded-lg bg-amber-500/15 grid place-items-center ring-1 ring-amber-500/30 shrink-0">
+            <Sparkles className="size-4 text-amber-400" />
+          </div>
+          <div>
+            <div className="text-sm font-semibold">Auto-seed from YouTube dataset</div>
+            <div className="text-xs text-muted-foreground mt-0.5">
+              {seed.length} curated full-match links (1998–2022) from <span className="font-mono">choucisan/fwc_games</span>.
+              {result && (
+                <span className="ml-2 text-foreground">
+                  → <span className="text-emerald-400">{result.updated} updated</span>
+                  {", "}<span className="text-amber-400">{result.skipped} skipped</span>
+                  {", "}<span className="text-red-400">{result.missing} missing</span>
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
+        <div className="flex items-center gap-2 shrink-0">
+          <button
+            onClick={() => run(false)}
+            disabled={running}
+            className="px-3 py-2 text-xs font-semibold rounded-lg bg-amber-500 text-black hover:bg-amber-400 disabled:opacity-40 inline-flex items-center gap-1.5"
+          >
+            {running ? <Loader2 className="size-3.5 animate-spin" /> : <Sparkles className="size-3.5" />}
+            Seed missing
+          </button>
+          <button
+            onClick={() => {
+              if (confirm("Overwrite existing video URLs with dataset links?")) run(true);
+            }}
+            disabled={running}
+            className="px-3 py-2 text-xs rounded-lg bg-gray-900 border border-gray-800 hover:bg-gray-800 disabled:opacity-40"
+          >
+            Overwrite all
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
