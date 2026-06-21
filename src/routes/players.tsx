@@ -1,5 +1,7 @@
 import { useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { Trophy, Search, X, ShieldCheck } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { flagOf } from "@/lib/flags";
@@ -8,6 +10,7 @@ import { AdSlot } from "@/components/ads/AdSlot";
 import goalsData from "@/data/wc_goals.json";
 import cardsData from "@/data/wc_cards.json";
 import fifaRankings from "@/data/fifa_rankings.json";
+import { getFifaRankings, wc2026TeamLogo } from "@/lib/wc2026.functions";
 
 type GoalRow = {
   pid: string;
