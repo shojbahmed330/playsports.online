@@ -1,9 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Trophy, Flame, ArrowRight, Loader2 } from "lucide-react";
+import { Trophy, Flame, ArrowRight, Loader2, MapPin } from "lucide-react";
 import { SPORT_LIST } from "@/lib/sports-config";
 import { getMultiSportToday } from "@/lib/espn.functions";
+import { getWc2026Fixtures, type Wc2026Fixture } from "@/lib/wc2026.functions";
+import { flagOf } from "@/lib/flags";
 import { GameCard } from "@/components/sports/GameCard";
 import { SportNav } from "@/components/sports/SportNav";
 import { AdSlot } from "@/components/ads/AdSlot";
@@ -120,6 +122,10 @@ function HubPage() {
         {/* TODAY'S GAMES BY LEAGUE */}
         <section className="space-y-8">
           <h2 className="text-lg font-bold">Today's Slate</h2>
+
+          {/* FIFA World Cup 2026 */}
+          <FootballSlate />
+
           {SPORT_LIST.map((s) => {
             const games = byLeague[s.label] ?? [];
             return (
