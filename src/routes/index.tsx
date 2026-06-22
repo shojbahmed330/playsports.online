@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -292,49 +293,163 @@ function FootballSlate() {
   const q = useQuery({
     queryKey: ["wc2026", "fixtures"],
     queryFn: () => fn(),
-    staleTime: 60 * 60_000,
+    staleTime: 5 * 60_000,
     retry: 1,
+    refetchInterval: (qq) => {
+      const data = qq.state.data as { fixtures?: Wc2026Fixture[] } | undefined;
+      const live = (data?.fixtures ?? []).some((f) => f.status === "inprogress");
+      return live ? 30_000 : false;
+    },
   });
 
-  const todays = (() => {
+  const buckets = useMemo(() => {
     const list = q.data?.fixtures ?? [];
-    if (list.length === 0) return [] as Wc2026Fixture[];
     const now = Date.now() / 1000;
     const dayStart = new Date(); dayStart.setHours(0, 0, 0, 0);
-    const dayEnd = new Date(); dayEnd.setHours(23, 59, 59, 999);
     const tStart = dayStart.getTime() / 1000;
-    const tEnd = dayEnd.getTime() / 1000;
-    const today = list.filter((f) => f.startTs >= tStart && f.startTs <= tEnd);
-    if (today.length) return today.slice(0, 3);
-    return list.filter((f) => f.startTs >= now).slice(0, 3);
-  })();
+    const tEndToday = tStart + 24 * 3600;
+    const tEndTomorrow = tEndToday + 24 * 3600;
+    const tEndWeek = tStart + 7 * 24 * 3600;
+
+    const live = list.filter((f) => f.status === "inprogress");
+    const today = list.filter((f) => f.status === "notstarted" && f.startTs >= tStart && f.startTs < tEndToday);
+    const tomorrow = list.filter((f) => f.status === "notstarted" && f.startTs >= tEndToday && f.startTs < tEndTomorrow);
+    const later = list.filter((f) => f.status === "notstarted" && f.startTs >= tEndTomorrow && f.startTs < tEndWeek);
+    const upcoming = [...live, ...today, ...tomorrow, ...later];
+    const recent = list
+      .filter((f) => f.status === "finished" && f.startTs >= now - 48 * 3600)
+      .sort((a, b) => b.startTs - a.startTs)
+      .slice(0, 3);
+    return { live, today, tomorrow, later, upcoming, recent };
+  }, [q.data]);
+
+  const featured = buckets.live[0] ?? buckets.today[0] ?? buckets.tomorrow[0] ?? buckets.upcoming[0] ?? null;
 
   return (
-    <section className="space-y-3">
-      <div className="flex items-center justify-between">
+    <section className="space-y-4">
+      <div className="flex items-center justify-between flex-wrap gap-2">
         <Link
           to="/football"
+          search={{ year: 2026 }}
           className="group inline-flex items-center gap-2 text-lg font-bold text-amber-400 hover:underline"
         >
           <span className="text-base">⚽</span> FIFA World Cup 2026
           <ArrowRight className="size-3.5 group-hover:translate-x-0.5 transition-transform" />
         </Link>
-        <span className="text-xs text-gray-500">{todays.length} match{todays.length === 1 ? "" : "es"}</span>
+        <div className="flex items-center gap-2 text-[11px]">
+          {buckets.live.length > 0 && (
+            <span className="inline-flex items-center gap-1 text-red-300 bg-red-500/15 ring-1 ring-red-500/30 rounded-full px-2 py-0.5 font-bold">
+              <span className="size-1.5 rounded-full bg-red-500 animate-pulse" /> {buckets.live.length} live
+            </span>
+          )}
+          <span className="text-gray-500">{buckets.upcoming.length} upcoming · next 7 days</span>
+        </div>
       </div>
+
+      {/* FEATURED SPOTLIGHT */}
+      {featured && <FeaturedFootballCard f={featured} />}
+
       {q.isLoading ? (
         <div className="rounded-xl border border-dashed border-gray-800 p-6 text-center text-xs text-gray-500 bg-gray-900/40">
           Loading fixtures…
         </div>
-      ) : todays.length === 0 ? (
+      ) : buckets.upcoming.length === 0 && buckets.recent.length === 0 ? (
         <div className="rounded-xl border border-dashed border-gray-800 p-6 text-center text-xs text-gray-500 bg-gray-900/40">
           No World Cup matches scheduled.
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          {todays.map((f) => <Wc2026FixtureCard key={f.id} f={f} />)}
+        <div className="space-y-5">
+          {buckets.live.length > 0 && (
+            <FixtureBucket label="🔴 Live now" tone="red" fixtures={buckets.live} />
+          )}
+          {buckets.today.length > 0 && (
+            <FixtureBucket label="Today" tone="amber" fixtures={buckets.today} />
+          )}
+          {buckets.tomorrow.length > 0 && (
+            <FixtureBucket label="Tomorrow" tone="muted" fixtures={buckets.tomorrow} />
+          )}
+          {buckets.later.length > 0 && (
+            <FixtureBucket label="This week" tone="muted" fixtures={buckets.later.slice(0, 6)} />
+          )}
+          {buckets.recent.length > 0 && (
+            <FixtureBucket label="Recent results" tone="muted" fixtures={buckets.recent} />
+          )}
         </div>
       )}
     </section>
+  );
+}
+
+function FixtureBucket({
+  label, tone, fixtures,
+}: { label: string; tone: "red" | "amber" | "muted"; fixtures: Wc2026Fixture[] }) {
+  const toneClass =
+    tone === "red"
+      ? "text-red-300"
+      : tone === "amber"
+      ? "text-amber-300"
+      : "text-gray-400";
+  return (
+    <div className="space-y-2">
+      <div className={`text-[11px] uppercase tracking-[0.18em] font-bold ${toneClass}`}>{label}</div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        {fixtures.map((f) => <Wc2026FixtureCard key={f.id} f={f} />)}
+      </div>
+    </div>
+  );
+}
+
+function FeaturedFootballCard({ f }: { f: Wc2026Fixture }) {
+  const live = f.status === "inprogress";
+  const finished = f.status === "finished";
+  const startMs = f.startTs * 1000;
+  return (
+    <Link
+      to="/football"
+      search={{ year: 2026 }}
+      className="group block relative overflow-hidden rounded-2xl border border-amber-500/30 bg-gradient-to-br from-amber-900/40 via-gray-900 to-red-900/30 hover:border-amber-400/60 transition-all hover:-translate-y-0.5 hover:shadow-[0_12px_40px_rgba(245,158,11,0.18)]"
+    >
+      <div className="absolute inset-0 opacity-20 pointer-events-none" aria-hidden style={{
+        background: "radial-gradient(60% 60% at 50% 0%, oklch(0.78 0.16 75 / 0.35), transparent 65%)",
+      }} />
+      <div className="relative px-5 py-5 sm:px-6 sm:py-6">
+        <div className="flex items-center justify-between mb-4">
+          <span className="text-[10px] uppercase tracking-[0.18em] font-bold text-amber-300">
+            {live ? "🔴 Live" : finished ? "Recent" : "Featured · Up next"} · {f.group}
+          </span>
+          {live ? (
+            <span className="inline-flex items-center gap-1 text-[10px] font-bold text-red-300">
+              <span className="size-1.5 rounded-full bg-red-500 animate-pulse" /> {f.minute ? `${f.minute}'` : "LIVE"}
+            </span>
+          ) : finished ? (
+            <span className="text-[10px] font-bold text-gray-400">FT</span>
+          ) : (
+            <span className="text-[10px] font-semibold text-amber-200">
+              {relativeDay(startMs)} · {formatLocalTime(startMs)}
+            </span>
+          )}
+        </div>
+        <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 sm:gap-4">
+          <div className="flex items-center gap-3 min-w-0">
+            <span className="text-3xl sm:text-4xl shrink-0">{flagOf(f.home.name)}</span>
+            <span className="truncate text-base sm:text-lg font-bold">{f.home.name}</span>
+          </div>
+          <div className="text-2xl sm:text-4xl font-black text-amber-400 tabular-nums whitespace-nowrap">
+            {f.home.goals ?? "-"} <span className="text-gray-600">:</span> {f.away.goals ?? "-"}
+          </div>
+          <div className="flex items-center gap-3 min-w-0 justify-end">
+            <span className="truncate text-base sm:text-lg font-bold text-right">{f.away.name}</span>
+            <span className="text-3xl sm:text-4xl shrink-0">{flagOf(f.away.name)}</span>
+          </div>
+        </div>
+        <div className="mt-4 flex items-center justify-between text-[11px] text-gray-400 gap-2">
+          <span className="truncate inline-flex items-center gap-1.5">
+            {f.venue && <><MapPin className="size-3" /> {f.venue}{f.city ? `, ${f.city}` : ""}</>}
+          </span>
+          {!live && !finished && <Countdown ts={startMs} />}
+        </div>
+      </div>
+    </Link>
   );
 }
 
@@ -345,6 +460,7 @@ function Wc2026FixtureCard({ f }: { f: Wc2026Fixture }) {
   return (
     <Link
       to="/football"
+      search={{ year: 2026 }}
       className="block rounded-xl bg-gray-900 border border-white/[0.08] hover:border-amber-500/50 transition-all overflow-hidden hover:-translate-y-0.5"
     >
       <div className="h-[3px] bg-gradient-to-r from-amber-500 to-yellow-400" />
@@ -386,3 +502,4 @@ function TeamLine({ name, score }: { name: string; score: number | null }) {
     </div>
   );
 }
+

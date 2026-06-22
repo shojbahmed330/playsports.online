@@ -1,6 +1,6 @@
 import type { WCMatch } from "@/lib/supabase";
 import { flagOf } from "@/lib/flags";
-import { Check } from "lucide-react";
+import { Check, Play } from "lucide-react";
 
 export type RoundKey = "round_of_32" | "round_of_16" | "quarter_final" | "semi_final" | "final" | "third_place";
 
@@ -59,6 +59,16 @@ export function MatchCard({
       {match.match_number != null && (
         <span className="absolute top-1.5 left-2 text-[10px] text-gray-700 font-mono">
           M{match.match_number}
+        </span>
+      )}
+
+      {/* video badge */}
+      {match.video_url && (
+        <span
+          title="Highlights available"
+          className="absolute top-1.5 right-2 inline-flex items-center gap-0.5 text-[9px] font-bold bg-amber-500/20 text-amber-300 ring-1 ring-amber-500/40 rounded-full px-1.5 py-0.5"
+        >
+          <Play className="size-2.5 fill-amber-300" /> HL
         </span>
       )}
 

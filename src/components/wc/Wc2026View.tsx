@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { Loader2, Trophy } from "lucide-react";
@@ -14,7 +14,7 @@ import { GroupStage } from "./GroupStage";
 import { MatchCard, type RoundKey } from "./MatchCard";
 import { MatchModal } from "./MatchModal";
 import { flagOf } from "@/lib/flags";
-import { useState } from "react";
+import { fetch2026VideoMap, videoKey } from "@/lib/wc-2026-videos";
 
 const HOUR = 60 * 60 * 1000;
 
@@ -46,11 +46,11 @@ function toWcGroups(groups: Wc2026Group[]): WCGroup[] {
   return out;
 }
 
-function toWcMatches(fixtures: Wc2026Fixture[]): WCMatch[] {
+function toWcMatches(fixtures: Wc2026Fixture[], videoMap?: Map<string, string>): WCMatch[] {
   return fixtures.map((f, i) => ({
     id: f.id,
     tournament_year: 2026,
-    round: f.group, // "Group A" / "Round of 16" / "Final" etc.
+    round: f.group,
     match_number: i + 1,
     home_team: f.home.name,
     away_team: f.away.name,
@@ -61,7 +61,7 @@ function toWcMatches(fixtures: Wc2026Fixture[]): WCMatch[] {
     match_date: f.startTs ? new Date(f.startTs * 1000).toISOString() : null,
     stadium: f.venue,
     city: f.city,
-    video_url: null,
+    video_url: videoMap?.get(videoKey(f.home.name, f.away.name)) ?? null,
   }));
 }
 
@@ -111,9 +111,15 @@ export function Wc2026GroupsView() {
     () => toWcGroups(sQ.data?.groups ?? []),
     [sQ.data],
   );
+  const vQ = useQuery({
+    queryKey: ["wc2026", "video_map"],
+    queryFn: () => fetch2026VideoMap(),
+    staleTime: 5 * 60_000,
+    retry: 1,
+  });
   const wcMatches = useMemo(
-    () => toWcMatches(fQ.data?.fixtures ?? []),
-    [fQ.data],
+    () => toWcMatches(fQ.data?.fixtures ?? [], vQ.data),
+    [fQ.data, vQ.data],
   );
 
   const [activeMatch, setActiveMatch] = useState<WCMatch | null>(null);
@@ -164,9 +170,15 @@ export function Wc2026KnockoutView() {
   });
 
   // All hooks before returns.
+  const vQ = useQuery({
+    queryKey: ["wc2026", "video_map"],
+    queryFn: () => fetch2026VideoMap(),
+    staleTime: 5 * 60_000,
+    retry: 1,
+  });
   const wcMatches = useMemo(
-    () => toWcMatches(fQ.data?.fixtures ?? []),
-    [fQ.data],
+    () => toWcMatches(fQ.data?.fixtures ?? [], vQ.data),
+    [fQ.data, vQ.data],
   );
   const groupedKnockout = useMemo(() => {
     const order: RoundKey[] = ["round_of_32", "round_of_16", "quarter_final", "semi_final", "third_place", "final"];
