@@ -18,8 +18,8 @@ const GROUP_MATCHES_BY_YEAR = groupMatchesData as Record<string, WCMatch[]>;
 export const Route = createFileRoute("/football")({
   head: () => ({
     meta: [
-      { title: "FIFA World Cup Archive — 1930 to 2022" },
-      { name: "description", content: "Complete FIFA World Cup tournament history, brackets and match details from 1930 to 2022." },
+      { title: "FIFA World Cup Archive — 1930 to 2026" },
+      { name: "description", content: "Complete FIFA World Cup tournament history, brackets and match details from 1930 to 2026, plus live 2026 data." },
     ],
   }),
   component: Index,
