@@ -1,6 +1,6 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Trophy, Loader2, ChevronDown, Users, Swords, ShieldCheck } from "lucide-react";
 import { supabase, WC_YEARS, type WCTournament, type WCMatch, type WCGroup } from "@/lib/supabase";
 import { TournamentInfoCard } from "@/components/wc/TournamentInfoCard";
@@ -15,11 +15,19 @@ import { Wc2026GroupsView, Wc2026KnockoutView } from "@/components/wc/Wc2026View
 
 const GROUP_MATCHES_BY_YEAR = groupMatchesData as Record<string, WCMatch[]>;
 
+type FootballSearch = { year?: number };
+
 export const Route = createFileRoute("/football")({
+  validateSearch: (s: Record<string, unknown>): FootballSearch => {
+    const y = Number(s.year);
+    return { year: WC_YEARS.includes(y) ? y : undefined };
+  },
   head: () => ({
     meta: [
-      { title: "FIFA World Cup Archive — 1930 to 2026" },
-      { name: "description", content: "Complete FIFA World Cup tournament history, brackets and match details from 1930 to 2026, plus live 2026 data." },
+      { title: "FIFA World Cup 2026 — Live Scores, Bracket & Archive 1930–2026" },
+      { name: "description", content: "Live FIFA World Cup 2026 fixtures, group standings, knockout bracket and complete tournament history from 1930 to 2026." },
+      { property: "og:title", content: "FIFA World Cup 2026 — Live Scores & Complete Archive" },
+      { property: "og:description", content: "Live 2026 fixtures with kickoff countdowns, full bracket, top scorers and historical tournaments." },
     ],
   }),
   component: Index,
