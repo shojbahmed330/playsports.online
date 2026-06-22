@@ -3,7 +3,7 @@ import { Trophy, ShieldCheck } from "lucide-react";
 import { SPORT_LIST } from "@/lib/sports-config";
 import { useAuth } from "@/hooks/use-auth";
 
-export function SportNav() {
+export function SportNav({ liveCount = 0 }: { liveCount?: number }) {
   const { isAdmin } = useAuth();
   return (
     <header className="sticky top-0 z-30 border-b border-border bg-background/85 backdrop-blur">
@@ -23,6 +23,11 @@ export function SportNav() {
           {SPORT_LIST.map((s) => (
             <NavTab key={s.slug} to={`/${s.slug}`} emoji={s.emoji} label={s.label} />
           ))}
+          {liveCount > 0 && (
+            <span className="ml-2 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-red-500/15 ring-1 ring-red-500/40 text-[10px] font-bold text-red-300">
+              <span className="size-1.5 rounded-full bg-red-500 animate-pulse" /> {liveCount} live
+            </span>
+          )}
           {isAdmin && (
             <Link
               to="/admin"
