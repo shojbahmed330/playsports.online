@@ -5,6 +5,8 @@ const MAP: Record<string, string> = {
   Bulgaria: "🇧🇬", Cameroon: "🇨🇲", Canada: "🇨🇦", Chile: "🇨🇱",
   China: "🇨🇳", "China PR": "🇨🇳", Colombia: "🇨🇴", "Costa Rica": "🇨🇷",
   Croatia: "🇭🇷", Cuba: "🇨🇺", "Czech Republic": "🇨🇿", Czechoslovakia: "🇨🇿",
+  Czechia: "🇨🇿", Algeria: "🇩🇿", "Bosnia & Herzegovina": "🇧🇦",
+  "Türkiye": "🇹🇷", Turkiye: "🇹🇷", Venezuela: "🇻🇪", Norway: "🇳🇴",
   Denmark: "🇩🇰", "Dutch East Indies": "🇮🇩", Ecuador: "🇪🇨", Egypt: "🇪🇬",
   "El Salvador": "🇸🇻", England: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", France: "🇫🇷",
   "Germany": "🇩🇪", "West Germany": "🇩🇪", "East Germany": "🇩🇪",
