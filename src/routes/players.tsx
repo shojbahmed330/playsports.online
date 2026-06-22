@@ -10,7 +10,7 @@ import { AdSlot } from "@/components/ads/AdSlot";
 import goalsData from "@/data/wc_goals.json";
 import cardsData from "@/data/wc_cards.json";
 import fifaRankings from "@/data/fifa_rankings.json";
-import { getFifaRankings, wc2026TeamLogo } from "@/lib/wc2026.functions";
+import { getFifaRankings, getWc2026TopScorers } from "@/lib/wc2026.functions";
 
 type GoalRow = {
   pid: string;
@@ -88,7 +88,16 @@ function PlayersPage() {
     });
   }, [year, country, position, search]);
 
-  // Top scorers leaderboard
+  // Live 2026 World Cup goals — merged into the all-time leaderboard.
+  const wc2026ScorersFn = useServerFn(getWc2026TopScorers);
+  const wc2026ScorersQ = useQuery({
+    queryKey: ["wc2026", "scorers"],
+    queryFn: () => wc2026ScorersFn(),
+    staleTime: 60 * 60 * 1000,
+    retry: 1,
+  });
+
+  // Top scorers leaderboard (historical 1930–2022 + live 2026 overlay)
   const topScorers = useMemo(() => {
     const agg = new Map<
       string,
@@ -109,6 +118,29 @@ function PlayersPage() {
         });
       }
     }
+
+    // Merge live 2026 scorers when the year filter allows it.
+    const includes2026 = year === "ALL" || year === 2026;
+    if (includes2026) {
+      for (const s of wc2026ScorersQ.data?.scorers ?? []) {
+        const countryName = s.team.name;
+        if (country !== "ALL" && country !== countryName) continue;
+        const key = `wc2026_${s.playerId}|${countryName}`;
+        const ex = agg.get(key);
+        if (ex) {
+          ex.goals += s.goals;
+          ex.years.add(2026);
+        } else {
+          agg.set(key, {
+            name: s.name,
+            country: countryName,
+            goals: s.goals,
+            years: new Set([2026]),
+          });
+        }
+      }
+    }
+
     return Array.from(agg.values())
       .map((r) => ({
         ...r,
@@ -117,7 +149,7 @@ function PlayersPage() {
       }))
       .sort((a, b) => b.goals - a.goals || a.name.localeCompare(b.name))
       .slice(0, 50);
-  }, [filteredGoals]);
+  }, [filteredGoals, wc2026ScorersQ.data, year, country]);
 
   const topYellow = useMemo(
     () => buildCardLeaderboard(filteredCards, "yellow", 10),
@@ -480,7 +512,7 @@ function LiveFifaRankings() {
         <div key={r.team.id} className="flex items-center justify-between gap-2 py-1 border-b border-gray-800/50">
           <div className="flex items-center gap-2 min-w-0">
             <span className="text-xs text-gray-500 w-6 tabular-nums">#{r.rank}</span>
-            <img src={wc2026TeamLogo(r.team.id)} alt="" className="size-4 object-contain" loading="lazy" />
+            <span className="text-base leading-none">{flagOf(r.team.name)}</span>
             <span className="truncate">{r.team.name}</span>
           </div>
           <span className="text-[10px] text-gray-500 tabular-nums">{r.group}</span>
