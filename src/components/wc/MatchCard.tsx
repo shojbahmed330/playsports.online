@@ -1,6 +1,6 @@
 import type { WCMatch } from "@/lib/supabase";
 import { flagOf } from "@/lib/flags";
-import { Check } from "lucide-react";
+import { Check, Play } from "lucide-react";
 
 export type RoundKey = "round_of_32" | "round_of_16" | "quarter_final" | "semi_final" | "final" | "third_place";
 
