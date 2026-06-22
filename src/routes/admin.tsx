@@ -443,6 +443,7 @@ function MatchRow({ match, year }: { match: AdminMatch; year: number }) {
     toast.success(`${match.home_team} vs ${match.away_team} saved`);
     queryClient.invalidateQueries({ queryKey: ["admin_wc_matches", year] });
     queryClient.invalidateQueries({ queryKey: ["wc_matches", year] });
+    queryClient.invalidateQueries({ queryKey: ["wc2026", "video_map"] });
   };
 
   return (
