@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import {
   Trophy, Loader2, LogOut, Search, ChevronDown, Save, Check,
   Filter, ExternalLink, ArrowLeft, ShieldCheck, AlertTriangle, Sparkles,
@@ -13,6 +14,7 @@ import { toast } from "sonner";
 import videoSeed from "@/data/wc_video_seed.json";
 import groupMatchesData from "@/data/wc_group_matches.json";
 import { AdSenseAdminCard } from "@/components/admin/AdSenseAdminCard";
+import { getWc2026Fixtures, type Wc2026Fixture } from "@/lib/wc2026.functions";
 
 const GROUP_MATCHES_BY_YEAR = groupMatchesData as Record<string, WCMatch[]>;
 type AdminMatch = WCMatch & { _bundled?: boolean };
