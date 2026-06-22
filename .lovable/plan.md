@@ -1,83 +1,138 @@
-## Goal
-Transform the FIFA World Cup Archive into a multi-sport platform (ESPN-style) with live scoreboards, standings, and top scorers for **MLB, NBA, NHL, and MLS**, alongside the existing FIFA World Cup section.
+# Plan — Pro-Grade Sports Hub & League Pages
 
-## Data source
-**ESPN's public hidden API** (`site.api.espn.com`) — same source ESPN.com itself uses.
-- ✅ No API key required
-- ✅ Works on Cloudflare Workers (pure HTTPS fetch, no Node dependencies)
-- ✅ Returns scores, standings, schedules, team logos, player stats
-- ✅ Used by `sportsdataverse` under the hood — we'll call it directly instead of installing a Node-only wrapper
+Goal: Take the Home hub and the four league pages (MLB, NBA, NHL, MLS) from "functional" to "ESPN/Athletic-grade" — polished UI, motion, richer data, and clear countdowns to upcoming games.
 
-Endpoints used:
-```text
-/apis/site/v2/sports/baseball/mlb/scoreboard      → MLB games
-/apis/site/v2/sports/basketball/nba/scoreboard    → NBA games
-/apis/site/v2/sports/hockey/nhl/scoreboard        → NHL games
-/apis/site/v2/sports/soccer/usa.1/scoreboard      → MLS games
-/apis/site/v2/sports/{path}/standings             → League tables
-/apis/site/v2/sports/{path}/news                  → Headlines
-```
+---
 
-## New site structure
+## 1. Upcoming Event Times (the explicit ask)
 
-```text
-/                       → Sports hub (cards for each sport + featured live games)
-/football               → FIFA World Cup Archive (existing site, moved here)
-/football/players       → Existing players page
-/mlb                    → MLB scoreboard, standings, news
-/nba                    → NBA scoreboard, standings, news
-/nhl                    → NHL scoreboard, standings, news
-/mls                    → MLS scoreboard, standings, news
-```
+Every scheduled game (`status === "pre"`) will show:
+- **Local time** in the viewer's timezone (e.g. "Tue 7:05 PM" + "your time").
+- **Countdown chip**: "Starts in 3h 42m" — live-ticking via a 1s interval, auto-hides at kickoff.
+- **Date context**: "Today / Tomorrow / Sat Jun 27".
+- **Broadcast** badge (TV network) — already in API, surface more prominently.
+- For the Hub's "Today's Slate", group by **Live → Upcoming (next 12h) → Later today → Final**.
 
-Top nav becomes: **Football · MLB · NBA · NHL · MLS** with an ESPN-style sport switcher.
+New component: `src/components/sports/Countdown.tsx` (pure presentational, uses `setInterval`).
+Helper: `src/lib/time.ts` — `formatLocal`, `relativeDay`, `msUntil`.
 
-## Build steps
+---
 
-1. **Sports data service** — `src/lib/espn.functions.ts`
-   - Server functions: `getScoreboard(sport, date?)`, `getStandings(sport, season?)`, `getNews(sport)`
-   - In-memory cache, 5-min TTL for scoreboards (live), 1-hour for standings
-   - Typed adapters returning clean DTOs (no raw ESPN shapes leaked to client)
+## 2. Home Hub — Pro Redesign
 
-2. **Shared UI primitives** — `src/components/sports/`
-   - `SportHero` — branded hero per sport (color + icon)
-   - `GameCard` — score/status/teams/logos (works for any sport)
-   - `StandingsTable` — generic table (conference/division aware)
-   - `LiveBadge`, `DateScrubber` — date picker for scoreboards
-   - `NewsRail` — horizontal news cards from ESPN feed
+Current hub is a static grid. Target: a magazine-style command center.
 
-3. **One reusable league page** — `src/components/sports/LeaguePage.tsx`
-   - Takes `sport` config and renders: hero → date scrubber → games grid → standings → news
-   - Per-sport route file is a thin 5-line wrapper passing the sport key
+**New sections (top → bottom):**
+1. **Live Ticker bar** (sticky, auto-scroll marquee) — every in-progress game across all sports, click to jump.
+2. **Hero**: rotating featured game (biggest live game, or next marquee matchup) with team colors as gradient background, countdown if pre-game.
+3. **Today's Slate** — tabbed by sport (All · ⚽ Football · ⚾ MLB · 🏀 NBA · 🏒 NHL · MLS), with FIFA 2026 fixtures included.
+4. **Sport tiles** — 5 cards (Football, MLB, NBA, NHL, MLS) with live count badge, next game preview, and accent-colored hover glow.
+5. **Top Stories rail** — aggregated news from all leagues, horizontally scrollable.
+6. **Standings snapshot** — top-3 from each league's headline conference/division.
 
-4. **Sport configs** — `src/lib/sports-config.ts`
-   - Per-sport brand color, icon, label, ESPN path, season settings
+**Motion:**
+- Framer-motion stagger on first paint.
+- Score-flip animation when a score updates (compare prev/next via ref).
+- Live pulse dot synced across the page (single CSS keyframe, no per-card timers).
+- Hover lift + accent-color ring on cards.
 
-5. **New homepage** — `src/routes/index.tsx`
-   - ESPN-style hub: today's live games across all sports + sport selector cards
-   - Featured: FIFA World Cup 2026 callout (links to /football)
+---
 
-6. **Move existing FIFA site** to `/football` (current `index.tsx` content moves to `src/routes/football.tsx`)
+## 3. League Page (MLB/NBA/NHL/MLS) — Pro Upgrade
 
-## Design language
-- Keep the existing dark theme + amber accent for FIFA
-- Each sport gets a signature accent color (MLB navy, NBA orange, NHL ice-blue, MLS green-red gradient)
-- Reuse the existing `MatchCard` / card-grid aesthetic so the whole platform feels cohesive
-- ESPN-style sticky top nav with sport switcher
+Reuse `LeaguePage.tsx`, expand it to a tabbed workspace.
 
-## Out of scope (for now)
-- NFL (regular season runs late; can add after launch if you want)
-- Game-by-game play-by-play modals (huge data, can add later per sport)
-- User accounts / favorites
-- Mobile-only score ticker (can add)
+**Hero upgrades:**
+- Big league wordmark + tagline, animated gradient background using league accent.
+- Quick stats strip: "Today: 8 games · 2 live · Season Week 14".
+- "Next big game" card with countdown if no games are live.
 
-## Risks & notes
-- ESPN's API is undocumented but extremely stable (powers ESPN.com itself). If a sport endpoint breaks, the affected page shows a friendly error; other sports keep working.
-- Caching keeps total outbound requests low (~12-20 req/hour per warm worker, regardless of traffic).
-- No new secrets needed.
-- The existing FIFA 2026 SofaScore integration stays as-is.
+**Tabs (replace single scroll):**
+1. **Scores** — current DateScrubber + GameCard grid. Add filter chips: All / Live / Upcoming / Final. Empty state offers "Jump to next game day" button.
+2. **Standings** — current table, plus:
+   - Sortable columns (W, L, PCT, GB, Streak).
+   - Conference/Division toggle.
+   - Playoff-line indicator (color-coded row separator, e.g. NBA top-6 = green, 7-10 = amber Play-In).
+   - Tiny form guide (last 5 results as colored dots) per row.
+3. **News** — current NewsRail expanded to full grid with hero article + thumbnails.
+4. **Teams** — grid of all teams with logos → link to a team modal (roster snapshot from ESPN `/teams/{id}` endpoint).
+5. **Schedule** — week view: 7-day strip with game counts per day, click drills into Scores tab.
 
-## Confirm before I build
-1. **Routing OK?** Move FIFA archive from `/` to `/football` and make `/` the new multi-sport hub?
-2. **All 4 sports in this batch?** Or start with one (say NBA) to validate the design first?
-3. **Live data only**, or also historical (e.g. past NBA Finals, World Series winners list)? Historical is a much bigger lift — ESPN's API is mostly current-season focused.
+**Game card upgrades:**
+- Pre-game: countdown + broadcast + venue + line score placeholders.
+- Live: animated score pulse + period/clock + last-play snippet (ESPN exposes for NBA/NHL/MLB).
+- Final: winner highlighted, loser dimmed, "Recap" link if news article exists.
+- Click → modal with box score (ESPN summary endpoint).
+
+**Motion:**
+- Tab switch slide-in.
+- Score updates: number flip via framer's `AnimatePresence`.
+- Skeleton loaders instead of spinner.
+
+---
+
+## 4. Global UX/Pro Polish
+
+- **SportNav redesign**: sticky top bar, current sport highlighted with accent underline, "🔴 N live" pill aggregating across all sports.
+- **Command palette (⌘K)**: jump to any league, team, or date (cmdk lib already in shadcn).
+- **Dark/Light toggle** (currently dark-only).
+- **Auto-refresh**: when any game on the page is live, poll scoreboard every 30s (React Query `refetchInterval`).
+- **Offline / error states**: every fetch has a friendly retry card, not just red error text.
+- **Toasts** for score updates of "favorited" teams (localStorage favorites list, ⭐ icon on team rows).
+- **Loading skeletons** matching the final card shape.
+- **Empty states** with illustrations and a CTA.
+- **SEO**: per-league JSON-LD `SportsEvent` schema for today's games.
+- **Accessibility**: proper aria-live on score updates, keyboard tab order, focus rings.
+- **Mobile**: horizontal-scroll game rail on Hub, bottom-sheet for modals.
+
+---
+
+## 5. New / Modified Files (technical)
+
+**New:**
+- `src/components/sports/Countdown.tsx` — live countdown chip.
+- `src/components/sports/LiveTicker.tsx` — marquee bar.
+- `src/components/sports/FeaturedGame.tsx` — hero rotator.
+- `src/components/sports/ScoreFlip.tsx` — animated number.
+- `src/components/sports/FormGuide.tsx` — last-5 dots.
+- `src/components/sports/TeamGrid.tsx` + `TeamModal.tsx`.
+- `src/components/sports/CommandPalette.tsx`.
+- `src/components/sports/Skeletons.tsx`.
+- `src/lib/time.ts` — time helpers.
+- `src/lib/favorites.ts` — localStorage favorites hook.
+- ESPN: add `getTeams`, `getGameSummary`, `getTeamRoster` to `espn.functions.ts`.
+
+**Modified:**
+- `src/routes/index.tsx` — full hub redesign.
+- `src/components/sports/LeaguePage.tsx` — tabbed layout.
+- `src/components/sports/GameCard.tsx` — countdown, last-play, click-to-modal.
+- `src/components/sports/StandingsTable.tsx` — sortable, playoff line, form guide.
+- `src/components/sports/SportNav.tsx` — sticky + live pill + ⌘K trigger.
+
+**Deps:** `framer-motion` (likely already in), `cmdk` (already via shadcn), `date-fns` for time formatting.
+
+---
+
+## 6. Risks / Scope Notes
+
+- ESPN's "last play" and box score fields vary by sport; will gracefully degrade.
+- Auto-refresh raises ESPN request volume — protected by existing 60s server cache.
+- Light theme is a bigger lift (tokens audit) — flag as **optional**, can defer.
+- Command palette is **nice-to-have** — flag as optional if scope feels heavy.
+
+---
+
+## 7. Out of Scope (this batch)
+
+- FIFA `/football` page redesign (already styled — only Hub's football slate is touched).
+- User accounts / cross-device favorites (localStorage only).
+- Native push notifications.
+- Historical season archives for MLB/NBA/NHL/MLS.
+
+---
+
+## Questions before I build
+
+1. **Scope size**: do all 5 sections (Hub + 4 leagues + tabs + countdown + ticker + ⌘K + favorites) in one go, or land in 2 passes (Pass A = countdowns + Hub redesign + LeaguePage tabs; Pass B = ⌘K + favorites + team modals + light theme)?
+2. **Light theme**: skip for now, or include?
+3. **Auto-refresh interval** when live games exist: 30s (snappy, more ESPN calls) or 60s (safer)?
