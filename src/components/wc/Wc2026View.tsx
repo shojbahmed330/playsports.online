@@ -111,9 +111,15 @@ export function Wc2026GroupsView() {
     () => toWcGroups(sQ.data?.groups ?? []),
     [sQ.data],
   );
+  const vQ = useQuery({
+    queryKey: ["wc2026", "video_map"],
+    queryFn: () => fetch2026VideoMap(),
+    staleTime: 5 * 60_000,
+    retry: 1,
+  });
   const wcMatches = useMemo(
-    () => toWcMatches(fQ.data?.fixtures ?? []),
-    [fQ.data],
+    () => toWcMatches(fQ.data?.fixtures ?? [], vQ.data),
+    [fQ.data, vQ.data],
   );
 
   const [activeMatch, setActiveMatch] = useState<WCMatch | null>(null);
