@@ -267,38 +267,25 @@ function Index() {
               "radial-gradient(60% 80% at 50% 0%, oklch(0.78 0.16 75 / 0.18), transparent 60%), radial-gradient(40% 60% at 80% 100%, oklch(0.62 0.22 27 / 0.12), transparent 60%)",
           }}
         />
-        <div className="relative max-w-5xl mx-auto px-4 sm:px-6 py-14 sm:py-20 text-center">
-          <div className="flex justify-center mb-6">
-            <div className="size-20 rounded-full bg-gradient-to-br from-gold/40 to-destructive/20 grid place-items-center ring-1 ring-gold/30 animate-spin-slow">
-              <Trophy className="size-9 text-gold" />
+        <div className="relative max-w-5xl mx-auto px-4 sm:px-6 py-10 sm:py-16 text-center">
+          <div className="flex justify-center mb-5">
+            <div className="size-16 sm:size-20 rounded-full bg-gradient-to-br from-gold/40 to-destructive/20 grid place-items-center ring-1 ring-gold/30 animate-spin-slow">
+              <Trophy className="size-8 sm:size-9 text-gold" />
             </div>
           </div>
-          <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight">
-            FIFA World Cup <span className="text-gold">Archive</span>
+          <h1 className="text-3xl sm:text-6xl font-extrabold tracking-tight">
+            {year === 2026 ? (<>FIFA World Cup <span className="text-gold">2026</span></>) : (<>FIFA World Cup <span className="text-gold">Archive</span></>)}
           </h1>
-          <p className="mt-4 text-base sm:text-lg text-muted-foreground max-w-xl mx-auto">
-            Complete tournament history from <span className="text-foreground font-semibold">1930</span> to{" "}
-            <span className="text-foreground font-semibold">2022</span>. Every match, every champion.
+          <p className="mt-3 sm:mt-4 text-sm sm:text-lg text-muted-foreground max-w-xl mx-auto px-2">
+            {year === 2026
+              ? "Live fixtures, group standings, knockout bracket and top scorers for the 48-team tournament across USA, Canada & Mexico."
+              : <>Complete tournament history from <span className="text-foreground font-semibold">1930</span> to <span className="text-foreground font-semibold">2026</span>. Every match, every champion.</>}
           </p>
 
-          <div className="mt-10 inline-flex flex-col items-center gap-2">
-            <label className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">Select Tournament</label>
-            <div className="relative">
-              <select
-                value={year}
-                onChange={(e) => {
-                  const y = Number(e.target.value);
-                  setYear(y);
-                  toast(`Viewing ${y} World Cup`, { duration: 2000 });
-                }}
-                className="appearance-none pl-6 pr-12 py-3.5 text-lg font-semibold rounded-xl bg-card border border-border ring-1 ring-gold/20 hover:ring-gold/50 focus:outline-none focus:ring-2 focus:ring-gold transition cursor-pointer min-w-[260px]"
-              >
-                {WC_YEARS.slice().reverse().map((y) => (
-                  <option key={y} value={y}>{y}</option>
-                ))}
-              </select>
-              <ChevronDown className="size-5 text-gold absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none" />
-            </div>
+          {/* YEAR STRIP — horizontal snap-scroll, mobile-friendly */}
+          <div className="mt-8 sm:mt-10">
+            <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-3">Select Tournament</div>
+            <YearStrip year={year} onChange={(y) => { setYear(y); toast(`Viewing ${y} World Cup`, { duration: 1800 }); }} />
           </div>
         </div>
       </section>
