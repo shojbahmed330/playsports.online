@@ -62,6 +62,16 @@ export function MatchCard({
         </span>
       )}
 
+      {/* video badge */}
+      {match.video_url && (
+        <span
+          title="Highlights available"
+          className="absolute top-1.5 right-2 inline-flex items-center gap-0.5 text-[9px] font-bold bg-amber-500/20 text-amber-300 ring-1 ring-amber-500/40 rounded-full px-1.5 py-0.5"
+        >
+          <Play className="size-2.5 fill-amber-300" /> HL
+        </span>
+      )}
+
       {/* home */}
       <TeamRow
         team={match.home_team}
