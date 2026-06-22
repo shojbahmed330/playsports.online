@@ -37,6 +37,7 @@ function classifyRound(round: string): RoundKey | "group" | null {
 }
 
 const ROUND_HEADER: Record<RoundKey, { label: string; grad: string; glow: string }> = {
+  round_of_32:   { label: "Round of 32",   grad: "from-sky-600 to-cyan-500",      glow: "shadow-sky-500/30" },
   round_of_16:   { label: "Round of 16",   grad: "from-blue-600 to-blue-500",   glow: "shadow-blue-500/30" },
   quarter_final: { label: "Quarter Final", grad: "from-purple-600 to-purple-500", glow: "shadow-purple-500/30" },
   semi_final:    { label: "Semi Final",    grad: "from-orange-600 to-orange-500", glow: "shadow-orange-500/30" },
