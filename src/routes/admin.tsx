@@ -79,7 +79,7 @@ function AdminShell() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const [year, setYear] = useState<number>(2022);
+  const [year, setYear] = useState<number>(2026);
   const [search, setSearch] = useState("");
   const [missingOnly, setMissingOnly] = useState(false);
 
