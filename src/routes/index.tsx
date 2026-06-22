@@ -220,3 +220,99 @@ function SportTile({
     </a>
   );
 }
+
+function FootballSlate() {
+  const fn = useServerFn(getWc2026Fixtures);
+  const q = useQuery({
+    queryKey: ["wc2026", "fixtures"],
+    queryFn: () => fn(),
+    staleTime: 60 * 60_000,
+    retry: 1,
+  });
+
+  const todays = (() => {
+    const list = q.data?.fixtures ?? [];
+    if (list.length === 0) return [] as Wc2026Fixture[];
+    const now = Date.now() / 1000;
+    const dayStart = new Date(); dayStart.setHours(0, 0, 0, 0);
+    const dayEnd = new Date(); dayEnd.setHours(23, 59, 59, 999);
+    const tStart = dayStart.getTime() / 1000;
+    const tEnd = dayEnd.getTime() / 1000;
+    const today = list.filter((f) => f.startTs >= tStart && f.startTs <= tEnd);
+    if (today.length) return today.slice(0, 3);
+    // Fallback: show 3 nearest upcoming
+    return list.filter((f) => f.startTs >= now).slice(0, 3);
+  })();
+
+  return (
+    <div className="space-y-3">
+      <div className="flex items-center justify-between">
+        <Link
+          to="/football"
+          className="group inline-flex items-center gap-2 text-sm font-bold text-amber-400 hover:underline"
+        >
+          <span className="text-base">⚽</span> FIFA World Cup 2026
+          <ArrowRight className="size-3.5 group-hover:translate-x-0.5 transition-transform" />
+        </Link>
+        <span className="text-xs text-gray-500">{todays.length} match{todays.length === 1 ? "" : "es"}</span>
+      </div>
+      {q.isLoading ? (
+        <div className="rounded-xl border border-dashed border-gray-800 p-6 text-center text-xs text-gray-500 bg-gray-900/40">
+          Loading fixtures…
+        </div>
+      ) : todays.length === 0 ? (
+        <div className="rounded-xl border border-dashed border-gray-800 p-6 text-center text-xs text-gray-500 bg-gray-900/40">
+          No World Cup matches scheduled.
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          {todays.map((f) => <Wc2026FixtureCard key={f.id} f={f} />)}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function Wc2026FixtureCard({ f }: { f: Wc2026Fixture }) {
+  const live = f.status === "inprogress";
+  const finished = f.status === "finished";
+  const when = new Date(f.startTs * 1000).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  return (
+    <Link
+      to="/football"
+      className="block rounded-xl bg-gray-900 border border-white/[0.08] hover:border-amber-500/50 transition-all overflow-hidden"
+    >
+      <div className="h-[3px] bg-gradient-to-r from-amber-500 to-yellow-400" />
+      <div className="flex items-center justify-between px-3 pt-2">
+        <span className="text-[10px] uppercase tracking-wider text-gray-500">{f.group}</span>
+        {live ? (
+          <span className="inline-flex items-center gap-1 text-[10px] font-bold text-red-300">
+            <span className="size-1.5 rounded-full bg-red-500 animate-pulse" /> LIVE {f.minute ? `${f.minute}'` : ""}
+          </span>
+        ) : finished ? (
+          <span className="text-[10px] font-bold text-gray-500">FT</span>
+        ) : (
+          <span className="text-[10px] text-gray-500">{when}</span>
+        )}
+      </div>
+      <TeamLine name={f.home.name} score={f.home.goals} />
+      <div className="h-px bg-white/[0.05]" />
+      <TeamLine name={f.away.name} score={f.away.goals} />
+      {f.venue && (
+        <div className="bg-gray-800/50 px-3 py-1.5 text-[10px] text-gray-500 truncate flex items-center gap-1">
+          <MapPin className="size-3" /> {f.venue}
+        </div>
+      )}
+    </Link>
+  );
+}
+
+function TeamLine({ name, score }: { name: string; score: number | null }) {
+  return (
+    <div className="flex items-center gap-2 px-3 h-10">
+      <span className="text-lg leading-none shrink-0">{flagOf(name)}</span>
+      <span className="flex-1 min-w-0 truncate text-sm text-white font-medium">{name}</span>
+      <span className="shrink-0 tabular-nums font-bold text-amber-400">{score ?? "-"}</span>
+    </div>
+  );
+}
