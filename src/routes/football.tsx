@@ -15,7 +15,7 @@ import { Wc2026GroupsView, Wc2026KnockoutView } from "@/components/wc/Wc2026View
 
 const GROUP_MATCHES_BY_YEAR = groupMatchesData as Record<string, WCMatch[]>;
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute("/football")({
   head: () => ({
     meta: [
       { title: "FIFA World Cup Archive — 1930 to 2022" },
