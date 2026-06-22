@@ -10,6 +10,10 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as PlayersRouteImport } from './routes/players'
+import { Route as NhlRouteImport } from './routes/nhl'
+import { Route as NbaRouteImport } from './routes/nba'
+import { Route as MlsRouteImport } from './routes/mls'
+import { Route as MlbRouteImport } from './routes/mlb'
 import { Route as FootballRouteImport } from './routes/football'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AdminRouteImport } from './routes/admin'
@@ -18,6 +22,26 @@ import { Route as IndexRouteImport } from './routes/index'
 const PlayersRoute = PlayersRouteImport.update({
   id: '/players',
   path: '/players',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NhlRoute = NhlRouteImport.update({
+  id: '/nhl',
+  path: '/nhl',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NbaRoute = NbaRouteImport.update({
+  id: '/nba',
+  path: '/nba',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MlsRoute = MlsRouteImport.update({
+  id: '/mls',
+  path: '/mls',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MlbRoute = MlbRouteImport.update({
+  id: '/mlb',
+  path: '/mlb',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FootballRoute = FootballRouteImport.update({
@@ -46,6 +70,10 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
   '/football': typeof FootballRoute
+  '/mlb': typeof MlbRoute
+  '/mls': typeof MlsRoute
+  '/nba': typeof NbaRoute
+  '/nhl': typeof NhlRoute
   '/players': typeof PlayersRoute
 }
 export interface FileRoutesByTo {
@@ -53,6 +81,10 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
   '/football': typeof FootballRoute
+  '/mlb': typeof MlbRoute
+  '/mls': typeof MlsRoute
+  '/nba': typeof NbaRoute
+  '/nhl': typeof NhlRoute
   '/players': typeof PlayersRoute
 }
 export interface FileRoutesById {
@@ -61,14 +93,46 @@ export interface FileRoutesById {
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
   '/football': typeof FootballRoute
+  '/mlb': typeof MlbRoute
+  '/mls': typeof MlsRoute
+  '/nba': typeof NbaRoute
+  '/nhl': typeof NhlRoute
   '/players': typeof PlayersRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/admin' | '/auth' | '/football' | '/players'
+  fullPaths:
+    | '/'
+    | '/admin'
+    | '/auth'
+    | '/football'
+    | '/mlb'
+    | '/mls'
+    | '/nba'
+    | '/nhl'
+    | '/players'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/admin' | '/auth' | '/football' | '/players'
-  id: '__root__' | '/' | '/admin' | '/auth' | '/football' | '/players'
+  to:
+    | '/'
+    | '/admin'
+    | '/auth'
+    | '/football'
+    | '/mlb'
+    | '/mls'
+    | '/nba'
+    | '/nhl'
+    | '/players'
+  id:
+    | '__root__'
+    | '/'
+    | '/admin'
+    | '/auth'
+    | '/football'
+    | '/mlb'
+    | '/mls'
+    | '/nba'
+    | '/nhl'
+    | '/players'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -76,6 +140,10 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRoute
   AuthRoute: typeof AuthRoute
   FootballRoute: typeof FootballRoute
+  MlbRoute: typeof MlbRoute
+  MlsRoute: typeof MlsRoute
+  NbaRoute: typeof NbaRoute
+  NhlRoute: typeof NhlRoute
   PlayersRoute: typeof PlayersRoute
 }
 
@@ -86,6 +154,34 @@ declare module '@tanstack/react-router' {
       path: '/players'
       fullPath: '/players'
       preLoaderRoute: typeof PlayersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/nhl': {
+      id: '/nhl'
+      path: '/nhl'
+      fullPath: '/nhl'
+      preLoaderRoute: typeof NhlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/nba': {
+      id: '/nba'
+      path: '/nba'
+      fullPath: '/nba'
+      preLoaderRoute: typeof NbaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mls': {
+      id: '/mls'
+      path: '/mls'
+      fullPath: '/mls'
+      preLoaderRoute: typeof MlsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mlb': {
+      id: '/mlb'
+      path: '/mlb'
+      fullPath: '/mlb'
+      preLoaderRoute: typeof MlbRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/football': {
@@ -124,6 +220,10 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRoute,
   AuthRoute: AuthRoute,
   FootballRoute: FootballRoute,
+  MlbRoute: MlbRoute,
+  MlsRoute: MlsRoute,
+  NbaRoute: NbaRoute,
+  NhlRoute: NhlRoute,
   PlayersRoute: PlayersRoute,
 }
 export const routeTree = rootRouteImport
