@@ -70,12 +70,14 @@ function classifyKnockout(round: string): RoundKey | null {
   if (r.includes("third") || r.startsWith("3rd")) return "third_place";
   if (r.includes("semi")) return "semi_final";
   if (r.includes("quarter")) return "quarter_final";
-  if (r.includes("round of 16") || r === "round of 16") return "round_of_16";
+  if (r.includes("round of 16")) return "round_of_16";
+  if (r.includes("round of 32") || r.includes("last 32") || r.includes("playoff round") || r.includes("play-off round")) return "round_of_32";
   if (r === "final" || r.endsWith(" final")) return "final";
   return null;
 }
 
 const ROUND_LABEL: Record<RoundKey, string> = {
+  round_of_32: "Round of 32",
   round_of_16: "Round of 16",
   quarter_final: "Quarter Finals",
   semi_final: "Semi Finals",
@@ -167,7 +169,7 @@ export function Wc2026KnockoutView() {
     [fQ.data],
   );
   const groupedKnockout = useMemo(() => {
-    const order: RoundKey[] = ["round_of_16", "quarter_final", "semi_final", "third_place", "final"];
+    const order: RoundKey[] = ["round_of_32", "round_of_16", "quarter_final", "semi_final", "third_place", "final"];
     const m: Partial<Record<RoundKey, WCMatch[]>> = {};
     for (const match of wcMatches) {
       const k = classifyKnockout(match.round);

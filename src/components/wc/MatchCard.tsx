@@ -2,9 +2,10 @@ import type { WCMatch } from "@/lib/supabase";
 import { flagOf } from "@/lib/flags";
 import { Check } from "lucide-react";
 
-export type RoundKey = "round_of_16" | "quarter_final" | "semi_final" | "final" | "third_place";
+export type RoundKey = "round_of_32" | "round_of_16" | "quarter_final" | "semi_final" | "final" | "third_place";
 
 const ROUND_GRADIENT: Record<RoundKey, string> = {
+  round_of_32: "from-sky-600 to-cyan-500",
   round_of_16: "from-blue-600 to-blue-500",
   quarter_final: "from-purple-600 to-purple-500",
   semi_final: "from-orange-600 to-orange-500",
