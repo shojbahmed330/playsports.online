@@ -103,6 +103,18 @@ function PlayersPage() {
       string,
       { name: string; country: string; goals: number; years: Set<number> }
     >();
+    // Build a name→key index so we can merge live 2026 goals onto existing
+    // historical players (Messi, Ronaldo, Mbappé…) instead of creating
+    // duplicate rows keyed off SofaScore's playerId.
+    const nameIndex = new Map<string, string>(); // "messi|argentina" -> aggKey
+    const norm = (s: string) =>
+      s
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-z0-9 ]/g, "")
+        .trim();
+
     for (const g of filteredGoals) {
       const key = `${g.pid}|${g.pteam}`;
       const ex = agg.get(key);
@@ -116,6 +128,7 @@ function PlayersPage() {
           goals: 1,
           years: new Set([g.year]),
         });
+        nameIndex.set(`${norm(g.name)}|${norm(g.pteam)}`, key);
       }
     }
 
@@ -125,7 +138,9 @@ function PlayersPage() {
       for (const s of wc2026ScorersQ.data?.scorers ?? []) {
         const countryName = s.team.name;
         if (country !== "ALL" && country !== countryName) continue;
-        const key = `wc2026_${s.playerId}|${countryName}`;
+        const nameKey = `${norm(s.name)}|${norm(countryName)}`;
+        const existingKey = nameIndex.get(nameKey);
+        const key = existingKey ?? `wc2026_${s.playerId}|${countryName}`;
         const ex = agg.get(key);
         if (ex) {
           ex.goals += s.goals;
@@ -137,6 +152,7 @@ function PlayersPage() {
             goals: s.goals,
             years: new Set([2026]),
           });
+          nameIndex.set(nameKey, key);
         }
       }
     }
