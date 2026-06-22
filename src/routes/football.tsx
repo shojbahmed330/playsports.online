@@ -286,7 +286,7 @@ function Index() {
           {/* YEAR STRIP — horizontal snap-scroll, mobile-friendly */}
           <div className="mt-8 sm:mt-10">
             <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-3">Select Tournament</div>
-            <YearStrip year={year} onChange={(y) => { setYear(y); toast(`Viewing ${y} World Cup`, { duration: 1800 }); }} />
+            <YearStrip year={year} onChange={(y: number) => { setYear(y); toast(`Viewing ${y} World Cup`, { duration: 1800 }); }} />
           </div>
         </div>
       </section>
