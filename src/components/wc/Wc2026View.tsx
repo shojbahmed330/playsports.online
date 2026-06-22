@@ -46,11 +46,11 @@ function toWcGroups(groups: Wc2026Group[]): WCGroup[] {
   return out;
 }
 
-function toWcMatches(fixtures: Wc2026Fixture[]): WCMatch[] {
+function toWcMatches(fixtures: Wc2026Fixture[], videoMap?: Map<string, string>): WCMatch[] {
   return fixtures.map((f, i) => ({
     id: f.id,
     tournament_year: 2026,
-    round: f.group, // "Group A" / "Round of 16" / "Final" etc.
+    round: f.group,
     match_number: i + 1,
     home_team: f.home.name,
     away_team: f.away.name,
@@ -61,7 +61,7 @@ function toWcMatches(fixtures: Wc2026Fixture[]): WCMatch[] {
     match_date: f.startTs ? new Date(f.startTs * 1000).toISOString() : null,
     stadium: f.venue,
     city: f.city,
-    video_url: null,
+    video_url: videoMap?.get(videoKey(f.home.name, f.away.name)) ?? null,
   }));
 }
 
