@@ -1,13 +1,17 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Trophy, Flame, ArrowRight, Loader2, MapPin } from "lucide-react";
-import { SPORT_LIST } from "@/lib/sports-config";
-import { getMultiSportToday } from "@/lib/espn.functions";
+import { Trophy, Flame, ArrowRight, MapPin, Clock, CheckCircle2 } from "lucide-react";
+import { SPORT_LIST, type SportConfig } from "@/lib/sports-config";
+import { getMultiSportToday, type SportGame } from "@/lib/espn.functions";
 import { getWc2026Fixtures, type Wc2026Fixture } from "@/lib/wc2026.functions";
 import { flagOf } from "@/lib/flags";
 import { GameCard } from "@/components/sports/GameCard";
 import { SportNav } from "@/components/sports/SportNav";
+import { LiveTicker } from "@/components/sports/LiveTicker";
+import { Countdown } from "@/components/sports/Countdown";
+import { GameGridSkeleton } from "@/components/sports/Skeletons";
+import { formatLocalTime, relativeDay } from "@/lib/time";
 import { AdSlot } from "@/components/ads/AdSlot";
 
 export const Route = createFileRoute("/")({
@@ -29,23 +33,35 @@ export const Route = createFileRoute("/")({
 function HubPage() {
   const multiFn = useServerFn(getMultiSportToday);
   const sportsInput = SPORT_LIST.map((s) => ({ path: s.path, league: s.label }));
+
   const liveQ = useQuery({
     queryKey: ["hub", "today", sportsInput.map((s) => s.league).join(",")],
     queryFn: () => multiFn({ data: { sports: sportsInput } }),
-    staleTime: 60_000,
+    staleTime: 30_000,
     retry: 1,
+    refetchInterval: (q) => {
+      const data = q.state.data as { byLeague?: Record<string, SportGame[]> } | undefined;
+      const any = Object.values(data?.byLeague ?? {}).flat().some((g) => g.status === "in");
+      return any ? 30_000 : false;
+    },
   });
 
   const byLeague = liveQ.data?.byLeague ?? {};
-  const liveNow = SPORT_LIST.flatMap((s) =>
-    (byLeague[s.label] ?? [])
-      .filter((g) => g.status === "in")
-      .map((g) => ({ sport: s, game: g })),
-  ).slice(0, 6);
+
+  // Flatten everything into a single tagged list
+  type Tagged = { sport: SportConfig; game: SportGame };
+  const all: Tagged[] = SPORT_LIST.flatMap((s) =>
+    (byLeague[s.label] ?? []).map((g) => ({ sport: s, game: g })),
+  );
+  const liveGames = all.filter((x) => x.game.status === "in");
+  const upcomingGames = all.filter((x) => x.game.status === "pre").sort((a, b) => a.game.startTs - b.game.startTs);
+  const finalGames = all.filter((x) => x.game.status === "post");
+  const totalLive = liveGames.length;
 
   return (
     <div className="min-h-screen">
-      <SportNav />
+      <SportNav liveCount={totalLive} />
+      <LiveTicker items={liveGames} />
 
       {/* HERO */}
       <section className="relative overflow-hidden border-b border-border">
@@ -59,7 +75,8 @@ function HubPage() {
         />
         <div className="relative max-w-6xl mx-auto px-4 sm:px-6 py-12 sm:py-16 text-center">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/15 ring-1 ring-amber-500/30 text-[11px] uppercase tracking-[0.18em] font-bold text-amber-300 mb-5">
-            <span className="size-1.5 rounded-full bg-amber-400 animate-pulse" /> Live across 5 leagues
+            <span className="size-1.5 rounded-full bg-amber-400 animate-pulse" />
+            {totalLive > 0 ? `${totalLive} game${totalLive === 1 ? "" : "s"} live now` : "Live across 5 leagues"}
           </div>
           <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight">
             One <span className="text-amber-400">Sports Hub</span>. Every Game.
@@ -82,82 +99,123 @@ function HubPage() {
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
             <FootballTile />
-            {SPORT_LIST.map((s) => (
-              <SportTile key={s.slug} sport={s} liveCount={(byLeague[s.label] ?? []).filter((g) => g.status === "in").length} />
-            ))}
+            {SPORT_LIST.map((s) => {
+              const games = byLeague[s.label] ?? [];
+              const next = games.filter((g) => g.status === "pre").sort((a, b) => a.startTs - b.startTs)[0];
+              return (
+                <SportTile
+                  key={s.slug}
+                  sport={s}
+                  liveCount={games.filter((g) => g.status === "in").length}
+                  nextStartTs={next?.startTs ?? null}
+                />
+              );
+            })}
           </div>
         </section>
 
         {/* LIVE NOW */}
-        {liveQ.isLoading ? (
-          <div className="flex justify-center py-8">
-            <Loader2 className="size-6 animate-spin text-amber-400" />
-          </div>
-        ) : liveNow.length > 0 ? (
-          <section className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-bold flex items-center gap-2">
-                <Flame className="size-5 text-red-400" /> Live Right Now
-              </h2>
-              <span className="inline-flex items-center gap-1.5 text-xs text-red-300">
-                <span className="size-1.5 rounded-full bg-red-500 animate-pulse" />
-                {liveNow.length} game{liveNow.length === 1 ? "" : "s"}
-              </span>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-              {liveNow.map(({ sport, game }) => (
-                <div key={game.id} className="relative">
-                  <div className={`absolute -top-2 -right-2 z-10 px-2 py-0.5 rounded-full ${sport.chipBg} ring-1 ${sport.ring} text-[10px] font-bold ${sport.accent}`}>
-                    {sport.emoji} {sport.label}
-                  </div>
-                  <GameCard game={game} />
-                </div>
-              ))}
-            </div>
-          </section>
-        ) : null}
+        {liveGames.length > 0 && (
+          <Section
+            icon={<Flame className="size-5 text-red-400" />}
+            title="Live right now"
+            badge={`${liveGames.length} game${liveGames.length === 1 ? "" : "s"}`}
+            badgeTone="red"
+          >
+            <TaggedGrid items={liveGames} />
+          </Section>
+        )}
+
+        {/* FIFA SLATE */}
+        <FootballSlate />
 
         <AdSlot slot="in_content" layout="in-article" />
 
-        {/* TODAY'S GAMES BY LEAGUE */}
-        <section className="space-y-8">
-          <h2 className="text-lg font-bold">Today's Slate</h2>
+        {/* UPCOMING TODAY */}
+        {liveQ.isLoading ? (
+          <Section icon={<Clock className="size-5 text-amber-400" />} title="Loading today's slate…">
+            <GameGridSkeleton />
+          </Section>
+        ) : upcomingGames.length > 0 ? (
+          <Section
+            icon={<Clock className="size-5 text-amber-400" />}
+            title="Upcoming today"
+            badge={`${upcomingGames.length} game${upcomingGames.length === 1 ? "" : "s"}`}
+            badgeTone="amber"
+          >
+            <TaggedGrid items={upcomingGames.slice(0, 9)} />
+          </Section>
+        ) : null}
 
-          {/* FIFA World Cup 2026 */}
-          <FootballSlate />
-
-          {SPORT_LIST.map((s) => {
-            const games = byLeague[s.label] ?? [];
-            return (
-              <div key={s.slug} className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <Link
-                    to={`/${s.slug}`}
-                    className={`group inline-flex items-center gap-2 text-sm font-bold ${s.accent} hover:underline`}
-                  >
-                    <span className="text-base">{s.emoji}</span> {s.label}
-                    <ArrowRight className="size-3.5 group-hover:translate-x-0.5 transition-transform" />
-                  </Link>
-                  <span className="text-xs text-gray-500">{games.length} game{games.length === 1 ? "" : "s"}</span>
-                </div>
-                {games.length === 0 ? (
-                  <div className="rounded-xl border border-dashed border-gray-800 p-6 text-center text-xs text-gray-500 bg-gray-900/40">
-                    No {s.label} games scheduled.
-                  </div>
-                ) : (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                    {games.slice(0, 3).map((g) => <GameCard key={g.id} game={g} />)}
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </section>
+        {/* RECENT FINALS */}
+        {finalGames.length > 0 && (
+          <Section
+            icon={<CheckCircle2 className="size-5 text-gray-400" />}
+            title="Recent finals"
+            badge={`${finalGames.length}`}
+            badgeTone="muted"
+          >
+            <TaggedGrid items={finalGames.slice(0, 6)} />
+          </Section>
+        )}
       </main>
 
       <footer className="border-t border-border mt-10 py-8 text-center text-xs text-muted-foreground">
         Live data from ESPN · FIFA World Cup data from Sofascore & jfjelstul/worldcup dataset
       </footer>
+    </div>
+  );
+}
+
+function Section({
+  icon,
+  title,
+  badge,
+  badgeTone,
+  children,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  badge?: string;
+  badgeTone?: "red" | "amber" | "muted";
+  children: React.ReactNode;
+}) {
+  const tone =
+    badgeTone === "red"
+      ? "text-red-300 bg-red-500/15 ring-red-500/30"
+      : badgeTone === "amber"
+      ? "text-amber-300 bg-amber-500/15 ring-amber-500/30"
+      : "text-gray-400 bg-gray-800/60 ring-gray-700/60";
+  return (
+    <section className="space-y-4">
+      <div className="flex items-center justify-between">
+        <h2 className="text-lg font-bold flex items-center gap-2">{icon} {title}</h2>
+        {badge && (
+          <span className={`inline-flex items-center gap-1.5 text-xs font-bold px-2 py-1 rounded-full ring-1 ${tone}`}>
+            {badgeTone === "red" && <span className="size-1.5 rounded-full bg-red-500 animate-pulse" />}
+            {badge}
+          </span>
+        )}
+      </div>
+      {children}
+    </section>
+  );
+}
+
+function TaggedGrid({ items }: { items: { sport: SportConfig; game: SportGame }[] }) {
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+      {items.map(({ sport, game }) => (
+        <div key={`${sport.slug}-${game.id}`} className="relative">
+          <Link
+            to={`/${sport.slug}` as "/mlb" | "/nba" | "/nhl" | "/mls"}
+            className={`absolute -top-2 -right-2 z-10 px-2 py-0.5 rounded-full ${sport.chipBg} ring-1 ${sport.ring} text-[10px] font-bold ${sport.accent} hover:scale-105 transition-transform`}
+          >
+            {sport.emoji} {sport.label}
+          </Link>
+          <GameCard game={game} />
+        </div>
+      ))}
     </div>
   );
 }
@@ -190,26 +248,34 @@ function FootballTile() {
 function SportTile({
   sport,
   liveCount,
+  nextStartTs,
 }: {
-  sport: (typeof SPORT_LIST)[number];
+  sport: SportConfig;
   liveCount: number;
+  nextStartTs: number | null;
 }) {
   return (
     <a
       href={`/${sport.slug}`}
       className={`group relative overflow-hidden rounded-2xl p-5 bg-gradient-to-br ${sport.bgGrad} border border-gray-800 hover:border-gray-700 transition-all hover:-translate-y-0.5`}
     >
-      {liveCount > 0 && (
+      {liveCount > 0 ? (
         <span className="absolute top-3 right-3 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-500/20 ring-1 ring-red-500/40 text-[10px] font-bold text-red-300">
-          <span className="size-1 rounded-full bg-red-500 animate-pulse" /> {liveCount}
+          <span className="size-1 rounded-full bg-red-500 animate-pulse" /> {liveCount} live
         </span>
-      )}
+      ) : nextStartTs ? (
+        <span className="absolute top-3 right-3">
+          <Countdown ts={nextStartTs} compact />
+        </span>
+      ) : null}
       <div className="flex items-start gap-3 mb-3">
         <div className={`size-12 rounded-xl ${sport.chipBg} ring-1 ${sport.ring} grid place-items-center text-2xl`}>
           {sport.emoji}
         </div>
         <div className="min-w-0">
-          <div className={`text-[10px] uppercase tracking-wider font-bold ${sport.accent}`}>Live</div>
+          <div className={`text-[10px] uppercase tracking-wider font-bold ${sport.accent}`}>
+            {liveCount > 0 ? "Live" : "Open"}
+          </div>
           <div className="text-base font-extrabold leading-tight">{sport.label}</div>
         </div>
       </div>
@@ -240,16 +306,15 @@ function FootballSlate() {
     const tEnd = dayEnd.getTime() / 1000;
     const today = list.filter((f) => f.startTs >= tStart && f.startTs <= tEnd);
     if (today.length) return today.slice(0, 3);
-    // Fallback: show 3 nearest upcoming
     return list.filter((f) => f.startTs >= now).slice(0, 3);
   })();
 
   return (
-    <div className="space-y-3">
+    <section className="space-y-3">
       <div className="flex items-center justify-between">
         <Link
           to="/football"
-          className="group inline-flex items-center gap-2 text-sm font-bold text-amber-400 hover:underline"
+          className="group inline-flex items-center gap-2 text-lg font-bold text-amber-400 hover:underline"
         >
           <span className="text-base">⚽</span> FIFA World Cup 2026
           <ArrowRight className="size-3.5 group-hover:translate-x-0.5 transition-transform" />
@@ -269,22 +334,22 @@ function FootballSlate() {
           {todays.map((f) => <Wc2026FixtureCard key={f.id} f={f} />)}
         </div>
       )}
-    </div>
+    </section>
   );
 }
 
 function Wc2026FixtureCard({ f }: { f: Wc2026Fixture }) {
   const live = f.status === "inprogress";
   const finished = f.status === "finished";
-  const when = new Date(f.startTs * 1000).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  const startMs = f.startTs * 1000;
   return (
     <Link
       to="/football"
-      className="block rounded-xl bg-gray-900 border border-white/[0.08] hover:border-amber-500/50 transition-all overflow-hidden"
+      className="block rounded-xl bg-gray-900 border border-white/[0.08] hover:border-amber-500/50 transition-all overflow-hidden hover:-translate-y-0.5"
     >
       <div className="h-[3px] bg-gradient-to-r from-amber-500 to-yellow-400" />
-      <div className="flex items-center justify-between px-3 pt-2">
-        <span className="text-[10px] uppercase tracking-wider text-gray-500">{f.group}</span>
+      <div className="flex items-center justify-between px-3 pt-2 gap-2">
+        <span className="text-[10px] uppercase tracking-wider text-gray-500 truncate">{f.group}</span>
         {live ? (
           <span className="inline-flex items-center gap-1 text-[10px] font-bold text-red-300">
             <span className="size-1.5 rounded-full bg-red-500 animate-pulse" /> LIVE {f.minute ? `${f.minute}'` : ""}
@@ -292,17 +357,22 @@ function Wc2026FixtureCard({ f }: { f: Wc2026Fixture }) {
         ) : finished ? (
           <span className="text-[10px] font-bold text-gray-500">FT</span>
         ) : (
-          <span className="text-[10px] text-gray-500">{when}</span>
+          <span className="text-[10px] font-semibold text-amber-300">
+            {relativeDay(startMs)} · {formatLocalTime(startMs)}
+          </span>
         )}
       </div>
       <TeamLine name={f.home.name} score={f.home.goals} />
       <div className="h-px bg-white/[0.05]" />
       <TeamLine name={f.away.name} score={f.away.goals} />
-      {f.venue && (
-        <div className="bg-gray-800/50 px-3 py-1.5 text-[10px] text-gray-500 truncate flex items-center gap-1">
-          <MapPin className="size-3" /> {f.venue}
-        </div>
-      )}
+      <div className="bg-gray-800/40 px-3 py-1.5 text-[10px] text-gray-500 flex items-center justify-between gap-2">
+        {f.venue ? (
+          <span className="truncate inline-flex items-center gap-1">
+            <MapPin className="size-3" /> {f.venue}
+          </span>
+        ) : <span />}
+        {!live && !finished && <Countdown ts={startMs} compact />}
+      </div>
     </Link>
   );
 }
