@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { Loader2, Trophy } from "lucide-react";
@@ -14,7 +14,7 @@ import { GroupStage } from "./GroupStage";
 import { MatchCard, type RoundKey } from "./MatchCard";
 import { MatchModal } from "./MatchModal";
 import { flagOf } from "@/lib/flags";
-import { useState } from "react";
+import { fetch2026VideoMap, videoKey } from "@/lib/wc-2026-videos";
 
 const HOUR = 60 * 60 * 1000;
 
