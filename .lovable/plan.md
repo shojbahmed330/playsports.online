@@ -1,138 +1,142 @@
-# Plan — Pro-Grade Sports Hub & League Pages
 
-Goal: Take the Home hub and the four league pages (MLB, NBA, NHL, MLS) from "functional" to "ESPN/Athletic-grade" — polished UI, motion, richer data, and clear countdowns to upcoming games.
+# Plan — Pro Football Experience, 2026-First, Admin Match Videos
 
----
-
-## 1. Upcoming Event Times (the explicit ask)
-
-Every scheduled game (`status === "pre"`) will show:
-- **Local time** in the viewer's timezone (e.g. "Tue 7:05 PM" + "your time").
-- **Countdown chip**: "Starts in 3h 42m" — live-ticking via a 1s interval, auto-hides at kickoff.
-- **Date context**: "Today / Tomorrow / Sat Jun 27".
-- **Broadcast** badge (TV network) — already in API, surface more prominently.
-- For the Hub's "Today's Slate", group by **Live → Upcoming (next 12h) → Later today → Final**.
-
-New component: `src/components/sports/Countdown.tsx` (pure presentational, uses `setInterval`).
-Helper: `src/lib/time.ts` — `formatLocal`, `relativeDay`, `msUntil`.
+Goal: Bring `/football` (FIFA World Cup) up to the same polished, animated, mobile-first standard as the new sports hub. Surface 2026 fixtures on the homepage with live kickoff times/countdowns. Let admins attach match videos for 2026 games from the admin panel. Default the Football page to **2026**.
 
 ---
 
-## 2. Home Hub — Pro Redesign
+## 1. Default to 2026 + smarter year picker
 
-Current hub is a static grid. Target: a magazine-style command center.
+- `/football` opens on **2026** (currently 2022). When 2026 has no live data yet, auto-fallback to 2022 with a small "Showing latest completed tournament" badge.
+- Replace the bare `<select>` with a horizontal year strip (pill-style, snap-scroll on mobile) grouped by decade, with the current/upcoming edition highlighted in gold and a 🔴 LIVE pulse on 2026 while matches are in progress.
+- Tournament switch animates (cross-fade + slide), keyboard arrow navigation, URL search param `?year=2026` so links are shareable.
 
-**New sections (top → bottom):**
-1. **Live Ticker bar** (sticky, auto-scroll marquee) — every in-progress game across all sports, click to jump.
-2. **Hero**: rotating featured game (biggest live game, or next marquee matchup) with team colors as gradient background, countdown if pre-game.
-3. **Today's Slate** — tabbed by sport (All · ⚽ Football · ⚾ MLB · 🏀 NBA · 🏒 NHL · MLS), with FIFA 2026 fixtures included.
-4. **Sport tiles** — 5 cards (Football, MLB, NBA, NHL, MLS) with live count badge, next game preview, and accent-colored hover glow.
-5. **Top Stories rail** — aggregated news from all leagues, horizontally scrollable.
-6. **Standings snapshot** — top-3 from each league's headline conference/division.
+## 2. Football page — pro UI upgrade (works for historical + 2026)
 
-**Motion:**
-- Framer-motion stagger on first paint.
-- Score-flip animation when a score updates (compare prev/next via ref).
-- Live pulse dot synced across the page (single CSS keyframe, no per-card timers).
-- Hover lift + accent-color ring on cards.
+**Hero**
+- Animated gradient using each tournament's host-country palette (data already in `wc_tournaments`).
+- Trophy mark with subtle parallax. Quick-stat strip: teams · matches · goals · top scorer (computed from existing data; for 2026 from live API).
+- For 2026: live status row — "Next match in 3h 42m" countdown + venue + broadcast.
 
----
+**Sticky sub-nav (replaces single Groups/Knockout toggle)**
+Tabs: **Overview · Groups · Knockout · Schedule · Top Scorers · Teams · Videos**. Underline slides on switch. Sticky under the header on scroll.
 
-## 3. League Page (MLB/NBA/NHL/MLS) — Pro Upgrade
+**Overview tab (new)**
+- "Today / Next up" card (2026 only) with `Countdown` + flag pair + venue + TV.
+- Featured-match hero (biggest upcoming or latest result).
+- Mini bracket preview + top-5 scorers + champion card.
 
-Reuse `LeaguePage.tsx`, expand it to a tabbed workspace.
+**Groups tab**
+- Reuse `GroupStage` but add: form guide (last-5 dots per team), qualified ✓ / eliminated ✗ chips, animated row entry, sortable columns.
 
-**Hero upgrades:**
-- Big league wordmark + tagline, animated gradient background using league accent.
-- Quick stats strip: "Today: 8 games · 2 live · Season Week 14".
-- "Next big game" card with countdown if no games are live.
+**Knockout tab**
+- Keep `SymmetricBracket` on desktop. Add winner-path glow animation when hovering a final match (highlights the bracket spine).
+- Mobile: keep accordion but add per-match countdown / live score pill and swipe-between-rounds gesture.
 
-**Tabs (replace single scroll):**
-1. **Scores** — current DateScrubber + GameCard grid. Add filter chips: All / Live / Upcoming / Final. Empty state offers "Jump to next game day" button.
-2. **Standings** — current table, plus:
-   - Sortable columns (W, L, PCT, GB, Streak).
-   - Conference/Division toggle.
-   - Playoff-line indicator (color-coded row separator, e.g. NBA top-6 = green, 7-10 = amber Play-In).
-   - Tiny form guide (last 5 results as colored dots) per row.
-3. **News** — current NewsRail expanded to full grid with hero article + thumbnails.
-4. **Teams** — grid of all teams with logos → link to a team modal (roster snapshot from ESPN `/teams/{id}` endpoint).
-5. **Schedule** — week view: 7-day strip with game counts per day, click drills into Scores tab.
+**Schedule tab (new)**
+- Date scrubber (reuse `DateScrubber`) → fixtures grouped by date, with local time, countdown, broadcast badge, venue. Filters: All / Live / Upcoming / Final / By group.
 
-**Game card upgrades:**
-- Pre-game: countdown + broadcast + venue + line score placeholders.
-- Live: animated score pulse + period/clock + last-play snippet (ESPN exposes for NBA/NHL/MLB).
-- Final: winner highlighted, loser dimmed, "Recap" link if news article exists.
-- Click → modal with box score (ESPN summary endpoint).
+**Top Scorers tab**
+- Pull existing 2026 scorers component out into its own tab, add historical scorers for past tournaments (compute from match data + bundled player stats), animated bar chart, country flag, club.
 
-**Motion:**
-- Tab switch slide-in.
-- Score updates: number flip via framer's `AnimatePresence`.
-- Skeleton loaders instead of spinner.
+**Teams tab (new)**
+- Grid of all 32/48 teams for the selected tournament, flag + group + path-to-final. Tap → drawer with squad (from existing `players` data) + their matches.
 
----
+**Videos tab (new — see §4)**
+- Grid of admin-uploaded match videos for the active tournament. Filter by round. Each card: thumbnail, teams, score, round, "Watch" → existing `VideoPlayer` modal.
 
-## 4. Global UX/Pro Polish
+**Motion & polish**
+- Framer-motion stagger on first paint, tab cross-fade, score-pulse on update (reuse `ScoreFlip`), skeletons matching final card shape (reuse `Skeletons.tsx`), 🔴 live pulse synced across page.
+- Auto-refresh: when 2026 has any in-progress match, refetch fixtures every 30s.
 
-- **SportNav redesign**: sticky top bar, current sport highlighted with accent underline, "🔴 N live" pill aggregating across all sports.
-- **Command palette (⌘K)**: jump to any league, team, or date (cmdk lib already in shadcn).
-- **Dark/Light toggle** (currently dark-only).
-- **Auto-refresh**: when any game on the page is live, poll scoreboard every 30s (React Query `refetchInterval`).
-- **Offline / error states**: every fetch has a friendly retry card, not just red error text.
-- **Toasts** for score updates of "favorited" teams (localStorage favorites list, ⭐ icon on team rows).
-- **Loading skeletons** matching the final card shape.
-- **Empty states** with illustrations and a CTA.
-- **SEO**: per-league JSON-LD `SportsEvent` schema for today's games.
-- **Accessibility**: proper aria-live on score updates, keyboard tab order, focus rings.
-- **Mobile**: horizontal-scroll game rail on Hub, bottom-sheet for modals.
+## 3. Mobile-first rework
 
----
+- Bottom-tab style sub-nav on `< sm`, sticky.
+- Bracket → horizontal snap-scroll of rounds with dot indicators (instead of long accordion).
+- Hero scales: trophy + year + 3-stat strip in one viewport.
+- Tap targets ≥ 44px, safe-area padding, no horizontal overflow.
+- Year strip becomes momentum-scroll.
+- Match modal becomes a bottom sheet on mobile.
 
-## 5. New / Modified Files (technical)
+## 4. Homepage — Football upcoming events with times
 
-**New:**
-- `src/components/sports/Countdown.tsx` — live countdown chip.
-- `src/components/sports/LiveTicker.tsx` — marquee bar.
-- `src/components/sports/FeaturedGame.tsx` — hero rotator.
-- `src/components/sports/ScoreFlip.tsx` — animated number.
-- `src/components/sports/FormGuide.tsx` — last-5 dots.
-- `src/components/sports/TeamGrid.tsx` + `TeamModal.tsx`.
-- `src/components/sports/CommandPalette.tsx`.
-- `src/components/sports/Skeletons.tsx`.
-- `src/lib/time.ts` — time helpers.
-- `src/lib/favorites.ts` — localStorage favorites hook.
-- ESPN: add `getTeams`, `getGameSummary`, `getTeamRoster` to `espn.functions.ts`.
+`src/routes/index.tsx` currently slates today's football via `FootballSlate`, but only for `today`. Upgrade:
 
-**Modified:**
-- `src/routes/index.tsx` — full hub redesign.
-- `src/components/sports/LeaguePage.tsx` — tabbed layout.
-- `src/components/sports/GameCard.tsx` — countdown, last-play, click-to-modal.
-- `src/components/sports/StandingsTable.tsx` — sortable, playoff line, form guide.
-- `src/components/sports/SportNav.tsx` — sticky + live pill + ⌘K trigger.
+- **Football Live & Upcoming rail** (always visible, even when no game today): pulls next 7 days of 2026 fixtures, groups by Live → Today → Tomorrow → This week.
+- Each card shows: flags, teams, **local kickoff time** + **live countdown chip** ("Starts in 2d 4h 12m"), venue, group/round, broadcast pill.
+- Card click → `/football?year=2026&match=<id>` deep link that opens MatchModal.
+- Featured "World Cup spotlight" hero rotates between the next marquee fixture and the most recent finished match (gradient = team colors).
+- Live score auto-refresh every 30s when any match is `in`.
 
-**Deps:** `framer-motion` (likely already in), `cmdk` (already via shadcn), `date-fns` for time formatting.
+## 5. Admin: upload match videos for 2026
 
----
+`wc_matches` already has `video_url`. The 2026 view currently uses adapted SofaScore IDs that are not in `wc_matches`. Approach:
 
-## 6. Risks / Scope Notes
+**Schema (new migration)**
+- New table `public.wc_match_videos` (works for any year, but UI gated to 2026 initially):
+  - `id uuid pk`
+  - `tournament_year int not null`
+  - `external_match_id text` (SofaScore id for 2026; nullable for historical)
+  - `home_team text not null`, `away_team text not null`
+  - `round text` (e.g. "Group A", "Round of 32")
+  - `match_date timestamptz`
+  - `title text`, `video_url text not null`, `thumbnail_url text`
+  - `created_by uuid references auth.users`, `created_at timestamptz default now()`
+- RLS: public `SELECT` for everyone; `INSERT/UPDATE/DELETE` only for `has_role(auth.uid(),'admin')`.
+- GRANTs: `SELECT` to `anon, authenticated`; full to `authenticated` admins via policy + `service_role`.
 
-- ESPN's "last play" and box score fields vary by sport; will gracefully degrade.
-- Auto-refresh raises ESPN request volume — protected by existing 60s server cache.
-- Light theme is a bigger lift (tokens audit) — flag as **optional**, can defer.
-- Command palette is **nice-to-have** — flag as optional if scope feels heavy.
+**Admin panel (`/admin`)**
+- New "World Cup Videos" card. Form fields:
+  - Year (defaults 2026), Round dropdown (Group A–L, R32, R16, QF, SF, Final, 3rd Place), Home & Away team pickers (autocomplete from current fixtures), Match date, Title, Video URL (YouTube / mp4), Thumbnail URL (optional, auto-derived from YouTube).
+  - "Link to live match" — pick from current 2026 fixtures list (sets `external_match_id`, home, away, round, date).
+- Table of existing videos with edit / delete, filter by year + round.
 
----
+**Where videos appear**
+- New **Videos** tab on `/football`.
+- Inside `MatchModal`: if a video exists for this match, show "▶ Watch highlights" button → existing `VideoPlayer`.
+- 2026 `MatchCard` gets a small ▶ badge when a video exists.
 
-## 7. Out of Scope (this batch)
+## 6. New / modified files
 
-- FIFA `/football` page redesign (already styled — only Hub's football slate is touched).
-- User accounts / cross-device favorites (localStorage only).
-- Native push notifications.
-- Historical season archives for MLB/NBA/NHL/MLS.
+**New**
+- `src/components/wc/YearStrip.tsx` — animated year picker
+- `src/components/wc/FootballHero.tsx` — animated hero with stats
+- `src/components/wc/OverviewTab.tsx`
+- `src/components/wc/ScheduleTab.tsx`
+- `src/components/wc/TeamsTab.tsx`
+- `src/components/wc/VideosTab.tsx`
+- `src/components/wc/FootballSubNav.tsx`
+- `src/components/wc/FormGuide.tsx`
+- `src/components/home/FootballUpcomingRail.tsx`
+- `src/components/admin/WcVideosAdminCard.tsx`
+- `src/lib/wc-videos.functions.ts` — list/create/update/delete server fns (admin-gated)
+- Migration: `wc_match_videos` table + RLS + grants
+
+**Modified**
+- `src/routes/football.tsx` — default 2026, sub-nav, new tabs, mobile bracket, URL sync
+- `src/routes/index.tsx` — add `FootballUpcomingRail`, deep-link cards
+- `src/routes/admin.tsx` — mount `WcVideosAdminCard`
+- `src/components/wc/MatchModal.tsx` — show video button when present
+- `src/components/wc/MatchCard.tsx` — ▶ badge when video exists
+- `src/components/wc/Wc2026View.tsx` — pass video map to cards, expose fixtures list to admin form
+
+## 7. Out of scope (this batch)
+
+- Direct video file uploads to storage (URL input only; can add a bucket later).
+- Per-user favorites for football matches.
+- Historical (1930–2022) video back-fill — schema supports it; UI only exposes 2026 initially.
+- Live commentary / minute-by-minute feed (depends on API tier).
+
+## 8. Risks
+
+- 2026 fixtures use SofaScore IDs; `external_match_id` matching may drift if the upstream changes IDs — admin form also stores teams + date for fallback lookup.
+- Auto-refresh raises API volume — guarded by existing 60s server cache and only polls when a live match exists.
+- Default-to-2026 before draw is finalised could feel empty — overview tab handles empty state gracefully with a "Tournament starts in X days" countdown.
 
 ---
 
 ## Questions before I build
 
-1. **Scope size**: do all 5 sections (Hub + 4 leagues + tabs + countdown + ticker + ⌘K + favorites) in one go, or land in 2 passes (Pass A = countdowns + Hub redesign + LeaguePage tabs; Pass B = ⌘K + favorites + team modals + light theme)?
-2. **Light theme**: skip for now, or include?
-3. **Auto-refresh interval** when live games exist: 30s (snappy, more ESPN calls) or 60s (safer)?
+1. **Video source**: URL-only (YouTube / direct mp4) for now — okay? Or do you want a real uploader to Lovable Cloud storage (adds a storage bucket + size limits)?
+2. **Default year fallback**: if 2026 has zero fixtures live, fall back to 2022 silently, or always stay on 2026 with an "awaiting draw" state?
+3. **Scope split**: ship as **one big PR** (everything above), or in two passes — Pass A = Football page redesign + 2026 default + homepage upcoming rail; Pass B = admin videos table + Videos tab + MatchModal video button?
