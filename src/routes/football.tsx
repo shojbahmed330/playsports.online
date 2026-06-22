@@ -55,10 +55,18 @@ const ROUND_HEADER: Record<RoundKey, { label: string; grad: string; glow: string
 
 function Index() {
   const { isAdmin } = useAuth();
-  const [year, setYear] = useState<number>(2022);
+  const navigate = useNavigate({ from: "/football" });
+  const search = Route.useSearch();
+  const initialYear = search.year ?? 2026;
+  const [year, setYear] = useState<number>(initialYear);
   const [activeMatch, setActiveMatch] = useState<WCMatch | null>(null);
   const [tab, setTab] = useState<"groups" | "knockout">("knockout");
   const [hintSeen, setHintSeen] = useState(true);
+
+  // Sync URL ?year= when changed
+  useEffect(() => {
+    navigate({ search: (prev) => ({ ...prev, year }), replace: true });
+  }, [year, navigate]);
 
   useEffect(() => {
     try {
