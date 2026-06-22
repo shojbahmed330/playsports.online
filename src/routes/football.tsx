@@ -65,7 +65,7 @@ function Index() {
 
   // Sync URL ?year= when changed
   useEffect(() => {
-    navigate({ search: (prev) => ({ ...prev, year }), replace: true });
+    navigate({ search: (prev: FootballSearch) => ({ ...prev, year }), replace: true });
   }, [year, navigate]);
 
   useEffect(() => {
