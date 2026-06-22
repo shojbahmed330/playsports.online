@@ -83,6 +83,8 @@ function AdminShell() {
   const [search, setSearch] = useState("");
   const [missingOnly, setMissingOnly] = useState(false);
 
+  const fixturesFn = useServerFn(getWc2026Fixtures);
+
   const matches = useQuery({
     queryKey: ["admin_wc_matches", year],
     queryFn: async (): Promise<AdminMatch[]> => {
@@ -94,10 +96,38 @@ function AdminShell() {
       if (error) throw error;
       const db = (data ?? []) as WCMatch[];
       const seen = new Set(
-        db.map((m) => `${m.home_team}|${m.away_team}|${m.round}`),
+        db.map((m) => `${m.home_team.toLowerCase()}|${m.away_team.toLowerCase()}`),
       );
+
+      // 2026: pull live fixtures from Sofascore as bundled rows.
+      if (year === 2026) {
+        const res = await fixturesFn();
+        const bundled: AdminMatch[] = (res.fixtures ?? [])
+          .filter((f) => !seen.has(`${f.home.name.toLowerCase()}|${f.away.name.toLowerCase()}`))
+          .map((f, i): AdminMatch => ({
+            id: 900000 + i, // synthetic; stripped on insert
+            tournament_year: 2026,
+            round: f.group,
+            match_number: i + 1,
+            home_team: f.home.name,
+            away_team: f.away.name,
+            home_score: f.home.goals,
+            away_score: f.away.goals,
+            home_score_pen: null,
+            away_score_pen: null,
+            match_date: f.startTs ? new Date(f.startTs * 1000).toISOString() : null,
+            stadium: f.venue,
+            city: f.city,
+            video_url: null,
+            _bundled: true,
+          }));
+        return [...db, ...bundled].sort(
+          (a, b) => (a.match_date ?? "").localeCompare(b.match_date ?? ""),
+        );
+      }
+
       const bundled = (GROUP_MATCHES_BY_YEAR[String(year)] ?? [])
-        .filter((m) => !seen.has(`${m.home_team}|${m.away_team}|${m.round}`))
+        .filter((m) => !seen.has(`${m.home_team.toLowerCase()}|${m.away_team.toLowerCase()}`))
         .map((m) => ({ ...m, _bundled: true }) as AdminMatch);
       return [...db, ...bundled].sort(
         (a, b) => (a.match_number ?? 0) - (b.match_number ?? 0),
