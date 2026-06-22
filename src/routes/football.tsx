@@ -7,6 +7,7 @@ import { TournamentInfoCard } from "@/components/wc/TournamentInfoCard";
 import { GroupStage } from "@/components/wc/GroupStage";
 import { MatchCard, type RoundKey } from "@/components/wc/MatchCard";
 import { MatchModal } from "@/components/wc/MatchModal";
+import { YearStrip } from "@/components/wc/YearStrip";
 import { useAuth } from "@/hooks/use-auth";
 import groupMatchesData from "@/data/wc_group_matches.json";
 import { toast } from "sonner";
