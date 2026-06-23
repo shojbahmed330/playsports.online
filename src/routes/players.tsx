@@ -92,7 +92,7 @@ function PlayersPage() {
   const selectedYears = useMemo(() => {
     const ys = parseList(search.years).map(Number).filter(Boolean);
     if (ys.length) return new Set(ys);
-    if (search.era !== "ALL") return new Set(ERA_YEARS[search.era]);
+    if (search.era !== "ALL") return new Set(ERA_YEARS[search.era as Exclude<typeof search.era, "ALL">]);
     return null;
   }, [search.years, search.era]);
 
@@ -207,7 +207,7 @@ function PlayersPage() {
       recent: (a: typeof enriched[number], b: typeof enriched[number]) =>
         (b.yearsList[b.yearsList.length - 1] ?? 0) -
           (a.yearsList[a.yearsList.length - 1] ?? 0) || b.goals - a.goals,
-    }[search.sort];
+    }[search.sort as keyof typeof sorter_map];
 
     return enriched.sort(sorter).slice(0, 100);
   }, [filteredGoals, wc2026Q.data, search.minGoals, search.sort, search.goalType, search.q, selectedYears, selectedCountries, selectedConfeds]);
