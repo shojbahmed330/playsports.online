@@ -195,20 +195,17 @@ function PlayersPage() {
         gpt: r.years.size ? r.goals / r.years.size : 0,
       }));
 
-    const sorter = {
-      goals: (a: typeof enriched[number], b: typeof enriched[number]) =>
-        b.goals - a.goals || a.name.localeCompare(b.name),
-      goals_per_tournament: (a: typeof enriched[number], b: typeof enriched[number]) =>
-        b.gpt - a.gpt || b.goals - a.goals,
-      tournaments: (a: typeof enriched[number], b: typeof enriched[number]) =>
-        b.tournaments - a.tournaments || b.goals - a.goals,
-      name: (a: typeof enriched[number], b: typeof enriched[number]) =>
-        a.name.localeCompare(b.name),
-      recent: (a: typeof enriched[number], b: typeof enriched[number]) =>
+    type Enriched = typeof enriched[number];
+    const sorters: Record<string, (a: Enriched, b: Enriched) => number> = {
+      goals: (a, b) => b.goals - a.goals || a.name.localeCompare(b.name),
+      goals_per_tournament: (a, b) => b.gpt - a.gpt || b.goals - a.goals,
+      tournaments: (a, b) => b.tournaments - a.tournaments || b.goals - a.goals,
+      name: (a, b) => a.name.localeCompare(b.name),
+      recent: (a, b) =>
         (b.yearsList[b.yearsList.length - 1] ?? 0) -
           (a.yearsList[a.yearsList.length - 1] ?? 0) || b.goals - a.goals,
-    }[search.sort as keyof typeof sorter_map];
-
+    };
+    const sorter = sorters[search.sort] ?? sorters.goals;
     return enriched.sort(sorter).slice(0, 100);
   }, [filteredGoals, wc2026Q.data, search.minGoals, search.sort, search.goalType, search.q, selectedYears, selectedCountries, selectedConfeds]);
 
