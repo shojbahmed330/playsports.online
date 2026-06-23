@@ -90,7 +90,7 @@ export function FilterBar({
 
   const reset = () =>
     navigate({
-      search: (prev) => ({
+      search: (prev: PlayersSearch) => ({
         ...playersDefaults,
         tab: prev.tab,
       }),
