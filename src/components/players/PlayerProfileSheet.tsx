@@ -10,18 +10,13 @@ import {
 import { Button } from "@/components/ui/button";
 import { flagOf } from "@/lib/flags";
 import { parsePlayerKey, playerKey, type PlayersSearch } from "@/lib/players-filters";
-import goalsData from "@/data/wc_goals.json";
 import cardsData from "@/data/wc_cards.json";
+import { useMergedGoals } from "@/lib/use-merged-goals";
 
-type GoalRow = {
-  pid: string; name: string; team: string; pteam: string;
-  year: number; og: boolean; pen: boolean; pos: string;
-};
 type CardRow = {
   pid: string; name: string; team: string; year: number;
   type: "yellow" | "red"; pos: string;
 };
-const GOALS = goalsData as GoalRow[];
 const CARDS = cardsData as CardRow[];
 
 export function PlayerProfileSheet() {
