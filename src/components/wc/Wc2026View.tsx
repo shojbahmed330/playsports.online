@@ -13,6 +13,10 @@ import type { WCGroup, WCMatch } from "@/lib/supabase";
 import { GroupStage } from "./GroupStage";
 import { MatchCard, type RoundKey } from "./MatchCard";
 import { MatchModal } from "./MatchModal";
+import { MobileGroupDeck } from "./MobileGroupDeck";
+import { MobileBracket } from "./MobileBracket";
+import { MobileLiveTicker } from "./MobileLiveTicker";
+import { WatchLivePanel } from "./WatchLivePanel";
 import { flagOf } from "@/lib/flags";
 import { fetch2026VideoMap, videoKey } from "@/lib/wc-2026-videos";
 
