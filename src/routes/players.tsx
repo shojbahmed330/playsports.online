@@ -135,13 +135,12 @@ function PlayersPage() {
     });
   }, [search.pos, search.q, selectedYears, selectedCountries, selectedConfeds]);
 
-  // Top scorers with live 2026 merge
+  // Top scorers — GOALS already includes live 2026 rows from useMergedGoals.
   const topScorers = useMemo(() => {
     const agg = new Map<
       string,
       { name: string; country: string; goals: number; years: Set<number>; live2026: number }
     >();
-    const nameIndex = new Map<string, string>();
 
     for (const g of filteredGoals) {
       const key = `${g.pid}|${g.pteam}`;
@@ -149,36 +148,15 @@ function PlayersPage() {
       if (ex) {
         ex.goals++;
         ex.years.add(g.year);
+        if (g.live) ex.live2026++;
       } else {
         agg.set(key, {
-          name: g.name, country: g.pteam, goals: 1,
-          years: new Set([g.year]), live2026: 0,
+          name: g.name,
+          country: g.pteam,
+          goals: 1,
+          years: new Set([g.year]),
+          live2026: g.live ? 1 : 0,
         });
-        nameIndex.set(`${norm(g.name)}|${norm(g.pteam)}`, key);
-      }
-    }
-
-    const include2026 = yearAllowed(2026) && (search.goalType === "ALL" || search.goalType === "open" || search.goalType === "penalty");
-    if (include2026) {
-      for (const s of wc2026Q.data?.scorers ?? []) {
-        const cn = s.team.name;
-        if (!countryAllowed(cn)) continue;
-        if (search.q && !fuzzyMatch(s.name, search.q)) continue;
-        const nk = `${norm(s.name)}|${norm(cn)}`;
-        const existingKey = nameIndex.get(nk);
-        const key = existingKey ?? `wc2026_${s.playerId}|${cn}`;
-        const ex = agg.get(key);
-        if (ex) {
-          ex.goals += s.goals;
-          ex.live2026 += s.goals;
-          ex.years.add(2026);
-        } else {
-          agg.set(key, {
-            name: s.name, country: cn, goals: s.goals,
-            years: new Set([2026]), live2026: s.goals,
-          });
-          nameIndex.set(nk, key);
-        }
       }
     }
 
@@ -203,7 +181,7 @@ function PlayersPage() {
     };
     const sorter = sorters[search.sort] ?? sorters.goals;
     return enriched.sort(sorter).slice(0, 100);
-  }, [filteredGoals, wc2026Q.data, search.minGoals, search.sort, search.goalType, search.q, selectedYears, selectedCountries, selectedConfeds]);
+  }, [filteredGoals, search.minGoals, search.sort]);
 
   const topYellow = useMemo(() => buildCardLeaderboard(filteredCards, "yellow", 15), [filteredCards]);
   const topRed = useMemo(() => buildCardLeaderboard(filteredCards, "red", 15), [filteredCards]);
