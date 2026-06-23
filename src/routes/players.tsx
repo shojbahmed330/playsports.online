@@ -75,14 +75,8 @@ function PlayersPage() {
     return Array.from(s).sort();
   }, [GOALS]);
 
-  // Live 2026 scorers
-  const wc2026Fn = useServerFn(getWc2026TopScorers);
-  const wc2026Q = useQuery({
-    queryKey: ["wc2026", "scorers"],
-    queryFn: () => wc2026Fn(),
-    staleTime: 60 * 60 * 1000,
-    retry: 1,
-  });
+  // (Live 2026 scorers come from useMergedGoals above — shared query cache.)
+
 
   // Resolve filters
   const selectedYears = useMemo(() => {
