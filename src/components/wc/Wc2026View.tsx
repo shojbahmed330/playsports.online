@@ -142,12 +142,27 @@ export function Wc2026GroupsView() {
 
   return (
     <>
-      <GroupStage
-        groups={wcGroups}
-        matches={wcMatches}
-        year={2026}
-        onPick={setActiveMatch}
-      />
+      <MobileLiveTicker matches={wcMatches} />
+
+      {/* Mobile-only swipeable group deck */}
+      <div className="md:hidden">
+        <MobileGroupDeck groups={wcGroups} matches={wcMatches} onPick={setActiveMatch} />
+      </div>
+
+      {/* Desktop layout */}
+      <div className="hidden md:block">
+        <GroupStage
+          groups={wcGroups}
+          matches={wcMatches}
+          year={2026}
+          onPick={setActiveMatch}
+        />
+      </div>
+
+      <div className="mt-6">
+        <WatchLivePanel />
+      </div>
+
       <MatchModal match={activeMatch} onClose={() => setActiveMatch(null)} />
     </>
   );
