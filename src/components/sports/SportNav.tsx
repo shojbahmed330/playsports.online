@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Trophy, ShieldCheck, Users, Globe2 } from "lucide-react";
+import { Trophy, ShieldCheck } from "lucide-react";
 import { SPORT_LIST } from "@/lib/sports-config";
 import { useAuth } from "@/hooks/use-auth";
 
