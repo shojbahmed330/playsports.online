@@ -123,7 +123,7 @@ function PlayersPage() {
       if (search.q && !fuzzyMatch(g.name, search.q)) return false;
       return true;
     });
-  }, [search.goalType, search.pos, search.q, selectedYears, selectedCountries, selectedConfeds]);
+  }, [GOALS, search.goalType, search.pos, search.q, selectedYears, selectedCountries, selectedConfeds]);
 
   const filteredCards = useMemo(() => {
     return CARDS.filter((c) => {
