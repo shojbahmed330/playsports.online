@@ -33,14 +33,16 @@ export function MatchModal({ match, onClose }: { match: WCMatch | null; onClose:
     ? new Date(match.match_date).toLocaleDateString("en-GB", { year: "numeric", month: "long", day: "numeric" })
     : null;
 
+  const is2026 = match.tournament_year === 2026;
+
   return (
     <div
-      className="fixed inset-0 z-50 grid place-items-center bg-black/80 backdrop-blur-sm p-4 animate-in fade-in duration-200"
+      className="fixed inset-0 z-50 grid place-items-start sm:place-items-center bg-black/80 backdrop-blur-sm p-2 sm:p-4 overflow-y-auto animate-in fade-in duration-200"
       onClick={onClose}
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-[560px] rounded-2xl border border-gray-800 bg-gray-950 shadow-2xl overflow-hidden"
+        className="relative w-full max-w-[640px] my-2 sm:my-8 rounded-2xl border border-gray-800 bg-gray-950 shadow-2xl overflow-hidden"
       >
         {/* Header */}
         <div className="flex items-center justify-between px-5 pt-4">
