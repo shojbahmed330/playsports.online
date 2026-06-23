@@ -16,6 +16,7 @@ type Tab = {
 const BASE_TABS: Tab[] = [
   { to: "/",         emoji: "🏆", label: "Hub",      grad: "from-amber-500 to-orange-500",   accent: "text-amber-300" },
   { to: "/football", emoji: "⚽", label: "Football", grad: "from-emerald-500 to-teal-500",   accent: "text-emerald-300" },
+  { to: "/cricket",  emoji: "🏏", label: "Cricket",  grad: "from-emerald-500 to-amber-500",  accent: "text-emerald-200" },
   { to: "/players",  emoji: "👤", label: "Players",  grad: "from-fuchsia-500 to-purple-500", accent: "text-fuchsia-300" },
 ];
 
