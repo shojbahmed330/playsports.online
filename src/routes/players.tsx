@@ -9,7 +9,7 @@ import { flagOf } from "@/lib/flags";
 import { AdSlot } from "@/components/ads/AdSlot";
 import cardsData from "@/data/wc_cards.json";
 import fifaRankings from "@/data/fifa_rankings.json";
-import { getFifaRankings, getWc2026TopScorers } from "@/lib/wc2026.functions";
+import { getFifaRankings } from "@/lib/wc2026.functions";
 import { useMergedGoals, type GoalRow } from "@/lib/use-merged-goals";
 
 import {
