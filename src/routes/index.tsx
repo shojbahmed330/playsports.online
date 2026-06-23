@@ -14,6 +14,7 @@ import { Countdown } from "@/components/sports/Countdown";
 import { GameGridSkeleton } from "@/components/sports/Skeletons";
 import { formatLocalTime, relativeDay } from "@/lib/time";
 import { AdSlot } from "@/components/ads/AdSlot";
+import { CricketSlate } from "@/components/cricket/CricketSlate";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -129,6 +130,9 @@ function HubPage() {
 
         {/* FIFA SLATE */}
         <FootballSlate />
+
+        {/* CRICKET SLATE */}
+        <CricketSlate />
 
         <AdSlot slot="in_content" layout="in-article" />
 
