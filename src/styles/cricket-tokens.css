@@ -1,0 +1,46 @@
+/* Cricket-specific design tokens & animations. */
+
+:root {
+  --gradient-cricket-hero: linear-gradient(135deg, #064e3b 0%, #14532d 35%, #b45309 100%);
+  --gradient-cricket-pill: linear-gradient(135deg, #10b981 0%, #f59e0b 100%);
+  --cricket-pitch: linear-gradient(180deg, #064e3b 0%, #052e16 100%);
+  --cricket-live-glow: 0 0 24px rgba(239, 68, 68, 0.35);
+}
+
+.cricket-hero { background: var(--gradient-cricket-hero); }
+.cricket-pitch { background: var(--cricket-pitch); }
+
+/* Score pulse — replays whenever the run total changes */
+@keyframes scorePulse {
+  0%   { transform: scale(1);    color: inherit;        text-shadow: none; }
+  35%  { transform: scale(1.18); color: #fbbf24;        text-shadow: 0 0 14px rgba(251, 191, 36, 0.6); }
+  100% { transform: scale(1);    color: inherit;        text-shadow: none; }
+}
+.score-pulse { animation: scorePulse 0.9s ease-out; }
+
+/* Ball chip pop (last 6 balls) */
+@keyframes ballPop {
+  0%   { transform: scale(0.4); opacity: 0; }
+  60%  { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(1);   opacity: 1; }
+}
+.ball-pop { animation: ballPop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+
+/* Live red dot ring */
+@keyframes cricketLiveRing {
+  0%   { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.55); }
+  70%  { box-shadow: 0 0 0 12px rgba(239, 68, 68, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+.cricket-live-ring { animation: cricketLiveRing 1.8s ease-out infinite; }
+
+/* Format chips */
+.fmt-t20  { background: linear-gradient(135deg, #c026d3, #7c3aed); color: #fff; }
+.fmt-odi  { background: linear-gradient(135deg, #2563eb, #06b6d4); color: #fff; }
+.fmt-test { background: linear-gradient(135deg, #b45309, #f59e0b); color: #fff; }
+.fmt-t10  { background: linear-gradient(135deg, #db2777, #f97316); color: #fff; }
+.fmt-fc   { background: linear-gradient(135deg, #57534e, #a8a29e); color: #fff; }
+
+@media (prefers-reduced-motion: reduce) {
+  .score-pulse, .ball-pop, .cricket-live-ring { animation: none; }
+}
