@@ -396,12 +396,12 @@ export function ActiveFilterChips() {
       clear: () => update({ confeds: joinList(cfs.filter((x) => x !== c)) }),
     });
   if (search.era !== "ALL")
-    chips.push({ label: ERA_LABELS[search.era], clear: () => update({ era: "ALL" }) });
+    chips.push({ label: ERA_LABELS[search.era as Era], clear: () => update({ era: "ALL" }) });
   if (search.pos !== "ALL")
     chips.push({ label: search.pos, clear: () => update({ pos: "ALL" }) });
   if (search.goalType !== "ALL")
     chips.push({
-      label: GOAL_LABELS[search.goalType],
+      label: GOAL_LABELS[search.goalType as GoalType],
       clear: () => update({ goalType: "ALL" }),
     });
   if (search.minGoals > 1)
