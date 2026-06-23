@@ -7,10 +7,10 @@ import { Trophy, ShieldCheck, Share2, TrendingUp } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { flagOf } from "@/lib/flags";
 import { AdSlot } from "@/components/ads/AdSlot";
-import goalsData from "@/data/wc_goals.json";
 import cardsData from "@/data/wc_cards.json";
 import fifaRankings from "@/data/fifa_rankings.json";
-import { getFifaRankings, getWc2026TopScorers } from "@/lib/wc2026.functions";
+import { getFifaRankings } from "@/lib/wc2026.functions";
+import { useMergedGoals, type GoalRow } from "@/lib/use-merged-goals";
 
 import {
   playersSearchSchema,
@@ -19,7 +19,6 @@ import {
   parsePlayerKey,
   playerKey,
   ERA_YEARS,
-  norm,
   fuzzyMatch,
   type PlayersSearch,
 } from "@/lib/players-filters";
@@ -36,16 +35,11 @@ const RecordsPanel = lazy(() =>
   import("@/components/players/RecordsPanel").then((m) => ({ default: m.RecordsPanel })),
 );
 
-type GoalRow = {
-  pid: string; name: string; team: string; pteam: string;
-  year: number; og: boolean; pen: boolean; pos: string;
-};
 type CardRow = {
   pid: string; name: string; team: string; year: number;
   type: "yellow" | "red"; pos: string;
 };
 
-const GOALS = goalsData as GoalRow[];
 const CARDS = cardsData as CardRow[];
 
 export const Route = createFileRoute("/players")({
@@ -72,21 +66,16 @@ function PlayersPage() {
   const { isAdmin } = useAuth();
   const search = Route.useSearch() as PlayersSearch;
   const navigate = useNavigate({ from: "/players" });
+  const { goals: GOALS, live2026Goals } = useMergedGoals();
 
   const countries = useMemo(() => {
     const s = new Set<string>();
     for (const g of GOALS) s.add(g.pteam);
     return Array.from(s).sort();
-  }, []);
+  }, [GOALS]);
 
-  // Live 2026 scorers
-  const wc2026Fn = useServerFn(getWc2026TopScorers);
-  const wc2026Q = useQuery({
-    queryKey: ["wc2026", "scorers"],
-    queryFn: () => wc2026Fn(),
-    staleTime: 60 * 60 * 1000,
-    retry: 1,
-  });
+  // (Live 2026 scorers come from useMergedGoals above — shared query cache.)
+
 
   // Resolve filters
   const selectedYears = useMemo(() => {
@@ -127,7 +116,7 @@ function PlayersPage() {
       if (search.q && !fuzzyMatch(g.name, search.q)) return false;
       return true;
     });
-  }, [search.goalType, search.pos, search.q, selectedYears, selectedCountries, selectedConfeds]);
+  }, [GOALS, search.goalType, search.pos, search.q, selectedYears, selectedCountries, selectedConfeds]);
 
   const filteredCards = useMemo(() => {
     return CARDS.filter((c) => {
@@ -139,13 +128,12 @@ function PlayersPage() {
     });
   }, [search.pos, search.q, selectedYears, selectedCountries, selectedConfeds]);
 
-  // Top scorers with live 2026 merge
+  // Top scorers — GOALS already includes live 2026 rows from useMergedGoals.
   const topScorers = useMemo(() => {
     const agg = new Map<
       string,
       { name: string; country: string; goals: number; years: Set<number>; live2026: number }
     >();
-    const nameIndex = new Map<string, string>();
 
     for (const g of filteredGoals) {
       const key = `${g.pid}|${g.pteam}`;
@@ -153,36 +141,15 @@ function PlayersPage() {
       if (ex) {
         ex.goals++;
         ex.years.add(g.year);
+        if (g.live) ex.live2026++;
       } else {
         agg.set(key, {
-          name: g.name, country: g.pteam, goals: 1,
-          years: new Set([g.year]), live2026: 0,
+          name: g.name,
+          country: g.pteam,
+          goals: 1,
+          years: new Set([g.year]),
+          live2026: g.live ? 1 : 0,
         });
-        nameIndex.set(`${norm(g.name)}|${norm(g.pteam)}`, key);
-      }
-    }
-
-    const include2026 = yearAllowed(2026) && (search.goalType === "ALL" || search.goalType === "open" || search.goalType === "penalty");
-    if (include2026) {
-      for (const s of wc2026Q.data?.scorers ?? []) {
-        const cn = s.team.name;
-        if (!countryAllowed(cn)) continue;
-        if (search.q && !fuzzyMatch(s.name, search.q)) continue;
-        const nk = `${norm(s.name)}|${norm(cn)}`;
-        const existingKey = nameIndex.get(nk);
-        const key = existingKey ?? `wc2026_${s.playerId}|${cn}`;
-        const ex = agg.get(key);
-        if (ex) {
-          ex.goals += s.goals;
-          ex.live2026 += s.goals;
-          ex.years.add(2026);
-        } else {
-          agg.set(key, {
-            name: s.name, country: cn, goals: s.goals,
-            years: new Set([2026]), live2026: s.goals,
-          });
-          nameIndex.set(nk, key);
-        }
       }
     }
 
@@ -207,7 +174,7 @@ function PlayersPage() {
     };
     const sorter = sorters[search.sort] ?? sorters.goals;
     return enriched.sort(sorter).slice(0, 100);
-  }, [filteredGoals, wc2026Q.data, search.minGoals, search.sort, search.goalType, search.q, selectedYears, selectedCountries, selectedConfeds]);
+  }, [filteredGoals, search.minGoals, search.sort]);
 
   const topYellow = useMemo(() => buildCardLeaderboard(filteredCards, "yellow", 15), [filteredCards]);
   const topRed = useMemo(() => buildCardLeaderboard(filteredCards, "red", 15), [filteredCards]);
@@ -250,7 +217,7 @@ function PlayersPage() {
     });
     out.sort((a, b) => b.tournaments - a.tournaments || b.goals - a.goals);
     return out;
-  }, [selectedConfeds]);
+  }, [GOALS, selectedConfeds]);
 
   const openPlayer = (name: string, country: string) =>
     navigate({
@@ -316,8 +283,8 @@ function PlayersPage() {
           <KpiStrip
             totalPlayers={countCountUnique(GOALS)}
             totalGoals={GOALS.filter((g) => !g.og).length}
-            tournaments={new Set(GOALS.map((g) => g.year)).size + 1}
-            live2026={wc2026Q.data?.scorers?.reduce((a, s) => a + s.goals, 0) ?? 0}
+            tournaments={new Set(GOALS.map((g) => g.year)).size}
+            live2026={live2026Goals.length}
           />
         </div>
       </section>
@@ -345,7 +312,7 @@ function PlayersPage() {
             topScorers={topScorers}
             countryStats={countryStats}
             onPickPlayer={openPlayer}
-            live2026Count={wc2026Q.data?.scorers?.length ?? 0}
+            live2026Count={new Set(live2026Goals.map((g) => g.pid)).size}
           />
         )}
 

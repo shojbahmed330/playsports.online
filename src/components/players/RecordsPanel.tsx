@@ -1,16 +1,11 @@
 import { useMemo } from "react";
 import { Sparkles, Trophy, Zap, Crown } from "lucide-react";
 import records from "@/data/wc_records.json";
-import goalsData from "@/data/wc_goals.json";
 import { flagOf } from "@/lib/flags";
-
-type GoalRow = {
-  pid: string; name: string; team: string; pteam: string;
-  year: number; og: boolean; pen: boolean; pos: string;
-};
-const GOALS = goalsData as GoalRow[];
+import { useMergedGoals } from "@/lib/use-merged-goals";
 
 export function RecordsPanel() {
+  const { goals: GOALS } = useMergedGoals();
   const derived = useMemo(() => {
     // Most goals in a single year per player (across our dataset)
     const m = new Map<string, { name: string; country: string; year: number; goals: number }>();
@@ -37,7 +32,7 @@ export function RecordsPanel() {
     const hatTrick = arr.filter((x) => x.goals >= 3).slice(0, 8);
 
     return { topSingleYear: arr.slice(0, 8), topYears, hatTrick };
-  }, []);
+  }, [GOALS]);
 
   return (
     <div className="space-y-6">
@@ -80,7 +75,14 @@ export function RecordsPanel() {
                 </span>
                 <span className="text-base">{flagOf(p.country)}</span>
                 <span className="flex-1 truncate font-medium">{p.name}</span>
-                <span className="text-xs text-muted-foreground tabular-nums">{p.year}</span>
+                <span className="text-xs text-muted-foreground tabular-nums flex items-center gap-1">
+                  {p.year}
+                  {p.year === 2026 && (
+                    <span className="inline-flex items-center gap-0.5 text-[9px] uppercase tracking-wider text-emerald-400 font-bold">
+                      <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" /> Live
+                    </span>
+                  )}
+                </span>
                 <span className="text-gold font-bold tabular-nums w-8 text-right">
                   {p.goals}
                 </span>
@@ -100,7 +102,14 @@ export function RecordsPanel() {
                 <span className="w-6 text-muted-foreground font-semibold tabular-nums">
                   {i + 1}
                 </span>
-                <span className="flex-1 font-medium tabular-nums">{y} World Cup</span>
+                <span className="flex-1 font-medium tabular-nums flex items-center gap-2">
+                  {y} World Cup
+                  {y === 2026 && (
+                    <span className="inline-flex items-center gap-0.5 text-[9px] uppercase tracking-wider text-emerald-400 font-bold">
+                      <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" /> Live
+                    </span>
+                  )}
+                </span>
                 <span className="text-gold font-bold tabular-nums">{n} goals</span>
               </li>
             ))}
@@ -121,7 +130,12 @@ export function RecordsPanel() {
             >
               <div className="text-2xl">{flagOf(p.country)}</div>
               <div className="text-sm font-semibold truncate mt-1">{p.name}</div>
-              <div className="text-[11px] text-muted-foreground">{p.year}</div>
+              <div className="text-[11px] text-muted-foreground flex items-center justify-center gap-1">
+                {p.year}
+                {p.year === 2026 && (
+                  <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                )}
+              </div>
               <div className="text-gold font-bold tabular-nums">{p.goals} ⚽</div>
             </div>
           ))}

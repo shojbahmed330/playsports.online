@@ -1,121 +1,126 @@
+# Plan: 2026 Everywhere + Live Football + Mobile Football Redesign
 
-# Plan — Pro-grade `/players` redesign
+Three independent work streams. Each can ship on its own.
 
-Goal: turn `/players` from a static list of leaderboards into a professional, mobile-friendly, fully filterable player intelligence hub that blends historical World Cup data (1930–2022) with live 2026 data, with shareable URLs and clean UX on every screen size.
+---
 
-## 1. Hero + page chrome
+## 1. Propagate 2026 live data into Records, Compare, Countries
 
-- New compact hero with animated gradient ribbon, KPI strip: total players, total goals tracked, tournaments covered, live 2026 goals counter (animated number).
-- Sticky sub-nav (tabs): **Overview · Top Scorers · Discipline · Countries · Rankings · Compare · Records**. On mobile it becomes a horizontal snap-scroll pill bar; on desktop a centered segmented bar. Active tab reflected in `?tab=` URL param.
-- Breadcrumb (Home / Players / <tab>) + share button (copies current URL with all filters encoded).
+Today only the Scorers leaderboard merges live 2026 goals from Sofascore. Records, Compare and Country stats still read only the static 1930–2022 JSON, so a Messi 2026 goal never shows up there.
 
-## 2. Filter system (the biggest upgrade)
+**Approach: one shared "merged goals" hook**
 
-Replace the 3 selects + position row with a single sticky **FilterBar** card. All filter state is URL-synced via TanStack `validateSearch` so any view is shareable/bookmarkable.
+Create `src/lib/use-merged-goals.ts`:
+- Wraps `getWc2026TopScorers` via TanStack Query (1h stale, shared cache key).
+- Returns a `GoalRow[]` that combines `wc_goals.json` with synthetic 2026 rows (one row per goal scored, `year: 2026`, `pen` flag from Sofascore when available, `og: false`).
+- Uses the same diacritic-insensitive name+country index already in `players.tsx` so a 2026 Messi merges into the historical Messi key — no duplicates.
+- Exposes `{ goals, live2026Goals, isLoading, lastUpdated }`.
 
-Filters:
-- **Search** (debounced, fuzzy by name; matches diacritics — "mbappe" finds "Mbappé").
-- **Tournament year**: multi-select chip strip (All / 2026 / 2022 / 2018 / … / 1930). Tap to toggle multiple.
-- **Country**: command-palette style combobox (shadcn `Command`) with flag + name; supports multi-select; "Top 10 only" quick toggle.
-- **Confederation**: UEFA / CONMEBOL / CONCACAF / CAF / AFC / OFC pills (derived from a small `confederation.ts` lookup).
-- **Position**: GK / DEF / MID / FWD pills (existing, restyled).
-- **Era**: Pre-WWII / Classic (50s–70s) / Modern (80s–2000s) / Current (2010+) — quick presets that set year multi-select.
-- **Goal type** (only affects scorers tab): Open play / Penalty / Own goal toggle group.
-- **Stage** (when data is available from `wc_goals.json` if a `stage` field exists, otherwise hidden): Group / R16 / QF / SF / Final.
-- **Min goals / Min matches**: slider (1–15) to prune the leaderboard.
-- **Sort**: Goals, Goals per tournament, Tournaments played, Name A–Z, Most recent.
-- Active filter chips row underneath, each removable (`×`), plus "Reset all" link.
-- Filter count badge on a mobile "Filters" button that opens a `Sheet` from the bottom — mobile users don't see the desktop bar by default.
+Then refactor:
+- **`src/routes/players.tsx`** — replace the local `GOALS` constant in the scorers pipeline with the merged set; remove the inline 2026 merge block (now redundant). `countryStats` and `filteredCards` (cards stay static, Sofascore doesn't expose them reliably) use merged goals.
+- **`src/components/players/RecordsPanel.tsx`** — accept `goals` via prop (or read the hook) so "Top single-tournament hauls", "Highest-scoring tournaments" and "Hat-trick heroes" include 2026. Add a small "Live" pill on any 2026 row.
+- **`src/components/players/CompareView.tsx`** — same: read merged goals so per-tournament timelines and totals reflect 2026.
+- **`src/components/players/PlayerProfileSheet.tsx`** — read merged goals; the per-year table will now have a 2026 row for active players with a green Live dot.
+- Country stats: include 2026 goals in the country's `goals`, `tournaments` (adds 2026 if any goal), and re-pick top scorer.
 
-## 3. Tabs / content sections
+**Curated records JSON stays untouched** (those are historical facts). Only the *derived* sections in `RecordsPanel` get the live merge.
 
-### 3a. Overview
-- KPI cards (animated counters) — Top scorer of all time, Most decorated nation, Most cards, Live 2026 leader.
-- "Goal trend" sparkline by tournament (uses existing `recharts`-style component or a simple SVG).
-- Top 5 scorers mini-card, Top 5 nations mini-card — each click jumps to its own tab with filters applied.
+---
 
-### 3b. Top Scorers (current section, upgraded)
-- Same table but with: rank delta arrow (vs all-time), goals/tournament column, penalty %, flag, position badge, "2026 LIVE" pill on players with current-tournament goals.
-- Row click → player profile drawer (see §4).
-- Virtualized list when >100 rows (basic windowing) for mobile smoothness.
-- Toggle "Show per-tournament breakdown" expands a small bar chart inline.
+## 2. Free live football streaming on the platform
 
-### 3c. Discipline
-- Existing yellow/red tables, plus a third table "Cards per match" rate.
-- Filter chips inherit from FilterBar.
+**Reality check first:** There is no legal free API that returns playable World Cup video streams — FIFA+, FOX, Telemundo, BBC etc. are geo-locked and DRM-protected. Embedding pirate streams (Sportsurge, Buffstreams, etc.) gets the domain blocked by AdSense and risks DMCA. We will not do that.
 
-### 3d. Countries
-- Existing country grid, plus: search-within-grid, sort dropdown (Tournaments / Goals / Players / Win rate if available), and a "Compare countries" button that opens a side-by-side view.
+**What we *can* do for free, legally:**
 
-### 3e. Rankings (existing live FIFA section, restyled)
-- Two columns become tabs on mobile.
-- Add "Movement" arrows (up/down vs previous ranking snapshot if cached; otherwise hidden).
+a. **Official broadcaster deep-links per match.** Build `src/lib/broadcasters.ts` mapping ISO country → list of official rightsholders for FIFA 2026 (FIFA+ where free, FOX/Telemundo US, BBC iPlayer UK, CBC Canada, SBS Australia, etc.). On each live/upcoming match card show a "Watch live" button that opens the correct broadcaster for the visitor's locale (detected via `navigator.language` + a country selector override stored in localStorage).
 
-### 3f. Compare (new)
-- Pick up to 4 players via combobox. Shows side-by-side stat cards: goals, tournaments, penalty %, cards, years active, mini sparkline per tournament. Mobile = vertical stack.
+b. **FIFA+ embeds where available.** FIFA+ offers free live streams for many matches in supported regions. Embed via `<iframe src="https://www.fifa.com/fifaplus/...">` inside a new `LiveStreamPanel` component when an embeddable URL exists in our config.
 
-### 3g. Records (new)
-- Curated "World Cup records" panel: most goals in single tournament, fastest goal, oldest/youngest scorer, hat-tricks, etc. Some derived from `wc_goals.json` aggregations, some from a small static `records.ts`.
+c. **Live match center (always free).** For every live 2026 fixture, render a real-time match center using Sofascore data we already fetch:
+   - Live score with `ScoreFlip` animation
+   - Minute ticker + event timeline (goals, cards, subs) — add `getWc2026MatchEvents(matchId)` server fn
+   - Lineups, possession bar, shots, xG when available
+   - Auto-refresh every 20s while `status=live`
 
-## 4. Player profile drawer
+d. **Admin override.** Reuse the existing 2026 video admin to let you paste a YouTube live URL per match (e.g. official highlights livestream). When present, it embeds in the match modal above the broadcaster list.
 
-Replace current modal with a shadcn `Sheet` (right-side on desktop, bottom on mobile):
-- Header: flag, name, country, position, years active.
-- Stats grid: total goals, penalties, OGs against (if tracked), tournaments, avg goals/tournament.
-- Per-tournament timeline (year cards with goals + cards).
-- "Goals scored against" mini list.
-- Live 2026 section if player has current goals.
-- Share button copies a deep link `/players?player=<id>`.
+New files:
+- `src/lib/broadcasters.ts` — region → broadcaster table
+- `src/lib/wc2026.functions.ts` — add `getWc2026MatchEvents`, `getWc2026Lineups`
+- `src/components/wc/LiveMatchCenter.tsx` — score, timeline, stats
+- `src/components/wc/WatchLiveButton.tsx` — locale-aware broadcaster dropdown
+- `src/routes/football.match.$id.tsx` — dedicated match page wiring all of the above (SEO-friendly URL, shareable)
 
-## 5. Mobile-first details
+Modify:
+- `src/components/wc/MatchCard.tsx` — when live, show pulsing LIVE pill + "Watch live" CTA → opens `LiveMatchCenter` in a sheet on mobile, modal on desktop.
+- `src/components/wc/MatchModal.tsx` — mount `LiveMatchCenter` when match is live.
 
-- Filter bar collapses into a bottom `Sheet` with sectioned content; main page shows just a "Filters (3)" button + active chips.
-- Tables convert to stacked cards under `sm` breakpoint (rank + name + flag + big goals number on the right).
-- Sticky sub-nav uses `overflow-x-auto snap-x` with safe-area padding.
-- Tap targets ≥ 44px; large numbers use `tabular-nums`.
-- All sections use the existing semantic tokens — no hardcoded colors. Keep the gold accent.
+---
 
-## 6. URL state & shareability
+## 3. Mobile-only redesign for the football section
 
-`validateSearch` with `zodValidator` + `fallback`:
-```
-tab, q, years[], countries[], confeds[], pos, era, goalType, stage, minGoals, sort, player
-```
-Search middlewares: `stripSearchParams(defaults)` so clean URLs don't carry default values; `retainSearchParams(["tab"])` across nav.
+Desktop stays as-is. Target viewport: 360–430px.
 
-## 7. Performance & polish
+**Design language:** colorful per-confederation accent gradients (CONMEBOL red, UEFA blue, CAF green, AFC orange, CONCACAF teal, OFC purple), Motion-driven entrances, haptic-feeling tap states, sticky context bars.
 
-- Move heavy aggregations (top scorers, country stats) into `useMemo` keyed on filter signature — already done; extend for new filters.
-- Lazy-load Compare and Records tabs with `React.lazy` to keep initial bundle small.
-- Animated counters via small CSS/transform; respect `prefers-reduced-motion`.
-- Skeletons for the live 2026 scorers + live rankings queries.
-- SEO: dynamic `head()` per tab — title/description reflect active tab.
+### 3.1 Football route header (`src/routes/football.tsx`)
+- Replace year dropdown row with a **collapsing app-bar** (shrinks on scroll, shows tournament logo + year + LIVE pill).
+- `YearStrip` becomes a sticky pill rail directly under the app-bar with snap-scroll and a glowing gold underline for active year; auto-scroll active into view on mount.
+- Add a **stage tabs bar** (Group · R32 · R16 · QF · SF · Final) as horizontally scrollable chips with active gradient fill. Tapping scrolls to that section AND filters when zoomed in.
 
-## 8. File plan
+### 3.2 Group stage cards (`src/components/wc/GroupStage.tsx` mobile branch)
+- One group per swipeable card (horizontal snap) instead of a long vertical list. Dots indicator at bottom.
+- Each group: confederation-tinted header, team rows with flag, P/W/D/L/Pts in tabular-nums, qualification color bar on the left (green = through, yellow = playoff, red = out).
+- Tap team row → mini sheet with their remaining fixtures + last 5 form dots.
+- Subtle Motion stagger on mount (50ms per row).
 
-**New:**
-- `src/components/players/FilterBar.tsx` — desktop filter bar.
-- `src/components/players/FilterSheet.tsx` — mobile bottom sheet wrapper around `FilterBar`.
-- `src/components/players/PlayerSubNav.tsx` — sticky tabs.
-- `src/components/players/PlayerProfileSheet.tsx` — profile drawer.
-- `src/components/players/CompareView.tsx`
-- `src/components/players/RecordsPanel.tsx`
-- `src/components/players/OverviewKpis.tsx`
-- `src/components/players/ScorerCardMobile.tsx`
-- `src/lib/players-filters.ts` — types, defaults, URL schema, normalizer, fuzzy matcher.
-- `src/lib/confederations.ts` — country → confederation lookup.
-- `src/data/wc_records.json` — curated records.
+### 3.3 Knockout rounds (R32, R16, QF, SF, Final)
+- New `src/components/wc/KnockoutBracketMobile.tsx`:
+  - Vertical bracket per round, each tie as a compact card with two teams stacked, score on right.
+  - Aggregate/PSO badge, extra-time pill.
+  - "Path to final" mode: tap a team → highlight their bracket line all the way through, dim everything else (Motion `layoutId` glow).
+  - Live ties show pulsing border + minute.
+  - Swipe left/right to jump between rounds; current round shown in a sticky top chip rail synced with scroll position.
 
-**Modified:**
-- `src/routes/players.tsx` — slim to layout + tab routing + data wiring; move sections into components.
+### 3.4 Match cards (`src/components/wc/MatchCard.tsx` mobile branch)
+- Bigger flags (40px), country code under flag.
+- Score in a dedicated centered pill; if live, score pill pulses and shows minute.
+- Status row: kickoff in viewer timezone (already in `src/lib/time.ts`) + countdown chip if upcoming.
+- Bottom action row: Watch live · Highlights · Stats (icons + label), with 44px tap targets.
+- Long-press → quick share sheet.
 
-## 9. Out of scope (this pass)
+### 3.5 Live ticker for football
+- Add a sticky bottom marquee on `/football` (mobile only) listing all live 2026 matches with score, mirroring the Hub's `LiveTicker`. Tap a chip → opens that match page.
 
-- Player photos / external player API enrichment.
-- Historical "minute of goal" data (not in JSON today).
-- Authenticated favorites / following players.
-- Server-side pagination (dataset is small enough for client memo).
+### 3.6 Motion + polish
+- Use Motion for React (`motion/react`) — already in stack — for: app-bar collapse, group card swipe physics, bracket highlight, score-flip emphasis (extend existing `ScoreFlip`).
+- Reduced-motion: respect `prefers-reduced-motion` and fall back to opacity-only transitions.
+- Skeletons: per-section shimmer using existing `Skeletons.tsx`.
 
-## 10. Open question
+### 3.7 Files touched / added
+Added:
+- `src/components/wc/MobileAppBar.tsx`
+- `src/components/wc/StageTabs.tsx`
+- `src/components/wc/GroupSwipeDeck.tsx`
+- `src/components/wc/KnockoutBracketMobile.tsx`
+- `src/components/wc/FootballLiveTicker.tsx`
+- `src/styles/confederation-tokens.css` (CSS custom properties for the 6 gradients, imported from `styles.css`)
 
-Single big PR, or split into two passes (Pass A: FilterBar + sub-nav + URL state + mobile cards; Pass B: Compare, Records, Profile drawer)? I'd recommend **one PR** since the parts share the new filter state shape.
+Modified:
+- `src/routes/football.tsx` — mobile branch wires the new components, desktop unchanged.
+- `src/components/wc/GroupStage.tsx`, `MatchCard.tsx`, `Wc2026View.tsx`, `YearStrip.tsx` — add mobile variants behind `useIsMobile()`.
+
+---
+
+## Suggested rollout order
+
+1. Stream 1 (Records/Compare/Countries 2026 merge) — smallest, highest user-visible payoff.
+2. Stream 3 (Mobile football redesign) — large but isolated to football section.
+3. Stream 2 (Live streaming + match center) — depends on new Sofascore endpoints and broadcaster research; ship after.
+
+## Open question
+
+For Stream 2, do you want me to:
+- **(A)** Ship all three sub-features (broadcaster deep-links + FIFA+ embeds where allowed + live match center with events/lineups), or
+- **(B)** Start with just the live match center (always works, no geo issues) and add broadcaster links in a second pass?

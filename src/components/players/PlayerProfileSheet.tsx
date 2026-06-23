@@ -10,18 +10,13 @@ import {
 import { Button } from "@/components/ui/button";
 import { flagOf } from "@/lib/flags";
 import { parsePlayerKey, playerKey, type PlayersSearch } from "@/lib/players-filters";
-import goalsData from "@/data/wc_goals.json";
 import cardsData from "@/data/wc_cards.json";
+import { useMergedGoals } from "@/lib/use-merged-goals";
 
-type GoalRow = {
-  pid: string; name: string; team: string; pteam: string;
-  year: number; og: boolean; pen: boolean; pos: string;
-};
 type CardRow = {
   pid: string; name: string; team: string; year: number;
   type: "yellow" | "red"; pos: string;
 };
-const GOALS = goalsData as GoalRow[];
 const CARDS = cardsData as CardRow[];
 
 export function PlayerProfileSheet() {
@@ -46,9 +41,10 @@ export function PlayerProfileSheet() {
 }
 
 function ProfileBody({ player }: { player: { name: string; country: string } }) {
+  const { goals: ALL_GOALS } = useMergedGoals();
   const goals = useMemo(
-    () => GOALS.filter((g) => !g.og && g.name === player.name && g.pteam === player.country),
-    [player],
+    () => ALL_GOALS.filter((g) => !g.og && g.name === player.name && g.pteam === player.country),
+    [player, ALL_GOALS],
   );
   const cards = useMemo(
     () => CARDS.filter((c) => c.name === player.name && c.team === player.country),
@@ -135,7 +131,12 @@ function ProfileBody({ player }: { player: { name: string; country: string } }) 
           <ul className="divide-y divide-border max-h-72 overflow-y-auto">
             {byYear.map(([y, r]) => (
               <li key={y} className="grid grid-cols-5 gap-2 px-3 py-2 text-sm tabular-nums">
-                <div className="font-semibold">{y}</div>
+                <div className="font-semibold flex items-center gap-1.5">
+                  {y}
+                  {y === 2026 && (
+                    <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" title="Live" />
+                  )}
+                </div>
                 <div className="text-right text-gold font-bold">{r.goals || ""}</div>
                 <div className="text-right text-muted-foreground">{r.pen || ""}</div>
                 <div className="text-right text-yellow-400">{r.yellow || ""}</div>

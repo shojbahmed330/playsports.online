@@ -22,24 +22,19 @@ import {
   playerKey,
   type PlayersSearch,
 } from "@/lib/players-filters";
-import goalsData from "@/data/wc_goals.json";
 import cardsData from "@/data/wc_cards.json";
+import { useMergedGoals, HISTORICAL_GOALS, type GoalRow } from "@/lib/use-merged-goals";
 
-type GoalRow = {
-  pid: string; name: string; team: string; pteam: string;
-  year: number; og: boolean; pen: boolean; pos: string;
-};
 type CardRow = {
   pid: string; name: string; team: string; year: number;
   type: "yellow" | "red"; pos: string;
 };
-const GOALS = goalsData as GoalRow[];
 const CARDS = cardsData as CardRow[];
 
-// Pre-aggregated player index (built once).
+// Pre-aggregated player index (built once from historical data — used only by the picker).
 const PLAYER_INDEX = (() => {
   const m = new Map<string, { name: string; country: string; goals: number }>();
-  for (const g of GOALS) {
+  for (const g of HISTORICAL_GOALS) {
     if (g.og) continue;
     const k = `${g.name}||${g.pteam}`;
     const ex = m.get(k);
@@ -50,6 +45,7 @@ const PLAYER_INDEX = (() => {
 })();
 
 export function CompareView() {
+  const { goals: GOALS } = useMergedGoals();
   const search = useSearch({ from: "/players" });
   const navigate = useNavigate({ from: "/players" });
   const selected = parseComparePlayers(search.compare);
@@ -66,11 +62,12 @@ export function CompareView() {
   const stats = useMemo(
     () =>
       selected.map((p) => {
-        const gs = GOALS.filter(
+        const gs: GoalRow[] = GOALS.filter(
           (g) => !g.og && g.name === p.name && g.pteam === p.country,
         );
         const cs = CARDS.filter((c) => c.name === p.name && c.team === p.country);
-        const years = new Set(gs.map((g) => g.year));
+        const years = new Set<number>(gs.map((g) => g.year));
+        const live2026 = gs.filter((g) => g.year === 2026).length;
         return {
           ...p,
           goals: gs.length,
@@ -78,11 +75,12 @@ export function CompareView() {
           tournaments: years.size,
           yellow: cs.filter((c) => c.type === "yellow").length,
           red: cs.filter((c) => c.type === "red").length,
-          first: years.size ? Math.min(...years) : 0,
-          last: years.size ? Math.max(...years) : 0,
+          first: years.size ? Math.min(...Array.from(years)) : 0,
+          last: years.size ? Math.max(...Array.from(years)) : 0,
+          live2026,
         };
       }),
-    [selected],
+    [selected, GOALS],
   );
 
   return (
@@ -147,8 +145,16 @@ export function CompareView() {
             >
               <div className="flex items-center gap-2">
                 <span className="text-2xl">{flagOf(s.country)}</span>
-                <div className="min-w-0">
-                  <div className="font-bold truncate">{s.name}</div>
+                <div className="min-w-0 flex-1">
+                  <div className="font-bold truncate flex items-center gap-1.5">
+                    {s.name}
+                    {s.live2026 > 0 && (
+                      <span className="inline-flex items-center gap-0.5 text-[9px] uppercase tracking-wider text-emerald-400 font-bold shrink-0">
+                        <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                        +{s.live2026} '26
+                      </span>
+                    )}
+                  </div>
                   <div className="text-xs text-muted-foreground truncate">
                     {s.country}
                   </div>
