@@ -310,7 +310,7 @@ function mapIncidentType(t: string): string {
 }
 
 export const getWc2026MatchEvents = createServerFn({ method: "GET" })
-  .validator((d: unknown) => {
+  .inputValidator((d: unknown) => {
     const id = Number((d as any)?.matchId);
     if (!Number.isFinite(id)) throw new Error("matchId required");
     return { matchId: id };
@@ -344,7 +344,7 @@ export const getWc2026MatchEvents = createServerFn({ method: "GET" })
   });
 
 export const getWc2026MatchLineups = createServerFn({ method: "GET" })
-  .validator((d: unknown) => {
+  .inputValidator((d: unknown) => {
     const id = Number((d as any)?.matchId);
     if (!Number.isFinite(id)) throw new Error("matchId required");
     return { matchId: id };
@@ -382,7 +382,7 @@ export const getWc2026MatchLineups = createServerFn({ method: "GET" })
   });
 
 export const getWc2026MatchStats = createServerFn({ method: "GET" })
-  .validator((d: unknown) => {
+  .inputValidator((d: unknown) => {
     const id = Number((d as any)?.matchId);
     if (!Number.isFinite(id)) throw new Error("matchId required");
     return { matchId: id };
@@ -415,7 +415,7 @@ export const getWc2026MatchStats = createServerFn({ method: "GET" })
 // Fetches a single match's headline info (score, status, minute) — used by the
 // match page when the user lands directly on it.
 export const getWc2026Match = createServerFn({ method: "GET" })
-  .validator((d: unknown) => {
+  .inputValidator((d: unknown) => {
     const id = Number((d as any)?.matchId);
     if (!Number.isFinite(id)) throw new Error("matchId required");
     return { matchId: id };
