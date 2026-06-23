@@ -45,6 +45,7 @@ const PLAYER_INDEX = (() => {
 })();
 
 export function CompareView() {
+  const { goals: GOALS } = useMergedGoals();
   const search = useSearch({ from: "/players" });
   const navigate = useNavigate({ from: "/players" });
   const selected = parseComparePlayers(search.compare);
