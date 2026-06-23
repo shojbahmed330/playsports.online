@@ -131,7 +131,12 @@ function ProfileBody({ player }: { player: { name: string; country: string } }) 
           <ul className="divide-y divide-border max-h-72 overflow-y-auto">
             {byYear.map(([y, r]) => (
               <li key={y} className="grid grid-cols-5 gap-2 px-3 py-2 text-sm tabular-nums">
-                <div className="font-semibold">{y}</div>
+                <div className="font-semibold flex items-center gap-1.5">
+                  {y}
+                  {y === 2026 && (
+                    <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" title="Live" />
+                  )}
+                </div>
                 <div className="text-right text-gold font-bold">{r.goals || ""}</div>
                 <div className="text-right text-muted-foreground">{r.pen || ""}</div>
                 <div className="text-right text-yellow-400">{r.yellow || ""}</div>
