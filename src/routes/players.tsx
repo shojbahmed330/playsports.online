@@ -22,7 +22,7 @@ import {
   fuzzyMatch,
   type PlayersSearch,
 } from "@/lib/players-filters";
-import { confederationOf } from "@/lib/confederations";
+import { confederationLabel } from "@/lib/confederations";
 import { PlayerSubNav } from "@/components/players/PlayerSubNav";
 import { FilterBar, ActiveFilterChips } from "@/components/players/FilterBar";
 import { FilterSheet } from "@/components/players/FilterSheet";
@@ -97,7 +97,7 @@ function PlayersPage() {
   const countryAllowed = (c: string) => {
     if (selectedCountries.size && !selectedCountries.has(c)) return false;
     if (selectedConfeds.size) {
-      const conf = confederationOf(c);
+      const conf = confederationLabel(c);
       if (!conf || !selectedConfeds.has(conf)) return false;
     }
     return true;
@@ -188,7 +188,7 @@ function PlayersPage() {
     for (const g of GOALS) {
       if (g.og) continue;
       if (selectedConfeds.size) {
-        const conf = confederationOf(g.pteam);
+        const conf = confederationLabel(g.pteam);
         if (!conf || !selectedConfeds.has(conf)) continue;
       }
       const key = g.pteam;
