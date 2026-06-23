@@ -1,16 +1,11 @@
 import { useMemo } from "react";
 import { Sparkles, Trophy, Zap, Crown } from "lucide-react";
 import records from "@/data/wc_records.json";
-import goalsData from "@/data/wc_goals.json";
 import { flagOf } from "@/lib/flags";
-
-type GoalRow = {
-  pid: string; name: string; team: string; pteam: string;
-  year: number; og: boolean; pen: boolean; pos: string;
-};
-const GOALS = goalsData as GoalRow[];
+import { useMergedGoals } from "@/lib/use-merged-goals";
 
 export function RecordsPanel() {
+  const { goals: GOALS } = useMergedGoals();
   const derived = useMemo(() => {
     // Most goals in a single year per player (across our dataset)
     const m = new Map<string, { name: string; country: string; year: number; goals: number }>();
