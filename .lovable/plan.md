@@ -1,142 +1,121 @@
 
-# Plan — Pro Football Experience, 2026-First, Admin Match Videos
+# Plan — Pro-grade `/players` redesign
 
-Goal: Bring `/football` (FIFA World Cup) up to the same polished, animated, mobile-first standard as the new sports hub. Surface 2026 fixtures on the homepage with live kickoff times/countdowns. Let admins attach match videos for 2026 games from the admin panel. Default the Football page to **2026**.
+Goal: turn `/players` from a static list of leaderboards into a professional, mobile-friendly, fully filterable player intelligence hub that blends historical World Cup data (1930–2022) with live 2026 data, with shareable URLs and clean UX on every screen size.
 
----
+## 1. Hero + page chrome
 
-## 1. Default to 2026 + smarter year picker
+- New compact hero with animated gradient ribbon, KPI strip: total players, total goals tracked, tournaments covered, live 2026 goals counter (animated number).
+- Sticky sub-nav (tabs): **Overview · Top Scorers · Discipline · Countries · Rankings · Compare · Records**. On mobile it becomes a horizontal snap-scroll pill bar; on desktop a centered segmented bar. Active tab reflected in `?tab=` URL param.
+- Breadcrumb (Home / Players / <tab>) + share button (copies current URL with all filters encoded).
 
-- `/football` opens on **2026** (currently 2022). When 2026 has no live data yet, auto-fallback to 2022 with a small "Showing latest completed tournament" badge.
-- Replace the bare `<select>` with a horizontal year strip (pill-style, snap-scroll on mobile) grouped by decade, with the current/upcoming edition highlighted in gold and a 🔴 LIVE pulse on 2026 while matches are in progress.
-- Tournament switch animates (cross-fade + slide), keyboard arrow navigation, URL search param `?year=2026` so links are shareable.
+## 2. Filter system (the biggest upgrade)
 
-## 2. Football page — pro UI upgrade (works for historical + 2026)
+Replace the 3 selects + position row with a single sticky **FilterBar** card. All filter state is URL-synced via TanStack `validateSearch` so any view is shareable/bookmarkable.
 
-**Hero**
-- Animated gradient using each tournament's host-country palette (data already in `wc_tournaments`).
-- Trophy mark with subtle parallax. Quick-stat strip: teams · matches · goals · top scorer (computed from existing data; for 2026 from live API).
-- For 2026: live status row — "Next match in 3h 42m" countdown + venue + broadcast.
+Filters:
+- **Search** (debounced, fuzzy by name; matches diacritics — "mbappe" finds "Mbappé").
+- **Tournament year**: multi-select chip strip (All / 2026 / 2022 / 2018 / … / 1930). Tap to toggle multiple.
+- **Country**: command-palette style combobox (shadcn `Command`) with flag + name; supports multi-select; "Top 10 only" quick toggle.
+- **Confederation**: UEFA / CONMEBOL / CONCACAF / CAF / AFC / OFC pills (derived from a small `confederation.ts` lookup).
+- **Position**: GK / DEF / MID / FWD pills (existing, restyled).
+- **Era**: Pre-WWII / Classic (50s–70s) / Modern (80s–2000s) / Current (2010+) — quick presets that set year multi-select.
+- **Goal type** (only affects scorers tab): Open play / Penalty / Own goal toggle group.
+- **Stage** (when data is available from `wc_goals.json` if a `stage` field exists, otherwise hidden): Group / R16 / QF / SF / Final.
+- **Min goals / Min matches**: slider (1–15) to prune the leaderboard.
+- **Sort**: Goals, Goals per tournament, Tournaments played, Name A–Z, Most recent.
+- Active filter chips row underneath, each removable (`×`), plus "Reset all" link.
+- Filter count badge on a mobile "Filters" button that opens a `Sheet` from the bottom — mobile users don't see the desktop bar by default.
 
-**Sticky sub-nav (replaces single Groups/Knockout toggle)**
-Tabs: **Overview · Groups · Knockout · Schedule · Top Scorers · Teams · Videos**. Underline slides on switch. Sticky under the header on scroll.
+## 3. Tabs / content sections
 
-**Overview tab (new)**
-- "Today / Next up" card (2026 only) with `Countdown` + flag pair + venue + TV.
-- Featured-match hero (biggest upcoming or latest result).
-- Mini bracket preview + top-5 scorers + champion card.
+### 3a. Overview
+- KPI cards (animated counters) — Top scorer of all time, Most decorated nation, Most cards, Live 2026 leader.
+- "Goal trend" sparkline by tournament (uses existing `recharts`-style component or a simple SVG).
+- Top 5 scorers mini-card, Top 5 nations mini-card — each click jumps to its own tab with filters applied.
 
-**Groups tab**
-- Reuse `GroupStage` but add: form guide (last-5 dots per team), qualified ✓ / eliminated ✗ chips, animated row entry, sortable columns.
+### 3b. Top Scorers (current section, upgraded)
+- Same table but with: rank delta arrow (vs all-time), goals/tournament column, penalty %, flag, position badge, "2026 LIVE" pill on players with current-tournament goals.
+- Row click → player profile drawer (see §4).
+- Virtualized list when >100 rows (basic windowing) for mobile smoothness.
+- Toggle "Show per-tournament breakdown" expands a small bar chart inline.
 
-**Knockout tab**
-- Keep `SymmetricBracket` on desktop. Add winner-path glow animation when hovering a final match (highlights the bracket spine).
-- Mobile: keep accordion but add per-match countdown / live score pill and swipe-between-rounds gesture.
+### 3c. Discipline
+- Existing yellow/red tables, plus a third table "Cards per match" rate.
+- Filter chips inherit from FilterBar.
 
-**Schedule tab (new)**
-- Date scrubber (reuse `DateScrubber`) → fixtures grouped by date, with local time, countdown, broadcast badge, venue. Filters: All / Live / Upcoming / Final / By group.
+### 3d. Countries
+- Existing country grid, plus: search-within-grid, sort dropdown (Tournaments / Goals / Players / Win rate if available), and a "Compare countries" button that opens a side-by-side view.
 
-**Top Scorers tab**
-- Pull existing 2026 scorers component out into its own tab, add historical scorers for past tournaments (compute from match data + bundled player stats), animated bar chart, country flag, club.
+### 3e. Rankings (existing live FIFA section, restyled)
+- Two columns become tabs on mobile.
+- Add "Movement" arrows (up/down vs previous ranking snapshot if cached; otherwise hidden).
 
-**Teams tab (new)**
-- Grid of all 32/48 teams for the selected tournament, flag + group + path-to-final. Tap → drawer with squad (from existing `players` data) + their matches.
+### 3f. Compare (new)
+- Pick up to 4 players via combobox. Shows side-by-side stat cards: goals, tournaments, penalty %, cards, years active, mini sparkline per tournament. Mobile = vertical stack.
 
-**Videos tab (new — see §4)**
-- Grid of admin-uploaded match videos for the active tournament. Filter by round. Each card: thumbnail, teams, score, round, "Watch" → existing `VideoPlayer` modal.
+### 3g. Records (new)
+- Curated "World Cup records" panel: most goals in single tournament, fastest goal, oldest/youngest scorer, hat-tricks, etc. Some derived from `wc_goals.json` aggregations, some from a small static `records.ts`.
 
-**Motion & polish**
-- Framer-motion stagger on first paint, tab cross-fade, score-pulse on update (reuse `ScoreFlip`), skeletons matching final card shape (reuse `Skeletons.tsx`), 🔴 live pulse synced across page.
-- Auto-refresh: when 2026 has any in-progress match, refetch fixtures every 30s.
+## 4. Player profile drawer
 
-## 3. Mobile-first rework
+Replace current modal with a shadcn `Sheet` (right-side on desktop, bottom on mobile):
+- Header: flag, name, country, position, years active.
+- Stats grid: total goals, penalties, OGs against (if tracked), tournaments, avg goals/tournament.
+- Per-tournament timeline (year cards with goals + cards).
+- "Goals scored against" mini list.
+- Live 2026 section if player has current goals.
+- Share button copies a deep link `/players?player=<id>`.
 
-- Bottom-tab style sub-nav on `< sm`, sticky.
-- Bracket → horizontal snap-scroll of rounds with dot indicators (instead of long accordion).
-- Hero scales: trophy + year + 3-stat strip in one viewport.
-- Tap targets ≥ 44px, safe-area padding, no horizontal overflow.
-- Year strip becomes momentum-scroll.
-- Match modal becomes a bottom sheet on mobile.
+## 5. Mobile-first details
 
-## 4. Homepage — Football upcoming events with times
+- Filter bar collapses into a bottom `Sheet` with sectioned content; main page shows just a "Filters (3)" button + active chips.
+- Tables convert to stacked cards under `sm` breakpoint (rank + name + flag + big goals number on the right).
+- Sticky sub-nav uses `overflow-x-auto snap-x` with safe-area padding.
+- Tap targets ≥ 44px; large numbers use `tabular-nums`.
+- All sections use the existing semantic tokens — no hardcoded colors. Keep the gold accent.
 
-`src/routes/index.tsx` currently slates today's football via `FootballSlate`, but only for `today`. Upgrade:
+## 6. URL state & shareability
 
-- **Football Live & Upcoming rail** (always visible, even when no game today): pulls next 7 days of 2026 fixtures, groups by Live → Today → Tomorrow → This week.
-- Each card shows: flags, teams, **local kickoff time** + **live countdown chip** ("Starts in 2d 4h 12m"), venue, group/round, broadcast pill.
-- Card click → `/football?year=2026&match=<id>` deep link that opens MatchModal.
-- Featured "World Cup spotlight" hero rotates between the next marquee fixture and the most recent finished match (gradient = team colors).
-- Live score auto-refresh every 30s when any match is `in`.
+`validateSearch` with `zodValidator` + `fallback`:
+```
+tab, q, years[], countries[], confeds[], pos, era, goalType, stage, minGoals, sort, player
+```
+Search middlewares: `stripSearchParams(defaults)` so clean URLs don't carry default values; `retainSearchParams(["tab"])` across nav.
 
-## 5. Admin: upload match videos for 2026
+## 7. Performance & polish
 
-`wc_matches` already has `video_url`. The 2026 view currently uses adapted SofaScore IDs that are not in `wc_matches`. Approach:
+- Move heavy aggregations (top scorers, country stats) into `useMemo` keyed on filter signature — already done; extend for new filters.
+- Lazy-load Compare and Records tabs with `React.lazy` to keep initial bundle small.
+- Animated counters via small CSS/transform; respect `prefers-reduced-motion`.
+- Skeletons for the live 2026 scorers + live rankings queries.
+- SEO: dynamic `head()` per tab — title/description reflect active tab.
 
-**Schema (new migration)**
-- New table `public.wc_match_videos` (works for any year, but UI gated to 2026 initially):
-  - `id uuid pk`
-  - `tournament_year int not null`
-  - `external_match_id text` (SofaScore id for 2026; nullable for historical)
-  - `home_team text not null`, `away_team text not null`
-  - `round text` (e.g. "Group A", "Round of 32")
-  - `match_date timestamptz`
-  - `title text`, `video_url text not null`, `thumbnail_url text`
-  - `created_by uuid references auth.users`, `created_at timestamptz default now()`
-- RLS: public `SELECT` for everyone; `INSERT/UPDATE/DELETE` only for `has_role(auth.uid(),'admin')`.
-- GRANTs: `SELECT` to `anon, authenticated`; full to `authenticated` admins via policy + `service_role`.
+## 8. File plan
 
-**Admin panel (`/admin`)**
-- New "World Cup Videos" card. Form fields:
-  - Year (defaults 2026), Round dropdown (Group A–L, R32, R16, QF, SF, Final, 3rd Place), Home & Away team pickers (autocomplete from current fixtures), Match date, Title, Video URL (YouTube / mp4), Thumbnail URL (optional, auto-derived from YouTube).
-  - "Link to live match" — pick from current 2026 fixtures list (sets `external_match_id`, home, away, round, date).
-- Table of existing videos with edit / delete, filter by year + round.
+**New:**
+- `src/components/players/FilterBar.tsx` — desktop filter bar.
+- `src/components/players/FilterSheet.tsx` — mobile bottom sheet wrapper around `FilterBar`.
+- `src/components/players/PlayerSubNav.tsx` — sticky tabs.
+- `src/components/players/PlayerProfileSheet.tsx` — profile drawer.
+- `src/components/players/CompareView.tsx`
+- `src/components/players/RecordsPanel.tsx`
+- `src/components/players/OverviewKpis.tsx`
+- `src/components/players/ScorerCardMobile.tsx`
+- `src/lib/players-filters.ts` — types, defaults, URL schema, normalizer, fuzzy matcher.
+- `src/lib/confederations.ts` — country → confederation lookup.
+- `src/data/wc_records.json` — curated records.
 
-**Where videos appear**
-- New **Videos** tab on `/football`.
-- Inside `MatchModal`: if a video exists for this match, show "▶ Watch highlights" button → existing `VideoPlayer`.
-- 2026 `MatchCard` gets a small ▶ badge when a video exists.
+**Modified:**
+- `src/routes/players.tsx` — slim to layout + tab routing + data wiring; move sections into components.
 
-## 6. New / modified files
+## 9. Out of scope (this pass)
 
-**New**
-- `src/components/wc/YearStrip.tsx` — animated year picker
-- `src/components/wc/FootballHero.tsx` — animated hero with stats
-- `src/components/wc/OverviewTab.tsx`
-- `src/components/wc/ScheduleTab.tsx`
-- `src/components/wc/TeamsTab.tsx`
-- `src/components/wc/VideosTab.tsx`
-- `src/components/wc/FootballSubNav.tsx`
-- `src/components/wc/FormGuide.tsx`
-- `src/components/home/FootballUpcomingRail.tsx`
-- `src/components/admin/WcVideosAdminCard.tsx`
-- `src/lib/wc-videos.functions.ts` — list/create/update/delete server fns (admin-gated)
-- Migration: `wc_match_videos` table + RLS + grants
+- Player photos / external player API enrichment.
+- Historical "minute of goal" data (not in JSON today).
+- Authenticated favorites / following players.
+- Server-side pagination (dataset is small enough for client memo).
 
-**Modified**
-- `src/routes/football.tsx` — default 2026, sub-nav, new tabs, mobile bracket, URL sync
-- `src/routes/index.tsx` — add `FootballUpcomingRail`, deep-link cards
-- `src/routes/admin.tsx` — mount `WcVideosAdminCard`
-- `src/components/wc/MatchModal.tsx` — show video button when present
-- `src/components/wc/MatchCard.tsx` — ▶ badge when video exists
-- `src/components/wc/Wc2026View.tsx` — pass video map to cards, expose fixtures list to admin form
+## 10. Open question
 
-## 7. Out of scope (this batch)
-
-- Direct video file uploads to storage (URL input only; can add a bucket later).
-- Per-user favorites for football matches.
-- Historical (1930–2022) video back-fill — schema supports it; UI only exposes 2026 initially.
-- Live commentary / minute-by-minute feed (depends on API tier).
-
-## 8. Risks
-
-- 2026 fixtures use SofaScore IDs; `external_match_id` matching may drift if the upstream changes IDs — admin form also stores teams + date for fallback lookup.
-- Auto-refresh raises API volume — guarded by existing 60s server cache and only polls when a live match exists.
-- Default-to-2026 before draw is finalised could feel empty — overview tab handles empty state gracefully with a "Tournament starts in X days" countdown.
-
----
-
-## Questions before I build
-
-1. **Video source**: URL-only (YouTube / direct mp4) for now — okay? Or do you want a real uploader to Lovable Cloud storage (adds a storage bucket + size limits)?
-2. **Default year fallback**: if 2026 has zero fixtures live, fall back to 2022 silently, or always stay on 2026 with an "awaiting draw" state?
-3. **Scope split**: ship as **one big PR** (everything above), or in two passes — Pass A = Football page redesign + 2026 default + homepage upcoming rail; Pass B = admin videos table + Videos tab + MatchModal video button?
+Single big PR, or split into two passes (Pass A: FilterBar + sub-nav + URL state + mobile cards; Pass B: Compare, Records, Profile drawer)? I'd recommend **one PR** since the parts share the new filter state shape.
