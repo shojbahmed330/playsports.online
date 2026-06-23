@@ -290,8 +290,8 @@ function PlayersPage() {
           <KpiStrip
             totalPlayers={countCountUnique(GOALS)}
             totalGoals={GOALS.filter((g) => !g.og).length}
-            tournaments={new Set(GOALS.map((g) => g.year)).size + 1}
-            live2026={wc2026Q.data?.scorers?.reduce((a, s) => a + s.goals, 0) ?? 0}
+            tournaments={new Set(GOALS.map((g) => g.year)).size}
+            live2026={live2026Goals.length}
           />
         </div>
       </section>
