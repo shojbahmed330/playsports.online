@@ -32,7 +32,7 @@ export function RecordsPanel() {
     const hatTrick = arr.filter((x) => x.goals >= 3).slice(0, 8);
 
     return { topSingleYear: arr.slice(0, 8), topYears, hatTrick };
-  }, []);
+  }, [GOALS]);
 
   return (
     <div className="space-y-6">
