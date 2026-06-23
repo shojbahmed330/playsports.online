@@ -224,7 +224,7 @@ function PlayersPage() {
     });
     out.sort((a, b) => b.tournaments - a.tournaments || b.goals - a.goals);
     return out;
-  }, [selectedConfeds]);
+  }, [GOALS, selectedConfeds]);
 
   const openPlayer = (name: string, country: string) =>
     navigate({
