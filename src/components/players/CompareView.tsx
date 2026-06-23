@@ -62,11 +62,12 @@ export function CompareView() {
   const stats = useMemo(
     () =>
       selected.map((p) => {
-        const gs = GOALS.filter(
+        const gs: GoalRow[] = GOALS.filter(
           (g) => !g.og && g.name === p.name && g.pteam === p.country,
         );
         const cs = CARDS.filter((c) => c.name === p.name && c.team === p.country);
-        const years = new Set(gs.map((g) => g.year));
+        const years = new Set<number>(gs.map((g) => g.year));
+        const live2026 = gs.filter((g) => g.year === 2026).length;
         return {
           ...p,
           goals: gs.length,
@@ -74,11 +75,12 @@ export function CompareView() {
           tournaments: years.size,
           yellow: cs.filter((c) => c.type === "yellow").length,
           red: cs.filter((c) => c.type === "red").length,
-          first: years.size ? Math.min(...years) : 0,
-          last: years.size ? Math.max(...years) : 0,
+          first: years.size ? Math.min(...Array.from(years)) : 0,
+          last: years.size ? Math.max(...Array.from(years)) : 0,
+          live2026,
         };
       }),
-    [selected],
+    [selected, GOALS],
   );
 
   return (
