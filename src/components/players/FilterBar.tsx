@@ -77,7 +77,7 @@ export function FilterBar({
 
   const update = (patch: Partial<typeof playersDefaults>) =>
     navigate({
-      search: (prev) => ({ ...prev, ...patch }),
+      search: (prev: PlayersSearch) => ({ ...prev, ...patch }),
       replace: true,
     });
 
@@ -370,7 +370,7 @@ export function ActiveFilterChips() {
   const search = useSearch({ from: "/players" });
   const navigate = useNavigate({ from: "/players" });
   const update = (patch: Partial<typeof playersDefaults>) =>
-    navigate({ search: (prev) => ({ ...prev, ...patch }), replace: true });
+    navigate({ search: (prev: PlayersSearch) => ({ ...prev, ...patch }), replace: true });
 
   const years = parseList(search.years);
   const cs = parseList(search.countries);

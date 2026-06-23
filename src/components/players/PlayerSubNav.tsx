@@ -43,7 +43,7 @@ export function PlayerSubNav() {
               key={t}
               onClick={() =>
                 navigate({
-                  search: (prev) => ({ ...prev, tab: t }),
+                  search: (prev: PlayersSearch) => ({ ...prev, tab: t }),
                   replace: true,
                 })
               }
