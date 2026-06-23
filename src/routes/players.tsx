@@ -319,7 +319,7 @@ function PlayersPage() {
             topScorers={topScorers}
             countryStats={countryStats}
             onPickPlayer={openPlayer}
-            live2026Count={wc2026Q.data?.scorers?.length ?? 0}
+            live2026Count={new Set(live2026Goals.map((g) => g.pid)).size}
           />
         )}
 
