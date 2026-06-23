@@ -36,16 +36,11 @@ const RecordsPanel = lazy(() =>
   import("@/components/players/RecordsPanel").then((m) => ({ default: m.RecordsPanel })),
 );
 
-type GoalRow = {
-  pid: string; name: string; team: string; pteam: string;
-  year: number; og: boolean; pen: boolean; pos: string;
-};
 type CardRow = {
   pid: string; name: string; team: string; year: number;
   type: "yellow" | "red"; pos: string;
 };
 
-const GOALS = goalsData as GoalRow[];
 const CARDS = cardsData as CardRow[];
 
 export const Route = createFileRoute("/players")({
