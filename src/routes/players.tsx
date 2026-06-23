@@ -67,12 +67,13 @@ function PlayersPage() {
   const { isAdmin } = useAuth();
   const search = Route.useSearch() as PlayersSearch;
   const navigate = useNavigate({ from: "/players" });
+  const { goals: GOALS, live2026Goals } = useMergedGoals();
 
   const countries = useMemo(() => {
     const s = new Set<string>();
     for (const g of GOALS) s.add(g.pteam);
     return Array.from(s).sort();
-  }, []);
+  }, [GOALS]);
 
   // Live 2026 scorers
   const wc2026Fn = useServerFn(getWc2026TopScorers);
