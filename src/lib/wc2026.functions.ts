@@ -261,6 +261,179 @@ export const getFifaRankings = createServerFn({ method: "GET" }).handler(async (
   }
 });
 
+// ===================== LIVE MATCH CENTER =====================
+
+export type Wc2026MatchEvent = {
+  id: number | string;
+  minute: number | null;
+  injuryTime: number | null;
+  team: "home" | "away" | null;
+  type: string;          // goal | yellowcard | redcard | substitution | penalty | own_goal | var
+  playerName: string | null;
+  assistName?: string | null;
+  description: string | null;
+};
+
+export type Wc2026LineupPlayer = {
+  id: number;
+  name: string;
+  shirt: number | null;
+  position: string | null;
+  captain: boolean;
+  substitute: boolean;
+};
+
+export type Wc2026Lineups = {
+  confirmed: boolean;
+  formationHome: string | null;
+  formationAway: string | null;
+  home: Wc2026LineupPlayer[];
+  away: Wc2026LineupPlayer[];
+};
+
+export type Wc2026MatchStats = {
+  group: string;          // "Possession", "Shots", …
+  rows: { name: string; home: string; away: string }[];
+}[];
+
+function mapIncidentType(t: string): string {
+  const s = (t ?? "").toLowerCase();
+  if (s.includes("goal") && s.includes("own")) return "own_goal";
+  if (s.includes("penalty") && s.includes("missed")) return "penalty_missed";
+  if (s === "goal" || s.includes("goal")) return "goal";
+  if (s.includes("yellow") && s.includes("red")) return "yellow_red";
+  if (s.includes("yellow")) return "yellowcard";
+  if (s.includes("red")) return "redcard";
+  if (s.includes("substitution") || s === "sub") return "substitution";
+  if (s.includes("var")) return "var";
+  return s || "event";
+}
+
+export const getWc2026MatchEvents = createServerFn({ method: "GET" })
+  .validator((d: unknown) => {
+    const id = Number((d as any)?.matchId);
+    if (!Number.isFinite(id)) throw new Error("matchId required");
+    return { matchId: id };
+  })
+  .handler(async ({ data }) => {
+    try {
+      const raw = (await apiGet(
+        `/matches/get-incidents?matchId=${data.matchId}`,
+      )) as { incidents?: any[] };
+      const incidents = (raw.incidents ?? [])
+        .filter((i: any) => i.incidentType && i.incidentType !== "period")
+        .map((i: any, idx: number): Wc2026MatchEvent => ({
+          id: i.id ?? `${data.matchId}-${idx}`,
+          minute: i.time ?? null,
+          injuryTime: i.addedTime ?? null,
+          team: i.isHome === true ? "home" : i.isHome === false ? "away" : null,
+          type: mapIncidentType(i.incidentType ?? i.incidentClass ?? ""),
+          playerName: i.player?.name ?? i.playerName ?? null,
+          assistName: i.assist1?.name ?? null,
+          description: i.text ?? i.reason ?? null,
+        }));
+      // sort ascending by minute
+      incidents.sort((a, b) => (a.minute ?? 0) - (b.minute ?? 0));
+      return { events: incidents, error: null as string | null };
+    } catch (e) {
+      return {
+        events: [] as Wc2026MatchEvent[],
+        error: e instanceof Error ? e.message : "Unknown error",
+      };
+    }
+  });
+
+export const getWc2026MatchLineups = createServerFn({ method: "GET" })
+  .validator((d: unknown) => {
+    const id = Number((d as any)?.matchId);
+    if (!Number.isFinite(id)) throw new Error("matchId required");
+    return { matchId: id };
+  })
+  .handler(async ({ data }) => {
+    try {
+      const raw = (await apiGet(
+        `/matches/get-lineups?matchId=${data.matchId}`,
+      )) as { confirmed?: boolean; home?: any; away?: any };
+      const mapSide = (side: any): Wc2026LineupPlayer[] => {
+        const players = side?.players ?? [];
+        return players.map((p: any) => ({
+          id: p.player?.id,
+          name: p.player?.name ?? "",
+          shirt: p.shirtNumber ?? p.jerseyNumber ?? null,
+          position: p.position ?? null,
+          captain: !!p.captain,
+          substitute: !!p.substitute,
+        }));
+      };
+      const lineups: Wc2026Lineups = {
+        confirmed: !!raw.confirmed,
+        formationHome: raw.home?.formation ?? null,
+        formationAway: raw.away?.formation ?? null,
+        home: mapSide(raw.home),
+        away: mapSide(raw.away),
+      };
+      return { lineups, error: null as string | null };
+    } catch (e) {
+      return {
+        lineups: null as Wc2026Lineups | null,
+        error: e instanceof Error ? e.message : "Unknown error",
+      };
+    }
+  });
+
+export const getWc2026MatchStats = createServerFn({ method: "GET" })
+  .validator((d: unknown) => {
+    const id = Number((d as any)?.matchId);
+    if (!Number.isFinite(id)) throw new Error("matchId required");
+    return { matchId: id };
+  })
+  .handler(async ({ data }) => {
+    try {
+      const raw = (await apiGet(
+        `/matches/get-statistics?matchId=${data.matchId}`,
+      )) as { statistics?: any[] };
+      // Use "ALL" period if available.
+      const all = (raw.statistics ?? []).find((p: any) => p.period === "ALL")
+        ?? (raw.statistics ?? [])[0];
+      const groups: Wc2026MatchStats = (all?.groups ?? []).map((g: any) => ({
+        group: g.groupName ?? "",
+        rows: (g.statisticsItems ?? []).map((it: any) => ({
+          name: it.name ?? "",
+          home: String(it.home ?? "—"),
+          away: String(it.away ?? "—"),
+        })),
+      }));
+      return { stats: groups, error: null as string | null };
+    } catch (e) {
+      return {
+        stats: [] as Wc2026MatchStats,
+        error: e instanceof Error ? e.message : "Unknown error",
+      };
+    }
+  });
+
+// Fetches a single match's headline info (score, status, minute) — used by the
+// match page when the user lands directly on it.
+export const getWc2026Match = createServerFn({ method: "GET" })
+  .validator((d: unknown) => {
+    const id = Number((d as any)?.matchId);
+    if (!Number.isFinite(id)) throw new Error("matchId required");
+    return { matchId: id };
+  })
+  .handler(async ({ data }) => {
+    try {
+      const raw = (await apiGet(`/matches/detail?matchId=${data.matchId}`)) as { event?: any };
+      const e = raw.event;
+      if (!e) return { fixture: null as Wc2026Fixture | null, error: "Not found" };
+      return { fixture: mapEvent(e), error: null as string | null };
+    } catch (err) {
+      return {
+        fixture: null as Wc2026Fixture | null,
+        error: err instanceof Error ? err.message : "Unknown error",
+      };
+    }
+  });
+
 // ===================== ADMIN: clear cache =====================
 
 export const clearWc2026Cache = createServerFn({ method: "POST" }).handler(async () => {
