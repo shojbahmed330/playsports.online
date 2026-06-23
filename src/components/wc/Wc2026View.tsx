@@ -21,6 +21,7 @@ import { flagOf } from "@/lib/flags";
 import { fetch2026VideoMap, videoKey } from "@/lib/wc-2026-videos";
 
 const HOUR = 60 * 60 * 1000;
+const LIVE_MS = 20 * 1000;
 
 // ──────────────────────────────────────────────────────────────
 // Adapters: SofaScore shape → app's WCGroup / WCMatch shapes so
