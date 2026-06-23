@@ -18,6 +18,7 @@ import { Route as FootballRouteImport } from './routes/football'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as FootballMatchIdRouteImport } from './routes/football.match.$id'
 
 const PlayersRoute = PlayersRouteImport.update({
   id: '/players',
@@ -64,40 +65,48 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FootballMatchIdRoute = FootballMatchIdRouteImport.update({
+  id: '/match/$id',
+  path: '/match/$id',
+  getParentRoute: () => FootballRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
-  '/football': typeof FootballRoute
+  '/football': typeof FootballRouteWithChildren
   '/mlb': typeof MlbRoute
   '/mls': typeof MlsRoute
   '/nba': typeof NbaRoute
   '/nhl': typeof NhlRoute
   '/players': typeof PlayersRoute
+  '/football/match/$id': typeof FootballMatchIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
-  '/football': typeof FootballRoute
+  '/football': typeof FootballRouteWithChildren
   '/mlb': typeof MlbRoute
   '/mls': typeof MlsRoute
   '/nba': typeof NbaRoute
   '/nhl': typeof NhlRoute
   '/players': typeof PlayersRoute
+  '/football/match/$id': typeof FootballMatchIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
-  '/football': typeof FootballRoute
+  '/football': typeof FootballRouteWithChildren
   '/mlb': typeof MlbRoute
   '/mls': typeof MlsRoute
   '/nba': typeof NbaRoute
   '/nhl': typeof NhlRoute
   '/players': typeof PlayersRoute
+  '/football/match/$id': typeof FootballMatchIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -111,6 +120,7 @@ export interface FileRouteTypes {
     | '/nba'
     | '/nhl'
     | '/players'
+    | '/football/match/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -122,6 +132,7 @@ export interface FileRouteTypes {
     | '/nba'
     | '/nhl'
     | '/players'
+    | '/football/match/$id'
   id:
     | '__root__'
     | '/'
@@ -133,13 +144,14 @@ export interface FileRouteTypes {
     | '/nba'
     | '/nhl'
     | '/players'
+    | '/football/match/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
   AuthRoute: typeof AuthRoute
-  FootballRoute: typeof FootballRoute
+  FootballRoute: typeof FootballRouteWithChildren
   MlbRoute: typeof MlbRoute
   MlsRoute: typeof MlsRoute
   NbaRoute: typeof NbaRoute
@@ -212,14 +224,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/football/match/$id': {
+      id: '/football/match/$id'
+      path: '/match/$id'
+      fullPath: '/football/match/$id'
+      preLoaderRoute: typeof FootballMatchIdRouteImport
+      parentRoute: typeof FootballRoute
+    }
   }
 }
+
+interface FootballRouteChildren {
+  FootballMatchIdRoute: typeof FootballMatchIdRoute
+}
+
+const FootballRouteChildren: FootballRouteChildren = {
+  FootballMatchIdRoute: FootballMatchIdRoute,
+}
+
+const FootballRouteWithChildren = FootballRoute._addFileChildren(
+  FootballRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
   AuthRoute: AuthRoute,
-  FootballRoute: FootballRoute,
+  FootballRoute: FootballRouteWithChildren,
   MlbRoute: MlbRoute,
   MlsRoute: MlsRoute,
   NbaRoute: NbaRoute,
