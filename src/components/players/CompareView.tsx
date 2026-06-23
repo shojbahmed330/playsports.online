@@ -1,0 +1,237 @@
+import { useMemo, useState } from "react";
+import { useNavigate, useSearch } from "@tanstack/react-router";
+import { Plus, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@/components/ui/popover";
+import {
+  Command,
+  CommandInput,
+  CommandList,
+  CommandEmpty,
+  CommandGroup,
+  CommandItem,
+} from "@/components/ui/command";
+import { flagOf } from "@/lib/flags";
+import {
+  parseComparePlayers,
+  joinComparePlayers,
+  playerKey,
+  type PlayersSearch,
+} from "@/lib/players-filters";
+import goalsData from "@/data/wc_goals.json";
+import cardsData from "@/data/wc_cards.json";
+
+type GoalRow = {
+  pid: string; name: string; team: string; pteam: string;
+  year: number; og: boolean; pen: boolean; pos: string;
+};
+type CardRow = {
+  pid: string; name: string; team: string; year: number;
+  type: "yellow" | "red"; pos: string;
+};
+const GOALS = goalsData as GoalRow[];
+const CARDS = cardsData as CardRow[];
+
+// Pre-aggregated player index (built once).
+const PLAYER_INDEX = (() => {
+  const m = new Map<string, { name: string; country: string; goals: number }>();
+  for (const g of GOALS) {
+    if (g.og) continue;
+    const k = `${g.name}||${g.pteam}`;
+    const ex = m.get(k);
+    if (ex) ex.goals++;
+    else m.set(k, { name: g.name, country: g.pteam, goals: 1 });
+  }
+  return Array.from(m.values()).sort((a, b) => b.goals - a.goals);
+})();
+
+export function CompareView() {
+  const search = useSearch({ from: "/players" });
+  const navigate = useNavigate({ from: "/players" });
+  const selected = parseComparePlayers(search.compare);
+
+  const setSelected = (next: { name: string; country: string }[]) =>
+    navigate({
+      search: (prev: PlayersSearch) => ({
+        ...prev,
+        compare: joinComparePlayers(next),
+      }),
+      replace: true,
+    });
+
+  const stats = useMemo(
+    () =>
+      selected.map((p) => {
+        const gs = GOALS.filter(
+          (g) => !g.og && g.name === p.name && g.pteam === p.country,
+        );
+        const cs = CARDS.filter((c) => c.name === p.name && c.team === p.country);
+        const years = new Set(gs.map((g) => g.year));
+        return {
+          ...p,
+          goals: gs.length,
+          penalties: gs.filter((g) => g.pen).length,
+          tournaments: years.size,
+          yellow: cs.filter((c) => c.type === "yellow").length,
+          red: cs.filter((c) => c.type === "red").length,
+          first: years.size ? Math.min(...years) : 0,
+          last: years.size ? Math.max(...years) : 0,
+        };
+      }),
+    [selected],
+  );
+
+  return (
+    <div className="space-y-5">
+      <div className="rounded-2xl border border-border bg-card/60 p-4 sm:p-5">
+        <div className="flex flex-wrap items-center gap-2">
+          {selected.map((p, i) => (
+            <span
+              key={i}
+              className="inline-flex items-center gap-1.5 h-8 px-3 rounded-full bg-gold/15 text-gold ring-1 ring-gold/30 text-xs font-semibold"
+            >
+              {flagOf(p.country)} {p.name}
+              <button
+                onClick={() =>
+                  setSelected(selected.filter((_, j) => j !== i))
+                }
+                className="hover:text-amber-200"
+                aria-label={`Remove ${p.name}`}
+              >
+                <X className="size-3" />
+              </button>
+            </span>
+          ))}
+          {selected.length < 4 && (
+            <AddPicker
+              exclude={selected}
+              onPick={(p) => setSelected([...selected, p])}
+            />
+          )}
+          {selected.length > 0 && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setSelected([])}
+              className="ml-auto"
+            >
+              Clear
+            </Button>
+          )}
+        </div>
+        {selected.length === 0 && (
+          <p className="text-sm text-muted-foreground mt-3">
+            Pick up to 4 players to compare side-by-side.
+          </p>
+        )}
+      </div>
+
+      {stats.length > 0 && (
+        <div
+          className={`grid gap-3 ${
+            stats.length === 1
+              ? "grid-cols-1"
+              : stats.length === 2
+                ? "grid-cols-1 sm:grid-cols-2"
+                : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"
+          }`}
+        >
+          {stats.map((s) => (
+            <div
+              key={s.name + s.country}
+              className="rounded-2xl border border-border bg-card p-4 space-y-3"
+            >
+              <div className="flex items-center gap-2">
+                <span className="text-2xl">{flagOf(s.country)}</span>
+                <div className="min-w-0">
+                  <div className="font-bold truncate">{s.name}</div>
+                  <div className="text-xs text-muted-foreground truncate">
+                    {s.country}
+                  </div>
+                </div>
+              </div>
+              <div className="grid grid-cols-3 gap-2 text-center">
+                <Cell label="Goals" value={s.goals} accent />
+                <Cell label="WC" value={s.tournaments} />
+                <Cell label="Pen" value={s.penalties} />
+                <Cell label="🟨" value={s.yellow} />
+                <Cell label="🟥" value={s.red} />
+                <Cell
+                  label="G/WC"
+                  value={s.tournaments ? +(s.goals / s.tournaments).toFixed(1) : 0}
+                />
+              </div>
+              <div className="text-[11px] text-muted-foreground text-center">
+                {s.first ? `${s.first} – ${s.last}` : "—"}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function Cell({ label, value, accent }: { label: string; value: number; accent?: boolean }) {
+  return (
+    <div className="rounded-md bg-background border border-border py-2">
+      <div className={`text-lg font-extrabold tabular-nums ${accent ? "text-gold" : ""}`}>
+        {value}
+      </div>
+      <div className="text-[10px] uppercase tracking-wider text-muted-foreground">
+        {label}
+      </div>
+    </div>
+  );
+}
+
+function AddPicker({
+  onPick,
+  exclude,
+}: {
+  onPick: (p: { name: string; country: string }) => void;
+  exclude: { name: string; country: string }[];
+}) {
+  const [open, setOpen] = useState(false);
+  const excludeKeys = new Set(exclude.map((p) => playerKey(p.name, p.country)));
+  const options = PLAYER_INDEX.filter(
+    (p) => !excludeKeys.has(playerKey(p.name, p.country)),
+  ).slice(0, 200);
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button variant="outline" size="sm" className="gap-1.5 h-8">
+          <Plus className="size-3.5" /> Add player
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-[300px] p-0" align="start">
+        <Command>
+          <CommandInput placeholder="Search top scorers…" />
+          <CommandList>
+            <CommandEmpty>No matches.</CommandEmpty>
+            <CommandGroup>
+              {options.map((p) => (
+                <CommandItem
+                  key={p.name + p.country}
+                  onSelect={() => {
+                    onPick({ name: p.name, country: p.country });
+                    setOpen(false);
+                  }}
+                >
+                  <span className="text-base mr-2">{flagOf(p.country)}</span>
+                  <span className="flex-1 truncate">{p.name}</span>
+                  <span className="text-xs text-gold tabular-nums">{p.goals}</span>
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </CommandList>
+        </Command>
+      </PopoverContent>
+    </Popover>
+  );
+}
