@@ -41,9 +41,10 @@ export function PlayerProfileSheet() {
 }
 
 function ProfileBody({ player }: { player: { name: string; country: string } }) {
+  const { goals: ALL_GOALS } = useMergedGoals();
   const goals = useMemo(
-    () => GOALS.filter((g) => !g.og && g.name === player.name && g.pteam === player.country),
-    [player],
+    () => ALL_GOALS.filter((g) => !g.og && g.name === player.name && g.pteam === player.country),
+    [player, ALL_GOALS],
   );
   const cards = useMemo(
     () => CARDS.filter((c) => c.name === player.name && c.team === player.country),
