@@ -1,0 +1,48 @@
+/* Confederation accent gradients used by the mobile football redesign.
+   Applied via `style={{ background: 'var(--conf-uefa)' }}` or class names. */
+
+:root {
+  --conf-uefa:     linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);   /* blue */
+  --conf-conmebol: linear-gradient(135deg, #b91c1c 0%, #ef4444 100%);   /* red */
+  --conf-caf:      linear-gradient(135deg, #15803d 0%, #22c55e 100%);   /* green */
+  --conf-afc:      linear-gradient(135deg, #c2410c 0%, #f97316 100%);   /* orange */
+  --conf-concacaf: linear-gradient(135deg, #0f766e 0%, #14b8a6 100%);   /* teal */
+  --conf-ofc:      linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);   /* purple */
+  --conf-none:     linear-gradient(135deg, #475569 0%, #64748b 100%);   /* slate */
+}
+
+.conf-uefa     { background: var(--conf-uefa);     }
+.conf-conmebol { background: var(--conf-conmebol); }
+.conf-caf      { background: var(--conf-caf);      }
+.conf-afc      { background: var(--conf-afc);      }
+.conf-concacaf { background: var(--conf-concacaf); }
+.conf-ofc      { background: var(--conf-ofc);      }
+.conf-none     { background: var(--conf-none);     }
+
+/* ── Mobile-specific animations ── */
+@keyframes pulseRing {
+  0%   { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.55); }
+  70%  { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+.live-pulse { animation: pulseRing 1.6s ease-out infinite; }
+
+@keyframes minuteBlink {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.45; }
+}
+.minute-blink { animation: minuteBlink 1.4s ease-in-out infinite; }
+
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.shimmer-bg {
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 2s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .live-pulse, .minute-blink, .shimmer-bg { animation: none; }
+}
