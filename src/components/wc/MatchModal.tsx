@@ -1,8 +1,12 @@
-import { X, MapPin, CalendarDays } from "lucide-react";
+import { X, MapPin, CalendarDays, ExternalLink } from "lucide-react";
 import { type WCMatch } from "@/lib/supabase";
 import { flagOf } from "@/lib/flags";
 import { useEffect } from "react";
+import { Link } from "@tanstack/react-router";
 import { VideoPlayer } from "./VideoPlayer";
+import { LiveMatchCenter } from "./LiveMatchCenter";
+import { WatchLivePanel } from "./WatchLivePanel";
+import type { Wc2026Fixture } from "@/lib/wc2026.functions";
 
 function winnerSide(m: WCMatch): "home" | "away" | "draw" {
   if (m.home_score_pen != null && m.away_score_pen != null) {
