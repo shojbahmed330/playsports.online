@@ -2,6 +2,7 @@ import { Link, useNavigate, useSearch } from "@tanstack/react-router";
 import {
   PLAYER_TABS,
   type PlayerTab,
+  type PlayersSearch,
 } from "@/lib/players-filters";
 import {
   BarChart3,

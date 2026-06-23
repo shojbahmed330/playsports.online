@@ -36,6 +36,7 @@ import {
   type Era,
   type PositionFilter,
   type GoalType,
+  type PlayersSearch,
 } from "@/lib/players-filters";
 import { CONFEDERATIONS } from "@/lib/confederations";
 import { WC_YEARS } from "@/lib/supabase";
