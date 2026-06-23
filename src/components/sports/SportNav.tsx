@@ -86,8 +86,8 @@ export function SportNav({ liveCount = 0 }: { liveCount?: number }) {
 
 function NavPill({ tab, active }: { tab: Tab; active: boolean }) {
   return (
-    <Link
-      to={tab.to}
+    <a
+      href={tab.to}
       className={[
         "group relative inline-flex items-center gap-1.5 rounded-full text-xs font-bold transition-all duration-200",
         "px-3 py-1.5 sm:px-3.5 sm:py-1.5",
@@ -98,12 +98,7 @@ function NavPill({ tab, active }: { tab: Tab; active: boolean }) {
     >
       <span aria-hidden className="text-sm leading-none">{tab.emoji}</span>
       <span className="tracking-wide">{tab.label}</span>
-      {active && (
-        <span aria-hidden className="absolute inset-0 rounded-full pointer-events-none">
-          <span className="absolute inset-0 rounded-full bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
-        </span>
-      )}
-    </Link>
+    </a>
   );
 }
 
