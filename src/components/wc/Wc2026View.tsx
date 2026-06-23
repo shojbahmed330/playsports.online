@@ -219,36 +219,52 @@ export function Wc2026KnockoutView() {
 
   return (
     <div className="space-y-10">
+      <MobileLiveTicker matches={wcMatches} />
+
       {groupedKnockout.length === 0 ? (
         <EmptyBox
           title="Knockout bracket not yet available"
           body="The bracket will populate after the group stage ends."
         />
       ) : (
-        groupedKnockout.map(([round, list]) => (
-          <section key={round} className="space-y-4">
-            <div className="flex items-center gap-3">
-              <span className="block w-1.5 h-6 rounded-full bg-amber-500" />
-              <h3 className="text-sm font-bold uppercase tracking-[0.18em] text-amber-400">
-                {ROUND_LABEL[round]}
-              </h3>
-              <span className="text-[10px] text-gray-500">{list.length} match{list.length === 1 ? "" : "es"}</span>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-              {list.map((m, i) => (
-                <MatchCard
-                  key={m.id}
-                  match={m}
-                  round={round}
-                  index={i}
-                  isFinal={round === "final"}
-                  onClick={() => setActiveMatch(m)}
-                />
-              ))}
-            </div>
-          </section>
-        ))
+        <>
+          {/* Mobile vertical bracket with stage chips */}
+          <MobileBracket
+            rounds={groupedKnockout.map(([round, matches]) => ({ round, matches }))}
+            onPick={setActiveMatch}
+          />
+
+          {/* Desktop grid */}
+          <div className="hidden md:block space-y-10">
+            {groupedKnockout.map(([round, list]) => (
+              <section key={round} className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <span className="block w-1.5 h-6 rounded-full bg-amber-500" />
+                  <h3 className="text-sm font-bold uppercase tracking-[0.18em] text-amber-400">
+                    {ROUND_LABEL[round]}
+                  </h3>
+                  <span className="text-[10px] text-gray-500">{list.length} match{list.length === 1 ? "" : "es"}</span>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                  {list.map((m, i) => (
+                    <MatchCard
+                      key={m.id}
+                      match={m}
+                      round={round}
+                      index={i}
+                      isFinal={round === "final"}
+                      onClick={() => setActiveMatch(m)}
+                    />
+                  ))}
+                </div>
+              </section>
+            ))}
+          </div>
+        </>
       )}
+
+      <WatchLivePanel />
+
 
       {/* Top Scorers */}
       <section className="rounded-2xl border border-gray-800 bg-gray-900/60 p-5">
