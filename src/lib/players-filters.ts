@@ -57,7 +57,20 @@ export const playersSearchSchema = z.object({
   compare: fallback(z.string(), "").default(""), // "Name||Country" entries joined by ;;
 });
 
-export type PlayersSearch = z.infer<typeof playersSearchSchema>;
+export type PlayersSearch = {
+  tab: PlayerTab;
+  q: string;
+  years: string;
+  countries: string;
+  confeds: string;
+  pos: PositionFilter;
+  era: Era;
+  goalType: GoalType;
+  minGoals: number;
+  sort: SortKey;
+  player: string;
+  compare: string;
+};
 
 export const playersDefaults: PlayersSearch = {
   tab: "overview",
