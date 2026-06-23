@@ -130,7 +130,12 @@ export function RecordsPanel() {
             >
               <div className="text-2xl">{flagOf(p.country)}</div>
               <div className="text-sm font-semibold truncate mt-1">{p.name}</div>
-              <div className="text-[11px] text-muted-foreground">{p.year}</div>
+              <div className="text-[11px] text-muted-foreground flex items-center justify-center gap-1">
+                {p.year}
+                {p.year === 2026 && (
+                  <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                )}
+              </div>
               <div className="text-gold font-bold tabular-nums">{p.goals} ⚽</div>
             </div>
           ))}
