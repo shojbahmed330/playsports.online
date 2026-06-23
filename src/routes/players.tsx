@@ -70,7 +70,7 @@ export const Route = createFileRoute("/players")({
 
 function PlayersPage() {
   const { isAdmin } = useAuth();
-  const search = Route.useSearch();
+  const search = Route.useSearch() as PlayersSearch;
   const navigate = useNavigate({ from: "/players" });
 
   const countries = useMemo(() => {
@@ -92,7 +92,7 @@ function PlayersPage() {
   const selectedYears = useMemo(() => {
     const ys = parseList(search.years).map(Number).filter(Boolean);
     if (ys.length) return new Set(ys);
-    if (search.era !== "ALL") return new Set(ERA_YEARS[search.era as Exclude<typeof search.era, "ALL">]);
+    if (search.era !== "ALL") return new Set(ERA_YEARS[search.era]);
     return null;
   }, [search.years, search.era]);
 
