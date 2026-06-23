@@ -6,15 +6,17 @@ const BASE = `https://${HOST}`;
 const TID = 16;
 const SID = 58210;
 
-// In-memory cache per warm Worker instance.
-const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
+// In-memory cache per warm Worker instance. Different TTL per call — live
+// fixtures / match events / stats must be fresh so scores update without a
+// manual reload. Standings / scorers can be cached longer.
+const DEFAULT_TTL_MS = 60 * 60 * 1000; // 1 hour
 const cache = new Map<string, { at: number; data: unknown }>();
 
-async function apiGet(path: string): Promise<unknown> {
+async function apiGet(path: string, ttlMs: number = DEFAULT_TTL_MS): Promise<unknown> {
   const key = process.env.RAPIDAPI_KEY;
   if (!key) throw new Error("RAPIDAPI_KEY not configured");
   const hit = cache.get(path);
-  if (hit && Date.now() - hit.at < CACHE_TTL_MS) return hit.data;
+  if (hit && Date.now() - hit.at < ttlMs) return hit.data;
   const res = await fetch(`${BASE}${path}`, {
     headers: { "X-RapidAPI-Key": key, "X-RapidAPI-Host": HOST },
   });
@@ -26,6 +28,9 @@ async function apiGet(path: string): Promise<unknown> {
   cache.set(path, { at: Date.now(), data: json });
   return json;
 }
+
+// Short TTL for endpoints that change during a live match (score, minute, events).
+const LIVE_TTL_MS = 20 * 1000; // 20s
 
 // ===================== FIXTURES =====================
 
