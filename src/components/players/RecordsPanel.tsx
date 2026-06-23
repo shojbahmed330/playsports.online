@@ -102,7 +102,14 @@ export function RecordsPanel() {
                 <span className="w-6 text-muted-foreground font-semibold tabular-nums">
                   {i + 1}
                 </span>
-                <span className="flex-1 font-medium tabular-nums">{y} World Cup</span>
+                <span className="flex-1 font-medium tabular-nums flex items-center gap-2">
+                  {y} World Cup
+                  {y === 2026 && (
+                    <span className="inline-flex items-center gap-0.5 text-[9px] uppercase tracking-wider text-emerald-400 font-bold">
+                      <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" /> Live
+                    </span>
+                  )}
+                </span>
                 <span className="text-gold font-bold tabular-nums">{n} goals</span>
               </li>
             ))}
