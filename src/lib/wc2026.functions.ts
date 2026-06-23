@@ -106,7 +106,7 @@ export const getWc2026Fixtures = createServerFn({ method: "GET" }).handler(async
     // last matches (played) – may paginate
     for (let p = 0; p < 6; p++) {
       const raw = (await apiGet(
-        `/tournaments/get-last-matches?tournamentId=${TID}&seasonId=${SID}&pageIndex=${p}`,
+        `/tournaments/get-last-matches?tournamentId=${TID}&seasonId=${SID}&pageIndex=${p}`, LIVE_TTL_MS,
       )) as { events?: any[]; hasNextPage?: boolean };
       for (const e of raw.events ?? []) {
         if (!seen.has(e.id)) { seen.add(e.id); fixtures.push(mapEvent(e)); }
@@ -116,7 +116,7 @@ export const getWc2026Fixtures = createServerFn({ method: "GET" }).handler(async
     // next matches (upcoming)
     for (let p = 0; p < 6; p++) {
       const raw = (await apiGet(
-        `/tournaments/get-next-matches?tournamentId=${TID}&seasonId=${SID}&pageIndex=${p}`,
+        `/tournaments/get-next-matches?tournamentId=${TID}&seasonId=${SID}&pageIndex=${p}`, LIVE_TTL_MS,
       )) as { events?: any[]; hasNextPage?: boolean };
       for (const e of raw.events ?? []) {
         if (!seen.has(e.id)) { seen.add(e.id); fixtures.push(mapEvent(e)); }
@@ -323,7 +323,7 @@ export const getWc2026MatchEvents = createServerFn({ method: "GET" })
   .handler(async ({ data }) => {
     try {
       const raw = (await apiGet(
-        `/matches/get-incidents?matchId=${data.matchId}`,
+        `/matches/get-incidents?matchId=${data.matchId}`, LIVE_TTL_MS,
       )) as { incidents?: any[] };
       const incidents = (raw.incidents ?? [])
         .filter((i: any) => i.incidentType && i.incidentType !== "period")
@@ -395,7 +395,7 @@ export const getWc2026MatchStats = createServerFn({ method: "GET" })
   .handler(async ({ data }) => {
     try {
       const raw = (await apiGet(
-        `/matches/get-statistics?matchId=${data.matchId}`,
+        `/matches/get-statistics?matchId=${data.matchId}`, LIVE_TTL_MS,
       )) as { statistics?: any[] };
       // Use "ALL" period if available.
       const all = (raw.statistics ?? []).find((p: any) => p.period === "ALL")
@@ -427,7 +427,7 @@ export const getWc2026Match = createServerFn({ method: "GET" })
   })
   .handler(async ({ data }) => {
     try {
-      const raw = (await apiGet(`/matches/detail?matchId=${data.matchId}`)) as { event?: any };
+      const raw = (await apiGet(`/matches/detail?matchId=${data.matchId}`, LIVE_TTL_MS)) as { event?: any };
       const e = raw.event;
       if (!e) return { fixture: null as Wc2026Fixture | null, error: "Not found" };
       return { fixture: mapEvent(e), error: null as string | null };
