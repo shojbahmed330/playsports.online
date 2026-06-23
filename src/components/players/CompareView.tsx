@@ -22,24 +22,19 @@ import {
   playerKey,
   type PlayersSearch,
 } from "@/lib/players-filters";
-import goalsData from "@/data/wc_goals.json";
 import cardsData from "@/data/wc_cards.json";
+import { useMergedGoals, HISTORICAL_GOALS, type GoalRow } from "@/lib/use-merged-goals";
 
-type GoalRow = {
-  pid: string; name: string; team: string; pteam: string;
-  year: number; og: boolean; pen: boolean; pos: string;
-};
 type CardRow = {
   pid: string; name: string; team: string; year: number;
   type: "yellow" | "red"; pos: string;
 };
-const GOALS = goalsData as GoalRow[];
 const CARDS = cardsData as CardRow[];
 
-// Pre-aggregated player index (built once).
+// Pre-aggregated player index (built once from historical data — used only by the picker).
 const PLAYER_INDEX = (() => {
   const m = new Map<string, { name: string; country: string; goals: number }>();
-  for (const g of GOALS) {
+  for (const g of HISTORICAL_GOALS) {
     if (g.og) continue;
     const k = `${g.name}||${g.pteam}`;
     const ex = m.get(k);
