@@ -145,8 +145,16 @@ export function CompareView() {
             >
               <div className="flex items-center gap-2">
                 <span className="text-2xl">{flagOf(s.country)}</span>
-                <div className="min-w-0">
-                  <div className="font-bold truncate">{s.name}</div>
+                <div className="min-w-0 flex-1">
+                  <div className="font-bold truncate flex items-center gap-1.5">
+                    {s.name}
+                    {s.live2026 > 0 && (
+                      <span className="inline-flex items-center gap-0.5 text-[9px] uppercase tracking-wider text-emerald-400 font-bold shrink-0">
+                        <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                        +{s.live2026} '26
+                      </span>
+                    )}
+                  </div>
                   <div className="text-xs text-muted-foreground truncate">
                     {s.country}
                   </div>
