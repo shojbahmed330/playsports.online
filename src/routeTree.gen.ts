@@ -15,10 +15,14 @@ import { Route as NbaRouteImport } from './routes/nba'
 import { Route as MlsRouteImport } from './routes/mls'
 import { Route as MlbRouteImport } from './routes/mlb'
 import { Route as FootballRouteImport } from './routes/football'
+import { Route as CricketRouteImport } from './routes/cricket'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as CricketIndexRouteImport } from './routes/cricket.index'
 import { Route as FootballMatchIdRouteImport } from './routes/football.match.$id'
+import { Route as CricketSeriesIdRouteImport } from './routes/cricket.series.$id'
+import { Route as CricketMatchIdRouteImport } from './routes/cricket.match.$id'
 
 const PlayersRoute = PlayersRouteImport.update({
   id: '/players',
@@ -50,6 +54,11 @@ const FootballRoute = FootballRouteImport.update({
   path: '/football',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CricketRoute = CricketRouteImport.update({
+  id: '/cricket',
+  path: '/cricket',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
@@ -65,22 +74,41 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CricketIndexRoute = CricketIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => CricketRoute,
+} as any)
 const FootballMatchIdRoute = FootballMatchIdRouteImport.update({
   id: '/match/$id',
   path: '/match/$id',
   getParentRoute: () => FootballRoute,
+} as any)
+const CricketSeriesIdRoute = CricketSeriesIdRouteImport.update({
+  id: '/series/$id',
+  path: '/series/$id',
+  getParentRoute: () => CricketRoute,
+} as any)
+const CricketMatchIdRoute = CricketMatchIdRouteImport.update({
+  id: '/match/$id',
+  path: '/match/$id',
+  getParentRoute: () => CricketRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
+  '/cricket': typeof CricketRouteWithChildren
   '/football': typeof FootballRouteWithChildren
   '/mlb': typeof MlbRoute
   '/mls': typeof MlsRoute
   '/nba': typeof NbaRoute
   '/nhl': typeof NhlRoute
   '/players': typeof PlayersRoute
+  '/cricket/': typeof CricketIndexRoute
+  '/cricket/match/$id': typeof CricketMatchIdRoute
+  '/cricket/series/$id': typeof CricketSeriesIdRoute
   '/football/match/$id': typeof FootballMatchIdRoute
 }
 export interface FileRoutesByTo {
@@ -93,6 +121,9 @@ export interface FileRoutesByTo {
   '/nba': typeof NbaRoute
   '/nhl': typeof NhlRoute
   '/players': typeof PlayersRoute
+  '/cricket': typeof CricketIndexRoute
+  '/cricket/match/$id': typeof CricketMatchIdRoute
+  '/cricket/series/$id': typeof CricketSeriesIdRoute
   '/football/match/$id': typeof FootballMatchIdRoute
 }
 export interface FileRoutesById {
@@ -100,12 +131,16 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
+  '/cricket': typeof CricketRouteWithChildren
   '/football': typeof FootballRouteWithChildren
   '/mlb': typeof MlbRoute
   '/mls': typeof MlsRoute
   '/nba': typeof NbaRoute
   '/nhl': typeof NhlRoute
   '/players': typeof PlayersRoute
+  '/cricket/': typeof CricketIndexRoute
+  '/cricket/match/$id': typeof CricketMatchIdRoute
+  '/cricket/series/$id': typeof CricketSeriesIdRoute
   '/football/match/$id': typeof FootballMatchIdRoute
 }
 export interface FileRouteTypes {
@@ -114,12 +149,16 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/auth'
+    | '/cricket'
     | '/football'
     | '/mlb'
     | '/mls'
     | '/nba'
     | '/nhl'
     | '/players'
+    | '/cricket/'
+    | '/cricket/match/$id'
+    | '/cricket/series/$id'
     | '/football/match/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -132,18 +171,25 @@ export interface FileRouteTypes {
     | '/nba'
     | '/nhl'
     | '/players'
+    | '/cricket'
+    | '/cricket/match/$id'
+    | '/cricket/series/$id'
     | '/football/match/$id'
   id:
     | '__root__'
     | '/'
     | '/admin'
     | '/auth'
+    | '/cricket'
     | '/football'
     | '/mlb'
     | '/mls'
     | '/nba'
     | '/nhl'
     | '/players'
+    | '/cricket/'
+    | '/cricket/match/$id'
+    | '/cricket/series/$id'
     | '/football/match/$id'
   fileRoutesById: FileRoutesById
 }
@@ -151,6 +197,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
   AuthRoute: typeof AuthRoute
+  CricketRoute: typeof CricketRouteWithChildren
   FootballRoute: typeof FootballRouteWithChildren
   MlbRoute: typeof MlbRoute
   MlsRoute: typeof MlsRoute
@@ -203,6 +250,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FootballRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/cricket': {
+      id: '/cricket'
+      path: '/cricket'
+      fullPath: '/cricket'
+      preLoaderRoute: typeof CricketRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/auth': {
       id: '/auth'
       path: '/auth'
@@ -224,6 +278,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/cricket/': {
+      id: '/cricket/'
+      path: '/'
+      fullPath: '/cricket/'
+      preLoaderRoute: typeof CricketIndexRouteImport
+      parentRoute: typeof CricketRoute
+    }
     '/football/match/$id': {
       id: '/football/match/$id'
       path: '/match/$id'
@@ -231,8 +292,37 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FootballMatchIdRouteImport
       parentRoute: typeof FootballRoute
     }
+    '/cricket/series/$id': {
+      id: '/cricket/series/$id'
+      path: '/series/$id'
+      fullPath: '/cricket/series/$id'
+      preLoaderRoute: typeof CricketSeriesIdRouteImport
+      parentRoute: typeof CricketRoute
+    }
+    '/cricket/match/$id': {
+      id: '/cricket/match/$id'
+      path: '/match/$id'
+      fullPath: '/cricket/match/$id'
+      preLoaderRoute: typeof CricketMatchIdRouteImport
+      parentRoute: typeof CricketRoute
+    }
   }
 }
+
+interface CricketRouteChildren {
+  CricketIndexRoute: typeof CricketIndexRoute
+  CricketMatchIdRoute: typeof CricketMatchIdRoute
+  CricketSeriesIdRoute: typeof CricketSeriesIdRoute
+}
+
+const CricketRouteChildren: CricketRouteChildren = {
+  CricketIndexRoute: CricketIndexRoute,
+  CricketMatchIdRoute: CricketMatchIdRoute,
+  CricketSeriesIdRoute: CricketSeriesIdRoute,
+}
+
+const CricketRouteWithChildren =
+  CricketRoute._addFileChildren(CricketRouteChildren)
 
 interface FootballRouteChildren {
   FootballMatchIdRoute: typeof FootballMatchIdRoute
@@ -250,6 +340,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
   AuthRoute: AuthRoute,
+  CricketRoute: CricketRouteWithChildren,
   FootballRoute: FootballRouteWithChildren,
   MlbRoute: MlbRoute,
   MlsRoute: MlsRoute,
