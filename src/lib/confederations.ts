@@ -45,3 +45,15 @@ export function confederationOf(team: string): Confederation {
 export function confClass(team: string): string {
   return `conf-${confederationOf(team)}`;
 }
+
+/** Display labels (uppercase) used by Players filter chips. */
+export const CONFEDERATIONS = ["UEFA", "CONMEBOL", "CONCACAF", "CAF", "AFC", "OFC"] as const;
+export type ConfederationLabel = typeof CONFEDERATIONS[number];
+
+/** Returns the uppercase confederation label (or null) for a team. */
+export function confederationLabel(team: string): ConfederationLabel | null {
+  const c = confederationOf(team);
+  if (c === "none") return null;
+  return c.toUpperCase() as ConfederationLabel;
+}
+
