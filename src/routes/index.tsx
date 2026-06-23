@@ -293,12 +293,12 @@ function FootballSlate() {
   const q = useQuery({
     queryKey: ["wc2026", "fixtures"],
     queryFn: () => fn(),
-    staleTime: 5 * 60_000,
+    staleTime: 20_000,
     retry: 1,
     refetchInterval: (qq) => {
       const data = qq.state.data as { fixtures?: Wc2026Fixture[] } | undefined;
       const live = (data?.fixtures ?? []).some((f) => f.status === "inprogress");
-      return live ? 30_000 : false;
+      return live ? 20_000 : 5 * 60_000;
     },
   });
 

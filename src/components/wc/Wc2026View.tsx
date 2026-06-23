@@ -21,6 +21,7 @@ import { flagOf } from "@/lib/flags";
 import { fetch2026VideoMap, videoKey } from "@/lib/wc-2026-videos";
 
 const HOUR = 60 * 60 * 1000;
+const LIVE_MS = 20 * 1000;
 
 // ──────────────────────────────────────────────────────────────
 // Adapters: SofaScore shape → app's WCGroup / WCMatch shapes so
@@ -99,13 +100,15 @@ export function Wc2026GroupsView() {
   const sQ = useQuery({
     queryKey: ["wc2026", "standings"],
     queryFn: () => standingsFn(),
-    staleTime: HOUR,
+    staleTime: 5 * 60_000,
+    refetchInterval: 60_000,
     retry: 1,
   });
   const fQ = useQuery({
     queryKey: ["wc2026", "fixtures"],
     queryFn: () => fixturesFn(),
-    staleTime: HOUR,
+    staleTime: LIVE_MS,
+    refetchInterval: LIVE_MS,
     retry: 1,
   });
 
@@ -178,13 +181,15 @@ export function Wc2026KnockoutView() {
   const fQ = useQuery({
     queryKey: ["wc2026", "fixtures"],
     queryFn: () => fixturesFn(),
-    staleTime: HOUR,
+    staleTime: LIVE_MS,
+    refetchInterval: LIVE_MS,
     retry: 1,
   });
   const tQ = useQuery({
     queryKey: ["wc2026", "scorers"],
     queryFn: () => scorersFn(),
-    staleTime: HOUR,
+    staleTime: 5 * 60_000,
+    refetchInterval: 60_000,
     retry: 1,
   });
 

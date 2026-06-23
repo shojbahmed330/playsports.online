@@ -6,15 +6,17 @@ const BASE = `https://${HOST}`;
 const TID = 16;
 const SID = 58210;
 
-// In-memory cache per warm Worker instance.
-const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
+// In-memory cache per warm Worker instance. Different TTL per call — live
+// fixtures / match events / stats must be fresh so scores update without a
+// manual reload. Standings / scorers can be cached longer.
+const DEFAULT_TTL_MS = 60 * 60 * 1000; // 1 hour
 const cache = new Map<string, { at: number; data: unknown }>();
 
-async function apiGet(path: string): Promise<unknown> {
+async function apiGet(path: string, ttlMs: number = DEFAULT_TTL_MS): Promise<unknown> {
   const key = process.env.RAPIDAPI_KEY;
   if (!key) throw new Error("RAPIDAPI_KEY not configured");
   const hit = cache.get(path);
-  if (hit && Date.now() - hit.at < CACHE_TTL_MS) return hit.data;
+  if (hit && Date.now() - hit.at < ttlMs) return hit.data;
   const res = await fetch(`${BASE}${path}`, {
     headers: { "X-RapidAPI-Key": key, "X-RapidAPI-Host": HOST },
   });
@@ -26,6 +28,9 @@ async function apiGet(path: string): Promise<unknown> {
   cache.set(path, { at: Date.now(), data: json });
   return json;
 }
+
+// Short TTL for endpoints that change during a live match (score, minute, events).
+const LIVE_TTL_MS = 20 * 1000; // 20s
 
 // ===================== FIXTURES =====================
 
@@ -101,7 +106,7 @@ export const getWc2026Fixtures = createServerFn({ method: "GET" }).handler(async
     // last matches (played) – may paginate
     for (let p = 0; p < 6; p++) {
       const raw = (await apiGet(
-        `/tournaments/get-last-matches?tournamentId=${TID}&seasonId=${SID}&pageIndex=${p}`,
+        `/tournaments/get-last-matches?tournamentId=${TID}&seasonId=${SID}&pageIndex=${p}`, LIVE_TTL_MS,
       )) as { events?: any[]; hasNextPage?: boolean };
       for (const e of raw.events ?? []) {
         if (!seen.has(e.id)) { seen.add(e.id); fixtures.push(mapEvent(e)); }
@@ -111,7 +116,7 @@ export const getWc2026Fixtures = createServerFn({ method: "GET" }).handler(async
     // next matches (upcoming)
     for (let p = 0; p < 6; p++) {
       const raw = (await apiGet(
-        `/tournaments/get-next-matches?tournamentId=${TID}&seasonId=${SID}&pageIndex=${p}`,
+        `/tournaments/get-next-matches?tournamentId=${TID}&seasonId=${SID}&pageIndex=${p}`, LIVE_TTL_MS,
       )) as { events?: any[]; hasNextPage?: boolean };
       for (const e of raw.events ?? []) {
         if (!seen.has(e.id)) { seen.add(e.id); fixtures.push(mapEvent(e)); }
@@ -318,7 +323,7 @@ export const getWc2026MatchEvents = createServerFn({ method: "GET" })
   .handler(async ({ data }) => {
     try {
       const raw = (await apiGet(
-        `/matches/get-incidents?matchId=${data.matchId}`,
+        `/matches/get-incidents?matchId=${data.matchId}`, LIVE_TTL_MS,
       )) as { incidents?: any[] };
       const incidents = (raw.incidents ?? [])
         .filter((i: any) => i.incidentType && i.incidentType !== "period")
@@ -390,7 +395,7 @@ export const getWc2026MatchStats = createServerFn({ method: "GET" })
   .handler(async ({ data }) => {
     try {
       const raw = (await apiGet(
-        `/matches/get-statistics?matchId=${data.matchId}`,
+        `/matches/get-statistics?matchId=${data.matchId}`, LIVE_TTL_MS,
       )) as { statistics?: any[] };
       // Use "ALL" period if available.
       const all = (raw.statistics ?? []).find((p: any) => p.period === "ALL")
@@ -422,7 +427,7 @@ export const getWc2026Match = createServerFn({ method: "GET" })
   })
   .handler(async ({ data }) => {
     try {
-      const raw = (await apiGet(`/matches/detail?matchId=${data.matchId}`)) as { event?: any };
+      const raw = (await apiGet(`/matches/detail?matchId=${data.matchId}`, LIVE_TTL_MS)) as { event?: any };
       const e = raw.event;
       if (!e) return { fixture: null as Wc2026Fixture | null, error: "Not found" };
       return { fixture: mapEvent(e), error: null as string | null };
