@@ -106,6 +106,40 @@ export function MatchModal({ match, onClose }: { match: WCMatch | null; onClose:
           <VideoPlayer videoUrl={match.video_url} matchTitle={`${match.home_team} vs ${match.away_team}`} />
         </div>
 
+        {/* Video / highlights */}
+        <div className="px-6 pt-4">
+          <VideoPlayer videoUrl={match.video_url} matchTitle={`${match.home_team} vs ${match.away_team}`} />
+        </div>
+
+        {/* 2026 live match center + broadcasters */}
+        {is2026 && (
+          <div className="px-6 pt-5 space-y-4">
+            <LiveMatchCenter
+              fixture={{
+                id: match.id,
+                startTs: match.match_date ? Math.floor(new Date(match.match_date).getTime() / 1000) : 0,
+                status: "notstarted",
+                statusDesc: "",
+                minute: null,
+                group: match.round,
+                venue: match.stadium,
+                city: match.city,
+                home: { id: 0, name: match.home_team, code: "", goals: match.home_score },
+                away: { id: 0, name: match.away_team, code: "", goals: match.away_score },
+              } as Wc2026Fixture}
+            />
+            <WatchLivePanel compact />
+            <Link
+              to="/football/match/$id"
+              params={{ id: String(match.id) }}
+              className="flex items-center justify-center gap-2 w-full rounded-lg border border-amber-500/40 bg-amber-500/10 hover:bg-amber-500/20 py-2 text-xs font-medium text-amber-300"
+              onClick={onClose}
+            >
+              Open full match page <ExternalLink className="size-3.5" />
+            </Link>
+          </div>
+        )}
+
         <div className="p-6 pt-4">
           <button
             onClick={onClose}
