@@ -15,6 +15,7 @@ import { Route as NbaRouteImport } from './routes/nba'
 import { Route as MlsRouteImport } from './routes/mls'
 import { Route as MlbRouteImport } from './routes/mlb'
 import { Route as FootballRouteImport } from './routes/football'
+import { Route as CricketRouteImport } from './routes/cricket'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
@@ -50,6 +51,11 @@ const FootballRoute = FootballRouteImport.update({
   path: '/football',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CricketRoute = CricketRouteImport.update({
+  id: '/cricket',
+  path: '/cricket',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
@@ -75,6 +81,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
+  '/cricket': typeof CricketRoute
   '/football': typeof FootballRouteWithChildren
   '/mlb': typeof MlbRoute
   '/mls': typeof MlsRoute
@@ -87,6 +94,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
+  '/cricket': typeof CricketRoute
   '/football': typeof FootballRouteWithChildren
   '/mlb': typeof MlbRoute
   '/mls': typeof MlsRoute
@@ -100,6 +108,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
+  '/cricket': typeof CricketRoute
   '/football': typeof FootballRouteWithChildren
   '/mlb': typeof MlbRoute
   '/mls': typeof MlsRoute
@@ -114,6 +123,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/auth'
+    | '/cricket'
     | '/football'
     | '/mlb'
     | '/mls'
@@ -126,6 +136,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/auth'
+    | '/cricket'
     | '/football'
     | '/mlb'
     | '/mls'
@@ -138,6 +149,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/auth'
+    | '/cricket'
     | '/football'
     | '/mlb'
     | '/mls'
@@ -151,6 +163,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
   AuthRoute: typeof AuthRoute
+  CricketRoute: typeof CricketRoute
   FootballRoute: typeof FootballRouteWithChildren
   MlbRoute: typeof MlbRoute
   MlsRoute: typeof MlsRoute
@@ -203,6 +216,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FootballRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/cricket': {
+      id: '/cricket'
+      path: '/cricket'
+      fullPath: '/cricket'
+      preLoaderRoute: typeof CricketRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/auth': {
       id: '/auth'
       path: '/auth'
@@ -250,6 +270,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
   AuthRoute: AuthRoute,
+  CricketRoute: CricketRoute,
   FootballRoute: FootballRouteWithChildren,
   MlbRoute: MlbRoute,
   MlsRoute: MlsRoute,
