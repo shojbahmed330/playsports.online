@@ -13,6 +13,9 @@ import groupMatchesData from "@/data/wc_group_matches.json";
 import { toast } from "sonner";
 import { AdSlot } from "@/components/ads/AdSlot";
 import { Wc2026GroupsView, Wc2026KnockoutView } from "@/components/wc/Wc2026View";
+import { FootballHero } from "@/components/football/FootballHero";
+import { FootballSubNav, type SubNavTab } from "@/components/football/FootballSubNav";
+import { Wc2026ScorersPanel } from "@/components/football/Wc2026ScorersPanel";
 
 const GROUP_MATCHES_BY_YEAR = groupMatchesData as Record<string, WCMatch[]>;
 
