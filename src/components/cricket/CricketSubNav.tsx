@@ -4,9 +4,9 @@ import { Flame, Trophy, Users, BarChart3 } from "lucide-react";
 const TABS = [
   { to: "/cricket", label: "Live & Fixtures", emoji: "🏏", icon: Flame, match: (p: string) => p === "/cricket" || p === "/cricket/" },
   { to: "/cricket/history", label: "History & Records", emoji: "🏆", icon: Trophy, match: (p: string) => p.startsWith("/cricket/history") },
-  { to: "/cricket/series", label: "Series Hub", emoji: "📅", icon: BarChart3, match: (p: string) => p.startsWith("/cricket/series") },
 ] as const;
 void Users;
+void BarChart3;
 
 export function CricketSubNav() {
   const { pathname } = useLocation();

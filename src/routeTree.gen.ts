@@ -20,6 +20,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CricketIndexRouteImport } from './routes/cricket.index'
+import { Route as CricketHistoryRouteImport } from './routes/cricket.history'
 import { Route as FootballMatchIdRouteImport } from './routes/football.match.$id'
 import { Route as CricketSeriesIdRouteImport } from './routes/cricket.series.$id'
 import { Route as CricketMatchIdRouteImport } from './routes/cricket.match.$id'
@@ -79,6 +80,11 @@ const CricketIndexRoute = CricketIndexRouteImport.update({
   path: '/',
   getParentRoute: () => CricketRoute,
 } as any)
+const CricketHistoryRoute = CricketHistoryRouteImport.update({
+  id: '/history',
+  path: '/history',
+  getParentRoute: () => CricketRoute,
+} as any)
 const FootballMatchIdRoute = FootballMatchIdRouteImport.update({
   id: '/match/$id',
   path: '/match/$id',
@@ -106,6 +112,7 @@ export interface FileRoutesByFullPath {
   '/nba': typeof NbaRoute
   '/nhl': typeof NhlRoute
   '/players': typeof PlayersRoute
+  '/cricket/history': typeof CricketHistoryRoute
   '/cricket/': typeof CricketIndexRoute
   '/cricket/match/$id': typeof CricketMatchIdRoute
   '/cricket/series/$id': typeof CricketSeriesIdRoute
@@ -121,6 +128,7 @@ export interface FileRoutesByTo {
   '/nba': typeof NbaRoute
   '/nhl': typeof NhlRoute
   '/players': typeof PlayersRoute
+  '/cricket/history': typeof CricketHistoryRoute
   '/cricket': typeof CricketIndexRoute
   '/cricket/match/$id': typeof CricketMatchIdRoute
   '/cricket/series/$id': typeof CricketSeriesIdRoute
@@ -138,6 +146,7 @@ export interface FileRoutesById {
   '/nba': typeof NbaRoute
   '/nhl': typeof NhlRoute
   '/players': typeof PlayersRoute
+  '/cricket/history': typeof CricketHistoryRoute
   '/cricket/': typeof CricketIndexRoute
   '/cricket/match/$id': typeof CricketMatchIdRoute
   '/cricket/series/$id': typeof CricketSeriesIdRoute
@@ -156,6 +165,7 @@ export interface FileRouteTypes {
     | '/nba'
     | '/nhl'
     | '/players'
+    | '/cricket/history'
     | '/cricket/'
     | '/cricket/match/$id'
     | '/cricket/series/$id'
@@ -171,6 +181,7 @@ export interface FileRouteTypes {
     | '/nba'
     | '/nhl'
     | '/players'
+    | '/cricket/history'
     | '/cricket'
     | '/cricket/match/$id'
     | '/cricket/series/$id'
@@ -187,6 +198,7 @@ export interface FileRouteTypes {
     | '/nba'
     | '/nhl'
     | '/players'
+    | '/cricket/history'
     | '/cricket/'
     | '/cricket/match/$id'
     | '/cricket/series/$id'
@@ -285,6 +297,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CricketIndexRouteImport
       parentRoute: typeof CricketRoute
     }
+    '/cricket/history': {
+      id: '/cricket/history'
+      path: '/history'
+      fullPath: '/cricket/history'
+      preLoaderRoute: typeof CricketHistoryRouteImport
+      parentRoute: typeof CricketRoute
+    }
     '/football/match/$id': {
       id: '/football/match/$id'
       path: '/match/$id'
@@ -310,12 +329,14 @@ declare module '@tanstack/react-router' {
 }
 
 interface CricketRouteChildren {
+  CricketHistoryRoute: typeof CricketHistoryRoute
   CricketIndexRoute: typeof CricketIndexRoute
   CricketMatchIdRoute: typeof CricketMatchIdRoute
   CricketSeriesIdRoute: typeof CricketSeriesIdRoute
 }
 
 const CricketRouteChildren: CricketRouteChildren = {
+  CricketHistoryRoute: CricketHistoryRoute,
   CricketIndexRoute: CricketIndexRoute,
   CricketMatchIdRoute: CricketMatchIdRoute,
   CricketSeriesIdRoute: CricketSeriesIdRoute,
