@@ -418,22 +418,28 @@ function MatchRow({ match, year }: { match: AdminMatch; year: number }) {
   const save = async () => {
     setSaving(true);
     const newUrl = value.trim() || null;
-    let error;
-    if (isBundled) {
-      // Bundled row not yet in DB — insert the full row with the video URL.
-      // Strip the synthetic id so Postgres assigns its own and we never collide.
-      const { _bundled: _b, id: _id, ...rest } = match;
-      void _b; void _id;
-      const res = await supabase
-        .from("wc_matches")
-        .insert({ ...rest, video_url: newUrl });
-      error = res.error;
-    } else {
-      const res = await supabase
-        .from("wc_matches")
-        .update({ video_url: newUrl })
-        .eq("id", match.id);
-      error = res.error;
+    let error: { message: string } | null = null;
+    try {
+      if (match.tournament_year === 2026) {
+        // 2026 has no wc_tournaments parent row → store in site_settings.
+        await set2026Video(match.home_team, match.away_team, newUrl);
+      } else if (isBundled) {
+        // Bundled row not yet in DB — insert the full row with the video URL.
+        const { _bundled: _b, id: _id, ...rest } = match;
+        void _b; void _id;
+        const res = await supabase
+          .from("wc_matches")
+          .insert({ ...rest, video_url: newUrl });
+        error = res.error;
+      } else {
+        const res = await supabase
+          .from("wc_matches")
+          .update({ video_url: newUrl })
+          .eq("id", match.id);
+        error = res.error;
+      }
+    } catch (e) {
+      error = { message: e instanceof Error ? e.message : String(e) };
     }
     setSaving(false);
     if (error) {
