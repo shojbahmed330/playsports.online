@@ -103,7 +103,7 @@ function AdminShell() {
 
       // 2026: pull live fixtures from Sofascore as bundled rows.
       if (year === 2026) {
-        const res = await fixturesFn();
+        const [res, videoMap] = await Promise.all([fixturesFn(), fetch2026VideoMap()]);
         const bundled: AdminMatch[] = (res.fixtures ?? [])
           .filter((f) => !seen.has(`${f.home.name.toLowerCase()}|${f.away.name.toLowerCase()}`))
           .map((f, i): AdminMatch => ({
@@ -120,7 +120,7 @@ function AdminShell() {
             match_date: f.startTs ? new Date(f.startTs * 1000).toISOString() : null,
             stadium: f.venue,
             city: f.city,
-            video_url: null,
+            video_url: videoMap.get(videoKey(f.home.name, f.away.name)) ?? null,
             _bundled: true,
           }));
         return [...db, ...bundled].sort(
