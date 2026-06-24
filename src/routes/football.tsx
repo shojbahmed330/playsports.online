@@ -72,6 +72,11 @@ function Index() {
     navigate({ search: (prev: FootballSearch) => ({ ...prev, year }), replace: true });
   }, [year, navigate]);
 
+  // Reset to knockout when leaving 2026 — scorers tab is 2026-only.
+  useEffect(() => {
+    if (year !== 2026 && tab === "scorers") setTab("knockout");
+  }, [year, tab]);
+
   useEffect(() => {
     try {
       setHintSeen(localStorage.getItem("wc_hint_seen") === "1");
