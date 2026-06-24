@@ -15,6 +15,8 @@ import videoSeed from "@/data/wc_video_seed.json";
 import groupMatchesData from "@/data/wc_group_matches.json";
 import { AdSenseAdminCard } from "@/components/admin/AdSenseAdminCard";
 import { getWc2026Fixtures, type Wc2026Fixture } from "@/lib/wc2026.functions";
+import { fetch2026VideoMap, set2026Video, videoKey } from "@/lib/wc-2026-videos";
+import { Wc2026HighlightsCard } from "@/components/admin/Wc2026HighlightsCard";
 
 const GROUP_MATCHES_BY_YEAR = groupMatchesData as Record<string, WCMatch[]>;
 type AdminMatch = WCMatch & { _bundled?: boolean };
