@@ -64,7 +64,7 @@ function Index() {
   const initialYear = search.year ?? 2026;
   const [year, setYear] = useState<number>(initialYear);
   const [activeMatch, setActiveMatch] = useState<WCMatch | null>(null);
-  const [tab, setTab] = useState<"groups" | "knockout">("knockout");
+  const [tab, setTab] = useState<SubNavTab>("knockout");
   const [hintSeen, setHintSeen] = useState(true);
 
   // Sync URL ?year= when changed
