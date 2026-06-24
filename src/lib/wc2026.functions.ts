@@ -1,137 +1,45 @@
 import { createServerFn } from "@tanstack/react-start";
 
-// Sofascore via RapidAPI. FIFA World Cup uniqueTournamentId = 16; 2026 seasonId = 58210.
-const HOST = "sofascore.p.rapidapi.com";
-const BASE = `https://${HOST}`;
-const TID = 16;
-const SID = 58210;
+// ESPN public API (free, no key) replaces the paid Sofascore/RapidAPI feed.
+// FIFA World Cup league slug = "fifa.world". 2026 tournament window:
+// June 11 – July 19, 2026 (USA / Canada / Mexico, 48 teams).
+const ESPN_SITE = "https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world";
+const ESPN_CORE = "https://site.api.espn.com/apis/v2/sports/soccer/fifa.world";
+const ESPN_WEB  = "https://site.web.api.espn.com/apis/common/v3/sports/soccer/fifa.world";
+const SEASON = 2026;
+const WC_RANGE = "20260611-20260719";
 
-// In-memory cache per warm Worker instance. Different TTL per call — live
-// fixtures / match events / stats must be fresh so scores update without a
-// manual reload. Standings / scorers can be cached longer.
-const DEFAULT_TTL_MS = 60 * 60 * 1000; // 1 hour
+const DEFAULT_TTL_MS = 60 * 60 * 1000;
+const LIVE_TTL_MS = 20 * 1000;
 const cache = new Map<string, { at: number; data: unknown }>();
 
-async function apiGet(path: string, ttlMs: number = DEFAULT_TTL_MS): Promise<unknown> {
-  const key = process.env.RAPIDAPI_KEY;
-  if (!key) throw new Error("RAPIDAPI_KEY not configured");
-  const hit = cache.get(path);
+async function espnGet(url: string, ttlMs: number = DEFAULT_TTL_MS): Promise<unknown> {
+  const hit = cache.get(url);
   if (hit && Date.now() - hit.at < ttlMs) return hit.data;
-  const res = await fetch(`${BASE}${path}`, {
-    headers: { "X-RapidAPI-Key": key, "X-RapidAPI-Host": HOST },
-  });
+  const res = await fetch(url, { headers: { accept: "application/json" } });
   if (!res.ok) {
     const txt = await res.text().catch(() => "");
-    throw new Error(`Sofascore ${res.status}: ${txt.slice(0, 200)}`);
+    throw new Error(`ESPN ${res.status}: ${txt.slice(0, 200)}`);
   }
   const json = await res.json();
-  cache.set(path, { at: Date.now(), data: json });
+  cache.set(url, { at: Date.now(), data: json });
   return json;
 }
 
-// Short TTL for endpoints that change during a live match (score, minute, events).
-const LIVE_TTL_MS = 20 * 1000; // 20s
-
-// ===================== FIXTURES =====================
+// ===================== TYPES (unchanged shape — consumers don't need to change) =====================
 
 export type Wc2026Fixture = {
   id: number;
-  startTs: number;          // seconds
-  status: string;           // notstarted | inprogress | finished | postponed | canceled
+  startTs: number;
+  status: string;
   statusDesc: string;
   minute: number | null;
-  group: string;            // "Group A" or "Round of 16", "Final", etc.
+  group: string;
   venue: string | null;
   city: string | null;
   home: { id: number; name: string; code: string; goals: number | null };
   away: { id: number; name: string; code: string; goals: number | null };
 };
-
-function teamLogo(id: number) {
-  return `https://api.sofascore.app/api/v1/team/${id}/image`;
-}
-export const wc2026TeamLogo = teamLogo;
-
-function normalizeRound(tournamentName: string, roundInfo: any): string {
-  // tournament.name like "FIFA World Cup, Group A" or "FIFA World Cup, Knockout stage"
-  const m = /,\s*(.+)$/.exec(tournamentName ?? "");
-  if (m) {
-    const part = m[1].trim();
-    if (/^group/i.test(part)) return part; // "Group A"
-  }
-  const r = roundInfo?.name as string | undefined;
-  if (r) return r;
-  const code = roundInfo?.round as number | undefined;
-  if (code) {
-    if (code === 1) return "Final";
-    if (code === 2) return "Semi-Final";
-    if (code === 4) return "Quarter-Final";
-    if (code === 8) return "Round of 16";
-    if (code === 16) return "Round of 32";
-  }
-  return "Other";
-}
-
-function mapEvent(e: any): Wc2026Fixture {
-  return {
-    id: e.id,
-    startTs: e.startTimestamp,
-    status: e.status?.type ?? "notstarted",
-    statusDesc: e.status?.description ?? "",
-    minute: e.time?.currentPeriodStartTimestamp
-      ? Math.floor((Date.now() / 1000 - e.time.currentPeriodStartTimestamp) / 60)
-      : null,
-    group: normalizeRound(e.tournament?.name ?? "", e.roundInfo),
-    venue: e.venue?.stadium?.name ?? null,
-    city: e.venue?.city?.name ?? null,
-    home: {
-      id: e.homeTeam?.id,
-      name: e.homeTeam?.name ?? "",
-      code: e.homeTeam?.nameCode ?? "",
-      goals: e.homeScore?.current ?? null,
-    },
-    away: {
-      id: e.awayTeam?.id,
-      name: e.awayTeam?.name ?? "",
-      code: e.awayTeam?.nameCode ?? "",
-      goals: e.awayScore?.current ?? null,
-    },
-  };
-}
-
-export const getWc2026Fixtures = createServerFn({ method: "GET" }).handler(async () => {
-  try {
-    const fixtures: Wc2026Fixture[] = [];
-    const seen = new Set<number>();
-    // last matches (played) – may paginate
-    for (let p = 0; p < 6; p++) {
-      const raw = (await apiGet(
-        `/tournaments/get-last-matches?tournamentId=${TID}&seasonId=${SID}&pageIndex=${p}`, LIVE_TTL_MS,
-      )) as { events?: any[]; hasNextPage?: boolean };
-      for (const e of raw.events ?? []) {
-        if (!seen.has(e.id)) { seen.add(e.id); fixtures.push(mapEvent(e)); }
-      }
-      if (!raw.hasNextPage) break;
-    }
-    // next matches (upcoming)
-    for (let p = 0; p < 6; p++) {
-      const raw = (await apiGet(
-        `/tournaments/get-next-matches?tournamentId=${TID}&seasonId=${SID}&pageIndex=${p}`, LIVE_TTL_MS,
-      )) as { events?: any[]; hasNextPage?: boolean };
-      for (const e of raw.events ?? []) {
-        if (!seen.has(e.id)) { seen.add(e.id); fixtures.push(mapEvent(e)); }
-      }
-      if (!raw.hasNextPage) break;
-    }
-    fixtures.sort((a, b) => a.startTs - b.startTs);
-    return { fixtures, error: null as string | null };
-  } catch (e) {
-    const msg = e instanceof Error ? e.message : "Unknown error";
-    return { fixtures: [] as Wc2026Fixture[], error: msg };
-  }
-});
-
-// ===================== STANDINGS =====================
 
 export type Wc2026StandingRow = {
   rank: number;
@@ -145,51 +53,7 @@ export type Wc2026StandingRow = {
   goalsDiff: string;
   points: number;
 };
-export type Wc2026Group = {
-  group: string;            // "Group A"
-  rows: Wc2026StandingRow[];
-};
-
-export const getWc2026Standings = createServerFn({ method: "GET" }).handler(async () => {
-  try {
-    const raw = (await apiGet(
-      `/tournaments/get-standings?tournamentId=${TID}&seasonId=${SID}&type=total`,
-    )) as { standings?: any[] };
-    const groups: Wc2026Group[] = (raw.standings ?? [])
-      .filter((g: any) => /group/i.test(g.tournament?.name ?? ""))
-      .map((g: any) => {
-        const m = /,\s*(.+)$/.exec(g.tournament?.name ?? "");
-        const name = m ? m[1].trim() : g.tournament?.name ?? "Group";
-        return {
-          group: name,
-          rows: (g.rows ?? []).map((r: any) => ({
-            rank: r.position,
-            team: {
-              id: r.team?.id,
-              name: r.team?.name ?? "",
-              code: r.team?.nameCode ?? "",
-              fifaRanking: r.team?.ranking ?? null,
-            },
-            played: r.matches ?? 0,
-            win: r.wins ?? 0,
-            draw: r.draws ?? 0,
-            lose: r.losses ?? 0,
-            goalsFor: r.scoresFor ?? 0,
-            goalsAgainst: r.scoresAgainst ?? 0,
-            goalsDiff: r.scoreDiffFormatted ?? String((r.scoresFor ?? 0) - (r.scoresAgainst ?? 0)),
-            points: r.points ?? 0,
-          })),
-        };
-      });
-    groups.sort((a, b) => a.group.localeCompare(b.group));
-    return { groups, error: null as string | null };
-  } catch (e) {
-    const msg = e instanceof Error ? e.message : "Unknown error";
-    return { groups: [] as Wc2026Group[], error: msg };
-  }
-});
-
-// ===================== TOP SCORERS =====================
+export type Wc2026Group = { group: string; rows: Wc2026StandingRow[] };
 
 export type Wc2026Scorer = {
   rank: number;
@@ -200,80 +64,18 @@ export type Wc2026Scorer = {
   assists: number | null;
 };
 
-export const getWc2026TopScorers = createServerFn({ method: "GET" }).handler(async () => {
-  try {
-    const raw = (await apiGet(
-      `/tournaments/get-top-players?tournamentId=${TID}&seasonId=${SID}&positionDetail=all`,
-    )) as { topPlayers?: { goals?: any[]; assists?: any[] } };
-    const goalsArr = raw.topPlayers?.goals ?? [];
-    const scorers: Wc2026Scorer[] = goalsArr.slice(0, 25).map((row: any, i: number) => ({
-      rank: i + 1,
-      name: row.player?.name ?? "",
-      playerId: row.player?.id,
-      team: {
-        id: row.team?.id,
-        name: row.team?.name ?? "",
-        code: row.team?.nameCode ?? "",
-      },
-      goals: row.statistics?.goals ?? 0,
-      assists: row.statistics?.assists ?? null,
-    }));
-    return { scorers, error: null as string | null };
-  } catch (e) {
-    const msg = e instanceof Error ? e.message : "Unknown error";
-    return { scorers: [] as Wc2026Scorer[], error: msg };
-  }
-});
-
-// ===================== FIFA RANKINGS (derived from standings) =====================
-
 export type FifaRankRow = {
   rank: number;
   team: { id: number; name: string; code: string };
   group: string;
 };
 
-// Derives an "updated FIFA ranking" list from the WC 2026 standings response,
-// which embeds each team's current FIFA ranking. Zero extra API cost.
-export const getFifaRankings = createServerFn({ method: "GET" }).handler(async () => {
-  try {
-    const raw = (await apiGet(
-      `/tournaments/get-standings?tournamentId=${TID}&seasonId=${SID}&type=total`,
-    )) as { standings?: any[] };
-    const seen = new Map<number, FifaRankRow>();
-    for (const g of raw.standings ?? []) {
-      if (!/group/i.test(g.tournament?.name ?? "")) continue;
-      const m = /,\s*(.+)$/.exec(g.tournament?.name ?? "");
-      const groupName = m ? m[1].trim() : "";
-      for (const r of g.rows ?? []) {
-        const t = r.team;
-        const rk = t?.ranking;
-        if (!t || rk == null || rk === 0) continue;
-        if (!seen.has(t.id)) {
-          seen.set(t.id, {
-            rank: rk,
-            team: { id: t.id, name: t.name, code: t.nameCode ?? "" },
-            group: groupName,
-          });
-        }
-      }
-    }
-    const rows = Array.from(seen.values()).sort((a, b) => a.rank - b.rank);
-    return { rows, error: null as string | null };
-  } catch (e) {
-    const msg = e instanceof Error ? e.message : "Unknown error";
-    return { rows: [] as FifaRankRow[], error: msg };
-  }
-});
-
-// ===================== LIVE MATCH CENTER =====================
-
 export type Wc2026MatchEvent = {
   id: number | string;
   minute: number | null;
   injuryTime: number | null;
   team: "home" | "away" | null;
-  type: string;          // goal | yellowcard | redcard | substitution | penalty | own_goal | var
+  type: string;
   playerName: string | null;
   assistName?: string | null;
   description: string | null;
@@ -297,15 +99,244 @@ export type Wc2026Lineups = {
 };
 
 export type Wc2026MatchStats = {
-  group: string;          // "Possession", "Shots", …
+  group: string;
   rows: { name: string; home: string; away: string }[];
 }[];
 
+// ===================== HELPERS =====================
+
+export function wc2026TeamLogo(id: number) {
+  return `https://a.espncdn.com/i/teamlogos/soccer/500/${id}.png`;
+}
+
+function mapStatus(state: string | undefined): string {
+  if (state === "in") return "inprogress";
+  if (state === "post") return "finished";
+  return "notstarted";
+}
+
+function deriveGroup(ev: any): string {
+  // ESPN puts grouping in event.season.type.name, or competitions[0].notes,
+  // or competitions[0].type.text ("Group Stage", "Round of 32", etc.)
+  const notes = ev?.competitions?.[0]?.notes ?? [];
+  for (const n of notes) {
+    const h = String(n?.headline ?? "");
+    const m = /Group\s+[A-Z]/i.exec(h);
+    if (m) return m[0].replace(/\s+/, " ");
+    if (/round of 16/i.test(h)) return "Round of 16";
+    if (/round of 32/i.test(h)) return "Round of 32";
+    if (/quarter/i.test(h)) return "Quarter-Final";
+    if (/semi/i.test(h)) return "Semi-Final";
+    if (/third/i.test(h)) return "Third-Place Play-off";
+    if (/final/i.test(h)) return "Final";
+  }
+  const t = ev?.competitions?.[0]?.type?.text ?? ev?.season?.type?.name ?? "";
+  if (/group/i.test(t)) return "Group Stage";
+  return t || "Other";
+}
+
+function mapEvent(ev: any): Wc2026Fixture {
+  const comp = ev?.competitions?.[0] ?? {};
+  const competitors = comp.competitors ?? [];
+  const home = competitors.find((c: any) => c.homeAway === "home") ?? competitors[0] ?? {};
+  const away = competitors.find((c: any) => c.homeAway === "away") ?? competitors[1] ?? {};
+  const status = ev?.status ?? comp.status ?? {};
+  const startTs = Math.floor(new Date(ev.date).getTime() / 1000);
+  const period = status?.period ?? null;
+  const clock = status?.displayClock as string | undefined;
+  let minute: number | null = null;
+  if (mapStatus(status?.type?.state) === "inprogress" && clock) {
+    const m = /^(\d+)/.exec(clock);
+    if (m) minute = Number(m[1]) + (period && period > 1 ? 45 * (period - 1) : 0);
+  }
+  return {
+    id: Number(ev.id),
+    startTs,
+    status: mapStatus(status?.type?.state),
+    statusDesc: status?.type?.description ?? "",
+    minute,
+    group: deriveGroup(ev),
+    venue: comp.venue?.fullName ?? null,
+    city: comp.venue?.address?.city ?? null,
+    home: {
+      id: Number(home.team?.id ?? 0),
+      name: home.team?.displayName ?? "",
+      code: (home.team?.abbreviation ?? "").toUpperCase(),
+      goals: home.score != null ? Number(home.score) : null,
+    },
+    away: {
+      id: Number(away.team?.id ?? 0),
+      name: away.team?.displayName ?? "",
+      code: (away.team?.abbreviation ?? "").toUpperCase(),
+      goals: away.score != null ? Number(away.score) : null,
+    },
+  };
+}
+
+// ===================== FIXTURES =====================
+
+export const getWc2026Fixtures = createServerFn({ method: "GET" }).handler(async () => {
+  try {
+    const raw = (await espnGet(
+      `${ESPN_SITE}/scoreboard?dates=${WC_RANGE}&limit=200`,
+      LIVE_TTL_MS,
+    )) as { events?: any[] };
+    const fixtures: Wc2026Fixture[] = (raw.events ?? []).map(mapEvent);
+    fixtures.sort((a, b) => a.startTs - b.startTs);
+    return { fixtures, error: null as string | null };
+  } catch (e) {
+    return {
+      fixtures: [] as Wc2026Fixture[],
+      error: e instanceof Error ? e.message : "Unknown error",
+    };
+  }
+});
+
+// ===================== STANDINGS =====================
+
+function statVal(stats: any[], names: string[]): number {
+  for (const n of names) {
+    const s = stats.find((x) => x?.name === n || x?.type === n || x?.abbreviation === n);
+    if (s && s.value != null) return Number(s.value);
+  }
+  return 0;
+}
+
+function flattenStandingsTree(node: any, out: any[]): void {
+  if (!node) return;
+  if (Array.isArray(node.children) && node.children.length) {
+    for (const c of node.children) flattenStandingsTree(c, out);
+  }
+  if (node.standings?.entries?.length) out.push(node);
+}
+
+export const getWc2026Standings = createServerFn({ method: "GET" }).handler(async () => {
+  try {
+    const raw = (await espnGet(
+      `${ESPN_CORE}/standings?season=${SEASON}`,
+    )) as any;
+    const groupsRaw: any[] = [];
+    flattenStandingsTree(raw, groupsRaw);
+    const groups: Wc2026Group[] = groupsRaw
+      .filter((g) => /group/i.test(g?.name ?? g?.abbreviation ?? ""))
+      .map((g) => {
+        const name = String(g.name ?? g.abbreviation ?? "Group");
+        const rows: Wc2026StandingRow[] = (g.standings?.entries ?? []).map((en: any, i: number) => {
+          const stats = en.stats ?? [];
+          const win = statVal(stats, ["wins"]);
+          const draw = statVal(stats, ["ties"]);
+          const lose = statVal(stats, ["losses"]);
+          const gf = statVal(stats, ["pointsFor", "goalsFor"]);
+          const ga = statVal(stats, ["pointsAgainst", "goalsAgainst"]);
+          const played = statVal(stats, ["gamesPlayed"]) || win + draw + lose;
+          const points = statVal(stats, ["points"]) || win * 3 + draw;
+          const rank = statVal(stats, ["rank"]) || i + 1;
+          return {
+            rank,
+            team: {
+              id: Number(en.team?.id ?? 0),
+              name: en.team?.displayName ?? "",
+              code: (en.team?.abbreviation ?? "").toUpperCase(),
+              fifaRanking: null,
+            },
+            played, win, draw, lose,
+            goalsFor: gf, goalsAgainst: ga,
+            goalsDiff: String(gf - ga),
+            points,
+          };
+        });
+        rows.sort((a, b) => a.rank - b.rank);
+        return { group: name, rows };
+      });
+    groups.sort((a, b) => a.group.localeCompare(b.group));
+    return { groups, error: null as string | null };
+  } catch (e) {
+    return {
+      groups: [] as Wc2026Group[],
+      error: e instanceof Error ? e.message : "Unknown error",
+    };
+  }
+});
+
+// ===================== TOP SCORERS =====================
+
+export const getWc2026TopScorers = createServerFn({ method: "GET" }).handler(async () => {
+  try {
+    const raw = (await espnGet(
+      `${ESPN_WEB}/leaders?season=${SEASON}`,
+    )) as { categories?: any[] };
+    const cat = (raw.categories ?? []).find((c: any) =>
+      /goal/i.test(c?.name ?? c?.displayName ?? "") && !/assist|saved/i.test(c?.name ?? ""),
+    ) ?? (raw.categories ?? [])[0];
+    const leaders: any[] = cat?.leaders ?? [];
+    const scorers: Wc2026Scorer[] = leaders.slice(0, 25).map((l: any, i: number) => ({
+      rank: i + 1,
+      name: l.athlete?.displayName ?? l.displayName ?? "",
+      playerId: Number(l.athlete?.id ?? 0),
+      team: {
+        id: Number(l.team?.id ?? 0),
+        name: l.team?.displayName ?? "",
+        code: (l.team?.abbreviation ?? "").toUpperCase(),
+      },
+      goals: Number(l.value ?? 0),
+      assists: null,
+    }));
+    return { scorers, error: null as string | null };
+  } catch (e) {
+    return {
+      scorers: [] as Wc2026Scorer[],
+      error: e instanceof Error ? e.message : "Unknown error",
+    };
+  }
+});
+
+// ===================== FIFA RANKINGS (derived from standings) =====================
+// ESPN's standings payload doesn't carry FIFA ranking — return empty list; the
+// /players page also reads from a bundled fifa_rankings.json fallback.
+export const getFifaRankings = createServerFn({ method: "GET" }).handler(async () => {
+  try {
+    const sQ = (await espnGet(`${ESPN_CORE}/standings?season=${SEASON}`)) as any;
+    const groupsRaw: any[] = [];
+    flattenStandingsTree(sQ, groupsRaw);
+    const seen = new Map<number, FifaRankRow>();
+    let rank = 1;
+    for (const g of groupsRaw) {
+      const name = String(g.name ?? "");
+      if (!/group/i.test(name)) continue;
+      for (const en of g.standings?.entries ?? []) {
+        const id = Number(en.team?.id ?? 0);
+        if (!id || seen.has(id)) continue;
+        seen.set(id, {
+          rank: rank++,
+          team: {
+            id,
+            name: en.team?.displayName ?? "",
+            code: (en.team?.abbreviation ?? "").toUpperCase(),
+          },
+          group: name,
+        });
+      }
+    }
+    return { rows: Array.from(seen.values()), error: null as string | null };
+  } catch (e) {
+    return {
+      rows: [] as FifaRankRow[],
+      error: e instanceof Error ? e.message : "Unknown error",
+    };
+  }
+});
+
+// ===================== MATCH DETAIL / EVENTS / LINEUPS / STATS =====================
+
+async function fetchSummary(matchId: number, ttl = LIVE_TTL_MS): Promise<any> {
+  return espnGet(`${ESPN_SITE}/summary?event=${matchId}`, ttl);
+}
+
 function mapIncidentType(t: string): string {
   const s = (t ?? "").toLowerCase();
-  if (s.includes("goal") && s.includes("own")) return "own_goal";
-  if (s.includes("penalty") && s.includes("missed")) return "penalty_missed";
-  if (s === "goal" || s.includes("goal")) return "goal";
+  if (s.includes("own")) return "own_goal";
+  if (s.includes("penalty") && s.includes("miss")) return "penalty_missed";
+  if (s.includes("goal")) return "goal";
   if (s.includes("yellow") && s.includes("red")) return "yellow_red";
   if (s.includes("yellow")) return "yellowcard";
   if (s.includes("red")) return "redcard";
@@ -322,24 +353,26 @@ export const getWc2026MatchEvents = createServerFn({ method: "GET" })
   })
   .handler(async ({ data }) => {
     try {
-      const raw = (await apiGet(
-        `/matches/get-incidents?matchId=${data.matchId}`, LIVE_TTL_MS,
-      )) as { incidents?: any[] };
-      const incidents = (raw.incidents ?? [])
-        .filter((i: any) => i.incidentType && i.incidentType !== "period")
-        .map((i: any, idx: number): Wc2026MatchEvent => ({
-          id: i.id ?? `${data.matchId}-${idx}`,
-          minute: i.time ?? null,
-          injuryTime: i.addedTime ?? null,
-          team: i.isHome === true ? "home" : i.isHome === false ? "away" : null,
-          type: mapIncidentType(i.incidentType ?? i.incidentClass ?? ""),
-          playerName: i.player?.name ?? i.playerName ?? null,
-          assistName: i.assist1?.name ?? null,
-          description: i.text ?? i.reason ?? null,
-        }));
-      // sort ascending by minute
-      incidents.sort((a, b) => (a.minute ?? 0) - (b.minute ?? 0));
-      return { events: incidents, error: null as string | null };
+      const raw = (await fetchSummary(data.matchId)) as any;
+      const homeId = raw?.header?.competitions?.[0]?.competitors?.find((c: any) => c.homeAway === "home")?.team?.id;
+      const details: any[] = raw?.details ?? raw?.keyEvents ?? [];
+      const events: Wc2026MatchEvent[] = details.map((d: any, i: number) => {
+        const teamId = d.team?.id ?? d.teamId;
+        const side: "home" | "away" | null =
+          teamId == null ? null : String(teamId) === String(homeId) ? "home" : "away";
+        return {
+          id: d.id ?? `${data.matchId}-${i}`,
+          minute: d.clock?.value != null ? Math.floor(Number(d.clock.value) / 60) : (d.minute ?? null),
+          injuryTime: null,
+          team: side,
+          type: mapIncidentType(d.type?.text ?? d.type?.id ?? ""),
+          playerName: d.athletesInvolved?.[0]?.displayName ?? null,
+          assistName: d.athletesInvolved?.[1]?.displayName ?? null,
+          description: d.text ?? null,
+        };
+      });
+      events.sort((a, b) => (a.minute ?? 0) - (b.minute ?? 0));
+      return { events, error: null as string | null };
     } catch (e) {
       return {
         events: [] as Wc2026MatchEvent[],
@@ -356,26 +389,25 @@ export const getWc2026MatchLineups = createServerFn({ method: "GET" })
   })
   .handler(async ({ data }) => {
     try {
-      const raw = (await apiGet(
-        `/matches/get-lineups?matchId=${data.matchId}`,
-      )) as { confirmed?: boolean; home?: any; away?: any };
-      const mapSide = (side: any): Wc2026LineupPlayer[] => {
-        const players = side?.players ?? [];
-        return players.map((p: any) => ({
-          id: p.player?.id,
-          name: p.player?.name ?? "",
-          shirt: p.shirtNumber ?? p.jerseyNumber ?? null,
-          position: p.position ?? null,
+      const raw = (await fetchSummary(data.matchId, DEFAULT_TTL_MS)) as any;
+      const rosters: any[] = raw?.rosters ?? [];
+      const home = rosters.find((r) => r.homeAway === "home") ?? rosters[0];
+      const away = rosters.find((r) => r.homeAway === "away") ?? rosters[1];
+      const mapSide = (side: any): Wc2026LineupPlayer[] =>
+        (side?.roster ?? []).map((p: any) => ({
+          id: Number(p.athlete?.id ?? 0),
+          name: p.athlete?.displayName ?? "",
+          shirt: p.jersey != null ? Number(p.jersey) : null,
+          position: p.position?.abbreviation ?? p.position?.name ?? null,
           captain: !!p.captain,
-          substitute: !!p.substitute,
+          substitute: !p.starter,
         }));
-      };
       const lineups: Wc2026Lineups = {
-        confirmed: !!raw.confirmed,
-        formationHome: raw.home?.formation ?? null,
-        formationAway: raw.away?.formation ?? null,
-        home: mapSide(raw.home),
-        away: mapSide(raw.away),
+        confirmed: !!(home?.roster?.length || away?.roster?.length),
+        formationHome: home?.formation ?? null,
+        formationAway: away?.formation ?? null,
+        home: mapSide(home),
+        away: mapSide(away),
       };
       return { lineups, error: null as string | null };
     } catch (e) {
@@ -394,21 +426,22 @@ export const getWc2026MatchStats = createServerFn({ method: "GET" })
   })
   .handler(async ({ data }) => {
     try {
-      const raw = (await apiGet(
-        `/matches/get-statistics?matchId=${data.matchId}`, LIVE_TTL_MS,
-      )) as { statistics?: any[] };
-      // Use "ALL" period if available.
-      const all = (raw.statistics ?? []).find((p: any) => p.period === "ALL")
-        ?? (raw.statistics ?? [])[0];
-      const groups: Wc2026MatchStats = (all?.groups ?? []).map((g: any) => ({
-        group: g.groupName ?? "",
-        rows: (g.statisticsItems ?? []).map((it: any) => ({
-          name: it.name ?? "",
-          home: String(it.home ?? "—"),
-          away: String(it.away ?? "—"),
-        })),
-      }));
-      return { stats: groups, error: null as string | null };
+      const raw = (await fetchSummary(data.matchId)) as any;
+      const teamStats: any[] = raw?.boxscore?.teams ?? [];
+      if (teamStats.length < 2) return { stats: [] as Wc2026MatchStats, error: null };
+      const homeStats = (teamStats.find((t) => t.homeAway === "home") ?? teamStats[0])?.statistics ?? [];
+      const awayStats = (teamStats.find((t) => t.homeAway === "away") ?? teamStats[1])?.statistics ?? [];
+      const map = new Map<string, { home: string; away: string }>();
+      for (const s of homeStats) map.set(s.name ?? s.label, { home: String(s.displayValue ?? "—"), away: "—" });
+      for (const s of awayStats) {
+        const k = s.name ?? s.label;
+        const ex = map.get(k);
+        if (ex) ex.away = String(s.displayValue ?? "—");
+        else map.set(k, { home: "—", away: String(s.displayValue ?? "—") });
+      }
+      const rows = Array.from(map.entries()).map(([name, v]) => ({ name, home: v.home, away: v.away }));
+      const stats: Wc2026MatchStats = rows.length ? [{ group: "Match Stats", rows }] : [];
+      return { stats, error: null as string | null };
     } catch (e) {
       return {
         stats: [] as Wc2026MatchStats,
@@ -417,8 +450,6 @@ export const getWc2026MatchStats = createServerFn({ method: "GET" })
     }
   });
 
-// Fetches a single match's headline info (score, status, minute) — used by the
-// match page when the user lands directly on it.
 export const getWc2026Match = createServerFn({ method: "GET" })
   .inputValidator((d: unknown) => {
     const id = Number((d as any)?.matchId);
@@ -427,10 +458,18 @@ export const getWc2026Match = createServerFn({ method: "GET" })
   })
   .handler(async ({ data }) => {
     try {
-      const raw = (await apiGet(`/matches/detail?matchId=${data.matchId}`, LIVE_TTL_MS)) as { event?: any };
-      const e = raw.event;
-      if (!e) return { fixture: null as Wc2026Fixture | null, error: "Not found" };
-      return { fixture: mapEvent(e), error: null as string | null };
+      const raw = (await fetchSummary(data.matchId)) as any;
+      const header = raw?.header;
+      if (!header) return { fixture: null as Wc2026Fixture | null, error: "Not found" };
+      // Synthesize an event-shaped object for mapEvent
+      const ev = {
+        id: header.id,
+        date: header.competitions?.[0]?.date,
+        season: header.season,
+        status: header.competitions?.[0]?.status,
+        competitions: header.competitions,
+      };
+      return { fixture: mapEvent(ev), error: null as string | null };
     } catch (err) {
       return {
         fixture: null as Wc2026Fixture | null,
