@@ -94,41 +94,44 @@ function CricketIndex() {
         </div>
       </section>
 
-      {/* LEAGUE TABS */}
+      {/* LEAGUE TABS — horizontal snap rail (mobile + desktop) */}
       <div className="sticky top-16 z-20 border-b border-border bg-background/85 backdrop-blur">
-        <div className="max-w-7xl mx-auto px-3 sm:px-6 py-2.5 flex flex-wrap items-center gap-1.5">
-          <LeaguePill
-            label="All"
-            emoji="🏏"
-            active={activeLeagueId === "all"}
-            onClick={() => setActiveLeagueId("all")}
-            count={allMatches.length}
-          />
-          {CRICKET_LEAGUES.map((l) => {
-            const c = allMatches.filter((m) => m.leagueId === l.id).length;
-            return (
-              <LeaguePill
-                key={l.id}
-                label={l.label}
-                emoji={l.emoji}
-                active={activeLeagueId === l.id}
-                onClick={() => setActiveLeagueId(l.id)}
-                count={c}
-                accent={l.accent}
-              />
-            );
-          })}
-          <span className="hidden sm:block w-px h-5 bg-gray-700 mx-1" />
-          {(["any", "t20", "odi", "test"] as const).map((f) => (
-            <FormatChip key={f} value={f} active={fmt === f} onClick={() => setFmt(f)} />
-          ))}
-          {q.isFetching && !q.isLoading && (
-            <span className="ml-auto text-[10px] text-gray-500 inline-flex items-center gap-1.5">
-              <span className="size-1.5 rounded-full bg-amber-400 animate-pulse" /> Updating…
-            </span>
-          )}
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 py-2.5">
+          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-0.5">
+            <LeaguePill
+              label="All"
+              emoji="🏏"
+              active={activeLeagueId === "all"}
+              onClick={() => setActiveLeagueId("all")}
+              count={allMatches.length}
+            />
+            {CRICKET_LEAGUES.map((l) => {
+              const c = allMatches.filter((m) => m.leagueId === l.id).length;
+              return (
+                <LeaguePill
+                  key={l.id}
+                  label={l.label}
+                  emoji={l.emoji}
+                  active={activeLeagueId === l.id}
+                  onClick={() => setActiveLeagueId(l.id)}
+                  count={c}
+                  accent={l.accent}
+                />
+              );
+            })}
+            <span className="shrink-0 w-px h-5 bg-gray-700 mx-1" />
+            {(["any", "t20", "odi", "test"] as const).map((f) => (
+              <FormatChip key={f} value={f} active={fmt === f} onClick={() => setFmt(f)} />
+            ))}
+            {q.isFetching && !q.isLoading && (
+              <span className="ml-3 shrink-0 text-[10px] text-gray-500 inline-flex items-center gap-1.5">
+                <span className="size-1.5 rounded-full bg-amber-400 animate-pulse" /> Updating…
+              </span>
+            )}
+          </div>
         </div>
       </div>
+
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-10">
         {/* Quick series tiles */}
