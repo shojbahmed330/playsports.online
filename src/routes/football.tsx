@@ -261,38 +261,46 @@ function Index() {
         </div>
       </header>
 
-      {/* HERO */}
-      <section className="relative overflow-hidden border-b border-border">
-        <div
-          aria-hidden
-          className="absolute inset-0 opacity-40"
-          style={{
-            background:
-              "radial-gradient(60% 80% at 50% 0%, oklch(0.78 0.16 75 / 0.18), transparent 60%), radial-gradient(40% 60% at 80% 100%, oklch(0.62 0.22 27 / 0.12), transparent 60%)",
-          }}
-        />
-        <div className="relative max-w-5xl mx-auto px-4 sm:px-6 py-10 sm:py-16 text-center">
-          <div className="flex justify-center mb-5">
-            <div className="size-16 sm:size-20 rounded-full bg-gradient-to-br from-gold/40 to-destructive/20 grid place-items-center ring-1 ring-gold/30 animate-spin-slow">
-              <Trophy className="size-8 sm:size-9 text-gold" />
+      {/* HERO — live-aware for 2026, classic for archive years */}
+      {year === 2026 ? (
+        <>
+          <FootballHero />
+          <section className="relative overflow-hidden border-b border-border">
+            <div className="relative max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8 text-center">
+              <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-3">Browse tournaments</div>
+              <YearStrip year={year} onChange={(y: number) => { setYear(y); toast(`Viewing ${y} World Cup`, { duration: 1800 }); }} />
+            </div>
+          </section>
+        </>
+      ) : (
+        <section className="relative overflow-hidden border-b border-border">
+          <div
+            aria-hidden
+            className="absolute inset-0 opacity-40"
+            style={{
+              background:
+                "radial-gradient(60% 80% at 50% 0%, oklch(0.78 0.16 75 / 0.18), transparent 60%), radial-gradient(40% 60% at 80% 100%, oklch(0.62 0.22 27 / 0.12), transparent 60%)",
+            }}
+          />
+          <div className="relative max-w-5xl mx-auto px-4 sm:px-6 py-10 sm:py-16 text-center">
+            <div className="flex justify-center mb-5">
+              <div className="size-16 sm:size-20 rounded-full bg-gradient-to-br from-gold/40 to-destructive/20 grid place-items-center ring-1 ring-gold/30 animate-spin-slow">
+                <Trophy className="size-8 sm:size-9 text-gold" />
+              </div>
+            </div>
+            <h1 className="text-3xl sm:text-6xl font-extrabold tracking-tight">
+              FIFA World Cup <span className="text-gold">Archive</span>
+            </h1>
+            <p className="mt-3 sm:mt-4 text-sm sm:text-lg text-muted-foreground max-w-xl mx-auto px-2">
+              Complete tournament history from <span className="text-foreground font-semibold">1930</span> to <span className="text-foreground font-semibold">2026</span>. Every match, every champion.
+            </p>
+            <div className="mt-8 sm:mt-10">
+              <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-3">Select Tournament</div>
+              <YearStrip year={year} onChange={(y: number) => { setYear(y); toast(`Viewing ${y} World Cup`, { duration: 1800 }); }} />
             </div>
           </div>
-          <h1 className="text-3xl sm:text-6xl font-extrabold tracking-tight">
-            {year === 2026 ? (<>FIFA World Cup <span className="text-gold">2026</span></>) : (<>FIFA World Cup <span className="text-gold">Archive</span></>)}
-          </h1>
-          <p className="mt-3 sm:mt-4 text-sm sm:text-lg text-muted-foreground max-w-xl mx-auto px-2">
-            {year === 2026
-              ? "Live fixtures, group standings, knockout bracket and top scorers for the 48-team tournament across USA, Canada & Mexico."
-              : <>Complete tournament history from <span className="text-foreground font-semibold">1930</span> to <span className="text-foreground font-semibold">2026</span>. Every match, every champion.</>}
-          </p>
-
-          {/* YEAR STRIP — horizontal snap-scroll, mobile-friendly */}
-          <div className="mt-8 sm:mt-10">
-            <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-3">Select Tournament</div>
-            <YearStrip year={year} onChange={(y: number) => { setYear(y); toast(`Viewing ${y} World Cup`, { duration: 1800 }); }} />
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* CONTENT */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-14 space-y-8">
@@ -305,25 +313,20 @@ function Index() {
               </div>
             </div>
 
-            <div className="flex justify-center">
-              <div className="bg-gray-900 rounded-2xl p-1 inline-flex gap-1 border border-gray-800">
-                <TabBtn active={tab === "groups"} onClick={() => setTab("groups")} icon={<Users className="size-4" />}>
-                  Group Stage
-                </TabBtn>
-                <TabBtn active={tab === "knockout"} onClick={() => setTab("knockout")} icon={<Swords className="size-4" />}>
-                  Knockout & Scorers
-                </TabBtn>
-              </div>
-            </div>
+            <FootballSubNav active={tab} onChange={setTab} />
 
             <AdSlot slot="in_content" layout="in-article" />
 
             {tab === "groups" ? (
-              <section key="groups-2026" className="wc-tab-content">
+              <section key="groups-2026" className="wc-tab-content" id="fixtures">
                 <Wc2026GroupsView />
               </section>
+            ) : tab === "scorers" ? (
+              <section key="scorers-2026" className="wc-tab-content animate-fade-in" id="scorers">
+                <Wc2026ScorersPanel />
+              </section>
             ) : (
-              <section key="knockout-2026" className="wc-tab-content">
+              <section key="knockout-2026" className="wc-tab-content" id="fixtures">
                 <Wc2026KnockoutView />
               </section>
             )}
