@@ -39,32 +39,16 @@ export const Route = createFileRoute("/football")({
       team: t,
     };
   },
-  head: ({ search }) => {
-    const y = (search as FootballSearch).year ?? 2026;
-    const champ = getChampion(y);
-    const title =
-      y === 2026
-        ? "FIFA World Cup 2026 — Live Scores, Bracket & Archive 1930–2026"
-        : champ
-        ? `${y} World Cup — ${champ.champion} crowned in ${champ.host}`
-        : `${y} FIFA World Cup`;
-    const description =
-      y === 2026
-        ? "Live FIFA World Cup 2026 fixtures, group standings, knockout bracket and complete tournament history from 1930 to 2026."
-        : champ
-        ? `${champ.champion} won the ${y} World Cup, beating ${champ.runnerUp ?? "their opponent"} ${champ.finalScore ?? ""} in ${champ.host}. Full bracket, scores and matches.`
-        : `Browse every match from the ${y} FIFA World Cup.`;
-    return {
-      meta: [
-        { title },
-        { name: "description", content: description },
-        { property: "og:title", content: title },
-        { property: "og:description", content: description },
-        { property: "og:url", content: `https://allsportslive.lovable.app/football?year=${y}` },
-      ],
-      links: [{ rel: "canonical", href: `https://allsportslive.lovable.app/football?year=${y}` }],
-    };
-  },
+  head: () => ({
+    meta: [
+      { title: "FIFA World Cup 2026 — Live Scores, Bracket & Archive 1930–2026" },
+      { name: "description", content: "Live FIFA World Cup 2026 fixtures, group standings, knockout bracket and complete tournament history from 1930 to 2026." },
+      { property: "og:title", content: "FIFA World Cup 2026 — Live Scores & Complete Archive" },
+      { property: "og:description", content: "Live 2026 fixtures with kickoff countdowns, full bracket, top scorers and historical tournaments." },
+      { property: "og:url", content: "https://allsportslive.lovable.app/football" },
+    ],
+    links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/football" }],
+  }),
   component: Index,
 });
 
