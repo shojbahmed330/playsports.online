@@ -1,0 +1,23 @@
+import { createFileRoute } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
+import { getMlbAthlete } from "@/lib/mlb.functions";
+import { PlayerProfile } from "@/components/mlb/PlayerProfile";
+
+export const Route = createFileRoute("/mlb/player/$id")({
+  component: PlayerPage,
+});
+
+function PlayerPage() {
+  const { id } = Route.useParams();
+  const fn = useServerFn(getMlbAthlete);
+  const q = useQuery({ queryKey: ["mlb", "athlete", id], queryFn: () => fn({ data: { id } }), staleTime: 60 * 60_000 });
+
+  if (q.isLoading) {
+    return <div className="h-64 rounded-2xl bg-card ring-1 ring-border animate-pulse" />;
+  }
+  if (!q.data?.athlete) {
+    return <div className="text-sm text-muted-foreground">Player not found.</div>;
+  }
+  return <PlayerProfile athlete={q.data.athlete} career={q.data.career} />;
+}
