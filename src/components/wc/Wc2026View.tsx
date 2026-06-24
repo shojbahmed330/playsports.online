@@ -19,6 +19,7 @@ import { MobileLiveTicker } from "./MobileLiveTicker";
 import { WatchLivePanel } from "./WatchLivePanel";
 import { flagOf } from "@/lib/flags";
 import { fetch2026VideoMap, videoKey } from "@/lib/wc-2026-videos";
+import r32Fallback from "@/data/wc2026_r32_fixtures.json";
 
 const HOUR = 60 * 60 * 1000;
 const LIVE_MS = 20 * 1000;
