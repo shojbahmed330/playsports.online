@@ -20,7 +20,7 @@ import { Wc2026ScorersPanel } from "@/components/football/Wc2026ScorersPanel";
 import { FootballFilterBar } from "@/components/football/FootballFilterBar";
 import { applyFilter, uniqueTeams, useMyTeams, type FootballFilter } from "@/lib/football-filters";
 import { SiteFooter } from "@/components/home/SiteFooter";
-import { getChampion } from "@/data/wc_champions";
+
 
 const GROUP_MATCHES_BY_YEAR = groupMatchesData as Record<string, WCMatch[]>;
 
@@ -82,10 +82,20 @@ function Index() {
   const [tab, setTab] = useState<SubNavTab>("knockout");
   const [hintSeen, setHintSeen] = useState(true);
 
+  const filter: FootballFilter = search.filter ?? "all";
+  const teamFilter = search.team;
+
   // Sync URL ?year= when changed
   useEffect(() => {
     navigate({ search: (prev: FootballSearch) => ({ ...prev, year }), replace: true });
   }, [year, navigate]);
+
+  const setFilter = (f: FootballFilter) => {
+    navigate({ search: (prev: FootballSearch) => ({ ...prev, filter: f === "all" ? undefined : f }), replace: true });
+  };
+  const setTeamFilter = (t: string | undefined) => {
+    navigate({ search: (prev: FootballSearch) => ({ ...prev, team: t }), replace: true });
+  };
 
   // Reset to knockout when leaving 2026 — scorers tab is 2026-only.
   useEffect(() => {
