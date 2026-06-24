@@ -28,6 +28,10 @@ async function readMap(): Promise<VideoMap> {
 
 export async function fetch2026VideoMap(): Promise<Map<string, string>> {
   const out = new Map<string, string>();
+  // 0) Bundled highlights (curated from @robi_axiata) — baseline.
+  for (const [k, v] of Object.entries(bundledHighlights as Record<string, string>)) {
+    if (v) out.set(k, v);
+  }
   // 1) Anything that *did* get saved to wc_matches in the past — keep honouring it.
   const { data } = await supabase
     .from("wc_matches")
@@ -42,6 +46,7 @@ export async function fetch2026VideoMap(): Promise<Map<string, string>> {
   for (const [k, v] of Object.entries(map)) if (v) out.set(k, v);
   return out;
 }
+
 
 export async function set2026Video(home: string, away: string, url: string | null) {
   const map = await readMap();
