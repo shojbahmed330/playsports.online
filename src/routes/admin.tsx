@@ -249,6 +249,10 @@ function AdminShell() {
         {/* Auto-seed from bundled YouTube dataset */}
         <SeedFromDataset />
 
+        {/* 2026 highlight auto-import from Robi Axiata YouTube channel */}
+        {year === 2026 && <Wc2026HighlightsCard />}
+
+
 
         {/* Match table */}
         <div className="rounded-2xl border border-border bg-card/40 overflow-hidden">
