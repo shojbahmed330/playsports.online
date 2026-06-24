@@ -1,4 +1,6 @@
 import { supabase, type WCMatch } from "@/lib/supabase";
+import bundledHighlights from "@/data/wc2026_highlights.json";
+
 
 /**
  * 2026 video links can't live in `wc_matches` because there is no
