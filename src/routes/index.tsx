@@ -1,8 +1,8 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Trophy, Flame, ArrowRight, MapPin, Clock, CheckCircle2 } from "lucide-react";
+import { Trophy, Flame, ArrowRight, MapPin, Clock, CheckCircle2, X } from "lucide-react";
 import { SPORT_LIST, type SportConfig } from "@/lib/sports-config";
 import { getMultiSportToday, type SportGame } from "@/lib/espn.functions";
 import { getWc2026Fixtures, type Wc2026Fixture } from "@/lib/wc2026.functions";
@@ -15,6 +15,11 @@ import { GameGridSkeleton } from "@/components/sports/Skeletons";
 import { formatLocalTime, relativeDay } from "@/lib/time";
 import { AdSlot } from "@/components/ads/AdSlot";
 import { CricketSlate } from "@/components/cricket/CricketSlate";
+import { HeroSpotlight } from "@/components/home/HeroSpotlight";
+import { PulseStrip } from "@/components/home/PulseStrip";
+import { SportCard, FifaCard, CricketCard } from "@/components/home/SportCard";
+import { SiteFooter } from "@/components/home/SiteFooter";
+import { WatchLivePanel } from "@/components/wc/WatchLivePanel";
 
 export const Route = createFileRoute("/")({
   head: () => ({
