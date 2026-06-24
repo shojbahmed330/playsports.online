@@ -1,15 +1,15 @@
 import { Link, useLocation } from "@tanstack/react-router";
 import { Calendar, Trophy, Users, BarChart3, Newspaper, History, Home, ListOrdered } from "lucide-react";
 
-const TABS: Array<{ to: string; label: string; icon: typeof Home; exact?: boolean }> = [
-  { to: "/mlb",             label: "Today",     icon: Home,        exact: true },
-  { to: "/mlb/scores",      label: "Scores",    icon: Calendar },
-  { to: "/mlb/standings",   label: "Standings", icon: ListOrdered },
-  { to: "/mlb/teams",       label: "Teams",     icon: Users },
-  { to: "/mlb/players",     label: "Leaders",   icon: BarChart3 },
-  { to: "/mlb/history",     label: "History",   icon: History },
-  { to: "/mlb/news",        label: "News",      icon: Newspaper },
-];
+const TABS = [
+  { to: "/mlb",           label: "Today",     icon: Home,        exact: true  as boolean },
+  { to: "/mlb/scores",    label: "Scores",    icon: Calendar,    exact: false as boolean },
+  { to: "/mlb/standings", label: "Standings", icon: ListOrdered, exact: false as boolean },
+  { to: "/mlb/teams",     label: "Teams",     icon: Users,       exact: false as boolean },
+  { to: "/mlb/players",   label: "Leaders",   icon: BarChart3,   exact: false as boolean },
+  { to: "/mlb/history",   label: "History",   icon: History,     exact: false as boolean },
+  { to: "/mlb/news",      label: "News",      icon: Newspaper,   exact: false as boolean },
+] as const;
 void Trophy;
 
 export function MlbSubNav() {
