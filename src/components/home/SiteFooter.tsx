@@ -7,7 +7,7 @@ export function SiteFooter() {
   return (
     <footer className="border-t border-border mt-12 bg-gradient-to-b from-transparent to-gray-950/60">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
-        <AdSlot slot="footer" layout="horizontal" />
+        <AdSlot slot="footer" />
       </div>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 pb-10 grid grid-cols-2 md:grid-cols-4 gap-8 text-sm">
         <div className="col-span-2 md:col-span-1">
