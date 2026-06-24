@@ -345,11 +345,21 @@ function Index() {
 
             <FootballSubNav active={tab} onChange={setTab} />
 
+            {tab !== "scorers" && (
+              <FootballFilterBar
+                filter={filter}
+                onFilterChange={setFilter}
+                team={teamFilter}
+                onTeamChange={setTeamFilter}
+                teamOptions={[]}
+              />
+            )}
+
             <AdSlot slot="in_content" layout="in-article" />
 
             {tab === "groups" ? (
               <section key="groups-2026" className="wc-tab-content" id="fixtures">
-                <Wc2026GroupsView />
+                <Wc2026GroupsView filter={filter} team={teamFilter} />
               </section>
             ) : tab === "scorers" ? (
               <section key="scorers-2026" className="wc-tab-content animate-fade-in" id="scorers">
@@ -357,9 +367,11 @@ function Index() {
               </section>
             ) : (
               <section key="knockout-2026" className="wc-tab-content" id="fixtures">
-                <Wc2026KnockoutView />
+                <Wc2026KnockoutView filter={filter} team={teamFilter} />
               </section>
             )}
+
+            <AdSlot slot="in_content" layout="in-article" />
           </>
         ) : loading ? (
           <BracketSkeleton year={year} />
@@ -415,26 +427,11 @@ function Index() {
                       />
                     </div>
 
-                    {/* Mobile accordion */}
-                    <div className="md:hidden space-y-3">
-                      {knockoutRounds.map((r) => (
-                        <MobileRound
-                          key={r}
-                          round={r}
-                          matches={grouped[r] ?? []}
-                          defaultOpen={r === "final" || r === "semi_final"}
-                          onPick={setActiveMatch}
-                        />
-                      ))}
-                      {(grouped.third_place?.length ?? 0) > 0 && (
-                        <MobileRound
-                          round="third_place"
-                          matches={grouped.third_place ?? []}
-                          defaultOpen={false}
-                          onPick={setActiveMatch}
-                        />
-                      )}
-                    </div>
+                    {/* Mobile vertical bracket with stage chips */}
+                    <MobileBracket
+                      rounds={knockoutRounds.map((r) => ({ round: r, matches: grouped[r] ?? [] }))}
+                      onPick={setActiveMatch}
+                    />
                   </>
                 )}
               </section>
@@ -443,10 +440,8 @@ function Index() {
         )}
       </main>
 
+      <SiteFooter />
 
-      <footer className="border-t border-border mt-10 py-8 text-center text-xs text-muted-foreground">
-        FIFA World Cup Archive — Historical data 1930–2022
-      </footer>
 
       <MatchModal match={activeMatch} onClose={() => setActiveMatch(null)} />
     </div>
