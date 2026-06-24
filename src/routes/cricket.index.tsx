@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { Flame, Clock, CheckCircle2, Calendar, ChevronRight, Trophy } from "lucide-react";
 import { SportNav } from "@/components/sports/SportNav";
+import { CricketSubNav } from "@/components/cricket/CricketSubNav";
 import { GameGridSkeleton } from "@/components/sports/Skeletons";
 import { AdSlot } from "@/components/ads/AdSlot";
 import { CricketMatchCard } from "@/components/cricket/CricketMatchCard";
