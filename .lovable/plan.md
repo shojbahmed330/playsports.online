@@ -1,94 +1,98 @@
+# /football Page Pro Upgrade Plan
 
-# Home Page Audit & Upgrade Plan
+Audit-driven plan to make `/football` stylish, animated, colorful, professional, and fully mobile-friendly. Below: what already exists, gaps found, and an 8-phase build plan.
 
-## What's already on `/` (working)
-- `SportNav` + `LiveTicker` marquee
-- Static text hero ("One Sports Hub. Every Game.")
-- Sport tiles grid (FIFA + MLB/NBA/NHL/MLS)
-- "Live right now" tagged grid
-- `FootballSlate` (WC 2026 featured + buckets)
-- `CricketSlate`
-- One in-content AdSlot
-- "Upcoming today" + "Recent finals"
-- Plain footer
+---
 
-## Gaps & weaknesses (why it feels unfinished)
-1. **Hero is flat** — no live data, no imagery, no motion. Just a gradient + heading.
-2. **No personalization / no "Continue watching"** — user can't jump back to a league/match they were on.
-3. **No trending / top stories rail** — `NewsRail` exists in codebase but isn't used on home.
-4. **No top scorers / records teaser** — `/players` data is rich but invisible from home.
-5. **No standings snapshot** — `StandingsTable` never shown; user must dive into each league.
-6. **No "Watch live" CTA** — `WatchLivePanel` (FIFA YouTube embed) hidden inside football page only.
-7. **No countdown to next marquee event** — `Countdown` exists, only used inside small tiles.
-8. **Cricket + Football slates look identical** — no visual hierarchy between sports.
-9. **Sport tiles don't preview scores** — just emoji + tagline. Wasted real estate.
-10. **Mobile**: hero text scales, but tiles are 2-col and dense; no horizontal snap rails for live games.
-11. **No theme/identity** — generic dark + amber. No signature motion, no brand mark, no hero artwork.
-12. **Footer is one line** — no sitemap, no social, no "data sources" expansion.
-13. **No empty/offline states** with personality — just gray "No matches" boxes.
-14. **No skeleton shimmer** on the FootballSlate / CricketSlate (only on upcoming grid).
-15. **AdSlot placement** — only one mid-page; missing footer/leaderboard slot the AdSense system supports.
+## Current state (what's there)
 
-## Upgrade plan
+- `/football` route: header + hero (Trophy + year title) + `YearStrip` + tabs (Groups / Knockout) + bracket/groups view + `MatchModal`.
+- 2026 view: `Wc2026GroupsView` + `Wc2026KnockoutView` (live ESPN data, 20s refresh).
+- Mobile: accordion bracket, mobile match cards, snap-scroll year strip.
+- Highlights: YouTube video URLs merged from `wc2026_highlights.json` + DB.
+- Watch Live: only on home page (floating FAB), not on `/football`.
 
-### A. Hero redesign (signature moment)
-- Full-bleed animated hero: layered gradient + subtle SVG stadium silhouette + grain.
-- Live stat strip inside hero: `🔴 X live · Y today · Z leagues` with animated counters.
-- Rotating "spotlight card" (3s auto-rotate, Framer Motion `AnimatePresence`): cycles between the single most important live game across all sports → next big WC 2026 fixture → top scorer of the week.
-- Primary CTA: **Watch live** (opens FIFA stream drawer) + secondary **Browse archive**.
-- Countdown chip to next marquee fixture.
+## Gaps & "not fully implemented" findings
 
-### B. New "Pulse" strip (above the fold, below hero)
-- Horizontal snap-scroll rail of every live game across all sports, with `ScoreFlip` animated scores.
-- Sticky on mobile when scrolling past hero.
+1. **No live ticker / live match center** on `/football` itself — `LiveMatchCenter.tsx` and `MobileLiveTicker.tsx` exist but aren't mounted here.
+2. **No "Watch Live" CTA** on the football page (only on `/`).
+3. **Hero is static** — same trophy + title regardless of whether matches are live, today, or finished. No live count, no "Next kickoff in 2h 14m" countdown.
+4. **No Top Scorers / Golden Boot panel** on 2026 view (data exists via `getWc2026TopScorers`, unused on this route).
+5. **No standings snapshot** outside the group tab (no "qualified / eliminated" badges in groups either).
+6. **No filters** — can't filter knockout by team, can't search "show me all Argentina matches".
+7. **No Today's Matches / Live strip** above the tabs — user has to scroll the bracket to find what's on now.
+8. **History years feel flat** — `YearStrip` shows years but no champion flag/badge preview per year; no "winner reel".
+9. **Mobile knockout** is plain accordions — no bracket visualization, no swipeable round deck (`MobileBracket.tsx` exists but isn't used here for historical years).
+10. **No sticky sub-nav** on mobile — once you scroll past tabs they're gone; have to scroll back up to switch Groups/Knockout.
+11. **Header nav** is duplicated across every sport route and not animated; no active-state polish.
+12. **Empty/loading states** are generic skeletons — no branded shimmer, no helpful CTAs.
+13. **No share / deep-link** per match (modal opens but URL doesn't reflect it for sharing).
+14. **No SEO per year** — `head()` is static "2026"; old years should get year-specific title/description.
+15. **AdSlot placement** is single in-content — could add footer slot + between groups/knockout transition.
 
-### C. Sport tiles → "Sport cards 2.0"
-- Each tile shows: league logo, live count badge, next game teams + countdown, today's headline score.
-- Hover: gradient sweep + arrow slide (Framer Motion).
-- Colorful per-sport accent borders using tokens already in `sports-config.ts`.
+---
 
-### D. Sections to add
-1. **Top Stories** — wire existing `NewsRail` with MLB/NBA/NHL/MLS/Soccer headlines (ESPN news API already used in `/mlb/news`).
-2. **Standings snapshot** — 2-col: AL/NL East leaders + Eastern/Western Conf leaders + WC 2026 group leaders. "See full standings →".
-3. **Records & Stars** — pull from `wc_records.json` + merged 2026 goals: "Golden Boot race", "All-time top scorers", clickable to `/players`.
-4. **Watch Live drawer** — global button bottom-right; opens `WatchLivePanel` (FIFA YouTube) as a sheet.
-5. **Cricket / Football side-by-side** on desktop (2-col grid) instead of stacked, with distinct color tokens (amber for football, emerald for cricket).
+## 8-Phase Build Plan
 
-### E. Visual / motion system
-- Add `framer-motion` page-enter stagger for sections.
-- Section headers get a 1px gradient underline + emoji chip.
-- Consistent card hover: `-translate-y-0.5` + colored shadow matching sport accent.
-- Add `noise.svg` overlay (low opacity) for depth on hero.
-- Skeleton shimmer (`animate-pulse` gradient) for every async section.
-- Live dots: replace `animate-pulse` with a custom ping+pulse double ring.
+### Phase 1 — Live-Aware Hero
+- Detect live/today/upcoming from 2026 fixtures, swap hero copy.
+- Add stat pills: `● LIVE 2`, `Today 6`, `Goals today 14`, `Next kickoff in 2h 14m`.
+- Primary CTA: "Watch Live" (opens `WatchLivePanel`) + secondary "Jump to live match".
+- Animated gradient backdrop (gold → red → blue), grid overlay, subtle shimmer on the trophy.
 
-### F. Mobile polish
-- Hero: tighter spacing, single-line stat strip with auto-shrink.
-- Pulse strip + Football fixtures + Cricket fixtures → horizontal snap rails (`snap-x snap-mandatory`).
-- Floating "Live" pill bottom of viewport when any game is in-progress, taps to scroll to Pulse strip.
-- Tile grid: 2 cols mobile, ensure `min-w-0` + truncation on team names.
+### Phase 2 — Football Live Ticker
+- Mount `LiveTicker` (football-only) directly under the hero on desktop.
+- Mount `MobileLiveTicker` as a sticky top strip on mobile (under header).
+- Auto-scroll marquee of live + next-3 upcoming matches with `ScoreFlip` animations.
 
-### G. Footer upgrade
-- 3-column: Sitemap (sports + admin + auth), Data sources, Social/legal.
-- Add `AdSlot slot="footer"` already supported by AdSense system.
-- "Last updated" timestamp from latest live query.
+### Phase 3 — Sticky Sub-nav (mobile-friendly)
+- After hero scrolls past, pin a compact bar: `[2026 ▾] [Groups] [Knockout] [Scorers] [History]`.
+- Snap-scroll on mobile; segmented control on desktop.
+- Active tab has gold underline + scale-in animation.
 
-### H. SEO / metadata polish
-- Add `og:image` (generated hero collage).
-- JSON-LD `SportsEvent` for the spotlight fixture.
-- Canonical tag.
+### Phase 4 — Top Scorers + Standings Snapshot (2026)
+- New "Golden Boot Race" panel: top-10 scorers with country flag, goals, club, animated bars.
+- "Qualified / Eliminated" badges injected into group cards.
+- Use existing `getWc2026TopScorers`; add `<Wc2026ScorersPanel />`.
 
-## Tech notes
-- New components: `HeroSpotlight.tsx`, `PulseStrip.tsx`, `SportCard.tsx` (replaces `SportTile`), `TopStoriesRail.tsx`, `StandingsSnapshot.tsx`, `RecordsTeaser.tsx`, `WatchLiveFab.tsx`, `SiteFooter.tsx`.
-- Reuse existing: `NewsRail`, `WatchLivePanel`, `ScoreFlip`, `Countdown`, `StandingsTable`, `wc_records.json`, `use-merged-goals.ts`.
-- Add `framer-motion` (already present per project context — verify).
-- No backend changes; all data via existing server functions with their current TTLs.
+### Phase 5 — Filters & Search
+- Filter chip row: `All | Live | Today | My Teams`, plus team autocomplete.
+- "My Teams" persists to localStorage; star icon on each match card.
+- URL-synced via `?team=ARG&filter=live`.
 
-## Rollout order (incremental, each is independently shippable)
-1. Hero + Pulse strip + animated counters
-2. Sport cards 2.0 with live preview
-3. Top Stories + Standings snapshot
-4. Records & Stars teaser
-5. Watch Live floating drawer
-6. Footer + AdSlot footer + SEO polish
-7. Mobile snap rails + floating live pill
+### Phase 6 — Year Strip 2.0 + Historical Polish
+- Each year tile: champion country flag emoji + small trophy badge + hover preview (final score).
+- Use `MobileBracket` for historical knockout on mobile (swipeable round deck).
+- Per-year `head()` metadata for SEO (title/desc with champion + host).
+
+### Phase 7 — Match Modal Upgrade + Share Links
+- URL sync: `/football/match/:id` deep link (route already exists, wire it).
+- Share button (Web Share API + copy fallback).
+- Embed highlight thumbnail with play-glow animation.
+
+### Phase 8 — Polish, Footer, Ads
+- Replace generic skeletons with branded football pitch shimmer.
+- Animated empty states (bouncing ball SVG + CTA "Browse 1930–2022").
+- Add `SiteFooter` (reuse from home) + second AdSlot before footer.
+- Per-card micro-interactions: hover lift, score flip, gradient border on live.
+
+---
+
+## Technical notes
+
+- New components: `FootballHero.tsx`, `FootballLiveTicker.tsx`, `FootballStickyNav.tsx`, `Wc2026ScorersPanel.tsx`, `YearTile.tsx` (with champion), `FootballSkeleton.tsx`.
+- New helpers: `src/lib/football-live.ts` (derive live/today/next from fixtures), reuse `src/lib/time.ts` for countdowns.
+- Reuse: `LiveMatchCenter`, `MobileLiveTicker`, `MobileBracket`, `WatchLivePanel`, `ScoreFlip`, `AdSlot`.
+- Tokens: extend `src/styles/confederation-tokens.css` with `--football-live`, `--football-gold-grad`.
+- All animations via existing Tailwind keyframes (`fade-in`, `scale-in`) + a few new gradient pulses.
+- Mobile-first: every component tested at 360px; snap-scroll rails, sticky sub-nav, swipe gestures.
+
+---
+
+## Suggested order
+
+Ship in 2 batches:
+- **Batch A (high impact, low risk):** Phases 1, 2, 3, 4 — hero, ticker, sticky nav, scorers panel.
+- **Batch B (depth + polish):** Phases 5, 6, 7, 8 — filters, year strip 2.0, match deep-links, skeletons + footer.
+
+Reply with **"Start Batch A"** (or pick specific phases) and I'll implement.
