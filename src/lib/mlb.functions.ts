@@ -184,7 +184,7 @@ export const getMlbTeam = createServerFn({ method: "GET" })
             name: opp?.team?.displayName ?? opp?.team?.name ?? "",
             logo: opp?.team?.logos?.[0]?.href ?? opp?.team?.logo ?? null,
           },
-          homeAway: isHome ? "home" : "away",
+          homeAway: isHome ? ("home" as const) : ("away" as const),
           result,
           venue: comp?.venue?.fullName ?? null,
         };
