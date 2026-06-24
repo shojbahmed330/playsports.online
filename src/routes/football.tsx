@@ -8,6 +8,7 @@ import { GroupStage } from "@/components/wc/GroupStage";
 import { MatchCard, type RoundKey } from "@/components/wc/MatchCard";
 import { MatchModal } from "@/components/wc/MatchModal";
 import { YearStrip } from "@/components/wc/YearStrip";
+import { MobileBracket } from "@/components/wc/MobileBracket";
 import { useAuth } from "@/hooks/use-auth";
 import groupMatchesData from "@/data/wc_group_matches.json";
 import { toast } from "sonner";
@@ -16,24 +17,54 @@ import { Wc2026GroupsView, Wc2026KnockoutView } from "@/components/wc/Wc2026View
 import { FootballHero } from "@/components/football/FootballHero";
 import { FootballSubNav, type SubNavTab } from "@/components/football/FootballSubNav";
 import { Wc2026ScorersPanel } from "@/components/football/Wc2026ScorersPanel";
+import { FootballFilterBar } from "@/components/football/FootballFilterBar";
+import { applyFilter, uniqueTeams, useMyTeams, type FootballFilter } from "@/lib/football-filters";
+import { SiteFooter } from "@/components/home/SiteFooter";
+import { getChampion } from "@/data/wc_champions";
 
 const GROUP_MATCHES_BY_YEAR = groupMatchesData as Record<string, WCMatch[]>;
 
-type FootballSearch = { year?: number };
+const FILTER_VALUES: FootballFilter[] = ["all", "live", "today", "my"];
+
+type FootballSearch = { year?: number; filter?: FootballFilter; team?: string };
 
 export const Route = createFileRoute("/football")({
   validateSearch: (s: Record<string, unknown>): FootballSearch => {
     const y = Number(s.year);
-    return { year: WC_YEARS.includes(y) ? y : undefined };
+    const f = String(s.filter ?? "");
+    const t = typeof s.team === "string" && s.team.trim().length > 0 ? s.team.trim() : undefined;
+    return {
+      year: WC_YEARS.includes(y) ? y : undefined,
+      filter: (FILTER_VALUES as string[]).includes(f) ? (f as FootballFilter) : undefined,
+      team: t,
+    };
   },
-  head: () => ({
-    meta: [
-      { title: "FIFA World Cup 2026 — Live Scores, Bracket & Archive 1930–2026" },
-      { name: "description", content: "Live FIFA World Cup 2026 fixtures, group standings, knockout bracket and complete tournament history from 1930 to 2026." },
-      { property: "og:title", content: "FIFA World Cup 2026 — Live Scores & Complete Archive" },
-      { property: "og:description", content: "Live 2026 fixtures with kickoff countdowns, full bracket, top scorers and historical tournaments." },
-    ],
-  }),
+  head: ({ search }) => {
+    const y = (search as FootballSearch).year ?? 2026;
+    const champ = getChampion(y);
+    const title =
+      y === 2026
+        ? "FIFA World Cup 2026 — Live Scores, Bracket & Archive 1930–2026"
+        : champ
+        ? `${y} World Cup — ${champ.champion} crowned in ${champ.host}`
+        : `${y} FIFA World Cup`;
+    const description =
+      y === 2026
+        ? "Live FIFA World Cup 2026 fixtures, group standings, knockout bracket and complete tournament history from 1930 to 2026."
+        : champ
+        ? `${champ.champion} won the ${y} World Cup, beating ${champ.runnerUp ?? "their opponent"} ${champ.finalScore ?? ""} in ${champ.host}. Full bracket, scores and matches.`
+        : `Browse every match from the ${y} FIFA World Cup.`;
+    return {
+      meta: [
+        { title },
+        { name: "description", content: description },
+        { property: "og:title", content: title },
+        { property: "og:description", content: description },
+        { property: "og:url", content: `https://allsportslive.lovable.app/football?year=${y}` },
+      ],
+      links: [{ rel: "canonical", href: `https://allsportslive.lovable.app/football?year=${y}` }],
+    };
+  },
   component: Index,
 });
 
