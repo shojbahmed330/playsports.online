@@ -216,7 +216,7 @@ function FormatChip({ value, active, onClick }: { value: keyof typeof FORMAT_MET
     <button
       onClick={onClick}
       className={[
-        "inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-[11px] font-bold ring-1 transition-all",
+        "snap-start shrink-0 inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-[11px] font-bold ring-1 transition-all",
         active ? `${meta.color} ring-1` : "bg-white/[0.04] hover:bg-white/[0.09] text-gray-300 ring-white/10",
       ].join(" ")}
     >
@@ -224,6 +224,7 @@ function FormatChip({ value, active, onClick }: { value: keyof typeof FORMAT_MET
     </button>
   );
 }
+
 
 function SeriesTile({ league, liveCount, totalCount }: { league: CricketLeague; liveCount: number; totalCount: number }) {
   return (
