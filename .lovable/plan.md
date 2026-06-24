@@ -1,108 +1,86 @@
-## Cricket Section — Full Build Plan
+## 1) Fix admin "Save link" failure (FK error)
 
-Cricket ke ekta full first-class sport hisebe add korbo, exactly football er level e — live score, fixtures, tournament hub, player stats, squad/country profile, records. ESPN Cricinfo er public `site.api` + `core.api` endpoints use korbo (free, no key, Cloudflare Worker safe — same pattern jeta MLB/NBA/NHL/MLS e use korechi).
+**Root cause:** `wc_matches.tournament_year` has FK → `wc_tournaments(year)`. When admin saves a 2026 video link, code inserts a `wc_matches` row with `tournament_year: 2026`, but there's no `wc_tournaments` row for 2026 yet → FK violation.
 
----
+**Fix (migration):**
+- Insert a `wc_tournaments` row for `year = 2026` (host: "USA / Canada / Mexico", format details).
+- Backfill any other missing tournament years that admin might target.
 
-### 1. Data Layer
+No frontend changes needed for the save itself — once the parent row exists, the existing insert works.
 
-**`src/lib/cricket.functions.ts`** — notun server functions file (`createServerFn`, 20–60s TTL in-memory cache, just like `espn.functions.ts`):
+## 2) Auto-pull 2026 highlights from Robi Axiata YouTube channel
 
-- `getCricketScoreboard({ date? })` — sob format (Test, ODI, T20I, T20 league) er live + today's matches. Returns `CricketMatch[]` with innings score, overs, status (live/upcoming/stumps/result), venue, broadcast.
-- `getCricketSeries({ year? })` — running + upcoming series/tournaments list.
-- `getSeriesDetail({ seriesId })` — fixtures, points table, squads, top performers per series.
-- `getMatchDetail({ matchId })` — full scorecard (batting/bowling per innings), commentary highlights, playing XI, toss, partnership.
-- `getCricketRankings({ format })` — ICC team rankings + top batsmen/bowlers/all-rounders (Test/ODI/T20I).
-- `getPlayerProfile({ playerId })` — career stats per format, debut, current team.
-- `getTeamProfile({ teamId })` — squad, recent form, upcoming fixtures, H2H summary.
-- `getMultiCricketToday()` — homepage slate helper (live + next 5 upcoming across formats).
+**Approach:** YouTube Data API v3 (free quota, 10k units/day). Need a `YOUTUBE_API_KEY` secret.
 
-ESPN endpoints we'll wrap (all under `https://site.api.espn.com/apis/site/v2/sports/cricket/...` and `https://hs-consumer-api.espncricinfo.com/v1/...`):
-- `/scoreboard?lang=en&league=8048` (and other league IDs: 8039 IPL, 13266 BBL, 22791 PSL, 23174 T20 WC, etc.)
-- `/standings`, `/teams/{id}`, `/teams/{id}/roster`
-- Cricinfo HS consumer API for richer scorecard + commentary
+- Add server function `src/lib/yt-highlights.functions.ts`
+  - `listRobiAxiataHighlights()` → fetches recent uploads from channel `@robi_axiata` via `channels.list?forHandle=@robi_axiata` then `playlistItems.list` on uploads playlist (cache 30 min).
+  - `autoMatch2026Highlights()` (admin-only, `requireSupabaseAuth` + admin role) → for each video title, fuzzy-match team pair (using same normalization as `wc-2026-videos.ts`), upsert `wc_matches` row with `video_url=https://youtu.be/{id}`, `tournament_year=2026`.
+- Admin panel: new card "Auto-import 2026 highlights from Robi Axiata"
+  - "Preview matches" button → shows table of detected video↔match pairs with checkboxes.
+  - "Import selected" button → bulk upsert.
+  - Status badges (already saved / new / no-match).
+- Runs on demand from admin. (Optional cron later via `/api/public/cron/refresh-highlights` — not in this pass unless you want it.)
 
-A `src/lib/cricket-leagues.ts` const file will register the league IDs we surface (Int'l Test/ODI/T20I, IPL, BBL, PSL, CPL, The Hundred, T20 WC, ODI WC, Champions Trophy, Asia Cup, WPL).
+**Need from you:** Provide the YouTube Data API v3 key (I'll prompt via `add_secret`).
 
-### 2. Routes (file-based)
+## 3) `/cricket` — real recent data, not demo
 
-```
-src/routes/cricket.tsx                 -> /cricket (layout, <Outlet/>)
-src/routes/cricket.index.tsx           -> /cricket (Live + Upcoming + Recent slate, format tabs)
-src/routes/cricket.series.$id.tsx      -> tournament hub (fixtures, table, squads, stats)
-src/routes/cricket.match.$id.tsx       -> live match center (scorecard, commentary, lineups)
-src/routes/cricket.players.tsx         -> all-time records, rankings, top scorers/wickets
-src/routes/cricket.team.$id.tsx        -> country/franchise: squad, ranking, H2H, form
-```
+**Root cause:** the 4 curated league IDs (8048 IPL, 8039 ICC WC, 8044 BBL, 8043 Sheffield Shield) only return matches when those specific tournaments are in season. Right now they all show stale/empty seasons → looks like demo.
 
-Each route: TanStack Query `ensureQueryData` + `useSuspenseQuery`, 20s `refetchInterval` for live data, distinct `head()` SEO metadata, `errorComponent` + `notFoundComponent`.
+**Fix:**
+- Switch the hub default feed to ESPN's **global live cricket scoreboard** endpoint that's always populated, in this priority:
+  1. `site.api.espn.com/apis/site/v2/sports/cricket/scoreboard` (all live series — when available)
+  2. Fan out across an expanded league registry (add: 8047 PSL, 8068 SA20, 27987 ILT20, 28017 MLC, 8045 CPL, 23174 The Hundred, 8053 Bangladesh Premier League, 8059 WPL, plus international tour series IDs).
+- Add a "Today / Live / Upcoming / Recent" tab strip on `/cricket` driven by status buckets.
+- Year/season selector per league so a user can browse past editions.
 
-### 3. Components (`src/components/cricket/`)
+## 4) `/cricket` history pages (Players, Countries, IPL, World Cup, BBL, etc.)
 
-- `CricketMatchCard.tsx` — innings score with ScoreFlip-style pulse animation, overs, run rate, status pill (LIVE pulsing, Stumps, Result), team flags, win-probability bar for live.
-- `LiveScorecard.tsx` — current batsmen (strike/non-strike with •), current bowler, partnership, last 6 balls visualization (●1●4●W animated chips).
-- `FullScorecard.tsx` — innings-wise batting & bowling tables, fall of wickets, extras.
-- `PointsTable.tsx` — series standings with NRR, qualification colors.
-- `BracketKnockout.tsx` — knockout bracket for WC/IPL playoffs.
-- `SquadGrid.tsx` — playing XI / full squad with role chips (BAT/BOWL/AR/WK), captain & wicket-keeper badges.
-- `CricketRankingsTable.tsx` — ICC rankings with movement arrows.
-- `RecordsPanel.tsx` — all-time most runs/wickets/centuries, WC-specific records, format filters.
-- `CricketSlate.tsx` — home page hero slate (mirrors `FootballSlate`).
-- `Mobile*` variants — `MobileSeriesDeck.tsx` (swipeable series cards), `MobileLiveScorecard.tsx` (collapsible, stacked), `MobileScoreTicker.tsx` (marquee like `MobileLiveTicker`).
-- `CricketSubNav.tsx` — sticky nav: Live · Series · Players · Records · Rankings (mirrors `PlayerSubNav`).
+ESPN's public site API doesn't expose deep historical records. Best free path = **Cricinfo Stats Guru–style static datasets bundled with the app**, refreshed periodically.
 
-### 4. Hub Integration
+Plan:
+- Add `src/data/cricket/` with JSON datasets (curated, sized like the football WC ones):
+  - `players_career.json` — top batters/bowlers/all-rounders (career runs, wickets, avg, SR, 100s, 50s).
+  - `team_records.json` — per-country: matches/wins/losses by format, biggest wins, highest totals.
+  - `tournaments/ipl.json`, `tournaments/world_cup_odi.json`, `tournaments/world_cup_t20.json`, `tournaments/bbl.json` — season-by-season winners, runners-up, top scorer (Orange Cap), top wicket-taker (Purple Cap), finals scorecard summary.
+- New routes:
+  - `/cricket/records` — leaderboards (Most runs, Most wickets, Highest individual score, Best bowling, Most 100s) with format filters.
+  - `/cricket/players` — list + filter (country, role, format) + click into `/cricket/players/$slug` profile.
+  - `/cricket/teams` — country grid + `/cricket/teams/$code` profile (format breakdown, recent form from ESPN, all-time records from JSON).
+  - `/cricket/history/$tournament` — season cards for IPL / WC ODI / WC T20 / BBL (champion, MVP, top scorer, top wicket-taker, final summary, expandable scorecard).
+- Sub-nav `CricketSubNav.tsx` (Live · Series · Records · Players · Teams · History) — mirrors football's `PlayerSubNav`.
 
-- `src/components/sports/SportNav.tsx` — add Cricket pill with unique animated gradient (deep green → gold, `--gradient-cricket`).
-- `src/routes/index.tsx` — add `<CricketSlate />` below the football slate; ticker also surfaces live cricket innings.
-- `src/lib/sports-config.ts` — register cricket league.
+> Datasets are static (manually curated initial release ~2010→present for marquee tournaments). Auto-refresh later if you want.
 
-### 5. Design / Animation
+## 5) `/cricket` UI overhaul (pro + mobile-first)
 
-- New tokens in `src/styles/cricket-tokens.css`:
-  - `--gradient-cricket` (pitch-green → sunset-amber)
-  - `--cricket-live-pulse` keyframe (slow red glow on live score)
-  - `--ball-pop` keyframe for last-6-balls chips entering
-  - Format chips: Test=cream, ODI=blue, T20I=magenta, IPL=gold, BBL=teal, etc.
-- Motion: framer-motion for card entry stagger, animated number tween on score change (reuse `ScoreFlip` pattern with overs).
-- Mobile-first: horizontal snap deck for series carousel, bottom-sheet match details, collapsible scorecards, sticky live ticker top bar on `/cricket`.
-- Typography: same display/body pair already used site-wide — no new fonts.
+- New `CricketHero` with animated pitch gradient, live ticker of in-play matches (mobile-swipeable).
+- `CricketSubNav` — sticky pill nav, horizontal scroll-snap on mobile (no left/right scroll feel — wraps + snap like the SportNav redesign).
+- `CricketMatchCard` v2 — bigger team blocks, run-rate, required rate, last-6-balls dots, "LIVE" pulse, tap to expand mini-scorecard inline on mobile.
+- `MobileScorecard` sheet — bottom drawer with tabs (Summary / Batting / Bowling / Commentary), swipe between innings.
+- Format chips with confederation-style colored tokens.
+- Skeleton loaders, empty states with "browse past seasons" CTAs.
+- Cricket-specific tokens extended in `src/styles/cricket-tokens.css` (per-league accent gradients reused on hub).
 
-### 6. Live Updates
+## Files (high level)
 
-- Live endpoints: `refetchInterval: 20_000`, `refetchOnWindowFocus: true`.
-- Detailed scorecard route: 15s interval while `status === "in"`, paused when tab hidden.
-- Visual live indicator: pulsing red dot + "LIVE" badge in confederation-token style.
+**New**
+- `src/lib/yt-highlights.functions.ts`
+- `src/components/admin/Wc2026HighlightsCard.tsx`
+- `src/data/cricket/players_career.json`, `team_records.json`, `tournaments/*.json`
+- `src/routes/cricket.records.tsx`, `cricket.players.tsx`, `cricket.players.$slug.tsx`, `cricket.teams.tsx`, `cricket.teams.$code.tsx`, `cricket.history.$tournament.tsx`
+- `src/components/cricket/CricketSubNav.tsx`, `CricketHero.tsx`, `MobileScorecard.tsx`, `LeaderboardTable.tsx`
+- Migration: insert `wc_tournaments` 2026 row
 
-### 7. Watch Live (optional, AdSense-safe)
+**Updated**
+- `src/lib/cricket-leagues.ts` (expanded registry)
+- `src/lib/cricket.functions.ts` (global scoreboard fallback, season selector)
+- `src/routes/cricket.index.tsx` (tabs, hero, sub-nav)
+- `src/components/cricket/CricketMatchCard.tsx` (v2)
+- `src/routes/admin.tsx` (mount highlights card)
 
-Same approach as football `WatchLivePanel`: a "Watch Live" button per international/IPL match that opens a dialog with the official broadcaster's free YouTube highlight stream where available (Star Sports, Willow, FanCode, ICC YouTube). No pirate IPTV. Regional broadcaster deep-links via existing `src/lib/geo.ts` + a new `src/lib/cricket-broadcasters.ts`.
+## Questions before I build
 
-### 8. SEO
-
-- `/cricket` → title "Live Cricket Scores, Fixtures & Stats", unique meta.
-- Series & match pages get dynamic `head()` from loader data (team names, score, venue) + og:image when team logos available.
-
-### 9. Phasing
-
-Phase 1 (this build):
-1. Data layer (`cricket.functions.ts`, leagues const).
-2. `/cricket` index — live + upcoming + recent slate with format tabs.
-3. Match center route with full scorecard + commentary.
-4. Series hub route with fixtures + points table + bracket.
-5. Players route — rankings + all-time records.
-6. Team route — squad + form + H2H.
-7. Hub integration (SportNav pill, home slate, ticker).
-8. Mobile components + design tokens + animations.
-
-Phase 2 (later, separate request): Watch-live broadcaster panel, deep historical records (year filters), player compare (mirror football compare view), admin overrides for highlight videos.
-
-### 10. Risks / Notes
-
-- ESPN Cricinfo public endpoints are unofficial and occasionally rate-limit / change shape. Mitigation: short TTL cache, defensive mapping (always `?? null`), per-league try/catch like `getMultiSportToday` so one failure doesn't break the slate.
-- Some leagues (BBL off-season, etc.) return empty — UI shows "No matches today" state, never errors.
-- Cricinfo HS API has CORS restrictions for browsers but works fine from Worker server functions — all calls go through `createServerFn`.
-
----
-
-**Deliverable on approval:** Phase 1 implemented end-to-end with everything above wired, mobile + desktop polished, live-refreshing, and integrated into the existing multi-sport hub.
+1. **YouTube API key** — do you already have a Google Cloud `YOUTUBE_API_KEY`, or should I prompt to create one when build starts?
+2. **Auto-import scope** — should imported videos always overwrite an existing `video_url`, or only fill when empty? (Default I'll use: only fill when empty, with an "Overwrite" toggle in the card.)
+3. **Cricket history depth** — initial dataset coverage: IPL (2008→2025), ODI WC (1975→2023), T20 WC (2007→2024), BBL (2011→2025). OK, or want more leagues (PSL, CPL, The Hundred, SA20) in pass 1?

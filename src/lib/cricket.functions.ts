@@ -191,10 +191,36 @@ export const getCricketScoreboard = createServerFn({ method: "GET" })
     }
   });
 
-// Multi-series aggregator for the homepage / hub
+// Multi-series aggregator for the homepage / hub.
+// Always merges in ESPN's global cricket scoreboard so we never show stale
+// data when a curated series id has rolled over to a new season.
 export const getMultiCricketToday = createServerFn({ method: "GET" })
   .inputValidator((d: { leagueIds: string[] }) => d)
   .handler(async ({ data }) => {
+    const seenIds = new Set<string>();
+    const all: CricketMatch[] = [];
+
+    // 1) Global scoreboard (covers live + soon + recent across all series).
+    try {
+      const raw = (await apiGet(`/scoreboard`, 30_000)) as any;
+      const events: any[] = raw?.events ?? [];
+      for (const e of events) {
+        const lm = e?.league ?? e?.leagues?.[0] ?? raw?.leagues?.[0] ?? {};
+        const league = {
+          id: String(lm.id ?? "global"),
+          name: lm.name ?? "Cricket",
+          abbr: lm.abbreviation ?? "",
+        };
+        const m = mapMatch(e, league);
+        if (!m.id || seenIds.has(m.id)) continue;
+        seenIds.add(m.id);
+        all.push(m);
+      }
+    } catch {
+      /* fall through to curated */
+    }
+
+    // 2) Curated series — fills gaps and tags league nicely.
     const results = await Promise.all(
       data.leagueIds.map(async (id) => {
         try {
@@ -212,7 +238,14 @@ export const getMultiCricketToday = createServerFn({ method: "GET" })
         }
       }),
     );
-    const all = results.flat();
+    for (const list of results) {
+      for (const m of list) {
+        if (!m.id || seenIds.has(m.id)) continue;
+        seenIds.add(m.id);
+        all.push(m);
+      }
+    }
+
     all.sort((a, b) => a.startTs - b.startTs);
     return { matches: all };
   });

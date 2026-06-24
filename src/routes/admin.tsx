@@ -15,6 +15,8 @@ import videoSeed from "@/data/wc_video_seed.json";
 import groupMatchesData from "@/data/wc_group_matches.json";
 import { AdSenseAdminCard } from "@/components/admin/AdSenseAdminCard";
 import { getWc2026Fixtures, type Wc2026Fixture } from "@/lib/wc2026.functions";
+import { fetch2026VideoMap, set2026Video, videoKey } from "@/lib/wc-2026-videos";
+import { Wc2026HighlightsCard } from "@/components/admin/Wc2026HighlightsCard";
 
 const GROUP_MATCHES_BY_YEAR = groupMatchesData as Record<string, WCMatch[]>;
 type AdminMatch = WCMatch & { _bundled?: boolean };
@@ -101,7 +103,7 @@ function AdminShell() {
 
       // 2026: pull live fixtures from Sofascore as bundled rows.
       if (year === 2026) {
-        const res = await fixturesFn();
+        const [res, videoMap] = await Promise.all([fixturesFn(), fetch2026VideoMap()]);
         const bundled: AdminMatch[] = (res.fixtures ?? [])
           .filter((f) => !seen.has(`${f.home.name.toLowerCase()}|${f.away.name.toLowerCase()}`))
           .map((f, i): AdminMatch => ({
@@ -118,7 +120,7 @@ function AdminShell() {
             match_date: f.startTs ? new Date(f.startTs * 1000).toISOString() : null,
             stadium: f.venue,
             city: f.city,
-            video_url: null,
+            video_url: videoMap.get(videoKey(f.home.name, f.away.name)) ?? null,
             _bundled: true,
           }));
         return [...db, ...bundled].sort(
@@ -246,6 +248,10 @@ function AdminShell() {
 
         {/* Auto-seed from bundled YouTube dataset */}
         <SeedFromDataset />
+
+        {/* 2026 highlight auto-import from Robi Axiata YouTube channel */}
+        {year === 2026 && <Wc2026HighlightsCard />}
+
 
 
         {/* Match table */}
@@ -416,22 +422,28 @@ function MatchRow({ match, year }: { match: AdminMatch; year: number }) {
   const save = async () => {
     setSaving(true);
     const newUrl = value.trim() || null;
-    let error;
-    if (isBundled) {
-      // Bundled row not yet in DB — insert the full row with the video URL.
-      // Strip the synthetic id so Postgres assigns its own and we never collide.
-      const { _bundled: _b, id: _id, ...rest } = match;
-      void _b; void _id;
-      const res = await supabase
-        .from("wc_matches")
-        .insert({ ...rest, video_url: newUrl });
-      error = res.error;
-    } else {
-      const res = await supabase
-        .from("wc_matches")
-        .update({ video_url: newUrl })
-        .eq("id", match.id);
-      error = res.error;
+    let error: { message: string } | null = null;
+    try {
+      if (match.tournament_year === 2026) {
+        // 2026 has no wc_tournaments parent row → store in site_settings.
+        await set2026Video(match.home_team, match.away_team, newUrl);
+      } else if (isBundled) {
+        // Bundled row not yet in DB — insert the full row with the video URL.
+        const { _bundled: _b, id: _id, ...rest } = match;
+        void _b; void _id;
+        const res = await supabase
+          .from("wc_matches")
+          .insert({ ...rest, video_url: newUrl });
+        error = res.error;
+      } else {
+        const res = await supabase
+          .from("wc_matches")
+          .update({ video_url: newUrl })
+          .eq("id", match.id);
+        error = res.error;
+      }
+    } catch (e) {
+      error = { message: e instanceof Error ? e.message : String(e) };
     }
     setSaving(false);
     if (error) {
