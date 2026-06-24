@@ -68,6 +68,8 @@ function CricketIndex() {
   return (
     <div className="min-h-screen">
       <SportNav liveCount={liveAll} />
+      <CricketSubNav />
+
 
       {/* HERO */}
       <section className="relative overflow-hidden border-b border-border cricket-hero">
