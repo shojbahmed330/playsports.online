@@ -192,7 +192,7 @@ function LeaguePill({
     <button
       onClick={onClick}
       className={[
-        "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold ring-1 transition-all",
+        "snap-start shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold ring-1 transition-all",
         active
           ? "bg-gradient-to-r from-emerald-500 to-amber-500 text-black ring-amber-300 shadow-[0_4px_18px_-4px_rgba(245,158,11,0.5)]"
           : `bg-white/[0.04] hover:bg-white/[0.09] ring-white/10 hover:ring-white/20 ${accent ?? "text-gray-200"}`,
@@ -208,6 +208,7 @@ function LeaguePill({
     </button>
   );
 }
+
 
 function FormatChip({ value, active, onClick }: { value: keyof typeof FORMAT_META; active: boolean; onClick: () => void }) {
   const meta = FORMAT_META[value];
