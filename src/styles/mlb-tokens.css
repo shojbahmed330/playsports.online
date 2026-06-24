@@ -1,0 +1,32 @@
+/* MLB design tokens — Americana navy + red + cream */
+:root {
+  --mlb-navy: #002d72;
+  --mlb-navy-deep: #001a44;
+  --mlb-red: #d50032;
+  --mlb-red-deep: #8c0020;
+  --mlb-cream: #f7e6c4;
+  --mlb-grass: #2e7d32;
+  --mlb-dirt: #b88248;
+  --gradient-mlb: linear-gradient(135deg, var(--mlb-navy-deep) 0%, var(--mlb-navy) 50%, var(--mlb-red-deep) 100%);
+  --gradient-mlb-soft: linear-gradient(135deg, rgba(0,45,114,0.35) 0%, rgba(213,0,50,0.18) 100%);
+}
+
+.bg-mlb-hero { background: var(--gradient-mlb); }
+.bg-mlb-soft { background: var(--gradient-mlb-soft); }
+.ring-mlb { box-shadow: 0 0 0 1px rgba(247,230,196,0.18); }
+
+.mlb-pinstripes {
+  background-image: repeating-linear-gradient(
+    90deg,
+    transparent 0,
+    transparent 18px,
+    rgba(247, 230, 196, 0.05) 18px,
+    rgba(247, 230, 196, 0.05) 19px
+  );
+}
+
+@keyframes mlb-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(213, 0, 50, 0.5); }
+  50%      { box-shadow: 0 0 0 8px rgba(213, 0, 50, 0); }
+}
+.mlb-live-pulse { animation: mlb-pulse 1.6s ease-out infinite; }

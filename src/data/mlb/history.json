@@ -1,0 +1,194 @@
+{
+  "worldSeries": [
+    { "year": 2024, "champion": "Los Angeles Dodgers", "runnerUp": "New York Yankees", "result": "4-1", "mvp": "Freddie Freeman" },
+    { "year": 2023, "champion": "Texas Rangers", "runnerUp": "Arizona Diamondbacks", "result": "4-1", "mvp": "Corey Seager" },
+    { "year": 2022, "champion": "Houston Astros", "runnerUp": "Philadelphia Phillies", "result": "4-2", "mvp": "Jeremy Peña" },
+    { "year": 2021, "champion": "Atlanta Braves", "runnerUp": "Houston Astros", "result": "4-2", "mvp": "Jorge Soler" },
+    { "year": 2020, "champion": "Los Angeles Dodgers", "runnerUp": "Tampa Bay Rays", "result": "4-2", "mvp": "Corey Seager" },
+    { "year": 2019, "champion": "Washington Nationals", "runnerUp": "Houston Astros", "result": "4-3", "mvp": "Stephen Strasburg" },
+    { "year": 2018, "champion": "Boston Red Sox", "runnerUp": "Los Angeles Dodgers", "result": "4-1", "mvp": "Steve Pearce" },
+    { "year": 2017, "champion": "Houston Astros", "runnerUp": "Los Angeles Dodgers", "result": "4-3", "mvp": "George Springer" },
+    { "year": 2016, "champion": "Chicago Cubs", "runnerUp": "Cleveland Indians", "result": "4-3", "mvp": "Ben Zobrist" },
+    { "year": 2015, "champion": "Kansas City Royals", "runnerUp": "New York Mets", "result": "4-1", "mvp": "Salvador Pérez" },
+    { "year": 2014, "champion": "San Francisco Giants", "runnerUp": "Kansas City Royals", "result": "4-3", "mvp": "Madison Bumgarner" },
+    { "year": 2013, "champion": "Boston Red Sox", "runnerUp": "St. Louis Cardinals", "result": "4-2", "mvp": "David Ortiz" },
+    { "year": 2012, "champion": "San Francisco Giants", "runnerUp": "Detroit Tigers", "result": "4-0", "mvp": "Pablo Sandoval" },
+    { "year": 2011, "champion": "St. Louis Cardinals", "runnerUp": "Texas Rangers", "result": "4-3", "mvp": "David Freese" },
+    { "year": 2010, "champion": "San Francisco Giants", "runnerUp": "Texas Rangers", "result": "4-1", "mvp": "Edgar Rentería" },
+    { "year": 2009, "champion": "New York Yankees", "runnerUp": "Philadelphia Phillies", "result": "4-2", "mvp": "Hideki Matsui" },
+    { "year": 2008, "champion": "Philadelphia Phillies", "runnerUp": "Tampa Bay Rays", "result": "4-1", "mvp": "Cole Hamels" },
+    { "year": 2007, "champion": "Boston Red Sox", "runnerUp": "Colorado Rockies", "result": "4-0", "mvp": "Mike Lowell" },
+    { "year": 2006, "champion": "St. Louis Cardinals", "runnerUp": "Detroit Tigers", "result": "4-1", "mvp": "David Eckstein" },
+    { "year": 2005, "champion": "Chicago White Sox", "runnerUp": "Houston Astros", "result": "4-0", "mvp": "Jermaine Dye" },
+    { "year": 2004, "champion": "Boston Red Sox", "runnerUp": "St. Louis Cardinals", "result": "4-0", "mvp": "Manny Ramírez" },
+    { "year": 2003, "champion": "Florida Marlins", "runnerUp": "New York Yankees", "result": "4-2", "mvp": "Josh Beckett" },
+    { "year": 2002, "champion": "Anaheim Angels", "runnerUp": "San Francisco Giants", "result": "4-3", "mvp": "Troy Glaus" },
+    { "year": 2001, "champion": "Arizona Diamondbacks", "runnerUp": "New York Yankees", "result": "4-3", "mvp": "Curt Schilling & Randy Johnson" },
+    { "year": 2000, "champion": "New York Yankees", "runnerUp": "New York Mets", "result": "4-1", "mvp": "Derek Jeter" },
+    { "year": 1999, "champion": "New York Yankees", "runnerUp": "Atlanta Braves", "result": "4-0", "mvp": "Mariano Rivera" },
+    { "year": 1998, "champion": "New York Yankees", "runnerUp": "San Diego Padres", "result": "4-0", "mvp": "Scott Brosius" },
+    { "year": 1997, "champion": "Florida Marlins", "runnerUp": "Cleveland Indians", "result": "4-3", "mvp": "Liván Hernández" },
+    { "year": 1996, "champion": "New York Yankees", "runnerUp": "Atlanta Braves", "result": "4-2", "mvp": "John Wetteland" },
+    { "year": 1995, "champion": "Atlanta Braves", "runnerUp": "Cleveland Indians", "result": "4-2", "mvp": "Tom Glavine" }
+  ],
+  "mvp": {
+    "AL": [
+      { "year": 2024, "player": "Aaron Judge", "team": "NYY" },
+      { "year": 2023, "player": "Shohei Ohtani", "team": "LAA" },
+      { "year": 2022, "player": "Aaron Judge", "team": "NYY" },
+      { "year": 2021, "player": "Shohei Ohtani", "team": "LAA" },
+      { "year": 2020, "player": "José Abreu", "team": "CWS" },
+      { "year": 2019, "player": "Mike Trout", "team": "LAA" },
+      { "year": 2018, "player": "Mookie Betts", "team": "BOS" },
+      { "year": 2017, "player": "José Altuve", "team": "HOU" },
+      { "year": 2016, "player": "Mike Trout", "team": "LAA" },
+      { "year": 2015, "player": "Josh Donaldson", "team": "TOR" }
+    ],
+    "NL": [
+      { "year": 2024, "player": "Shohei Ohtani", "team": "LAD" },
+      { "year": 2023, "player": "Ronald Acuña Jr.", "team": "ATL" },
+      { "year": 2022, "player": "Paul Goldschmidt", "team": "STL" },
+      { "year": 2021, "player": "Bryce Harper", "team": "PHI" },
+      { "year": 2020, "player": "Freddie Freeman", "team": "ATL" },
+      { "year": 2019, "player": "Cody Bellinger", "team": "LAD" },
+      { "year": 2018, "player": "Christian Yelich", "team": "MIL" },
+      { "year": 2017, "player": "Giancarlo Stanton", "team": "MIA" },
+      { "year": 2016, "player": "Kris Bryant", "team": "CHC" },
+      { "year": 2015, "player": "Bryce Harper", "team": "WSH" }
+    ]
+  },
+  "cyYoung": {
+    "AL": [
+      { "year": 2024, "player": "Tarik Skubal", "team": "DET" },
+      { "year": 2023, "player": "Gerrit Cole", "team": "NYY" },
+      { "year": 2022, "player": "Justin Verlander", "team": "HOU" },
+      { "year": 2021, "player": "Robbie Ray", "team": "TOR" },
+      { "year": 2020, "player": "Shane Bieber", "team": "CLE" },
+      { "year": 2019, "player": "Justin Verlander", "team": "HOU" },
+      { "year": 2018, "player": "Blake Snell", "team": "TB" },
+      { "year": 2017, "player": "Corey Kluber", "team": "CLE" },
+      { "year": 2016, "player": "Rick Porcello", "team": "BOS" },
+      { "year": 2015, "player": "Dallas Keuchel", "team": "HOU" }
+    ],
+    "NL": [
+      { "year": 2024, "player": "Chris Sale", "team": "ATL" },
+      { "year": 2023, "player": "Blake Snell", "team": "SD" },
+      { "year": 2022, "player": "Sandy Alcántara", "team": "MIA" },
+      { "year": 2021, "player": "Corbin Burnes", "team": "MIL" },
+      { "year": 2020, "player": "Trevor Bauer", "team": "CIN" },
+      { "year": 2019, "player": "Jacob deGrom", "team": "NYM" },
+      { "year": 2018, "player": "Jacob deGrom", "team": "NYM" },
+      { "year": 2017, "player": "Max Scherzer", "team": "WSH" },
+      { "year": 2016, "player": "Max Scherzer", "team": "WSH" },
+      { "year": 2015, "player": "Jake Arrieta", "team": "CHC" }
+    ]
+  },
+  "rookieOfYear": {
+    "AL": [
+      { "year": 2024, "player": "Colton Cowser", "team": "BAL" },
+      { "year": 2023, "player": "Gunnar Henderson", "team": "BAL" },
+      { "year": 2022, "player": "Julio Rodríguez", "team": "SEA" },
+      { "year": 2021, "player": "Randy Arozarena", "team": "TB" },
+      { "year": 2020, "player": "Kyle Lewis", "team": "SEA" },
+      { "year": 2019, "player": "Yordan Álvarez", "team": "HOU" },
+      { "year": 2018, "player": "Shohei Ohtani", "team": "LAA" },
+      { "year": 2017, "player": "Aaron Judge", "team": "NYY" }
+    ],
+    "NL": [
+      { "year": 2024, "player": "Paul Skenes", "team": "PIT" },
+      { "year": 2023, "player": "Corbin Carroll", "team": "ARI" },
+      { "year": 2022, "player": "Michael Harris II", "team": "ATL" },
+      { "year": 2021, "player": "Jonathan India", "team": "CIN" },
+      { "year": 2020, "player": "Devin Williams", "team": "MIL" },
+      { "year": 2019, "player": "Pete Alonso", "team": "NYM" },
+      { "year": 2018, "player": "Ronald Acuña Jr.", "team": "ATL" },
+      { "year": 2017, "player": "Cody Bellinger", "team": "LAD" }
+    ]
+  },
+  "allTimeLeaders": {
+    "homeRuns": [
+      { "rank": 1, "player": "Barry Bonds", "value": "762" },
+      { "rank": 2, "player": "Hank Aaron", "value": "755" },
+      { "rank": 3, "player": "Babe Ruth", "value": "714" },
+      { "rank": 4, "player": "Albert Pujols", "value": "703" },
+      { "rank": 5, "player": "Alex Rodriguez", "value": "696" },
+      { "rank": 6, "player": "Willie Mays", "value": "660" },
+      { "rank": 7, "player": "Ken Griffey Jr.", "value": "630" },
+      { "rank": 8, "player": "Jim Thome", "value": "612" },
+      { "rank": 9, "player": "Sammy Sosa", "value": "609" },
+      { "rank": 10, "player": "Frank Robinson", "value": "586" }
+    ],
+    "hits": [
+      { "rank": 1, "player": "Pete Rose", "value": "4256" },
+      { "rank": 2, "player": "Ty Cobb", "value": "4189" },
+      { "rank": 3, "player": "Hank Aaron", "value": "3771" },
+      { "rank": 4, "player": "Stan Musial", "value": "3630" },
+      { "rank": 5, "player": "Tris Speaker", "value": "3514" },
+      { "rank": 6, "player": "Derek Jeter", "value": "3465" },
+      { "rank": 7, "player": "Albert Pujols", "value": "3384" },
+      { "rank": 8, "player": "Honus Wagner", "value": "3420" },
+      { "rank": 9, "player": "Carl Yastrzemski", "value": "3419" },
+      { "rank": 10, "player": "Cap Anson", "value": "3435" }
+    ],
+    "battingAverage": [
+      { "rank": 1, "player": "Ty Cobb", "value": ".366" },
+      { "rank": 2, "player": "Rogers Hornsby", "value": ".358" },
+      { "rank": 3, "player": "Shoeless Joe Jackson", "value": ".356" },
+      { "rank": 4, "player": "Lefty O'Doul", "value": ".349" },
+      { "rank": 5, "player": "Ed Delahanty", "value": ".346" },
+      { "rank": 6, "player": "Tris Speaker", "value": ".345" },
+      { "rank": 7, "player": "Ted Williams", "value": ".344" },
+      { "rank": 8, "player": "Babe Ruth", "value": ".342" },
+      { "rank": 9, "player": "Harry Heilmann", "value": ".342" },
+      { "rank": 10, "player": "Bill Terry", "value": ".341" }
+    ],
+    "wins": [
+      { "rank": 1, "player": "Cy Young", "value": "511" },
+      { "rank": 2, "player": "Walter Johnson", "value": "417" },
+      { "rank": 3, "player": "Pete Alexander", "value": "373" },
+      { "rank": 4, "player": "Christy Mathewson", "value": "373" },
+      { "rank": 5, "player": "Pud Galvin", "value": "365" },
+      { "rank": 6, "player": "Warren Spahn", "value": "363" },
+      { "rank": 7, "player": "Kid Nichols", "value": "362" },
+      { "rank": 8, "player": "Greg Maddux", "value": "355" },
+      { "rank": 9, "player": "Roger Clemens", "value": "354" },
+      { "rank": 10, "player": "Tim Keefe", "value": "342" }
+    ],
+    "strikeouts": [
+      { "rank": 1, "player": "Nolan Ryan", "value": "5714" },
+      { "rank": 2, "player": "Randy Johnson", "value": "4875" },
+      { "rank": 3, "player": "Roger Clemens", "value": "4672" },
+      { "rank": 4, "player": "Steve Carlton", "value": "4136" },
+      { "rank": 5, "player": "Bert Blyleven", "value": "3701" },
+      { "rank": 6, "player": "Tom Seaver", "value": "3640" },
+      { "rank": 7, "player": "Don Sutton", "value": "3574" },
+      { "rank": 8, "player": "Gaylord Perry", "value": "3534" },
+      { "rank": 9, "player": "Walter Johnson", "value": "3509" },
+      { "rank": 10, "player": "Greg Maddux", "value": "3371" }
+    ],
+    "saves": [
+      { "rank": 1, "player": "Mariano Rivera", "value": "652" },
+      { "rank": 2, "player": "Trevor Hoffman", "value": "601" },
+      { "rank": 3, "player": "Lee Smith", "value": "478" },
+      { "rank": 4, "player": "Francisco Rodríguez", "value": "437" },
+      { "rank": 5, "player": "John Franco", "value": "424" },
+      { "rank": 6, "player": "Kenley Jansen", "value": "447" },
+      { "rank": 7, "player": "Craig Kimbrel", "value": "440" },
+      { "rank": 8, "player": "Billy Wagner", "value": "422" },
+      { "rank": 9, "player": "Dennis Eckersley", "value": "390" },
+      { "rank": 10, "player": "Joe Nathan", "value": "377" }
+    ],
+    "era": [
+      { "rank": 1, "player": "Ed Walsh", "value": "1.82" },
+      { "rank": 2, "player": "Addie Joss", "value": "1.89" },
+      { "rank": 3, "player": "Mordecai Brown", "value": "2.06" },
+      { "rank": 4, "player": "Christy Mathewson", "value": "2.13" },
+      { "rank": 5, "player": "Rube Waddell", "value": "2.16" },
+      { "rank": 6, "player": "Walter Johnson", "value": "2.17" },
+      { "rank": 7, "player": "Orval Overall", "value": "2.23" },
+      { "rank": 8, "player": "Tommy Bond", "value": "2.25" },
+      { "rank": 9, "player": "Ed Reulbach", "value": "2.28" },
+      { "rank": 10, "player": "Will White", "value": "2.28" }
+    ]
+  }
+}
