@@ -20,6 +20,8 @@ import { WatchLivePanel } from "./WatchLivePanel";
 import { flagOf } from "@/lib/flags";
 import { fetch2026VideoMap, videoKey } from "@/lib/wc-2026-videos";
 import r32Fallback from "@/data/wc2026_r32_fixtures.json";
+import { applyFilter, useMyTeams, type FootballFilter } from "@/lib/football-filters";
+import { FootballPitchSkeleton, FootballEmptyBall } from "@/components/football/FootballSkeleton";
 
 const HOUR = 60 * 60 * 1000;
 const LIVE_MS = 20 * 1000;
@@ -94,7 +96,7 @@ const ROUND_LABEL: Record<RoundKey, string> = {
 // ============================================================
 // GROUP STAGE — reuses GroupStage component (same design as 2018/2022)
 // ============================================================
-export function Wc2026GroupsView() {
+export function Wc2026GroupsView({ filter = "all", team }: { filter?: FootballFilter; team?: string } = {}) {
   const standingsFn = useServerFn(getWc2026Standings);
   const fixturesFn = useServerFn(getWc2026Fixtures);
 
@@ -125,14 +127,19 @@ export function Wc2026GroupsView() {
     staleTime: 5 * 60_000,
     retry: 1,
   });
-  const wcMatches = useMemo(
+  const wcMatchesAll = useMemo(
     () => toWcMatches(fQ.data?.fixtures ?? [], vQ.data),
     [fQ.data, vQ.data],
+  );
+  const { teams: myTeams } = useMyTeams();
+  const wcMatches = useMemo(
+    () => applyFilter(wcMatchesAll, filter, team, myTeams),
+    [wcMatchesAll, filter, team, myTeams],
   );
 
   const [activeMatch, setActiveMatch] = useState<WCMatch | null>(null);
 
-  if (sQ.isLoading) return <Spinner />;
+  if (sQ.isLoading) return <FootballPitchSkeleton rows={6} />;
   const apiErr = sQ.data?.error || fQ.data?.error;
   if (apiErr && wcGroups.length === 0) return <ErrBox msg={apiErr} />;
   if (wcGroups.length === 0) {
@@ -175,7 +182,7 @@ export function Wc2026GroupsView() {
 // ============================================================
 // KNOCKOUT + TOP SCORERS — reuses MatchCard (same design)
 // ============================================================
-export function Wc2026KnockoutView() {
+export function Wc2026KnockoutView({ filter = "all", team }: { filter?: FootballFilter; team?: string } = {}) {
   const fixturesFn = useServerFn(getWc2026Fixtures);
   const scorersFn = useServerFn(getWc2026TopScorers);
 
@@ -201,9 +208,14 @@ export function Wc2026KnockoutView() {
     staleTime: 5 * 60_000,
     retry: 1,
   });
-  const wcMatches = useMemo(
+  const wcMatchesRaw = useMemo(
     () => toWcMatches(fQ.data?.fixtures ?? [], vQ.data),
     [fQ.data, vQ.data],
+  );
+  const { teams: myTeams } = useMyTeams();
+  const wcMatches = useMemo(
+    () => applyFilter(wcMatchesRaw, filter, team, myTeams),
+    [wcMatchesRaw, filter, team, myTeams],
   );
   const groupedKnockout = useMemo(() => {
     const order: RoundKey[] = ["round_of_32", "round_of_16", "quarter_final", "semi_final", "third_place", "final"];
@@ -246,7 +258,7 @@ export function Wc2026KnockoutView() {
 
   const [activeMatch, setActiveMatch] = useState<WCMatch | null>(null);
 
-  if (fQ.isLoading) return <Spinner />;
+  if (fQ.isLoading) return <FootballPitchSkeleton rows={6} />;
   if (fQ.data?.error && wcMatches.length === 0) return <ErrBox msg={fQ.data.error} />;
 
   return (

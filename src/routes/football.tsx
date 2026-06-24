@@ -8,6 +8,7 @@ import { GroupStage } from "@/components/wc/GroupStage";
 import { MatchCard, type RoundKey } from "@/components/wc/MatchCard";
 import { MatchModal } from "@/components/wc/MatchModal";
 import { YearStrip } from "@/components/wc/YearStrip";
+import { MobileBracket } from "@/components/wc/MobileBracket";
 import { useAuth } from "@/hooks/use-auth";
 import groupMatchesData from "@/data/wc_group_matches.json";
 import { toast } from "sonner";
@@ -16,15 +17,27 @@ import { Wc2026GroupsView, Wc2026KnockoutView } from "@/components/wc/Wc2026View
 import { FootballHero } from "@/components/football/FootballHero";
 import { FootballSubNav, type SubNavTab } from "@/components/football/FootballSubNav";
 import { Wc2026ScorersPanel } from "@/components/football/Wc2026ScorersPanel";
+import { FootballFilterBar } from "@/components/football/FootballFilterBar";
+import { applyFilter, uniqueTeams, useMyTeams, type FootballFilter } from "@/lib/football-filters";
+import { SiteFooter } from "@/components/home/SiteFooter";
+
 
 const GROUP_MATCHES_BY_YEAR = groupMatchesData as Record<string, WCMatch[]>;
 
-type FootballSearch = { year?: number };
+const FILTER_VALUES: FootballFilter[] = ["all", "live", "today", "my"];
+
+type FootballSearch = { year?: number; filter?: FootballFilter; team?: string };
 
 export const Route = createFileRoute("/football")({
   validateSearch: (s: Record<string, unknown>): FootballSearch => {
     const y = Number(s.year);
-    return { year: WC_YEARS.includes(y) ? y : undefined };
+    const f = String(s.filter ?? "");
+    const t = typeof s.team === "string" && s.team.trim().length > 0 ? s.team.trim() : undefined;
+    return {
+      year: WC_YEARS.includes(y) ? y : undefined,
+      filter: (FILTER_VALUES as string[]).includes(f) ? (f as FootballFilter) : undefined,
+      team: t,
+    };
   },
   head: () => ({
     meta: [
@@ -32,7 +45,9 @@ export const Route = createFileRoute("/football")({
       { name: "description", content: "Live FIFA World Cup 2026 fixtures, group standings, knockout bracket and complete tournament history from 1930 to 2026." },
       { property: "og:title", content: "FIFA World Cup 2026 — Live Scores & Complete Archive" },
       { property: "og:description", content: "Live 2026 fixtures with kickoff countdowns, full bracket, top scorers and historical tournaments." },
+      { property: "og:url", content: "https://allsportslive.lovable.app/football" },
     ],
+    links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/football" }],
   }),
   component: Index,
 });
@@ -67,10 +82,20 @@ function Index() {
   const [tab, setTab] = useState<SubNavTab>("knockout");
   const [hintSeen, setHintSeen] = useState(true);
 
+  const filter: FootballFilter = search.filter ?? "all";
+  const teamFilter = search.team;
+
   // Sync URL ?year= when changed
   useEffect(() => {
     navigate({ search: (prev: FootballSearch) => ({ ...prev, year }), replace: true });
   }, [year, navigate]);
+
+  const setFilter = (f: FootballFilter) => {
+    navigate({ search: (prev: FootballSearch) => ({ ...prev, filter: f === "all" ? undefined : f }), replace: true });
+  };
+  const setTeamFilter = (t: string | undefined) => {
+    navigate({ search: (prev: FootballSearch) => ({ ...prev, team: t }), replace: true });
+  };
 
   // Reset to knockout when leaving 2026 — scorers tab is 2026-only.
   useEffect(() => {
@@ -320,11 +345,21 @@ function Index() {
 
             <FootballSubNav active={tab} onChange={setTab} />
 
+            {tab !== "scorers" && (
+              <FootballFilterBar
+                filter={filter}
+                onFilterChange={setFilter}
+                team={teamFilter}
+                onTeamChange={setTeamFilter}
+                teamOptions={[]}
+              />
+            )}
+
             <AdSlot slot="in_content" layout="in-article" />
 
             {tab === "groups" ? (
               <section key="groups-2026" className="wc-tab-content" id="fixtures">
-                <Wc2026GroupsView />
+                <Wc2026GroupsView filter={filter} team={teamFilter} />
               </section>
             ) : tab === "scorers" ? (
               <section key="scorers-2026" className="wc-tab-content animate-fade-in" id="scorers">
@@ -332,9 +367,11 @@ function Index() {
               </section>
             ) : (
               <section key="knockout-2026" className="wc-tab-content" id="fixtures">
-                <Wc2026KnockoutView />
+                <Wc2026KnockoutView filter={filter} team={teamFilter} />
               </section>
             )}
+
+            <AdSlot slot="in_content" layout="in-article" />
           </>
         ) : loading ? (
           <BracketSkeleton year={year} />
@@ -390,26 +427,11 @@ function Index() {
                       />
                     </div>
 
-                    {/* Mobile accordion */}
-                    <div className="md:hidden space-y-3">
-                      {knockoutRounds.map((r) => (
-                        <MobileRound
-                          key={r}
-                          round={r}
-                          matches={grouped[r] ?? []}
-                          defaultOpen={r === "final" || r === "semi_final"}
-                          onPick={setActiveMatch}
-                        />
-                      ))}
-                      {(grouped.third_place?.length ?? 0) > 0 && (
-                        <MobileRound
-                          round="third_place"
-                          matches={grouped.third_place ?? []}
-                          defaultOpen={false}
-                          onPick={setActiveMatch}
-                        />
-                      )}
-                    </div>
+                    {/* Mobile vertical bracket with stage chips */}
+                    <MobileBracket
+                      rounds={knockoutRounds.map((r) => ({ round: r, matches: grouped[r] ?? [] }))}
+                      onPick={setActiveMatch}
+                    />
                   </>
                 )}
               </section>
@@ -418,10 +440,8 @@ function Index() {
         )}
       </main>
 
+      <SiteFooter />
 
-      <footer className="border-t border-border mt-10 py-8 text-center text-xs text-muted-foreground">
-        FIFA World Cup Archive — Historical data 1930–2022
-      </footer>
 
       <MatchModal match={activeMatch} onClose={() => setActiveMatch(null)} />
     </div>

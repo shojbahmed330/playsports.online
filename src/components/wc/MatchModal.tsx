@@ -6,6 +6,8 @@ import { Link } from "@tanstack/react-router";
 import { VideoPlayer } from "./VideoPlayer";
 import { LiveMatchCenter } from "./LiveMatchCenter";
 import { WatchLivePanel } from "./WatchLivePanel";
+import { ShareButton } from "@/components/football/ShareButton";
+import { StarTeamButton } from "@/components/football/StarTeamButton";
 import type { Wc2026Fixture } from "@/lib/wc2026.functions";
 
 function winnerSide(m: WCMatch): "home" | "away" | "draw" {
@@ -45,32 +47,40 @@ export function MatchModal({ match, onClose }: { match: WCMatch | null; onClose:
         className="relative w-full max-w-[640px] my-2 sm:my-8 rounded-2xl border border-gray-800 bg-gray-950 shadow-2xl overflow-hidden"
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-5 pt-4">
+        <div className="flex items-center justify-between px-5 pt-4 gap-2">
           <span className="bg-gradient-to-r from-amber-500 to-amber-600 text-black font-bold text-[10px] uppercase tracking-widest rounded-full px-3 py-1">
             {match.round} · {match.tournament_year}
           </span>
-          <button
-            onClick={onClose}
-            className="size-8 grid place-items-center rounded-full bg-gray-900 hover:bg-gray-800 border border-gray-800"
-            aria-label="Close"
-          >
-            <X className="size-4" />
-          </button>
+          <div className="flex items-center gap-2">
+            <ShareButton
+              title={`${match.home_team} vs ${match.away_team} — ${match.tournament_year} World Cup`}
+              url={`/football/match/${match.id}`}
+            />
+            <button
+              onClick={onClose}
+              className="size-8 grid place-items-center rounded-full bg-gray-900 hover:bg-gray-800 border border-gray-800"
+              aria-label="Close"
+            >
+              <X className="size-4" />
+            </button>
+          </div>
         </div>
 
         <div className="px-6 pt-5 pb-2">
           {/* Score row */}
           <div className="flex items-center justify-between gap-3">
-            <div className="flex-1 flex items-center gap-2 min-w-0">
+            <div className="flex-1 flex items-center gap-1.5 min-w-0">
               <span className="text-2xl shrink-0">{flagOf(match.home_team)}</span>
               <span className={`truncate text-base sm:text-lg font-semibold ${win === "home" ? "text-amber-400" : "text-gray-300"}`}>
                 {match.home_team}
               </span>
+              <StarTeamButton team={match.home_team} />
             </div>
             <div className="text-5xl font-black text-amber-400 tabular-nums whitespace-nowrap">
               {match.home_score ?? "-"} <span className="text-gray-600">-</span> {match.away_score ?? "-"}
             </div>
-            <div className="flex-1 flex items-center gap-2 min-w-0 justify-end">
+            <div className="flex-1 flex items-center gap-1.5 min-w-0 justify-end">
+              <StarTeamButton team={match.away_team} />
               <span className={`truncate text-base sm:text-lg font-semibold text-right ${win === "away" ? "text-amber-400" : "text-gray-300"}`}>
                 {match.away_team}
               </span>
@@ -99,11 +109,6 @@ export function MatchModal({ match, onClose }: { match: WCMatch | null; onClose:
               </div>
             )}
           </div>
-        </div>
-
-        {/* Video */}
-        <div className="px-6 pt-4">
-          <VideoPlayer videoUrl={match.video_url} matchTitle={`${match.home_team} vs ${match.away_team}`} />
         </div>
 
         {/* Video / highlights */}
