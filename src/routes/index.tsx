@@ -65,63 +65,71 @@ function HubPage() {
   const finalGames = all.filter((x) => x.game.status === "post");
   const totalLive = liveGames.length;
 
+  // Use fixtures for WC2026 spotlight in hero
+  const wcFn = useServerFn(getWc2026Fixtures);
+  const wcQ = useQuery({
+    queryKey: ["wc2026", "fixtures"],
+    queryFn: () => wcFn(),
+    staleTime: 20_000,
+    retry: 1,
+  });
+  const wcFeatured = useMemo<Wc2026Fixture | null>(() => {
+    const list = wcQ.data?.fixtures ?? [];
+    return (
+      list.find((f) => f.status === "inprogress") ??
+      list.filter((f) => f.status === "notstarted").sort((a, b) => a.startTs - b.startTs)[0] ??
+      null
+    );
+  }, [wcQ.data]);
+
+  const totalToday = all.length;
+
   return (
     <div className="min-h-screen">
       <SportNav liveCount={totalLive} />
       <LiveTicker items={liveGames} />
 
-      {/* HERO */}
-      <section className="relative overflow-hidden border-b border-border">
-        <div
-          aria-hidden
-          className="absolute inset-0 opacity-50"
-          style={{
-            background:
-              "radial-gradient(60% 80% at 50% 0%, oklch(0.78 0.16 75 / 0.22), transparent 60%), radial-gradient(40% 60% at 80% 100%, oklch(0.62 0.22 27 / 0.16), transparent 60%)",
-          }}
-        />
-        <div className="relative max-w-6xl mx-auto px-4 sm:px-6 py-12 sm:py-16 text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/15 ring-1 ring-amber-500/30 text-[11px] uppercase tracking-[0.18em] font-bold text-amber-300 mb-5">
-            <span className="size-1.5 rounded-full bg-amber-400 animate-pulse" />
-            {totalLive > 0 ? `${totalLive} game${totalLive === 1 ? "" : "s"} live now` : "Live across 5 leagues"}
-          </div>
-          <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight">
-            One <span className="text-amber-400">Sports Hub</span>. Every Game.
-          </h1>
-          <p className="mt-4 text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto">
-            Live scores and standings for <strong className="text-foreground">MLB</strong>,{" "}
-            <strong className="text-foreground">NBA</strong>,{" "}
-            <strong className="text-foreground">NHL</strong> and{" "}
-            <strong className="text-foreground">MLS</strong>, plus the complete{" "}
-            <strong className="text-foreground">FIFA World Cup</strong> archive from 1930 to 2026.
-          </p>
-        </div>
-      </section>
+      <HeroSpotlight
+        liveGames={liveGames}
+        upcomingGames={upcomingGames}
+        totalToday={totalToday}
+        wcFeatured={wcFeatured}
+      />
+
+      <PulseStrip items={liveGames} />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-10 space-y-12">
-        {/* SPORT TILES */}
-        <section className="space-y-4">
-          <h2 className="text-xs uppercase tracking-[0.2em] text-muted-foreground font-bold">
-            Choose a sport
-          </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-            <FootballTile />
+        {/* SPORT CARDS 2.0 */}
+        <section className="space-y-4 animate-fade-in">
+          <div className="flex items-end justify-between">
+            <div>
+              <h2 className="text-xs uppercase tracking-[0.2em] text-muted-foreground font-bold">
+                Choose a sport
+              </h2>
+              <p className="text-lg sm:text-xl font-extrabold mt-1">Jump into any league</p>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+            <FifaCard />
+            <CricketCard />
             {SPORT_LIST.map((s) => {
               const games = byLeague[s.label] ?? [];
-              const next = games.filter((g) => g.status === "pre").sort((a, b) => a.startTs - b.startTs)[0];
+              const next = games.filter((g) => g.status === "pre").sort((a, b) => a.startTs - b.startTs)[0] ?? null;
+              const recent = games.filter((g) => g.status === "post").sort((a, b) => b.startTs - a.startTs)[0] ?? null;
               return (
-                <SportTile
+                <SportCard
                   key={s.slug}
                   sport={s}
                   liveCount={games.filter((g) => g.status === "in").length}
-                  nextStartTs={next?.startTs ?? null}
+                  next={next}
+                  recent={recent}
                 />
               );
             })}
           </div>
         </section>
 
-        {/* LIVE NOW */}
+        {/* LIVE NOW (full grid below pulse strip) */}
         {liveGames.length > 0 && (
           <Section
             icon={<Flame className="size-5 text-red-400" />}
@@ -170,9 +178,12 @@ function HubPage() {
         )}
       </main>
 
-      <footer className="border-t border-border mt-10 py-8 text-center text-xs text-muted-foreground">
-        Live data from ESPN · FIFA World Cup data from Sofascore & jfjelstul/worldcup dataset
-      </footer>
+      {/* Floating Watch Live */}
+      <div className="fixed bottom-4 right-4 z-40">
+        <WatchLivePanel compact />
+      </div>
+
+      <SiteFooter />
     </div>
   );
 }
