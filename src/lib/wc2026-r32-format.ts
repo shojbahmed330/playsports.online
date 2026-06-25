@@ -98,6 +98,8 @@ function toMatch(
     city: sched?.city ?? null,
     video_url: null,
     predicted: true,
+    home_seed_label: homeHint,
+    away_seed_label: awayHint,
   };
 }
 

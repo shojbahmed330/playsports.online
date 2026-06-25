@@ -42,6 +42,10 @@ export type WCMatch = {
   video_url: string | null;
   /** True for synthesized fixtures (e.g. predicted Round of 32 before FIFA/ESPN publishes the real matchup). */
   predicted?: boolean;
+  /** Human-readable seed hint for the home slot of a predicted KO fixture (e.g. "Winner Group A"). */
+  home_seed_label?: string | null;
+  /** Human-readable seed hint for the away slot of a predicted KO fixture (e.g. "Best 3rd #1"). */
+  away_seed_label?: string | null;
 };
 
 export type WCGroup = {
