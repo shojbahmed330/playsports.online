@@ -350,9 +350,13 @@ export function Wc2026KnockoutView({ filter = "all", team }: { filter?: Football
     () => buildTeamGroup(sQ.data?.groups ?? []),
     [sQ.data],
   );
+  const canonName = useMemo(
+    () => buildCanonicalName(sQ.data?.groups ?? []),
+    [sQ.data],
+  );
   const wcMatchesRaw = useMemo(
-    () => toWcMatches(fQ.data?.fixtures ?? [], vQ.data, teamGroup),
-    [fQ.data, vQ.data, teamGroup],
+    () => toWcMatches(fQ.data?.fixtures ?? [], vQ.data, teamGroup, canonName),
+    [fQ.data, vQ.data, teamGroup, canonName],
   );
   const { teams: myTeams } = useMyTeams();
   const wcMatches = useMemo(
