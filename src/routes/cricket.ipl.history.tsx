@@ -331,3 +331,57 @@ function BracketCell({ b }: { b: IplBracketMatch }) {
   );
 }
 
+
+// ─── Auction spend trend ─────────────────────────────────
+function parsePrice(s: string): number {
+  // returns USD in millions
+  const m = s.replace(/[$,]/g, "").trim();
+  if (/m/i.test(m)) return parseFloat(m);
+  if (/k/i.test(m)) return parseFloat(m) / 1000;
+  const n = parseFloat(m);
+  return Number.isFinite(n) ? n : 0;
+}
+
+function AuctionSpendChart() {
+  const rows = useMemo(
+    () =>
+      auctions.headlines
+        .slice()
+        .sort((a, b) => a.year - b.year)
+        .map((h) => ({
+          year: h.year,
+          top: parsePrice(h.mostExpensive.price),
+          player: h.mostExpensive.player,
+          team: h.mostExpensive.team,
+          priceLabel: h.mostExpensive.price,
+        })),
+    [],
+  );
+  const max = Math.max(...rows.map((r) => r.top), 1);
+  return (
+    <section className="mb-6 overflow-hidden rounded-2xl border border-violet-300/15 bg-gradient-to-br from-violet-950/30 via-gray-900/60 to-gray-900/30 p-4">
+      <div className="mb-3 flex items-center gap-2">
+        <Sparkles className="size-4 text-violet-300" />
+        <h2 className="text-sm font-black uppercase tracking-widest text-violet-200">Auction spend — top buy per season</h2>
+        <span className="ml-auto text-[10px] font-bold text-white/35">USD millions</span>
+      </div>
+      <div className="flex items-end gap-1.5 overflow-x-auto pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        {rows.map((r) => {
+          const h = Math.max(8, Math.round((r.top / max) * 100));
+          return (
+            <div key={r.year} className="group flex w-[34px] shrink-0 flex-col items-center gap-1">
+              <div className="text-[9px] font-black tabular-nums text-violet-200/90">{r.priceLabel}</div>
+              <div
+                className="w-full rounded-md bg-gradient-to-t from-violet-700 via-fuchsia-500 to-amber-300 ring-1 ring-white/10 transition group-hover:from-violet-500"
+                style={{ height: `${h}px` }}
+                title={`${r.year} — ${r.player} (${r.team}) ${r.priceLabel}`}
+              />
+              <div className="text-[9px] font-bold text-white/55">{String(r.year).slice(2)}</div>
+            </div>
+          );
+        })}
+      </div>
+      <p className="mt-2 text-[10px] text-white/45">Hover any bar for player and franchise. Trend shows escalation across the 18 IPL auctions.</p>
+    </section>
+  );
+}
