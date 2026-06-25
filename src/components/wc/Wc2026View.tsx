@@ -264,9 +264,16 @@ export function Wc2026GroupsView({ filter = "all", team, date, onDateChange }: {
     return [...fromEspn, ...synth];
   }, [fQ.data, vQ.data, teamGroup, canonName]);
   const { teams: myTeams } = useMyTeams();
+  // Group stage view ALWAYS shows every group fixture (past + scheduled).
+  // The date scrubber only filters the live ticker — selecting a date with
+  // no matches must not blank out the groups.
   const wcMatches = useMemo(
-    () => filterByDateKey(applyFilter(wcMatchesAll, filter, team, myTeams), date),
-    [wcMatchesAll, filter, team, myTeams, date],
+    () => applyFilter(wcMatchesAll, filter, team, myTeams),
+    [wcMatchesAll, filter, team, myTeams],
+  );
+  const wcMatchesForTicker = useMemo(
+    () => filterByDateKey(wcMatches, date),
+    [wcMatches, date],
   );
 
 
