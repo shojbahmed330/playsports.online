@@ -58,7 +58,7 @@ function PlayersPage() {
             <div className="size-12 rounded-2xl bg-fuchsia-500/15 ring-1 ring-fuchsia-500/30 grid place-items-center text-2xl">👤</div>
             <div>
               <div className="text-[11px] uppercase tracking-[0.2em] text-fuchsia-300 font-bold">Cricket</div>
-              <h1 className="text-2xl sm:text-3xl font-extrabold">Players</h1>
+              <h1 className="text-2xl sm:text-3xl font-extrabold">International Cricket Players</h1>
               <p className="text-xs text-muted-foreground mt-1">Top-ranked players across all formats.</p>
             </div>
           </div>
