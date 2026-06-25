@@ -29,8 +29,28 @@ export type MlbTeam = {
   record: string | null;
   venue: string | null;
   division: string | null;
+  standingSummary: string | null;
 };
 
+export type MlbTeamStat = { name: string; abbr: string; value: string };
+export type MlbTeamLeader = {
+  category: string;
+  displayValue: string;
+  athleteId: string | null;
+  athleteName: string;
+  headshot: string | null;
+  position: string | null;
+};
+export type MlbInjury = {
+  athleteId: string | null;
+  athleteName: string;
+  position: string | null;
+  status: string;
+  type: string | null;
+  detail: string | null;
+  date: string | null;
+  headshot: string | null;
+};
 export type MlbRosterPlayer = {
   id: string;
   name: string;
@@ -138,10 +158,11 @@ export const getMlbTeam = createServerFn({ method: "GET" })
   .inputValidator((d: { id: string }) => d)
   .handler(async ({ data }) => {
     try {
-      const [teamRaw, scheduleRaw, rosterRaw] = await Promise.all([
+      const [teamRaw, scheduleRaw, rosterRaw, injuriesRaw] = await Promise.all([
         get(`${SITE}/teams/${data.id}`, 60 * 60_000) as Promise<any>,
         get(`${SITE}/teams/${data.id}/schedule`, 10 * 60_000) as Promise<any>,
         get(`${SITE}/teams/${data.id}/roster`, 6 * 60 * 60_000) as Promise<any>,
+        get(`${SITE}/teams/${data.id}/injuries`, 30 * 60_000).catch(() => null) as Promise<any>,
       ]);
       const t = teamRaw?.team ?? {};
       const team: MlbTeam = {
@@ -156,7 +177,54 @@ export const getMlbTeam = createServerFn({ method: "GET" })
         record: t.record?.items?.[0]?.summary ?? null,
         venue: t.franchise?.venue?.fullName ?? null,
         division: t.groups?.parent?.name ?? null,
+        standingSummary: t.standingSummary ?? null,
       };
+
+      // Team season statistics from record items
+      const recItems: any[] = t?.record?.items ?? [];
+      const overall = recItems.find((r: any) => r.type === "total") ?? recItems[0];
+      const stats: MlbTeamStat[] = (overall?.stats ?? []).map((s: any) => ({
+        name: s.name ?? s.displayName ?? "",
+        abbr: s.abbreviation ?? s.shortDisplayName ?? s.name ?? "",
+        value: s.displayValue ?? String(s.value ?? ""),
+      })).filter((s: MlbTeamStat) => s.abbr && s.value);
+
+      // Leaders
+      const leadersRaw: any[] = t?.leaders ?? [];
+      const leaders: MlbTeamLeader[] = [];
+      for (const cat of leadersRaw) {
+        const top = cat?.leaders?.[0];
+        if (!top) continue;
+        leaders.push({
+          category: cat.displayName ?? cat.name ?? "",
+          displayValue: top.displayValue ?? "",
+          athleteId: top.athlete?.id ? String(top.athlete.id) : null,
+          athleteName: top.athlete?.displayName ?? top.athlete?.shortName ?? "",
+          headshot: top.athlete?.headshot?.href ?? null,
+          position: top.athlete?.position?.abbreviation ?? null,
+        });
+      }
+
+      // Injuries
+      const injuriesList: any[] = injuriesRaw?.injuries ?? [];
+      const injuries: MlbInjury[] = [];
+      for (const group of injuriesList) {
+        const items: any[] = group?.injuries ?? (Array.isArray(group) ? group : []);
+        for (const inj of items) {
+          const a = inj.athlete ?? {};
+          injuries.push({
+            athleteId: a.id ? String(a.id) : null,
+            athleteName: a.displayName ?? a.fullName ?? "",
+            position: a.position?.abbreviation ?? null,
+            status: inj.status ?? inj.type?.description ?? "—",
+            type: inj.type?.description ?? null,
+            detail: inj.details?.detail ?? inj.shortComment ?? inj.longComment ?? null,
+            date: inj.date ?? null,
+            headshot: a.headshot?.href ?? null,
+          });
+        }
+      }
+
 
       const evs: any[] = scheduleRaw?.events ?? [];
       const schedule: MlbScheduleGame[] = evs.map((e: any) => {
@@ -208,12 +276,15 @@ export const getMlbTeam = createServerFn({ method: "GET" })
         }
       }
 
-      return { team, schedule, roster, error: null as string | null };
+      return { team, schedule, roster, stats, leaders, injuries, error: null as string | null };
     } catch (e) {
       return {
         team: null as MlbTeam | null,
         schedule: [] as MlbScheduleGame[],
         roster: [] as MlbRosterPlayer[],
+        stats: [] as MlbTeamStat[],
+        leaders: [] as MlbTeamLeader[],
+        injuries: [] as MlbInjury[],
         error: e instanceof Error ? e.message : "Unknown",
       };
     }
