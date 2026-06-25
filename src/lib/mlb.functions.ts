@@ -334,7 +334,7 @@ export const getMlbLeaders = createServerFn({ method: "GET" })
         return list.map(({ key, label }) => {
           const c = byKey.get(key);
           const leaders: any[] = c?.leaders ?? [];
-          const entries: MlbLeaderEntry[] = leaders.slice(0, 10).map((l: any, i: number) => {
+          const entries: MlbLeaderEntry[] = leaders.slice(0, 25).map((l: any, i: number) => {
             const ath = l?.athlete ?? {};
             const team = ath?.team ?? l?.team ?? {};
             return {
