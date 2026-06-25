@@ -125,9 +125,14 @@ function RankingsPage() {
                   <td className="px-3 py-3">
                     <div className="flex items-center gap-2 min-w-0">
                       <span className="text-lg leading-none">{r.flag}</span>
-                      <span className="font-bold truncate">{r.team ?? r.player}</span>
+                      {cat === "teams" ? (
+                        <span className="font-bold truncate">{r.team}</span>
+                      ) : (
+                        <PlayerLink name={r.player} className="font-bold truncate block">{r.player}</PlayerLink>
+                      )}
                     </div>
                   </td>
+
                   {cat !== "teams" && <td className="px-3 py-3 hidden sm:table-cell text-xs text-gray-400 font-mono">{r.team}</td>}
                   <td className="px-3 py-3 text-right tabular-nums font-extrabold text-emerald-300">{r.rating}</td>
                   <td className="px-3 py-3 text-right">
