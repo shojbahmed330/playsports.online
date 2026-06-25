@@ -58,7 +58,7 @@ function ScoresPage() {
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          {filtered.map((g) => <GameCard key={g.id} game={g} />)}
+          {filtered.map((g) => <GameCard key={g.id} game={g} linkTo={`/mlb/game/${g.id}`} />)}
         </div>
       )}
     </div>
