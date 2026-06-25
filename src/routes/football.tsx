@@ -265,10 +265,20 @@ function Index() {
     setHintSeen(true);
   };
 
+  // Mobile bottom nav — 2026-only quick switcher between primary sections.
+  const mobileTabs: MobileTab[] = year === 2026 ? [
+    { to: "/football", label: "Groups",   Icon: Users,    search: { tab: "groups" },   match: (_p, s) => (s.tab as string) === "groups" },
+    { to: "/football", label: "Bracket",  Icon: Swords,   search: { tab: "knockout" }, match: (_p, s) => !s.tab || s.tab === "knockout" },
+    { to: "/football", label: "Scorers",  Icon: Goal,     search: { tab: "scorers" },  match: (_p, s) => (s.tab as string) === "scorers" },
+    { to: "/players",  label: "Stats",    Icon: Trophy,   match: (p) => p.startsWith("/players") },
+  ] : [];
+
   return (
     <div className="min-h-screen">
       {/* HEADER — shared sport nav (same look as Hub / MLB / NBA) */}
       <SportNav />
+      <Breadcrumbs />
+
 
       {/* HERO — live-aware for 2026, classic for archive years */}
       {year === 2026 ? (
