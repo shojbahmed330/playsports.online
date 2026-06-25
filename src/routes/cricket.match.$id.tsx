@@ -202,7 +202,7 @@ function TeamScoreBlock({ t }: { t: import("@/lib/cricket.functions").CricketMat
 }
 
 function InningsCard({ inn, onPlayer }: { inn: CricketInningsDetail; onPlayer: (id: string) => void }) {
-  const PlayerBtn = ({ id, name, children }: { id: string; name: string; children?: React.ReactNode }) =>
+  const PlayerBtn = ({ id, name, children }: { id: string; name: string; children?: ReactNode }) =>
     id ? (
       <button
         type="button"
