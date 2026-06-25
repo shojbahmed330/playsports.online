@@ -59,6 +59,8 @@ function TeamPage() {
   const squadQ = useQuery(squadQo(teamId));
   const t = data.team!;
   const [activeAthlete, setActiveAthlete] = useState<string | null>(null);
+  const [tab, setTab] = useState<"overview" | "squad" | "fixtures" | "h2h" | "titles">("overview");
+  const captainTimeline = (captainsData as Record<string, Array<{ name: string; years: string; titles: number }>>)[teamId] ?? [];
   const titleSeasons = (history as Array<{ year: number; championId: string | null; mom: string }>)
     .filter((s) => s.championId === t.id)
     .sort((a, b) => b.year - a.year);
