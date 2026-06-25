@@ -195,7 +195,9 @@ function SeriesIndex() {
             })}
           </div>
         )}
+        </div>
       </div>
+
     </div>
   );
 }
