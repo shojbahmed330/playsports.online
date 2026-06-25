@@ -69,7 +69,7 @@ function IplHome() {
 
   return (
     <div className="min-h-screen bg-background text-white">
-      <CricketSubNav />
+      <SportNav liveCount={overview.live.length} />
       <IplSubNav />
 
       <IplHero
