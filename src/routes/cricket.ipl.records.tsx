@@ -127,12 +127,13 @@ function RecordsPage() {
                     <div className="mt-1 flex items-baseline justify-between gap-3">
                       <div className="min-w-0">
                         {r.player ? (
-                          <div className="truncate text-sm font-bold text-white">{r.player}</div>
+                          <PlayerLink name={r.player} className="truncate text-sm font-bold text-white block">{r.player}</PlayerLink>
                         ) : (
                           <div className="truncate text-sm font-bold text-white">{r.team}</div>
                         )}
                         {r.player && r.team && <div className="truncate text-[11px] text-white/55">{r.team}</div>}
                       </div>
+
                       <div className="shrink-0 text-lg font-black text-amber-300">{r.value}</div>
                     </div>
                     {r.context && <div className="mt-1 truncate text-[11px] text-white/45">{r.context}</div>}
