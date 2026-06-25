@@ -50,8 +50,9 @@ function SeriesIndex() {
     });
   }, [series, fmt, group]);
 
-  const set = (patch: Partial<{ fmt: typeof fmt; group: typeof group }>) =>
-    navigate({ search: (prev) => ({ ...prev, ...patch }), replace: true });
+  type S = { fmt: typeof fmt; group: typeof group };
+  const set = (patch: Partial<S>) =>
+    navigate({ search: (prev: S) => ({ ...prev, ...patch }), replace: true });
 
   return (
     <div className="min-h-screen">

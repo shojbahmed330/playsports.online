@@ -42,8 +42,8 @@ const FORMATS: { id: Fmt; label: string }[] = [
 function RankingsPage() {
   const { cat, fmt } = Route.useSearch();
   const navigate = Route.useNavigate();
-  const setCat = (c: Cat) => navigate({ search: (p) => ({ ...p, cat: c }), replace: true });
-  const setFmt = (f: Fmt) => navigate({ search: (p) => ({ ...p, fmt: f }), replace: true });
+  const setCat = (c: Cat) => navigate({ search: (p: { cat: Cat; fmt: Fmt }) => ({ ...p, cat: c }), replace: true });
+  const setFmt = (f: Fmt) => navigate({ search: (p: { cat: Cat; fmt: Fmt }) => ({ ...p, fmt: f }), replace: true });
 
   const data: any[] = (rankings as any)[cat]?.[cat === "teams" && fmt === "test" ? "test" : fmt] ?? [];
 
