@@ -272,7 +272,7 @@ function InningsCard({ inn, onPlayer }: { inn: CricketInningsDetail; onPlayer: (
             <tbody className="divide-y divide-gray-800">
               {inn.bowlers.map((b) => (
                 <tr key={b.id || b.name} className="hover:bg-gray-900/40">
-                  <td className="px-3 py-2 font-medium">{b.name}</td>
+                  <td className="px-3 py-2 font-medium"><PlayerBtn id={b.id} name={b.name} /></td>
                   <td className="px-3 py-2 text-right tabular-nums">{b.overs}</td>
                   <td className="px-3 py-2 text-right tabular-nums hidden sm:table-cell">{b.maidens}</td>
                   <td className="px-3 py-2 text-right tabular-nums">{b.runs}</td>
