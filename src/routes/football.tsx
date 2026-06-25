@@ -85,16 +85,28 @@ function Index() {
   const initialYear = search.year ?? 2026;
   const [year, setYear] = useState<number>(initialYear);
   const [activeMatch, setActiveMatch] = useState<WCMatch | null>(null);
-  const [tab, setTab] = useState<SubNavTab>("knockout");
+  const initialTab: SubNavTab = search.tab ?? "knockout";
+  const [tab, setTab] = useState<SubNavTab>(initialTab);
   const [hintSeen, setHintSeen] = useState(true);
 
   const filter: FootballFilter = search.filter ?? "all";
   const teamFilter = search.team;
 
-  // Sync URL ?year= when changed
+  // Sync URL ?year= and ?tab= when changed
   useEffect(() => {
     navigate({ search: (prev: FootballSearch) => ({ ...prev, year }), replace: true });
   }, [year, navigate]);
+  useEffect(() => {
+    navigate({
+      search: (prev: FootballSearch) => ({ ...prev, tab: tab === "knockout" ? undefined : tab }),
+      replace: true,
+    });
+  }, [tab, navigate]);
+  // External tab change (e.g. from MobileTabBar Link) → adopt into state
+  useEffect(() => {
+    if (search.tab && search.tab !== tab) setTab(search.tab);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search.tab]);
 
   const setFilter = (f: FootballFilter) => {
     navigate({ search: (prev: FootballSearch) => ({ ...prev, filter: f === "all" ? undefined : f }), replace: true });
