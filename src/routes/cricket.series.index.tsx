@@ -38,6 +38,16 @@ function SeriesIndex() {
     refetchInterval: 60_000,
   });
 
+  const tourFn = useServerFn(getBilateralSeriesList);
+  const tourQ = useQuery({
+    queryKey: ["cricket", "bilateral-tours"],
+    queryFn: () => tourFn({}),
+    staleTime: 5 * 60_000,
+    refetchInterval: 60_000,
+  });
+  const tours: BilateralTour[] = tourQ.data?.tours ?? [];
+
+
   const series = q.data?.series ?? [];
   const filtered = useMemo(() => {
     return series.filter((s) => {
