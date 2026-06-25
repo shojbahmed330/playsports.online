@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { Trophy, Loader2, ChevronDown, Users, Swords } from "lucide-react";
+import { Trophy, Loader2, ChevronDown, Users, Swords, Goal, Calendar } from "lucide-react";
 import { SportNav } from "@/components/sports/SportNav";
 import { supabase, WC_YEARS, type WCTournament, type WCMatch, type WCGroup } from "@/lib/supabase";
 import { TournamentInfoCard } from "@/components/wc/TournamentInfoCard";
@@ -21,23 +21,28 @@ import { Wc2026ScorersPanel } from "@/components/football/Wc2026ScorersPanel";
 import { FootballFilterBar } from "@/components/football/FootballFilterBar";
 import { applyFilter, uniqueTeams, useMyTeams, type FootballFilter } from "@/lib/football-filters";
 import { SiteFooter } from "@/components/home/SiteFooter";
+import { Breadcrumbs } from "@/components/nav/Breadcrumbs";
+import { MobileTabBar, type MobileTab } from "@/components/nav/MobileTabBar";
 
 
 const GROUP_MATCHES_BY_YEAR = groupMatchesData as Record<string, WCMatch[]>;
 
 const FILTER_VALUES: FootballFilter[] = ["all", "live", "today", "my"];
+const TAB_VALUES: SubNavTab[] = ["groups", "knockout", "scorers"];
 
-type FootballSearch = { year?: number; filter?: FootballFilter; team?: string };
+type FootballSearch = { year?: number; filter?: FootballFilter; team?: string; tab?: SubNavTab };
 
 export const Route = createFileRoute("/football")({
   validateSearch: (s: Record<string, unknown>): FootballSearch => {
     const y = Number(s.year);
     const f = String(s.filter ?? "");
     const t = typeof s.team === "string" && s.team.trim().length > 0 ? s.team.trim() : undefined;
+    const tb = String(s.tab ?? "");
     return {
       year: WC_YEARS.includes(y) ? y : undefined,
       filter: (FILTER_VALUES as string[]).includes(f) ? (f as FootballFilter) : undefined,
       team: t,
+      tab: (TAB_VALUES as string[]).includes(tb) ? (tb as SubNavTab) : undefined,
     };
   },
   head: () => ({
