@@ -75,6 +75,10 @@ export type NewsItem = {
   publishedAt: string;
   image: string | null;
   link: string;
+  category?: string | null;
+  byline?: string | null;
+  type?: string | null;
+  premium?: boolean;
 };
 
 // ───────────── ADAPTERS ─────────────
@@ -208,19 +212,29 @@ export const getStandings = createServerFn({ method: "GET" })
 
 // News — longer TTL.
 export const getSportNews = createServerFn({ method: "GET" })
-  .inputValidator((d: { sportPath: string }) => d)
+  .inputValidator((d: { sportPath: string; limit?: number }) => d)
   .handler(async ({ data }) => {
     try {
-      const raw = (await apiGet(`/${data.sportPath}/news`, 30 * 60_000)) as any;
+      const limit = data.limit ?? 40;
+      const raw = (await apiGet(`/${data.sportPath}/news?limit=${limit}`, 15 * 60_000)) as any;
       const articles: any[] = raw?.articles ?? [];
-      const items: NewsItem[] = articles.slice(0, 12).map((a: any) => ({
-        id: String(a.id ?? a.dataSourceIdentifier ?? a.headline),
-        headline: a.headline ?? "",
-        description: a.description ?? "",
-        publishedAt: a.published ?? "",
-        image: a.images?.[0]?.url ?? null,
-        link: a.links?.web?.href ?? a.links?.mobile?.href ?? "",
-      }));
+      const items: NewsItem[] = articles.slice(0, limit).map((a: any) => {
+        const cats: any[] = a?.categories ?? [];
+        const primaryCat = cats.find((c) => c?.type === "league" || c?.description)?.description
+          ?? cats[0]?.description ?? null;
+        return {
+          id: String(a.id ?? a.dataSourceIdentifier ?? a.headline),
+          headline: a.headline ?? a.title ?? "",
+          description: a.description ?? "",
+          publishedAt: a.published ?? a.lastModified ?? "",
+          image: a.images?.[0]?.url ?? null,
+          link: a.links?.web?.href ?? a.links?.mobile?.href ?? "",
+          category: primaryCat,
+          byline: a.byline ?? null,
+          type: a.type ?? null,
+          premium: !!a.premium,
+        };
+      });
       return { items, error: null as string | null };
     } catch (e) {
       return { items: [] as NewsItem[], error: e instanceof Error ? e.message : "Unknown" };
