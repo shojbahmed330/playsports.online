@@ -147,29 +147,32 @@ function TeamPage() {
         ) : (
           <ul className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-6">
             {squadQ.data!.players.map((p) => (
-              <li
-                key={p.athleteId}
-                className="group relative overflow-hidden rounded-xl bg-white/[0.04] p-3 ring-1 ring-white/10 transition hover:-translate-y-0.5 hover:bg-white/[0.08] hover:ring-white/20"
-              >
-                <span
-                  aria-hidden
-                  className="absolute inset-x-0 top-0 h-0.5"
-                  style={{ background: `linear-gradient(90deg, ${t.primary}, ${t.secondary})` }}
-                />
-                <div className="flex flex-col items-center text-center">
-                  {p.headshot ? (
-                    <img src={p.headshot} alt="" loading="lazy" className="size-14 rounded-full bg-black/30 object-cover ring-1 ring-white/15" />
-                  ) : (
-                    <div className="grid size-14 place-items-center rounded-full bg-black/30 text-sm font-black text-white/60 ring-1 ring-white/15">
-                      {p.name.split(" ").map((n) => n[0]).slice(0, 2).join("")}
+              <li key={p.athleteId}>
+                <button
+                  type="button"
+                  onClick={() => setActiveAthlete(p.athleteId)}
+                  className="group relative w-full overflow-hidden rounded-xl bg-white/[0.04] p-3 ring-1 ring-white/10 transition hover:-translate-y-0.5 hover:bg-white/[0.08] hover:ring-white/20 focus:outline-none focus:ring-2 focus:ring-amber-300/60"
+                >
+                  <span
+                    aria-hidden
+                    className="absolute inset-x-0 top-0 h-0.5"
+                    style={{ background: `linear-gradient(90deg, ${t.primary}, ${t.secondary})` }}
+                  />
+                  <div className="flex flex-col items-center text-center">
+                    {p.headshot ? (
+                      <img src={p.headshot} alt="" loading="lazy" className="size-14 rounded-full bg-black/30 object-cover ring-1 ring-white/15" />
+                    ) : (
+                      <div className="grid size-14 place-items-center rounded-full bg-black/30 text-sm font-black text-white/60 ring-1 ring-white/15">
+                        {p.name.split(" ").map((n) => n[0]).slice(0, 2).join("")}
+                      </div>
+                    )}
+                    <div className="mt-2 line-clamp-2 text-[12px] font-bold text-white">{p.name}</div>
+                    <div className="mt-0.5 text-[10px] uppercase tracking-wide text-white/50">
+                      {p.position ?? "Player"}{p.jersey ? ` · #${p.jersey}` : ""}
                     </div>
-                  )}
-                  <div className="mt-2 line-clamp-2 text-[12px] font-bold text-white">{p.name}</div>
-                  <div className="mt-0.5 text-[10px] uppercase tracking-wide text-white/50">
-                    {p.position ?? "Player"}{p.jersey ? ` · #${p.jersey}` : ""}
+                    <div className="mt-1 text-[10px] text-amber-300/80">{p.appearances} match{p.appearances === 1 ? "" : "es"}</div>
                   </div>
-                  <div className="mt-1 text-[10px] text-amber-300/80">{p.appearances} match{p.appearances === 1 ? "" : "es"}</div>
-                </div>
+                </button>
               </li>
             ))}
           </ul>
