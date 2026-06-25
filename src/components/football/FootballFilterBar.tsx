@@ -35,42 +35,44 @@ export function FootballFilterBar({
 
   return (
     <div className="space-y-3">
-      {/* Chip row */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-1 -mx-1 px-1">
-        {CHIPS.map((c) => {
-          const active = filter === c.id;
-          const disabled = c.id === "my" && myTeams.length === 0;
-          return (
-            <button
-              key={c.id}
-              onClick={() => onFilterChange(c.id)}
-              disabled={disabled}
-              className={`relative inline-flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition-all ${
-                active
-                  ? `bg-gradient-to-r ${c.tone} text-black shadow-md`
-                  : "bg-white/5 border border-white/10 text-muted-foreground hover:text-foreground hover:bg-white/10"
-              } ${disabled ? "opacity-40 cursor-not-allowed" : ""}`}
-              title={disabled ? "Star teams to fill this list" : c.label}
-            >
-              {c.icon}
-              {c.label}
-              {c.id === "my" && myTeams.length > 0 && (
-                <span className={`ml-1 rounded-full px-1.5 text-[10px] tabular-nums ${active ? "bg-black/20" : "bg-white/10"}`}>
-                  {myTeams.length}
-                </span>
-              )}
-            </button>
-          );
-        })}
+      {/* Chip row + search — wrap on mobile to avoid horizontal scrollbar */}
+      <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2 min-w-0">
+          {CHIPS.map((c) => {
+            const active = filter === c.id;
+            const disabled = c.id === "my" && myTeams.length === 0;
+            return (
+              <button
+                key={c.id}
+                onClick={() => onFilterChange(c.id)}
+                disabled={disabled}
+                className={`relative inline-flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition-all ${
+                  active
+                    ? `bg-gradient-to-r ${c.tone} text-black shadow-md`
+                    : "bg-white/5 border border-white/10 text-muted-foreground hover:text-foreground hover:bg-white/10"
+                } ${disabled ? "opacity-40 cursor-not-allowed" : ""}`}
+                title={disabled ? "Star teams to fill this list" : c.label}
+              >
+                {c.icon}
+                {c.label}
+                {c.id === "my" && myTeams.length > 0 && (
+                  <span className={`ml-1 rounded-full px-1.5 text-[10px] tabular-nums ${active ? "bg-black/20" : "bg-white/10"}`}>
+                    {myTeams.length}
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </div>
 
-        {/* Search */}
-        <div className="relative ml-auto shrink-0">
+        {/* Search — full width on mobile, inline on sm+ */}
+        <div className="relative w-full sm:w-auto sm:ml-auto sm:shrink-0">
           <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground" />
           <input
             value={q}
             onChange={(e) => { setQ(e.target.value); onTeamChange(e.target.value || undefined); }}
             placeholder="Search team…"
-            className="w-44 sm:w-56 pl-8 pr-7 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-amber-400/40"
+            className="w-full sm:w-56 pl-8 pr-7 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-amber-400/40"
           />
           {q && (
             <button
@@ -83,6 +85,7 @@ export function FootballFilterBar({
           )}
         </div>
       </div>
+
 
       {/* Autocomplete suggestions */}
       {suggestions.length > 0 && (
