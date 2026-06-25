@@ -320,7 +320,7 @@ export function LiveMatchCenter({ fixture }: { fixture: Wc2026Fixture }) {
           <TimelineTab matchId={fixture.id} live={live} />
         </TabsContent>
         <TabsContent value="lineups" className="mt-3">
-          <LineupsTab matchId={fixture.id} />
+          <LineupsTab matchId={fixture.id} homeTeam={fixture.home.name || fixture.home.code} awayTeam={fixture.away.name || fixture.away.code} />
         </TabsContent>
         <TabsContent value="stats" className="mt-3">
           <StatsTab matchId={fixture.id} live={live} />
