@@ -98,6 +98,9 @@ function HistoryPage() {
       title="History"
       subtitle={`${filtered.length} / ${data.seasons.length} seasons`}
     >
+      {/* Auction spend trend */}
+      <AuctionSpendChart />
+
       {/* Hall of Champions */}
       <section className="mb-6 overflow-hidden rounded-2xl border border-amber-300/15 bg-gradient-to-br from-amber-950/30 via-gray-900/60 to-gray-900/30 p-4">
         <div className="mb-3 flex items-center gap-2">
@@ -130,6 +133,7 @@ function HistoryPage() {
           ))}
         </div>
       </section>
+
 
       {/* Era tabs */}
       <div className="mb-3 flex flex-wrap gap-1">
