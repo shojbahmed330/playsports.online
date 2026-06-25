@@ -12,29 +12,35 @@ import {
 import { useTimezone, TimezonePicker } from "@/components/wc/TimezonePicker";
 import type { SportGame } from "@/lib/espn.functions";
 import type { Wc2026Fixture } from "@/lib/wc2026.functions";
+import type { CricketMatch } from "@/lib/cricket.functions";
 import type { SportConfig } from "@/lib/sports-config";
 import { flagOf } from "@/lib/flags";
 
 type EspnTagged = { kind: "espn"; sport: SportConfig; game: SportGame };
 type WcTagged = { kind: "wc"; fixture: Wc2026Fixture };
-type Item = EspnTagged | WcTagged;
+type CricketTagged = { kind: "cricket"; match: CricketMatch };
+type Item = EspnTagged | WcTagged | CricketTagged;
 
 function startMs(it: Item): number {
-  return it.kind === "espn" ? it.game.startTs : it.fixture.startTs * 1000;
+  if (it.kind === "espn") return it.game.startTs;
+  if (it.kind === "wc") return it.fixture.startTs * 1000;
+  return it.match.startTs;
 }
 function isLive(it: Item): boolean {
-  return it.kind === "espn"
-    ? it.game.status === "in"
-    : it.fixture.status === "inprogress";
+  if (it.kind === "espn") return it.game.status === "in";
+  if (it.kind === "wc") return it.fixture.status === "inprogress";
+  return it.match.status === "in";
 }
 
 export function TodayInZoneStrip({
   espnByLeague,
   wcFixtures,
+  cricketMatches,
   sports,
 }: {
   espnByLeague: Record<string, SportGame[]>;
   wcFixtures: Wc2026Fixture[];
+  cricketMatches: CricketMatch[];
   sports: SportConfig[];
 }) {
   const tz = useTimezone();
@@ -45,6 +51,7 @@ export function TodayInZoneStrip({
         (espnByLeague[s.label] ?? []).map<Item>((g) => ({ kind: "espn", sport: s, game: g })),
       ),
       ...wcFixtures.map<Item>((f) => ({ kind: "wc", fixture: f })),
+      ...cricketMatches.map<Item>((m) => ({ kind: "cricket", match: m })),
     ];
 
     // Compute today/tomorrow/dayAfter keys in active TZ
@@ -76,7 +83,7 @@ export function TodayInZoneStrip({
       tz,
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [espnByLeague, wcFixtures, sports, tz]);
+  }, [espnByLeague, wcFixtures, cricketMatches, sports, tz]);
 
   const total = buckets.live.length + buckets.today.length + buckets.tomorrow.length + buckets.dayAfter.length;
   if (total === 0) return null;
