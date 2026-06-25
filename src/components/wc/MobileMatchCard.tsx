@@ -3,6 +3,8 @@ import { Link } from "@tanstack/react-router";
 import type { WCMatch } from "@/lib/supabase";
 import { flagOf } from "@/lib/flags";
 import { confederationOf } from "@/lib/confederations";
+import { fmtTime, fmtDateShort } from "@/lib/timezone";
+import { useTimezone } from "./TimezonePicker";
 import { Play, Radio, Clock } from "lucide-react";
 
 type Status = "live" | "finished" | "upcoming" | "scheduled";
@@ -55,11 +57,12 @@ export function MobileMatchCard({
     return () => clearInterval(i);
   }, [st]);
 
+  useTimezone(); // re-render when viewer changes their tz
   const date = match.match_date ? new Date(match.match_date) : null;
   const countdown = date && (st === "upcoming" || st === "scheduled")
     ? fmtCountdown(date.getTime() - now) : null;
-  const timeStr = date ? date.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" }) : null;
-  const dayStr = date ? date.toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" }) : null;
+  const timeStr = date ? fmtTime(date) : null;
+  const dayStr = date ? fmtDateShort(date) : null;
 
   return (
     <button

@@ -1,5 +1,7 @@
 import type { WCMatch } from "@/lib/supabase";
 import { flagOf } from "@/lib/flags";
+import { fmtDateShort } from "@/lib/timezone";
+import { useTimezone } from "./TimezonePicker";
 import { Check, Play } from "lucide-react";
 
 export type RoundKey = "round_of_32" | "round_of_16" | "quarter_final" | "semi_final" | "final" | "third_place";
@@ -24,9 +26,7 @@ function winnerOf(m: WCMatch): "home" | "away" | "draw" {
 
 function formatDate(d: string | null): string | null {
   if (!d) return null;
-  try {
-    return new Date(d).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
-  } catch { return null; }
+  return fmtDateShort(d) || null;
 }
 
 export function MatchCard({
@@ -38,6 +38,7 @@ export function MatchCard({
   isFinal?: boolean;
   index?: number;
 }) {
+  useTimezone();
   const w = winnerOf(match);
   const hasPen = match.home_score_pen != null && match.away_score_pen != null;
   const grad = ROUND_GRADIENT[round];
