@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef } from "react";
-import { CalendarDays, Dot } from "lucide-react";
+import { CalendarDays, Dot, Globe } from "lucide-react";
+import { userTimezone } from "@/lib/time";
 import type { WCMatch } from "@/lib/supabase";
 
 // YYYY-MM-DD in *local* time so chips match what the user sees on each card.
@@ -73,9 +74,13 @@ export function DateScrubber({ matches, value, onChange, className = "" }: DateS
 
   return (
     <div className={`relative ${className}`}>
-      <div className="flex items-center gap-2 px-1 mb-2">
+      <div className="flex items-center gap-2 px-1 mb-2 flex-wrap">
         <CalendarDays className="size-3.5 text-amber-400" />
         <span className="text-[10px] font-bold tracking-[0.18em] text-amber-400 uppercase">Match Schedule</span>
+        <span className="inline-flex items-center gap-1 text-[9.5px] text-gray-500 ml-1">
+          <Globe className="size-3" />
+          <span className="uppercase tracking-wider">Your time · {userTimezone()}</span>
+        </span>
         {value && (
           <button
             onClick={() => onChange(undefined)}
@@ -88,9 +93,9 @@ export function DateScrubber({ matches, value, onChange, className = "" }: DateS
 
       <div
         ref={scrollerRef}
-        className="flex gap-2 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-2 -mx-1 px-1
-          [&::-webkit-scrollbar]:h-1 [&::-webkit-scrollbar-thumb]:bg-amber-500/30
-          [&::-webkit-scrollbar-track]:bg-transparent"
+        className="flex gap-2 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-1 -mx-1 px-1
+          [scrollbar-width:none] [-ms-overflow-style:none]
+          [&::-webkit-scrollbar]:hidden"
       >
         <button
           type="button"
