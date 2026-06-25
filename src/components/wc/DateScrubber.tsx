@@ -72,10 +72,8 @@ export function DateScrubber({ matches, value, onChange, className = "" }: DateS
       <div className="flex items-center gap-2 px-1 mb-2 flex-wrap">
         <CalendarDays className="size-3.5 text-amber-400" />
         <span className="text-[10px] font-bold tracking-[0.18em] text-amber-400 uppercase">Match Schedule</span>
-        <span className="inline-flex items-center gap-1 text-[9.5px] text-gray-500 ml-1">
-          <Globe className="size-3" />
-          <span className="uppercase tracking-wider">Your time · {userTimezone()}</span>
-        </span>
+        <TimezonePicker compact />
+        <span className="text-[9.5px] text-gray-500 hidden sm:inline">Tap to change</span>
         {value && (
           <button
             onClick={() => onChange(undefined)}
