@@ -175,7 +175,7 @@ function resolveStatsTarget(pathname: string): StatsTarget {
   }
   if (pathname === "/cricket" || pathname.startsWith("/cricket/")) {
     return {
-      to: "/cricket/players",
+      to: "/players",
       title: "Player Stats",
       subtitle: "Batting · Bowling",
       grad: "from-amber-500 to-emerald-500",
