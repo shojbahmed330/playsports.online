@@ -118,16 +118,24 @@ export function MatchCard({
         </div>
       )}
 
-      {isUnplayed && match.match_date ? (
-        <div className="flex items-center justify-between gap-2 px-3 py-1.5 bg-sky-500/10 border-t border-sky-500/20 text-[10px]">
-          <span className="text-sky-300 font-semibold uppercase tracking-wider">{date}</span>
-          {time && <span className="text-sky-200 font-bold tabular-nums">{time}</span>}
-        </div>
+      {isUnplayed ? (
+        match.match_date ? (
+          <div className="flex items-center justify-between gap-2 px-3 py-1.5 bg-sky-500/10 border-t border-sky-500/20 text-[10px]">
+            <span className="text-sky-300 font-semibold uppercase tracking-wider">{date}</span>
+            {time && <span className="text-sky-200 font-bold tabular-nums">{time}</span>}
+          </div>
+        ) : (
+          <div className="flex items-center justify-between gap-2 px-3 py-1.5 bg-gray-800/40 border-t border-gray-700/40 text-[10px]">
+            <span className="text-gray-400 font-semibold uppercase tracking-wider">Kickoff TBD</span>
+            <span className="text-gray-500 italic">awaiting schedule</span>
+          </div>
+        )
       ) : date ? (
         <div className="absolute bottom-1 right-2 text-[9px] text-gray-500 opacity-0 group-hover:opacity-100 transition-opacity">
           {date}
         </div>
       ) : null}
+
     </button>
   );
 
