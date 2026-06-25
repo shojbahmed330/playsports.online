@@ -299,7 +299,12 @@ const BATTING_CATEGORIES: Array<{ key: string; label: string }> = [
   { key: "runs", label: "Runs" },
   { key: "stolenBases", label: "Stolen Bases" },
   { key: "onBasePercentage", label: "On-Base %" },
+  { key: "sluggingPercentage", label: "Slugging %" },
   { key: "OPS", label: "OPS" },
+  { key: "doubles", label: "Doubles" },
+  { key: "triples", label: "Triples" },
+  { key: "walks", label: "Walks" },
+  { key: "totalBases", label: "Total Bases" },
 ];
 const PITCHING_CATEGORIES: Array<{ key: string; label: string }> = [
   { key: "wins", label: "Wins" },
@@ -308,6 +313,10 @@ const PITCHING_CATEGORIES: Array<{ key: string; label: string }> = [
   { key: "WHIP", label: "WHIP" },
   { key: "saves", label: "Saves" },
   { key: "inningsPitched", label: "Innings Pitched" },
+  { key: "holds", label: "Holds" },
+  { key: "completeGames", label: "Complete Games" },
+  { key: "shutouts", label: "Shutouts" },
+  { key: "qualityStarts", label: "Quality Starts" },
 ];
 
 export const getMlbLeaders = createServerFn({ method: "GET" })
