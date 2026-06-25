@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useNavigate, useSearch } from "@tanstack/react-router";
-import { Share2, ExternalLink } from "lucide-react";
+import { Share2, ExternalLink, Plus, Check } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -9,9 +9,16 @@ import {
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { flagOf } from "@/lib/flags";
-import { parsePlayerKey, playerKey, type PlayersSearch } from "@/lib/players-filters";
+import {
+  parsePlayerKey,
+  parseComparePlayers,
+  joinComparePlayers,
+  playerKey,
+  type PlayersSearch,
+} from "@/lib/players-filters";
 import cardsData from "@/data/wc_cards.json";
 import { useMergedGoals } from "@/lib/use-merged-goals";
+import { CareerSparkline } from "@/components/players/CareerSparkline";
 
 type CardRow = {
   pid: string; name: string; team: string; year: number;
