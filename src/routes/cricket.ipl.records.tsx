@@ -3,8 +3,10 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, queryOptions } from "@tanstack/react-query";
 import { Search, Trophy } from "lucide-react";
 import { IplPageShell } from "@/components/ipl/IplPageShell";
+import { PlayerLink } from "@/components/cricket/PlayerLink";
 import records from "@/data/cricket/ipl/records.json";
 import { getIplLeaders, IPL_SEASON_IDS } from "@/lib/ipl.functions";
+
 
 type Record = {
   label: string;
