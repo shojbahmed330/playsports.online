@@ -82,9 +82,20 @@ export function LeaguePage({ sport }: { sport: SportConfig }) {
   const showTies = sport.slug === "mls" || sport.slug === "nhl";
   const showOT = sport.slug === "nhl";
 
+  const accentKey: "amber" | "emerald" | "sky" | "fuchsia" =
+    sport.slug === "mlb" ? "sky" : sport.slug === "nba" ? "fuchsia" : sport.slug === "mls" ? "emerald" : "sky";
+  const mobileTabs: MobileTab[] = [
+    { to: `/${sport.slug}`, label: "Today", Icon: HomeIcon, match: (p) => p === `/${sport.slug}` },
+    { to: `/${sport.slug}`, label: "Scores", Icon: Calendar, match: () => tab === "scores" },
+    { to: `/${sport.slug}`, label: "Table", Icon: ListOrdered, match: () => tab === "standings" },
+    { to: `/${sport.slug}`, label: "News", Icon: Newspaper, match: () => tab === "news" },
+  ];
+
   return (
     <div className="min-h-screen">
       <SportNav />
+      <Breadcrumbs />
+
 
       {/* HERO */}
       <section className={`relative overflow-hidden border-b border-border bg-gradient-to-br ${sport.bgGrad}`}>
