@@ -282,8 +282,9 @@ function AuctionCard({ tone, label, h }: { tone: "amber" | "violet"; label: stri
       <div className={`text-[9px] font-black uppercase tracking-widest ${accent}`}>{label}</div>
       <div className="mt-1 flex items-baseline justify-between gap-2">
         <div className="min-w-0">
-          <div className="truncate text-sm font-bold text-white">{h.player}</div>
+          <PlayerLink name={h.player} className="truncate text-sm font-bold text-white block">{h.player}</PlayerLink>
           <div className="truncate text-[11px] text-white/55">{h.team}</div>
+
         </div>
         <div className={`shrink-0 text-base font-black ${accent}`}>{h.price}</div>
       </div>
