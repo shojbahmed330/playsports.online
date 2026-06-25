@@ -43,6 +43,8 @@ export function MatchCard({
   const hasPen = match.home_score_pen != null && match.away_score_pen != null;
   const grad = ROUND_GRADIENT[round];
   const date = formatDate(match.match_date);
+  const time = match.match_date ? fmtTime(match.match_date) : "";
+  const isUnplayed = match.home_score == null && match.away_score == null;
 
   const card = (
     <button
