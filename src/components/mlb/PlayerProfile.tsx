@@ -1,6 +1,29 @@
 import type { MlbAthlete, MlbCareer } from "@/lib/mlb.functions";
+import { Sparkline } from "./Sparkline";
+import { GameLogTable } from "./GameLogTable";
+
+const BATTING_TREND_KEYS = ["AVG", "HR", "RBI", "OPS", "SB"];
+const PITCHING_TREND_KEYS = ["ERA", "W", "SO", "WHIP", "SV"];
+
+function num(v: string | undefined): number {
+  if (!v || v === "—") return NaN;
+  const n = Number(String(v).replace(/[^\d.\-]/g, ""));
+  return Number.isFinite(n) ? n : NaN;
+}
 
 export function PlayerProfile({ athlete, career }: { athlete: MlbAthlete; career: MlbCareer }) {
+  const trendKeys = career.group === "pitching" ? PITCHING_TREND_KEYS : BATTING_TREND_KEYS;
+  // career.rows are reversed (most-recent first). Sparklines want chronological order.
+  const chronoRows = [...career.rows].reverse();
+  const sparkData = trendKeys
+    .filter((k) => career.headers.includes(k))
+    .map((k) => ({
+      key: k,
+      values: chronoRows.map((r) => num(r.stats[k])),
+      latest: chronoRows.length ? chronoRows[chronoRows.length - 1].stats[k] : "—",
+    }))
+    .filter((s) => s.values.filter((v) => Number.isFinite(v)).length >= 2);
+
   return (
     <div className="space-y-6">
       {/* Bio header */}
@@ -37,6 +60,33 @@ export function PlayerProfile({ athlete, career }: { athlete: MlbAthlete; career
           </div>
         </div>
       </div>
+
+      {/* Career Trends — Sparklines */}
+      {sparkData.length > 0 && (
+        <div className="rounded-2xl bg-card ring-1 ring-border p-4">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-sm font-bold text-white">Career Trends</h2>
+            <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
+              {chronoRows.length} seasons
+            </span>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+            {sparkData.map((s) => (
+              <div key={s.key} className="rounded-xl bg-white/[0.03] ring-1 ring-white/5 p-3">
+                <div className="flex items-baseline justify-between">
+                  <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">
+                    {s.key}
+                  </span>
+                  <span className="text-base font-extrabold text-white tabular-nums">{s.latest}</span>
+                </div>
+                <div className="mt-2">
+                  <Sparkline values={s.values} width={160} height={36} />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Career table */}
       <div className="rounded-2xl bg-card ring-1 ring-border overflow-hidden">
@@ -81,6 +131,9 @@ export function PlayerProfile({ athlete, career }: { athlete: MlbAthlete; career
           </div>
         )}
       </div>
+
+      {/* Game Log */}
+      <GameLogTable athleteId={athlete.id} />
     </div>
   );
 }
