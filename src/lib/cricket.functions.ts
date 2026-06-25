@@ -647,6 +647,21 @@ export const getCricketTeamsForLeague = createServerFn({ method: "GET" })
 
 // ───────── Player (best-effort: ESPN athlete summary) ─────────
 
+export type CricketCareerStat = {
+  format: string;       // "Test" / "ODI" / "T20I" / "IPL"
+  matches: number | null;
+  runs: number | null;
+  battingAvg: number | null;
+  strikeRate: number | null;
+  hundreds: number | null;
+  fifties: number | null;
+  highScore: string | null;
+  wickets: number | null;
+  bowlingAvg: number | null;
+  economy: number | null;
+  bestBowling: string | null;
+};
+
 export type CricketPlayerProfile = {
   id: string;
   name: string;
@@ -660,10 +675,64 @@ export type CricketPlayerProfile = {
   batStyle: string | null;
   bowlStyle: string | null;
   dob: string | null;
+  age: number | null;
   birthPlace: string | null;
   jersey: string | null;
+  description: string | null;
+  career: CricketCareerStat[];
   error: string | null;
 };
+
+function numOrNull(v: unknown): number | null {
+  if (v == null || v === "") return null;
+  const n = typeof v === "number" ? v : parseFloat(String(v));
+  return Number.isFinite(n) ? n : null;
+}
+
+
+function parseAthleteStats(raw: any): CricketCareerStat[] {
+  // ESPN shapes vary. Try a few well-known shapes; fall back to empty.
+  const out: CricketCareerStat[] = [];
+  const splits: any[] = raw?.athlete?.statistics?.splits
+    ?? raw?.statistics?.splits
+    ?? raw?.athlete?.careerStats
+    ?? raw?.careerStats
+    ?? [];
+  for (const s of splits) {
+    const stats = s?.stats ?? s?.values ?? {};
+    const get = (k: string) =>
+      Array.isArray(stats)
+        ? num(stats.find((x: any) => x?.name === k || x?.abbreviation === k)?.value)
+        : num(stats?.[k]);
+    out.push({
+      format: s?.displayName ?? s?.name ?? s?.type ?? "—",
+      matches: get("matches") ?? get("M") ?? get("games"),
+      runs: get("runs") ?? get("R"),
+      battingAvg: get("battingAverage") ?? get("Ave") ?? get("avg"),
+      strikeRate: get("battingStrikeRate") ?? get("SR") ?? get("strikeRate"),
+      hundreds: get("hundreds") ?? get("100s"),
+      fifties: get("fifties") ?? get("50s"),
+      highScore: (Array.isArray(stats)
+        ? stats.find((x: any) => x?.name === "highScore" || x?.abbreviation === "HS")?.displayValue
+        : stats?.highScore) ?? null,
+      wickets: get("wickets") ?? get("W"),
+      bowlingAvg: get("bowlingAverage") ?? get("bowlAvg"),
+      economy: get("economy") ?? get("Econ"),
+      bestBowling: (Array.isArray(stats)
+        ? stats.find((x: any) => x?.name === "bestBowling" || x?.abbreviation === "BBI")?.displayValue
+        : stats?.bestBowling) ?? null,
+    });
+  }
+  return out;
+}
+
+function ageFromDob(dob: string | null): number | null {
+  if (!dob) return null;
+  const d = new Date(dob);
+  if (Number.isNaN(d.getTime())) return null;
+  const diff = Date.now() - d.getTime();
+  return Math.floor(diff / (365.25 * 24 * 3600 * 1000));
+}
 
 export const getCricketPlayer = createServerFn({ method: "GET" })
   .inputValidator((d: { athleteId: string; leagueId?: string }) => d)
@@ -673,6 +742,7 @@ export const getCricketPlayer = createServerFn({ method: "GET" })
       const raw = (await apiGet(`/${league}/athletes/${data.athleteId}`, 60 * 60_000)) as any;
       const a = raw?.athlete ?? raw ?? {};
       const team = a?.team ?? {};
+      const dob = a.dateOfBirth ?? null;
       const profile: CricketPlayerProfile = {
         id: String(a.id ?? data.athleteId),
         name: a.displayName ?? a.fullName ?? "",
@@ -680,14 +750,17 @@ export const getCricketPlayer = createServerFn({ method: "GET" })
         headshot: a.headshot?.href ?? a.headshot ?? null,
         team: team.displayName ?? team.name ?? null,
         teamLogo: team.logo ?? team.logos?.[0]?.href ?? null,
-        country: a.citizenship ?? null,
+        country: a.citizenship ?? a.birthPlace?.country ?? null,
         flag: a.flag?.href ?? null,
         position: a.position?.displayName ?? a.position?.name ?? null,
         batStyle: a.batting?.style ?? a.style?.batting ?? null,
         bowlStyle: a.bowling?.style ?? a.style?.bowling ?? null,
-        dob: a.dateOfBirth ?? null,
-        birthPlace: a.birthPlace?.city ?? null,
+        dob,
+        age: ageFromDob(dob),
+        birthPlace: [a.birthPlace?.city, a.birthPlace?.country].filter(Boolean).join(", ") || null,
         jersey: a.jersey ?? null,
+        description: a.description ?? a.bio ?? null,
+        career: parseAthleteStats(raw),
         error: null,
       };
       return { profile };
@@ -698,6 +771,7 @@ export const getCricketPlayer = createServerFn({ method: "GET" })
       };
     }
   });
+
 
 // ───────── Rankings (bundled fallback) ─────────
 

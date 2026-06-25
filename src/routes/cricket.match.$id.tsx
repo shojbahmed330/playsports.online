@@ -1,12 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
+import { useState, type ReactNode } from "react";
 import { ArrowLeft, MapPin, Tv, Trophy, Activity } from "lucide-react";
 import { z } from "zod";
 import { SportNav } from "@/components/sports/SportNav";
 import { ScoreFlip } from "@/components/sports/ScoreFlip";
+import { CricketPlayerSheet } from "@/components/cricket/CricketPlayerSheet";
 import { getCricketMatchDetail, type CricketInningsDetail } from "@/lib/cricket.functions";
 import { formatLocalTime, relativeDay } from "@/lib/time";
+
 
 const searchSchema = z.object({
   leagueId: z.string().default("8048"),
@@ -53,6 +56,8 @@ function MatchPage() {
   const match = q.data?.match ?? null;
   const innings = q.data?.innings ?? [];
   const commentary = q.data?.commentary ?? [];
+  const [playerId, setPlayerId] = useState<string | null>(null);
+
 
   if (q.isLoading) {
     return (
@@ -142,8 +147,11 @@ function MatchPage() {
             </p>
           </div>
         ) : (
-          innings.map((inn) => <InningsCard key={`${inn.battingTeamId}-${inn.period}`} inn={inn} />)
+          innings.map((inn) => <InningsCard key={`${inn.battingTeamId}-${inn.period}`} inn={inn} onPlayer={setPlayerId} />)
         )}
+
+        <CricketPlayerSheet athleteId={playerId} leagueId={leagueId} onClose={() => setPlayerId(null)} />
+
 
         {commentary.length > 0 && (
           <section className="space-y-3">
@@ -193,8 +201,21 @@ function TeamScoreBlock({ t }: { t: import("@/lib/cricket.functions").CricketMat
   );
 }
 
-function InningsCard({ inn }: { inn: CricketInningsDetail }) {
+function InningsCard({ inn, onPlayer }: { inn: CricketInningsDetail; onPlayer: (id: string) => void }) {
+  const PlayerBtn = ({ id, name, children }: { id: string; name: string; children?: ReactNode }) =>
+    id ? (
+      <button
+        type="button"
+        onClick={() => onPlayer(id)}
+        className="text-left hover:text-emerald-300 hover:underline underline-offset-2 transition truncate"
+      >
+        {name}{children}
+      </button>
+    ) : (
+      <span className="truncate">{name}{children}</span>
+    );
   return (
+
     <section className="rounded-2xl border border-gray-800 overflow-hidden">
       <header className="flex items-center justify-between gap-2 px-4 py-3 bg-gray-900/70 border-b border-gray-800">
         <h3 className="text-sm font-bold">
@@ -222,7 +243,7 @@ function InningsCard({ inn }: { inn: CricketInningsDetail }) {
             <tbody className="divide-y divide-gray-800">
               {inn.batters.map((b) => (
                 <tr key={b.id || b.name} className="hover:bg-gray-900/40">
-                  <td className="px-3 py-2 font-medium">{b.name}{b.notOut && <span className="text-emerald-400 ml-1">*</span>}</td>
+                  <td className="px-3 py-2 font-medium"><PlayerBtn id={b.id} name={b.name}>{b.notOut && <span className="text-emerald-400 ml-1">*</span>}</PlayerBtn></td>
                   <td className="px-3 py-2 text-xs text-gray-400 hidden sm:table-cell">{b.dismissal || (b.notOut ? "not out" : "—")}</td>
                   <td className="px-3 py-2 text-right tabular-nums font-bold">{b.runs}</td>
                   <td className="px-3 py-2 text-right tabular-nums">{b.balls}</td>
@@ -251,7 +272,7 @@ function InningsCard({ inn }: { inn: CricketInningsDetail }) {
             <tbody className="divide-y divide-gray-800">
               {inn.bowlers.map((b) => (
                 <tr key={b.id || b.name} className="hover:bg-gray-900/40">
-                  <td className="px-3 py-2 font-medium">{b.name}</td>
+                  <td className="px-3 py-2 font-medium"><PlayerBtn id={b.id} name={b.name} /></td>
                   <td className="px-3 py-2 text-right tabular-nums">{b.overs}</td>
                   <td className="px-3 py-2 text-right tabular-nums hidden sm:table-cell">{b.maidens}</td>
                   <td className="px-3 py-2 text-right tabular-nums">{b.runs}</td>
