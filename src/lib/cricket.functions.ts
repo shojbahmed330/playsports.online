@@ -56,6 +56,8 @@ export type CricketMatch = {
   leagueId: string;
   leagueName: string;
   leagueAbbr: string;
+  /** "league" = curated franchise/tournament (IPL, BBL, T20WC…); "bilateral" = international tour (NZ v ENG…) */
+  kind: "league" | "bilateral";
   startTs: number;            // ms
   status: "pre" | "in" | "post";
   statusDetail: string;       // "Stumps · Day 2" / "Live · 12.3 ov" / "FT"
@@ -72,6 +74,7 @@ export type CricketMatch = {
   /** Toss / result blurb */
   note: string | null;
 };
+
 
 export type CricketNewsItem = {
   id: string;
