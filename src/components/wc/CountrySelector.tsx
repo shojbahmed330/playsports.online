@@ -5,6 +5,20 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { detectCountry, setCountryOverride, COMMON_COUNTRIES } from "@/lib/geo";
+import { setTimezoneOverride, isTimezoneOverridden } from "@/lib/timezone";
+
+// ISO-3166 → preferred IANA timezone. Picks the most populous zone per country.
+const COUNTRY_TZ: Record<string, string> = {
+  US: "America/New_York", GB: "Europe/London", CA: "America/Toronto",
+  MX: "America/Mexico_City", BR: "America/Sao_Paulo", AR: "America/Argentina/Buenos_Aires",
+  DE: "Europe/Berlin", FR: "Europe/Paris", ES: "Europe/Madrid", IT: "Europe/Rome",
+  PT: "Europe/Lisbon", NL: "Europe/Amsterdam", BE: "Europe/Brussels",
+  AT: "Europe/Vienna", CH: "Europe/Zurich", AU: "Australia/Sydney",
+  NZ: "Pacific/Auckland", IN: "Asia/Kolkata", BD: "Asia/Dhaka",
+  PK: "Asia/Karachi", JP: "Asia/Tokyo", KR: "Asia/Seoul",
+  SA: "Asia/Riyadh", AE: "Asia/Dubai", QA: "Asia/Qatar",
+  ZA: "Africa/Johannesburg", NG: "Africa/Lagos", EG: "Africa/Cairo",
+};
 
 /** Header chip that opens a picker to override viewer country. */
 export function CountrySelector({ onChange }: { onChange?: (cc: string) => void }) {
@@ -44,6 +58,10 @@ export function CountrySelector({ onChange }: { onChange?: (cc: string) => void 
               onClick={() => {
                 setCountryOverride(c.code);
                 setCurrent(c.code);
+                // Auto-set timezone to this country's default unless the user
+                // has already locked one explicitly via the TimezonePicker.
+                const tz = COUNTRY_TZ[c.code];
+                if (tz && !isTimezoneOverridden()) setTimezoneOverride(tz);
                 onChange?.(c.code);
                 setOpen(false);
               }}
