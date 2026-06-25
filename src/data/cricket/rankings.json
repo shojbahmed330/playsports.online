@@ -1,0 +1,104 @@
+{
+  "updatedAt": "2026-06-01",
+  "source": "ICC official rankings — bundled fallback",
+  "teams": {
+    "t20i": [
+      { "rank": 1,  "team": "India",        "code": "IND", "flag": "🇮🇳", "rating": 270, "trend": 0 },
+      { "rank": 2,  "team": "Australia",    "code": "AUS", "flag": "🇦🇺", "rating": 258, "trend": 1 },
+      { "rank": 3,  "team": "England",      "code": "ENG", "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿", "rating": 251, "trend": -1 },
+      { "rank": 4,  "team": "South Africa", "code": "RSA", "flag": "🇿🇦", "rating": 247, "trend": 0 },
+      { "rank": 5,  "team": "Pakistan",     "code": "PAK", "flag": "🇵🇰", "rating": 243, "trend": 2 },
+      { "rank": 6,  "team": "New Zealand",  "code": "NZL", "flag": "🇳🇿", "rating": 239, "trend": -1 },
+      { "rank": 7,  "team": "West Indies",  "code": "WIN", "flag": "🌴", "rating": 234, "trend": 0 },
+      { "rank": 8,  "team": "Sri Lanka",    "code": "SRL", "flag": "🇱🇰", "rating": 229, "trend": 0 },
+      { "rank": 9,  "team": "Bangladesh",   "code": "BAN", "flag": "🇧🇩", "rating": 223, "trend": 1 },
+      { "rank": 10, "team": "Afghanistan",  "code": "AFG", "flag": "🇦🇫", "rating": 218, "trend": -1 }
+    ],
+    "odi": [
+      { "rank": 1,  "team": "India",        "code": "IND", "flag": "🇮🇳", "rating": 122, "trend": 0 },
+      { "rank": 2,  "team": "Australia",    "code": "AUS", "flag": "🇦🇺", "rating": 118, "trend": 0 },
+      { "rank": 3,  "team": "South Africa", "code": "RSA", "flag": "🇿🇦", "rating": 113, "trend": 1 },
+      { "rank": 4,  "team": "Pakistan",     "code": "PAK", "flag": "🇵🇰", "rating": 109, "trend": -1 },
+      { "rank": 5,  "team": "New Zealand",  "code": "NZL", "flag": "🇳🇿", "rating": 105, "trend": 0 },
+      { "rank": 6,  "team": "Sri Lanka",    "code": "SRL", "flag": "🇱🇰", "rating": 100, "trend": 0 },
+      { "rank": 7,  "team": "England",      "code": "ENG", "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿", "rating": 97,  "trend": -2 },
+      { "rank": 8,  "team": "Bangladesh",   "code": "BAN", "flag": "🇧🇩", "rating": 93,  "trend": 0 },
+      { "rank": 9,  "team": "Afghanistan",  "code": "AFG", "flag": "🇦🇫", "rating": 90,  "trend": 1 },
+      { "rank": 10, "team": "West Indies",  "code": "WIN", "flag": "🌴", "rating": 84,  "trend": -1 }
+    ],
+    "test": [
+      { "rank": 1,  "team": "Australia",    "code": "AUS", "flag": "🇦🇺", "rating": 124, "trend": 0 },
+      { "rank": 2,  "team": "India",        "code": "IND", "flag": "🇮🇳", "rating": 120, "trend": 0 },
+      { "rank": 3,  "team": "South Africa", "code": "RSA", "flag": "🇿🇦", "rating": 113, "trend": 1 },
+      { "rank": 4,  "team": "England",      "code": "ENG", "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿", "rating": 108, "trend": -1 },
+      { "rank": 5,  "team": "New Zealand",  "code": "NZL", "flag": "🇳🇿", "rating": 99,  "trend": 0 },
+      { "rank": 6,  "team": "Sri Lanka",    "code": "SRL", "flag": "🇱🇰", "rating": 94,  "trend": 0 },
+      { "rank": 7,  "team": "Pakistan",     "code": "PAK", "flag": "🇵🇰", "rating": 90,  "trend": 0 },
+      { "rank": 8,  "team": "West Indies",  "code": "WIN", "flag": "🌴", "rating": 78,  "trend": 0 },
+      { "rank": 9,  "team": "Bangladesh",   "code": "BAN", "flag": "🇧🇩", "rating": 50,  "trend": 0 }
+    ]
+  },
+  "batters": {
+    "t20i": [
+      { "rank": 1, "player": "Suryakumar Yadav", "team": "IND", "flag": "🇮🇳", "rating": 902, "trend": 0 },
+      { "rank": 2, "player": "Travis Head",      "team": "AUS", "flag": "🇦🇺", "rating": 818, "trend": 1 },
+      { "rank": 3, "player": "Phil Salt",        "team": "ENG", "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿", "rating": 793, "trend": -1 },
+      { "rank": 4, "player": "Babar Azam",       "team": "PAK", "flag": "🇵🇰", "rating": 770, "trend": 0 },
+      { "rank": 5, "player": "Tilak Varma",      "team": "IND", "flag": "🇮🇳", "rating": 762, "trend": 2 }
+    ],
+    "odi": [
+      { "rank": 1, "player": "Shubman Gill",   "team": "IND", "flag": "🇮🇳", "rating": 784, "trend": 1 },
+      { "rank": 2, "player": "Babar Azam",     "team": "PAK", "flag": "🇵🇰", "rating": 766, "trend": -1 },
+      { "rank": 3, "player": "Rohit Sharma",   "team": "IND", "flag": "🇮🇳", "rating": 752, "trend": 0 },
+      { "rank": 4, "player": "Heinrich Klaasen","team": "RSA","flag": "🇿🇦", "rating": 731, "trend": 0 },
+      { "rank": 5, "player": "Daryl Mitchell", "team": "NZL", "flag": "🇳🇿", "rating": 706, "trend": 1 }
+    ],
+    "test": [
+      { "rank": 1, "player": "Joe Root",        "team": "ENG", "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿", "rating": 899, "trend": 0 },
+      { "rank": 2, "player": "Kane Williamson", "team": "NZL", "flag": "🇳🇿", "rating": 871, "trend": 0 },
+      { "rank": 3, "player": "Yashasvi Jaiswal","team": "IND", "flag": "🇮🇳", "rating": 824, "trend": 1 },
+      { "rank": 4, "player": "Harry Brook",    "team": "ENG", "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿", "rating": 812, "trend": -1 },
+      { "rank": 5, "player": "Steve Smith",     "team": "AUS", "flag": "🇦🇺", "rating": 786, "trend": 0 }
+    ]
+  },
+  "bowlers": {
+    "t20i": [
+      { "rank": 1, "player": "Rashid Khan",     "team": "AFG", "flag": "🇦🇫", "rating": 743, "trend": 0 },
+      { "rank": 2, "player": "Jasprit Bumrah",  "team": "IND", "flag": "🇮🇳", "rating": 718, "trend": 1 },
+      { "rank": 3, "player": "Adil Rashid",     "team": "ENG", "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿", "rating": 702, "trend": -1 },
+      { "rank": 4, "player": "Adam Zampa",      "team": "AUS", "flag": "🇦🇺", "rating": 688, "trend": 0 },
+      { "rank": 5, "player": "Maheesh Theekshana","team": "SRL","flag":"🇱🇰","rating": 671, "trend": 1 }
+    ],
+    "odi": [
+      { "rank": 1, "player": "Josh Hazlewood",  "team": "AUS", "flag": "🇦🇺", "rating": 678, "trend": 0 },
+      { "rank": 2, "player": "Rashid Khan",     "team": "AFG", "flag": "🇦🇫", "rating": 665, "trend": 1 },
+      { "rank": 3, "player": "Kuldeep Yadav",   "team": "IND", "flag": "🇮🇳", "rating": 654, "trend": 0 },
+      { "rank": 4, "player": "Mohammed Siraj",  "team": "IND", "flag": "🇮🇳", "rating": 631, "trend": -1 },
+      { "rank": 5, "player": "Trent Boult",     "team": "NZL", "flag": "🇳🇿", "rating": 615, "trend": 0 }
+    ],
+    "test": [
+      { "rank": 1, "player": "Jasprit Bumrah",  "team": "IND", "flag": "🇮🇳", "rating": 908, "trend": 0 },
+      { "rank": 2, "player": "Kagiso Rabada",   "team": "RSA", "flag": "🇿🇦", "rating": 851, "trend": 0 },
+      { "rank": 3, "player": "Pat Cummins",     "team": "AUS", "flag": "🇦🇺", "rating": 829, "trend": 1 },
+      { "rank": 4, "player": "Josh Hazlewood",  "team": "AUS", "flag": "🇦🇺", "rating": 814, "trend": -1 },
+      { "rank": 5, "player": "Ravichandran Ashwin","team":"IND","flag":"🇮🇳","rating": 787, "trend": 0 }
+    ]
+  },
+  "allrounders": {
+    "t20i": [
+      { "rank": 1, "player": "Hardik Pandya",   "team": "IND", "flag": "🇮🇳", "rating": 322, "trend": 0 },
+      { "rank": 2, "player": "Sikandar Raza",   "team": "ZIM", "flag": "🇿🇼", "rating": 311, "trend": 1 },
+      { "rank": 3, "player": "Mohammad Nabi",   "team": "AFG", "flag": "🇦🇫", "rating": 298, "trend": -1 }
+    ],
+    "odi": [
+      { "rank": 1, "player": "Mohammad Nabi",   "team": "AFG", "flag": "🇦🇫", "rating": 357, "trend": 0 },
+      { "rank": 2, "player": "Sikandar Raza",   "team": "ZIM", "flag": "🇿🇼", "rating": 342, "trend": 1 },
+      { "rank": 3, "player": "Ravindra Jadeja", "team": "IND", "flag": "🇮🇳", "rating": 335, "trend": -1 }
+    ],
+    "test": [
+      { "rank": 1, "player": "Ravindra Jadeja", "team": "IND", "flag": "🇮🇳", "rating": 414, "trend": 0 },
+      { "rank": 2, "player": "Ravichandran Ashwin","team":"IND","flag":"🇮🇳","rating": 401, "trend": 0 },
+      { "rank": 3, "player": "Ben Stokes",      "team": "ENG", "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿", "rating": 372, "trend": 0 }
+    ]
+  }
+}
