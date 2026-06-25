@@ -20,7 +20,7 @@ import { WatchLivePanel } from "./WatchLivePanel";
 import { DateScrubber, filterByDateKey } from "./DateScrubber";
 import { flagOf } from "@/lib/flags";
 import { fetch2026VideoMap, videoKey } from "@/lib/wc-2026-videos";
-import { computeR32 } from "@/lib/wc2026-r32-format";
+import { computeR32, computePredictedKnockout } from "@/lib/wc2026-r32-format";
 
 
 import { applyFilter, useMyTeams, type FootballFilter } from "@/lib/football-filters";
@@ -404,21 +404,37 @@ export function Wc2026KnockoutView({ filter = "all", team, date, onDateChange }:
     [fQ.data, vQ.data, teamGroup, canonName],
   );
 
-  // Predicted R32 — synthesize from standings when ESPN hasn't published the
-  // real R32 fixtures yet. Dedup by sorted team-pair key, so the moment ESPN
-  // posts a real fixture for any pair, the predicted row disappears.
+  // Predicted bracket — synthesize R32 + R16 + QF + SF + 3rd + Final from
+  // standings whenever ESPN hasn't published that round yet. Dedup strategy:
+  // R32 → by sorted team-pair key (real ESPN R32 drops the matching predicted).
+  // R16/QF/SF/3rd/F → per-round wipeout: as soon as ESPN posts any fixture
+  // for that round, ALL predicted rows of that round are dropped.
   const wcMatchesWithR32 = useMemo(() => {
-    const predicted = computeR32(sQ.data?.groups ?? []);
-    if (predicted.length === 0) return wcMatchesRaw;
+    const groups = sQ.data?.groups ?? [];
+    if (groups.length === 0) return wcMatchesRaw;
+
+    // R32 — pair-key dedup (real teams known from standings).
+    const predictedR32 = computeR32(groups);
     const espnR32Pairs = new Set(
       wcMatchesRaw
-        .filter((m) => /round of 32/i.test(m.round))
+        .filter((m) => classifyKnockout(m.round) === "round_of_32")
         .map((m) => aliasPairKey(m.home_team, m.away_team)),
     );
-    const synth = predicted.filter(
+    const synthR32 = predictedR32.filter(
       (p) => !espnR32Pairs.has(aliasPairKey(p.home_team, p.away_team)),
     );
-    return [...wcMatchesRaw, ...synth];
+
+    // R16 → Final — per-round wipeout (predicted team names are placeholders
+    // like "Winner Match 73", so pair-key dedup wouldn't work).
+    const predictedLater = computePredictedKnockout(groups);
+    const espnHasRound = (key: RoundKey) =>
+      wcMatchesRaw.some((m) => classifyKnockout(m.round) === key);
+    const synthLater = predictedLater.filter((p) => {
+      const k = classifyKnockout(p.round);
+      return k ? !espnHasRound(k) : true;
+    });
+
+    return [...wcMatchesRaw, ...synthR32, ...synthLater];
   }, [wcMatchesRaw, sQ.data]);
 
   const { teams: myTeams } = useMyTeams();
