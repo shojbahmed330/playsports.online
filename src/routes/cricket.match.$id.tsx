@@ -243,7 +243,7 @@ function InningsCard({ inn, onPlayer }: { inn: CricketInningsDetail; onPlayer: (
             <tbody className="divide-y divide-gray-800">
               {inn.batters.map((b) => (
                 <tr key={b.id || b.name} className="hover:bg-gray-900/40">
-                  <td className="px-3 py-2 font-medium">{b.name}{b.notOut && <span className="text-emerald-400 ml-1">*</span>}</td>
+                  <td className="px-3 py-2 font-medium"><PlayerBtn id={b.id} name={b.name}>{b.notOut && <span className="text-emerald-400 ml-1">*</span>}</PlayerBtn></td>
                   <td className="px-3 py-2 text-xs text-gray-400 hidden sm:table-cell">{b.dismissal || (b.notOut ? "not out" : "—")}</td>
                   <td className="px-3 py-2 text-right tabular-nums font-bold">{b.runs}</td>
                   <td className="px-3 py-2 text-right tabular-nums">{b.balls}</td>
