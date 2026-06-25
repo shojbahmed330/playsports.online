@@ -251,11 +251,15 @@ export function Wc2026GroupsView({ filter = "all", team }: { filter?: FootballFi
     () => buildTeamGroup(sQ.data?.groups ?? []),
     [sQ.data],
   );
+  const canonName = useMemo(
+    () => buildCanonicalName(sQ.data?.groups ?? []),
+    [sQ.data],
+  );
   const wcMatchesAll = useMemo(() => {
-    const fromEspn = toWcMatches(fQ.data?.fixtures ?? [], vQ.data, teamGroup);
-    const synth = synthGroupFixturesFromVideos(vQ.data, teamGroup, fromEspn);
+    const fromEspn = toWcMatches(fQ.data?.fixtures ?? [], vQ.data, teamGroup, canonName);
+    const synth = synthGroupFixturesFromVideos(vQ.data, teamGroup, canonName, fromEspn);
     return [...fromEspn, ...synth];
-  }, [fQ.data, vQ.data, teamGroup]);
+  }, [fQ.data, vQ.data, teamGroup, canonName]);
   const { teams: myTeams } = useMyTeams();
   const wcMatches = useMemo(
     () => applyFilter(wcMatchesAll, filter, team, myTeams),
