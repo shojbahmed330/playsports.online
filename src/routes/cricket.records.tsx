@@ -110,7 +110,7 @@ function RecordsPage() {
                           <div className="flex items-center gap-2 min-w-0">
                             <span className="text-base leading-none">{r.flag}</span>
                             <div className="min-w-0">
-                              <div className="font-bold leading-tight truncate">{r.player}</div>
+                              <PlayerLink name={r.player} className="font-bold leading-tight truncate block">{r.player}</PlayerLink>
                               {r.extra && <div className="text-[10px] text-gray-500 truncate">{r.extra}</div>}
                             </div>
                           </div>
