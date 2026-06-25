@@ -86,7 +86,7 @@ function StandingsPage() {
                     <td className="py-2.5 pl-3 font-black text-white/70">{i + 1}</td>
                     <td className="py-2.5">
                       <div className="flex items-center gap-2 min-w-0">
-                        {r.logo && <img src={r.logo} alt="" className="h-6 w-6 shrink-0 object-contain" loading="lazy" />}
+                        <TeamCrest src={r.logo} abbr={r.teamName} name={r.teamName} className="h-6 w-6 shrink-0" />
                         <span className="truncate font-semibold text-white">{r.teamName}</span>
                       </div>
                     </td>

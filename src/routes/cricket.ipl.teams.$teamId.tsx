@@ -335,11 +335,7 @@ function TeamPage() {
                   className="overflow-hidden rounded-xl bg-white/[0.04] p-3 ring-1 ring-white/10"
                 >
                   <div className="flex items-center gap-3">
-                    {o.logo ? (
-                      <img src={o.logo} alt="" className="size-9 rounded-md bg-black/30 object-contain p-1 ring-1 ring-white/10" />
-                    ) : (
-                      <div className="size-9 rounded-md bg-black/30 ring-1 ring-white/10" />
-                    )}
+                    <TeamCrest src={o.logo} abbr={o.abbr} name={o.name} className="size-9 shrink-0" />
                     <div className="min-w-0 flex-1">
                       <div className="truncate text-sm font-bold text-white">vs {o.name}</div>
                       <div className="text-[11px] text-white/55">

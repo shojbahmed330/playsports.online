@@ -187,7 +187,7 @@ function MiniStandings({ rows }: { rows: import("@/lib/ipl.functions").IplStandi
           <li key={r.teamId} className="grid grid-cols-[28px_minmax(0,1fr)_40px_40px_56px] items-center gap-2 px-3 py-2 text-sm">
             <div className="text-white/50 font-bold">{i + 1}</div>
             <div className="min-w-0 flex items-center gap-2">
-              {r.logo && <img src={r.logo} alt="" className="h-5 w-5 shrink-0 object-contain" loading="lazy" />}
+              <TeamCrest src={r.logo} abbr={r.shortName || r.teamName} name={r.teamName} className="h-5 w-5 shrink-0" />
               <span className="truncate font-semibold text-white">{r.shortName || r.teamName}</span>
             </div>
             <div className="text-right text-emerald-300 font-bold">{r.wins}</div>

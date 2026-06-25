@@ -114,11 +114,7 @@ function TeamsIndex() {
                 className="group rounded-2xl border border-white/10 bg-gray-900/60 hover:bg-gray-900 hover:-translate-y-0.5 transition p-4 flex items-center gap-3"
                 style={t.color ? { boxShadow: `inset 0 0 0 1px ${t.color}33` } : undefined}
               >
-                {t.logo ? (
-                  <img src={t.logo} alt="" className="size-10 object-contain shrink-0" loading="lazy" />
-                ) : (
-                  <div className="size-10 rounded-lg bg-white/5 grid place-items-center text-xs font-bold text-gray-400">{t.abbr || "?"}</div>
-                )}
+                <TeamCrest src={t.logo} abbr={t.abbr} name={t.name} className="size-10 shrink-0" />
                 <div className="min-w-0">
                   <div className="font-bold text-sm leading-tight truncate">{t.name}</div>
                   <div className="text-[10px] text-gray-500 uppercase tracking-wider">{t.abbr}</div>

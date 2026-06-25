@@ -182,9 +182,7 @@ function TeamScoreBlock({ t }: { t: import("@/lib/cricket.functions").CricketMat
   return (
     <div className={`rounded-xl p-4 ring-1 ${winner ? "bg-emerald-500/15 ring-emerald-400/40" : "bg-black/30 ring-white/10"}`}>
       <div className="flex items-center gap-3">
-        <div className="size-12 rounded-lg bg-white/5 grid place-items-center overflow-hidden ring-1 ring-white/10 shrink-0">
-          {t.logo ? <img src={t.logo} alt="" className="size-10 object-contain" /> : <span className="text-xs text-gray-300 font-bold">{t.abbr}</span>}
-        </div>
+        <TeamCrest src={t.logo} abbr={t.abbr} name={t.name} className="size-12 shrink-0" />
         <div className="min-w-0 flex-1">
           <div className="text-base font-extrabold text-white truncate">{t.name}</div>
           {t.scoreSummary && <div className="text-[11px] text-emerald-100/70 truncate">{t.scoreSummary}</div>}
