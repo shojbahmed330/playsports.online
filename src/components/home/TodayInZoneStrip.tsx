@@ -153,8 +153,8 @@ function Chip({ item }: { item: Item }) {
               : fmtTime(f.startTs * 1000)}
           </span>
         </div>
-        <Team name={f.homeTeam.name} score={live || finished ? f.homeScore : null} />
-        <Team name={f.awayTeam.name} score={live || finished ? f.awayScore : null} />
+        <Team name={f.home.name} score={live || finished ? f.home.goals : null} />
+        <Team name={f.away.name} score={live || finished ? f.away.goals : null} />
       </Link>
     );
   }
@@ -176,8 +176,8 @@ function Chip({ item }: { item: Item }) {
             : fmtTime(game.startTs)}
         </span>
       </div>
-      <Team name={game.away.displayName ?? game.away.name ?? ""} score={live || finished ? (game.away.score ?? null) : null} />
-      <Team name={game.home.displayName ?? game.home.name ?? ""} score={live || finished ? (game.home.score ?? null) : null} />
+      <Team name={game.away.shortName || game.away.name} score={live || finished ? game.away.score : null} />
+      <Team name={game.home.shortName || game.home.name} score={live || finished ? game.home.score : null} />
     </Link>
   );
 }
