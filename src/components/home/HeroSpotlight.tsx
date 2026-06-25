@@ -24,12 +24,16 @@ export function HeroSpotlight({
   wcFeatured: Wc2026Fixture | null;
   onWatchLive?: () => void;
 }) {
-  // Build spotlight slides: live games first, then WC featured, then next upcoming
-  const slides: SpotlightSlide[] = [
-    ...liveGames.slice(0, 3).map<SpotlightSlide>((t) => ({ kind: "game", tagged: t })),
+  // Build spotlight slides: cycle through EVERY live game, then WC featured + a couple of upcoming.
+  const liveSlides: SpotlightSlide[] = liveGames.map((t) => ({ kind: "game", tagged: t }));
+  const extraSlides: SpotlightSlide[] = [
     ...(wcFeatured ? [{ kind: "wc" as const, fixture: wcFeatured }] : []),
     ...upcomingGames.slice(0, 2).map<SpotlightSlide>((t) => ({ kind: "game", tagged: t })),
-  ].slice(0, 5);
+  ];
+  const slides: SpotlightSlide[] =
+    liveSlides.length > 0
+      ? [...liveSlides, ...extraSlides].slice(0, Math.max(liveSlides.length, 6))
+      : extraSlides.slice(0, 5);
 
   const [idx, setIdx] = useState(0);
   useEffect(() => {
