@@ -50,8 +50,8 @@ function RecordsPage() {
               <div className="text-[11px] uppercase tracking-[0.2em] text-yellow-300 font-bold flex items-center gap-1.5">
                 <Crown className="size-3.5" /> All-time Records
               </div>
-              <h1 className="text-2xl sm:text-3xl font-extrabold">Cricket Records</h1>
-              <p className="text-xs text-muted-foreground mt-1">Career and innings records across formats.</p>
+              <h1 className="text-2xl sm:text-3xl font-extrabold">International Cricket Records</h1>
+              <p className="text-xs text-muted-foreground mt-1">Test, ODI and T20I career and innings records.</p>
             </div>
           </div>
         </div>
