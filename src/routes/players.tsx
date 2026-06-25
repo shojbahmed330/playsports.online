@@ -413,6 +413,8 @@ function OverviewTab({
 
   return (
     <div className="space-y-6">
+      {live2026Count > 0 && <Wc2026Podium onPick={onPickPlayer} />}
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div className="rounded-2xl border border-border bg-card/60 p-5">
           <div className="flex items-center justify-between mb-4">
