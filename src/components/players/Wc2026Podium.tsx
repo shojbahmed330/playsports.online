@@ -121,7 +121,7 @@ export function Wc2026Podium({
                 </div>
                 <div className="h-1.5 rounded-full bg-white/5 overflow-hidden ml-6">
                   <div
-                    className="h-full rounded-full bg-gradient-to-r from-amber-400 via-rose-400 to-amber-400 bg-[length:200%_100%] animate-[gradient_3s_linear_infinite] transition-all"
+                    className="h-full rounded-full bg-gradient-to-r from-amber-400 via-rose-400 to-amber-400 transition-all duration-700 ease-out"
                     style={{ width: `${pct}%` }}
                   />
                 </div>
