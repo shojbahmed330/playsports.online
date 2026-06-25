@@ -93,8 +93,15 @@ export function CricketMatchCard({ match, leagueSlug }: { match: CricketMatch; l
             <span className="truncate">{match.venue}{match.city ? `, ${match.city}` : ""}</span>
           </span>
         ) : <span />}
-        <span className="text-emerald-400/70 font-semibold shrink-0">{match.leagueAbbr || match.leagueName}</span>
+        {match.kind === "bilateral" ? (
+          <span className="shrink-0 inline-flex items-center gap-1 px-1.5 py-0.5 rounded font-bold tracking-wider bg-sky-500/15 text-sky-300 ring-1 ring-sky-500/30 text-[9px]">
+            BILATERAL{match.format ? ` · ${match.format.toUpperCase()}` : ""}
+          </span>
+        ) : (
+          <span className="text-emerald-400/70 font-semibold shrink-0">{match.leagueAbbr || match.leagueName}</span>
+        )}
       </div>
+
     </Link>
   );
 }
