@@ -70,7 +70,7 @@ function PlayersPage() {
 
   return (
     <IplPageShell
-      title="Player Leaderboards"
+      title="IPL Player Leaders"
       subtitle="Orange Cap (runs), Purple Cap (wickets) and six-hitters"
       right={
         <select
