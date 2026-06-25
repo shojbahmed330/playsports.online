@@ -18,6 +18,9 @@ import { Countdown } from "./Countdown";
 import { GameGridSkeleton, StandingsSkeleton } from "./Skeletons";
 import { AdSlot } from "@/components/ads/AdSlot";
 import { formatLocalTime, relativeDay } from "@/lib/time";
+import { Breadcrumbs } from "@/components/nav/Breadcrumbs";
+import { MobileTabBar, type MobileTab } from "@/components/nav/MobileTabBar";
+import { Home as HomeIcon, ListOrdered } from "lucide-react";
 
 type TabKey = "scores" | "standings" | "news";
 type Filter = "all" | "live" | "upcoming" | "final";
