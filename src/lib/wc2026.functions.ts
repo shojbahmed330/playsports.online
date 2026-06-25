@@ -259,26 +259,79 @@ export const getWc2026Standings = createServerFn({ method: "GET" }).handler(asyn
 });
 
 // ===================== TOP SCORERS =====================
+// ESPN's `/leaders?season=...` endpoint is 404 for this competition, so we
+// aggregate goals by walking the scoreboard and reading each event's
+// `keyEvents`/`details` array (cached per-event for 5 min).
+const SCORERS_TTL_MS = 5 * 60 * 1000;
 
 export const getWc2026TopScorers = createServerFn({ method: "GET" }).handler(async () => {
   try {
-    const raw = (await espnGet(
-      `${ESPN_WEB}/leaders?season=${SEASON}`,
-    )) as { categories?: any[] };
-    const cat = (raw.categories ?? []).find((c: any) =>
-      /goal/i.test(c?.name ?? c?.displayName ?? "") && !/assist|saved/i.test(c?.name ?? ""),
-    ) ?? (raw.categories ?? [])[0];
-    const leaders: any[] = cat?.leaders ?? [];
-    const scorers: Wc2026Scorer[] = leaders.slice(0, 25).map((l: any, i: number) => ({
+    const sb = (await espnGet(
+      `${ESPN_SITE}/scoreboard?dates=${WC_RANGE}&limit=200`,
+      LIVE_TTL_MS,
+    )) as { events?: any[] };
+    const events = (sb.events ?? []).filter((e: any) => {
+      const st = e?.status?.type?.state;
+      return st === "post" || st === "in";
+    });
+
+    type Agg = {
+      playerId: number;
+      name: string;
+      teamId: number;
+      teamName: string;
+      teamCode: string;
+      goals: number;
+    };
+    const agg = new Map<number, Agg>();
+
+    // Fetch summaries in parallel batches (cached).
+    const batch = 8;
+    for (let i = 0; i < events.length; i += batch) {
+      const chunk = events.slice(i, i + batch);
+      const sums = await Promise.all(
+        chunk.map((ev: any) =>
+          espnGet(
+            `${ESPN_SITE}/summary?event=${ev.id}`,
+            SCORERS_TTL_MS,
+          ).catch(() => null),
+        ),
+      );
+      for (const s of sums) {
+        if (!s || typeof s !== "object") continue;
+        const details: any[] = (s as any).keyEvents ?? (s as any).details ?? [];
+        for (const d of details) {
+          const tp = String(d?.type?.text ?? "").toLowerCase();
+          if (!d?.scoringPlay && !tp.includes("goal")) continue;
+          // Skip own goals (don't credit the scorer's tally).
+          if (tp.includes("own")) continue;
+          const ath = d?.participants?.[0]?.athlete ?? d?.athletesInvolved?.[0];
+          if (!ath?.id) continue;
+          const pid = Number(ath.id);
+          const cur = agg.get(pid);
+          if (cur) {
+            cur.goals += 1;
+          } else {
+            agg.set(pid, {
+              playerId: pid,
+              name: ath.displayName ?? "",
+              teamId: Number(d?.team?.id ?? 0),
+              teamName: d?.team?.displayName ?? "",
+              teamCode: (d?.team?.abbreviation ?? "").toUpperCase(),
+              goals: 1,
+            });
+          }
+        }
+      }
+    }
+
+    const sorted = Array.from(agg.values()).sort((a, b) => b.goals - a.goals);
+    const scorers: Wc2026Scorer[] = sorted.slice(0, 50).map((a, i) => ({
       rank: i + 1,
-      name: l.athlete?.displayName ?? l.displayName ?? "",
-      playerId: Number(l.athlete?.id ?? 0),
-      team: {
-        id: Number(l.team?.id ?? 0),
-        name: l.team?.displayName ?? "",
-        code: (l.team?.abbreviation ?? "").toUpperCase(),
-      },
-      goals: Number(l.value ?? 0),
+      name: a.name,
+      playerId: a.playerId,
+      team: { id: a.teamId, name: a.teamName, code: a.teamCode },
+      goals: a.goals,
       assists: null,
     }));
     return { scorers, error: null as string | null };
@@ -289,6 +342,8 @@ export const getWc2026TopScorers = createServerFn({ method: "GET" }).handler(asy
     };
   }
 });
+
+
 
 // ===================== FIFA RANKINGS (derived from standings) =====================
 // ESPN's standings payload doesn't carry FIFA ranking — return empty list; the

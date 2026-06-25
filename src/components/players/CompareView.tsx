@@ -32,10 +32,10 @@ type CardRow = {
 };
 const CARDS = cardsData as CardRow[];
 
-// Pre-aggregated player index (built once from historical data — used only by the picker).
-const PLAYER_INDEX = (() => {
+// Build a player index from any goal dataset (used by the picker).
+function buildPlayerIndex(goals: GoalRow[]) {
   const m = new Map<string, { name: string; country: string; goals: number }>();
-  for (const g of HISTORICAL_GOALS) {
+  for (const g of goals) {
     if (g.og) continue;
     const k = `${g.name}||${g.pteam}`;
     const ex = m.get(k);
@@ -43,7 +43,7 @@ const PLAYER_INDEX = (() => {
     else m.set(k, { name: g.name, country: g.pteam, goals: 1 });
   }
   return Array.from(m.values()).sort((a, b) => b.goals - a.goals);
-})();
+}
 
 export function CompareView() {
   const { goals: GOALS } = useMergedGoals();
@@ -108,6 +108,7 @@ export function CompareView() {
           {selected.length < 4 && (
             <AddPicker
               exclude={selected}
+              goals={GOALS}
               onPick={(p) => setSelected([...selected, p])}
             />
           )}
@@ -201,15 +202,18 @@ function Cell({ label, value, accent }: { label: string; value: number; accent?:
 function AddPicker({
   onPick,
   exclude,
+  goals,
 }: {
   onPick: (p: { name: string; country: string }) => void;
   exclude: { name: string; country: string }[];
+  goals: GoalRow[];
 }) {
   const [open, setOpen] = useState(false);
+  const index = useMemo(() => buildPlayerIndex(goals), [goals]);
   const excludeKeys = new Set(exclude.map((p) => playerKey(p.name, p.country)));
-  const options = PLAYER_INDEX.filter(
-    (p) => !excludeKeys.has(playerKey(p.name, p.country)),
-  ).slice(0, 200);
+  const options = index
+    .filter((p) => !excludeKeys.has(playerKey(p.name, p.country)))
+    .slice(0, 200);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
