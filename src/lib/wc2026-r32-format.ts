@@ -43,6 +43,15 @@ const LATER_SCHEDULE: ScheduleRow[] = [
   { slot: 32, matchNo: 104, dateISO: "2026-07-19T15:00:00-04:00", stadium: "MetLife Stadium", city: "East Rutherford, NJ" },
 ];
 const LATER_SCHEDULE_BY_MATCH = new Map<number, ScheduleRow>(LATER_SCHEDULE.map((s) => [s.matchNo, s]));
+const ALL_KNOCKOUT_SCHEDULE = [...SCHEDULE, ...LATER_SCHEDULE];
+
+export function inferWc2026KnockoutMatchNo(matchDate: string | null | undefined): number | null {
+  if (!matchDate) return null;
+  const ts = new Date(matchDate).getTime();
+  if (!Number.isFinite(ts)) return null;
+  const row = ALL_KNOCKOUT_SCHEDULE.find((s) => Math.abs(new Date(s.dateISO).getTime() - ts) < 5 * 60 * 1000);
+  return row?.matchNo ?? null;
+}
 
 // ───────────────────────────────────────────────────────────────────────────
 // SEED PICKING

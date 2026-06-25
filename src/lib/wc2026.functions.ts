@@ -118,19 +118,31 @@ function mapStatus(state: string | undefined): string {
 function deriveGroup(ev: any): string {
   // ESPN puts grouping in event.season.type.name, or competitions[0].notes,
   // or competitions[0].type.text ("Group Stage", "Round of 32", etc.)
-  const notes = ev?.competitions?.[0]?.notes ?? [];
-  for (const n of notes) {
-    const h = String(n?.headline ?? "");
+  const comp = ev?.competitions?.[0] ?? {};
+  const notes = comp?.notes ?? [];
+  const classify = (value: unknown): string | null => {
+    const h = String(value ?? "");
+    if (!h) return null;
     const m = /Group\s+[A-Z]/i.exec(h);
     if (m) return m[0].replace(/\s+/, " ");
-    if (/round of 16/i.test(h)) return "Round of 16";
-    if (/round of 32/i.test(h)) return "Round of 32";
+    if (/round[\s-]+of[\s-]+16/i.test(h)) return "Round of 16";
+    if (/round[\s-]+of[\s-]+32/i.test(h)) return "Round of 32";
     if (/quarter/i.test(h)) return "Quarter-Final";
     if (/semi/i.test(h)) return "Semi-Final";
-    if (/third/i.test(h)) return "Third-Place Play-off";
-    if (/final/i.test(h)) return "Final";
+    if (/third|3rd|play-?off/i.test(h)) return "Third-Place Play-off";
+    if (/\bfinal\b/i.test(h)) return "Final";
+    if (/group[\s-]+stage/i.test(h)) return "Group Stage";
+    return null;
+  };
+  for (const n of notes) {
+    const hit = classify(n?.headline);
+    if (hit) return hit;
   }
-  const t = ev?.competitions?.[0]?.type?.text ?? ev?.season?.type?.name ?? "";
+  for (const value of [comp?.altGameNote, comp?.type?.text, ev?.season?.slug, ev?.season?.type?.name]) {
+    const hit = classify(value);
+    if (hit) return hit;
+  }
+  const t = comp?.type?.text ?? ev?.season?.type?.name ?? "";
   if (/group/i.test(t)) return "Group Stage";
   return t || "Other";
 }

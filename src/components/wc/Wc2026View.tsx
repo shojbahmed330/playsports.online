@@ -20,7 +20,7 @@ import { WatchLivePanel } from "./WatchLivePanel";
 import { DateScrubber, filterByDateKey } from "./DateScrubber";
 import { flagOf } from "@/lib/flags";
 import { fetch2026VideoMap, videoKey } from "@/lib/wc-2026-videos";
-import { computeR32, computePredictedKnockout } from "@/lib/wc2026-r32-format";
+import { computeR32, computePredictedKnockout, inferWc2026KnockoutMatchNo } from "@/lib/wc2026-r32-format";
 
 
 import { applyFilter, useMyTeams, type FootballFilter } from "@/lib/football-filters";
@@ -108,6 +108,14 @@ function aliasPairKey(a: string, b: string): string {
   return [aliasKey(a), aliasKey(b)].sort().join("|");
 }
 
+function isSeedPlaceholder(name: string): boolean {
+  return /(\bTBD\b|Group\s+[A-L].*(Winner|2nd|Runner|Place)|Third\s+Place|Winner\s+Group|Runner-up\s+Group|Round\s+of\s+\d+|Quarterfinal|Semifinal|Final\s+Winner|Final\s+Loser|\b[123][A-L]\b)/i.test(name);
+}
+
+function isPlaceholderMatch(match: WCMatch): boolean {
+  return isSeedPlaceholder(match.home_team) || isSeedPlaceholder(match.away_team);
+}
+
 function titleCase(s: string) {
   return s.replace(/\b\w/g, (c) => c.toUpperCase());
 }
@@ -131,18 +139,20 @@ function toWcMatches(
     }
     const home = canonName.get(aliasKey(f.home.name)) ?? f.home.name;
     const away = canonName.get(aliasKey(f.away.name)) ?? f.away.name;
+    const matchDate = f.startTs ? new Date(f.startTs * 1000).toISOString() : null;
+    const officialKnockoutNo = inferWc2026KnockoutMatchNo(matchDate);
     return {
       id: f.id,
       tournament_year: 2026,
       round,
-      match_number: i + 1,
+      match_number: officialKnockoutNo ?? i + 1,
       home_team: home,
       away_team: away,
       home_score: f.home.goals,
       away_score: f.away.goals,
       home_score_pen: null,
       away_score_pen: null,
-      match_date: f.startTs ? new Date(f.startTs * 1000).toISOString() : null,
+      match_date: matchDate,
       stadium: f.venue,
       city: f.city,
       video_url: videoMap?.get(videoKey(f.home.name, f.away.name)) ?? null,
@@ -413,28 +423,51 @@ export function Wc2026KnockoutView({ filter = "all", team, date, onDateChange }:
     const groups = sQ.data?.groups ?? [];
     if (groups.length === 0) return wcMatchesRaw;
 
-    // R32 — pair-key dedup (real teams known from standings).
+    // R32 — merge ESPN's official dated fixture with our corrected FIFA seed
+    // matrix. If ESPN still says "Group H 2nd Place", the UI shows the current
+    // standings projection from the correct group (never a team from another
+    // group), while keeping ESPN's event id/date/venue for auto-replacement.
     const predictedR32 = computeR32(groups);
-    const espnR32Pairs = new Set(
-      wcMatchesRaw
+    const predictedR32ByNo = new Map(predictedR32.map((m) => [m.match_number ?? 0, m]));
+    const rawMerged = wcMatchesRaw.flatMap((m) => {
+      const k = classifyKnockout(m.round);
+      if (k === "round_of_32") {
+        const projected = predictedR32ByNo.get(m.match_number ?? 0);
+        if (projected && isPlaceholderMatch(m)) {
+          return [{
+            ...m,
+            home_team: projected.home_team,
+            away_team: projected.away_team,
+            predicted: true,
+            home_seed_label: projected.home_seed_label,
+            away_seed_label: projected.away_seed_label,
+          }];
+        }
+      }
+      // Later-round ESPN placeholders are written as "Round of 32 1 Winner";
+      // hide those and show our clearer deterministic "Winner Match 73" chain
+      // until ESPN publishes real teams.
+      if (k && k !== "round_of_32" && isPlaceholderMatch(m)) return [];
+      return [m];
+    });
+    const existingR32MatchNos = new Set(
+      rawMerged
         .filter((m) => classifyKnockout(m.round) === "round_of_32")
-        .map((m) => aliasPairKey(m.home_team, m.away_team)),
+        .map((m) => m.match_number),
     );
-    const synthR32 = predictedR32.filter(
-      (p) => !espnR32Pairs.has(aliasPairKey(p.home_team, p.away_team)),
-    );
+    const synthR32 = predictedR32.filter((p) => !existingR32MatchNos.has(p.match_number));
 
     // R16 → Final — per-round wipeout (predicted team names are placeholders
     // like "Winner Match 73", so pair-key dedup wouldn't work).
     const predictedLater = computePredictedKnockout(groups);
     const espnHasRound = (key: RoundKey) =>
-      wcMatchesRaw.some((m) => classifyKnockout(m.round) === key);
+      rawMerged.some((m) => classifyKnockout(m.round) === key && !m.predicted && !isPlaceholderMatch(m));
     const synthLater = predictedLater.filter((p) => {
       const k = classifyKnockout(p.round);
       return k ? !espnHasRound(k) : true;
     });
 
-    return [...wcMatchesRaw, ...synthR32, ...synthLater];
+    return [...rawMerged, ...synthR32, ...synthLater];
   }, [wcMatchesRaw, sQ.data]);
 
   const { teams: myTeams } = useMyTeams();
