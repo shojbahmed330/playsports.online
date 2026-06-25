@@ -265,9 +265,10 @@ export function Wc2026GroupsView({ filter = "all", team, date, onDateChange }: {
   }, [fQ.data, vQ.data, teamGroup, canonName]);
   const { teams: myTeams } = useMyTeams();
   const wcMatches = useMemo(
-    () => applyFilter(wcMatchesAll, filter, team, myTeams),
-    [wcMatchesAll, filter, team, myTeams],
+    () => filterByDateKey(applyFilter(wcMatchesAll, filter, team, myTeams), date),
+    [wcMatchesAll, filter, team, myTeams, date],
   );
+
 
   const [activeMatch, setActiveMatch] = useState<WCMatch | null>(null);
 
