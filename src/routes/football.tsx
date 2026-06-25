@@ -10,7 +10,7 @@ import { MatchCard, type RoundKey } from "@/components/wc/MatchCard";
 import { MatchModal } from "@/components/wc/MatchModal";
 import { YearStrip } from "@/components/wc/YearStrip";
 import { MobileBracket } from "@/components/wc/MobileBracket";
-import { useAuth } from "@/hooks/use-auth";
+
 import groupMatchesData from "@/data/wc_group_matches.json";
 import { toast } from "sonner";
 import { AdSlot } from "@/components/ads/AdSlot";
@@ -74,7 +74,7 @@ const ROUND_HEADER: Record<RoundKey, { label: string; grad: string; glow: string
 };
 
 function Index() {
-  const { isAdmin } = useAuth();
+  // header (SportNav) handles admin chip itself
   const navigate = useNavigate({ from: "/football" });
   const search = Route.useSearch();
   const initialYear = search.year ?? 2026;
