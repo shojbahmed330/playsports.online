@@ -51,6 +51,15 @@ const TABS: Tab[] = [
     match: (p) => p.startsWith("/cricket/series"),
   },
   {
+    to: "/cricket/ipl",
+    label: "IPL",
+    emoji: "🏆",
+    Icon: Trophy,
+    grad: "from-amber-400 to-orange-500",
+    accent: "text-amber-200",
+    match: (p) => p.startsWith("/cricket/ipl"),
+  },
+  {
     to: "/cricket/teams",
     label: "Teams",
     emoji: "🛡️",
