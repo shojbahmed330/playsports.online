@@ -3,7 +3,9 @@ import { useMemo, useState } from "react";
 import { Search, User } from "lucide-react";
 import { SportNav } from "@/components/sports/SportNav";
 import { CricketSubNav } from "@/components/cricket/CricketSubNav";
+import { PlayerLink } from "@/components/cricket/PlayerLink";
 import rankings from "@/data/cricket/rankings.json";
+
 
 export const Route = createFileRoute("/cricket/players")({
   head: () => ({
@@ -109,7 +111,7 @@ function PlayersPage() {
                     <span className="text-gray-600">·</span>
                     <span className="text-gray-400">{r.format.toUpperCase()}</span>
                   </div>
-                  <div className="font-extrabold leading-tight truncate">{r.player}</div>
+                  <PlayerLink name={r.player} className="font-extrabold leading-tight truncate block">{r.player}</PlayerLink>
                   <div className="text-[11px] text-gray-500 truncate font-mono">{r.team}</div>
                 </div>
                 <div className="text-right">

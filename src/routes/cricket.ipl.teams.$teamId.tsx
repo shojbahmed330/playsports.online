@@ -6,7 +6,9 @@ import { MapPin, Crown, Calendar } from "lucide-react";
 import { IplPageShell } from "@/components/ipl/IplPageShell";
 import { CricketMatchCard } from "@/components/cricket/CricketMatchCard";
 import { CricketPlayerSheet } from "@/components/cricket/CricketPlayerSheet";
+import { PlayerLink } from "@/components/cricket/PlayerLink";
 import { toCricketMatch } from "@/components/ipl/toCricketMatch";
+
 import { getIplTeam, getIplTeamSquad, IPL_SEASON_IDS } from "@/lib/ipl.functions";
 import history from "@/data/cricket/ipl/history.json";
 import captainsData from "@/data/cricket/ipl/captains.json";
@@ -212,7 +214,7 @@ function TeamPage() {
                       key={`${c.name}-${i}`}
                       className="flex items-baseline justify-between gap-2 rounded-lg bg-white/[0.03] px-3 py-1.5 text-xs ring-1 ring-white/5"
                     >
-                      <span className="truncate font-semibold text-white">{c.name}</span>
+                      <PlayerLink name={c.name} className="truncate font-semibold text-white">{c.name}</PlayerLink>
                       <span className="shrink-0 text-[11px] text-white/55">
                         {c.years}{c.titles > 0 ? ` · 🏆${c.titles}` : ""}
                       </span>

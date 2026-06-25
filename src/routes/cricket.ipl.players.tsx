@@ -4,6 +4,8 @@ import { zodValidator } from "@tanstack/zod-adapter";
 import { z } from "zod";
 import { IplPageShell } from "@/components/ipl/IplPageShell";
 import { OrangePurpleCap } from "@/components/ipl/OrangePurpleCap";
+import { PlayerLink } from "@/components/cricket/PlayerLink";
+
 import { getIplLeaders, getIplHistory, IPL_SEASON_IDS } from "@/lib/ipl.functions";
 
 const searchSchema = z.object({
@@ -118,7 +120,7 @@ function PlayersPage() {
                     {p.athleteName.slice(0, 1)}
                   </span>
                 )}
-                <span className="min-w-0 truncate font-semibold text-white">{p.athleteName}</span>
+                <PlayerLink name={p.athleteName} athleteId={p.athleteId} className="min-w-0 truncate font-semibold text-white">{p.athleteName}</PlayerLink>
                 <span className="text-[11px] text-white/60">{p.teamAbbr}</span>
                 <span className="text-right font-black text-white">{p.value} 6s</span>
               </li>

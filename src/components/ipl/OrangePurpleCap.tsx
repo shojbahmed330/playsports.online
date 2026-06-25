@@ -1,5 +1,7 @@
 import { Trophy, Flame } from "lucide-react";
 import type { IplLeader } from "@/lib/ipl.functions";
+import { PlayerLink } from "@/components/cricket/PlayerLink";
+
 
 type Props = {
   orange: IplLeader[];
@@ -93,9 +95,10 @@ function CapCard({
               </div>
             )}
             <div className="min-w-0 flex-1">
-              <div className="truncate text-base font-bold text-white">{top.athleteName}</div>
+              <PlayerLink name={top.athleteName} athleteId={top.athleteId} className="truncate text-base font-bold text-white block">{top.athleteName}</PlayerLink>
               <div className="text-xs text-white/60">{top.teamName || top.teamAbbr}</div>
             </div>
+
             <div className="shrink-0 text-right">
               <div className="text-2xl font-black text-white">{top.value}</div>
               <div className="text-[10px] uppercase tracking-widest text-white/50">{unit}</div>
@@ -108,9 +111,10 @@ function CapCard({
             </div>
             <div className="mt-1 flex items-baseline justify-between gap-3">
               <div className="min-w-0">
-                <div className="truncate text-base font-bold text-white">{emptyFallback.name}</div>
+                <PlayerLink name={emptyFallback.name} className="truncate text-base font-bold text-white block">{emptyFallback.name}</PlayerLink>
                 <div className="text-xs text-white/60">{emptyFallback.team}</div>
               </div>
+
               <div className="text-xl font-black text-white">{emptyFallback.value}</div>
             </div>
             <p className="mt-2 text-[11px] text-white/50">
@@ -130,7 +134,7 @@ function CapCard({
                 <span className="w-5 shrink-0 text-center text-[11px] font-black text-white/50">
                   {p.rank}
                 </span>
-                <span className="min-w-0 flex-1 truncate text-sm text-white/90">{p.athleteName}</span>
+                <PlayerLink name={p.athleteName} athleteId={p.athleteId} className="min-w-0 flex-1 truncate text-sm text-white/90">{p.athleteName}</PlayerLink>
                 <span className="shrink-0 text-[11px] text-white/50">{p.teamAbbr}</span>
                 <span className="w-12 shrink-0 text-right text-sm font-bold text-white">{p.value}</span>
               </li>

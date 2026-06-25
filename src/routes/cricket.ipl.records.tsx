@@ -3,8 +3,10 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, queryOptions } from "@tanstack/react-query";
 import { Search, Trophy } from "lucide-react";
 import { IplPageShell } from "@/components/ipl/IplPageShell";
+import { PlayerLink } from "@/components/cricket/PlayerLink";
 import records from "@/data/cricket/ipl/records.json";
 import { getIplLeaders, IPL_SEASON_IDS } from "@/lib/ipl.functions";
+
 
 type Record = {
   label: string;
@@ -125,12 +127,13 @@ function RecordsPage() {
                     <div className="mt-1 flex items-baseline justify-between gap-3">
                       <div className="min-w-0">
                         {r.player ? (
-                          <div className="truncate text-sm font-bold text-white">{r.player}</div>
+                          <PlayerLink name={r.player} className="truncate text-sm font-bold text-white block">{r.player}</PlayerLink>
                         ) : (
                           <div className="truncate text-sm font-bold text-white">{r.team}</div>
                         )}
                         {r.player && r.team && <div className="truncate text-[11px] text-white/55">{r.team}</div>}
                       </div>
+
                       <div className="shrink-0 text-lg font-black text-amber-300">{r.value}</div>
                     </div>
                     {r.context && <div className="mt-1 truncate text-[11px] text-white/45">{r.context}</div>}
@@ -214,9 +217,10 @@ function SeasonLeadersPanel() {
                 <div className="size-8 shrink-0 rounded-full bg-white/10" />
               )}
               <div className="min-w-0 flex-1">
-                <div className="truncate text-sm font-bold text-white">{l.athleteName}</div>
+                <PlayerLink name={l.athleteName} athleteId={l.athleteId} className="truncate text-sm font-bold text-white block">{l.athleteName}</PlayerLink>
                 <div className="truncate text-[10px] uppercase tracking-wider text-white/50">{l.teamAbbr || l.teamName}</div>
               </div>
+
               <span className="shrink-0 font-black tabular-nums text-amber-300">{l.displayValue}</span>
             </li>
           ))}

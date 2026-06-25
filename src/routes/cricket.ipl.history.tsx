@@ -3,9 +3,11 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useSuspenseQuery, useQuery, queryOptions } from "@tanstack/react-query";
 import { Trophy, Award, Search, ChevronDown, Sparkles, GitBranch } from "lucide-react";
 import { IplPageShell } from "@/components/ipl/IplPageShell";
+import { PlayerLink } from "@/components/cricket/PlayerLink";
 import { getIplHistory, getIplPlayoffs, IPL_SEASON_IDS, type IplBracketMatch } from "@/lib/ipl.functions";
 import franchises from "@/data/cricket/ipl/franchises.json";
 import auctions from "@/data/cricket/ipl/auctions.json";
+
 
 const qo = queryOptions({
   queryKey: ["ipl", "history"],
@@ -205,8 +207,9 @@ function HistoryPage() {
                   <p className="mt-1 text-sm text-white/90">{s.finalScore}</p>
                   <p className="mt-0.5 text-[11px] text-white/50">{s.finalVenue}</p>
                   <p className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-white/[0.06] px-2.5 py-1 text-[11px] font-semibold text-white/80 ring-1 ring-white/10">
-                    <Award className="size-3" /> Player of the Final: {s.mom}
+                    <Award className="size-3" /> Player of the Final: <PlayerLink name={s.mom} className="font-semibold">{s.mom}</PlayerLink>
                   </p>
+
                 </div>
 
                 <dl className="grid grid-cols-2 gap-2 text-xs">
@@ -261,7 +264,7 @@ function AwardCard({ label, name, team, value, className }: { label: string; nam
   return (
     <div className={`rounded-lg p-2.5 ${className}`}>
       <div className="text-[9px] font-black uppercase tracking-widest opacity-80">{label}</div>
-      <div className="mt-0.5 truncate text-sm font-bold">{name}</div>
+      <PlayerLink name={name} className="mt-0.5 truncate text-sm font-bold block">{name}</PlayerLink>
       <div className="flex items-baseline justify-between text-[11px] opacity-90">
         <span>{team}</span>
         <span className="font-black">{value}</span>
@@ -269,6 +272,7 @@ function AwardCard({ label, name, team, value, className }: { label: string; nam
     </div>
   );
 }
+
 
 function AuctionCard({ tone, label, h }: { tone: "amber" | "violet"; label: string; h: { player: string; team: string; price: string; note?: string } }) {
   const ring = tone === "amber" ? "ring-amber-300/30 bg-amber-400/10" : "ring-violet-300/25 bg-violet-500/10";
@@ -278,8 +282,9 @@ function AuctionCard({ tone, label, h }: { tone: "amber" | "violet"; label: stri
       <div className={`text-[9px] font-black uppercase tracking-widest ${accent}`}>{label}</div>
       <div className="mt-1 flex items-baseline justify-between gap-2">
         <div className="min-w-0">
-          <div className="truncate text-sm font-bold text-white">{h.player}</div>
+          <PlayerLink name={h.player} className="truncate text-sm font-bold text-white block">{h.player}</PlayerLink>
           <div className="truncate text-[11px] text-white/55">{h.team}</div>
+
         </div>
         <div className={`shrink-0 text-base font-black ${accent}`}>{h.price}</div>
       </div>
