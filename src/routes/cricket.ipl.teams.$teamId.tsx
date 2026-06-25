@@ -6,7 +6,9 @@ import { MapPin, Crown, Calendar } from "lucide-react";
 import { IplPageShell } from "@/components/ipl/IplPageShell";
 import { CricketMatchCard } from "@/components/cricket/CricketMatchCard";
 import { CricketPlayerSheet } from "@/components/cricket/CricketPlayerSheet";
+import { PlayerLink } from "@/components/cricket/PlayerLink";
 import { toCricketMatch } from "@/components/ipl/toCricketMatch";
+
 import { getIplTeam, getIplTeamSquad, IPL_SEASON_IDS } from "@/lib/ipl.functions";
 import history from "@/data/cricket/ipl/history.json";
 import captainsData from "@/data/cricket/ipl/captains.json";
