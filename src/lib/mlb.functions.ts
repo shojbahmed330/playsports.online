@@ -844,3 +844,86 @@ export const searchMlbPlayers = createServerFn({ method: "GET" })
       return { hits: [] as MlbPlayerSearchHit[], error: e instanceof Error ? e.message : "Unknown" };
     }
   });
+
+// ───────── Athlete Game Log (per-season) ─────────
+export type MlbGameLogRow = {
+  date: string;             // ISO
+  opponentAbbr: string | null;
+  opponentLogo: string | null;
+  homeAway: "home" | "away" | null;
+  result: string | null;    // "W 6-3"
+  stats: Record<string, string>;
+};
+
+export type MlbGameLogSeason = {
+  season: number;
+  group: "batting" | "pitching" | "fielding" | "unknown";
+  headers: string[];
+  rows: MlbGameLogRow[];
+};
+
+export const getMlbAthleteGameLog = createServerFn({ method: "GET" })
+  .inputValidator((d: { id: string; season?: number }) => d)
+  .handler(async ({ data }) => {
+    const season = data.season ?? new Date().getFullYear();
+    try {
+      const url = `${CORE}/athletes/${data.id}/gamelog?season=${season}`;
+      const raw = (await get(url, 15 * 60_000)) as any;
+
+      // ESPN gamelog shape: { events: { [eventId]: {...} }, seasonTypes: [{categories:[{events:[{eventId,stats:[]}]}]}], names:[], labels:[], displayNames:[] }
+      const events: Record<string, any> = raw?.events ?? {};
+      const seasonTypes: any[] = raw?.seasonTypes ?? [];
+
+      // Pick first season type with events (regular season usually)
+      let cat: any = null;
+      let labels: string[] = [];
+      let groupName: string = "";
+      for (const st of seasonTypes) {
+        const cats: any[] = st?.categories ?? [];
+        for (const c of cats) {
+          if ((c?.events?.length ?? 0) > 0) {
+            cat = c;
+            labels = c?.labels ?? st?.labels ?? raw?.labels ?? raw?.displayNames ?? [];
+            groupName = (c?.type ?? c?.name ?? "").toLowerCase();
+            break;
+          }
+        }
+        if (cat) break;
+      }
+      const headers: string[] = (labels ?? []).slice(0, 14).map((s: any) => String(s));
+      const group: MlbGameLogSeason["group"] =
+        groupName.includes("pitch") ? "pitching" :
+        groupName.includes("batt") ? "batting" :
+        groupName.includes("field") ? "fielding" : "batting";
+
+      const rows: MlbGameLogRow[] = [];
+      const evs: any[] = cat?.events ?? [];
+      for (const e of evs) {
+        const ev = events[String(e?.eventId ?? "")] ?? {};
+        const opp = ev?.opponent ?? {};
+        const stats: Record<string, string> = {};
+        const vals: any[] = e?.stats ?? [];
+        headers.forEach((h, i) => { stats[h] = vals[i] != null ? String(vals[i]) : "—"; });
+        rows.push({
+          date: ev?.gameDate ?? ev?.date ?? "",
+          opponentAbbr: opp?.abbreviation ?? null,
+          opponentLogo: opp?.logo ?? opp?.logos?.[0]?.href ?? null,
+          homeAway: ev?.atVs === "vs" ? "home" : ev?.atVs === "@" ? "away" : null,
+          result: ev?.gameResult && ev?.score ? `${ev.gameResult} ${ev.score}` : (ev?.score ?? null),
+          stats,
+        });
+      }
+
+      return {
+        season,
+        log: { season, group, headers, rows } as MlbGameLogSeason,
+        error: null as string | null,
+      };
+    } catch (e) {
+      return {
+        season,
+        log: { season, group: "unknown", headers: [], rows: [] } as MlbGameLogSeason,
+        error: e instanceof Error ? e.message : "Unknown",
+      };
+    }
+  });
