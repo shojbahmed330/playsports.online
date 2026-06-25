@@ -179,6 +179,8 @@ export function CompareView() {
           ))}
         </div>
       )}
+
+      {stats.length >= 2 && <CompareChart rows={stats} />}
     </div>
   );
 }
