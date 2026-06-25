@@ -1,0 +1,34 @@
+{
+  "batting": [
+    { "label": "Most runs (career)", "player": "Virat Kohli", "team": "RCB", "value": "8661+", "context": "2008–present" },
+    { "label": "Most runs in a season", "player": "Virat Kohli", "team": "RCB", "value": "973", "context": "2016 season" },
+    { "label": "Highest individual score", "player": "Chris Gayle", "team": "RCB", "value": "175*", "context": "vs PWI, 2013" },
+    { "label": "Fastest century", "player": "Chris Gayle", "team": "RCB", "value": "30 balls", "context": "vs PWI, 2013" },
+    { "label": "Fastest fifty", "player": "Yashasvi Jaiswal", "team": "RR", "value": "13 balls", "context": "vs MI, 2023" },
+    { "label": "Most sixes (career)", "player": "Chris Gayle", "team": "RCB/PBKS", "value": "357", "context": "All-time" },
+    { "label": "Most sixes in a season", "player": "Nicholas Pooran", "team": "LSG", "value": "75", "context": "Joint record, 2025" },
+    { "label": "Most centuries", "player": "Virat Kohli", "team": "RCB", "value": "8", "context": "All-time" }
+  ],
+  "bowling": [
+    { "label": "Most wickets (career)", "player": "Yuzvendra Chahal", "team": "Multi", "value": "221+", "context": "2013–present" },
+    { "label": "Most wickets in a season", "player": "Harshal Patel", "team": "RCB", "value": "32", "context": "2021 (joint w/ Bravo 2013)" },
+    { "label": "Best bowling figures", "player": "Akash Madhwal", "team": "MI", "value": "5/5", "context": "vs LSG, 2023" },
+    { "label": "Most 5-wicket hauls", "player": "Multiple", "team": "—", "value": "2", "context": "Bhuvneshwar, A. Mishra, others" },
+    { "label": "Most maiden overs", "player": "Praveen Kumar", "team": "Multi", "value": "14", "context": "All-time" },
+    { "label": "Best economy (season, min 10 ov)", "player": "Sunil Narine", "team": "KKR", "value": "5.47", "context": "2012" }
+  ],
+  "team": [
+    { "label": "Highest team total", "team": "Sunrisers Hyderabad", "value": "287/3", "context": "vs RCB, 2024" },
+    { "label": "Lowest team total", "team": "Royal Challengers Bengaluru", "value": "49 all out", "context": "vs KKR, 2017" },
+    { "label": "Most titles", "team": "Chennai Super Kings & Mumbai Indians", "value": "5 each", "context": "All-time" },
+    { "label": "Highest successful chase", "team": "Punjab Kings", "value": "262", "context": "vs KKR, 2024" },
+    { "label": "Largest victory (runs)", "team": "Mumbai Indians", "value": "146 runs", "context": "vs DC, 2017" },
+    { "label": "Most consecutive wins", "team": "Kolkata Knight Riders", "value": "10", "context": "2014–15" }
+  ],
+  "fielding": [
+    { "label": "Most catches (career)", "player": "MS Dhoni", "team": "CSK", "value": "180+ (incl. stumpings)", "context": "All-time wicketkeeping dismissals" },
+    { "label": "Most catches (fielder)", "player": "Suresh Raina", "team": "CSK", "value": "109", "context": "All-time" },
+    { "label": "Most stumpings", "player": "MS Dhoni", "team": "CSK", "value": "42", "context": "All-time" },
+    { "label": "Most Player of the Match", "player": "AB de Villiers", "team": "RCB", "value": "25", "context": "All-time" }
+  ]
+}
