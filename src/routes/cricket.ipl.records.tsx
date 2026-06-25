@@ -217,9 +217,10 @@ function SeasonLeadersPanel() {
                 <div className="size-8 shrink-0 rounded-full bg-white/10" />
               )}
               <div className="min-w-0 flex-1">
-                <div className="truncate text-sm font-bold text-white">{l.athleteName}</div>
+                <PlayerLink name={l.athleteName} athleteId={l.athleteId} className="truncate text-sm font-bold text-white block">{l.athleteName}</PlayerLink>
                 <div className="truncate text-[10px] uppercase tracking-wider text-white/50">{l.teamAbbr || l.teamName}</div>
               </div>
+
               <span className="shrink-0 font-black tabular-nums text-amber-300">{l.displayValue}</span>
             </li>
           ))}
