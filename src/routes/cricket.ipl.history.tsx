@@ -3,9 +3,11 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useSuspenseQuery, useQuery, queryOptions } from "@tanstack/react-query";
 import { Trophy, Award, Search, ChevronDown, Sparkles, GitBranch } from "lucide-react";
 import { IplPageShell } from "@/components/ipl/IplPageShell";
+import { PlayerLink } from "@/components/cricket/PlayerLink";
 import { getIplHistory, getIplPlayoffs, IPL_SEASON_IDS, type IplBracketMatch } from "@/lib/ipl.functions";
 import franchises from "@/data/cricket/ipl/franchises.json";
 import auctions from "@/data/cricket/ipl/auctions.json";
+
 
 const qo = queryOptions({
   queryKey: ["ipl", "history"],
