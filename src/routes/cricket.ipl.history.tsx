@@ -95,7 +95,7 @@ function HistoryPage() {
 
   return (
     <IplPageShell
-      title="History"
+      title="IPL Seasons & Champions"
       subtitle={`${filtered.length} / ${data.seasons.length} seasons`}
     >
       {/* Auction spend trend */}
