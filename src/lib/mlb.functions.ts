@@ -291,82 +291,111 @@ export const getMlbTeam = createServerFn({ method: "GET" })
   });
 
 // ───────── Leaders (batting + pitching) ─────────
-const BATTING_CATEGORIES: Array<{ key: string; label: string }> = [
+const BATTING_CATEGORIES: Array<{ key: string; label: string; sortDir?: "asc" | "desc" }> = [
   { key: "homeRuns", label: "Home Runs" },
-  { key: "RBIs", label: "RBI" },
-  { key: "battingAverage", label: "Batting Average" },
+  { key: "RBIs", label: "Runs Batted In" },
   { key: "hits", label: "Hits" },
   { key: "runs", label: "Runs" },
+  { key: "avg", label: "Batting Average" },
   { key: "stolenBases", label: "Stolen Bases" },
-  { key: "onBasePercentage", label: "On-Base %" },
-  { key: "sluggingPercentage", label: "Slugging %" },
+  { key: "onBasePct", label: "On-Base %" },
+  { key: "slugAvg", label: "Slugging %" },
   { key: "OPS", label: "OPS" },
   { key: "doubles", label: "Doubles" },
   { key: "triples", label: "Triples" },
   { key: "walks", label: "Walks" },
   { key: "totalBases", label: "Total Bases" },
 ];
-const PITCHING_CATEGORIES: Array<{ key: string; label: string }> = [
+const PITCHING_CATEGORIES: Array<{ key: string; label: string; sortDir?: "asc" | "desc" }> = [
   { key: "wins", label: "Wins" },
   { key: "strikeouts", label: "Strikeouts" },
-  { key: "ERA", label: "ERA" },
-  { key: "WHIP", label: "WHIP" },
+  { key: "ERA", label: "ERA", sortDir: "asc" },
+  { key: "WHIP", label: "WHIP", sortDir: "asc" },
   { key: "saves", label: "Saves" },
-  { key: "inningsPitched", label: "Innings Pitched" },
+  { key: "innings", label: "Innings Pitched" },
   { key: "holds", label: "Holds" },
-  { key: "completeGames", label: "Complete Games" },
-  { key: "shutouts", label: "Shutouts" },
   { key: "qualityStarts", label: "Quality Starts" },
+  { key: "strikeoutsPerNineInnings", label: "K / 9" },
 ];
+
+const STATS_BYATHLETE = "https://site.web.api.espn.com/apis/common/v3/sports/baseball/mlb/statistics/byathlete";
+
+async function fetchLeaderCategory(
+  season: number,
+  group: "batting" | "pitching",
+  key: string,
+  sortDir: "asc" | "desc",
+  label: string,
+): Promise<MlbLeaderCategory | null> {
+  try {
+    const url = `${STATS_BYATHLETE}?season=${season}&seasontype=2&category=${group}&sort=${group}.${key}:${sortDir}&limit=25`;
+    const raw = (await get(url, 60 * 60_000)) as any;
+    const athletes: any[] = raw?.athletes ?? [];
+    if (!athletes.length) return null;
+    const meta = (raw?.categories ?? []).find((c: any) => c?.name === group);
+    const idx: number = meta?.names?.indexOf?.(key) ?? -1;
+    const entries: MlbLeaderEntry[] = athletes.map((row: any, i: number) => {
+      const a = row?.athlete ?? {};
+      const cat = (row?.categories ?? []).find((c: any) => c?.name === group);
+      const value = idx >= 0 ? (cat?.totals?.[idx] ?? String(cat?.values?.[idx] ?? "")) : "";
+      const teamLogo = a?.teamLogos?.[0]?.href ?? null;
+      return {
+        rank: i + 1,
+        athleteId: String(a?.id ?? ""),
+        athleteName: a?.displayName ?? a?.shortName ?? "",
+        teamAbbr: a?.teamShortName ?? null,
+        teamLogo,
+        value: String(value ?? ""),
+        position: a?.position?.abbreviation ?? null,
+        headshot: a?.headshot?.href ?? null,
+      };
+    });
+    return { key, label, group, entries };
+  } catch {
+    return null;
+  }
+}
+
+async function buildLeadersForSeason(season: number) {
+  const [batting, pitching] = await Promise.all([
+    Promise.all(BATTING_CATEGORIES.map((c) => fetchLeaderCategory(season, "batting", c.key, c.sortDir ?? "desc", c.label))),
+    Promise.all(PITCHING_CATEGORIES.map((c) => fetchLeaderCategory(season, "pitching", c.key, c.sortDir ?? "desc", c.label))),
+  ]);
+  return {
+    batting: batting.filter((c): c is MlbLeaderCategory => !!c && c.entries.length > 0),
+    pitching: pitching.filter((c): c is MlbLeaderCategory => !!c && c.entries.length > 0),
+  };
+}
 
 export const getMlbLeaders = createServerFn({ method: "GET" })
   .inputValidator((d: { season?: number }) => d)
   .handler(async ({ data }) => {
+    const requested = data.season ?? new Date().getFullYear();
     try {
-      const season = data.season ?? new Date().getFullYear();
-      const raw = (await get(`${SITE}/leaders?season=${season}`, 60 * 60_000)) as any;
-      const all: any[] = raw?.leaders?.categories ?? raw?.categories ?? [];
-
-      const byKey = new Map<string, any>();
-      for (const c of all) byKey.set(c?.name ?? c?.shortDisplayName ?? "", c);
-
-      function build(group: "batting" | "pitching", list: Array<{ key: string; label: string }>): MlbLeaderCategory[] {
-        return list.map(({ key, label }) => {
-          const c = byKey.get(key);
-          const leaders: any[] = c?.leaders ?? [];
-          const entries: MlbLeaderEntry[] = leaders.slice(0, 25).map((l: any, i: number) => {
-            const ath = l?.athlete ?? {};
-            const team = ath?.team ?? l?.team ?? {};
-            return {
-              rank: i + 1,
-              athleteId: String(ath?.id ?? ""),
-              athleteName: ath?.displayName ?? ath?.fullName ?? "",
-              teamAbbr: team?.abbreviation ?? null,
-              teamLogo: team?.logos?.[0]?.href ?? team?.logo ?? null,
-              value: l?.displayValue ?? String(l?.value ?? ""),
-              position: ath?.position?.abbreviation ?? null,
-              headshot: ath?.headshot?.href ?? null,
-            };
-          });
-          return { key, label, group, entries };
-        }).filter((c) => c.entries.length > 0);
+      let used = requested;
+      let res = await buildLeadersForSeason(used);
+      if (!res.batting.length && !res.pitching.length) {
+        used = requested - 1;
+        res = await buildLeadersForSeason(used);
       }
-
       return {
-        season,
-        batting: build("batting", BATTING_CATEGORIES),
-        pitching: build("pitching", PITCHING_CATEGORIES),
+        season: used,
+        requestedSeason: requested,
+        batting: res.batting,
+        pitching: res.pitching,
         error: null as string | null,
       };
     } catch (e) {
       return {
-        season: data.season ?? new Date().getFullYear(),
+        season: requested,
+        requestedSeason: requested,
         batting: [] as MlbLeaderCategory[],
         pitching: [] as MlbLeaderCategory[],
         error: e instanceof Error ? e.message : "Unknown",
       };
     }
   });
+
 
 // ───────── Athlete bio + career ─────────
 export const getMlbAthlete = createServerFn({ method: "GET" })
