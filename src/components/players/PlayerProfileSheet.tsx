@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useNavigate, useSearch } from "@tanstack/react-router";
-import { Share2, ExternalLink } from "lucide-react";
+import { Share2, ExternalLink, Plus, Check } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -9,9 +9,16 @@ import {
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { flagOf } from "@/lib/flags";
-import { parsePlayerKey, playerKey, type PlayersSearch } from "@/lib/players-filters";
+import {
+  parsePlayerKey,
+  parseComparePlayers,
+  joinComparePlayers,
+  playerKey,
+  type PlayersSearch,
+} from "@/lib/players-filters";
 import cardsData from "@/data/wc_cards.json";
 import { useMergedGoals } from "@/lib/use-merged-goals";
+import { CareerSparkline } from "@/components/players/CareerSparkline";
 
 type CardRow = {
   pid: string; name: string; team: string; year: number;
@@ -42,6 +49,8 @@ export function PlayerProfileSheet() {
 
 function ProfileBody({ player }: { player: { name: string; country: string } }) {
   const { goals: ALL_GOALS } = useMergedGoals();
+  const search = useSearch({ from: "/players" });
+  const navigate = useNavigate({ from: "/players" });
   const goals = useMemo(
     () => ALL_GOALS.filter((g) => !g.og && g.name === player.name && g.pteam === player.country),
     [player, ALL_GOALS],
@@ -50,6 +59,21 @@ function ProfileBody({ player }: { player: { name: string; country: string } }) 
     () => CARDS.filter((c) => c.name === player.name && c.team === player.country),
     [player],
   );
+
+  const compareList = parseComparePlayers(search.compare);
+  const inCompare = compareList.some(
+    (p) => p.name === player.name && p.country === player.country,
+  );
+  const toggleCompare = () => {
+    const next = inCompare
+      ? compareList.filter((p) => !(p.name === player.name && p.country === player.country))
+      : [...compareList, { name: player.name, country: player.country }].slice(0, 4);
+    navigate({
+      search: (prev: PlayersSearch) => ({ ...prev, compare: joinComparePlayers(next), tab: "compare" }),
+      replace: true,
+    });
+  };
+
 
   const byYear = useMemo(() => {
     const m = new Map<number, { goals: number; pen: number; yellow: number; red: number }>();
@@ -120,6 +144,10 @@ function ProfileBody({ player }: { player: { name: string; country: string } }) 
       </div>
 
       {byYear.length > 0 && (
+        <CareerSparkline data={byYear.map(([year, r]) => ({ year, goals: r.goals }))} />
+      )}
+
+      {byYear.length > 0 && (
         <div className="rounded-xl border border-border overflow-hidden">
           <div className="grid grid-cols-5 gap-2 px-3 py-2 bg-muted/50 text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">
             <div>Year</div>
@@ -147,7 +175,16 @@ function ProfileBody({ player }: { player: { name: string; country: string } }) 
         </div>
       )}
 
-      <div className="flex items-center gap-2 pt-2">
+      <div className="flex flex-wrap items-center gap-2 pt-2">
+        <Button
+          onClick={toggleCompare}
+          variant={inCompare ? "default" : "outline"}
+          size="sm"
+          className="gap-1.5"
+        >
+          {inCompare ? <Check className="size-3.5" /> : <Plus className="size-3.5" />}
+          {inCompare ? "In Compare" : "Add to Compare"}
+        </Button>
         <Button onClick={share} variant="outline" size="sm" className="gap-1.5">
           <Share2 className="size-3.5" /> Copy link
         </Button>
@@ -160,6 +197,7 @@ function ProfileBody({ player }: { player: { name: string; country: string } }) 
           Wikipedia <ExternalLink className="size-3" />
         </a>
       </div>
+
     </div>
   );
 }

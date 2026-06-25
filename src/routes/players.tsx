@@ -27,6 +27,7 @@ import { PlayerSubNav } from "@/components/players/PlayerSubNav";
 import { FilterBar, ActiveFilterChips } from "@/components/players/FilterBar";
 import { FilterSheet } from "@/components/players/FilterSheet";
 import { PlayerProfileSheet } from "@/components/players/PlayerProfileSheet";
+import { Wc2026Podium } from "@/components/players/Wc2026Podium";
 
 const CompareView = lazy(() =>
   import("@/components/players/CompareView").then((m) => ({ default: m.CompareView })),
@@ -412,6 +413,8 @@ function OverviewTab({
 
   return (
     <div className="space-y-6">
+      {live2026Count > 0 && <Wc2026Podium onPick={onPickPlayer} />}
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div className="rounded-2xl border border-border bg-card/60 p-5">
           <div className="flex items-center justify-between mb-4">
@@ -491,6 +494,7 @@ function ScorersTab({
 }: { rows: ScorerRow[]; onPick: (n: string, c: string) => void }) {
   return (
     <section className="space-y-4">
+      <Wc2026Podium onPick={onPick} />
       <div className="flex items-baseline justify-between flex-wrap gap-2">
         <h2 className="text-xl sm:text-2xl font-bold">🥇 Top Scorers</h2>
         <span className="text-xs text-muted-foreground tabular-nums">
