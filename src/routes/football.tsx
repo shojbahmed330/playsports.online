@@ -433,6 +433,8 @@ function Index() {
 
 
       <MatchModal match={activeMatch} onClose={() => setActiveMatch(null)} />
+
+      {mobileTabs.length > 0 && <MobileTabBar tabs={mobileTabs} accent="amber" />}
     </div>
   );
 }
