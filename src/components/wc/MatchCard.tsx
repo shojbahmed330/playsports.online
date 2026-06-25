@@ -1,6 +1,6 @@
 import type { WCMatch } from "@/lib/supabase";
 import { flagOf } from "@/lib/flags";
-import { fmtDateShort } from "@/lib/timezone";
+import { fmtDateShort, fmtTime } from "@/lib/timezone";
 import { useTimezone } from "./TimezonePicker";
 import { Check, Play } from "lucide-react";
 
