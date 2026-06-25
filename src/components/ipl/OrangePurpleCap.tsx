@@ -111,9 +111,10 @@ function CapCard({
             </div>
             <div className="mt-1 flex items-baseline justify-between gap-3">
               <div className="min-w-0">
-                <div className="truncate text-base font-bold text-white">{emptyFallback.name}</div>
+                <PlayerLink name={emptyFallback.name} className="truncate text-base font-bold text-white block">{emptyFallback.name}</PlayerLink>
                 <div className="text-xs text-white/60">{emptyFallback.team}</div>
               </div>
+
               <div className="text-xl font-black text-white">{emptyFallback.value}</div>
             </div>
             <p className="mt-2 text-[11px] text-white/50">
