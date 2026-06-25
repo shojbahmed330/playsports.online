@@ -683,11 +683,12 @@ export type CricketPlayerProfile = {
   error: string | null;
 };
 
-function num(v: unknown): number | null {
+function numOrNull(v: unknown): number | null {
   if (v == null || v === "") return null;
   const n = typeof v === "number" ? v : parseFloat(String(v));
   return Number.isFinite(n) ? n : null;
 }
+
 
 function parseAthleteStats(raw: any): CricketCareerStat[] {
   // ESPN shapes vary. Try a few well-known shapes; fall back to empty.
