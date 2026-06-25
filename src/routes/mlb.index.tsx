@@ -55,15 +55,24 @@ function MlbToday() {
   }, [stQ.data]);
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-8 sm:space-y-10 animate-fade-in">
       {/* Today's slate */}
       <section className="space-y-3">
         <Header icon={<Flame className="size-4 text-[#d50032]" />} title={`Today — ${games.length} games`} link="/mlb/scores" linkLabel="Full scoreboard" />
+        {sbQ.isLoading && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {Array.from({ length: 3 }).map((_, i) => <CardSkeleton key={i} />)}
+          </div>
+        )}
         {live.length > 0 && (
           <div className="space-y-2">
             <SubLabel tone="red">Live now · {live.length}</SubLabel>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-              {live.map((g) => <GameCard key={g.id} game={g} linkTo={`/mlb/game/${g.id}`} />)}
+              {live.map((g, i) => (
+                <div key={g.id} className="animate-fade-in" style={{ animationDelay: `${i * 40}ms` }}>
+                  <GameCard game={g} linkTo={`/mlb/game/${g.id}`} />
+                </div>
+              ))}
             </div>
           </div>
         )}
@@ -71,7 +80,11 @@ function MlbToday() {
           <div className="space-y-2">
             <SubLabel tone="amber">Upcoming · {upcoming.length}</SubLabel>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-              {upcoming.slice(0, 6).map((g) => <GameCard key={g.id} game={g} linkTo={`/mlb/game/${g.id}`} />)}
+              {upcoming.slice(0, 6).map((g, i) => (
+                <div key={g.id} className="animate-fade-in" style={{ animationDelay: `${i * 40}ms` }}>
+                  <GameCard game={g} linkTo={`/mlb/game/${g.id}`} />
+                </div>
+              ))}
             </div>
           </div>
         )}
@@ -79,7 +92,11 @@ function MlbToday() {
           <div className="space-y-2">
             <SubLabel>Final · {finals.length}</SubLabel>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-              {finals.slice(0, 6).map((g) => <GameCard key={g.id} game={g} linkTo={`/mlb/game/${g.id}`} />)}
+              {finals.slice(0, 6).map((g, i) => (
+                <div key={g.id} className="animate-fade-in" style={{ animationDelay: `${i * 40}ms` }}>
+                  <GameCard game={g} linkTo={`/mlb/game/${g.id}`} />
+                </div>
+              ))}
             </div>
           </div>
         )}
@@ -165,5 +182,23 @@ function SubLabel({ children, tone = "default" }: { children: React.ReactNode; t
       {tone === "red" && <span className="size-1.5 rounded-full bg-red-500 animate-pulse" />}
       {children}
     </span>
+  );
+}
+
+function CardSkeleton() {
+  return (
+    <div className="rounded-2xl bg-card ring-1 ring-border p-4 animate-pulse">
+      <div className="h-3 w-20 bg-white/10 rounded mb-3" />
+      <div className="flex items-center gap-3 mb-2">
+        <div className="size-8 rounded-full bg-white/10" />
+        <div className="h-4 flex-1 bg-white/10 rounded" />
+        <div className="h-4 w-8 bg-white/10 rounded" />
+      </div>
+      <div className="flex items-center gap-3">
+        <div className="size-8 rounded-full bg-white/10" />
+        <div className="h-4 flex-1 bg-white/10 rounded" />
+        <div className="h-4 w-8 bg-white/10 rounded" />
+      </div>
+    </div>
   );
 }
