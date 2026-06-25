@@ -86,7 +86,7 @@ function MatchPage() {
   const isFinal = match.status === "post";
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen pb-16 sm:pb-0">
       <SportNav liveCount={isLive ? 1 : 0} />
 
       <section className="relative overflow-hidden border-b border-border cricket-hero">
