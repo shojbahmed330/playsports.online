@@ -356,7 +356,7 @@ function Index() {
 
             {tab === "groups" ? (
               <section key="groups-2026" className="wc-tab-content" id="fixtures">
-                <Wc2026GroupsView filter={filter} team={teamFilter} />
+                <Wc2026GroupsView filter={filter} team={teamFilter} date={dateFilter} onDateChange={setDateFilter} />
               </section>
             ) : tab === "scorers" ? (
               <section key="scorers-2026" className="wc-tab-content animate-fade-in" id="scorers">
@@ -364,9 +364,10 @@ function Index() {
               </section>
             ) : (
               <section key="knockout-2026" className="wc-tab-content" id="fixtures">
-                <Wc2026KnockoutView filter={filter} team={teamFilter} />
+                <Wc2026KnockoutView filter={filter} team={teamFilter} date={dateFilter} onDateChange={setDateFilter} />
               </section>
             )}
+
 
             <AdSlot slot="in_content" layout="in-article" />
           </>
