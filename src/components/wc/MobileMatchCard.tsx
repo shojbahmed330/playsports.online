@@ -142,8 +142,8 @@ export function MobileMatchCard({
         )}
       </div>
 
-      {/* Open match centre quick link for 2026 fixtures */}
-      {match.tournament_year === 2026 && (
+      {/* Open match centre quick link for 2026 fixtures — only real ESPN events */}
+      {match.tournament_year === 2026 && !match.predicted && match.id > 0 && (
         <Link
           to="/football/match/$id"
           params={{ id: String(match.id) }}
@@ -152,6 +152,11 @@ export function MobileMatchCard({
         >
           Open Match Centre →
         </Link>
+      )}
+      {match.predicted && (
+        <div className="text-center text-[10px] py-1.5 bg-sky-500/[0.06] text-sky-300 border-t border-sky-500/20">
+          Tap for fixture preview
+        </div>
       )}
     </button>
   );
