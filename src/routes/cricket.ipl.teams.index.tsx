@@ -9,7 +9,7 @@ const teamsQO = queryOptions({
   staleTime: 60 * 60_000,
 });
 
-export const Route = createFileRoute("/cricket/ipl/teams")({
+export const Route = createFileRoute("/cricket/ipl/teams/")({
   head: () => ({
     meta: [
       { title: "IPL Teams — Franchises, Captains & Titles" },
