@@ -309,6 +309,92 @@ export const getIplTeam = createServerFn({ method: "GET" })
     };
   });
 
+export type IplSquadPlayer = {
+  athleteId: string;
+  name: string;
+  headshot: string | null;
+  position: string | null;
+  jersey: string | null;
+  appearances: number;
+};
+
+// Derive a squad list by scanning summaries of the current season for this team.
+// ESPN cricket doesn't expose a stable roster endpoint, so we union athletes
+// who took the field for the franchise across this season's completed matches.
+export const getIplTeamSquad = createServerFn({ method: "GET" })
+  .inputValidator((d: { teamId: string; year?: number | "current" }) => ({
+    teamId: d.teamId,
+    year: d.year ?? "current" as const,
+  }))
+  .handler(async ({ data }) => {
+    const team = (franchises as typeof franchises).find((t) => t.id === data.teamId);
+    if (!team) return { players: [] as IplSquadPlayer[] };
+    const seasonId = resolveSeasonId(data.year);
+    const ck = `__ipl_squad__${seasonId}_${team.espnId}`;
+    const hit = cache.get(ck);
+    if (hit && Date.now() - hit.at < hit.ttl) return hit.data as { players: IplSquadPlayer[] };
+
+    let events: any[] = [];
+    try {
+      const raw = (await apiGet(`/${seasonId}/scoreboard`, 60_000)) as any;
+      events = raw?.events ?? [];
+    } catch {
+      return { players: [] as IplSquadPlayer[] };
+    }
+
+    const teamEvents = events
+      .filter((e) => {
+        const cs = e?.competitions?.[0]?.competitors ?? [];
+        return cs.some((c: any) => String(c?.team?.id) === team.espnId);
+      })
+      .filter((e) => e?.status?.type?.completed)
+      .map((e) => String(e.id))
+      .slice(0, 14);
+
+    const agg = new Map<string, IplSquadPlayer>();
+    const CONCURRENCY = 5;
+    for (let i = 0; i < teamEvents.length; i += CONCURRENCY) {
+      const batch = teamEvents.slice(i, i + CONCURRENCY);
+      const parts = await Promise.all(
+        batch.map(async (eid) => {
+          try { return (await apiGet(`/${seasonId}/summary?event=${eid}`, 120_000)) as any; }
+          catch { return null; }
+        }),
+      );
+      for (const raw of parts) {
+        if (!raw) continue;
+        const rosters: any[] = Array.isArray(raw?.rosters) ? raw.rosters : [];
+        for (const r of rosters) {
+          if (String(r?.team?.id) !== team.espnId) continue;
+          const list = Array.isArray(r?.roster) ? r.roster : [];
+          for (const p of list) {
+            const a = p?.athlete ?? {};
+            const aid = String(a.id ?? "");
+            if (!aid) continue;
+            const hs = a?.headshot?.href ?? (typeof a?.headshot === "string" ? a.headshot : null);
+            const existing = agg.get(aid);
+            if (existing) existing.appearances += 1;
+            else agg.set(aid, {
+              athleteId: aid,
+              name: a.displayName ?? a.fullName ?? a.shortName ?? "",
+              headshot: hs ?? null,
+              position: a?.position?.abbreviation ?? a?.position?.name ?? null,
+              jersey: a?.jersey ?? null,
+              appearances: 1,
+            });
+          }
+        }
+      }
+    }
+
+    const players = Array.from(agg.values()).sort(
+      (a, b) => b.appearances - a.appearances || a.name.localeCompare(b.name),
+    );
+    const out = { players };
+    cache.set(ck, { at: Date.now(), ttl: 10 * 60_000, data: out });
+    return out;
+  });
+
 // Orange / Purple cap — derive from finished season matches by scanning
 // per-match boxscore stats. Cached aggressively; ESPN has no season-leader
 // endpoint for IPL.
