@@ -276,12 +276,15 @@ export const getMlbTeam = createServerFn({ method: "GET" })
         }
       }
 
-      return { team, schedule, roster, error: null as string | null };
+      return { team, schedule, roster, stats, leaders, injuries, error: null as string | null };
     } catch (e) {
       return {
         team: null as MlbTeam | null,
         schedule: [] as MlbScheduleGame[],
         roster: [] as MlbRosterPlayer[],
+        stats: [] as MlbTeamStat[],
+        leaders: [] as MlbTeamLeader[],
+        injuries: [] as MlbInjury[],
         error: e instanceof Error ? e.message : "Unknown",
       };
     }
