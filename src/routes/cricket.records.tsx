@@ -3,7 +3,9 @@ import { useMemo, useState } from "react";
 import { Crown, Search } from "lucide-react";
 import { SportNav } from "@/components/sports/SportNav";
 import { CricketSubNav } from "@/components/cricket/CricketSubNav";
+import { PlayerLink } from "@/components/cricket/PlayerLink";
 import records from "@/data/cricket/records.json";
+
 
 export const Route = createFileRoute("/cricket/records")({
   head: () => ({
