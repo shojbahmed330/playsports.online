@@ -46,11 +46,12 @@ function MatchPage() {
   const q = useQuery({
     queryKey: ["cricket", "match", leagueId, id],
     queryFn: () => fn({ data: { leagueId, eventId: id } }),
-    staleTime: 15_000,
+    staleTime: 5_000,
     refetchInterval: (qq) => {
       const d = qq.state.data as { match?: { status: string } | null } | undefined;
-      return d?.match?.status === "in" ? 15_000 : false;
+      return d?.match?.status === "in" ? 10_000 : false;
     },
+    refetchOnWindowFocus: true,
   });
 
   const match = q.data?.match ?? null;
