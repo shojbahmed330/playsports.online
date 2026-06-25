@@ -276,7 +276,9 @@ export function Wc2026GroupsView({ filter = "all", team, date, onDateChange }: {
     () => filterByDateKey(wcMatchesAllFiltered, date),
     [wcMatchesAllFiltered, date],
   );
-  const wcMatches = date ? wcMatchesForDate : wcMatchesAllFiltered;
+  // Group cards always show every fixture; the date-filtered subset renders
+  // in a dedicated "Matches on this date" panel above.
+  const wcMatches = wcMatchesAllFiltered;
 
 
   const [activeMatch, setActiveMatch] = useState<WCMatch | null>(null);
@@ -304,8 +306,25 @@ export function Wc2026GroupsView({ filter = "all", team, date, onDateChange }: {
 
       {date && wcMatchesForDate.length === 0 && (
         <div className="mb-4 rounded-xl border border-sky-500/30 bg-sky-500/5 px-4 py-3 text-xs text-sky-200">
-          No matches scheduled on this date — standings shown below. Tap “Clear date” on the scrubber to see every fixture.
+          No matches scheduled on this date. All group fixtures still shown below — tap “Clear date” on the scrubber to dismiss.
         </div>
+      )}
+
+      {date && wcMatchesForDate.length > 0 && (
+        <section className="mb-6 rounded-2xl border border-sky-500/30 bg-sky-500/5 p-4">
+          <div className="flex items-center gap-2 mb-3">
+            <span className="block w-1.5 h-5 rounded-full bg-sky-400" />
+            <h3 className="text-xs font-bold uppercase tracking-[0.18em] text-sky-300">
+              Matches on this date
+            </h3>
+            <span className="text-[10px] text-sky-200/70">{wcMatchesForDate.length} fixture{wcMatchesForDate.length === 1 ? "" : "s"}</span>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {wcMatchesForDate.map((m, i) => (
+              <MatchCard key={`d-${m.id}`} match={m} round="round_of_16" index={i} onClick={() => setActiveMatch(m)} />
+            ))}
+          </div>
+        </section>
       )}
 
       {/* Mobile-only swipeable group deck */}
