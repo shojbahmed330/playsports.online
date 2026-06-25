@@ -205,7 +205,7 @@ function CricketIndex() {
 }
 
 function SeriesTile({ league, liveCount, totalCount }: { league: CricketLeague; liveCount: number; totalCount: number }) {
-  const isIpl = league.id === "ipl" || /indian premier league/i.test(league.label);
+  const isIpl = league.slug === "ipl" || league.id === "8048" || /indian premier league/i.test(league.longName);
   const className = `group relative overflow-hidden rounded-2xl p-4 bg-gradient-to-br ${league.bgGrad} border border-gray-800 hover:border-emerald-500/40 transition-all hover:-translate-y-0.5`;
   const inner = (
     <>
