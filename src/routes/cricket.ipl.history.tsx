@@ -1,9 +1,11 @@
 import { useMemo, useState } from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
-import { Trophy, Award, Search } from "lucide-react";
+import { Trophy, Award, Search, ChevronDown, Sparkles } from "lucide-react";
 import { IplPageShell } from "@/components/ipl/IplPageShell";
 import { getIplHistory } from "@/lib/ipl.functions";
+import franchises from "@/data/cricket/ipl/franchises.json";
+import auctions from "@/data/cricket/ipl/auctions.json";
 
 const qo = queryOptions({
   queryKey: ["ipl", "history"],
@@ -11,13 +13,26 @@ const qo = queryOptions({
   staleTime: 60 * 60_000,
 });
 
+type Era = { id: string; label: string; range: [number, number] };
+const ERAS: Era[] = [
+  { id: "all", label: "All Eras", range: [2008, 2099] },
+  { id: "early", label: "2008–2014", range: [2008, 2014] },
+  { id: "golden", label: "2015–2021", range: [2015, 2021] },
+  { id: "modern", label: "2022–Now", range: [2022, 2099] },
+];
+
+type AuctionHeadline = (typeof auctions.headlines)[number];
+const auctionByYear = new Map<number, AuctionHeadline>(
+  auctions.headlines.map((a) => [a.year, a]),
+);
+
 export const Route = createFileRoute("/cricket/ipl/history")({
   head: () => ({
     meta: [
-      { title: "IPL History — All Champions, Finals & Awards (2008–present)" },
-      { name: "description", content: "Every IPL final with champion, runner-up, venue, scoreline, Player of the Final and season awards." },
+      { title: "IPL History — Champions, Finals, Awards & Auctions" },
+      { name: "description", content: "Every IPL final, champion, runner-up, orange/purple cap winner, MoF and auction headline since 2008." },
       { property: "og:title", content: "IPL — Complete History" },
-      { property: "og:description", content: "Every IPL final, champion and award winner since 2008." },
+      { property: "og:description", content: "Every IPL final and award winner with era filters and a Hall of Champions." },
     ],
   }),
   loader: ({ context }) => context.queryClient.ensureQueryData(qo),
@@ -28,6 +43,8 @@ function HistoryPage() {
   const { data } = useSuspenseQuery(qo);
   const [q, setQ] = useState("");
   const [team, setTeam] = useState<string>("all");
+  const [era, setEra] = useState<string>("all");
+  const [openYear, setOpenYear] = useState<number | null>(null);
 
   const teams = useMemo(() => {
     const set = new Set<string>();
@@ -35,21 +52,91 @@ function HistoryPage() {
     return Array.from(set).sort();
   }, [data]);
 
+  // Hall of Champions: count titles per franchise
+  const hall = useMemo(() => {
+    const counts = new Map<string, { id: string; name: string; short: string; primary: string; ink: string; titles: number; years: number[] }>();
+    for (const s of data.seasons) {
+      if (!s.championId) continue;
+      const f = (franchises as any[]).find((x) => x.id === s.championId);
+      if (!f) continue;
+      let row = counts.get(f.id);
+      if (!row) {
+        row = { id: f.id, name: f.name, short: f.short, primary: f.primary, ink: f.ink, titles: 0, years: [] };
+        counts.set(f.id, row);
+      }
+      row.titles++;
+      row.years.push(s.year);
+    }
+    return Array.from(counts.values()).sort((a, b) => b.titles - a.titles);
+  }, [data]);
+
+  const eraDef = ERAS.find((e) => e.id === era)!;
   const filtered = useMemo(() => {
     const needle = q.trim().toLowerCase();
     return data.seasons.filter((s) => {
+      if (s.year < eraDef.range[0] || s.year > eraDef.range[1]) return false;
       if (team !== "all" && s.champion !== team && s.runnerUp !== team) return false;
       if (!needle) return true;
       return [String(s.year), s.champion, s.runnerUp, s.mom, s.finalVenue, s.orangeCap.player, s.purpleCap.player]
         .some((v) => v?.toLowerCase().includes(needle));
     });
-  }, [data, q, team]);
+  }, [data, q, team, eraDef]);
 
   return (
     <IplPageShell
       title="History"
       subtitle={`${filtered.length} / ${data.seasons.length} seasons`}
     >
+      {/* Hall of Champions */}
+      <section className="mb-6 overflow-hidden rounded-2xl border border-amber-300/15 bg-gradient-to-br from-amber-950/30 via-gray-900/60 to-gray-900/30 p-4">
+        <div className="mb-3 flex items-center gap-2">
+          <Trophy className="size-4 text-amber-300" />
+          <h2 className="text-sm font-black uppercase tracking-widest text-amber-200">Hall of Champions</h2>
+        </div>
+        <div className="flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          {hall.map((h) => (
+            <Link
+              key={h.id}
+              to="/cricket/ipl/teams/$teamId"
+              params={{ teamId: h.id }}
+              className="group flex shrink-0 items-center gap-2 rounded-xl px-3 py-2 ring-1 ring-white/10 transition hover:-translate-y-0.5"
+              style={{
+                background: `linear-gradient(135deg, ${h.primary} 0%, color-mix(in oklab, ${h.primary} 50%, #07080f) 100%)`,
+                color: h.ink,
+              }}
+              onClick={() => setTeam(h.name)}
+            >
+              <span className="text-[10px] font-black uppercase tracking-widest opacity-80">{h.short}</span>
+              <span className="flex items-baseline gap-0.5">
+                <span className="text-lg font-black leading-none">{h.titles}</span>
+                <span className="text-[10px] font-bold opacity-80">×</span>
+                <Trophy className="size-3 opacity-90" />
+              </span>
+              <span className="hidden sm:inline text-[10px] font-semibold opacity-85">
+                {h.years.sort().join(" · ")}
+              </span>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* Era tabs */}
+      <div className="mb-3 flex flex-wrap gap-1">
+        {ERAS.map((e) => (
+          <button
+            key={e.id}
+            type="button"
+            onClick={() => setEra(e.id)}
+            className={`rounded-full px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider transition ${
+              era === e.id ? "bg-amber-400 text-gray-950" : "bg-white/5 text-white/70 hover:bg-white/10"
+            }`}
+          >
+            {e.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Search + team filter */}
       <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center">
         <div className="relative flex-1">
           <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-white/40" />
@@ -75,42 +162,66 @@ function HistoryPage() {
       )}
 
       <ul className="grid gap-4">
-        {filtered.map((s) => (
-          <li
-            key={s.year}
-            className="overflow-hidden rounded-2xl border border-white/5 bg-gradient-to-br from-amber-950/40 via-gray-900/70 to-gray-900/40 shadow-xl"
-          >
-            <header className="grid grid-cols-[60px_minmax(0,1fr)_auto] items-center gap-3 border-b border-white/5 px-4 py-3">
-              <div className="text-2xl font-black text-amber-300">{s.year}</div>
-              <div className="min-w-0">
-                <div className="flex items-center gap-2 text-sm font-bold text-white">
-                  <Trophy className="size-4 text-amber-300" />
-                  <span className="truncate">{s.champion}</span>
+        {filtered.map((s) => {
+          const open = openYear === s.year;
+          const auction = auctionByYear.get(s.year);
+          return (
+            <li
+              key={s.year}
+              className="overflow-hidden rounded-2xl border border-white/5 bg-gradient-to-br from-amber-950/40 via-gray-900/70 to-gray-900/40 shadow-xl"
+            >
+              <header className="grid grid-cols-[60px_minmax(0,1fr)_auto] items-center gap-3 border-b border-white/5 px-4 py-3">
+                <div className="text-2xl font-black text-amber-300">{s.year}</div>
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2 text-sm font-bold text-white">
+                    <Trophy className="size-4 text-amber-300" />
+                    <span className="truncate">{s.champion}</span>
+                  </div>
+                  <div className="truncate text-xs text-white/60">def. {s.runnerUp}</div>
                 </div>
-                <div className="truncate text-xs text-white/60">def. {s.runnerUp}</div>
-              </div>
-              <span className="shrink-0 rounded-full bg-amber-400/15 px-2.5 py-1 text-[10px] font-black text-amber-200 ring-1 ring-amber-300/30">
-                CHAMPION
-              </span>
-            </header>
+                <span className="shrink-0 rounded-full bg-amber-400/15 px-2.5 py-1 text-[10px] font-black text-amber-200 ring-1 ring-amber-300/30">
+                  CHAMPION
+                </span>
+              </header>
 
-            <div className="grid gap-3 px-4 py-3 sm:grid-cols-2">
-              <div>
-                <div className="text-[10px] font-black uppercase tracking-widest text-white/40">Final</div>
-                <p className="mt-1 text-sm text-white/90">{s.finalScore}</p>
-                <p className="mt-0.5 text-[11px] text-white/50">{s.finalVenue}</p>
-                <p className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-white/[0.06] px-2.5 py-1 text-[11px] font-semibold text-white/80 ring-1 ring-white/10">
-                  <Award className="size-3" /> Player of the Final: {s.mom}
-                </p>
+              <div className="grid gap-3 px-4 py-3 sm:grid-cols-2">
+                <div>
+                  <div className="text-[10px] font-black uppercase tracking-widest text-white/40">Final</div>
+                  <p className="mt-1 text-sm text-white/90">{s.finalScore}</p>
+                  <p className="mt-0.5 text-[11px] text-white/50">{s.finalVenue}</p>
+                  <p className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-white/[0.06] px-2.5 py-1 text-[11px] font-semibold text-white/80 ring-1 ring-white/10">
+                    <Award className="size-3" /> Player of the Final: {s.mom}
+                  </p>
+                </div>
+
+                <dl className="grid grid-cols-2 gap-2 text-xs">
+                  <AwardCard label="Orange Cap" name={s.orangeCap.player} team={s.orangeCap.team} value={`${s.orangeCap.runs} runs`} className="ipl-orange-cap" />
+                  <AwardCard label="Purple Cap" name={s.purpleCap.player} team={s.purpleCap.team} value={`${s.purpleCap.wickets} wkts`} className="ipl-purple-cap" />
+                </dl>
               </div>
 
-              <dl className="grid grid-cols-2 gap-2 text-xs">
-                <AwardCard label="Orange Cap" name={s.orangeCap.player} team={s.orangeCap.team} value={`${s.orangeCap.runs} runs`} className="ipl-orange-cap" />
-                <AwardCard label="Purple Cap" name={s.purpleCap.player} team={s.purpleCap.team} value={`${s.purpleCap.wickets} wkts`} className="ipl-purple-cap" />
-              </dl>
-            </div>
-          </li>
-        ))}
+              {/* Expandable: auction headlines */}
+              {auction && (
+                <div className="border-t border-white/5">
+                  <button
+                    type="button"
+                    onClick={() => setOpenYear(open ? null : s.year)}
+                    className="flex w-full items-center justify-between gap-2 px-4 py-2.5 text-[11px] font-bold uppercase tracking-widest text-white/60 hover:bg-white/[0.03]"
+                  >
+                    <span className="flex items-center gap-1.5"><Sparkles className="size-3.5 text-amber-300" /> Auction headlines</span>
+                    <ChevronDown className={`size-4 transition-transform ${open ? "rotate-180" : ""}`} />
+                  </button>
+                  {open && (
+                    <div className="grid gap-2 px-4 pb-4 sm:grid-cols-2">
+                      <AuctionCard tone="amber" label="Most expensive" h={auction.mostExpensive} />
+                      <AuctionCard tone="violet" label="Surprise pick" h={auction.surprise} />
+                    </div>
+                  )}
+                </div>
+              )}
+            </li>
+          );
+        })}
       </ul>
     </IplPageShell>
   );
@@ -125,6 +236,24 @@ function AwardCard({ label, name, team, value, className }: { label: string; nam
         <span>{team}</span>
         <span className="font-black">{value}</span>
       </div>
+    </div>
+  );
+}
+
+function AuctionCard({ tone, label, h }: { tone: "amber" | "violet"; label: string; h: { player: string; team: string; price: string; note?: string } }) {
+  const ring = tone === "amber" ? "ring-amber-300/30 bg-amber-400/10" : "ring-violet-300/25 bg-violet-500/10";
+  const accent = tone === "amber" ? "text-amber-200" : "text-violet-200";
+  return (
+    <div className={`rounded-lg p-3 ring-1 ${ring}`}>
+      <div className={`text-[9px] font-black uppercase tracking-widest ${accent}`}>{label}</div>
+      <div className="mt-1 flex items-baseline justify-between gap-2">
+        <div className="min-w-0">
+          <div className="truncate text-sm font-bold text-white">{h.player}</div>
+          <div className="truncate text-[11px] text-white/55">{h.team}</div>
+        </div>
+        <div className={`shrink-0 text-base font-black ${accent}`}>{h.price}</div>
+      </div>
+      {h.note && <div className="mt-1 text-[11px] text-white/55">{h.note}</div>}
     </div>
   );
 }

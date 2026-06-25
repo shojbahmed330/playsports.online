@@ -1,0 +1,77 @@
+{
+  "csk": [
+    { "name": "MS Dhoni", "years": "2008–2015, 2018–2023, 2025", "titles": 5 },
+    { "name": "Suresh Raina", "years": "2014 (interim)", "titles": 0 },
+    { "name": "Ravindra Jadeja", "years": "2022", "titles": 0 },
+    { "name": "Ruturaj Gaikwad", "years": "2024–present", "titles": 0 }
+  ],
+  "mi": [
+    { "name": "Sachin Tendulkar", "years": "2008, 2010–2011", "titles": 0 },
+    { "name": "Harbhajan Singh", "years": "2009, 2012", "titles": 0 },
+    { "name": "Ricky Ponting", "years": "2013 (early)", "titles": 0 },
+    { "name": "Rohit Sharma", "years": "2013–2023", "titles": 5 },
+    { "name": "Hardik Pandya", "years": "2024–present", "titles": 0 }
+  ],
+  "kkr": [
+    { "name": "Sourav Ganguly", "years": "2008–2010", "titles": 0 },
+    { "name": "Gautam Gambhir", "years": "2011–2017", "titles": 2 },
+    { "name": "Dinesh Karthik", "years": "2018–2019", "titles": 0 },
+    { "name": "Eoin Morgan", "years": "2020–2021", "titles": 0 },
+    { "name": "Shreyas Iyer", "years": "2022–2024", "titles": 1 },
+    { "name": "Ajinkya Rahane", "years": "2025–present", "titles": 0 }
+  ],
+  "rcb": [
+    { "name": "Rahul Dravid", "years": "2008", "titles": 0 },
+    { "name": "Kevin Pietersen / Anil Kumble", "years": "2009", "titles": 0 },
+    { "name": "Daniel Vettori", "years": "2010–2011", "titles": 0 },
+    { "name": "Virat Kohli", "years": "2013–2021", "titles": 0 },
+    { "name": "Faf du Plessis", "years": "2022–2024", "titles": 0 },
+    { "name": "Rajat Patidar", "years": "2025–present", "titles": 1 }
+  ],
+  "rr": [
+    { "name": "Shane Warne", "years": "2008–2011", "titles": 1 },
+    { "name": "Rahul Dravid", "years": "2012–2013", "titles": 0 },
+    { "name": "Shane Watson", "years": "2014–2015", "titles": 0 },
+    { "name": "Ajinkya Rahane", "years": "2018, 2019", "titles": 0 },
+    { "name": "Steve Smith", "years": "2019, 2020", "titles": 0 },
+    { "name": "Sanju Samson", "years": "2021–present", "titles": 0 }
+  ],
+  "srh": [
+    { "name": "Adam Gilchrist", "years": "2008–2010 (Deccan)", "titles": 0 },
+    { "name": "Kumar Sangakkara", "years": "2011–2012", "titles": 0 },
+    { "name": "Cameron White / Shikhar Dhawan", "years": "2013", "titles": 0 },
+    { "name": "David Warner", "years": "2015–2019", "titles": 1 },
+    { "name": "Kane Williamson", "years": "2018, 2022", "titles": 0 },
+    { "name": "Aiden Markram", "years": "2023", "titles": 0 },
+    { "name": "Pat Cummins", "years": "2024–present", "titles": 0 }
+  ],
+  "dc": [
+    { "name": "Virender Sehwag", "years": "2008–2012", "titles": 0 },
+    { "name": "Mahela Jayawardene", "years": "2013", "titles": 0 },
+    { "name": "Kevin Pietersen", "years": "2014", "titles": 0 },
+    { "name": "Zaheer Khan / Karun Nair", "years": "2016–2017", "titles": 0 },
+    { "name": "Shreyas Iyer", "years": "2018–2021", "titles": 0 },
+    { "name": "Rishabh Pant", "years": "2021–2024", "titles": 0 },
+    { "name": "Axar Patel", "years": "2025–present", "titles": 0 }
+  ],
+  "pbks": [
+    { "name": "Yuvraj Singh", "years": "2008", "titles": 0 },
+    { "name": "Kumar Sangakkara", "years": "2009", "titles": 0 },
+    { "name": "Adam Gilchrist", "years": "2011–2013", "titles": 0 },
+    { "name": "George Bailey", "years": "2014", "titles": 0 },
+    { "name": "Virender Sehwag", "years": "2014 (interim)", "titles": 0 },
+    { "name": "R Ashwin", "years": "2018–2019", "titles": 0 },
+    { "name": "KL Rahul", "years": "2020–2021", "titles": 0 },
+    { "name": "Mayank Agarwal", "years": "2022", "titles": 0 },
+    { "name": "Shikhar Dhawan", "years": "2023–2024", "titles": 0 },
+    { "name": "Shreyas Iyer", "years": "2025–present", "titles": 0 }
+  ],
+  "gt": [
+    { "name": "Hardik Pandya", "years": "2022–2023", "titles": 1 },
+    { "name": "Shubman Gill", "years": "2024–present", "titles": 0 }
+  ],
+  "lsg": [
+    { "name": "KL Rahul", "years": "2022–2024", "titles": 0 },
+    { "name": "Rishabh Pant", "years": "2025–present", "titles": 0 }
+  ]
+}

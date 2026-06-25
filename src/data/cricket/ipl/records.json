@@ -30,5 +30,22 @@
     { "label": "Most catches (fielder)", "player": "Suresh Raina", "team": "CSK", "value": "109", "context": "All-time" },
     { "label": "Most stumpings", "player": "MS Dhoni", "team": "CSK", "value": "42", "context": "All-time" },
     { "label": "Most Player of the Match", "player": "AB de Villiers", "team": "RCB", "value": "25", "context": "All-time" }
+  ],
+  "partnerships": [
+    { "label": "Highest partnership (any wicket)", "player": "Virat Kohli & AB de Villiers", "team": "RCB", "value": "229*", "context": "2nd wkt vs GL, 2016" },
+    { "label": "Highest 1st-wicket stand", "player": "Chris Gayle & Virender Sehwag", "team": "RCB / PBKS", "value": "176", "context": "Joint record" },
+    { "label": "Highest 3rd-wicket stand", "player": "Shaun Marsh & David Hussey", "team": "PBKS", "value": "206", "context": "vs RCB, 2011" },
+    { "label": "Highest 4th-wicket stand", "player": "Travis Head & Heinrich Klaasen", "team": "SRH", "value": "184", "context": "vs RCB, 2024" },
+    { "label": "Highest 5th-wicket stand", "player": "Kieron Pollard & Krunal Pandya", "team": "MI", "value": "129*", "context": "vs RCB, 2019" },
+    { "label": "Most century partnerships", "player": "Virat Kohli & AB de Villiers", "team": "RCB", "value": "13", "context": "All-time pair" }
+  ],
+  "captaincy": [
+    { "label": "Most matches as captain", "player": "MS Dhoni", "team": "CSK", "value": "240+", "context": "CSK & RPS combined" },
+    { "label": "Most wins as captain", "player": "MS Dhoni", "team": "CSK", "value": "140+", "context": "All-time leader" },
+    { "label": "Most titles as captain", "player": "MS Dhoni & Rohit Sharma", "team": "CSK / MI", "value": "5 each", "context": "All-time" },
+    { "label": "Best win-rate (min 30 games)", "player": "Hardik Pandya", "team": "GT/MI", "value": "≈63%", "context": "Titans years skew average" },
+    { "label": "Youngest title-winning captain", "player": "Shreyas Iyer", "team": "KKR", "value": "29 yrs", "context": "2024 season" },
+    { "label": "Most playoff appearances", "player": "MS Dhoni", "team": "CSK", "value": "12", "context": "All-time" }
   ]
 }
+
