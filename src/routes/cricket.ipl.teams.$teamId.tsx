@@ -1,28 +1,31 @@
 import { useMemo, useState } from "react";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useSuspenseQuery, useQuery, queryOptions } from "@tanstack/react-query";
-import { MapPin, Crown } from "lucide-react";
+import { MapPin, Crown, Calendar } from "lucide-react";
 import { IplPageShell } from "@/components/ipl/IplPageShell";
 import { CricketMatchCard } from "@/components/cricket/CricketMatchCard";
 import { CricketPlayerSheet } from "@/components/cricket/CricketPlayerSheet";
 import { toCricketMatch } from "@/components/ipl/toCricketMatch";
-import { getIplTeam, getIplTeamSquad } from "@/lib/ipl.functions";
+import { getIplTeam, getIplTeamSquad, IPL_SEASON_IDS } from "@/lib/ipl.functions";
 import history from "@/data/cricket/ipl/history.json";
 import captainsData from "@/data/cricket/ipl/captains.json";
 
-const qo = (teamId: string) =>
+type SeasonYear = number | "current";
+
+const qo = (teamId: string, year: SeasonYear) =>
   queryOptions({
-    queryKey: ["ipl", "team", teamId],
-    queryFn: () => getIplTeam({ data: { teamId } }),
+    queryKey: ["ipl", "team", teamId, year],
+    queryFn: () => getIplTeam({ data: { teamId, year } }),
     staleTime: 60_000,
   });
 
-const squadQo = (teamId: string) =>
+const squadQo = (teamId: string, year: SeasonYear) =>
   queryOptions({
-    queryKey: ["ipl", "team", teamId, "squad"],
-    queryFn: () => getIplTeamSquad({ data: { teamId } }),
+    queryKey: ["ipl", "team", teamId, "squad", year],
+    queryFn: () => getIplTeamSquad({ data: { teamId, year } }),
     staleTime: 5 * 60_000,
   });
+
 
 export const Route = createFileRoute("/cricket/ipl/teams/$teamId")({
   loader: async ({ context, params }) => {
