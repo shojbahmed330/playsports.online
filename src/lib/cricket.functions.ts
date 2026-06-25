@@ -739,29 +739,56 @@ export const getCricketPlayer = createServerFn({ method: "GET" })
   .inputValidator((d: { athleteId: string; leagueId?: string }) => d)
   .handler(async ({ data }) => {
     try {
-      const league = data.leagueId ?? "8048";
-      const raw = (await apiGet(`/${league}/athletes/${data.athleteId}`, 60 * 60_000)) as any;
+      // ESPN's working public athlete endpoint (cricket): site.web.api common/v3
+      const url = `https://site.web.api.espn.com/apis/common/v3/sports/cricket/athletes/${data.athleteId}`;
+      const res = await fetch(url, { headers: { accept: "application/json" } });
+      if (!res.ok) {
+        return {
+          profile: null as CricketPlayerProfile | null,
+          error: `ESPN ${res.status}`,
+        };
+      }
+      const raw = (await res.json()) as any;
       const a = raw?.athlete ?? raw ?? {};
       const team = a?.team ?? {};
-      const dob = a.dateOfBirth ?? null;
+      const bat = Array.isArray(a.batStyle) ? a.batStyle[0]?.description : a.batStyle?.description ?? a.batStyle;
+      const bowl = Array.isArray(a.bowlStyle) ? a.bowlStyle[0]?.description : a.bowlStyle?.description ?? a.bowlStyle;
+      // displayDOB is dd/mm/yyyy
+      let dob: string | null = null;
+      if (typeof a.displayDOB === "string" && /^\d{2}\/\d{2}\/\d{4}$/.test(a.displayDOB)) {
+        const [dd, mm, yy] = a.displayDOB.split("/");
+        dob = `${yy}-${mm}-${dd}`;
+      } else if (a.dateOfBirth) {
+        dob = String(a.dateOfBirth);
+      }
+      // Stats endpoint (often empty for cricket, but try)
+      let career: CricketCareerStat[] = [];
+      try {
+        const sres = await fetch(`https://site.web.api.espn.com/apis/common/v3/sports/cricket/athletes/${data.athleteId}/stats`);
+        if (sres.ok) {
+          const sjson = await sres.json();
+          career = parseAthleteStats(sjson);
+        }
+      } catch { /* ignore */ }
+
       const profile: CricketPlayerProfile = {
         id: String(a.id ?? data.athleteId),
         name: a.displayName ?? a.fullName ?? "",
         shortName: a.shortName ?? a.lastName ?? "",
-        headshot: a.headshot?.href ?? a.headshot ?? null,
-        team: team.displayName ?? team.name ?? null,
-        teamLogo: team.logo ?? team.logos?.[0]?.href ?? null,
-        country: a.citizenship ?? a.birthPlace?.country ?? null,
+        headshot: a.headshot?.href ?? null,
+        team: team.displayName ?? team.name ?? team.location ?? null,
+        teamLogo: team.logos?.[0]?.href ?? team.logo ?? null,
+        country: team.displayName ?? team.location ?? a.citizenship ?? null,
         flag: a.flag?.href ?? null,
         position: a.position?.displayName ?? a.position?.name ?? null,
-        batStyle: a.batting?.style ?? a.style?.batting ?? null,
-        bowlStyle: a.bowling?.style ?? a.style?.bowling ?? null,
+        batStyle: bat ?? null,
+        bowlStyle: bowl ?? null,
         dob,
-        age: ageFromDob(dob),
+        age: typeof a.age === "number" ? a.age : ageFromDob(dob),
         birthPlace: [a.birthPlace?.city, a.birthPlace?.country].filter(Boolean).join(", ") || null,
         jersey: a.jersey ?? null,
         description: a.description ?? a.bio ?? null,
-        career: parseAthleteStats(raw),
+        career,
         error: null,
       };
       return { profile };
@@ -772,6 +799,7 @@ export const getCricketPlayer = createServerFn({ method: "GET" })
       };
     }
   });
+
 
 
 // ───────── Rankings (bundled fallback) ─────────
