@@ -11,6 +11,16 @@ import { GameGridSkeleton } from "@/components/sports/Skeletons";
 type Filter = "all" | "live" | "upcoming" | "final";
 
 export const Route = createFileRoute("/mlb/scores")({
+  head: () => ({
+    meta: [
+      { title: "MLB Scores & Schedule — Live, Upcoming, Final" },
+      { name: "description", content: "Live MLB scores, today's schedule, and final results across the league with broadcast info and quick filters." },
+      { property: "og:title", content: "MLB Scores & Schedule" },
+      { property: "og:description", content: "Live MLB scores and today's schedule." },
+      { property: "og:url", content: "https://allsportslive.lovable.app/mlb/scores" },
+    ],
+    links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/mlb/scores" }],
+  }),
   component: ScoresPage,
 });
 

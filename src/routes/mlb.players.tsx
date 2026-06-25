@@ -6,6 +6,16 @@ import { getMlbLeaders, searchMlbPlayers } from "@/lib/mlb.functions";
 import { LeaderBoard } from "@/components/mlb/LeaderBoard";
 
 export const Route = createFileRoute("/mlb/players")({
+  head: () => ({
+    meta: [
+      { title: "MLB Leaders & Player Search — Batting · Pitching" },
+      { name: "description", content: "MLB batting and pitching leaders by season with Top 10/25 toggles, plus player search across the league." },
+      { property: "og:title", content: "MLB Leaders & Player Search" },
+      { property: "og:description", content: "Batting and pitching leaders by season, plus player search." },
+      { property: "og:url", content: "https://allsportslive.lovable.app/mlb/players" },
+    ],
+    links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/mlb/players" }],
+  }),
   component: LeadersPage,
 });
 

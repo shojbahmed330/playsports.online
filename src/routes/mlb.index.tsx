@@ -11,6 +11,16 @@ import { AdSlot } from "@/components/ads/AdSlot";
 import { todayYmd } from "@/components/sports/DateScrubber";
 
 export const Route = createFileRoute("/mlb/")({
+  head: () => ({
+    meta: [
+      { title: "MLB Today — Live Scores, Standings, Leaders, News" },
+      { name: "description", content: "Today's MLB games, standings snapshot, batting and pitching leaders, and the latest baseball headlines in one hub." },
+      { property: "og:title", content: "MLB Today — Live Scores, Standings, Leaders" },
+      { property: "og:description", content: "Today's MLB games, standings, leaders and headlines." },
+      { property: "og:url", content: "https://allsportslive.lovable.app/mlb" },
+    ],
+    links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/mlb" }],
+  }),
   component: MlbToday,
 });
 

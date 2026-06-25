@@ -10,7 +10,11 @@ export const Route = createFileRoute("/mlb/standings")({
     meta: [
       { title: "MLB Standings — AL · NL · Wild Card" },
       { name: "description", content: "Live MLB standings by Division, League, and Wild Card with GB, PCT, L10, streak, run differential, and playoff probability." },
+      { property: "og:title", content: "MLB Standings — AL · NL · Wild Card" },
+      { property: "og:description", content: "Live MLB standings with playoff probability and run differential." },
+      { property: "og:url", content: "https://allsportslive.lovable.app/mlb/standings" },
     ],
+    links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/mlb/standings" }],
   }),
   component: StandingsPage,
 });
