@@ -90,6 +90,21 @@ function buildTeamGroup(groups: Wc2026Group[]): Map<string, string> {
   return m;
 }
 
+// alias-key → canonical display name (from standings), so fixtures and
+// curated videos all render the same team label (e.g. always "South Korea",
+// never a mix of "Korea Republic" / "South Korea" / "korea").
+function buildCanonicalName(groups: Wc2026Group[]): Map<string, string> {
+  const m = new Map<string, string>();
+  for (const g of groups) for (const r of g.rows) m.set(aliasKey(r.team.name), r.team.name);
+  return m;
+}
+
+// Sorted alias-pair key — used to dedupe ESPN fixtures vs curated videos
+// regardless of which spelling each side uses.
+function aliasPairKey(a: string, b: string): string {
+  return [aliasKey(a), aliasKey(b)].sort().join("|");
+}
+
 function titleCase(s: string) {
   return s.replace(/\b\w/g, (c) => c.toUpperCase());
 }
@@ -98,6 +113,7 @@ function toWcMatches(
   fixtures: Wc2026Fixture[],
   videoMap: Map<string, string> | undefined,
   teamGroup: Map<string, string>,
+  canonName: Map<string, string>,
 ): WCMatch[] {
   return fixtures.map((f, i) => {
     // Fix ESPN's generic "Group Stage"/"Other" → real "Group X" using standings.
@@ -110,13 +126,15 @@ function toWcMatches(
       const ga = teamGroup.get(aliasKey(f.away.name));
       if (gh && gh === ga) round = gh;
     }
+    const home = canonName.get(aliasKey(f.home.name)) ?? f.home.name;
+    const away = canonName.get(aliasKey(f.away.name)) ?? f.away.name;
     return {
       id: f.id,
       tournament_year: 2026,
       round,
       match_number: i + 1,
-      home_team: f.home.name,
-      away_team: f.away.name,
+      home_team: home,
+      away_team: away,
       home_score: f.home.goals,
       away_score: f.away.goals,
       home_score_pen: null,
@@ -134,30 +152,33 @@ function toWcMatches(
 function synthGroupFixturesFromVideos(
   videoMap: Map<string, string> | undefined,
   teamGroup: Map<string, string>,
+  canonName: Map<string, string>,
   existing: WCMatch[],
 ): WCMatch[] {
   if (!videoMap || teamGroup.size === 0) return [];
-  // Reverse lookup so we can render official display names from standings.
-  const aliasToDisplay = new Map<string, string>();
-  for (const [aKey, _g] of teamGroup) aliasToDisplay.set(aKey, aKey);
-  const seen = new Set(existing.map((m) => videoKey(m.home_team, m.away_team)));
+  // Dedupe by sorted alias-pair so "Korea Republic vs Mexico" matches
+  // "south korea|mexico" and we don't duplicate.
+  const seen = new Set(existing.map((m) => aliasPairKey(m.home_team, m.away_team)));
   const out: WCMatch[] = [];
   let i = 0;
   for (const [k, url] of videoMap.entries()) {
-    if (seen.has(k)) continue;
     const [a, b] = k.split("|");
     if (!a || !b) continue;
+    const pairKey = aliasPairKey(a, b);
+    if (seen.has(pairKey)) continue;
     const ga = teamGroup.get(aliasKey(a));
     const gb = teamGroup.get(aliasKey(b));
     if (!ga || ga !== gb) continue; // skip non-group pairs / unknown teams
-    seen.add(k);
+    seen.add(pairKey);
+    const home = canonName.get(aliasKey(a)) ?? titleCase(a);
+    const away = canonName.get(aliasKey(b)) ?? titleCase(b);
     out.push({
       id: -5000 - i,
       tournament_year: 2026,
       round: ga,
       match_number: 100 + i,
-      home_team: titleCase(a),
-      away_team: titleCase(b),
+      home_team: home,
+      away_team: away,
       home_score: null,
       away_score: null,
       home_score_pen: null,
@@ -230,11 +251,15 @@ export function Wc2026GroupsView({ filter = "all", team }: { filter?: FootballFi
     () => buildTeamGroup(sQ.data?.groups ?? []),
     [sQ.data],
   );
+  const canonName = useMemo(
+    () => buildCanonicalName(sQ.data?.groups ?? []),
+    [sQ.data],
+  );
   const wcMatchesAll = useMemo(() => {
-    const fromEspn = toWcMatches(fQ.data?.fixtures ?? [], vQ.data, teamGroup);
-    const synth = synthGroupFixturesFromVideos(vQ.data, teamGroup, fromEspn);
+    const fromEspn = toWcMatches(fQ.data?.fixtures ?? [], vQ.data, teamGroup, canonName);
+    const synth = synthGroupFixturesFromVideos(vQ.data, teamGroup, canonName, fromEspn);
     return [...fromEspn, ...synth];
-  }, [fQ.data, vQ.data, teamGroup]);
+  }, [fQ.data, vQ.data, teamGroup, canonName]);
   const { teams: myTeams } = useMyTeams();
   const wcMatches = useMemo(
     () => applyFilter(wcMatchesAll, filter, team, myTeams),
@@ -325,9 +350,13 @@ export function Wc2026KnockoutView({ filter = "all", team }: { filter?: Football
     () => buildTeamGroup(sQ.data?.groups ?? []),
     [sQ.data],
   );
+  const canonName = useMemo(
+    () => buildCanonicalName(sQ.data?.groups ?? []),
+    [sQ.data],
+  );
   const wcMatchesRaw = useMemo(
-    () => toWcMatches(fQ.data?.fixtures ?? [], vQ.data, teamGroup),
-    [fQ.data, vQ.data, teamGroup],
+    () => toWcMatches(fQ.data?.fixtures ?? [], vQ.data, teamGroup, canonName),
+    [fQ.data, vQ.data, teamGroup, canonName],
   );
   const { teams: myTeams } = useMyTeams();
   const wcMatches = useMemo(
