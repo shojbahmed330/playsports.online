@@ -144,6 +144,10 @@ function ProfileBody({ player }: { player: { name: string; country: string } }) 
       </div>
 
       {byYear.length > 0 && (
+        <CareerSparkline data={byYear.map(([year, r]) => ({ year, goals: r.goals }))} />
+      )}
+
+      {byYear.length > 0 && (
         <div className="rounded-xl border border-border overflow-hidden">
           <div className="grid grid-cols-5 gap-2 px-3 py-2 bg-muted/50 text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">
             <div>Year</div>
@@ -171,7 +175,16 @@ function ProfileBody({ player }: { player: { name: string; country: string } }) 
         </div>
       )}
 
-      <div className="flex items-center gap-2 pt-2">
+      <div className="flex flex-wrap items-center gap-2 pt-2">
+        <Button
+          onClick={toggleCompare}
+          variant={inCompare ? "default" : "outline"}
+          size="sm"
+          className="gap-1.5"
+        >
+          {inCompare ? <Check className="size-3.5" /> : <Plus className="size-3.5" />}
+          {inCompare ? "In Compare" : "Add to Compare"}
+        </Button>
         <Button onClick={share} variant="outline" size="sm" className="gap-1.5">
           <Share2 className="size-3.5" /> Copy link
         </Button>
@@ -184,6 +197,7 @@ function ProfileBody({ player }: { player: { name: string; country: string } }) 
           Wikipedia <ExternalLink className="size-3" />
         </a>
       </div>
+
     </div>
   );
 }
