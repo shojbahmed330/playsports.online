@@ -161,7 +161,7 @@ function Leaderboard({ title, data, kind }: { title: string; data: Stat[]; kind:
               "bg-gray-800 text-gray-400"
             }`}>{i + 1}</div>
             <div className="flex-1 min-w-0">
-              <div className="font-semibold truncate">{p.player}</div>
+              <PlayerLink name={p.player} className="font-semibold truncate block">{p.player}</PlayerLink>
               <div className="text-[11px] text-muted-foreground truncate">{p.country} · {p.matches} matches · avg {p.avg}</div>
             </div>
             <div className="text-right tabular-nums shrink-0">
