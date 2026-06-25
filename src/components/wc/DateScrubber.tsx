@@ -1,31 +1,25 @@
 import { useEffect, useMemo, useRef } from "react";
-import { CalendarDays, Dot, Globe } from "lucide-react";
-import { userTimezone } from "@/lib/time";
+import { CalendarDays, Dot } from "lucide-react";
 import type { WCMatch } from "@/lib/supabase";
+import { dateKeyInTz, fmtDateChip } from "@/lib/timezone";
+import { TimezonePicker, useTimezone } from "./TimezonePicker";
 
-// YYYY-MM-DD in *local* time so chips match what the user sees on each card.
+// YYYY-MM-DD in the *active timezone* so chips match what the user sees on
+// each card. Re-keyed when the user switches timezone via useTimezone().
 function dateKey(iso: string | null | undefined): string | null {
-  if (!iso) return null;
-  const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return null;
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
-  return `${y}-${m}-${day}`;
+  return dateKeyInTz(iso);
 }
 
 function todayKey(): string {
-  return dateKey(new Date().toISOString())!;
+  return dateKeyInTz(new Date())!;
 }
 
 function fmtChip(key: string): { weekday: string; day: string; month: string } {
+  // Build a midday-UTC date that the formatter renders into the same Y-M-D
+  // in the active tz (avoids edge-of-day wrap).
   const [y, m, d] = key.split("-").map(Number);
-  const date = new Date(y, m - 1, d);
-  return {
-    weekday: date.toLocaleDateString(undefined, { weekday: "short" }).toUpperCase(),
-    day: String(date.getDate()),
-    month: date.toLocaleDateString(undefined, { month: "short" }).toUpperCase(),
-  };
+  const noon = new Date(Date.UTC(y, m - 1, d, 12, 0, 0));
+  return fmtDateChip(noon) ?? { weekday: "", day: String(d), month: "" };
 }
 
 export interface DateScrubberProps {
@@ -36,6 +30,7 @@ export interface DateScrubberProps {
 }
 
 export function DateScrubber({ matches, value, onChange, className = "" }: DateScrubberProps) {
+  const tz = useTimezone(); // re-render when user switches timezone
   const { dates, countByDate, livePred } = useMemo(() => {
     const map = new Map<string, number>();
     const live = new Set<string>();
@@ -52,7 +47,7 @@ export function DateScrubber({ matches, value, onChange, className = "" }: DateS
     }
     const sorted = Array.from(map.keys()).sort();
     return { dates: sorted, countByDate: map, livePred: live };
-  }, [matches]);
+  }, [matches, tz]);
 
   const today = todayKey();
   const scrollerRef = useRef<HTMLDivElement | null>(null);
