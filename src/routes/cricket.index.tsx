@@ -61,6 +61,18 @@ function CricketIndex() {
     return { live, today, upcoming, finished, now };
   }, [allMatches]);
 
+  const internationals = useMemo(() => {
+    const now = Date.now();
+    const bil = allMatches.filter((m) => m.kind === "bilateral");
+    const live = bil.filter((m) => m.status === "in");
+    const next = bil
+      .filter((m) => m.status === "pre" && m.startTs > now)
+      .sort((a, b) => a.startTs - b.startTs)
+      .slice(0, 3);
+    return { all: bil, live, next };
+  }, [allMatches]);
+
+
   return (
     <div className="min-h-screen">
       <SportNav liveCount={liveAll} />
