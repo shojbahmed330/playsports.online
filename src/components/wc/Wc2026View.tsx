@@ -306,7 +306,7 @@ export function Wc2026GroupsView({ filter = "all", team, date, onDateChange }: {
 
       {date && wcMatchesForDate.length === 0 && (
         <div className="mb-4 rounded-xl border border-sky-500/30 bg-sky-500/5 px-4 py-3 text-xs text-sky-200">
-          No matches scheduled on this date — standings shown below. Tap “Clear date” on the scrubber to see every fixture.
+          No matches scheduled on this date. All group fixtures still shown below — tap “Clear date” on the scrubber to dismiss.
         </div>
       )}
 
