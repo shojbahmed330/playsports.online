@@ -242,6 +242,3 @@ function InfoCard({ icon, label, children }: { icon: React.ReactNode; label: str
   );
 }
 
-// type helper for GameInfo
-type GameData = NonNullable<Awaited<ReturnType<typeof getMlbGame>>["summary"]>;
-function useGameData(): GameData { return undefined as unknown as GameData; }
