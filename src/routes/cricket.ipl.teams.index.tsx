@@ -48,14 +48,13 @@ function TeamsPage() {
                 <h2 className="mt-1 truncate text-lg font-black leading-tight">{t.name}</h2>
                 <div className="mt-0.5 text-xs opacity-80">{t.city}</div>
               </div>
-              {t.logo && (
-                <img
-                  src={t.logo}
-                  alt=""
-                  className="h-14 w-14 shrink-0 rounded-lg bg-black/20 object-contain p-1.5 ring-1 ring-white/20"
-                  loading="lazy"
-                />
-              )}
+              <TeamCrest
+                src={t.logo}
+                abbr={t.short}
+                name={t.name}
+                className="h-14 w-14 shrink-0 bg-black/20 p-1.5 ring-1 ring-white/20 rounded-lg"
+              />
+
             </div>
 
             <dl className="mt-4 grid grid-cols-2 gap-2 text-[11px]">
