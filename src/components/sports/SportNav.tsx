@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Trophy, ShieldCheck } from "lucide-react";
+import { Trophy, ShieldCheck, Users } from "lucide-react";
 import { SPORT_LIST } from "@/lib/sports-config";
 import { useAuth } from "@/hooks/use-auth";
 
@@ -13,11 +13,12 @@ type Tab = {
   accent: string;
 };
 
+// Players is intentionally NOT in the sport tabs — it's a cross-sport stats
+// surface, rendered as a separate chip on the right next to Admin.
 const BASE_TABS: Tab[] = [
   { to: "/",         emoji: "🏆", label: "Hub",      grad: "from-amber-500 to-orange-500",   accent: "text-amber-300" },
   { to: "/football", emoji: "⚽", label: "Football", grad: "from-emerald-500 to-teal-500",   accent: "text-emerald-300" },
   { to: "/cricket",  emoji: "🏏", label: "Cricket",  grad: "from-emerald-500 to-amber-500",  accent: "text-emerald-200" },
-  { to: "/players",  emoji: "👤", label: "Players",  grad: "from-fuchsia-500 to-purple-500", accent: "text-fuchsia-300" },
 ];
 
 const SPORT_GRADS: Record<string, { grad: string; accent: string }> = {
@@ -57,9 +58,10 @@ export function SportNav({ liveCount = 0 }: { liveCount?: number }) {
             </div>
           </Link>
 
-          {/* live + admin chips, right-aligned on mobile brand row */}
+          {/* live + players + admin chips, right-aligned on mobile brand row */}
           <div className="flex items-center gap-2 sm:hidden">
             {liveCount > 0 && <LiveChip count={liveCount} />}
+            <PlayersChip active={pathname === "/players" || pathname.startsWith("/players/")} />
             {isAdmin && <AdminChip />}
           </div>
         </div>
@@ -78,6 +80,7 @@ export function SportNav({ liveCount = 0 }: { liveCount?: number }) {
         {/* desktop-only chips */}
         <div className="hidden sm:flex items-center gap-2">
           {liveCount > 0 && <LiveChip count={liveCount} />}
+          <PlayersChip active={pathname === "/players" || pathname.startsWith("/players/")} />
           {isAdmin && <AdminChip />}
         </div>
       </div>
@@ -118,6 +121,22 @@ function AdminChip() {
       className="px-2.5 py-1 rounded-full text-[10px] font-bold text-emerald-300 hover:text-emerald-200 bg-emerald-500/10 hover:bg-emerald-500/20 ring-1 ring-emerald-500/30 transition-colors inline-flex items-center gap-1"
     >
       <ShieldCheck className="size-3" /> Admin
+    </Link>
+  );
+}
+
+function PlayersChip({ active }: { active: boolean }) {
+  return (
+    <Link
+      to="/players"
+      className={[
+        "px-2.5 py-1 rounded-full text-[10px] font-bold transition-colors inline-flex items-center gap-1 ring-1",
+        active
+          ? "bg-gradient-to-r from-fuchsia-500 to-purple-500 text-white ring-white/15 shadow-[0_4px_14px_-4px_rgba(168,85,247,0.6)]"
+          : "text-fuchsia-300 hover:text-fuchsia-200 bg-fuchsia-500/10 hover:bg-fuchsia-500/20 ring-fuchsia-500/30",
+      ].join(" ")}
+    >
+      <Users className="size-3" /> Players
     </Link>
   );
 }

@@ -1,7 +1,8 @@
 import { useState, useMemo, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { Trophy, Loader2, ChevronDown, Users, Swords, ShieldCheck } from "lucide-react";
+import { Trophy, Loader2, ChevronDown, Users, Swords } from "lucide-react";
+import { SportNav } from "@/components/sports/SportNav";
 import { supabase, WC_YEARS, type WCTournament, type WCMatch, type WCGroup } from "@/lib/supabase";
 import { TournamentInfoCard } from "@/components/wc/TournamentInfoCard";
 import { GroupStage } from "@/components/wc/GroupStage";
@@ -9,7 +10,7 @@ import { MatchCard, type RoundKey } from "@/components/wc/MatchCard";
 import { MatchModal } from "@/components/wc/MatchModal";
 import { YearStrip } from "@/components/wc/YearStrip";
 import { MobileBracket } from "@/components/wc/MobileBracket";
-import { useAuth } from "@/hooks/use-auth";
+
 import groupMatchesData from "@/data/wc_group_matches.json";
 import { toast } from "sonner";
 import { AdSlot } from "@/components/ads/AdSlot";
@@ -73,7 +74,7 @@ const ROUND_HEADER: Record<RoundKey, { label: string; grad: string; glow: string
 };
 
 function Index() {
-  const { isAdmin } = useAuth();
+  // header (SportNav) handles admin chip itself
   const navigate = useNavigate({ from: "/football" });
   const search = Route.useSearch();
   const initialYear = search.year ?? 2026;
@@ -249,47 +250,8 @@ function Index() {
 
   return (
     <div className="min-h-screen">
-      {/* HEADER */}
-      <header className="sticky top-0 z-30 border-b border-border bg-background/85 backdrop-blur">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <div className="size-9 rounded-lg bg-gold/15 grid place-items-center ring-1 ring-gold/30">
-              <Trophy className="size-5 text-gold" />
-            </div>
-            <div className="leading-tight">
-              <div className="text-sm font-bold tracking-wide">FIFA World Cup</div>
-              <div className="text-[10px] uppercase tracking-[0.18em] text-gold">Archive</div>
-            </div>
-          </div>
-          <nav className="flex items-center gap-1 sm:gap-2 text-sm">
-            <a href="/" className="px-3 py-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition-colors">
-              Hub
-            </a>
-            <a href="/football" className="px-3 py-1.5 rounded-md text-foreground bg-accent/40 transition-colors">
-              Football
-            </a>
-            <Link
-              to="/players"
-              className="px-3 py-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
-            >
-              Players
-            </Link>
-            {["MLB", "NBA", "NHL", "MLS"].map((l) => (
-              <a key={l} href={`/${l.toLowerCase()}`} className="px-3 py-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition-colors">
-                {l}
-              </a>
-            ))}
-            {isAdmin && (
-              <Link
-                to="/admin"
-                className="ml-1 px-3 py-1.5 rounded-md text-emerald-300 hover:text-emerald-200 hover:bg-emerald-500/10 transition-colors inline-flex items-center gap-1.5"
-              >
-                <ShieldCheck className="size-3.5" /> Admin
-              </Link>
-            )}
-          </nav>
-        </div>
-      </header>
+      {/* HEADER — shared sport nav (same look as Hub / MLB / NBA) */}
+      <SportNav />
 
       {/* HERO — live-aware for 2026, classic for archive years */}
       {year === 2026 ? (
