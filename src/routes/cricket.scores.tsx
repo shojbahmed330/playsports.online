@@ -157,7 +157,7 @@ function CricketScoresPage() {
               return (
                 <button
                   key={t.id}
-                  onClick={() => navigate({ search: (prev) => ({ ...prev, tab: t.id, date: t.id === "today" ? isoDate(new Date()) : "" }) })}
+                  onClick={() => navigate({ search: (prev: { tab: "live" | "today" | "upcoming" | "results"; date: string; league: string; fmt: "any" | "t20" | "odi" | "test" }) => ({ ...prev, tab: t.id, date: t.id === "today" ? isoDate(new Date()) : "" }) })}
                   className={[
                     "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold ring-1 transition-all",
                     active
@@ -183,7 +183,7 @@ function CricketScoresPage() {
                   onClick={() => {
                     const cur = effectiveDate ? new Date(effectiveDate) : new Date();
                     cur.setDate(cur.getDate() - 1);
-                    navigate({ search: (prev) => ({ ...prev, date: isoDate(cur), tab: "upcoming" }) });
+                    navigate({ search: (prev: { tab: "live" | "today" | "upcoming" | "results"; date: string; league: string; fmt: "any" | "t20" | "odi" | "test" }) => ({ ...prev, date: isoDate(cur), tab: "upcoming" }) });
                   }}
                   className="shrink-0 size-8 rounded-full grid place-items-center bg-white/[0.06] hover:bg-white/[0.12] ring-1 ring-white/10"
                 >
@@ -196,7 +196,7 @@ function CricketScoresPage() {
                       return (
                         <button
                           key={d.iso}
-                          onClick={() => navigate({ search: (prev) => ({ ...prev, date: d.iso, tab: "upcoming" }) })}
+                          onClick={() => navigate({ search: (prev: { tab: "live" | "today" | "upcoming" | "results"; date: string; league: string; fmt: "any" | "t20" | "odi" | "test" }) => ({ ...prev, date: d.iso, tab: "upcoming" }) })}
                           className={[
                             "flex flex-col items-center min-w-[56px] px-2.5 py-1.5 rounded-xl ring-1 transition-all",
                             active
@@ -218,7 +218,7 @@ function CricketScoresPage() {
                   onClick={() => {
                     const cur = effectiveDate ? new Date(effectiveDate) : new Date();
                     cur.setDate(cur.getDate() + 1);
-                    navigate({ search: (prev) => ({ ...prev, date: isoDate(cur), tab: "upcoming" }) });
+                    navigate({ search: (prev: { tab: "live" | "today" | "upcoming" | "results"; date: string; league: string; fmt: "any" | "t20" | "odi" | "test" }) => ({ ...prev, date: isoDate(cur), tab: "upcoming" }) });
                   }}
                   className="shrink-0 size-8 rounded-full grid place-items-center bg-white/[0.06] hover:bg-white/[0.12] ring-1 ring-white/10"
                 >
@@ -234,7 +234,7 @@ function CricketScoresPage() {
               label="All series"
               emoji="🏏"
               active={league === "all"}
-              onClick={() => navigate({ search: (prev) => ({ ...prev, league: "all" }) })}
+              onClick={() => navigate({ search: (prev: { tab: "live" | "today" | "upcoming" | "results"; date: string; league: string; fmt: "any" | "t20" | "odi" | "test" }) => ({ ...prev, league: "all" }) })}
             />
             {CRICKET_LEAGUES.map((l) => (
               <FilterButton
@@ -242,7 +242,7 @@ function CricketScoresPage() {
                 label={l.label}
                 emoji={l.emoji}
                 active={league === l.id}
-                onClick={() => navigate({ search: (prev) => ({ ...prev, league: l.id }) })}
+                onClick={() => navigate({ search: (prev: { tab: "live" | "today" | "upcoming" | "results"; date: string; league: string; fmt: "any" | "t20" | "odi" | "test" }) => ({ ...prev, league: l.id }) })}
                 accent={l.accent}
               />
             ))}
@@ -253,7 +253,7 @@ function CricketScoresPage() {
               return (
                 <button
                   key={f}
-                  onClick={() => navigate({ search: (prev) => ({ ...prev, fmt: f }) })}
+                  onClick={() => navigate({ search: (prev: { tab: "live" | "today" | "upcoming" | "results"; date: string; league: string; fmt: "any" | "t20" | "odi" | "test" }) => ({ ...prev, fmt: f }) })}
                   className={[
                     "inline-flex items-center px-2.5 py-1.5 rounded-full text-[11px] font-bold ring-1 transition-all",
                     active ? `${meta.color} ring-1` : "bg-white/[0.04] hover:bg-white/[0.09] text-gray-300 ring-white/10",
