@@ -62,7 +62,7 @@ function RecordsPage() {
   }, [q, cat, sort]);
 
   return (
-    <IplPageShell title="Records" subtitle="All-time IPL milestones and benchmarks">
+    <IplPageShell title="IPL All-Time Records" subtitle="Career and innings milestones across every season">
       <SeasonLeadersPanel />
 
       <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center">
