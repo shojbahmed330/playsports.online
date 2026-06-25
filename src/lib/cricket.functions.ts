@@ -310,13 +310,28 @@ function num(v: unknown): number {
   const n = Number(v);
   return Number.isFinite(n) ? n : 0;
 }
-function pickStat(stats: any[] | undefined, keys: string[]): number {
-  if (!Array.isArray(stats)) return 0;
-  for (const k of keys) {
-    const s = stats.find((x: any) => x?.name === k || x?.abbreviation === k);
-    if (s) return num(s.value ?? s.displayValue);
+
+/** Flatten ESPN's nested `statistics.categories[].stats[]` into a name→value map. */
+function flattenStats(node: any): Record<string, number | string> {
+  const out: Record<string, number | string> = {};
+  const cats: any[] = node?.statistics?.categories ?? [];
+  for (const c of cats) {
+    for (const s of c?.stats ?? []) {
+      if (!s?.name) continue;
+      const raw = s.value ?? s.displayValue;
+      const nn = Number(raw);
+      out[s.name] = Number.isFinite(nn) ? nn : String(raw ?? "");
+    }
   }
-  return 0;
+  return out;
+}
+function nVal(stats: Record<string, number | string>, key: string): number {
+  const v = stats[key];
+  return typeof v === "number" ? v : Number(v) || 0;
+}
+function sVal(stats: Record<string, number | string>, key: string): string {
+  const v = stats[key];
+  return v == null ? "" : String(v);
 }
 
 export const getCricketMatchDetail = createServerFn({ method: "GET" })
