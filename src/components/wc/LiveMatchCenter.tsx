@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   getWc2026MatchEvents,
   getWc2026MatchLineups,
@@ -13,8 +13,9 @@ import {
 } from "@/components/ui/tabs";
 import {
   Goal, Square, AlertTriangle, RefreshCw, Users, BarChart3,
-  Activity, Loader2, Circle,
+  Activity, Loader2, Circle, ChevronRight,
 } from "lucide-react";
+import { PlayerProfileSheet, type PlayerSheetTarget } from "./PlayerProfileSheet";
 
 function isLive(status: string) {
   return status === "inprogress";
