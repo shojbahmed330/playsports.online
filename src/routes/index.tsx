@@ -20,6 +20,7 @@ import { PulseStrip } from "@/components/home/PulseStrip";
 import { SportCard, FifaCard, CricketCard } from "@/components/home/SportCard";
 import { SiteFooter } from "@/components/home/SiteFooter";
 import { WatchLivePanel } from "@/components/wc/WatchLivePanel";
+import { TodayInZoneStrip } from "@/components/home/TodayInZoneStrip";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -99,6 +100,13 @@ function HubPage() {
       <PulseStrip items={liveGames} />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-10 space-y-12">
+        {/* TODAY IN YOUR ZONE — TZ-aware cross-sport strip */}
+        <TodayInZoneStrip
+          espnByLeague={byLeague}
+          wcFixtures={wcQ.data?.fixtures ?? []}
+          sports={SPORT_LIST}
+        />
+
         {/* SPORT CARDS 2.0 */}
         <section className="space-y-4 animate-fade-in">
           <div className="flex items-end justify-between">
