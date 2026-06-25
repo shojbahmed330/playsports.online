@@ -207,8 +207,9 @@ function HistoryPage() {
                   <p className="mt-1 text-sm text-white/90">{s.finalScore}</p>
                   <p className="mt-0.5 text-[11px] text-white/50">{s.finalVenue}</p>
                   <p className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-white/[0.06] px-2.5 py-1 text-[11px] font-semibold text-white/80 ring-1 ring-white/10">
-                    <Award className="size-3" /> Player of the Final: {s.mom}
+                    <Award className="size-3" /> Player of the Final: <PlayerLink name={s.mom} className="font-semibold">{s.mom}</PlayerLink>
                   </p>
+
                 </div>
 
                 <dl className="grid grid-cols-2 gap-2 text-xs">
