@@ -64,7 +64,8 @@ export function MobileMatchCard({
   return (
     <button
       onClick={onClick}
-      className="group relative w-full text-left rounded-2xl overflow-hidden bg-gray-950 border border-white/[0.08] hover:border-amber-500/40 transition-all active:scale-[0.99] shadow-lg"
+      className={`group relative w-full text-left rounded-2xl overflow-hidden bg-gray-950 border transition-all active:scale-[0.99] shadow-lg
+        ${match.predicted ? "border-dashed border-sky-500/40 hover:border-sky-400/60" : "border-white/[0.08] hover:border-amber-500/40"}`}
     >
       {/* dual confederation top-accent */}
       <div className="flex h-1">
@@ -95,7 +96,12 @@ export function MobileMatchCard({
               <span className="text-[9.5px] uppercase tracking-widest text-emerald-400 font-bold">FT</span>
             )}
           </div>
-          {match.video_url && (
+          {match.predicted && (
+            <span className="inline-flex items-center gap-1 text-[9px] font-bold bg-sky-500/15 text-sky-300 ring-1 ring-sky-400/40 rounded-full px-1.5 py-0.5">
+              <span className="size-1 rounded-full bg-sky-400 animate-pulse" /> PREDICTED
+            </span>
+          )}
+          {match.video_url && !match.predicted && (
             <span className="inline-flex items-center gap-0.5 text-[9px] font-bold bg-amber-500/15 text-amber-300 ring-1 ring-amber-500/30 rounded-full px-1.5 py-0.5">
               <Play className="size-2.5 fill-amber-300" /> HL
             </span>

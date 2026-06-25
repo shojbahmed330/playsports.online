@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { Trophy, Loader2, ChevronDown, Users, Swords } from "lucide-react";
+import { Trophy, Loader2, ChevronDown, Users, Swords, Goal, Calendar } from "lucide-react";
 import { SportNav } from "@/components/sports/SportNav";
 import { supabase, WC_YEARS, type WCTournament, type WCMatch, type WCGroup } from "@/lib/supabase";
 import { TournamentInfoCard } from "@/components/wc/TournamentInfoCard";
@@ -21,23 +21,28 @@ import { Wc2026ScorersPanel } from "@/components/football/Wc2026ScorersPanel";
 import { FootballFilterBar } from "@/components/football/FootballFilterBar";
 import { applyFilter, uniqueTeams, useMyTeams, type FootballFilter } from "@/lib/football-filters";
 import { SiteFooter } from "@/components/home/SiteFooter";
+import { Breadcrumbs } from "@/components/nav/Breadcrumbs";
+import { MobileTabBar, type MobileTab } from "@/components/nav/MobileTabBar";
 
 
 const GROUP_MATCHES_BY_YEAR = groupMatchesData as Record<string, WCMatch[]>;
 
 const FILTER_VALUES: FootballFilter[] = ["all", "live", "today", "my"];
+const TAB_VALUES: SubNavTab[] = ["groups", "knockout", "scorers"];
 
-type FootballSearch = { year?: number; filter?: FootballFilter; team?: string };
+type FootballSearch = { year?: number; filter?: FootballFilter; team?: string; tab?: SubNavTab };
 
 export const Route = createFileRoute("/football")({
   validateSearch: (s: Record<string, unknown>): FootballSearch => {
     const y = Number(s.year);
     const f = String(s.filter ?? "");
     const t = typeof s.team === "string" && s.team.trim().length > 0 ? s.team.trim() : undefined;
+    const tb = String(s.tab ?? "");
     return {
       year: WC_YEARS.includes(y) ? y : undefined,
       filter: (FILTER_VALUES as string[]).includes(f) ? (f as FootballFilter) : undefined,
       team: t,
+      tab: (TAB_VALUES as string[]).includes(tb) ? (tb as SubNavTab) : undefined,
     };
   },
   head: () => ({
@@ -80,16 +85,28 @@ function Index() {
   const initialYear = search.year ?? 2026;
   const [year, setYear] = useState<number>(initialYear);
   const [activeMatch, setActiveMatch] = useState<WCMatch | null>(null);
-  const [tab, setTab] = useState<SubNavTab>("knockout");
+  const initialTab: SubNavTab = search.tab ?? "knockout";
+  const [tab, setTab] = useState<SubNavTab>(initialTab);
   const [hintSeen, setHintSeen] = useState(true);
 
   const filter: FootballFilter = search.filter ?? "all";
   const teamFilter = search.team;
 
-  // Sync URL ?year= when changed
+  // Sync URL ?year= and ?tab= when changed
   useEffect(() => {
     navigate({ search: (prev: FootballSearch) => ({ ...prev, year }), replace: true });
   }, [year, navigate]);
+  useEffect(() => {
+    navigate({
+      search: (prev: FootballSearch) => ({ ...prev, tab: tab === "knockout" ? undefined : tab }),
+      replace: true,
+    });
+  }, [tab, navigate]);
+  // External tab change (e.g. from MobileTabBar Link) → adopt into state
+  useEffect(() => {
+    if (search.tab && search.tab !== tab) setTab(search.tab);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search.tab]);
 
   const setFilter = (f: FootballFilter) => {
     navigate({ search: (prev: FootballSearch) => ({ ...prev, filter: f === "all" ? undefined : f }), replace: true });
@@ -248,10 +265,20 @@ function Index() {
     setHintSeen(true);
   };
 
+  // Mobile bottom nav — 2026-only quick switcher between primary sections.
+  const mobileTabs: MobileTab[] = year === 2026 ? [
+    { to: "/football", label: "Groups",   Icon: Users,    search: { tab: "groups" },   match: (_p, s) => (s.tab as string) === "groups" },
+    { to: "/football", label: "Bracket",  Icon: Swords,   search: { tab: "knockout" }, match: (_p, s) => !s.tab || s.tab === "knockout" },
+    { to: "/football", label: "Scorers",  Icon: Goal,     search: { tab: "scorers" },  match: (_p, s) => (s.tab as string) === "scorers" },
+    { to: "/players",  label: "Stats",    Icon: Trophy,   match: (p) => p.startsWith("/players") },
+  ] : [];
+
   return (
     <div className="min-h-screen">
       {/* HEADER — shared sport nav (same look as Hub / MLB / NBA) */}
       <SportNav />
+      <Breadcrumbs />
+
 
       {/* HERO — live-aware for 2026, classic for archive years */}
       {year === 2026 ? (
@@ -406,6 +433,8 @@ function Index() {
 
 
       <MatchModal match={activeMatch} onClose={() => setActiveMatch(null)} />
+
+      {mobileTabs.length > 0 && <MobileTabBar tabs={mobileTabs} accent="amber" />}
     </div>
   );
 }

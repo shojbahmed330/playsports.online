@@ -48,8 +48,9 @@ export function MatchCard({
       onClick={onClick}
       style={{ animationDelay: `${index * 60}ms` }}
       className={`wc-card group relative w-full text-left rounded-xl overflow-hidden bg-gray-900
-        border border-white/[0.08] transition-all duration-[250ms] cursor-pointer
+        border transition-all duration-[250ms] cursor-pointer
         hover:-translate-y-[3px] hover:border-amber-500/50 hover:shadow-[0_8px_32px_rgba(0,0,0,0.4)]
+        ${match.predicted ? "border-dashed border-sky-500/40" : "border-white/[0.08]"}
         ${isFinal ? "shadow-[0_0_40px_rgba(245,158,11,0.2)]" : ""}`}
     >
       {/* top accent */}
@@ -69,6 +70,16 @@ export function MatchCard({
           className="absolute top-1.5 right-2 inline-flex items-center gap-0.5 text-[9px] font-bold bg-amber-500/20 text-amber-300 ring-1 ring-amber-500/40 rounded-full px-1.5 py-0.5"
         >
           <Play className="size-2.5 fill-amber-300" /> HL
+        </span>
+      )}
+
+      {/* predicted badge — synthesized R32 fixture before FIFA/ESPN publishes the real pairing */}
+      {match.predicted && (
+        <span
+          title="Predicted from current standings — actual fixture will replace this once published"
+          className="absolute top-1.5 right-2 inline-flex items-center gap-1 text-[9px] font-bold bg-sky-500/15 text-sky-300 ring-1 ring-sky-400/40 rounded-full px-1.5 py-0.5"
+        >
+          <span className="size-1 rounded-full bg-sky-400 animate-pulse" /> PREDICTED
         </span>
       )}
 
