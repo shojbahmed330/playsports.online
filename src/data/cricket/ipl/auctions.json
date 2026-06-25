@@ -1,0 +1,22 @@
+{
+  "headlines": [
+    { "year": 2008, "mostExpensive": { "player": "Mahendra Singh Dhoni", "team": "CSK", "price": "$1.5M" }, "surprise": { "player": "Ishant Sharma", "team": "KKR", "price": "$950K", "note": "Young pacer earns blockbuster deal" } },
+    { "year": 2009, "mostExpensive": { "player": "Andrew Flintoff", "team": "CSK", "price": "$1.55M" }, "surprise": { "player": "Kevin Pietersen", "team": "RCB", "price": "$1.55M", "note": "England stars dominate auction" } },
+    { "year": 2010, "mostExpensive": { "player": "Shane Bond", "team": "KKR", "price": "$750K" }, "surprise": { "player": "Kieron Pollard", "team": "MI", "price": "$750K", "note": "Tie-breaker bid for the all-rounder" } },
+    { "year": 2011, "mostExpensive": { "player": "Gautam Gambhir", "team": "KKR", "price": "$2.4M" }, "surprise": { "player": "Yusuf Pathan", "team": "KKR", "price": "$2.1M", "note": "Big retention spend by KKR" } },
+    { "year": 2012, "mostExpensive": { "player": "Ravindra Jadeja", "team": "CSK", "price": "$2M" }, "surprise": { "player": "Azhar Mahmood", "team": "PBKS", "price": "$200K", "note": "Comeback story of the auction" } },
+    { "year": 2013, "mostExpensive": { "player": "Glenn Maxwell", "team": "MI", "price": "$1M" }, "surprise": { "player": "Kane Richardson", "team": "PBKS", "price": "$700K", "note": "Surprise pick for raw pacer" } },
+    { "year": 2014, "mostExpensive": { "player": "Yuvraj Singh", "team": "RCB", "price": "$2.33M" }, "surprise": { "player": "Glenn Maxwell", "team": "PBKS", "price": "$1M", "note": "PBKS investment pays off — finalists" } },
+    { "year": 2015, "mostExpensive": { "player": "Yuvraj Singh", "team": "DC", "price": "$2.6M" }, "surprise": { "player": "Dinesh Karthik", "team": "RCB", "price": "$1.7M", "note": "RCB splash on the wicketkeeper" } },
+    { "year": 2016, "mostExpensive": { "player": "Shane Watson", "team": "RCB", "price": "$1.4M" }, "surprise": { "player": "Pawan Negi", "team": "DC", "price": "$1.2M", "note": "Uncapped Indian breaks records" } },
+    { "year": 2017, "mostExpensive": { "player": "Ben Stokes", "team": "RPS", "price": "$2.16M" }, "surprise": { "player": "Tymal Mills", "team": "RCB", "price": "$1.85M", "note": "Massive deal for an uncapped Englishman" } },
+    { "year": 2018, "mostExpensive": { "player": "Ben Stokes", "team": "RR", "price": "$1.95M" }, "surprise": { "player": "Jaydev Unadkat", "team": "RR", "price": "$1.6M", "note": "Indian pacer earns record fee" } },
+    { "year": 2019, "mostExpensive": { "player": "Jaydev Unadkat", "team": "RR", "price": "$1.18M" }, "surprise": { "player": "Varun Chakravarthy", "team": "PBKS", "price": "$1.18M", "note": "Mystery spinner's auction breakthrough" } },
+    { "year": 2020, "mostExpensive": { "player": "Pat Cummins", "team": "KKR", "price": "$2.18M" }, "surprise": { "player": "Sheldon Cottrell", "team": "PBKS", "price": "$1.18M", "note": "PBKS splash on the salute man" } },
+    { "year": 2021, "mostExpensive": { "player": "Chris Morris", "team": "RR", "price": "$2.25M" }, "surprise": { "player": "Krishnappa Gowtham", "team": "CSK", "price": "$1.21M", "note": "Most expensive uncapped player to date" } },
+    { "year": 2022, "mostExpensive": { "player": "Ishan Kishan", "team": "MI", "price": "$2.06M" }, "surprise": { "player": "Deepak Chahar", "team": "CSK", "price": "$1.86M", "note": "Mega auction reshapes every squad" } },
+    { "year": 2023, "mostExpensive": { "player": "Sam Curran", "team": "PBKS", "price": "$2.23M" }, "surprise": { "player": "Cameron Green", "team": "MI", "price": "$2.12M", "note": "Australian all-rounder debut bid war" } },
+    { "year": 2024, "mostExpensive": { "player": "Mitchell Starc", "team": "KKR", "price": "$2.97M" }, "surprise": { "player": "Pat Cummins", "team": "SRH", "price": "$2.46M", "note": "Two Aussies smash the previous record on the same day" } },
+    { "year": 2025, "mostExpensive": { "player": "Rishabh Pant", "team": "LSG", "price": "$3.21M" }, "surprise": { "player": "Shreyas Iyer", "team": "PBKS", "price": "$3.17M", "note": "All-time IPL auction record changes hands twice" } }
+  ]
+}
