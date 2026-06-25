@@ -27,6 +27,7 @@ import { Route as MlbScoresRouteImport } from './routes/mlb.scores'
 import { Route as MlbPlayersRouteImport } from './routes/mlb.players'
 import { Route as MlbNewsRouteImport } from './routes/mlb.news'
 import { Route as MlbHistoryRouteImport } from './routes/mlb.history'
+import { Route as CricketScoresRouteImport } from './routes/cricket.scores'
 import { Route as CricketHistoryRouteImport } from './routes/cricket.history'
 import { Route as MlbTeamIdRouteImport } from './routes/mlb.team.$id'
 import { Route as MlbPlayerIdRouteImport } from './routes/mlb.player.$id'
@@ -124,6 +125,11 @@ const MlbHistoryRoute = MlbHistoryRouteImport.update({
   path: '/history',
   getParentRoute: () => MlbRoute,
 } as any)
+const CricketScoresRoute = CricketScoresRouteImport.update({
+  id: '/scores',
+  path: '/scores',
+  getParentRoute: () => CricketRoute,
+} as any)
 const CricketHistoryRoute = CricketHistoryRouteImport.update({
   id: '/history',
   path: '/history',
@@ -167,6 +173,7 @@ export interface FileRoutesByFullPath {
   '/nhl': typeof NhlRoute
   '/players': typeof PlayersRoute
   '/cricket/history': typeof CricketHistoryRoute
+  '/cricket/scores': typeof CricketScoresRoute
   '/mlb/history': typeof MlbHistoryRoute
   '/mlb/news': typeof MlbNewsRoute
   '/mlb/players': typeof MlbPlayersRoute
@@ -191,6 +198,7 @@ export interface FileRoutesByTo {
   '/nhl': typeof NhlRoute
   '/players': typeof PlayersRoute
   '/cricket/history': typeof CricketHistoryRoute
+  '/cricket/scores': typeof CricketScoresRoute
   '/mlb/history': typeof MlbHistoryRoute
   '/mlb/news': typeof MlbNewsRoute
   '/mlb/players': typeof MlbPlayersRoute
@@ -218,6 +226,7 @@ export interface FileRoutesById {
   '/nhl': typeof NhlRoute
   '/players': typeof PlayersRoute
   '/cricket/history': typeof CricketHistoryRoute
+  '/cricket/scores': typeof CricketScoresRoute
   '/mlb/history': typeof MlbHistoryRoute
   '/mlb/news': typeof MlbNewsRoute
   '/mlb/players': typeof MlbPlayersRoute
@@ -246,6 +255,7 @@ export interface FileRouteTypes {
     | '/nhl'
     | '/players'
     | '/cricket/history'
+    | '/cricket/scores'
     | '/mlb/history'
     | '/mlb/news'
     | '/mlb/players'
@@ -270,6 +280,7 @@ export interface FileRouteTypes {
     | '/nhl'
     | '/players'
     | '/cricket/history'
+    | '/cricket/scores'
     | '/mlb/history'
     | '/mlb/news'
     | '/mlb/players'
@@ -296,6 +307,7 @@ export interface FileRouteTypes {
     | '/nhl'
     | '/players'
     | '/cricket/history'
+    | '/cricket/scores'
     | '/mlb/history'
     | '/mlb/news'
     | '/mlb/players'
@@ -452,6 +464,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MlbHistoryRouteImport
       parentRoute: typeof MlbRoute
     }
+    '/cricket/scores': {
+      id: '/cricket/scores'
+      path: '/scores'
+      fullPath: '/cricket/scores'
+      preLoaderRoute: typeof CricketScoresRouteImport
+      parentRoute: typeof CricketRoute
+    }
     '/cricket/history': {
       id: '/cricket/history'
       path: '/history'
@@ -499,6 +518,7 @@ declare module '@tanstack/react-router' {
 
 interface CricketRouteChildren {
   CricketHistoryRoute: typeof CricketHistoryRoute
+  CricketScoresRoute: typeof CricketScoresRoute
   CricketIndexRoute: typeof CricketIndexRoute
   CricketMatchIdRoute: typeof CricketMatchIdRoute
   CricketSeriesIdRoute: typeof CricketSeriesIdRoute
@@ -506,6 +526,7 @@ interface CricketRouteChildren {
 
 const CricketRouteChildren: CricketRouteChildren = {
   CricketHistoryRoute: CricketHistoryRoute,
+  CricketScoresRoute: CricketScoresRoute,
   CricketIndexRoute: CricketIndexRoute,
   CricketMatchIdRoute: CricketMatchIdRoute,
   CricketSeriesIdRoute: CricketSeriesIdRoute,
