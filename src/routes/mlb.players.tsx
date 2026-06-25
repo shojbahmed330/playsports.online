@@ -96,11 +96,19 @@ function LeadersPage() {
         <>
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="min-w-0">
-              <h2 className="text-lg font-extrabold tracking-tight">League Leaders · {season}</h2>
+              <h2 className="text-lg font-extrabold tracking-tight">
+                League Leaders · {leadersQ.data?.season ?? season}
+              </h2>
               <div className="text-[11px] text-muted-foreground">
                 {group === "batting" ? "Batting" : "Pitching"} leaderboards · Top {topN}
+                {leadersQ.data && leadersQ.data.season !== season ? (
+                  <span className="ml-2 text-amber-400">
+                    · {season} not started yet — showing {leadersQ.data.season}
+                  </span>
+                ) : null}
               </div>
             </div>
+
             <div className="flex flex-wrap items-center gap-2">
               <input
                 value={filter}
