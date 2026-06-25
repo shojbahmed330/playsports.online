@@ -132,8 +132,79 @@ function TeamPage() {
         </dl>
       </section>
 
-      {/* Squad */}
-      <section className="mt-8">
+      {/* Tabs */}
+      <div className="mt-6 flex gap-1 overflow-x-auto rounded-full bg-white/[0.04] p-1 ring-1 ring-white/10 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        {([
+          { id: "overview", label: "Overview" },
+          { id: "squad", label: `Squad${squadQ.data ? ` · ${squadQ.data.players.length}` : ""}` },
+          { id: "fixtures", label: `Fixtures · ${data.fixtures.length}` },
+          { id: "h2h", label: "Head-to-head" },
+          { id: "titles", label: `Titles · ${titleSeasons.length}` },
+        ] as const).map((opt) => (
+          <button
+            key={opt.id}
+            type="button"
+            onClick={() => setTab(opt.id)}
+            className={`shrink-0 rounded-full px-3.5 py-1.5 text-[12px] font-bold transition ${
+              tab === opt.id
+                ? "bg-white text-gray-950 shadow-sm"
+                : "text-white/65 hover:text-white"
+            }`}
+            style={tab === opt.id ? { background: t.primary, color: t.ink } : undefined}
+          >
+            {opt.label}
+          </button>
+        ))}
+      </div>
+
+      {/* ===== OVERVIEW ===== */}
+      {tab === "overview" && (
+        <>
+          <section className="mt-6 grid gap-3 sm:grid-cols-2">
+            <div className="rounded-2xl border border-white/5 bg-gray-900/60 p-4">
+              <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-white/40">
+                <MapPin className="size-3.5" /> Home venue
+              </div>
+              <h3 className="mt-2 text-base font-black text-white">{t.homeGround}</h3>
+              <p className="mt-1 text-xs text-white/55">{t.city}</p>
+              <a
+                href={`https://www.google.com/maps/search/${encodeURIComponent(t.homeGround + ", " + t.city)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-3 inline-flex items-center gap-1 rounded-full bg-white/[0.06] px-2.5 py-1 text-[11px] font-semibold text-white/80 ring-1 ring-white/10 hover:bg-white/[0.12]"
+              >
+                Open in Maps ↗
+              </a>
+            </div>
+            <div className="rounded-2xl border border-white/5 bg-gray-900/60 p-4">
+              <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-white/40">
+                <Crown className="size-3.5" /> Captain timeline
+              </div>
+              {captainTimeline.length === 0 ? (
+                <p className="mt-3 text-sm text-white/55">Captain timeline coming soon.</p>
+              ) : (
+                <ol className="mt-3 grid gap-1.5">
+                  {captainTimeline.map((c, i) => (
+                    <li
+                      key={`${c.name}-${i}`}
+                      className="flex items-baseline justify-between gap-2 rounded-lg bg-white/[0.03] px-3 py-1.5 text-xs ring-1 ring-white/5"
+                    >
+                      <span className="truncate font-semibold text-white">{c.name}</span>
+                      <span className="shrink-0 text-[11px] text-white/55">
+                        {c.years}{c.titles > 0 ? ` · 🏆${c.titles}` : ""}
+                      </span>
+                    </li>
+                  ))}
+                </ol>
+              )}
+            </div>
+          </section>
+        </>
+      )}
+
+      {/* ===== SQUAD ===== */}
+      {tab === "squad" && (
+      <section className="mt-6">
         <div className="mb-3 flex items-end justify-between px-1">
           <h3 className="text-base font-black tracking-tight text-white">Squad</h3>
           <span className="text-[11px] text-white/50">
