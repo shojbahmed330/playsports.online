@@ -320,7 +320,7 @@ export function Wc2026GroupsView({ filter = "all", team, date, onDateChange }: {
 // ============================================================
 // KNOCKOUT + TOP SCORERS — reuses MatchCard (same design)
 // ============================================================
-export function Wc2026KnockoutView({ filter = "all", team }: { filter?: FootballFilter; team?: string } = {}) {
+export function Wc2026KnockoutView({ filter = "all", team, date, onDateChange }: { filter?: FootballFilter; team?: string; date?: string; onDateChange?: (d: string | undefined) => void } = {}) {
   const fixturesFn = useServerFn(getWc2026Fixtures);
   const scorersFn = useServerFn(getWc2026TopScorers);
   const standingsFn = useServerFn(getWc2026Standings);
