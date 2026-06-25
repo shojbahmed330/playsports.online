@@ -13,11 +13,15 @@ type Record = {
 };
 
 const SECTIONS: { key: keyof typeof records; title: string; emoji: string; accent: string }[] = [
-  { key: "batting",  title: "Batting Records",  emoji: "🏏", accent: "from-amber-500 to-orange-500" },
-  { key: "bowling",  title: "Bowling Records",  emoji: "🎯", accent: "from-violet-500 to-purple-600" },
-  { key: "team",     title: "Team Records",     emoji: "🛡️", accent: "from-sky-500 to-blue-600" },
-  { key: "fielding", title: "Fielding & MVP",   emoji: "🧤", accent: "from-emerald-500 to-teal-500" },
+  { key: "batting",      title: "Batting Records",      emoji: "🏏", accent: "from-amber-500 to-orange-500" },
+  { key: "bowling",      title: "Bowling Records",      emoji: "🎯", accent: "from-violet-500 to-purple-600" },
+  { key: "partnerships", title: "Partnerships",         emoji: "🤝", accent: "from-pink-500 to-rose-500" },
+  { key: "captaincy",    title: "Captaincy",            emoji: "👑", accent: "from-yellow-500 to-amber-600" },
+  { key: "team",         title: "Team Records",         emoji: "🛡️", accent: "from-sky-500 to-blue-600" },
+  { key: "fielding",     title: "Fielding & MVP",       emoji: "🧤", accent: "from-emerald-500 to-teal-500" },
 ];
+
+type SortMode = "default" | "team" | "az";
 
 export const Route = createFileRoute("/cricket/ipl/records")({
   head: () => ({
