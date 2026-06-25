@@ -152,7 +152,9 @@ function mapMatch(e: any, league: { id: string; name: string; abbr: string }): C
     leagueId: league.id,
     leagueName: league.name,
     leagueAbbr: league.abbr,
+    kind: isCuratedLeague(league.id) ? "league" : "bilateral",
     startTs: e.date ? new Date(e.date).getTime() : 0,
+
     status,
     statusDetail: e?.status?.type?.detail ?? e?.status?.type?.description ?? "",
     shortDetail: e?.status?.type?.shortDetail ?? "",
