@@ -226,10 +226,15 @@ export function Wc2026GroupsView({ filter = "all", team }: { filter?: FootballFi
     staleTime: 5 * 60_000,
     retry: 1,
   });
-  const wcMatchesAll = useMemo(
-    () => toWcMatches(fQ.data?.fixtures ?? [], vQ.data),
-    [fQ.data, vQ.data],
+  const teamGroup = useMemo(
+    () => buildTeamGroup(sQ.data?.groups ?? []),
+    [sQ.data],
   );
+  const wcMatchesAll = useMemo(() => {
+    const fromEspn = toWcMatches(fQ.data?.fixtures ?? [], vQ.data, teamGroup);
+    const synth = synthGroupFixturesFromVideos(vQ.data, teamGroup, fromEspn);
+    return [...fromEspn, ...synth];
+  }, [fQ.data, vQ.data, teamGroup]);
   const { teams: myTeams } = useMyTeams();
   const wcMatches = useMemo(
     () => applyFilter(wcMatchesAll, filter, team, myTeams),
@@ -284,6 +289,17 @@ export function Wc2026GroupsView({ filter = "all", team }: { filter?: FootballFi
 export function Wc2026KnockoutView({ filter = "all", team }: { filter?: FootballFilter; team?: string } = {}) {
   const fixturesFn = useServerFn(getWc2026Fixtures);
   const scorersFn = useServerFn(getWc2026TopScorers);
+  const standingsFn = useServerFn(getWc2026Standings);
+
+  const sQ = useQuery({
+    queryKey: ["wc2026", "standings"],
+    queryFn: () => standingsFn(),
+    staleTime: 5 * 60_000,
+    refetchInterval: 60_000,
+    retry: 1,
+  });
+  const fixturesFn = useServerFn(getWc2026Fixtures);
+  const scorersFn = useServerFn(getWc2026TopScorers);
 
   const fQ = useQuery({
     queryKey: ["wc2026", "fixtures"],
@@ -307,9 +323,13 @@ export function Wc2026KnockoutView({ filter = "all", team }: { filter?: Football
     staleTime: 5 * 60_000,
     retry: 1,
   });
+  const teamGroup = useMemo(
+    () => buildTeamGroup(sQ.data?.groups ?? []),
+    [sQ.data],
+  );
   const wcMatchesRaw = useMemo(
-    () => toWcMatches(fQ.data?.fixtures ?? [], vQ.data),
-    [fQ.data, vQ.data],
+    () => toWcMatches(fQ.data?.fixtures ?? [], vQ.data, teamGroup),
+    [fQ.data, vQ.data, teamGroup],
   );
   const { teams: myTeams } = useMyTeams();
   const wcMatches = useMemo(
@@ -324,36 +344,10 @@ export function Wc2026KnockoutView({ filter = "all", team }: { filter?: Football
       if (!k) continue;
       (m[k] ||= []).push(match);
     }
-    // Fallback: when ESPN hasn't tagged R32 yet, synthesize from the curated
-    // R32 pairings so users still see the bracket with click-to-watch videos.
-    if (!m.round_of_32 || m.round_of_32.length === 0) {
-      const seen = new Set(
-        (wcMatches ?? []).map((x) => videoKey(x.home_team, x.away_team)),
-      );
-      const synth: WCMatch[] = (r32Fallback as { home: string; away: string }[])
-        .filter((p) => !seen.has(videoKey(p.home, p.away)))
-        .map((p, i) => ({
-          id: -1000 - i,
-          tournament_year: 2026,
-          round: "Round of 32",
-          match_number: i + 1,
-          home_team: p.home,
-          away_team: p.away,
-          home_score: null,
-          away_score: null,
-          home_score_pen: null,
-          away_score_pen: null,
-          match_date: null,
-          stadium: null,
-          city: null,
-          video_url: vQ.data?.get(videoKey(p.home, p.away)) ?? null,
-        }));
-      if (synth.length) m.round_of_32 = synth;
-    }
     return order
       .filter((r) => (m[r]?.length ?? 0) > 0)
       .map((r) => [r, m[r]!] as const);
-  }, [wcMatches, vQ.data]);
+  }, [wcMatches]);
 
   const [activeMatch, setActiveMatch] = useState<WCMatch | null>(null);
 
