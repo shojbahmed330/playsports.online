@@ -1,0 +1,130 @@
+{
+  "updatedAt": "2026-06-01",
+  "categories": [
+    {
+      "id": "most-runs-test",
+      "title": "Most Runs — Test",
+      "format": "test",
+      "metric": "Runs",
+      "rows": [
+        { "player": "Sachin Tendulkar", "team": "IND", "flag": "🇮🇳", "value": 15921, "extra": "200 matches" },
+        { "player": "Ricky Ponting",    "team": "AUS", "flag": "🇦🇺", "value": 13378, "extra": "168 matches" },
+        { "player": "Jacques Kallis",   "team": "RSA", "flag": "🇿🇦", "value": 13289, "extra": "166 matches" },
+        { "player": "Rahul Dravid",     "team": "IND", "flag": "🇮🇳", "value": 13288, "extra": "164 matches" },
+        { "player": "Alastair Cook",    "team": "ENG", "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿", "value": 12472, "extra": "161 matches" },
+        { "player": "Kumar Sangakkara", "team": "SRL", "flag": "🇱🇰", "value": 12400, "extra": "134 matches" },
+        { "player": "Brian Lara",       "team": "WIN", "flag": "🌴", "value": 11953, "extra": "131 matches" },
+        { "player": "Joe Root",         "team": "ENG", "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿", "value": 11700, "extra": "139 matches" },
+        { "player": "Shivnarine Chanderpaul","team":"WIN","flag":"🌴","value": 11867, "extra": "164 matches" },
+        { "player": "Mahela Jayawardene","team":"SRL","flag":"🇱🇰","value": 11814, "extra": "149 matches" }
+      ]
+    },
+    {
+      "id": "most-runs-odi",
+      "title": "Most Runs — ODI",
+      "format": "odi",
+      "metric": "Runs",
+      "rows": [
+        { "player": "Sachin Tendulkar", "team": "IND", "flag": "🇮🇳", "value": 18426, "extra": "463 matches" },
+        { "player": "Kumar Sangakkara", "team": "SRL", "flag": "🇱🇰", "value": 14234, "extra": "404 matches" },
+        { "player": "Ricky Ponting",    "team": "AUS", "flag": "🇦🇺", "value": 13704, "extra": "375 matches" },
+        { "player": "Virat Kohli",      "team": "IND", "flag": "🇮🇳", "value": 13848, "extra": "295 matches" },
+        { "player": "Sanath Jayasuriya","team": "SRL", "flag": "🇱🇰", "value": 13430, "extra": "445 matches" },
+        { "player": "Mahela Jayawardene","team":"SRL","flag":"🇱🇰","value": 12650, "extra": "448 matches" },
+        { "player": "Inzamam-ul-Haq",   "team": "PAK", "flag": "🇵🇰", "value": 11739, "extra": "378 matches" },
+        { "player": "Rohit Sharma",     "team": "IND", "flag": "🇮🇳", "value": 11168, "extra": "262 matches" }
+      ]
+    },
+    {
+      "id": "most-runs-t20i",
+      "title": "Most Runs — T20I",
+      "format": "t20i",
+      "metric": "Runs",
+      "rows": [
+        { "player": "Rohit Sharma",   "team": "IND", "flag": "🇮🇳", "value": 4231, "extra": "159 matches" },
+        { "player": "Virat Kohli",    "team": "IND", "flag": "🇮🇳", "value": 4188, "extra": "125 matches" },
+        { "player": "Babar Azam",     "team": "PAK", "flag": "🇵🇰", "value": 4145, "extra": "128 matches" },
+        { "player": "Paul Stirling",  "team": "IRE", "flag": "🇮🇪", "value": 3603, "extra": "143 matches" },
+        { "player": "Mohammad Rizwan","team": "PAK", "flag": "🇵🇰", "value": 3568, "extra": "112 matches" }
+      ]
+    },
+    {
+      "id": "most-wickets-test",
+      "title": "Most Wickets — Test",
+      "format": "test",
+      "metric": "Wkts",
+      "rows": [
+        { "player": "Muttiah Muralitharan","team":"SRL","flag":"🇱🇰","value": 800, "extra": "133 matches" },
+        { "player": "Shane Warne",      "team": "AUS", "flag": "🇦🇺", "value": 708, "extra": "145 matches" },
+        { "player": "James Anderson",   "team": "ENG", "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿", "value": 704, "extra": "188 matches" },
+        { "player": "Anil Kumble",      "team": "IND", "flag": "🇮🇳", "value": 619, "extra": "132 matches" },
+        { "player": "Stuart Broad",     "team": "ENG", "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿", "value": 604, "extra": "167 matches" },
+        { "player": "R. Ashwin",        "team": "IND", "flag": "🇮🇳", "value": 537, "extra": "106 matches" }
+      ]
+    },
+    {
+      "id": "most-wickets-odi",
+      "title": "Most Wickets — ODI",
+      "format": "odi",
+      "metric": "Wkts",
+      "rows": [
+        { "player": "Muttiah Muralitharan","team":"SRL","flag":"🇱🇰","value": 534, "extra": "350 matches" },
+        { "player": "Wasim Akram",      "team": "PAK", "flag": "🇵🇰", "value": 502, "extra": "356 matches" },
+        { "player": "Waqar Younis",     "team": "PAK", "flag": "🇵🇰", "value": 416, "extra": "262 matches" },
+        { "player": "Chaminda Vaas",    "team": "SRL", "flag": "🇱🇰", "value": 400, "extra": "322 matches" },
+        { "player": "Shahid Afridi",    "team": "PAK", "flag": "🇵🇰", "value": 395, "extra": "398 matches" }
+      ]
+    },
+    {
+      "id": "highest-individual-test",
+      "title": "Highest Individual Score — Test",
+      "format": "test",
+      "metric": "Score",
+      "rows": [
+        { "player": "Brian Lara",        "team": "WIN", "flag": "🌴", "value": 400, "extra": "vs ENG, 2004 (not out)" },
+        { "player": "Matthew Hayden",    "team": "AUS", "flag": "🇦🇺", "value": 380, "extra": "vs ZIM, 2003" },
+        { "player": "Brian Lara",        "team": "WIN", "flag": "🌴", "value": 375, "extra": "vs ENG, 1994" },
+        { "player": "Mahela Jayawardene","team":"SRL","flag":"🇱🇰","value": 374, "extra": "vs RSA, 2006" },
+        { "player": "Garfield Sobers",   "team": "WIN", "flag": "🌴", "value": 365, "extra": "vs PAK, 1958" }
+      ]
+    },
+    {
+      "id": "highest-team-total-test",
+      "title": "Highest Team Total — Test",
+      "format": "test",
+      "metric": "Total",
+      "rows": [
+        { "player": "Sri Lanka",  "team": "SRL", "flag": "🇱🇰", "value": 952, "extra": "vs IND, 1997 (6 dec)" },
+        { "player": "England",    "team": "ENG", "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿", "value": 903, "extra": "vs AUS, 1938 (7 dec)" },
+        { "player": "England",    "team": "ENG", "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿", "value": 849, "extra": "vs WIN, 1930" },
+        { "player": "West Indies","team": "WIN", "flag": "🌴", "value": 790, "extra": "vs PAK, 1958 (3 dec)" },
+        { "player": "Pakistan",   "team": "PAK", "flag": "🇵🇰", "value": 765, "extra": "vs SRL, 2009 (6 dec)" }
+      ]
+    },
+    {
+      "id": "most-100s-international",
+      "title": "Most Centuries — International",
+      "format": "mixed",
+      "metric": "100s",
+      "rows": [
+        { "player": "Sachin Tendulkar", "team": "IND", "flag": "🇮🇳", "value": 100, "extra": "51 Test · 49 ODI" },
+        { "player": "Virat Kohli",      "team": "IND", "flag": "🇮🇳", "value": 80,  "extra": "29 Test · 50 ODI · 1 T20I" },
+        { "player": "Ricky Ponting",    "team": "AUS", "flag": "🇦🇺", "value": 71,  "extra": "41 Test · 30 ODI" },
+        { "player": "Kumar Sangakkara", "team": "SRL", "flag": "🇱🇰", "value": 63,  "extra": "38 Test · 25 ODI" },
+        { "player": "Jacques Kallis",   "team": "RSA", "flag": "🇿🇦", "value": 62,  "extra": "45 Test · 17 ODI" }
+      ]
+    },
+    {
+      "id": "best-bowling-test",
+      "title": "Best Bowling Figures — Test",
+      "format": "test",
+      "metric": "Figures",
+      "rows": [
+        { "player": "Jim Laker",          "team": "ENG", "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿", "value": "10/53",  "extra": "vs AUS, 1956" },
+        { "player": "Anil Kumble",        "team": "IND", "flag": "🇮🇳", "value": "10/74",  "extra": "vs PAK, 1999" },
+        { "player": "Ajaz Patel",         "team": "NZL", "flag": "🇳🇿", "value": "10/119", "extra": "vs IND, 2021" },
+        { "player": "George Lohmann",     "team": "ENG", "flag": "🏴󠁧󠁢󠁥󠁮󠁧󠁿", "value": "9/28",   "extra": "vs RSA, 1896" }
+      ]
+    }
+  ]
+}

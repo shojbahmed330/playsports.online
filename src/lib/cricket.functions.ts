@@ -485,3 +485,217 @@ export const getCricketNews = createServerFn({ method: "GET" })
       };
     }
   });
+
+// ═══════════════════════════════════════════════════════════════
+// Batch 1 — extended endpoints
+// ═══════════════════════════════════════════════════════════════
+
+import rankingsJson from "@/data/cricket/rankings.json";
+import { CRICKET_LEAGUES, CRICKET_LEAGUE_BY_ID } from "./cricket-leagues";
+
+// ───────── Series list / detail ─────────
+
+export type CricketSeriesSummary = {
+  id: string;
+  slug: string;
+  label: string;
+  longName: string;
+  emoji: string;
+  format: string;
+  group: string;
+  tagline: string;
+  liveCount: number;
+  upcomingCount: number;
+  nextStartTs: number | null;
+};
+
+export const getCricketSeriesList = createServerFn({ method: "GET" })
+  .handler(async () => {
+    const results = await Promise.all(
+      CRICKET_LEAGUES.map(async (l) => {
+        let live = 0;
+        let upcoming = 0;
+        let next: number | null = null;
+        try {
+          const raw = (await apiGet(`/${l.id}/scoreboard`, 5 * 60_000)) as any;
+          const events: any[] = raw?.events ?? [];
+          const now = Date.now();
+          for (const e of events) {
+            const state = e?.status?.type?.state;
+            const ts = e?.date ? new Date(e.date).getTime() : 0;
+            if (state === "in") live++;
+            else if (state === "pre" && ts > now) {
+              upcoming++;
+              if (next == null || ts < next) next = ts;
+            }
+          }
+        } catch { /* ignore */ }
+        const summary: CricketSeriesSummary = {
+          id: l.id, slug: l.slug, label: l.label, longName: l.longName,
+          emoji: l.emoji, format: l.format, group: l.group, tagline: l.tagline,
+          liveCount: live, upcomingCount: upcoming, nextStartTs: next,
+        };
+        return summary;
+      }),
+    );
+    return { series: results };
+  });
+
+export type CricketSeriesDetail = {
+  league: { id: string; name: string; abbr: string; meta: typeof CRICKET_LEAGUES[number] | null };
+  matches: CricketMatch[];
+  standings: { teamId: string; team: string; abbr: string; logo: string | null; played: number; won: number; lost: number; pts: number }[];
+  topScorers: { name: string; team: string; runs: number }[];
+  topWicketTakers: { name: string; team: string; wickets: number }[];
+  error: string | null;
+};
+
+export const getCricketSeriesDetail = createServerFn({ method: "GET" })
+  .inputValidator((d: { leagueId: string }) => d)
+  .handler(async ({ data }) => {
+    try {
+      const raw = (await apiGet(`/${data.leagueId}/scoreboard`, 60_000)) as any;
+      const leagueMeta = raw?.leagues?.[0] ?? {};
+      const league = {
+        id: String(leagueMeta.id ?? data.leagueId),
+        name: leagueMeta.name ?? "",
+        abbr: leagueMeta.abbreviation ?? "",
+        meta: CRICKET_LEAGUE_BY_ID[data.leagueId] ?? null,
+      };
+      const events: any[] = raw?.events ?? [];
+      const matches = events.map((e) => mapMatch(e, league)).sort((a, b) => a.startTs - b.startTs);
+
+      // Derive simple standings from completed matches
+      const tbl = new Map<string, { teamId: string; team: string; abbr: string; logo: string | null; played: number; won: number; lost: number; pts: number }>();
+      for (const m of matches) {
+        if (m.status !== "post") continue;
+        for (const t of [m.home, m.away]) {
+          const row = tbl.get(t.id) ?? { teamId: t.id, team: t.name, abbr: t.abbr, logo: t.logo, played: 0, won: 0, lost: 0, pts: 0 };
+          row.played++;
+          if (t.winner === true) { row.won++; row.pts += 2; }
+          else if (t.winner === false) row.lost++;
+          tbl.set(t.id, row);
+        }
+      }
+      const standings = Array.from(tbl.values()).sort((a, b) => b.pts - a.pts || b.won - a.won);
+
+      return {
+        league, matches, standings,
+        topScorers: [] as CricketSeriesDetail["topScorers"],
+        topWicketTakers: [] as CricketSeriesDetail["topWicketTakers"],
+        error: null as string | null,
+      };
+    } catch (e) {
+      return {
+        league: { id: data.leagueId, name: "", abbr: "", meta: CRICKET_LEAGUE_BY_ID[data.leagueId] ?? null },
+        matches: [], standings: [], topScorers: [], topWicketTakers: [],
+        error: e instanceof Error ? e.message : "Unknown",
+      };
+    }
+  });
+
+// ───────── Teams ─────────
+
+export type CricketTeamSummary = {
+  id: string;
+  name: string;
+  abbr: string;
+  logo: string | null;
+  color: string | null;
+  leagueId: string;
+  leagueLabel: string;
+};
+
+export const getCricketTeamsForLeague = createServerFn({ method: "GET" })
+  .inputValidator((d: { leagueId: string }) => d)
+  .handler(async ({ data }) => {
+    const seen = new Map<string, CricketTeamSummary>();
+    try {
+      const raw = (await apiGet(`/${data.leagueId}/scoreboard`, 10 * 60_000)) as any;
+      const leagueMeta = raw?.leagues?.[0] ?? {};
+      const leagueLabel = leagueMeta.abbreviation ?? leagueMeta.name ?? data.leagueId;
+      const events: any[] = raw?.events ?? [];
+      for (const e of events) {
+        const comp = e?.competitions?.[0] ?? {};
+        for (const c of comp.competitors ?? []) {
+          const t = c?.team ?? {};
+          const id = String(t.id ?? "");
+          if (!id || seen.has(id)) continue;
+          seen.set(id, {
+            id,
+            name: t.displayName ?? t.name ?? "",
+            abbr: t.abbreviation ?? "",
+            logo: t.logo ?? t.logos?.[0]?.href ?? null,
+            color: t.color ? (String(t.color).startsWith("#") ? t.color : `#${t.color}`) : null,
+            leagueId: data.leagueId,
+            leagueLabel,
+          });
+        }
+      }
+    } catch { /* swallow */ }
+    return { teams: Array.from(seen.values()).sort((a, b) => a.name.localeCompare(b.name)) };
+  });
+
+// ───────── Player (best-effort: ESPN athlete summary) ─────────
+
+export type CricketPlayerProfile = {
+  id: string;
+  name: string;
+  shortName: string;
+  headshot: string | null;
+  team: string | null;
+  teamLogo: string | null;
+  country: string | null;
+  flag: string | null;
+  position: string | null;
+  batStyle: string | null;
+  bowlStyle: string | null;
+  dob: string | null;
+  birthPlace: string | null;
+  jersey: string | null;
+  error: string | null;
+};
+
+export const getCricketPlayer = createServerFn({ method: "GET" })
+  .inputValidator((d: { athleteId: string; leagueId?: string }) => d)
+  .handler(async ({ data }) => {
+    try {
+      const league = data.leagueId ?? "8048";
+      const raw = (await apiGet(`/${league}/athletes/${data.athleteId}`, 60 * 60_000)) as any;
+      const a = raw?.athlete ?? raw ?? {};
+      const team = a?.team ?? {};
+      const profile: CricketPlayerProfile = {
+        id: String(a.id ?? data.athleteId),
+        name: a.displayName ?? a.fullName ?? "",
+        shortName: a.shortName ?? a.lastName ?? "",
+        headshot: a.headshot?.href ?? a.headshot ?? null,
+        team: team.displayName ?? team.name ?? null,
+        teamLogo: team.logo ?? team.logos?.[0]?.href ?? null,
+        country: a.citizenship ?? null,
+        flag: a.flag?.href ?? null,
+        position: a.position?.displayName ?? a.position?.name ?? null,
+        batStyle: a.batting?.style ?? a.style?.batting ?? null,
+        bowlStyle: a.bowling?.style ?? a.style?.bowling ?? null,
+        dob: a.dateOfBirth ?? null,
+        birthPlace: a.birthPlace?.city ?? null,
+        jersey: a.jersey ?? null,
+        error: null,
+      };
+      return { profile };
+    } catch (e) {
+      return {
+        profile: null as CricketPlayerProfile | null,
+        error: e instanceof Error ? e.message : "Unknown",
+      };
+    }
+  });
+
+// ───────── Rankings (bundled fallback) ─────────
+
+export type CricketRankings = typeof rankingsJson;
+
+export const getCricketRankings = createServerFn({ method: "GET" })
+  .handler(async () => {
+    return { rankings: rankingsJson as CricketRankings };
+  });
+
