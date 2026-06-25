@@ -219,7 +219,7 @@ const ROUND_LABEL: Record<RoundKey, string> = {
 // ============================================================
 // GROUP STAGE — reuses GroupStage component (same design as 2018/2022)
 // ============================================================
-export function Wc2026GroupsView({ filter = "all", team }: { filter?: FootballFilter; team?: string } = {}) {
+export function Wc2026GroupsView({ filter = "all", team, date, onDateChange }: { filter?: FootballFilter; team?: string; date?: string; onDateChange?: (d: string | undefined) => void } = {}) {
   const standingsFn = useServerFn(getWc2026Standings);
   const fixturesFn = useServerFn(getWc2026Fixtures);
 
