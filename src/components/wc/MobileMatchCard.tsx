@@ -147,12 +147,34 @@ export function MobileMatchCard({
         )}
 
         {/* footer */}
-        {(dayStr || timeStr || match.stadium) && (
-          <div className="mt-2 flex items-center justify-between text-[10px] text-gray-500">
-            <span className="truncate">{[dayStr, timeStr].filter(Boolean).join(" · ")}</span>
-            {match.stadium && <span className="truncate ml-2">{match.stadium}</span>}
-          </div>
-        )}
+        {(() => {
+          const isUnplayed = match.home_score == null && match.away_score == null;
+          if (dayStr || timeStr) {
+            return (
+              <div className="mt-2 flex items-center justify-between text-[10px] text-gray-500">
+                <span className="truncate">{[dayStr, timeStr].filter(Boolean).join(" · ")}</span>
+                {match.stadium && <span className="truncate ml-2">{match.stadium}</span>}
+              </div>
+            );
+          }
+          if (isUnplayed) {
+            return (
+              <div className="mt-2 flex items-center justify-between text-[10px]">
+                <span className="text-gray-400 font-semibold uppercase tracking-wider">Kickoff TBD</span>
+                {match.stadium && <span className="text-gray-500 truncate ml-2">{match.stadium}</span>}
+              </div>
+            );
+          }
+          if (match.stadium) {
+            return (
+              <div className="mt-2 flex items-center justify-end text-[10px] text-gray-500">
+                <span className="truncate">{match.stadium}</span>
+              </div>
+            );
+          }
+          return null;
+        })()}
+
       </div>
 
       {/* Open match centre quick link for 2026 fixtures — only real ESPN events */}
