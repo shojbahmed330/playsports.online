@@ -619,3 +619,99 @@ export const getMlbGame = createServerFn({ method: "GET" })
       };
     }
   });
+
+// ───────── STANDINGS PRO ─────────
+export type MlbStandingRow = {
+  teamId: string;
+  team: string;
+  shortName: string;
+  abbr: string;
+  logo: string | null;
+  seed: number | null;
+  wins: number;
+  losses: number;
+  pct: number | null;
+  gamesBack: string | null;
+  divisionGamesBack: string | null;
+  streak: string | null;
+  last10: string | null;
+  home: string | null;
+  away: string | null;
+  runsFor: number | null;
+  runsAgainst: number | null;
+  runDiff: number | null;
+  playoffPct: string | null;
+  divisionPct: string | null;
+  wildCardPct: string | null;
+  magicDivision: number | null;
+  magicWildcard: number | null;
+};
+export type MlbDivision = { name: string; rows: MlbStandingRow[] };
+export type MlbLeague = { name: string; abbr: string; divisions: MlbDivision[] };
+
+function rowFromEntry(e: any): MlbStandingRow {
+  const stats: any[] = e?.stats ?? [];
+  const find = (k: string) =>
+    stats.find((s: any) => s?.name === k || s?.shortDisplayName === k);
+  const num = (k: string): number | null => {
+    const s = find(k);
+    return s && typeof s.value === "number" ? s.value : null;
+  };
+  const str = (k: string): string | null => {
+    const s = find(k);
+    return s?.displayValue ?? null;
+  };
+  const t = e?.team ?? {};
+  return {
+    teamId: String(t.id ?? ""),
+    team: t.displayName ?? t.name ?? "",
+    shortName: t.shortDisplayName ?? t.name ?? "",
+    abbr: t.abbreviation ?? "",
+    logo: t.logos?.[0]?.href ?? t.logo ?? null,
+    seed: num("playoffSeed"),
+    wins: num("wins") ?? 0,
+    losses: num("losses") ?? 0,
+    pct: num("winPercent"),
+    gamesBack: str("gamesBehind"),
+    divisionGamesBack: str("divisionGamesBehind"),
+    streak: str("streak"),
+    last10: str("Last Ten Games") ?? str("lastTenGames"),
+    home: str("Home") ?? str("home"),
+    away: str("Road") ?? str("Away") ?? str("road"),
+    runsFor: num("pointsFor"),
+    runsAgainst: num("pointsAgainst"),
+    runDiff: num("pointDifferential") ?? num("differential"),
+    playoffPct: str("playoffPercent"),
+    divisionPct: str("divisionPercent"),
+    wildCardPct: str("wildCardPercent"),
+    magicDivision: num("magicNumberDivision"),
+    magicWildcard: num("magicNumberWildcard"),
+  };
+}
+
+export const getMlbStandingsPro = createServerFn({ method: "GET" })
+  .handler(async () => {
+    try {
+      const url = "https://site.web.api.espn.com/apis/v2/sports/baseball/mlb/standings?level=3";
+      const raw = (await get(url, 30 * 60_000)) as any;
+      const leagues: MlbLeague[] = [];
+      for (const lg of raw?.children ?? []) {
+        const divisions: MlbDivision[] = [];
+        for (const div of lg?.children ?? []) {
+          const entries = div?.standings?.entries ?? [];
+          const rows = entries.map(rowFromEntry);
+          rows.sort((a: MlbStandingRow, b: MlbStandingRow) =>
+            (b.pct ?? 0) - (a.pct ?? 0));
+          divisions.push({ name: div.name ?? "Division", rows });
+        }
+        leagues.push({
+          name: lg.name ?? "League",
+          abbr: lg.abbreviation ?? "",
+          divisions,
+        });
+      }
+      return { leagues, error: null as string | null };
+    } catch (e) {
+      return { leagues: [] as MlbLeague[], error: e instanceof Error ? e.message : "Unknown" };
+    }
+  });

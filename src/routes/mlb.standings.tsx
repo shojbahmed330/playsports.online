@@ -1,26 +1,40 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { getStandings } from "@/lib/espn.functions";
-import { StandingsTable } from "@/components/sports/StandingsTable";
+import { getMlbStandingsPro } from "@/lib/mlb.functions";
+import { MlbStandingsPro } from "@/components/mlb/MlbStandingsPro";
 import { StandingsSkeleton } from "@/components/sports/Skeletons";
 
 export const Route = createFileRoute("/mlb/standings")({
+  head: () => ({
+    meta: [
+      { title: "MLB Standings — AL · NL · Wild Card" },
+      { name: "description", content: "Live MLB standings by Division, League, and Wild Card with GB, PCT, L10, streak, run differential, and playoff probability." },
+    ],
+  }),
   component: StandingsPage,
 });
 
 function StandingsPage() {
-  const fn = useServerFn(getStandings);
+  const fn = useServerFn(getMlbStandingsPro);
   const q = useQuery({
-    queryKey: ["mlb", "standings"],
-    queryFn: () => fn({ data: { sportPath: "baseball/mlb" } }),
-    staleTime: 60 * 60_000,
+    queryKey: ["mlb", "standings", "pro"],
+    queryFn: () => fn(),
+    staleTime: 15 * 60_000,
+    refetchOnWindowFocus: false,
   });
   return (
     <div className="space-y-4">
-      <h2 className="text-lg font-extrabold tracking-tight">AL · NL Divisions</h2>
-      {q.isLoading ? <StandingsSkeleton /> : (
-        <StandingsTable groups={q.data?.groups ?? []} />
+      <div>
+        <h2 className="text-lg font-extrabold tracking-tight">Standings</h2>
+        <p className="text-xs text-muted-foreground">
+          Division, league and wild-card races · auto-updates every 15 minutes
+        </p>
+      </div>
+      {q.isLoading ? (
+        <StandingsSkeleton />
+      ) : (
+        <MlbStandingsPro leagues={q.data?.leagues ?? []} />
       )}
     </div>
   );
