@@ -23,7 +23,7 @@ function MatchPage() {
   });
 
   const fx = q.data?.fixture;
-  const title = fx ? `${fx.homeTeam} v ${fx.awayTeam}` : "Match Centre";
+  const title = fx ? `${fx.home.name} v ${fx.away.name}` : "Match Centre";
   const isLive = fx?.status === "inprogress";
 
   return (
@@ -33,7 +33,7 @@ function MatchPage() {
         <div className="max-w-3xl mx-auto px-3 py-2.5 flex items-center gap-2">
           <Link
             to="/football"
-            search={(prev) => ({ ...prev, tab: "knockout" })}
+            search={(prev: Record<string, unknown>) => ({ ...prev, tab: "knockout" })}
             className="inline-flex items-center gap-1 text-xs text-gray-400 hover:text-white shrink-0"
             aria-label="Back to Football"
           >
