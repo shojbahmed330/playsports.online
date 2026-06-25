@@ -17,9 +17,11 @@ import { MobileGroupDeck } from "./MobileGroupDeck";
 import { MobileBracket } from "./MobileBracket";
 import { MobileLiveTicker } from "./MobileLiveTicker";
 import { WatchLivePanel } from "./WatchLivePanel";
+import { DateScrubber, filterByDateKey } from "./DateScrubber";
 import { flagOf } from "@/lib/flags";
 import { fetch2026VideoMap, videoKey } from "@/lib/wc-2026-videos";
 import { computeR32 } from "@/lib/wc2026-r32-format";
+
 
 import { applyFilter, useMyTeams, type FootballFilter } from "@/lib/football-filters";
 import { FootballPitchSkeleton, FootballEmptyBall } from "@/components/football/FootballSkeleton";
@@ -217,7 +219,7 @@ const ROUND_LABEL: Record<RoundKey, string> = {
 // ============================================================
 // GROUP STAGE — reuses GroupStage component (same design as 2018/2022)
 // ============================================================
-export function Wc2026GroupsView({ filter = "all", team }: { filter?: FootballFilter; team?: string } = {}) {
+export function Wc2026GroupsView({ filter = "all", team, date, onDateChange }: { filter?: FootballFilter; team?: string; date?: string; onDateChange?: (d: string | undefined) => void } = {}) {
   const standingsFn = useServerFn(getWc2026Standings);
   const fixturesFn = useServerFn(getWc2026Fixtures);
 
@@ -263,9 +265,10 @@ export function Wc2026GroupsView({ filter = "all", team }: { filter?: FootballFi
   }, [fQ.data, vQ.data, teamGroup, canonName]);
   const { teams: myTeams } = useMyTeams();
   const wcMatches = useMemo(
-    () => applyFilter(wcMatchesAll, filter, team, myTeams),
-    [wcMatchesAll, filter, team, myTeams],
+    () => filterByDateKey(applyFilter(wcMatchesAll, filter, team, myTeams), date),
+    [wcMatchesAll, filter, team, myTeams, date],
   );
+
 
   const [activeMatch, setActiveMatch] = useState<WCMatch | null>(null);
 
@@ -285,10 +288,15 @@ export function Wc2026GroupsView({ filter = "all", team }: { filter?: FootballFi
     <>
       <MobileLiveTicker matches={wcMatches} />
 
+      {onDateChange && (
+        <DateScrubber matches={wcMatchesAll} value={date} onChange={onDateChange} className="mb-4" />
+      )}
+
       {/* Mobile-only swipeable group deck */}
       <div className="md:hidden">
         <MobileGroupDeck groups={wcGroups} matches={wcMatches} onPick={setActiveMatch} />
       </div>
+
 
       {/* Desktop layout */}
       <div className="hidden md:block">
@@ -312,7 +320,7 @@ export function Wc2026GroupsView({ filter = "all", team }: { filter?: FootballFi
 // ============================================================
 // KNOCKOUT + TOP SCORERS — reuses MatchCard (same design)
 // ============================================================
-export function Wc2026KnockoutView({ filter = "all", team }: { filter?: FootballFilter; team?: string } = {}) {
+export function Wc2026KnockoutView({ filter = "all", team, date, onDateChange }: { filter?: FootballFilter; team?: string; date?: string; onDateChange?: (d: string | undefined) => void } = {}) {
   const fixturesFn = useServerFn(getWc2026Fixtures);
   const scorersFn = useServerFn(getWc2026TopScorers);
   const standingsFn = useServerFn(getWc2026Standings);
@@ -379,9 +387,10 @@ export function Wc2026KnockoutView({ filter = "all", team }: { filter?: Football
 
   const { teams: myTeams } = useMyTeams();
   const wcMatches = useMemo(
-    () => applyFilter(wcMatchesWithR32, filter, team, myTeams),
-    [wcMatchesWithR32, filter, team, myTeams],
+    () => filterByDateKey(applyFilter(wcMatchesWithR32, filter, team, myTeams), date),
+    [wcMatchesWithR32, filter, team, myTeams, date],
   );
+
   const groupedKnockout = useMemo(() => {
     const order: RoundKey[] = ["round_of_32", "round_of_16", "quarter_final", "semi_final", "third_place", "final"];
     const m: Partial<Record<RoundKey, WCMatch[]>> = {};
@@ -403,6 +412,12 @@ export function Wc2026KnockoutView({ filter = "all", team }: { filter?: Football
   return (
     <div className="space-y-10">
       <MobileLiveTicker matches={wcMatches} />
+
+      {onDateChange && (
+        <DateScrubber matches={wcMatchesWithR32} value={date} onChange={onDateChange} />
+      )}
+
+
 
       {groupedKnockout.length === 0 ? (
         <EmptyBox
