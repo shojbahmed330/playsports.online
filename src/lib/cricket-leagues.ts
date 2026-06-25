@@ -97,17 +97,52 @@ export function isCuratedLeague(id: string | null | undefined): boolean {
 
 // Active bilateral / international tour series IDs on ESPN.
 // ESPN's global cricket scoreboard is empty and there's no public
-// "all bilaterals" endpoint — we maintain known active tour IDs and
-// query each one alongside the franchise leagues. Add new tours as they start.
+// "all bilaterals" endpoint, so we maintain the FTP catalogue ourselves.
+// Each series's per-id scoreboard returns the next/live match in that tour.
+// Server fetches all in parallel, dedupes by event id, and tags league.
+// Add/remove IDs as the FTP rolls forward.
 export const BILATERAL_SERIES_IDS: string[] = [
-  "1496491", // New Zealand tour of England 2026
+  // ───── Men's international tours (2026 / 2026-27) ─────
   "1496488", // India tour of England 2026
+  "1496491", // New Zealand tour of England 2026
+  "1496492", // Crowe-Thorpe Trophy (ENG v NZ Tests)
   "1496563", // Pakistan tour of England 2026
-  "1528677", // England tour of Australia 2026/27
-  "1532475", // Australia tour of Bangladesh 2026
-  "1538292", // Sri Lanka tour of West Indies 2026
+  "1496567", // Sri Lanka tour of England 2026
   "1517705", // West Indies / Afghanistan in UAE 2025/26
+  "1525632", // Pakistan tour of Bangladesh 2025/26
+  "1525634", // Australia tour of South Africa 2026/27
+  "1525637", // Bangladesh tour of South Africa 2026/27
+  "1525641", // England tour of South Africa 2026/27
+  "1525642", // Basil D'Oliveira Trophy 2026/27
+  "1525644", // Sri Lanka tour of UAE 2025/26
+  "1525645", // Afghanistan tour of UAE [Mar 2026]
   "1527147", // Afghanistan tour of India 2026
+  "1527154", // Bahrain tour of Malaysia 2025/26
+  "1527258", // Bangladesh tour of Australia 2026
+  "1528677", // England tour of Australia 2026/27 (Ashes)
+  "1528680", // New Zealand tour of Australia 2026/27
+  "1528681", // Trans-Tasman Trophy
+  "1528683", // England tour of Australia [Mar 2027]
+  "1528684", // 150th Anniversary Test Match
+  "1529220", // Sri Lanka tour of India 2026/27
+  "1529223", // Zimbabwe tour of India 2026/27
+  "1529225", // Australia tour of India 2026/27
+  "1529226", // Border-Gavaskar Trophy 2026/27
+  "1532475", // Australia tour of Bangladesh 2026
+  "1532478", // Pakistan tour of Bangladesh 2026
+  "1535643", // Australia tour of Pakistan 2026
+  "1538290", // Bangladesh tour of Zimbabwe 2026
+  "1538292", // Sri Lanka tour of West Indies 2026
+  // ───── Women's international tours ─────
+  "1496529", // New Zealand Women tour of England 2026
+  "1496532", // India Women tour of England 2026
+  "1496536", // Ireland Women tour of England 2026
+  "1527251", // India Women tour of South Africa 2026
+  "1528270", // Sri Lanka Women tour of Bangladesh 2026
+  "1528686", // Bangladesh Women tour of Australia 2026/27
+  "1528690", // New Zealand Women tour of Australia 2026/27
+  "1528692", // Rose Bowl 2026/27 (AUS-W v NZ-W)
+  "1535648", // Zimbabwe Women tour of India 2026/27
 ];
 
 export const FORMAT_META: Record<CricketLeague["format"] | "any", { label: string; color: string }> = {
