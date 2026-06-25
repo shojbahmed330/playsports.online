@@ -9,6 +9,7 @@
 @import "./styles/confederation-tokens.css";
 @import "./styles/cricket-tokens.css";
 @import "./styles/mlb-tokens.css";
+@import "./styles/ipl-tokens.css";
 
 @custom-variant dark (&:is(.dark *));
 
