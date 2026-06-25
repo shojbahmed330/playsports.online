@@ -38,20 +38,26 @@ export const Route = createFileRoute("/cricket/ipl/records")({
 function RecordsPage() {
   const [q, setQ] = useState("");
   const [cat, setCat] = useState<string>("all");
+  const [sort, setSort] = useState<SortMode>("default");
 
   const visibleSections = useMemo(() => {
     const needle = q.trim().toLowerCase();
     return SECTIONS
       .filter((s) => cat === "all" || cat === s.key)
       .map((sec) => {
-        const list = ((records[sec.key] as Record[]) ?? []).filter((r) =>
+        let list = ((records[sec.key] as Record[]) ?? []).filter((r) =>
           !needle ||
           [r.label, r.player, r.team, r.value, r.context].some((v) => v?.toLowerCase().includes(needle)),
         );
+        if (sort === "team") {
+          list = [...list].sort((a, b) => (a.team ?? "z").localeCompare(b.team ?? "z"));
+        } else if (sort === "az") {
+          list = [...list].sort((a, b) => (a.player ?? a.team ?? "").localeCompare(b.player ?? b.team ?? ""));
+        }
         return { sec, list };
       })
       .filter((x) => x.list.length > 0);
-  }, [q, cat]);
+  }, [q, cat, sort]);
 
   return (
     <IplPageShell title="Records" subtitle="All-time IPL milestones and benchmarks">
@@ -65,20 +71,30 @@ function RecordsPage() {
             className="w-full rounded-lg border border-white/10 bg-gray-900/60 py-2 pl-9 pr-3 text-sm text-white placeholder:text-white/40 focus:border-amber-400/40 focus:outline-none"
           />
         </div>
-        <div className="flex flex-wrap gap-1">
-          {[{ key: "all", title: "All" }, ...SECTIONS].map((s) => (
-            <button
-              key={s.key}
-              type="button"
-              onClick={() => setCat(s.key)}
-              className={`rounded-full px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider transition ${
-                cat === s.key ? "bg-amber-400 text-gray-950" : "bg-white/5 text-white/70 hover:bg-white/10"
-              }`}
-            >
-              {s.title}
-            </button>
-          ))}
-        </div>
+        <select
+          value={sort}
+          onChange={(e) => setSort(e.target.value as SortMode)}
+          className="rounded-lg border border-white/10 bg-gray-900/60 px-3 py-2 text-xs font-semibold text-white focus:border-amber-400/40 focus:outline-none"
+        >
+          <option value="default">Sort: Featured</option>
+          <option value="team">Sort: Team</option>
+          <option value="az">Sort: A–Z</option>
+        </select>
+      </div>
+
+      <div className="mb-4 flex flex-wrap gap-1">
+        {[{ key: "all", title: "All" }, ...SECTIONS].map((s) => (
+          <button
+            key={s.key}
+            type="button"
+            onClick={() => setCat(s.key)}
+            className={`rounded-full px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider transition ${
+              cat === s.key ? "bg-amber-400 text-gray-950" : "bg-white/5 text-white/70 hover:bg-white/10"
+            }`}
+          >
+            {s.title}
+          </button>
+        ))}
       </div>
 
       {visibleSections.length === 0 && (
@@ -93,6 +109,7 @@ function RecordsPage() {
                 <span aria-hidden className="text-base">{sec.emoji}</span>
                 <h2 className="text-base sm:text-lg font-black tracking-tight text-white">{sec.title}</h2>
                 <span className={`ml-1 rounded-full bg-gradient-to-r ${sec.accent} px-2 py-0.5 text-[9px] font-black uppercase tracking-widest text-white`}>IPL</span>
+                <span className="ml-auto text-[10px] font-bold text-white/35">{list.length}</span>
               </div>
               <ul className="grid gap-2 sm:grid-cols-2">
                 {list.map((r, i) => (
@@ -121,8 +138,9 @@ function RecordsPage() {
         })}
       </div>
       <p className="mt-6 px-1 text-[11px] text-white/40">
-        Records reflect publicly published IPL data through the most recent completed season.
+        Records reflect publicly published IPL data through the most recent completed season. Player-sheet lookup will arrive in Step 2 once we have a stable player-name → athleteId index.
       </p>
     </IplPageShell>
   );
 }
+
