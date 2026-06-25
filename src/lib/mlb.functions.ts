@@ -158,10 +158,11 @@ export const getMlbTeam = createServerFn({ method: "GET" })
   .inputValidator((d: { id: string }) => d)
   .handler(async ({ data }) => {
     try {
-      const [teamRaw, scheduleRaw, rosterRaw] = await Promise.all([
+      const [teamRaw, scheduleRaw, rosterRaw, injuriesRaw] = await Promise.all([
         get(`${SITE}/teams/${data.id}`, 60 * 60_000) as Promise<any>,
         get(`${SITE}/teams/${data.id}/schedule`, 10 * 60_000) as Promise<any>,
         get(`${SITE}/teams/${data.id}/roster`, 6 * 60 * 60_000) as Promise<any>,
+        get(`${SITE}/teams/${data.id}/injuries`, 30 * 60_000).catch(() => null) as Promise<any>,
       ]);
       const t = teamRaw?.team ?? {};
       const team: MlbTeam = {
@@ -176,7 +177,54 @@ export const getMlbTeam = createServerFn({ method: "GET" })
         record: t.record?.items?.[0]?.summary ?? null,
         venue: t.franchise?.venue?.fullName ?? null,
         division: t.groups?.parent?.name ?? null,
+        standingSummary: t.standingSummary ?? null,
       };
+
+      // Team season statistics from record items
+      const recItems: any[] = t?.record?.items ?? [];
+      const overall = recItems.find((r: any) => r.type === "total") ?? recItems[0];
+      const stats: MlbTeamStat[] = (overall?.stats ?? []).map((s: any) => ({
+        name: s.name ?? s.displayName ?? "",
+        abbr: s.abbreviation ?? s.shortDisplayName ?? s.name ?? "",
+        value: s.displayValue ?? String(s.value ?? ""),
+      })).filter((s: MlbTeamStat) => s.abbr && s.value);
+
+      // Leaders
+      const leadersRaw: any[] = t?.leaders ?? [];
+      const leaders: MlbTeamLeader[] = [];
+      for (const cat of leadersRaw) {
+        const top = cat?.leaders?.[0];
+        if (!top) continue;
+        leaders.push({
+          category: cat.displayName ?? cat.name ?? "",
+          displayValue: top.displayValue ?? "",
+          athleteId: top.athlete?.id ? String(top.athlete.id) : null,
+          athleteName: top.athlete?.displayName ?? top.athlete?.shortName ?? "",
+          headshot: top.athlete?.headshot?.href ?? null,
+          position: top.athlete?.position?.abbreviation ?? null,
+        });
+      }
+
+      // Injuries
+      const injuriesList: any[] = injuriesRaw?.injuries ?? [];
+      const injuries: MlbInjury[] = [];
+      for (const group of injuriesList) {
+        const items: any[] = group?.injuries ?? (Array.isArray(group) ? group : []);
+        for (const inj of items) {
+          const a = inj.athlete ?? {};
+          injuries.push({
+            athleteId: a.id ? String(a.id) : null,
+            athleteName: a.displayName ?? a.fullName ?? "",
+            position: a.position?.abbreviation ?? null,
+            status: inj.status ?? inj.type?.description ?? "—",
+            type: inj.type?.description ?? null,
+            detail: inj.details?.detail ?? inj.shortComment ?? inj.longComment ?? null,
+            date: inj.date ?? null,
+            headshot: a.headshot?.href ?? null,
+          });
+        }
+      }
+
 
       const evs: any[] = scheduleRaw?.events ?? [];
       const schedule: MlbScheduleGame[] = evs.map((e: any) => {
