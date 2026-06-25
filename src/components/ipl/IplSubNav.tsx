@@ -12,17 +12,14 @@ type Tab = {
   match: (p: string) => boolean;
 };
 
-// Tabs preview future routes; only "Home" is wired in Step 2 — the rest
-// resolve to /cricket/ipl for now and will be split into real routes in
-// the next steps (scores, standings, teams, players, history, records).
 const TABS: Tab[] = [
-  { to: "/cricket/ipl", label: "Home",      emoji: "🏠", Icon: Home,        grad: "from-amber-400 to-orange-500", accent: "text-amber-200", match: (p) => p === "/cricket/ipl" || p === "/cricket/ipl/" },
-  { to: "/cricket/ipl", label: "Scores",    emoji: "🔴", Icon: CalendarDays, grad: "from-rose-500 to-red-500",     accent: "text-rose-200",  match: (p) => p.startsWith("/cricket/ipl/scores") },
-  { to: "/cricket/ipl", label: "Standings", emoji: "📊", Icon: BarChart3,   grad: "from-sky-500 to-blue-600",     accent: "text-sky-200",   match: (p) => p.startsWith("/cricket/ipl/standings") },
-  { to: "/cricket/ipl", label: "Teams",     emoji: "🛡️", Icon: Shield,      grad: "from-emerald-500 to-teal-500", accent: "text-emerald-200", match: (p) => p.startsWith("/cricket/ipl/teams") },
-  { to: "/cricket/ipl", label: "Players",   emoji: "👤", Icon: User,         grad: "from-fuchsia-500 to-purple-500", accent: "text-fuchsia-200", match: (p) => p.startsWith("/cricket/ipl/players") },
-  { to: "/cricket/ipl", label: "History",   emoji: "🏆", Icon: Trophy,      grad: "from-yellow-500 to-amber-600", accent: "text-yellow-200", match: (p) => p.startsWith("/cricket/ipl/history") },
-  { to: "/cricket/ipl", label: "Records",   emoji: "👑", Icon: Crown,       grad: "from-indigo-500 to-violet-500", accent: "text-indigo-200", match: (p) => p.startsWith("/cricket/ipl/records") },
+  { to: "/cricket/ipl",           label: "Home",      emoji: "🏠", Icon: Home,         grad: "from-amber-400 to-orange-500",   accent: "text-amber-200",   match: (p) => p === "/cricket/ipl" || p === "/cricket/ipl/" },
+  { to: "/cricket/ipl/scores",    label: "Scores",    emoji: "🔴", Icon: CalendarDays, grad: "from-rose-500 to-red-500",       accent: "text-rose-200",    match: (p) => p.startsWith("/cricket/ipl/scores") },
+  { to: "/cricket/ipl/standings", label: "Standings", emoji: "📊", Icon: BarChart3,    grad: "from-sky-500 to-blue-600",       accent: "text-sky-200",     match: (p) => p.startsWith("/cricket/ipl/standings") },
+  { to: "/cricket/ipl/teams",     label: "Teams",     emoji: "🛡️", Icon: Shield,       grad: "from-emerald-500 to-teal-500",   accent: "text-emerald-200", match: (p) => p.startsWith("/cricket/ipl/teams") },
+  { to: "/cricket/ipl/players",   label: "Players",   emoji: "👤", Icon: User,          grad: "from-fuchsia-500 to-purple-500", accent: "text-fuchsia-200", match: (p) => p.startsWith("/cricket/ipl/players") },
+  { to: "/cricket/ipl/history",   label: "History",   emoji: "🏆", Icon: Trophy,       grad: "from-yellow-500 to-amber-600",   accent: "text-yellow-200",  match: (p) => p.startsWith("/cricket/ipl/history") },
+  { to: "/cricket/ipl/records",   label: "Records",   emoji: "👑", Icon: Crown,        grad: "from-indigo-500 to-violet-500",  accent: "text-indigo-200",  match: (p) => p.startsWith("/cricket/ipl/records") },
 ];
 
 export function IplSubNav() {
