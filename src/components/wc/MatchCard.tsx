@@ -90,6 +90,7 @@ export function MatchCard({
         score={match.home_score}
         win={w === "home"}
         large={isFinal}
+        seedLabel={match.predicted ? match.home_seed_label ?? null : null}
       />
       <div className="h-px bg-white/[0.05]" />
       {/* away */}
@@ -98,6 +99,7 @@ export function MatchCard({
         score={match.away_score}
         win={w === "away"}
         large={isFinal}
+        seedLabel={match.predicted ? match.away_seed_label ?? null : null}
       />
 
       {hasPen && (
@@ -133,22 +135,29 @@ export function MatchCard({
 }
 
 function TeamRow({
-  team, score, win, large,
-}: { team: string; score: number | null; win: boolean; large?: boolean }) {
+  team, score, win, large, seedLabel,
+}: { team: string; score: number | null; win: boolean; large?: boolean; seedLabel?: string | null }) {
   return (
     <div
-      className={`flex items-center gap-2 px-3 ${large ? "h-12" : "h-10"}
+      className={`flex items-center gap-2 px-3 ${large ? "h-12" : "h-11"}
         ${win ? "bg-gradient-to-r from-amber-500/15 to-transparent" : ""}`}
     >
       <span className="text-lg leading-none shrink-0">{flagOf(team)}</span>
-      <span
-        className={`flex-1 min-w-0 truncate text-sm ${
-          win ? "text-amber-400 font-semibold" : "text-gray-500"
-        }`}
-      >
-        {team}
-        {win && <Check className="inline ml-1 size-3 text-green-500" />}
-      </span>
+      <div className="flex-1 min-w-0">
+        <div
+          className={`truncate text-sm ${
+            win ? "text-amber-400 font-semibold" : "text-gray-300"
+          }`}
+        >
+          {team}
+          {win && <Check className="inline ml-1 size-3 text-green-500" />}
+        </div>
+        {seedLabel && (
+          <div className="text-[9.5px] text-sky-300/80 uppercase tracking-wider truncate -mt-0.5">
+            {seedLabel}
+          </div>
+        )}
+      </div>
       <span
         className={`shrink-0 tabular-nums ${
           win

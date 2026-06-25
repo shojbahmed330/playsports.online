@@ -113,17 +113,27 @@ export function MobileMatchCard({
 
         {/* teams + score */}
         <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
-          <div className={`flex items-center gap-2 ${win === "home" ? "text-white" : "text-gray-400"}`}>
+          <div className={`flex items-center gap-2 min-w-0 ${win === "home" ? "text-white" : "text-gray-400"}`}>
             <span className="text-2xl shrink-0">{flagOf(match.home_team)}</span>
-            <span className="text-sm font-semibold truncate">{match.home_team}</span>
+            <div className="min-w-0">
+              <div className="text-sm font-semibold truncate">{match.home_team}</div>
+              {match.predicted && match.home_seed_label && (
+                <div className="text-[9px] text-sky-300/80 truncate uppercase tracking-wider">{match.home_seed_label}</div>
+              )}
+            </div>
           </div>
           <div className="text-center px-2">
             <div className={`text-2xl font-black tabular-nums ${st === "live" ? "text-red-300" : "text-white"}`}>
               {match.home_score ?? "–"}<span className="text-gray-600 mx-1">:</span>{match.away_score ?? "–"}
             </div>
           </div>
-          <div className={`flex items-center gap-2 justify-end ${win === "away" ? "text-white" : "text-gray-400"}`}>
-            <span className="text-sm font-semibold truncate text-right">{match.away_team}</span>
+          <div className={`flex items-center gap-2 justify-end min-w-0 ${win === "away" ? "text-white" : "text-gray-400"}`}>
+            <div className="min-w-0 text-right">
+              <div className="text-sm font-semibold truncate">{match.away_team}</div>
+              {match.predicted && match.away_seed_label && (
+                <div className="text-[9px] text-sky-300/80 truncate uppercase tracking-wider">{match.away_seed_label}</div>
+              )}
+            </div>
             <span className="text-2xl shrink-0">{flagOf(match.away_team)}</span>
           </div>
         </div>
