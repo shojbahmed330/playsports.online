@@ -1001,3 +1001,200 @@ export const getMlbAthleteGameLog = createServerFn({ method: "GET" })
       };
     }
   });
+
+// ───────── POSTSEASON BRACKET ─────────
+export type MlbPostseasonGame = {
+  id: string;
+  date: string;
+  startTs: number;
+  status: "pre" | "in" | "post";
+  statusDetail: string;
+  home: { id: string; abbr: string; name: string; logo: string | null; score: number | null; winner: boolean };
+  away: { id: string; abbr: string; name: string; logo: string | null; score: number | null; winner: boolean };
+};
+
+export type MlbPostseasonSeries = {
+  key: string;
+  title: string;          // e.g. "American League Division Series"
+  round: "Wild Card" | "Division Series" | "League Championship" | "World Series" | "Other";
+  league: "AL" | "NL" | "MLB";
+  summary: string | null; // "LAD wins 3-1"
+  teamA: { id: string; abbr: string; name: string; logo: string | null; wins: number };
+  teamB: { id: string; abbr: string; name: string; logo: string | null; wins: number };
+  games: MlbPostseasonGame[];
+};
+
+function classifyRound(headline: string): { round: MlbPostseasonSeries["round"]; league: MlbPostseasonSeries["league"] } {
+  const h = headline.toLowerCase();
+  const league: MlbPostseasonSeries["league"] =
+    h.includes("american league") || h.startsWith("al ") ? "AL"
+    : h.includes("national league") || h.startsWith("nl ") ? "NL"
+    : "MLB";
+  if (h.includes("world series")) return { round: "World Series", league: "MLB" };
+  if (h.includes("championship")) return { round: "League Championship", league };
+  if (h.includes("division series")) return { round: "Division Series", league };
+  if (h.includes("wild card")) return { round: "Wild Card", league };
+  return { round: "Other", league };
+}
+
+export const getMlbPostseason = createServerFn({ method: "GET" })
+  .inputValidator((d: { year?: number }) => d)
+  .handler(async ({ data }) => {
+    const year = data.year ?? new Date().getFullYear();
+    try {
+      const url = `${SITE}/scoreboard?dates=${year}&seasontype=3&limit=200`;
+      const raw = (await get(url, 30 * 60_000)) as any;
+      const events: any[] = raw?.events ?? [];
+
+      const seriesMap = new Map<string, MlbPostseasonSeries>();
+
+      for (const e of events) {
+        const comp = e?.competitions?.[0] ?? {};
+        const notes: any[] = comp?.notes ?? [];
+        const headline = notes[0]?.headline ?? notes[0]?.title ?? e?.name ?? "";
+        const seriesObj = comp?.series ?? null;
+        const competitors: any[] = comp?.competitors ?? [];
+        const home = competitors.find((c) => c.homeAway === "home") ?? competitors[0] ?? {};
+        const away = competitors.find((c) => c.homeAway === "away") ?? competitors[1] ?? {};
+
+        const { round, league } = classifyRound(headline);
+        // Build a stable series key: prefer series.competitors id pair (sorted) + headline
+        const idA = String(home?.team?.id ?? "");
+        const idB = String(away?.team?.id ?? "");
+        const pair = [idA, idB].sort().join("-");
+        const key = `${headline}::${pair}`;
+
+        const state = comp?.status?.type?.state ?? "pre";
+        const status: "pre" | "in" | "post" = state === "in" ? "in" : state === "post" ? "post" : "pre";
+
+        const game: MlbPostseasonGame = {
+          id: String(e.id ?? ""),
+          date: e?.date ?? "",
+          startTs: e?.date ? new Date(e.date).getTime() : 0,
+          status,
+          statusDetail: comp?.status?.type?.shortDetail ?? "",
+          home: {
+            id: idA,
+            abbr: home?.team?.abbreviation ?? "",
+            name: home?.team?.shortDisplayName ?? home?.team?.name ?? "",
+            logo: home?.team?.logo ?? home?.team?.logos?.[0]?.href ?? null,
+            score: home?.score != null ? Number(home.score) : null,
+            winner: !!home?.winner,
+          },
+          away: {
+            id: idB,
+            abbr: away?.team?.abbreviation ?? "",
+            name: away?.team?.shortDisplayName ?? away?.team?.name ?? "",
+            logo: away?.team?.logo ?? away?.team?.logos?.[0]?.href ?? null,
+            score: away?.score != null ? Number(away.score) : null,
+            winner: !!away?.winner,
+          },
+        };
+
+        let s = seriesMap.get(key);
+        if (!s) {
+          s = {
+            key,
+            title: headline || `${round} ${league}`,
+            round,
+            league,
+            summary: seriesObj?.summary ?? seriesObj?.title ?? null,
+            teamA: { id: idA, abbr: game.home.abbr, name: game.home.name, logo: game.home.logo, wins: 0 },
+            teamB: { id: idB, abbr: game.away.abbr, name: game.away.name, logo: game.away.logo, wins: 0 },
+            games: [],
+          };
+          seriesMap.set(key, s);
+        }
+        s.games.push(game);
+        if (game.status === "post") {
+          if (game.home.winner) {
+            if (game.home.id === s.teamA.id) s.teamA.wins++;
+            else s.teamB.wins++;
+          } else if (game.away.winner) {
+            if (game.away.id === s.teamA.id) s.teamA.wins++;
+            else s.teamB.wins++;
+          }
+        }
+      }
+
+      const series = Array.from(seriesMap.values()).map((s) => {
+        s.games.sort((a, b) => a.startTs - b.startTs);
+        if (!s.summary && (s.teamA.wins || s.teamB.wins)) {
+          const winner = s.teamA.wins > s.teamB.wins ? s.teamA : s.teamB.wins > s.teamA.wins ? s.teamB : null;
+          if (winner) s.summary = `${winner.abbr} wins ${Math.max(s.teamA.wins, s.teamB.wins)}-${Math.min(s.teamA.wins, s.teamB.wins)}`;
+        }
+        return s;
+      });
+
+      const order: MlbPostseasonSeries["round"][] = ["Wild Card", "Division Series", "League Championship", "World Series", "Other"];
+      series.sort((a, b) => {
+        const ra = order.indexOf(a.round), rb = order.indexOf(b.round);
+        if (ra !== rb) return ra - rb;
+        if (a.league !== b.league) return a.league.localeCompare(b.league);
+        return (a.games[0]?.startTs ?? 0) - (b.games[0]?.startTs ?? 0);
+      });
+
+      return { year, series, error: null as string | null };
+    } catch (e) {
+      return { year, series: [] as MlbPostseasonSeries[], error: e instanceof Error ? e.message : "Unknown" };
+    }
+  });
+
+// ───────── HISTORICAL SEASON LEADERS (multi-season snapshot) ─────────
+export type MlbSeasonLeaderTop = {
+  key: string;
+  label: string;
+  group: "batting" | "pitching";
+  top: { athleteId: string; athleteName: string; teamAbbr: string | null; teamLogo: string | null; value: string; headshot: string | null }[];
+};
+
+export const getMlbSeasonLeaderSnapshot = createServerFn({ method: "GET" })
+  .inputValidator((d: { season: number }) => d)
+  .handler(async ({ data }) => {
+    try {
+      const raw = (await get(`${SITE}/leaders?season=${data.season}`, 6 * 60 * 60_000)) as any;
+      const all: any[] = raw?.leaders?.categories ?? raw?.categories ?? [];
+      const byKey = new Map<string, any>();
+      for (const c of all) byKey.set(c?.name ?? c?.shortDisplayName ?? "", c);
+
+      const pickList: Array<{ key: string; label: string; group: "batting" | "pitching" }> = [
+        { key: "homeRuns", label: "Home Runs", group: "batting" },
+        { key: "RBIs", label: "RBI", group: "batting" },
+        { key: "battingAverage", label: "Batting Average", group: "batting" },
+        { key: "hits", label: "Hits", group: "batting" },
+        { key: "stolenBases", label: "Stolen Bases", group: "batting" },
+        { key: "OPS", label: "OPS", group: "batting" },
+        { key: "wins", label: "Wins", group: "pitching" },
+        { key: "strikeouts", label: "Strikeouts", group: "pitching" },
+        { key: "ERA", label: "ERA", group: "pitching" },
+        { key: "saves", label: "Saves", group: "pitching" },
+        { key: "WHIP", label: "WHIP", group: "pitching" },
+      ];
+
+      const out: MlbSeasonLeaderTop[] = [];
+      for (const p of pickList) {
+        const c = byKey.get(p.key);
+        const leaders: any[] = c?.leaders ?? [];
+        if (!leaders.length) continue;
+        out.push({
+          ...p,
+          top: leaders.slice(0, 5).map((l) => {
+            const ath = l?.athlete ?? {};
+            const team = ath?.team ?? l?.team ?? {};
+            return {
+              athleteId: String(ath?.id ?? ""),
+              athleteName: ath?.displayName ?? ath?.fullName ?? "",
+              teamAbbr: team?.abbreviation ?? null,
+              teamLogo: team?.logos?.[0]?.href ?? team?.logo ?? null,
+              value: l?.displayValue ?? String(l?.value ?? ""),
+              headshot: ath?.headshot?.href ?? null,
+            };
+          }),
+        });
+      }
+
+      return { season: data.season, categories: out, error: null as string | null };
+    } catch (e) {
+      return { season: data.season, categories: [] as MlbSeasonLeaderTop[], error: e instanceof Error ? e.message : "Unknown" };
+    }
+  });
