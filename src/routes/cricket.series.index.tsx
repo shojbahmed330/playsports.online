@@ -4,11 +4,12 @@ import { useServerFn } from "@tanstack/react-start";
 import { useMemo } from "react";
 import { zodValidator, fallback } from "@tanstack/zod-adapter";
 import { z } from "zod";
-import { Trophy, Flame, CalendarClock } from "lucide-react";
+import { Flame, CalendarClock, Globe2, ChevronRight } from "lucide-react";
 import { SportNav } from "@/components/sports/SportNav";
 import { CricketSubNav } from "@/components/cricket/CricketSubNav";
-import { getCricketSeriesList } from "@/lib/cricket.functions";
+import { getCricketSeriesList, getBilateralSeriesList, type BilateralTour } from "@/lib/cricket.functions";
 import { CRICKET_LEAGUE_BY_ID } from "@/lib/cricket-leagues";
+
 
 const search = z.object({
   fmt: fallback(z.enum(["any", "t20", "odi", "test"]), "any").default("any"),
