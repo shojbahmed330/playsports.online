@@ -351,6 +351,8 @@ function TeamPage() {
           </ul>
         )}
       </section>
+      )}
+
 
       <CricketPlayerSheet
         athleteId={activeAthlete}
