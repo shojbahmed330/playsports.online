@@ -1,0 +1,60 @@
+/* IPL franchise color tokens. Consumed by team cards, hero gradients
+   and row highlights. Each token pair = primary + ink (text-on-primary). */
+
+:root {
+  --ipl-gold: #ffcc00;
+  --ipl-navy: #0a1024;
+  --ipl-trophy: #d4af37;
+
+  --ipl-csk: #ffcc00;     --ipl-csk-ink: #0a1024;
+  --ipl-mi:  #004ba0;     --ipl-mi-ink:  #ffffff;
+  --ipl-rcb: #ec1c24;     --ipl-rcb-ink: #ffffff;
+  --ipl-kkr: #3a225d;     --ipl-kkr-ink: #ffffff;
+  --ipl-srh: #fb643e;     --ipl-srh-ink: #ffffff;
+  --ipl-dc:  #17449b;     --ipl-dc-ink:  #ffffff;
+  --ipl-rr:  #e40c7c;     --ipl-rr-ink:  #ffffff;
+  --ipl-pbks:#a7282a;     --ipl-pbks-ink:#ffffff;
+  --ipl-gt:  #1c2c5b;     --ipl-gt-ink:  #ffffff;
+  --ipl-lsg: #a4d1ef;     --ipl-lsg-ink: #0a1024;
+}
+
+.ipl-hero-grad {
+  background:
+    radial-gradient(120% 90% at 12% 0%, color-mix(in oklab, var(--ipl-gold) 35%, transparent), transparent 60%),
+    radial-gradient(110% 90% at 100% 100%, color-mix(in oklab, var(--ipl-navy) 80%, transparent), transparent 60%),
+    linear-gradient(160deg, #0b1437 0%, #0a1024 60%, #15173a 100%);
+}
+
+.ipl-trophy-ring {
+  box-shadow:
+    inset 0 0 0 1px color-mix(in oklab, var(--ipl-trophy) 45%, transparent),
+    0 12px 40px -16px color-mix(in oklab, var(--ipl-trophy) 50%, transparent);
+}
+
+.ipl-orange-cap {
+  background: linear-gradient(135deg, #ff8a00 0%, #ff5a00 100%);
+  color: #fff;
+}
+.ipl-purple-cap {
+  background: linear-gradient(135deg, #6b21a8 0%, #4c1d95 100%);
+  color: #fff;
+}
+
+@keyframes ipl-shine {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.ipl-trophy-shine {
+  background: linear-gradient(110deg, transparent 30%, color-mix(in oklab, var(--ipl-trophy) 60%, transparent) 50%, transparent 70%);
+  background-size: 200% 100%;
+  animation: ipl-shine 3.5s ease-in-out infinite;
+}
+
+/* Mobile snap nav helpers for IplSubNav */
+.ipl-snap-nav { scroll-snap-type: x mandatory; scrollbar-width: none; }
+.ipl-snap-nav::-webkit-scrollbar { display: none; }
+.ipl-snap-nav > * { scroll-snap-align: center; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ipl-trophy-shine { animation: none; }
+}
