@@ -165,6 +165,31 @@ function Chip({ item }: { item: Item }) {
       </Link>
     );
   }
+  if (item.kind === "cricket") {
+    const m = item.match;
+    const live = m.status === "in";
+    const finished = m.status === "post";
+    return (
+      <Link
+        to="/cricket/match/$id"
+        params={{ id: m.id }}
+        className="shrink-0 min-w-[200px] max-w-[240px] rounded-xl border border-emerald-500/30 bg-emerald-500/[0.06] hover:bg-emerald-500/[0.12] hover:border-emerald-400/60 transition-colors px-3 py-2"
+      >
+        <div className="flex items-center justify-between mb-1">
+          <span className="text-[9px] uppercase tracking-wider font-bold text-emerald-300 truncate">
+            🏏 {m.leagueAbbr || m.leagueName} · {m.format}
+          </span>
+          <span className="text-[10px] font-bold text-gray-400 shrink-0 ml-1">
+            {live ? <span className="text-red-300">LIVE</span>
+              : finished ? "FT"
+              : fmtTime(m.startTs)}
+          </span>
+        </div>
+        <Team name={m.home.shortName || m.home.name} score={m.home.scoreSummary} />
+        <Team name={m.away.shortName || m.away.name} score={m.away.scoreSummary} />
+      </Link>
+    );
+  }
   const { sport, game } = item;
   const live = game.status === "in";
   const finished = game.status === "post";
