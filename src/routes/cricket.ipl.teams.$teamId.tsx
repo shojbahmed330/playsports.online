@@ -1,12 +1,14 @@
 import { useMemo, useState } from "react";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useSuspenseQuery, useQuery, queryOptions } from "@tanstack/react-query";
+import { MapPin, Crown } from "lucide-react";
 import { IplPageShell } from "@/components/ipl/IplPageShell";
 import { CricketMatchCard } from "@/components/cricket/CricketMatchCard";
 import { CricketPlayerSheet } from "@/components/cricket/CricketPlayerSheet";
 import { toCricketMatch } from "@/components/ipl/toCricketMatch";
 import { getIplTeam, getIplTeamSquad } from "@/lib/ipl.functions";
 import history from "@/data/cricket/ipl/history.json";
+import captainsData from "@/data/cricket/ipl/captains.json";
 
 const qo = (teamId: string) =>
   queryOptions({
