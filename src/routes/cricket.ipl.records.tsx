@@ -1,8 +1,10 @@
 import { useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { Search } from "lucide-react";
+import { useQuery, queryOptions } from "@tanstack/react-query";
+import { Search, Trophy } from "lucide-react";
 import { IplPageShell } from "@/components/ipl/IplPageShell";
 import records from "@/data/cricket/ipl/records.json";
+import { getIplLeaders, IPL_SEASON_IDS } from "@/lib/ipl.functions";
 
 type Record = {
   label: string;
@@ -61,6 +63,8 @@ function RecordsPage() {
 
   return (
     <IplPageShell title="Records" subtitle="All-time IPL milestones and benchmarks">
+      <SeasonLeadersPanel />
+
       <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center">
         <div className="relative flex-1">
           <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-white/40" />
@@ -138,9 +142,88 @@ function RecordsPage() {
         })}
       </div>
       <p className="mt-6 px-1 text-[11px] text-white/40">
-        Records reflect publicly published IPL data through the most recent completed season. Player-sheet lookup will arrive in Step 2 once we have a stable player-name → athleteId index.
+        All-time records reflect publicly published IPL data through the most recent completed season. Season leaders above are derived live from per-match scorecards.
       </p>
     </IplPageShell>
   );
 }
+
+// ─── Live per-season leaders ──────────────────────────────
+type Metric = "runs" | "wickets" | "sixes";
+const METRICS: { id: Metric; label: string; accent: string }[] = [
+  { id: "runs", label: "Orange Cap (Runs)", accent: "from-amber-500 to-orange-500" },
+  { id: "wickets", label: "Purple Cap (Wickets)", accent: "from-violet-500 to-purple-600" },
+  { id: "sixes", label: "Most Sixes", accent: "from-emerald-500 to-teal-500" },
+];
+
+function SeasonLeadersPanel() {
+  const years = IPL_SEASON_IDS.map((s) => s.year);
+  const [year, setYear] = useState<number | "current">("current");
+  const [metric, setMetric] = useState<Metric>("runs");
+
+  const q = useQuery(
+    queryOptions({
+      queryKey: ["ipl", "leaders", year, metric],
+      queryFn: () => getIplLeaders({ data: { year, metric } }),
+      staleTime: 5 * 60_000,
+    }),
+  );
+  const leaders = q.data?.leaders?.slice(0, 10) ?? [];
+  const accent = METRICS.find((m) => m.id === metric)!.accent;
+
+  return (
+    <section className="mb-6 overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-gray-900/80 via-gray-900/60 to-gray-900/40 p-4">
+      <div className="mb-3 flex flex-wrap items-center gap-2">
+        <Trophy className="size-4 text-amber-300" />
+        <h2 className="text-sm font-black uppercase tracking-widest text-white">Season Leaders</h2>
+        <span className={`rounded-full bg-gradient-to-r ${accent} px-2 py-0.5 text-[9px] font-black uppercase tracking-widest text-white`}>Live</span>
+        <div className="ml-auto flex gap-1.5">
+          <select
+            value={String(year)}
+            onChange={(e) => setYear(e.target.value === "current" ? "current" : Number(e.target.value))}
+            className="rounded-lg border border-white/10 bg-gray-950/70 px-2 py-1 text-[11px] font-bold text-white focus:outline-none"
+          >
+            {years.map((y) => (
+              <option key={String(y)} value={String(y)}>
+                {y === "current" ? "Current" : y}
+              </option>
+            ))}
+          </select>
+          <select
+            value={metric}
+            onChange={(e) => setMetric(e.target.value as Metric)}
+            className="rounded-lg border border-white/10 bg-gray-950/70 px-2 py-1 text-[11px] font-bold text-white focus:outline-none"
+          >
+            {METRICS.map((m) => <option key={m.id} value={m.id}>{m.label}</option>)}
+          </select>
+        </div>
+      </div>
+
+      {q.isLoading ? (
+        <div className="py-6 text-center text-xs text-white/50">Crunching scorecards…</div>
+      ) : leaders.length === 0 ? (
+        <div className="py-6 text-center text-xs text-white/50">No data for this season yet.</div>
+      ) : (
+        <ol className="grid gap-1.5 sm:grid-cols-2">
+          {leaders.map((l, i) => (
+            <li key={l.athleteId} className="flex items-center gap-3 rounded-lg bg-white/[0.04] px-3 py-2 ring-1 ring-white/5">
+              <span className="w-6 shrink-0 text-center text-xs font-black text-white/55">{i + 1}</span>
+              {l.headshot ? (
+                <img src={l.headshot} alt="" className="size-8 shrink-0 rounded-full object-cover ring-1 ring-white/10" loading="lazy" />
+              ) : (
+                <div className="size-8 shrink-0 rounded-full bg-white/10" />
+              )}
+              <div className="min-w-0 flex-1">
+                <div className="truncate text-sm font-bold text-white">{l.athleteName}</div>
+                <div className="truncate text-[10px] uppercase tracking-wider text-white/50">{l.teamAbbr || l.teamName}</div>
+              </div>
+              <span className="shrink-0 font-black tabular-nums text-amber-300">{l.displayValue}</span>
+            </li>
+          ))}
+        </ol>
+      )}
+    </section>
+  );
+}
+
 

@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { TeamCrest } from "./TeamCrest";
 import { Flame, Clock, MapPin, ArrowRight, Trophy } from "lucide-react";
 import type { CricketMatch } from "@/lib/cricket.functions";
 
@@ -140,13 +141,7 @@ function TeamRow({ side }: { side: CricketMatch["home"] }) {
   return (
     <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
       <div className="flex items-center gap-3 min-w-0">
-        {side.logo ? (
-          <img src={side.logo} alt="" className="size-9 rounded-full bg-white/5 ring-1 ring-white/10 object-contain shrink-0" loading="lazy" />
-        ) : (
-          <div className="size-9 rounded-full bg-emerald-500/15 ring-1 ring-emerald-500/30 grid place-items-center text-xs font-bold text-emerald-200 shrink-0">
-            {side.abbr || side.shortName?.slice(0, 3) || "?"}
-          </div>
-        )}
+        <TeamCrest src={side.logo} abbr={side.abbr} name={side.name} className="size-9 shrink-0" rounded />
         <div className="min-w-0">
           <div className="text-sm font-bold text-white truncate">{side.name || side.shortName}</div>
           {side.scoreSummary && (

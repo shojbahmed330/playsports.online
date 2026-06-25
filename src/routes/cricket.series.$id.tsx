@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { TeamCrest } from "@/components/cricket/TeamCrest";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useMemo } from "react";
@@ -152,7 +153,7 @@ function SeriesPage() {
                           <tr key={r.team.id} className="hover:bg-gray-900/40">
                             <td className="px-3 py-2 text-gray-500 tabular-nums">{i + 1}</td>
                             <td className="px-3 py-2 flex items-center gap-2">
-                              {r.team.logo ? <img src={r.team.logo} alt="" className="size-5 object-contain" loading="lazy" /> : <span className="text-[10px] text-gray-500">{r.team.abbr}</span>}
+                              <TeamCrest src={r.team.logo} abbr={r.team.abbr} name={r.team.name} className="size-5" />
                               <span className="font-medium">{r.team.shortName || r.team.name}</span>
                             </td>
                             <td className="px-3 py-2 text-right tabular-nums">{r.played}</td>

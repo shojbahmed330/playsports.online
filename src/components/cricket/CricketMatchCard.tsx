@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { TeamCrest } from "./TeamCrest";
 import { MapPin, Tv, Trophy } from "lucide-react";
 import type { CricketMatch } from "@/lib/cricket.functions";
 import { ScoreFlip } from "@/components/sports/ScoreFlip";
@@ -120,13 +121,7 @@ function TeamRow({
   const score = inningsLine(t);
   return (
     <div className={`flex items-center gap-3 px-3 py-2.5 ${winner ? "bg-emerald-500/[0.07]" : ""}`}>
-      <div className="shrink-0 size-8 rounded bg-gray-800/60 grid place-items-center overflow-hidden ring-1 ring-white/5">
-        {t.logo ? (
-          <img src={t.logo} alt="" loading="lazy" className="size-7 object-contain" />
-        ) : (
-          <span className="text-[10px] text-gray-500 font-bold">{t.abbr || "—"}</span>
-        )}
-      </div>
+      <TeamCrest src={t.logo} abbr={t.abbr} name={t.name} className="size-8 shrink-0" />
       <div className="min-w-0 flex-1">
         <div className={`text-sm truncate ${dim ? "text-gray-500" : winner ? "text-white font-semibold" : "text-gray-200"}`}>
           {t.shortName || t.name}
