@@ -29,7 +29,7 @@ const squadQo = (teamId: string, year: SeasonYear) =>
 
 export const Route = createFileRoute("/cricket/ipl/teams/$teamId")({
   loader: async ({ context, params }) => {
-    const data = await context.queryClient.ensureQueryData(qo(params.teamId));
+    const data = await context.queryClient.ensureQueryData(qo(params.teamId, "current"));
     if (!data.team) throw notFound();
     return data;
   },
