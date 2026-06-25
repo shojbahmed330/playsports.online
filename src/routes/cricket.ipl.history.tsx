@@ -283,3 +283,47 @@ function AuctionCard({ tone, label, h }: { tone: "amber" | "violet"; label: stri
     </div>
   );
 }
+
+function BracketPanel({ year }: { year: number }) {
+  const q = useQuery(bracketQo(year));
+  if (q.isLoading) {
+    return <div className="px-4 pb-4 text-[11px] text-white/50">Loading bracket…</div>;
+  }
+  const bracket = q.data?.bracket ?? [];
+  const empty = bracket.every((b) => !b.match);
+  if (empty) {
+    return <div className="px-4 pb-4 text-[11px] text-white/50">No playoff matches available for this season.</div>;
+  }
+  return (
+    <div className="grid gap-2 px-4 pb-4 sm:grid-cols-2">
+      {bracket.map((b) => <BracketCell key={b.stage} b={b} />)}
+    </div>
+  );
+}
+
+function BracketCell({ b }: { b: IplBracketMatch }) {
+  const m = b.match;
+  const stageTone =
+    b.stage === "Final" ? "ring-amber-300/40 bg-amber-400/10 text-amber-100"
+    : b.stage === "Eliminator" ? "ring-rose-300/30 bg-rose-500/10 text-rose-100"
+    : "ring-fuchsia-300/30 bg-fuchsia-500/10 text-fuchsia-100";
+  return (
+    <div className={`rounded-lg p-3 ring-1 ${stageTone}`}>
+      <div className="text-[9px] font-black uppercase tracking-widest opacity-90">{b.stage}</div>
+      {m ? (
+        <>
+          <div className="mt-1 flex items-center justify-between gap-2 text-xs font-bold text-white">
+            <span className="truncate">{m.home.shortName || m.home.name || "TBD"}</span>
+            <span className="opacity-60">vs</span>
+            <span className="truncate text-right">{m.away.shortName || m.away.name || "TBD"}</span>
+          </div>
+          <div className="mt-1 text-[10px] text-white/65">{m.shortDetail || m.statusDetail}</div>
+          {m.venue && <div className="text-[10px] text-white/45">{m.venue}</div>}
+        </>
+      ) : (
+        <div className="mt-1 text-[11px] text-white/50">Not scheduled.</div>
+      )}
+    </div>
+  );
+}
+
