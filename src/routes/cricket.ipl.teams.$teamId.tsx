@@ -56,9 +56,33 @@ function TeamPage() {
   const { data } = useSuspenseQuery(qo(teamId));
   const squadQ = useQuery(squadQo(teamId));
   const t = data.team!;
+  const [activeAthlete, setActiveAthlete] = useState<string | null>(null);
   const titleSeasons = (history as Array<{ year: number; championId: string | null; mom: string }>)
     .filter((s) => s.championId === t.id)
     .sort((a, b) => b.year - a.year);
+
+  // Head-to-head this season: aggregate W / L / NR against each opponent
+  // by walking finished fixtures.
+  const h2h = useMemo(() => {
+    const map = new Map<string, { id: string; name: string; abbr: string; logo: string | null; color: string | null; w: number; l: number; nr: number; last: typeof data.fixtures[number] | null }>();
+    for (const m of data.fixtures) {
+      const us = m.home.id === t.espnId ? m.home : m.away;
+      const them = m.home.id === t.espnId ? m.away : m.home;
+      if (!them.id) continue;
+      let row = map.get(them.id);
+      if (!row) {
+        row = { id: them.id, name: them.name, abbr: them.abbr, logo: them.logo, color: them.color, w: 0, l: 0, nr: 0, last: null };
+        map.set(them.id, row);
+      }
+      if (m.status === "post") {
+        if (us.winner === true) row.w++;
+        else if (them.winner === true) row.l++;
+        else row.nr++;
+        if (!row.last || m.startTs > row.last.startTs) row.last = m;
+      }
+    }
+    return Array.from(map.values()).sort((a, b) => (b.w + b.l + b.nr) - (a.w + a.l + a.nr));
+  }, [data.fixtures, t.espnId]);
 
   return (
     <IplPageShell
