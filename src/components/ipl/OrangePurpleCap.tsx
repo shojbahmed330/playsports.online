@@ -95,9 +95,10 @@ function CapCard({
               </div>
             )}
             <div className="min-w-0 flex-1">
-              <div className="truncate text-base font-bold text-white">{top.athleteName}</div>
+              <PlayerLink name={top.athleteName} athleteId={top.athleteId} className="truncate text-base font-bold text-white block">{top.athleteName}</PlayerLink>
               <div className="text-xs text-white/60">{top.teamName || top.teamAbbr}</div>
             </div>
+
             <div className="shrink-0 text-right">
               <div className="text-2xl font-black text-white">{top.value}</div>
               <div className="text-[10px] uppercase tracking-widest text-white/50">{unit}</div>
