@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { ArrowLeft, MapPin, Tv, CloudSun, Users, TrendingUp } from "lucide-react";
-import { getMlbGame, type MlbProbable, type MlbLinescoreTeam } from "@/lib/mlb.functions";
+import { getMlbGame, type MlbProbable, type MlbLinescoreTeam, type MlbGameSummary } from "@/lib/mlb.functions";
 import { MlbLinescore } from "@/components/mlb/MlbLinescore";
 import { MlbBoxScore } from "@/components/mlb/MlbBoxScore";
 import { MlbScoringPlays } from "@/components/mlb/MlbScoringPlays";

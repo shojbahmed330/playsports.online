@@ -37,6 +37,7 @@ import { Route as CricketSeriesIndexRouteImport } from './routes/cricket.series.
 import { Route as CricketIplIndexRouteImport } from './routes/cricket.ipl.index'
 import { Route as MlbTeamIdRouteImport } from './routes/mlb.team.$id'
 import { Route as MlbPlayerIdRouteImport } from './routes/mlb.player.$id'
+import { Route as MlbGameIdRouteImport } from './routes/mlb.game.$id'
 import { Route as FootballMatchIdRouteImport } from './routes/football.match.$id'
 import { Route as CricketSeriesIdRouteImport } from './routes/cricket.series.$id'
 import { Route as CricketMatchIdRouteImport } from './routes/cricket.match.$id'
@@ -188,6 +189,11 @@ const MlbPlayerIdRoute = MlbPlayerIdRouteImport.update({
   path: '/player/$id',
   getParentRoute: () => MlbRoute,
 } as any)
+const MlbGameIdRoute = MlbGameIdRouteImport.update({
+  id: '/game/$id',
+  path: '/game/$id',
+  getParentRoute: () => MlbRoute,
+} as any)
 const FootballMatchIdRoute = FootballMatchIdRouteImport.update({
   id: '/match/$id',
   path: '/match/$id',
@@ -272,6 +278,7 @@ export interface FileRoutesByFullPath {
   '/cricket/match/$id': typeof CricketMatchIdRoute
   '/cricket/series/$id': typeof CricketSeriesIdRoute
   '/football/match/$id': typeof FootballMatchIdRoute
+  '/mlb/game/$id': typeof MlbGameIdRoute
   '/mlb/player/$id': typeof MlbPlayerIdRoute
   '/mlb/team/$id': typeof MlbTeamIdRoute
   '/cricket/ipl/': typeof CricketIplIndexRoute
@@ -310,6 +317,7 @@ export interface FileRoutesByTo {
   '/cricket/match/$id': typeof CricketMatchIdRoute
   '/cricket/series/$id': typeof CricketSeriesIdRoute
   '/football/match/$id': typeof FootballMatchIdRoute
+  '/mlb/game/$id': typeof MlbGameIdRoute
   '/mlb/player/$id': typeof MlbPlayerIdRoute
   '/mlb/team/$id': typeof MlbTeamIdRoute
   '/cricket/ipl': typeof CricketIplIndexRoute
@@ -351,6 +359,7 @@ export interface FileRoutesById {
   '/cricket/match/$id': typeof CricketMatchIdRoute
   '/cricket/series/$id': typeof CricketSeriesIdRoute
   '/football/match/$id': typeof FootballMatchIdRoute
+  '/mlb/game/$id': typeof MlbGameIdRoute
   '/mlb/player/$id': typeof MlbPlayerIdRoute
   '/mlb/team/$id': typeof MlbTeamIdRoute
   '/cricket/ipl/': typeof CricketIplIndexRoute
@@ -393,6 +402,7 @@ export interface FileRouteTypes {
     | '/cricket/match/$id'
     | '/cricket/series/$id'
     | '/football/match/$id'
+    | '/mlb/game/$id'
     | '/mlb/player/$id'
     | '/mlb/team/$id'
     | '/cricket/ipl/'
@@ -431,6 +441,7 @@ export interface FileRouteTypes {
     | '/cricket/match/$id'
     | '/cricket/series/$id'
     | '/football/match/$id'
+    | '/mlb/game/$id'
     | '/mlb/player/$id'
     | '/mlb/team/$id'
     | '/cricket/ipl'
@@ -471,6 +482,7 @@ export interface FileRouteTypes {
     | '/cricket/match/$id'
     | '/cricket/series/$id'
     | '/football/match/$id'
+    | '/mlb/game/$id'
     | '/mlb/player/$id'
     | '/mlb/team/$id'
     | '/cricket/ipl/'
@@ -690,6 +702,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MlbPlayerIdRouteImport
       parentRoute: typeof MlbRoute
     }
+    '/mlb/game/$id': {
+      id: '/mlb/game/$id'
+      path: '/game/$id'
+      fullPath: '/mlb/game/$id'
+      preLoaderRoute: typeof MlbGameIdRouteImport
+      parentRoute: typeof MlbRoute
+    }
     '/football/match/$id': {
       id: '/football/match/$id'
       path: '/match/$id'
@@ -828,6 +847,7 @@ interface MlbRouteChildren {
   MlbStandingsRoute: typeof MlbStandingsRoute
   MlbTeamsRoute: typeof MlbTeamsRoute
   MlbIndexRoute: typeof MlbIndexRoute
+  MlbGameIdRoute: typeof MlbGameIdRoute
   MlbPlayerIdRoute: typeof MlbPlayerIdRoute
   MlbTeamIdRoute: typeof MlbTeamIdRoute
 }
@@ -840,6 +860,7 @@ const MlbRouteChildren: MlbRouteChildren = {
   MlbStandingsRoute: MlbStandingsRoute,
   MlbTeamsRoute: MlbTeamsRoute,
   MlbIndexRoute: MlbIndexRoute,
+  MlbGameIdRoute: MlbGameIdRoute,
   MlbPlayerIdRoute: MlbPlayerIdRoute,
   MlbTeamIdRoute: MlbTeamIdRoute,
 }
