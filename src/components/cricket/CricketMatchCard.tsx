@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { TeamCrest } from "./TeamCrest";
 import { MapPin, Tv, Trophy } from "lucide-react";
 import type { CricketMatch } from "@/lib/cricket.functions";
 import { ScoreFlip } from "@/components/sports/ScoreFlip";
