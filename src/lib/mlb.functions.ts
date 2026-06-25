@@ -795,3 +795,52 @@ export const getMlbStandingsPro = createServerFn({ method: "GET" })
       return { leagues: [] as MlbLeague[], error: e instanceof Error ? e.message : "Unknown" };
     }
   });
+
+// ───────── Player search ─────────
+export type MlbPlayerSearchHit = {
+  id: string;
+  name: string;
+  position: string | null;
+  teamName: string | null;
+  teamAbbr: string | null;
+  teamLogo: string | null;
+  headshot: string | null;
+};
+
+export const searchMlbPlayers = createServerFn({ method: "GET" })
+  .inputValidator((d: { q: string }) => d)
+  .handler(async ({ data }) => {
+    const q = (data.q ?? "").trim();
+    if (q.length < 2) return { hits: [] as MlbPlayerSearchHit[], error: null as string | null };
+    try {
+      const url = `https://site.web.api.espn.com/apis/common/v3/search?query=${encodeURIComponent(q)}&limit=25&type=player&sport=baseball&league=mlb`;
+      const raw = (await get(url, 10 * 60_000)) as any;
+      const results: any[] =
+        raw?.results?.[0]?.contents ??
+        raw?.results ??
+        raw?.items ??
+        [];
+      const hits: MlbPlayerSearchHit[] = [];
+      for (const r of results) {
+        const item = r?.athlete ?? r;
+        const id = String(item?.id ?? r?.id ?? "");
+        if (!id) continue;
+        const team = item?.team ?? r?.subtitle ?? null;
+        hits.push({
+          id,
+          name: item?.displayName ?? item?.name ?? r?.title ?? "",
+          position: item?.position?.abbreviation ?? null,
+          teamName: typeof team === "string" ? team : (team?.displayName ?? team?.name ?? null),
+          teamAbbr: typeof team === "object" ? (team?.abbreviation ?? null) : null,
+          teamLogo: typeof team === "object" ? (team?.logos?.[0]?.href ?? team?.logo ?? null) : null,
+          headshot: item?.headshot?.href ?? item?.image?.href ?? r?.image?.url ?? null,
+        });
+      }
+      // Dedupe by id
+      const seen = new Set<string>();
+      const unique = hits.filter((h) => (seen.has(h.id) ? false : (seen.add(h.id), true)));
+      return { hits: unique.slice(0, 20), error: null as string | null };
+    } catch (e) {
+      return { hits: [] as MlbPlayerSearchHit[], error: e instanceof Error ? e.message : "Unknown" };
+    }
+  });
