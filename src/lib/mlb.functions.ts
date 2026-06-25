@@ -1181,49 +1181,45 @@ export const getMlbSeasonLeaderSnapshot = createServerFn({ method: "GET" })
   .inputValidator((d: { season: number }) => d)
   .handler(async ({ data }) => {
     try {
-      const raw = (await get(`${SITE}/leaders?season=${data.season}`, 6 * 60 * 60_000)) as any;
-      const all: any[] = raw?.leaders?.categories ?? raw?.categories ?? [];
-      const byKey = new Map<string, any>();
-      for (const c of all) byKey.set(c?.name ?? c?.shortDisplayName ?? "", c);
-
-      const pickList: Array<{ key: string; label: string; group: "batting" | "pitching" }> = [
+      const pickList: Array<{ key: string; label: string; group: "batting" | "pitching"; sortDir?: "asc" | "desc" }> = [
         { key: "homeRuns", label: "Home Runs", group: "batting" },
         { key: "RBIs", label: "RBI", group: "batting" },
-        { key: "battingAverage", label: "Batting Average", group: "batting" },
+        { key: "avg", label: "Batting Average", group: "batting" },
         { key: "hits", label: "Hits", group: "batting" },
         { key: "stolenBases", label: "Stolen Bases", group: "batting" },
         { key: "OPS", label: "OPS", group: "batting" },
         { key: "wins", label: "Wins", group: "pitching" },
         { key: "strikeouts", label: "Strikeouts", group: "pitching" },
-        { key: "ERA", label: "ERA", group: "pitching" },
+        { key: "ERA", label: "ERA", group: "pitching", sortDir: "asc" },
         { key: "saves", label: "Saves", group: "pitching" },
-        { key: "WHIP", label: "WHIP", group: "pitching" },
+        { key: "WHIP", label: "WHIP", group: "pitching", sortDir: "asc" },
       ];
 
+      const cats = await Promise.all(
+        pickList.map((p) => fetchLeaderCategory(data.season, p.group, p.key, p.sortDir ?? "desc", p.label)),
+      );
       const out: MlbSeasonLeaderTop[] = [];
-      for (const p of pickList) {
-        const c = byKey.get(p.key);
-        const leaders: any[] = c?.leaders ?? [];
-        if (!leaders.length) continue;
+      cats.forEach((c, i) => {
+        if (!c || !c.entries.length) return;
+        const p = pickList[i];
         out.push({
-          ...p,
-          top: leaders.slice(0, 5).map((l) => {
-            const ath = l?.athlete ?? {};
-            const team = ath?.team ?? l?.team ?? {};
-            return {
-              athleteId: String(ath?.id ?? ""),
-              athleteName: ath?.displayName ?? ath?.fullName ?? "",
-              teamAbbr: team?.abbreviation ?? null,
-              teamLogo: team?.logos?.[0]?.href ?? team?.logo ?? null,
-              value: l?.displayValue ?? String(l?.value ?? ""),
-              headshot: ath?.headshot?.href ?? null,
-            };
-          }),
+          key: p.key,
+          label: p.label,
+          group: p.group,
+          top: c.entries.slice(0, 5).map((e) => ({
+            athleteId: e.athleteId,
+            athleteName: e.athleteName,
+            teamAbbr: e.teamAbbr,
+            teamLogo: e.teamLogo,
+            value: e.value,
+            headshot: e.headshot,
+          })),
         });
-      }
+      });
 
       return { season: data.season, categories: out, error: null as string | null };
     } catch (e) {
       return { season: data.season, categories: [] as MlbSeasonLeaderTop[], error: e instanceof Error ? e.message : "Unknown" };
     }
   });
+
