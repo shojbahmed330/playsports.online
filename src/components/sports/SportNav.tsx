@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Trophy, ShieldCheck, Users } from "lucide-react";
+import { Trophy, ShieldCheck, BarChart3 } from "lucide-react";
 import { SPORT_LIST } from "@/lib/sports-config";
 import { useAuth } from "@/hooks/use-auth";
 
@@ -61,7 +61,7 @@ export function SportNav({ liveCount = 0 }: { liveCount?: number }) {
           {/* live + players + admin chips, right-aligned on mobile brand row */}
           <div className="flex items-center gap-2 sm:hidden">
             {liveCount > 0 && <LiveChip count={liveCount} />}
-            <PlayersChip active={pathname === "/players" || pathname.startsWith("/players/")} />
+            <StatsChip pathname={pathname} />
             {isAdmin && <AdminChip />}
           </div>
         </div>
@@ -80,7 +80,7 @@ export function SportNav({ liveCount = 0 }: { liveCount?: number }) {
         {/* desktop-only chips */}
         <div className="hidden sm:flex items-center gap-2">
           {liveCount > 0 && <LiveChip count={liveCount} />}
-          <PlayersChip active={pathname === "/players" || pathname.startsWith("/players/")} />
+          <StatsChip pathname={pathname} />
           {isAdmin && <AdminChip />}
         </div>
       </div>
@@ -125,18 +125,91 @@ function AdminChip() {
   );
 }
 
-function PlayersChip({ active }: { active: boolean }) {
+type StatsTarget = {
+  to: string;
+  title: string;
+  subtitle: string;
+  grad: string;
+  ring: string;
+  text: string;
+  shadow: string;
+};
+
+function resolveStatsTarget(pathname: string): StatsTarget {
+  if (pathname === "/football" || pathname.startsWith("/football/")) {
+    return {
+      to: "/players",
+      title: "Player Stats",
+      subtitle: "Scorers · Records",
+      grad: "from-emerald-500 to-teal-500",
+      ring: "ring-emerald-400/40",
+      text: "text-emerald-200",
+      shadow: "shadow-emerald-500/30",
+    };
+  }
+  if (pathname === "/mlb" || pathname.startsWith("/mlb/")) {
+    return {
+      to: "/mlb/players",
+      title: "Player Stats",
+      subtitle: "Leaders · Rosters",
+      grad: "from-sky-500 to-blue-600",
+      ring: "ring-sky-400/40",
+      text: "text-sky-200",
+      shadow: "shadow-sky-500/30",
+    };
+  }
+  if (pathname === "/cricket" || pathname.startsWith("/cricket/")) {
+    return {
+      to: "/cricket/players",
+      title: "Player Stats",
+      subtitle: "Batting · Bowling",
+      grad: "from-amber-500 to-emerald-500",
+      ring: "ring-amber-400/40",
+      text: "text-amber-200",
+      shadow: "shadow-amber-500/30",
+    };
+  }
+  return {
+    to: "/players",
+    title: "Player Stats",
+    subtitle: "All sports",
+    grad: "from-fuchsia-500 to-purple-500",
+    ring: "ring-fuchsia-400/40",
+    text: "text-fuchsia-200",
+    shadow: "shadow-fuchsia-500/30",
+  };
+}
+
+function StatsChip({ pathname }: { pathname: string }) {
+  const t = resolveStatsTarget(pathname);
+  const active = pathname === t.to || pathname.startsWith(t.to + "/");
   return (
     <Link
-      to="/players"
+      to={t.to}
       className={[
-        "px-2.5 py-1 rounded-full text-[10px] font-bold transition-colors inline-flex items-center gap-1 ring-1",
+        "group relative inline-flex items-center gap-2 rounded-full pl-1.5 pr-3 py-1 transition-all ring-1",
         active
-          ? "bg-gradient-to-r from-fuchsia-500 to-purple-500 text-white ring-white/15 shadow-[0_4px_14px_-4px_rgba(168,85,247,0.6)]"
-          : "text-fuchsia-300 hover:text-fuchsia-200 bg-fuchsia-500/10 hover:bg-fuchsia-500/20 ring-fuchsia-500/30",
+          ? `bg-gradient-to-r ${t.grad} text-white ring-white/20 shadow-[0_6px_18px_-6px_rgba(0,0,0,0.6)] ${t.shadow}`
+          : `bg-white/[0.04] hover:bg-white/[0.08] ${t.ring} hover:-translate-y-0.5`,
       ].join(" ")}
     >
-      <Users className="size-3" /> Players
+      <span
+        className={[
+          "size-6 rounded-full grid place-items-center bg-gradient-to-br",
+          t.grad,
+          "ring-1 ring-white/20 shadow-inner",
+        ].join(" ")}
+      >
+        <BarChart3 className="size-3.5 text-white" />
+      </span>
+      <span className="leading-tight text-left">
+        <span className={["block text-[10px] font-extrabold tracking-wide", active ? "text-white" : t.text].join(" ")}>
+          {t.title}
+        </span>
+        <span className={["block text-[8px] uppercase tracking-[0.18em]", active ? "text-white/80" : "text-muted-foreground"].join(" ")}>
+          {t.subtitle}
+        </span>
+      </span>
     </Link>
   );
 }
