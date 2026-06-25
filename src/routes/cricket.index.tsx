@@ -205,12 +205,16 @@ function CricketIndex() {
 }
 
 function SeriesTile({ league, liveCount, totalCount }: { league: CricketLeague; liveCount: number; totalCount: number }) {
+  const isIpl = league.id === "ipl" || /indian premier league/i.test(league.label);
+  const linkProps = isIpl
+    ? ({ to: "/cricket/ipl" } as const)
+    : ({ to: "/cricket/series/$id", params: { id: league.id } } as const);
   return (
     <Link
-      to="/cricket/series/$id"
-      params={{ id: league.id }}
+      {...linkProps}
       className={`group relative overflow-hidden rounded-2xl p-4 bg-gradient-to-br ${league.bgGrad} border border-gray-800 hover:border-emerald-500/40 transition-all hover:-translate-y-0.5`}
     >
+
       {liveCount > 0 && (
         <span className="absolute top-2.5 right-2.5 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-500/20 ring-1 ring-red-500/40 text-[10px] font-bold text-red-300">
           <span className="size-1 rounded-full bg-red-500 animate-pulse" /> {liveCount} live
