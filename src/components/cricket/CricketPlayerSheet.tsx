@@ -138,17 +138,11 @@ export function CricketPlayerSheet({ athleteId, leagueId, onClose }: Props) {
                 <Activity className="size-3.5" /> Career
               </div>
               {p.career.length === 0 ? (
-                <div className="rounded-xl border border-dashed border-emerald-500/20 px-4 py-5 text-center text-xs text-muted-foreground space-y-2">
-                  <div>Detailed career stats aren't exposed by ESPN's public cricket API.</div>
-                  <a
-                    href={`https://www.espncricinfo.com/cricketers/_/${p.id}`}
-                    target="_blank" rel="noreferrer"
-                    className="inline-block text-emerald-300 hover:text-emerald-200 underline underline-offset-2"
-                  >
-                    View full career on ESPNcricinfo →
-                  </a>
+                <div className="rounded-xl border border-dashed border-emerald-500/20 px-4 py-5 text-center text-xs text-muted-foreground">
+                  Career stats unavailable for this player.
                 </div>
               ) : (
+
                 <div className="space-y-2">
                   {p.career.map((row, i) => (
                     <CareerRow key={`${row.format}-${i}`} row={row} />
