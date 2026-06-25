@@ -20,7 +20,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Breadcrumbs } from "@/components/nav/Breadcrumbs";
-import { MobileTabBar, type MobileTab } from "@/components/nav/MobileTabBar";
 
 type Tab = {
   to: string;
@@ -43,12 +42,7 @@ const TABS: Tab[] = [
   { to: "/cricket/history",  label: "History",  emoji: "🕰️", Icon: Crown,        grad: "from-stone-500 to-zinc-600",    accent: "text-stone-200",   match: (p) => p.startsWith("/cricket/history") },
 ];
 
-const MOBILE_TABS: MobileTab[] = [
-  { to: "/cricket",         label: "Home",    Icon: Home,         match: (p) => p === "/cricket" || p === "/cricket/" },
-  { to: "/cricket/scores",  label: "Scores",  Icon: CalendarDays, match: (p) => p.startsWith("/cricket/scores") },
-  { to: "/cricket/series",  label: "Series",  Icon: Trophy,       match: (p) => p.startsWith("/cricket/series") },
-  { to: "/cricket/players", label: "Players", Icon: User,         match: (p) => p.startsWith("/cricket/players") },
-];
+// Mobile bottom nav is mounted globally via <GlobalMobileNav /> in __root.tsx.
 
 export function CricketSubNav() {
   const { pathname } = useLocation();
@@ -112,7 +106,6 @@ export function CricketSubNav() {
         </div>
         <Breadcrumbs />
       </div>
-      <MobileTabBar tabs={MOBILE_TABS} accent="emerald" />
     </>
   );
 }

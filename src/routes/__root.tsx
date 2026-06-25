@@ -14,6 +14,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AdSenseLoader } from "../components/ads/AdSenseLoader";
 import { AdSlot } from "../components/ads/AdSlot";
+import { GlobalMobileNav } from "../components/nav/GlobalMobileNav";
 
 function NotFoundComponent() {
   return (
@@ -130,6 +131,8 @@ function RootComponent() {
       <Outlet />
       {/* Site-wide bottom banner. */}
       <AdSlot slot="footer" className="px-4" />
+      {/* Always-on mobile bottom nav — picks tabs based on current route. */}
+      <GlobalMobileNav />
       <Toaster position="bottom-right" theme="dark" richColors />
     </QueryClientProvider>
   );

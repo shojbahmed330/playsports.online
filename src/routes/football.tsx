@@ -22,7 +22,6 @@ import { FootballFilterBar } from "@/components/football/FootballFilterBar";
 import { applyFilter, uniqueTeams, useMyTeams, type FootballFilter } from "@/lib/football-filters";
 import { SiteFooter } from "@/components/home/SiteFooter";
 import { Breadcrumbs } from "@/components/nav/Breadcrumbs";
-import { MobileTabBar, type MobileTab } from "@/components/nav/MobileTabBar";
 
 
 const GROUP_MATCHES_BY_YEAR = groupMatchesData as Record<string, WCMatch[]>;
@@ -273,13 +272,7 @@ function Index() {
     setHintSeen(true);
   };
 
-  // Mobile bottom nav — 2026-only quick switcher between primary sections.
-  const mobileTabs: MobileTab[] = year === 2026 ? [
-    { to: "/football", label: "Groups",   Icon: Users,    search: { tab: "groups" },   match: (_p, s) => (s.tab as string) === "groups" },
-    { to: "/football", label: "Bracket",  Icon: Swords,   search: { tab: "knockout" }, match: (_p, s) => !s.tab || s.tab === "knockout" },
-    { to: "/football", label: "Scorers",  Icon: Goal,     search: { tab: "scorers" },  match: (_p, s) => (s.tab as string) === "scorers" },
-    { to: "/players",  label: "Stats",    Icon: Trophy,   match: (p) => p.startsWith("/players") },
-  ] : [];
+  // Mobile bottom nav is now mounted globally via <GlobalMobileNav /> in __root.tsx.
 
   return (
     <div className="min-h-screen">
@@ -443,7 +436,7 @@ function Index() {
 
       <MatchModal match={activeMatch} onClose={() => setActiveMatch(null)} />
 
-      {mobileTabs.length > 0 && <MobileTabBar tabs={mobileTabs} accent="amber" />}
+      
     </div>
   );
 }

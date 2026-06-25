@@ -2,7 +2,6 @@ import { Link, useLocation } from "@tanstack/react-router";
 import { Home, CalendarDays, BarChart3, Shield, User, Trophy, Crown, ChevronLeft } from "lucide-react";
 import { useEffect, useRef, type ComponentType } from "react";
 import { Breadcrumbs } from "@/components/nav/Breadcrumbs";
-import { MobileTabBar, type MobileTab } from "@/components/nav/MobileTabBar";
 
 type Tab = {
   to: string;
@@ -24,12 +23,7 @@ const TABS: Tab[] = [
   { to: "/cricket/ipl/records",   label: "Records",   emoji: "👑", Icon: Crown,        grad: "from-indigo-500 to-violet-500",  accent: "text-indigo-200",  match: (p) => p.startsWith("/cricket/ipl/records") },
 ];
 
-const MOBILE_TABS: MobileTab[] = [
-  { to: "/cricket/ipl",           label: "Home",    Icon: Home,         match: (p) => p === "/cricket/ipl" || p === "/cricket/ipl/" },
-  { to: "/cricket/ipl/scores",    label: "Scores",  Icon: CalendarDays, match: (p) => p.startsWith("/cricket/ipl/scores") },
-  { to: "/cricket/ipl/standings", label: "Table",   Icon: BarChart3,    match: (p) => p.startsWith("/cricket/ipl/standings") },
-  { to: "/cricket/ipl/players",   label: "Players", Icon: User,         match: (p) => p.startsWith("/cricket/ipl/players") },
-];
+// Mobile bottom nav is mounted globally via <GlobalMobileNav /> in __root.tsx.
 
 export function IplSubNav() {
   const { pathname } = useLocation();
@@ -97,7 +91,6 @@ export function IplSubNav() {
         </div>
         <Breadcrumbs />
       </div>
-      <MobileTabBar tabs={MOBILE_TABS} accent="amber" />
     </>
   );
 }
