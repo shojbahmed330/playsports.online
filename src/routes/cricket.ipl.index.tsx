@@ -4,7 +4,7 @@ import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
 import { IplHero } from "@/components/ipl/IplHero";
 import { IplSubNav } from "@/components/ipl/IplSubNav";
 import { OrangePurpleCap } from "@/components/ipl/OrangePurpleCap";
-import { CricketSubNav } from "@/components/cricket/CricketSubNav";
+import { SportNav } from "@/components/sports/SportNav";
 import { CricketMatchCard } from "@/components/cricket/CricketMatchCard";
 import { toCricketMatch } from "@/components/ipl/toCricketMatch";
 import {
