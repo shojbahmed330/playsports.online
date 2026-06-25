@@ -970,6 +970,78 @@ export const getCricketPlayer = createServerFn({ method: "GET" })
   });
 
 
+// ───────── Athlete search (name → id) ─────────
+
+const athleteSearchCache = new Map<string, { at: number; id: string | null }>();
+
+export const findCricketAthlete = createServerFn({ method: "GET" })
+  .inputValidator((d: { name: string }) => d)
+  .handler(async ({ data }) => {
+    const name = data.name?.trim();
+    if (!name) return { athleteId: null as string | null };
+    const key = name.toLowerCase();
+    const hit = athleteSearchCache.get(key);
+    if (hit && Date.now() - hit.at < 24 * 60 * 60_000) {
+      return { athleteId: hit.id };
+    }
+
+    async function tryUrl(url: string): Promise<string | null> {
+      try {
+        const r = await fetch(url, { headers: { accept: "application/json" } });
+        if (!r.ok) return null;
+        const j: any = await r.json();
+        // Walk the payload to find the first plausible cricket athlete id.
+        const found: string[] = [];
+        const seen = new Set<unknown>();
+        const walk = (node: any, parentSport?: string) => {
+          if (!node || typeof node !== "object" || seen.has(node)) return;
+          seen.add(node);
+          const sport = String(node.sport ?? node.sportSlug ?? parentSport ?? "").toLowerCase();
+          const type = String(node.type ?? node.kind ?? "").toLowerCase();
+          const uid = typeof node.uid === "string" ? node.uid : "";
+          const looksLikeAthlete =
+            type.includes("player") ||
+            type.includes("athlete") ||
+            /~a:\d+/.test(uid);
+          const rawId =
+            node.id ??
+            (uid.match(/~a:(\d+)/)?.[1]) ??
+            null;
+          if (looksLikeAthlete && rawId && (!sport || sport.includes("cricket"))) {
+            found.push(String(rawId));
+          }
+          for (const k of Object.keys(node)) {
+            const v = (node as any)[k];
+            if (Array.isArray(v)) v.forEach((x) => walk(x, sport || parentSport));
+            else if (v && typeof v === "object") walk(v, sport || parentSport);
+          }
+        };
+        walk(j);
+        return found[0] ?? null;
+      } catch {
+        return null;
+      }
+    }
+
+    const q = encodeURIComponent(name);
+    const urls = [
+      `https://site.web.api.espn.com/apis/search/v2?query=${q}&type=player&sport=cricket&limit=5`,
+      `https://site.web.api.espn.com/apis/search/v2?query=${q}&type=player&limit=10`,
+      `https://site.web.api.espn.com/apis/common/v3/search?query=${q}&limit=10`,
+    ];
+    let id: string | null = null;
+    for (const u of urls) {
+      id = await tryUrl(u);
+      if (id) break;
+    }
+    athleteSearchCache.set(key, { at: Date.now(), id });
+    return { athleteId: id };
+  });
+
+
+
+
+
 
 // ───────── Rankings (bundled fallback) ─────────
 
