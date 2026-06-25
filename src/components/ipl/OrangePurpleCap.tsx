@@ -134,7 +134,7 @@ function CapCard({
                 <span className="w-5 shrink-0 text-center text-[11px] font-black text-white/50">
                   {p.rank}
                 </span>
-                <span className="min-w-0 flex-1 truncate text-sm text-white/90">{p.athleteName}</span>
+                <PlayerLink name={p.athleteName} athleteId={p.athleteId} className="min-w-0 flex-1 truncate text-sm text-white/90">{p.athleteName}</PlayerLink>
                 <span className="shrink-0 text-[11px] text-white/50">{p.teamAbbr}</span>
                 <span className="w-12 shrink-0 text-right text-sm font-bold text-white">{p.value}</span>
               </li>
