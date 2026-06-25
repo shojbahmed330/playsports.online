@@ -310,13 +310,28 @@ function num(v: unknown): number {
   const n = Number(v);
   return Number.isFinite(n) ? n : 0;
 }
-function pickStat(stats: any[] | undefined, keys: string[]): number {
-  if (!Array.isArray(stats)) return 0;
-  for (const k of keys) {
-    const s = stats.find((x: any) => x?.name === k || x?.abbreviation === k);
-    if (s) return num(s.value ?? s.displayValue);
+
+/** Flatten ESPN's nested `statistics.categories[].stats[]` into a name→value map. */
+function flattenStats(node: any): Record<string, number | string> {
+  const out: Record<string, number | string> = {};
+  const cats: any[] = node?.statistics?.categories ?? [];
+  for (const c of cats) {
+    for (const s of c?.stats ?? []) {
+      if (!s?.name) continue;
+      const raw = s.value ?? s.displayValue;
+      const nn = Number(raw);
+      out[s.name] = Number.isFinite(nn) ? nn : String(raw ?? "");
+    }
   }
-  return 0;
+  return out;
+}
+function nVal(stats: Record<string, number | string>, key: string): number {
+  const v = stats[key];
+  return typeof v === "number" ? v : Number(v) || 0;
+}
+function sVal(stats: Record<string, number | string>, key: string): string {
+  const v = stats[key];
+  return v == null ? "" : String(v);
 }
 
 export const getCricketMatchDetail = createServerFn({ method: "GET" })
@@ -325,7 +340,7 @@ export const getCricketMatchDetail = createServerFn({ method: "GET" })
     try {
       const raw = (await apiGet(
         `/${data.leagueId}/summary?event=${data.eventId}`,
-        20_000,
+        10_000,
       )) as any;
 
       // Build the base match dto
@@ -377,82 +392,137 @@ export const getCricketMatchDetail = createServerFn({ method: "GET" })
         note,
       };
 
-      // Innings detail comes from raw.rosters[].roster (batting + bowling)
-      // and raw.scoringPlays / raw.commentary. ESPN's shape isn't documented;
-      // we defensively extract what we find.
-      const innings: CricketInningsDetail[] = [];
+      // Innings detail — ESPN nests per-player stats inside
+      //   roster[i].linescores[periodIdx].linescores[*].statistics.categories[*].stats[*]
+      // We flatten per (team, period) and classify batter vs bowler by stat presence.
+      type PerPlayer = {
+        athlete: any;
+        stats: Record<string, number | string>;
+        node: any;
+      };
+      type PeriodBucket = {
+        period: number;
+        byTeam: Map<string, { teamName: string; players: PerPlayer[] }>;
+      };
+      const periodMap = new Map<number, PeriodBucket>();
       const rosters: any[] = Array.isArray(raw?.rosters) ? raw.rosters : [];
 
       for (const r of rosters) {
         const teamId = String(r?.team?.id ?? "");
         const teamName = r?.team?.displayName ?? r?.team?.name ?? "";
-        const period = num(r?.period) || innings.length + 1;
-        const batters: CricketBatter[] = [];
-        const bowlers: CricketBowler[] = [];
-
         const list = Array.isArray(r?.roster) ? r.roster : [];
         for (const p of list) {
           const athlete = p?.athlete ?? {};
-          const stats: any[] = p?.stats ?? [];
-          const battingStats = p?.batting ?? stats;
-          const bowlingStats = p?.bowling ?? stats;
+          const perPlayerLs: any[] = Array.isArray(p?.linescores) ? p.linescores : [];
+          for (const periodEntry of perPlayerLs) {
+            const period = num(periodEntry?.period) || 1;
+            const inner: any[] = Array.isArray(periodEntry?.linescores) ? periodEntry.linescores : [];
+            for (const node of inner) {
+              const stats = flattenStats(node);
+              if (!Object.keys(stats).length) continue;
+              let bucket = periodMap.get(period);
+              if (!bucket) {
+                bucket = { period, byTeam: new Map() };
+                periodMap.set(period, bucket);
+              }
+              let team = bucket.byTeam.get(teamId);
+              if (!team) {
+                team = { teamName, players: [] };
+                bucket.byTeam.set(teamId, team);
+              }
+              team.players.push({ athlete, stats, node });
+            }
+          }
+        }
+      }
 
-          const runs = pickStat(battingStats, ["runs", "R"]);
-          const balls = pickStat(battingStats, ["ballsFaced", "balls", "BF"]);
-          const fours = pickStat(battingStats, ["fours", "4s"]);
-          const sixes = pickStat(battingStats, ["sixes", "6s"]);
-          const dismissal = p?.dismissalText ?? p?.dismissal ?? null;
-          const isBatter = balls > 0 || runs > 0 || !!dismissal;
+      const innings: CricketInningsDetail[] = [];
+      const sortedPeriods = Array.from(periodMap.values()).sort((a, b) => a.period - b.period);
+      for (const bucket of sortedPeriods) {
+        // Batting team = whichever side has players with `batted === 1` or `ballsFaced > 0`.
+        let battingTeamId = "";
+        for (const [tid, t] of bucket.byTeam) {
+          if (t.players.some((p) => nVal(p.stats, "batted") > 0 || nVal(p.stats, "ballsFaced") > 0 || nVal(p.stats, "outs") + nVal(p.stats, "notouts") > 0)) {
+            battingTeamId = tid;
+            break;
+          }
+        }
+        if (!battingTeamId) battingTeamId = bucket.byTeam.keys().next().value ?? "";
 
-          if (isBatter) {
+        const batSide = bucket.byTeam.get(battingTeamId);
+        const battingTeamName = batSide?.teamName ?? "";
+        const batters: CricketBatter[] = [];
+        if (batSide) {
+          for (const p of batSide.players) {
+            const batted = nVal(p.stats, "batted");
+            const balls = nVal(p.stats, "ballsFaced");
+            const runs = nVal(p.stats, "runs");
+            const notouts = nVal(p.stats, "notouts");
+            const outs = nVal(p.stats, "outs");
+            if (!batted && balls === 0 && runs === 0 && !notouts && !outs) continue;
+            const sr = nVal(p.stats, "strikeRate");
+            const dismissalText: string | null =
+              p.node?.batting?.outDetails?.shortText ??
+              p.node?.batting?.outDetails?.details?.shortText ??
+              null;
             batters.push({
-              id: String(athlete.id ?? ""),
-              name: athlete.displayName ?? athlete.fullName ?? "",
-              shortName: athlete.shortName ?? athlete.lastName ?? athlete.displayName ?? "",
+              id: String(p.athlete.id ?? ""),
+              name: p.athlete.displayName ?? p.athlete.fullName ?? "",
+              shortName: p.athlete.shortName || p.athlete.lastName || p.athlete.displayName || "",
               runs,
               balls,
-              fours,
-              sixes,
-              strikeRate: balls > 0 ? Number(((runs * 100) / balls).toFixed(2)) : 0,
-              dismissal,
-              notOut: !dismissal && (runs > 0 || balls > 0),
-            });
-          }
-
-          const oversBowled = pickStat(bowlingStats, ["overs", "O"]);
-          const wickets = pickStat(bowlingStats, ["wickets", "W"]);
-          const runsConceded = pickStat(bowlingStats, ["conceded", "runs", "R"]);
-          const maidens = pickStat(bowlingStats, ["maidens", "M"]);
-          if (oversBowled > 0 || wickets > 0) {
-            bowlers.push({
-              id: String(athlete.id ?? ""),
-              name: athlete.displayName ?? athlete.fullName ?? "",
-              shortName: athlete.shortName ?? athlete.lastName ?? athlete.displayName ?? "",
-              overs: oversBowled,
-              maidens,
-              runs: runsConceded,
-              wickets,
-              economy: oversBowled > 0 ? Number((runsConceded / oversBowled).toFixed(2)) : 0,
+              fours: nVal(p.stats, "fours"),
+              sixes: nVal(p.stats, "sixes"),
+              strikeRate: sr || (balls > 0 ? Number(((runs * 100) / balls).toFixed(2)) : 0),
+              dismissal: dismissalText,
+              notOut: notouts > 0 || (batted > 0 && outs === 0),
             });
           }
         }
 
-        // Totals — pull from team line for this period if available
-        const teamComp = competitors.find((c: any) => String(c?.team?.id ?? "") === teamId);
-        const line = (teamComp?.linescores ?? []).find((l: any) => num(l.period) === period);
+        const bowlers: CricketBowler[] = [];
+        for (const [tid, t] of bucket.byTeam) {
+          if (tid === battingTeamId) continue;
+          for (const p of t.players) {
+            const overs = nVal(p.stats, "overs");
+            const wickets = nVal(p.stats, "wickets");
+            const conceded = nVal(p.stats, "conceded");
+            const maidens = nVal(p.stats, "maidens");
+            const inningsBowled = nVal(p.stats, "inningsBowled");
+            if (overs === 0 && wickets === 0 && conceded === 0 && !inningsBowled) continue;
+            const econ = nVal(p.stats, "economyRate");
+            bowlers.push({
+              id: String(p.athlete.id ?? ""),
+              name: p.athlete.displayName ?? p.athlete.fullName ?? "",
+              shortName: p.athlete.shortName || p.athlete.lastName || p.athlete.displayName || "",
+              overs,
+              maidens,
+              runs: conceded,
+              wickets,
+              economy: econ || (overs > 0 ? Number((conceded / overs).toFixed(2)) : 0),
+            });
+          }
+        }
+
+        // Totals — prefer the team-line for this period when available
+        const teamComp = competitors.find((c: any) => String(c?.team?.id ?? "") === battingTeamId);
+        const line = (teamComp?.linescores ?? []).find((l: any) => num(l.period) === bucket.period);
         innings.push({
-          period,
-          battingTeamId: teamId,
-          battingTeamName: teamName,
-          runs: line ? num(line.runs) : batters.reduce((s, b) => s + b.runs, 0),
-          wickets: line ? num(line.wickets) : 0,
+          period: bucket.period,
+          battingTeamId,
+          battingTeamName,
+          runs: line ? num(line.runs) : batters.reduce((acc, b) => acc + b.runs, 0),
+          wickets: line ? num(line.wickets) : batters.filter((b) => !b.notOut).length,
           overs: line ? num(line.overs) : 0,
           extras: null,
           batters,
           bowlers,
           fallOfWickets: [],
         });
+        // silence unused helper warning
+        void sVal;
       }
+
 
       // Commentary / scoring plays (recent first; cap to 20)
       const commentaryRaw: any[] = Array.isArray(raw?.commentary)
