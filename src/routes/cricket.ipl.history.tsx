@@ -1,6 +1,7 @@
+import { useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
-import { Trophy, Award } from "lucide-react";
+import { Trophy, Award, Search } from "lucide-react";
 import { IplPageShell } from "@/components/ipl/IplPageShell";
 import { getIplHistory } from "@/lib/ipl.functions";
 
