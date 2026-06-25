@@ -136,6 +136,24 @@ function TeamPage() {
         </dl>
       </section>
 
+      {/* Season selector */}
+      <div className="mt-6 flex items-center gap-2">
+        <Calendar className="size-3.5 text-white/40" />
+        <label className="text-[10px] font-black uppercase tracking-widest text-white/40">Season</label>
+        <select
+          value={String(seasonYear)}
+          onChange={(e) => setSeasonYear(e.target.value === "current" ? "current" : Number(e.target.value))}
+          className="rounded-md border border-white/10 bg-gray-900/70 px-2.5 py-1 text-xs font-bold text-white focus:border-white/30 focus:outline-none"
+        >
+          {IPL_SEASON_IDS.map((s) => (
+            <option key={String(s.year)} value={String(s.year)}>
+              {s.year === "current" ? "Current season" : s.year}
+            </option>
+          ))}
+        </select>
+        {squadQ.isFetching && <span className="text-[10px] text-white/40">Loading…</span>}
+      </div>
+
       {/* Tabs */}
       <div className="mt-6 flex gap-1 overflow-x-auto rounded-full bg-white/[0.04] p-1 ring-1 ring-white/10 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {([
