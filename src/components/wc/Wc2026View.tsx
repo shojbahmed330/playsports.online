@@ -19,6 +19,7 @@ import { MobileLiveTicker } from "./MobileLiveTicker";
 import { WatchLivePanel } from "./WatchLivePanel";
 import { flagOf } from "@/lib/flags";
 import { fetch2026VideoMap, videoKey } from "@/lib/wc-2026-videos";
+import { computeR32 } from "@/lib/wc2026-r32-format";
 
 import { applyFilter, useMyTeams, type FootballFilter } from "@/lib/football-filters";
 import { FootballPitchSkeleton, FootballEmptyBall } from "@/components/football/FootballSkeleton";
@@ -358,10 +359,28 @@ export function Wc2026KnockoutView({ filter = "all", team }: { filter?: Football
     () => toWcMatches(fQ.data?.fixtures ?? [], vQ.data, teamGroup, canonName),
     [fQ.data, vQ.data, teamGroup, canonName],
   );
+
+  // Predicted R32 — synthesize from standings when ESPN hasn't published the
+  // real R32 fixtures yet. Dedup by sorted team-pair key, so the moment ESPN
+  // posts a real fixture for any pair, the predicted row disappears.
+  const wcMatchesWithR32 = useMemo(() => {
+    const predicted = computeR32(sQ.data?.groups ?? []);
+    if (predicted.length === 0) return wcMatchesRaw;
+    const espnR32Pairs = new Set(
+      wcMatchesRaw
+        .filter((m) => /round of 32/i.test(m.round))
+        .map((m) => aliasPairKey(m.home_team, m.away_team)),
+    );
+    const synth = predicted.filter(
+      (p) => !espnR32Pairs.has(aliasPairKey(p.home_team, p.away_team)),
+    );
+    return [...wcMatchesRaw, ...synth];
+  }, [wcMatchesRaw, sQ.data]);
+
   const { teams: myTeams } = useMyTeams();
   const wcMatches = useMemo(
-    () => applyFilter(wcMatchesRaw, filter, team, myTeams),
-    [wcMatchesRaw, filter, team, myTeams],
+    () => applyFilter(wcMatchesWithR32, filter, team, myTeams),
+    [wcMatchesWithR32, filter, team, myTeams],
   );
   const groupedKnockout = useMemo(() => {
     const order: RoundKey[] = ["round_of_32", "round_of_16", "quarter_final", "semi_final", "third_place", "final"];
