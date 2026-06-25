@@ -30,7 +30,7 @@ const GROUP_MATCHES_BY_YEAR = groupMatchesData as Record<string, WCMatch[]>;
 const FILTER_VALUES: FootballFilter[] = ["all", "live", "today", "my"];
 const TAB_VALUES: SubNavTab[] = ["groups", "knockout", "scorers"];
 
-type FootballSearch = { year?: number; filter?: FootballFilter; team?: string; tab?: SubNavTab };
+type FootballSearch = { year?: number; filter?: FootballFilter; team?: string; tab?: SubNavTab; date?: string };
 
 export const Route = createFileRoute("/football")({
   validateSearch: (s: Record<string, unknown>): FootballSearch => {
@@ -38,13 +38,16 @@ export const Route = createFileRoute("/football")({
     const f = String(s.filter ?? "");
     const t = typeof s.team === "string" && s.team.trim().length > 0 ? s.team.trim() : undefined;
     const tb = String(s.tab ?? "");
+    const dRaw = typeof s.date === "string" && /^\d{4}-\d{2}-\d{2}$/.test(s.date) ? s.date : undefined;
     return {
       year: WC_YEARS.includes(y) ? y : undefined,
       filter: (FILTER_VALUES as string[]).includes(f) ? (f as FootballFilter) : undefined,
       team: t,
       tab: (TAB_VALUES as string[]).includes(tb) ? (tb as SubNavTab) : undefined,
+      date: dRaw,
     };
   },
+
   head: () => ({
     meta: [
       { title: "FIFA World Cup 2026 — Live Scores, Bracket & Archive 1930–2026" },
