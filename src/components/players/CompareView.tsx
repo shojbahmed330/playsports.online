@@ -24,6 +24,7 @@ import {
 } from "@/lib/players-filters";
 import cardsData from "@/data/wc_cards.json";
 import { useMergedGoals, HISTORICAL_GOALS, type GoalRow } from "@/lib/use-merged-goals";
+import { CompareChart } from "@/components/players/CompareChart";
 
 type CardRow = {
   pid: string; name: string; team: string; year: number;
