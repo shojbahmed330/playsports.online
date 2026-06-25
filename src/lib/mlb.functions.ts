@@ -366,3 +366,256 @@ export const getMlbAthlete = createServerFn({ method: "GET" })
       };
     }
   });
+
+// ───────── Game Summary (Live Boxscore) ─────────
+export type MlbLinescoreTeam = {
+  id: string;
+  abbr: string;
+  name: string;
+  shortName: string;
+  logo: string | null;
+  color: string | null;
+  score: number | null;
+  hits: number | null;
+  errors: number | null;
+  record: string | null;
+  winner: boolean | null;
+  innings: (number | null)[];
+};
+
+export type MlbBoxRow = {
+  athleteId: string;
+  name: string;
+  pos: string | null;
+  stats: Record<string, string>;
+};
+export type MlbBoxGroup = {
+  teamId: string;
+  teamAbbr: string;
+  teamLogo: string | null;
+  group: "batting" | "pitching" | "fielding";
+  headers: string[];
+  rows: MlbBoxRow[];
+  totals: Record<string, string>;
+};
+
+export type MlbScoringPlay = {
+  id: string;
+  inning: string;        // "Top 5th"
+  text: string;
+  awayScore: number | null;
+  homeScore: number | null;
+  teamAbbr: string | null;
+};
+
+export type MlbProbable = {
+  athleteId: string | null;
+  name: string;
+  headshot: string | null;
+  summary: string | null;  // "5-3, 3.21 ERA"
+  teamAbbr: string | null;
+};
+
+export type MlbGameSummary = {
+  id: string;
+  status: "pre" | "in" | "post";
+  statusDetail: string;
+  shortDetail: string;
+  startTs: number;
+  venue: { name: string | null; city: string | null; capacity: number | null; indoor: boolean | null };
+  weather: { condition: string | null; temperature: number | null } | null;
+  broadcast: string | null;
+  odds: { provider: string | null; details: string | null; overUnder: number | null } | null;
+  attendance: number | null;
+  home: MlbLinescoreTeam;
+  away: MlbLinescoreTeam;
+  inningCount: number;
+  scoringPlays: MlbScoringPlay[];
+  boxscore: MlbBoxGroup[];
+  probables: { home: MlbProbable | null; away: MlbProbable | null };
+  leaders: Array<{ teamAbbr: string; name: string; athleteId: string; headshot: string | null; displayValue: string; label: string }>;
+};
+
+function pickInnings(team: any): (number | null)[] {
+  const linescores: any[] = team?.linescores ?? [];
+  return linescores.map((l) => (typeof l?.value === "number" ? l.value : l?.value != null ? Number(l.value) : null));
+}
+
+function pickStat(team: any, key: string): number | null {
+  const stats: any[] = team?.statistics ?? [];
+  const s = stats.find((x) => (x?.name ?? "").toLowerCase() === key.toLowerCase() || (x?.abbreviation ?? "").toLowerCase() === key.toLowerCase());
+  if (!s) return null;
+  const v = s?.displayValue ?? s?.value;
+  const n = Number(v);
+  return Number.isFinite(n) ? n : null;
+}
+
+export const getMlbGame = createServerFn({ method: "GET" })
+  .inputValidator((d: { id: string }) => d)
+  .handler(async ({ data }) => {
+    try {
+      const raw = (await get(`${SITE}/summary?event=${encodeURIComponent(data.id)}`, 15_000)) as any;
+      const header = raw?.header ?? {};
+      const comp = header?.competitions?.[0] ?? {};
+      const competitors: any[] = comp?.competitors ?? [];
+      const homeC = competitors.find((c) => c.homeAway === "home") ?? competitors[0] ?? {};
+      const awayC = competitors.find((c) => c.homeAway === "away") ?? competitors[1] ?? {};
+
+      const state = comp?.status?.type?.state ?? "pre";
+      const status: "pre" | "in" | "post" = state === "in" ? "in" : state === "post" ? "post" : "pre";
+
+      function buildTeam(c: any): MlbLinescoreTeam {
+        const t = c?.team ?? {};
+        return {
+          id: String(t.id ?? ""),
+          abbr: t.abbreviation ?? "",
+          name: t.displayName ?? t.name ?? "",
+          shortName: t.shortDisplayName ?? t.name ?? "",
+          logo: t.logos?.[0]?.href ?? t.logo ?? null,
+          color: t.color ? `#${t.color}` : null,
+          score: c?.score != null ? Number(c.score) : null,
+          hits: pickStat(c, "hits"),
+          errors: pickStat(c, "errors"),
+          record: (c?.record ?? []).find?.((r: any) => r?.type === "total")?.displayValue ?? c?.records?.[0]?.summary ?? null,
+          winner: typeof c?.winner === "boolean" ? c.winner : null,
+          innings: pickInnings(c),
+        };
+      }
+      const home = buildTeam(homeC);
+      const away = buildTeam(awayC);
+      const inningCount = Math.max(home.innings.length, away.innings.length, 9);
+
+      // Scoring plays
+      const scoringRaw: any[] = raw?.scoringPlays ?? [];
+      const scoringPlays: MlbScoringPlay[] = scoringRaw.map((p) => ({
+        id: String(p?.id ?? `${p?.period?.number}-${p?.sequenceNumber}`),
+        inning: p?.period?.displayValue ?? (p?.period?.number ? `Inning ${p.period.number}` : ""),
+        text: p?.text ?? "",
+        awayScore: p?.awayScore != null ? Number(p.awayScore) : null,
+        homeScore: p?.homeScore != null ? Number(p.homeScore) : null,
+        teamAbbr: p?.team?.abbreviation ?? null,
+      }));
+
+      // Boxscore — players array per team contains groups
+      const boxscoreTeams: any[] = raw?.boxscore?.players ?? [];
+      const box: MlbBoxGroup[] = [];
+      for (const t of boxscoreTeams) {
+        const team = t?.team ?? {};
+        const groups: any[] = t?.statistics ?? [];
+        for (const g of groups) {
+          const groupName = (g?.name ?? g?.type ?? "").toLowerCase();
+          const group: "batting" | "pitching" | "fielding" =
+            groupName.includes("pitch") ? "pitching"
+            : groupName.includes("field") ? "fielding"
+            : "batting";
+          const headers: string[] = (g?.labels ?? g?.descriptions ?? []).slice(0, 12);
+          const athletesRaw: any[] = g?.athletes ?? [];
+          const rows: MlbBoxRow[] = athletesRaw.filter((a) => a?.athlete?.id).map((a) => {
+            const stats: string[] = a?.stats ?? [];
+            const map: Record<string, string> = {};
+            headers.forEach((h, i) => { map[h] = stats[i] ?? "—"; });
+            return {
+              athleteId: String(a.athlete.id),
+              name: a.athlete.displayName ?? a.athlete.fullName ?? "",
+              pos: a.athlete.position?.abbreviation ?? a.position?.abbreviation ?? null,
+              stats: map,
+            };
+          });
+          const totalsArr: string[] = g?.totals ?? [];
+          const totals: Record<string, string> = {};
+          headers.forEach((h, i) => { totals[h] = totalsArr[i] ?? ""; });
+          box.push({
+            teamId: String(team.id ?? ""),
+            teamAbbr: team.abbreviation ?? "",
+            teamLogo: team.logos?.[0]?.href ?? team.logo ?? null,
+            group,
+            headers,
+            rows,
+            totals,
+          });
+        }
+      }
+
+      // Probables
+      function probableFrom(c: any): MlbProbable | null {
+        const p = c?.probables?.[0] ?? c?.probableStarter ?? null;
+        if (!p) return null;
+        const ath = p?.athlete ?? p ?? {};
+        return {
+          athleteId: ath?.id ? String(ath.id) : null,
+          name: ath?.displayName ?? ath?.fullName ?? "",
+          headshot: ath?.headshot?.href ?? null,
+          summary: p?.statistics?.[0]?.displayValue ?? p?.statusAbbreviation ?? p?.note ?? null,
+          teamAbbr: c?.team?.abbreviation ?? null,
+        };
+      }
+
+      // Game leaders
+      const leadersRaw: any[] = raw?.leaders ?? comp?.leaders ?? [];
+      const leaders: MlbGameSummary["leaders"] = [];
+      for (const teamBlock of leadersRaw) {
+        const tAbbr = teamBlock?.team?.abbreviation ?? "";
+        const cats: any[] = teamBlock?.leaders ?? [];
+        for (const c of cats) {
+          const top = c?.leaders?.[0];
+          if (!top?.athlete) continue;
+          leaders.push({
+            teamAbbr: tAbbr,
+            name: top.athlete.displayName ?? "",
+            athleteId: String(top.athlete.id ?? ""),
+            headshot: top.athlete.headshot?.href ?? null,
+            displayValue: top.displayValue ?? "",
+            label: c?.shortDisplayName ?? c?.displayName ?? "",
+          });
+        }
+      }
+
+      // Venue + weather + odds
+      const venue = {
+        name: raw?.gameInfo?.venue?.fullName ?? comp?.venue?.fullName ?? null,
+        city: raw?.gameInfo?.venue?.address?.city ?? null,
+        capacity: raw?.gameInfo?.venue?.capacity ?? null,
+        indoor: raw?.gameInfo?.venue?.indoor ?? null,
+      };
+      const weatherRaw = raw?.gameInfo?.weather ?? raw?.weather;
+      const weather = weatherRaw ? {
+        condition: weatherRaw?.displayValue ?? weatherRaw?.conditionId ?? null,
+        temperature: typeof weatherRaw?.temperature === "number" ? weatherRaw.temperature : null,
+      } : null;
+      const oddsRaw = raw?.pickcenter?.[0] ?? comp?.odds?.[0] ?? null;
+      const odds = oddsRaw ? {
+        provider: oddsRaw?.provider?.name ?? null,
+        details: oddsRaw?.details ?? null,
+        overUnder: typeof oddsRaw?.overUnder === "number" ? oddsRaw.overUnder : null,
+      } : null;
+      const broadcast = (comp?.broadcasts ?? []).map((b: any) => (b?.names ?? [b?.media?.shortName]).filter(Boolean).join("/")).filter(Boolean).join(" · ") || null;
+      const attendance = typeof comp?.attendance === "number" ? comp.attendance : null;
+
+      const summary: MlbGameSummary = {
+        id: String(header?.id ?? data.id),
+        status,
+        statusDetail: comp?.status?.type?.detail ?? comp?.status?.type?.description ?? "",
+        shortDetail: comp?.status?.type?.shortDetail ?? "",
+        startTs: header?.competitions?.[0]?.date ? new Date(header.competitions[0].date).getTime() : 0,
+        venue,
+        weather,
+        broadcast,
+        odds,
+        attendance,
+        home,
+        away,
+        inningCount,
+        scoringPlays,
+        boxscore: box,
+        probables: { home: probableFrom(homeC), away: probableFrom(awayC) },
+        leaders,
+      };
+
+      return { summary, error: null as string | null };
+    } catch (e) {
+      return {
+        summary: null as MlbGameSummary | null,
+        error: e instanceof Error ? e.message : "Unknown",
+      };
+    }
+  });
