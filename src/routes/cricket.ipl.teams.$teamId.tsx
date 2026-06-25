@@ -58,8 +58,9 @@ export const Route = createFileRoute("/cricket/ipl/teams/$teamId")({
 
 function TeamPage() {
   const { teamId } = Route.useParams();
-  const { data } = useSuspenseQuery(qo(teamId));
-  const squadQ = useQuery(squadQo(teamId));
+  const [seasonYear, setSeasonYear] = useState<SeasonYear>("current");
+  const { data } = useSuspenseQuery(qo(teamId, seasonYear));
+  const squadQ = useQuery(squadQo(teamId, seasonYear));
   const t = data.team!;
   const [activeAthlete, setActiveAthlete] = useState<string | null>(null);
   const [tab, setTab] = useState<"overview" | "squad" | "fixtures" | "h2h" | "titles">("overview");
