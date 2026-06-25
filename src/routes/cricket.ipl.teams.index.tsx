@@ -1,7 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
 import { IplPageShell } from "@/components/ipl/IplPageShell";
+import { TeamCrest } from "@/components/cricket/TeamCrest";
 import { getIplTeams } from "@/lib/ipl.functions";
+
 
 const teamsQO = queryOptions({
   queryKey: ["ipl", "teams"],
