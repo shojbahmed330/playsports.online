@@ -288,10 +288,15 @@ export function Wc2026GroupsView({ filter = "all", team, date, onDateChange }: {
     <>
       <MobileLiveTicker matches={wcMatches} />
 
+      {onDateChange && (
+        <DateScrubber matches={wcMatchesAll} value={date} onChange={onDateChange} className="mb-4" />
+      )}
+
       {/* Mobile-only swipeable group deck */}
       <div className="md:hidden">
         <MobileGroupDeck groups={wcGroups} matches={wcMatches} onPick={setActiveMatch} />
       </div>
+
 
       {/* Desktop layout */}
       <div className="hidden md:block">
