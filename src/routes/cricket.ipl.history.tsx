@@ -230,6 +230,21 @@ function HistoryPage() {
                   )}
                 </div>
               )}
+
+              {/* Expandable: playoff bracket */}
+              {KNOWN_BRACKET_YEARS.has(s.year) && (
+                <div className="border-t border-white/5">
+                  <button
+                    type="button"
+                    onClick={() => setOpenBracket(openBracket === s.year ? null : s.year)}
+                    className="flex w-full items-center justify-between gap-2 px-4 py-2.5 text-[11px] font-bold uppercase tracking-widest text-white/60 hover:bg-white/[0.03]"
+                  >
+                    <span className="flex items-center gap-1.5"><GitBranch className="size-3.5 text-fuchsia-300" /> Playoff bracket</span>
+                    <ChevronDown className={`size-4 transition-transform ${openBracket === s.year ? "rotate-180" : ""}`} />
+                  </button>
+                  {openBracket === s.year && <BracketPanel year={s.year} />}
+                </div>
+              )}
             </li>
           );
         })}
