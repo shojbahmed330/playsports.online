@@ -346,7 +346,9 @@ export const getCricketMatchDetail = createServerFn({ method: "GET" })
         leagueId: league.id,
         leagueName: league.name,
         leagueAbbr: league.abbr,
+        kind: isCuratedLeague(league.id) ? "league" : "bilateral",
         startTs: comp?.date ? new Date(comp.date).getTime() : 0,
+
         status,
         statusDetail: evt?.status?.type?.detail ?? "",
         shortDetail: evt?.status?.type?.shortDetail ?? "",
