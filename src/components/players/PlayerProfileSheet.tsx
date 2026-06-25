@@ -49,6 +49,8 @@ export function PlayerProfileSheet() {
 
 function ProfileBody({ player }: { player: { name: string; country: string } }) {
   const { goals: ALL_GOALS } = useMergedGoals();
+  const search = useSearch({ from: "/players" });
+  const navigate = useNavigate({ from: "/players" });
   const goals = useMemo(
     () => ALL_GOALS.filter((g) => !g.og && g.name === player.name && g.pteam === player.country),
     [player, ALL_GOALS],
@@ -57,6 +59,21 @@ function ProfileBody({ player }: { player: { name: string; country: string } }) 
     () => CARDS.filter((c) => c.name === player.name && c.team === player.country),
     [player],
   );
+
+  const compareList = parseComparePlayers(search.compare);
+  const inCompare = compareList.some(
+    (p) => p.name === player.name && p.country === player.country,
+  );
+  const toggleCompare = () => {
+    const next = inCompare
+      ? compareList.filter((p) => !(p.name === player.name && p.country === player.country))
+      : [...compareList, { name: player.name, country: player.country }].slice(0, 4);
+    navigate({
+      search: (prev: PlayersSearch) => ({ ...prev, compare: joinComparePlayers(next), tab: "compare" }),
+      replace: true,
+    });
+  };
+
 
   const byYear = useMemo(() => {
     const m = new Map<number, { goals: number; pen: number; yellow: number; red: number }>();
