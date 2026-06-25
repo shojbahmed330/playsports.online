@@ -214,7 +214,7 @@ function TeamPage() {
                       key={`${c.name}-${i}`}
                       className="flex items-baseline justify-between gap-2 rounded-lg bg-white/[0.03] px-3 py-1.5 text-xs ring-1 ring-white/5"
                     >
-                      <span className="truncate font-semibold text-white">{c.name}</span>
+                      <PlayerLink name={c.name} className="truncate font-semibold text-white">{c.name}</PlayerLink>
                       <span className="shrink-0 text-[11px] text-white/55">
                         {c.years}{c.titles > 0 ? ` · 🏆${c.titles}` : ""}
                       </span>
