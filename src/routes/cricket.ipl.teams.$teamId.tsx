@@ -253,8 +253,11 @@ function TeamPage() {
           </ul>
         )}
       </section>
+      )}
 
-      <section className="mt-8">
+      {/* ===== TITLES ===== */}
+      {tab === "titles" && (
+      <section className="mt-6">
         <h3 className="mb-3 px-1 text-base font-black tracking-tight text-white">Title-winning seasons</h3>
         {titleSeasons.length === 0 ? (
           <p className="px-1 text-sm text-white/60">No championships yet — every season is a fresh shot.</p>
