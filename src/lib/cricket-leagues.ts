@@ -90,6 +90,11 @@ export const CRICKET_LEAGUE_BY_ID: Record<string, CricketLeague> = Object.fromEn
   CRICKET_LEAGUES.map((l) => [l.id, l]),
 );
 
+export const CURATED_LEAGUE_IDS: Set<string> = new Set(CRICKET_LEAGUES.map((l) => l.id));
+export function isCuratedLeague(id: string | null | undefined): boolean {
+  return !!id && CURATED_LEAGUE_IDS.has(String(id));
+}
+
 export const FORMAT_META: Record<CricketLeague["format"] | "any", { label: string; color: string }> = {
   any:  { label: "All",   color: "bg-white/10 text-white" },
   t20:  { label: "T20",   color: "bg-fuchsia-500/15 text-fuchsia-300 ring-fuchsia-500/30" },
@@ -97,3 +102,4 @@ export const FORMAT_META: Record<CricketLeague["format"] | "any", { label: strin
   test: { label: "Test",  color: "bg-amber-500/15 text-amber-200 ring-amber-500/30" },
   mixed:{ label: "Mixed", color: "bg-gray-500/15 text-gray-300 ring-gray-500/30" },
 };
+
