@@ -264,7 +264,7 @@ function AwardCard({ label, name, team, value, className }: { label: string; nam
   return (
     <div className={`rounded-lg p-2.5 ${className}`}>
       <div className="text-[9px] font-black uppercase tracking-widest opacity-80">{label}</div>
-      <div className="mt-0.5 truncate text-sm font-bold">{name}</div>
+      <PlayerLink name={name} className="mt-0.5 truncate text-sm font-bold block">{name}</PlayerLink>
       <div className="flex items-baseline justify-between text-[11px] opacity-90">
         <span>{team}</span>
         <span className="font-black">{value}</span>
@@ -272,6 +272,7 @@ function AwardCard({ label, name, team, value, className }: { label: string; nam
     </div>
   );
 }
+
 
 function AuctionCard({ tone, label, h }: { tone: "amber" | "violet"; label: string; h: { player: string; team: string; price: string; note?: string } }) {
   const ring = tone === "amber" ? "ring-amber-300/30 bg-amber-400/10" : "ring-violet-300/25 bg-violet-500/10";
