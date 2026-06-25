@@ -32,11 +32,57 @@ export const Route = createFileRoute("/cricket/ipl/records")({
 });
 
 function RecordsPage() {
+  const [q, setQ] = useState("");
+  const [cat, setCat] = useState<string>("all");
+
+  const visibleSections = useMemo(() => {
+    const needle = q.trim().toLowerCase();
+    return SECTIONS
+      .filter((s) => cat === "all" || cat === s.key)
+      .map((sec) => {
+        const list = ((records[sec.key] as Record[]) ?? []).filter((r) =>
+          !needle ||
+          [r.label, r.player, r.team, r.value, r.context].some((v) => v?.toLowerCase().includes(needle)),
+        );
+        return { sec, list };
+      })
+      .filter((x) => x.list.length > 0);
+  }, [q, cat]);
+
   return (
     <IplPageShell title="Records" subtitle="All-time IPL milestones and benchmarks">
+      <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center">
+        <div className="relative flex-1">
+          <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-white/40" />
+          <input
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder="Search player, team, record…"
+            className="w-full rounded-lg border border-white/10 bg-gray-900/60 py-2 pl-9 pr-3 text-sm text-white placeholder:text-white/40 focus:border-amber-400/40 focus:outline-none"
+          />
+        </div>
+        <div className="flex flex-wrap gap-1">
+          {[{ key: "all", title: "All" }, ...SECTIONS].map((s) => (
+            <button
+              key={s.key}
+              type="button"
+              onClick={() => setCat(s.key)}
+              className={`rounded-full px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider transition ${
+                cat === s.key ? "bg-amber-400 text-gray-950" : "bg-white/5 text-white/70 hover:bg-white/10"
+              }`}
+            >
+              {s.title}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {visibleSections.length === 0 && (
+        <p className="rounded-lg border border-white/5 bg-gray-900/40 p-6 text-center text-sm text-white/50">No records match your search.</p>
+      )}
+
       <div className="grid gap-6">
-        {SECTIONS.map((sec) => {
-          const list = (records[sec.key] as Record[]) ?? [];
+        {visibleSections.map(({ sec, list }) => {
           return (
             <section key={sec.key}>
               <div className="mb-3 flex items-baseline gap-2 px-1">
