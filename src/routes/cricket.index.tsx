@@ -205,12 +205,10 @@ function CricketIndex() {
 }
 
 function SeriesTile({ league, liveCount, totalCount }: { league: CricketLeague; liveCount: number; totalCount: number }) {
-  return (
-    <Link
-      to="/cricket/series/$id"
-      params={{ id: league.id }}
-      className={`group relative overflow-hidden rounded-2xl p-4 bg-gradient-to-br ${league.bgGrad} border border-gray-800 hover:border-emerald-500/40 transition-all hover:-translate-y-0.5`}
-    >
+  const isIpl = league.id === "ipl" || /indian premier league/i.test(league.label);
+  const className = `group relative overflow-hidden rounded-2xl p-4 bg-gradient-to-br ${league.bgGrad} border border-gray-800 hover:border-emerald-500/40 transition-all hover:-translate-y-0.5`;
+  const inner = (
+    <>
       {liveCount > 0 && (
         <span className="absolute top-2.5 right-2.5 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-500/20 ring-1 ring-red-500/40 text-[10px] font-bold text-red-300">
           <span className="size-1 rounded-full bg-red-500 animate-pulse" /> {liveCount} live
@@ -229,9 +227,18 @@ function SeriesTile({ league, liveCount, totalCount }: { league: CricketLeague; 
       <div className={`mt-2 inline-flex items-center gap-1 text-[10px] font-bold ${league.accent} group-hover:gap-2 transition-all`}>
         {totalCount > 0 ? `${totalCount} match${totalCount === 1 ? "" : "es"}` : "View series"} <ChevronRight className="size-3" />
       </div>
+    </>
+  );
+  if (isIpl) {
+    return <Link to="/cricket/ipl" className={className}>{inner}</Link>;
+  }
+  return (
+    <Link to="/cricket/series/$id" params={{ id: league.id }} className={className}>
+      {inner}
     </Link>
   );
 }
+
 
 function Section({
   icon, title, badge, badgeTone, children, seeAll,
