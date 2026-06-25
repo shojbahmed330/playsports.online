@@ -4,6 +4,8 @@ import { zodValidator } from "@tanstack/zod-adapter";
 import { z } from "zod";
 import { IplPageShell } from "@/components/ipl/IplPageShell";
 import { OrangePurpleCap } from "@/components/ipl/OrangePurpleCap";
+import { PlayerLink } from "@/components/cricket/PlayerLink";
+
 import { getIplLeaders, getIplHistory, IPL_SEASON_IDS } from "@/lib/ipl.functions";
 
 const searchSchema = z.object({
