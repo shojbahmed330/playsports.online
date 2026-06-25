@@ -340,7 +340,7 @@ export const getCricketMatchDetail = createServerFn({ method: "GET" })
     try {
       const raw = (await apiGet(
         `/${data.leagueId}/summary?event=${data.eventId}`,
-        20_000,
+        10_000,
       )) as any;
 
       // Build the base match dto
