@@ -35,7 +35,7 @@ const purpleQO = queryOptions({
   staleTime: 5 * 60_000,
 });
 
-export const Route = createFileRoute("/cricket/ipl")({
+export const Route = createFileRoute("/cricket/ipl/")({
   head: () => ({
     meta: [
       { title: "Indian Premier League — Live IPL Scores, Standings & Stats" },
