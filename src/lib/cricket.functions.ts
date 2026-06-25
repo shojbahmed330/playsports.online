@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { isCuratedLeague } from "./cricket-leagues";
 
 // ESPN's public cricket API. Cricket is structured per-series:
 //   /cricket/{seriesId}/scoreboard
@@ -8,6 +9,7 @@ import { createServerFn } from "@tanstack/react-start";
 // and recent form from event data itself.
 
 const BASE = "https://site.api.espn.com/apis/site/v2/sports/cricket";
+
 
 type CacheEntry = { at: number; ttl: number; data: unknown };
 const cache = new Map<string, CacheEntry>();
