@@ -39,7 +39,20 @@ export function SportNav({ liveCount = 0 }: { liveCount?: number }) {
     grad: SPORT_GRADS[s.slug]?.grad ?? "from-gray-500 to-gray-700",
     accent: SPORT_GRADS[s.slug]?.accent ?? "text-gray-300",
   }));
-  const tabs: Tab[] = [...BASE_TABS, ...sportTabs];
+  const allTabs: Tab[] = [...BASE_TABS, ...sportTabs];
+
+  // Determine current sport context. On a specific sport page, hide other
+  // sport tabs so the bar shows just Hub + current sport (+ Player Stats chip).
+  const currentSportTab = allTabs.find(
+    (t) => t.to !== "/" && (pathname === t.to || pathname.startsWith(t.to + "/")),
+  );
+  const onHub = pathname === "/";
+  const tabs: Tab[] = currentSportTab
+    ? [allTabs[0], currentSportTab]
+    : allTabs;
+
+  // Player Stats chip is sport-scoped — only on a specific sport page.
+  const showStatsChip = !!currentSportTab;
 
   return (
     <header className="sticky top-0 z-30 border-b border-border bg-background/85 backdrop-blur-md">
@@ -61,7 +74,7 @@ export function SportNav({ liveCount = 0 }: { liveCount?: number }) {
           {/* live + players + admin chips, right-aligned on mobile brand row */}
           <div className="flex items-center gap-2 sm:hidden">
             {liveCount > 0 && <LiveChip count={liveCount} />}
-            <StatsChip pathname={pathname} />
+            {showStatsChip && <StatsChip pathname={pathname} />}
             {isAdmin && <AdminChip />}
           </div>
         </div>
@@ -75,12 +88,14 @@ export function SportNav({ liveCount = 0 }: { liveCount?: number }) {
                 : pathname === t.to || pathname.startsWith(t.to + "/");
             return <NavPill key={t.to} tab={t} active={active} />;
           })}
+          {/* On the Hub, surface every sport so users can jump in. */}
+          {onHub ? null : null}
         </nav>
 
         {/* desktop-only chips */}
         <div className="hidden sm:flex items-center gap-2">
           {liveCount > 0 && <LiveChip count={liveCount} />}
-          <StatsChip pathname={pathname} />
+          {showStatsChip && <StatsChip pathname={pathname} />}
           {isAdmin && <AdminChip />}
         </div>
       </div>
