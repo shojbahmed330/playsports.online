@@ -19,7 +19,7 @@ import { MobileLiveTicker } from "./MobileLiveTicker";
 import { WatchLivePanel } from "./WatchLivePanel";
 import { flagOf } from "@/lib/flags";
 import { fetch2026VideoMap, videoKey } from "@/lib/wc-2026-videos";
-import r32Fallback from "@/data/wc2026_r32_fixtures.json";
+
 import { applyFilter, useMyTeams, type FootballFilter } from "@/lib/football-filters";
 import { FootballPitchSkeleton, FootballEmptyBall } from "@/components/football/FootballSkeleton";
 
@@ -54,23 +54,122 @@ function toWcGroups(groups: Wc2026Group[]): WCGroup[] {
   return out;
 }
 
-function toWcMatches(fixtures: Wc2026Fixture[], videoMap?: Map<string, string>): WCMatch[] {
-  return fixtures.map((f, i) => ({
-    id: f.id,
-    tournament_year: 2026,
-    round: f.group,
-    match_number: i + 1,
-    home_team: f.home.name,
-    away_team: f.away.name,
-    home_score: f.home.goals,
-    away_score: f.away.goals,
-    home_score_pen: null,
-    away_score_pen: null,
-    match_date: f.startTs ? new Date(f.startTs * 1000).toISOString() : null,
-    stadium: f.venue,
-    city: f.city,
-    video_url: videoMap?.get(videoKey(f.home.name, f.away.name)) ?? null,
-  }));
+// Normalize a team name to a lookup key — strips accents/punctuation so
+// "Türkiye" === "turkiye", "USA" === "United States", etc.
+function nameKey(s: string): string {
+  return s
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/&/g, "and")
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+}
+const NAME_ALIASES: Record<string, string> = {
+  usa: "united states",
+  us: "united states",
+  "korea republic": "south korea",
+  korea: "south korea",
+  "cote d ivoire": "ivory coast",
+  "cote divoire": "ivory coast",
+  "cabo verde": "cape verde",
+  czechia: "czech republic",
+  turkiye: "turkey",
+  "congo dr": "dr congo",
+  "democratic republic of congo": "dr congo",
+};
+function aliasKey(s: string): string {
+  const k = nameKey(s);
+  return NAME_ALIASES[k] ?? k;
+}
+
+// team → "Group X" map built from standings
+function buildTeamGroup(groups: Wc2026Group[]): Map<string, string> {
+  const m = new Map<string, string>();
+  for (const g of groups) for (const r of g.rows) m.set(aliasKey(r.team.name), g.group);
+  return m;
+}
+
+function titleCase(s: string) {
+  return s.replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+function toWcMatches(
+  fixtures: Wc2026Fixture[],
+  videoMap: Map<string, string> | undefined,
+  teamGroup: Map<string, string>,
+): WCMatch[] {
+  return fixtures.map((f, i) => {
+    // Fix ESPN's generic "Group Stage"/"Other" → real "Group X" using standings.
+    let round = f.group;
+    const isKnownGroup = /Group\s+[A-Z0-9]/i.test(round);
+    const isKnownKnockout =
+      /(round of (32|16)|quarter|semi|final|third|play-?off)/i.test(round);
+    if (!isKnownGroup && !isKnownKnockout) {
+      const gh = teamGroup.get(aliasKey(f.home.name));
+      const ga = teamGroup.get(aliasKey(f.away.name));
+      if (gh && gh === ga) round = gh;
+    }
+    return {
+      id: f.id,
+      tournament_year: 2026,
+      round,
+      match_number: i + 1,
+      home_team: f.home.name,
+      away_team: f.away.name,
+      home_score: f.home.goals,
+      away_score: f.away.goals,
+      home_score_pen: null,
+      away_score_pen: null,
+      match_date: f.startTs ? new Date(f.startTs * 1000).toISOString() : null,
+      stadium: f.venue,
+      city: f.city,
+      video_url: videoMap?.get(videoKey(f.home.name, f.away.name)) ?? null,
+    };
+  });
+}
+
+// Synthesize group-stage fixtures from curated highlights when ESPN hasn't
+// published the event yet — only pairs whose teams sit in the same group.
+function synthGroupFixturesFromVideos(
+  videoMap: Map<string, string> | undefined,
+  teamGroup: Map<string, string>,
+  existing: WCMatch[],
+): WCMatch[] {
+  if (!videoMap || teamGroup.size === 0) return [];
+  // Reverse lookup so we can render official display names from standings.
+  const aliasToDisplay = new Map<string, string>();
+  for (const [aKey, _g] of teamGroup) aliasToDisplay.set(aKey, aKey);
+  const seen = new Set(existing.map((m) => videoKey(m.home_team, m.away_team)));
+  const out: WCMatch[] = [];
+  let i = 0;
+  for (const [k, url] of videoMap.entries()) {
+    if (seen.has(k)) continue;
+    const [a, b] = k.split("|");
+    if (!a || !b) continue;
+    const ga = teamGroup.get(aliasKey(a));
+    const gb = teamGroup.get(aliasKey(b));
+    if (!ga || ga !== gb) continue; // skip non-group pairs / unknown teams
+    seen.add(k);
+    out.push({
+      id: -5000 - i,
+      tournament_year: 2026,
+      round: ga,
+      match_number: 100 + i,
+      home_team: titleCase(a),
+      away_team: titleCase(b),
+      home_score: null,
+      away_score: null,
+      home_score_pen: null,
+      away_score_pen: null,
+      match_date: null,
+      stadium: null,
+      city: null,
+      video_url: url,
+    });
+    i++;
+  }
+  return out;
 }
 
 function classifyKnockout(round: string): RoundKey | null {
