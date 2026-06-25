@@ -5,7 +5,9 @@ import { z } from "zod";
 import { TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { SportNav } from "@/components/sports/SportNav";
 import { CricketSubNav } from "@/components/cricket/CricketSubNav";
+import { PlayerLink } from "@/components/cricket/PlayerLink";
 import rankings from "@/data/cricket/rankings.json";
+
 
 const search = z.object({
   cat: fallback(z.enum(["teams", "batters", "bowlers", "allrounders"]), "teams").default("teams"),
