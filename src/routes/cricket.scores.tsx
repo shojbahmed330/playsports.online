@@ -88,7 +88,8 @@ function CricketScoresPage() {
 
   const filtered = useMemo(() => {
     let m = allMatches;
-    if (league !== "all") m = m.filter((x) => x.leagueId === league);
+    if (league === "internationals") m = m.filter((x) => x.kind === "bilateral");
+    else if (league !== "all") m = m.filter((x) => x.leagueId === league);
     if (fmt !== "any") {
       m = m.filter((x) => {
         const f = (x.format || "").toUpperCase();
@@ -100,6 +101,7 @@ function CricketScoresPage() {
     }
     return m;
   }, [allMatches, league, fmt]);
+
 
   const visible = useMemo(() => {
     if (tab === "live") return filtered.filter((m) => m.status === "in");
