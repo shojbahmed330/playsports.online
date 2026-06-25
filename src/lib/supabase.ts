@@ -40,6 +40,8 @@ export type WCMatch = {
   stadium: string | null;
   city: string | null;
   video_url: string | null;
+  /** True for synthesized fixtures (e.g. predicted Round of 32 before FIFA/ESPN publishes the real matchup). */
+  predicted?: boolean;
 };
 
 export type WCGroup = {
