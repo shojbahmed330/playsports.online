@@ -264,17 +264,19 @@ export function Wc2026GroupsView({ filter = "all", team, date, onDateChange }: {
     return [...fromEspn, ...synth];
   }, [fQ.data, vQ.data, teamGroup, canonName]);
   const { teams: myTeams } = useMyTeams();
-  // Group stage view ALWAYS shows every group fixture (past + scheduled).
-  // The date scrubber only filters the live ticker — selecting a date with
-  // no matches must not blank out the groups.
-  const wcMatches = useMemo(
+  // Filtered by team/my-teams/etc — used for groups when no date is picked
+  // so users still see every fixture by default.
+  const wcMatchesAllFiltered = useMemo(
     () => applyFilter(wcMatchesAll, filter, team, myTeams),
     [wcMatchesAll, filter, team, myTeams],
   );
-  const wcMatchesForTicker = useMemo(
-    () => filterByDateKey(wcMatches, date),
-    [wcMatches, date],
+  // When a date is selected (e.g. "Today"), narrow the fixtures shown
+  // inside each group card AND the live ticker to that date.
+  const wcMatchesForDate = useMemo(
+    () => filterByDateKey(wcMatchesAllFiltered, date),
+    [wcMatchesAllFiltered, date],
   );
+  const wcMatches = date ? wcMatchesForDate : wcMatchesAllFiltered;
 
 
   const [activeMatch, setActiveMatch] = useState<WCMatch | null>(null);
@@ -293,17 +295,24 @@ export function Wc2026GroupsView({ filter = "all", team, date, onDateChange }: {
 
   return (
     <>
-      <MobileLiveTicker matches={wcMatchesForTicker} />
+      <MobileLiveTicker matches={wcMatches} />
 
 
       {onDateChange && (
         <DateScrubber matches={wcMatchesAll} value={date} onChange={onDateChange} className="mb-4" />
       )}
 
+      {date && wcMatchesForDate.length === 0 && (
+        <div className="mb-4 rounded-xl border border-sky-500/30 bg-sky-500/5 px-4 py-3 text-xs text-sky-200">
+          No matches scheduled on this date — standings shown below. Tap “Clear date” on the scrubber to see every fixture.
+        </div>
+      )}
+
       {/* Mobile-only swipeable group deck */}
       <div className="md:hidden">
         <MobileGroupDeck groups={wcGroups} matches={wcMatches} onPick={setActiveMatch} />
       </div>
+
 
 
       {/* Desktop layout */}
