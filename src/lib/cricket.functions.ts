@@ -227,9 +227,10 @@ export const getMultiCricketToday = createServerFn({ method: "GET" })
       /* fall through to curated */
     }
 
-    // 2) Curated series — fills gaps and tags league nicely.
+    // 2) Curated series + active bilateral tours — fills gaps and tags league.
+    const seriesToFetch = Array.from(new Set([...data.leagueIds, ...BILATERAL_SERIES_IDS]));
     const results = await Promise.all(
-      data.leagueIds.map(async (id) => {
+      seriesToFetch.map(async (id) => {
         try {
           const raw = (await apiGet(`/${id}/scoreboard`, 30_000)) as any;
           const leagueMeta = raw?.leagues?.[0] ?? {};
