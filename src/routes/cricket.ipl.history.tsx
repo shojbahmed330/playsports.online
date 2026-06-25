@@ -26,13 +26,56 @@ export const Route = createFileRoute("/cricket/ipl/history")({
 
 function HistoryPage() {
   const { data } = useSuspenseQuery(qo);
+  const [q, setQ] = useState("");
+  const [team, setTeam] = useState<string>("all");
+
+  const teams = useMemo(() => {
+    const set = new Set<string>();
+    data.seasons.forEach((s) => { set.add(s.champion); set.add(s.runnerUp); });
+    return Array.from(set).sort();
+  }, [data]);
+
+  const filtered = useMemo(() => {
+    const needle = q.trim().toLowerCase();
+    return data.seasons.filter((s) => {
+      if (team !== "all" && s.champion !== team && s.runnerUp !== team) return false;
+      if (!needle) return true;
+      return [String(s.year), s.champion, s.runnerUp, s.mom, s.finalVenue, s.orangeCap.player, s.purpleCap.player]
+        .some((v) => v?.toLowerCase().includes(needle));
+    });
+  }, [data, q, team]);
+
   return (
     <IplPageShell
       title="History"
-      subtitle={`${data.seasons.length} seasons of finals, champions and awards`}
+      subtitle={`${filtered.length} / ${data.seasons.length} seasons`}
     >
+      <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center">
+        <div className="relative flex-1">
+          <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-white/40" />
+          <input
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder="Search year, team, player, venue…"
+            className="w-full rounded-lg border border-white/10 bg-gray-900/60 py-2 pl-9 pr-3 text-sm text-white placeholder:text-white/40 focus:border-amber-400/40 focus:outline-none"
+          />
+        </div>
+        <select
+          value={team}
+          onChange={(e) => setTeam(e.target.value)}
+          className="rounded-lg border border-white/10 bg-gray-900/60 px-3 py-2 text-sm text-white focus:border-amber-400/40 focus:outline-none"
+        >
+          <option value="all">All teams</option>
+          {teams.map((t) => <option key={t} value={t}>{t}</option>)}
+        </select>
+      </div>
+
+      {filtered.length === 0 && (
+        <p className="rounded-lg border border-white/5 bg-gray-900/40 p-6 text-center text-sm text-white/50">No seasons match your filters.</p>
+      )}
+
       <ul className="grid gap-4">
-        {data.seasons.map((s) => (
+        {filtered.map((s) => (
           <li
             key={s.year}
             className="overflow-hidden rounded-2xl border border-white/5 bg-gradient-to-br from-amber-950/40 via-gray-900/70 to-gray-900/40 shadow-xl"
