@@ -55,6 +55,7 @@ function HistoryPage() {
   const [team, setTeam] = useState<string>("all");
   const [era, setEra] = useState<string>("all");
   const [openYear, setOpenYear] = useState<number | null>(null);
+  const [openBracket, setOpenBracket] = useState<number | null>(null);
 
   const teams = useMemo(() => {
     const set = new Set<string>();
