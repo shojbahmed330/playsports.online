@@ -1,9 +1,9 @@
 import { useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
-import { Trophy, Award, Search, ChevronDown, Sparkles } from "lucide-react";
+import { useSuspenseQuery, useQuery, queryOptions } from "@tanstack/react-query";
+import { Trophy, Award, Search, ChevronDown, Sparkles, GitBranch } from "lucide-react";
 import { IplPageShell } from "@/components/ipl/IplPageShell";
-import { getIplHistory } from "@/lib/ipl.functions";
+import { getIplHistory, getIplPlayoffs, IPL_SEASON_IDS, type IplBracketMatch } from "@/lib/ipl.functions";
 import franchises from "@/data/cricket/ipl/franchises.json";
 import auctions from "@/data/cricket/ipl/auctions.json";
 
@@ -12,6 +12,16 @@ const qo = queryOptions({
   queryFn: () => getIplHistory(),
   staleTime: 60 * 60_000,
 });
+
+const bracketQo = (year: number | "current") =>
+  queryOptions({
+    queryKey: ["ipl", "playoffs", year],
+    queryFn: () => getIplPlayoffs({ data: { year } }),
+    staleTime: 10 * 60_000,
+  });
+
+const KNOWN_BRACKET_YEARS = new Set<number | "current">(IPL_SEASON_IDS.map((s) => s.year));
+
 
 type Era = { id: string; label: string; range: [number, number] };
 const ERAS: Era[] = [
