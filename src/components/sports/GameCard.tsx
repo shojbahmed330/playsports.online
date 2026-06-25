@@ -1,23 +1,29 @@
 import type { SportGame } from "@/lib/espn.functions";
+import { Link } from "@tanstack/react-router";
 import { Countdown } from "./Countdown";
 import { ScoreFlip } from "./ScoreFlip";
 import { formatLocalTime, relativeDay } from "@/lib/time";
 import { MapPin, Tv } from "lucide-react";
 
-export function GameCard({ game }: { game: SportGame }) {
+export function GameCard({ game, linkTo }: { game: SportGame; linkTo?: string }) {
   const isLive = game.status === "in";
   const isFinal = game.status === "post";
   const isPre = game.status === "pre";
   const winnerHome = game.home.winner === true;
   const winnerAway = game.away.winner === true;
 
+  const Wrapper: any = linkTo ? Link : "div";
+  const wrapperProps = linkTo ? { to: linkTo } : {};
+
   return (
-    <div
-      className={`group rounded-xl border bg-gray-900/70 overflow-hidden transition-all hover:-translate-y-0.5 hover:shadow-lg
+    <Wrapper
+      {...wrapperProps}
+      className={`block group rounded-xl border bg-gray-900/70 overflow-hidden transition-all hover:-translate-y-0.5 hover:shadow-lg
         ${isLive
           ? "border-red-500/40 shadow-[0_0_24px_rgba(239,68,68,0.15)]"
           : "border-gray-800 hover:border-amber-500/30"}`}
     >
+
       {/* Status bar */}
       <div className="flex items-center justify-between gap-2 px-3 py-2 text-[10px] uppercase tracking-wider border-b border-gray-800/80 bg-gray-950/40">
         {isLive ? (
