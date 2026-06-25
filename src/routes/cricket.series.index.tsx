@@ -4,11 +4,12 @@ import { useServerFn } from "@tanstack/react-start";
 import { useMemo } from "react";
 import { zodValidator, fallback } from "@tanstack/zod-adapter";
 import { z } from "zod";
-import { Trophy, Flame, CalendarClock } from "lucide-react";
+import { Flame, CalendarClock, Globe2, ChevronRight } from "lucide-react";
 import { SportNav } from "@/components/sports/SportNav";
 import { CricketSubNav } from "@/components/cricket/CricketSubNav";
-import { getCricketSeriesList } from "@/lib/cricket.functions";
+import { getCricketSeriesList, getBilateralSeriesList, type BilateralTour } from "@/lib/cricket.functions";
 import { CRICKET_LEAGUE_BY_ID } from "@/lib/cricket-leagues";
+
 
 const search = z.object({
   fmt: fallback(z.enum(["any", "t20", "odi", "test"]), "any").default("any"),
@@ -36,6 +37,16 @@ function SeriesIndex() {
     staleTime: 5 * 60_000,
     refetchInterval: 60_000,
   });
+
+  const tourFn = useServerFn(getBilateralSeriesList);
+  const tourQ = useQuery({
+    queryKey: ["cricket", "bilateral-tours"],
+    queryFn: () => tourFn({}),
+    staleTime: 5 * 60_000,
+    refetchInterval: 60_000,
+  });
+  const tours: BilateralTour[] = tourQ.data?.tours ?? [];
+
 
   const series = q.data?.series ?? [];
   const filtered = useMemo(() => {
@@ -72,7 +83,53 @@ function SeriesIndex() {
         </div>
       </section>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-5 space-y-4">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-5 space-y-6">
+        {tours.length > 0 && (
+          <section className="rounded-2xl border border-sky-500/20 bg-gradient-to-br from-sky-950/40 via-background to-emerald-950/30 p-4">
+            <div className="flex items-center justify-between gap-3 mb-3">
+              <h2 className="text-base font-bold inline-flex items-center gap-2">
+                <Globe2 className="size-5 text-sky-300" /> Bilateral Tours
+                <span className="text-[10px] uppercase tracking-wider text-sky-300/80 font-bold">{tours.length}</span>
+              </h2>
+              <Link to="/cricket/scores" search={{ tab: "live", date: "", league: "internationals", fmt: "any" }} className="text-xs font-bold text-sky-300 hover:text-sky-200 inline-flex items-center gap-1">
+                Live & fixtures <ChevronRight className="size-3.5" />
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {tours.slice(0, 9).map((t) => (
+                <Link
+                  key={t.id}
+                  to="/cricket/series/$id"
+                  params={{ id: t.id }}
+                  className="group relative overflow-hidden rounded-xl border border-white/10 bg-gradient-to-br from-slate-900 to-slate-950 p-3 hover:border-sky-400/40 hover:-translate-y-0.5 transition"
+                >
+                  <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.18em] font-bold text-sky-300">
+                    🌍 Bilateral{t.format ? ` · ${t.format}` : ""}
+                  </div>
+                  <div className="font-bold leading-tight mt-1 line-clamp-2">{t.name}</div>
+                  <div className="mt-2 flex items-center gap-1.5 text-[11px]">
+                    {t.liveCount > 0 && (
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-500/15 text-red-300 ring-1 ring-red-500/30 font-bold">
+                        <span className="size-1.5 rounded-full bg-red-500 animate-pulse" /> {t.liveCount} live
+                      </span>
+                    )}
+                    {t.upcomingCount > 0 && (
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-300 ring-1 ring-amber-500/30 font-bold">
+                        <CalendarClock className="size-3" /> {t.upcomingCount}
+                      </span>
+                    )}
+                    {t.finishedCount > 0 && t.liveCount === 0 && (
+                      <span className="text-[10px] text-gray-500">{t.finishedCount} played</span>
+                    )}
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
+
+        <div className="space-y-4">
+
         <div className="flex flex-wrap items-center gap-2">
           <FilterGroup label="Format">
             {(["any", "t20", "odi", "test"] as const).map((v) => (
@@ -138,7 +195,9 @@ function SeriesIndex() {
             })}
           </div>
         )}
+        </div>
       </div>
+
     </div>
   );
 }

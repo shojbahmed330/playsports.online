@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Flame, Clock, CheckCircle2, Calendar, ChevronRight, Trophy } from "lucide-react";
+import { Flame, Clock, CheckCircle2, Calendar, ChevronRight, Trophy, Globe2 } from "lucide-react";
 import { SportNav } from "@/components/sports/SportNav";
 import { CricketSubNav } from "@/components/cricket/CricketSubNav";
 import { CricketHero } from "@/components/cricket/CricketHero";
@@ -12,6 +12,7 @@ import { AdSlot } from "@/components/ads/AdSlot";
 import { CricketMatchCard } from "@/components/cricket/CricketMatchCard";
 import { getMultiCricketToday, type CricketMatch } from "@/lib/cricket.functions";
 import { CRICKET_LEAGUES, type CricketLeague } from "@/lib/cricket-leagues";
+
 
 export const Route = createFileRoute("/cricket/")({
   head: () => ({
@@ -60,6 +61,18 @@ function CricketIndex() {
     return { live, today, upcoming, finished, now };
   }, [allMatches]);
 
+  const internationals = useMemo(() => {
+    const now = Date.now();
+    const bil = allMatches.filter((m) => m.kind === "bilateral");
+    const live = bil.filter((m) => m.status === "in");
+    const next = bil
+      .filter((m) => m.status === "pre" && m.startTs > now)
+      .sort((a, b) => a.startTs - b.startTs)
+      .slice(0, 3);
+    return { all: bil, live, next };
+  }, [allMatches]);
+
+
   return (
     <div className="min-h-screen">
       <SportNav liveCount={liveAll} />
@@ -69,6 +82,34 @@ function CricketIndex() {
       <LivePulseStrip matches={allMatches} />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-10">
+        {/* International Cricket — bilateral tours */}
+        {(internationals.live.length > 0 || internationals.next.length > 0) && (
+          <section className="relative overflow-hidden rounded-2xl border border-sky-500/20 bg-gradient-to-br from-sky-950/40 via-background to-emerald-950/30 p-4 sm:p-5">
+            <div className="absolute -top-16 -right-16 size-48 rounded-full bg-sky-500/10 blur-3xl pointer-events-none" />
+            <div className="relative flex items-center justify-between gap-3 mb-3">
+              <h2 className="text-lg font-bold flex items-center gap-2">
+                <Globe2 className="size-5 text-sky-300" />
+                International Cricket
+                {internationals.live.length > 0 && (
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-500/20 ring-1 ring-red-500/40 text-[10px] font-bold text-red-300">
+                    <span className="size-1 rounded-full bg-red-500 animate-pulse" /> {internationals.live.length} live
+                  </span>
+                )}
+              </h2>
+              <Link to="/cricket/scores" search={{ tab: "live", date: "", league: "internationals", fmt: "any" }} className="text-xs font-bold text-sky-300 hover:text-sky-200 inline-flex items-center gap-1 shrink-0">
+                All internationals <ChevronRight className="size-3.5" />
+              </Link>
+            </div>
+            <p className="relative text-xs text-muted-foreground mb-4">Country vs country tours — NZ v ENG, IND v AUS, and every bilateral series.</p>
+            <div className="relative grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {[...internationals.live, ...internationals.next].slice(0, 3).map((m) => (
+                <CricketMatchCard key={m.id} match={m} />
+              ))}
+            </div>
+          </section>
+        )}
+
+
         {/* Quick-jump series tiles */}
         <section>
           <div className="flex items-center justify-between mb-3">

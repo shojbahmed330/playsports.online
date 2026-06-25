@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { isCuratedLeague } from "./cricket-leagues";
 
 // ESPN's public cricket API. Cricket is structured per-series:
 //   /cricket/{seriesId}/scoreboard
@@ -8,6 +9,7 @@ import { createServerFn } from "@tanstack/react-start";
 // and recent form from event data itself.
 
 const BASE = "https://site.api.espn.com/apis/site/v2/sports/cricket";
+
 
 type CacheEntry = { at: number; ttl: number; data: unknown };
 const cache = new Map<string, CacheEntry>();
@@ -56,6 +58,8 @@ export type CricketMatch = {
   leagueId: string;
   leagueName: string;
   leagueAbbr: string;
+  /** "league" = curated franchise/tournament (IPL, BBL, T20WC…); "bilateral" = international tour (NZ v ENG…) */
+  kind: "league" | "bilateral";
   startTs: number;            // ms
   status: "pre" | "in" | "post";
   statusDetail: string;       // "Stumps · Day 2" / "Live · 12.3 ov" / "FT"
@@ -72,6 +76,7 @@ export type CricketMatch = {
   /** Toss / result blurb */
   note: string | null;
 };
+
 
 export type CricketNewsItem = {
   id: string;
@@ -147,7 +152,9 @@ function mapMatch(e: any, league: { id: string; name: string; abbr: string }): C
     leagueId: league.id,
     leagueName: league.name,
     leagueAbbr: league.abbr,
+    kind: isCuratedLeague(league.id) ? "league" : "bilateral",
     startTs: e.date ? new Date(e.date).getTime() : 0,
+
     status,
     statusDetail: e?.status?.type?.detail ?? e?.status?.type?.description ?? "",
     shortDetail: e?.status?.type?.shortDetail ?? "",
@@ -339,7 +346,9 @@ export const getCricketMatchDetail = createServerFn({ method: "GET" })
         leagueId: league.id,
         leagueName: league.name,
         leagueAbbr: league.abbr,
+        kind: isCuratedLeague(league.id) ? "league" : "bilateral",
         startTs: comp?.date ? new Date(comp.date).getTime() : 0,
+
         status,
         statusDetail: evt?.status?.type?.detail ?? "",
         shortDetail: evt?.status?.type?.shortDetail ?? "",
@@ -698,4 +707,108 @@ export const getCricketRankings = createServerFn({ method: "GET" })
   .handler(async () => {
     return { rankings: rankingsJson as CricketRankings };
   });
+
+// ───────── Bilateral / international tours ─────────
+// Groups uncurated ESPN tour series (e.g. "England in New Zealand 2026")
+// into tour buckets derived from the global cricket scoreboard.
+
+export type BilateralTour = {
+  id: string;          // ESPN leagueId
+  name: string;        // "England tour of New Zealand" — best-guess label
+  abbr: string;
+  format: string;      // T20I / ODI / Test (most common in the tour)
+  teams: { id: string; name: string; abbr: string; logo: string | null; flag: string | null }[];
+  liveCount: number;
+  upcomingCount: number;
+  finishedCount: number;
+  nextStartTs: number | null;
+  lastStartTs: number | null;
+};
+
+function deriveTourName(matches: CricketMatch[]): string {
+  // Prefer ESPN-provided league name if it doesn't look like a series id
+  const lname = matches[0]?.leagueName?.trim();
+  if (lname && lname.length > 3 && !/^\d+$/.test(lname)) return lname;
+  // Fallback — derive from teams
+  const teamSet = new Set<string>();
+  for (const m of matches) {
+    if (m.home.name) teamSet.add(m.home.name);
+    if (m.away.name) teamSet.add(m.away.name);
+  }
+  const arr = Array.from(teamSet);
+  if (arr.length === 2) return `${arr[0]} vs ${arr[1]}`;
+  if (arr.length > 2) return `${arr.slice(0, 3).join(", ")} tri-series`;
+  return matches[0]?.description || "International series";
+}
+
+export const getBilateralSeriesList = createServerFn({ method: "GET" })
+  .handler(async () => {
+    try {
+      const raw = (await apiGet(`/scoreboard`, 5 * 60_000)) as any;
+      const events: any[] = raw?.events ?? [];
+      const tours = new Map<string, CricketMatch[]>();
+      for (const e of events) {
+        const lm = e?.league ?? e?.leagues?.[0] ?? raw?.leagues?.[0] ?? {};
+        const league = {
+          id: String(lm.id ?? "global"),
+          name: lm.name ?? "Cricket",
+          abbr: lm.abbreviation ?? "",
+        };
+        if (isCuratedLeague(league.id)) continue;
+        const m = mapMatch(e, league);
+        const arr = tours.get(league.id) ?? [];
+        arr.push(m);
+        tours.set(league.id, arr);
+      }
+
+      const now = Date.now();
+      const result: BilateralTour[] = [];
+      for (const [id, ms] of tours) {
+        ms.sort((a, b) => a.startTs - b.startTs);
+        const teamMap = new Map<string, BilateralTour["teams"][number]>();
+        for (const m of ms) {
+          for (const t of [m.home, m.away]) {
+            if (!t.id) continue;
+            if (!teamMap.has(t.id)) {
+              teamMap.set(t.id, {
+                id: t.id, name: t.name, abbr: t.abbr, logo: t.logo, flag: t.logo,
+              });
+            }
+          }
+        }
+        const fmtCounts: Record<string, number> = {};
+        for (const m of ms) {
+          const f = (m.format || "").toUpperCase();
+          fmtCounts[f] = (fmtCounts[f] ?? 0) + 1;
+        }
+        const fmt = Object.entries(fmtCounts).sort((a, b) => b[1] - a[1])[0]?.[0] ?? "";
+        const upcoming = ms.filter((m) => m.status === "pre" && m.startTs > now);
+        const live = ms.filter((m) => m.status === "in");
+        const finished = ms.filter((m) => m.status === "post");
+        result.push({
+          id,
+          name: deriveTourName(ms),
+          abbr: ms[0]?.leagueAbbr ?? "",
+          format: fmt,
+          teams: Array.from(teamMap.values()),
+          liveCount: live.length,
+          upcomingCount: upcoming.length,
+          finishedCount: finished.length,
+          nextStartTs: upcoming[0]?.startTs ?? null,
+          lastStartTs: finished[finished.length - 1]?.startTs ?? null,
+        });
+      }
+      // Sort: live first, then by next upcoming
+      result.sort((a, b) => {
+        if (a.liveCount !== b.liveCount) return b.liveCount - a.liveCount;
+        const an = a.nextStartTs ?? Number.POSITIVE_INFINITY;
+        const bn = b.nextStartTs ?? Number.POSITIVE_INFINITY;
+        return an - bn;
+      });
+      return { tours: result, error: null as string | null };
+    } catch (e) {
+      return { tours: [] as BilateralTour[], error: e instanceof Error ? e.message : "Unknown" };
+    }
+  });
+
 
