@@ -298,8 +298,6 @@ export function Wc2026KnockoutView({ filter = "all", team }: { filter?: Football
     refetchInterval: 60_000,
     retry: 1,
   });
-  const fixturesFn = useServerFn(getWc2026Fixtures);
-  const scorersFn = useServerFn(getWc2026TopScorers);
 
   const fQ = useQuery({
     queryKey: ["wc2026", "fixtures"],
