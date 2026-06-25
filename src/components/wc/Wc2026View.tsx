@@ -293,7 +293,8 @@ export function Wc2026GroupsView({ filter = "all", team, date, onDateChange }: {
 
   return (
     <>
-      <MobileLiveTicker matches={wcMatches} />
+      <MobileLiveTicker matches={wcMatchesForTicker} />
+
 
       {onDateChange && (
         <DateScrubber matches={wcMatchesAll} value={date} onChange={onDateChange} className="mb-4" />
