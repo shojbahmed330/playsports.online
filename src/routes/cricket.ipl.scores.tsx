@@ -46,11 +46,11 @@ function ScoresPage() {
     <IplPageShell
       title="Scores & Fixtures"
       subtitle={`${data.matches.length} matches · season ${String(year)}`}
-      right={<SeasonPicker year={year} onChange={(y) => navigate({ search: (p) => ({ ...p, year: y }) })} />}
+      right={<SeasonPicker year={year} onChange={(y) => navigate({ search: (p: z.infer<typeof searchSchema>) => ({ ...p, year: y }) })} />}
     >
       <FilterChips
         value={status}
-        onChange={(s) => navigate({ search: (p) => ({ ...p, status: s }) })}
+        onChange={(s) => navigate({ search: (p: z.infer<typeof searchSchema>) => ({ ...p, status: s }) })}
         counts={{
           all: data.matches.length,
           live: data.matches.filter((m) => m.status === "in").length,

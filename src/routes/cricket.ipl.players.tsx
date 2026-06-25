@@ -77,7 +77,7 @@ function PlayersPage() {
           value={String(year)}
           onChange={(e) => {
             const v = e.target.value;
-            navigate({ search: (p) => ({ ...p, year: v === "current" ? "current" : Number(v) }) });
+            navigate({ search: (p: z.infer<typeof searchSchema>) => ({ ...p, year: v === "current" ? "current" : Number(v) }) });
           }}
           className="rounded-full border border-white/10 bg-gray-900/80 px-3 py-1.5 text-xs font-bold text-white focus:outline-none focus:ring-2 focus:ring-fuchsia-400/40"
         >
