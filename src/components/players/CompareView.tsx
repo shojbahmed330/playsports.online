@@ -108,6 +108,7 @@ export function CompareView() {
           {selected.length < 4 && (
             <AddPicker
               exclude={selected}
+              goals={GOALS}
               onPick={(p) => setSelected([...selected, p])}
             />
           )}
