@@ -413,6 +413,12 @@ export function Wc2026KnockoutView({ filter = "all", team, date, onDateChange }:
     <div className="space-y-10">
       <MobileLiveTicker matches={wcMatches} />
 
+      {onDateChange && (
+        <DateScrubber matches={wcMatchesWithR32} value={date} onChange={onDateChange} />
+      )}
+
+
+
       {groupedKnockout.length === 0 ? (
         <EmptyBox
           title="Knockout bracket not yet available"
