@@ -494,6 +494,7 @@ function ScorersTab({
 }: { rows: ScorerRow[]; onPick: (n: string, c: string) => void }) {
   return (
     <section className="space-y-4">
+      <Wc2026Podium onPick={onPick} />
       <div className="flex items-baseline justify-between flex-wrap gap-2">
         <h2 className="text-xl sm:text-2xl font-bold">🥇 Top Scorers</h2>
         <span className="text-xs text-muted-foreground tabular-nums">
