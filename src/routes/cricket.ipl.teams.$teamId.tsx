@@ -274,8 +274,11 @@ function TeamPage() {
           </ul>
         )}
       </section>
+      )}
 
-      <section className="mt-8">
+      {/* ===== FIXTURES ===== */}
+      {tab === "fixtures" && (
+      <section className="mt-6">
         <h3 className="mb-3 px-1 text-base font-black tracking-tight text-white">
           This season's fixtures
         </h3>
@@ -289,8 +292,11 @@ function TeamPage() {
           </div>
         )}
       </section>
-      {/* Head-to-head this season */}
-      <section className="mt-8">
+      )}
+
+      {/* ===== HEAD-TO-HEAD ===== */}
+      {tab === "h2h" && (
+      <section className="mt-6">
         <h3 className="mb-3 px-1 text-base font-black tracking-tight text-white">
           Head-to-head this season
         </h3>
