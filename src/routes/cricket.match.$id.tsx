@@ -56,6 +56,8 @@ function MatchPage() {
   const match = q.data?.match ?? null;
   const innings = q.data?.innings ?? [];
   const commentary = q.data?.commentary ?? [];
+  const [playerId, setPlayerId] = useState<string | null>(null);
+
 
   if (q.isLoading) {
     return (
