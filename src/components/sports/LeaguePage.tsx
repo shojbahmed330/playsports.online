@@ -19,8 +19,6 @@ import { GameGridSkeleton, StandingsSkeleton } from "./Skeletons";
 import { AdSlot } from "@/components/ads/AdSlot";
 import { formatLocalTime, relativeDay } from "@/lib/time";
 import { Breadcrumbs } from "@/components/nav/Breadcrumbs";
-import { Home as HomeIcon, ListOrdered } from "lucide-react";
-void HomeIcon; void ListOrdered;
 
 type TabKey = "scores" | "standings" | "news";
 type Filter = "all" | "live" | "upcoming" | "final";
