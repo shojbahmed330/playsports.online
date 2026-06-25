@@ -24,6 +24,7 @@ import { Route as CricketIndexRouteImport } from './routes/cricket.index'
 import { Route as MlbTeamsRouteImport } from './routes/mlb.teams'
 import { Route as MlbStandingsRouteImport } from './routes/mlb.standings'
 import { Route as MlbScoresRouteImport } from './routes/mlb.scores'
+import { Route as MlbPostseasonRouteImport } from './routes/mlb.postseason'
 import { Route as MlbPlayersRouteImport } from './routes/mlb.players'
 import { Route as MlbNewsRouteImport } from './routes/mlb.news'
 import { Route as MlbHistoryRouteImport } from './routes/mlb.history'
@@ -122,6 +123,11 @@ const MlbStandingsRoute = MlbStandingsRouteImport.update({
 const MlbScoresRoute = MlbScoresRouteImport.update({
   id: '/scores',
   path: '/scores',
+  getParentRoute: () => MlbRoute,
+} as any)
+const MlbPostseasonRoute = MlbPostseasonRouteImport.update({
+  id: '/postseason',
+  path: '/postseason',
   getParentRoute: () => MlbRoute,
 } as any)
 const MlbPlayersRoute = MlbPlayersRouteImport.update({
@@ -265,6 +271,7 @@ export interface FileRoutesByFullPath {
   '/mlb/history': typeof MlbHistoryRoute
   '/mlb/news': typeof MlbNewsRoute
   '/mlb/players': typeof MlbPlayersRoute
+  '/mlb/postseason': typeof MlbPostseasonRoute
   '/mlb/scores': typeof MlbScoresRoute
   '/mlb/standings': typeof MlbStandingsRoute
   '/mlb/teams': typeof MlbTeamsRoute
@@ -304,6 +311,7 @@ export interface FileRoutesByTo {
   '/mlb/history': typeof MlbHistoryRoute
   '/mlb/news': typeof MlbNewsRoute
   '/mlb/players': typeof MlbPlayersRoute
+  '/mlb/postseason': typeof MlbPostseasonRoute
   '/mlb/scores': typeof MlbScoresRoute
   '/mlb/standings': typeof MlbStandingsRoute
   '/mlb/teams': typeof MlbTeamsRoute
@@ -346,6 +354,7 @@ export interface FileRoutesById {
   '/mlb/history': typeof MlbHistoryRoute
   '/mlb/news': typeof MlbNewsRoute
   '/mlb/players': typeof MlbPlayersRoute
+  '/mlb/postseason': typeof MlbPostseasonRoute
   '/mlb/scores': typeof MlbScoresRoute
   '/mlb/standings': typeof MlbStandingsRoute
   '/mlb/teams': typeof MlbTeamsRoute
@@ -389,6 +398,7 @@ export interface FileRouteTypes {
     | '/mlb/history'
     | '/mlb/news'
     | '/mlb/players'
+    | '/mlb/postseason'
     | '/mlb/scores'
     | '/mlb/standings'
     | '/mlb/teams'
@@ -428,6 +438,7 @@ export interface FileRouteTypes {
     | '/mlb/history'
     | '/mlb/news'
     | '/mlb/players'
+    | '/mlb/postseason'
     | '/mlb/scores'
     | '/mlb/standings'
     | '/mlb/teams'
@@ -469,6 +480,7 @@ export interface FileRouteTypes {
     | '/mlb/history'
     | '/mlb/news'
     | '/mlb/players'
+    | '/mlb/postseason'
     | '/mlb/scores'
     | '/mlb/standings'
     | '/mlb/teams'
@@ -609,6 +621,13 @@ declare module '@tanstack/react-router' {
       path: '/scores'
       fullPath: '/mlb/scores'
       preLoaderRoute: typeof MlbScoresRouteImport
+      parentRoute: typeof MlbRoute
+    }
+    '/mlb/postseason': {
+      id: '/mlb/postseason'
+      path: '/postseason'
+      fullPath: '/mlb/postseason'
+      preLoaderRoute: typeof MlbPostseasonRouteImport
       parentRoute: typeof MlbRoute
     }
     '/mlb/players': {
@@ -843,6 +862,7 @@ interface MlbRouteChildren {
   MlbHistoryRoute: typeof MlbHistoryRoute
   MlbNewsRoute: typeof MlbNewsRoute
   MlbPlayersRoute: typeof MlbPlayersRoute
+  MlbPostseasonRoute: typeof MlbPostseasonRoute
   MlbScoresRoute: typeof MlbScoresRoute
   MlbStandingsRoute: typeof MlbStandingsRoute
   MlbTeamsRoute: typeof MlbTeamsRoute
@@ -856,6 +876,7 @@ const MlbRouteChildren: MlbRouteChildren = {
   MlbHistoryRoute: MlbHistoryRoute,
   MlbNewsRoute: MlbNewsRoute,
   MlbPlayersRoute: MlbPlayersRoute,
+  MlbPostseasonRoute: MlbPostseasonRoute,
   MlbScoresRoute: MlbScoresRoute,
   MlbStandingsRoute: MlbStandingsRoute,
   MlbTeamsRoute: MlbTeamsRoute,
