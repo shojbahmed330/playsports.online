@@ -94,6 +94,11 @@ function Index() {
 
   const filter: FootballFilter = search.filter ?? "all";
   const teamFilter = search.team;
+  const dateFilter = search.date;
+  const setDateFilter = (d: string | undefined) => {
+    navigate({ search: (prev: FootballSearch) => ({ ...prev, date: d }), replace: true });
+  };
+
 
   // Sync URL ?year= and ?tab= when changed
   useEffect(() => {
