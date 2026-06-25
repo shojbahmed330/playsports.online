@@ -184,3 +184,21 @@ function SubLabel({ children, tone = "default" }: { children: React.ReactNode; t
     </span>
   );
 }
+
+function CardSkeleton() {
+  return (
+    <div className="rounded-2xl bg-card ring-1 ring-border p-4 animate-pulse">
+      <div className="h-3 w-20 bg-white/10 rounded mb-3" />
+      <div className="flex items-center gap-3 mb-2">
+        <div className="size-8 rounded-full bg-white/10" />
+        <div className="h-4 flex-1 bg-white/10 rounded" />
+        <div className="h-4 w-8 bg-white/10 rounded" />
+      </div>
+      <div className="flex items-center gap-3">
+        <div className="size-8 rounded-full bg-white/10" />
+        <div className="h-4 flex-1 bg-white/10 rounded" />
+        <div className="h-4 w-8 bg-white/10 rounded" />
+      </div>
+    </div>
+  );
+}
