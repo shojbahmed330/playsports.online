@@ -113,7 +113,16 @@ function TimelineTab({ matchId, live }: { matchId: number; live: boolean }) {
   );
 }
 
-function LineupsTab({ matchId }: { matchId: number }) {
+function LineupsTab({
+  matchId,
+  homeTeam,
+  awayTeam,
+}: {
+  matchId: number;
+  homeTeam: string;
+  awayTeam: string;
+}) {
+  const [active, setActive] = useState<PlayerSheetTarget | null>(null);
   const q = useQuery({
     queryKey: ["wc2026-lineups", matchId],
     queryFn: () => getWc2026MatchLineups({ data: { matchId } }),
@@ -133,25 +142,45 @@ function LineupsTab({ matchId }: { matchId: number }) {
   const starters = (arr: typeof l.home) => arr.filter((p) => !p.substitute);
   const subs     = (arr: typeof l.home) => arr.filter((p) =>  p.substitute);
   return (
-    <div className="grid sm:grid-cols-2 gap-3">
-      <LineupColumn title="Home" formation={l.formationHome} starters={starters(l.home)} subs={subs(l.home)} />
-      <LineupColumn title="Away" formation={l.formationAway} starters={starters(l.away)} subs={subs(l.away)} />
-    </div>
+    <>
+      <div className="grid sm:grid-cols-2 gap-3">
+        <LineupColumn
+          title={homeTeam}
+          formation={l.formationHome}
+          starters={starters(l.home)}
+          subs={subs(l.home)}
+          onPick={(p) => setActive({ ...p, team: homeTeam })}
+        />
+        <LineupColumn
+          title={awayTeam}
+          formation={l.formationAway}
+          starters={starters(l.away)}
+          subs={subs(l.away)}
+          onPick={(p) => setActive({ ...p, team: awayTeam })}
+        />
+      </div>
+      <PlayerProfileSheet player={active} onClose={() => setActive(null)} />
+    </>
   );
 }
 
+type LineupPlayer = {
+  id: number; name: string; shirt: number | null; position: string | null; captain: boolean;
+};
+
 function LineupColumn({
-  title, formation, starters, subs,
+  title, formation, starters, subs, onPick,
 }: {
   title: string;
   formation: string | null;
-  starters: { id: number; name: string; shirt: number | null; position: string | null; captain: boolean }[];
-  subs:     { id: number; name: string; shirt: number | null; position: string | null; captain: boolean }[];
+  starters: LineupPlayer[];
+  subs: LineupPlayer[];
+  onPick: (p: PlayerSheetTarget) => void;
 }) {
   return (
     <div className="rounded-xl border border-gray-800 bg-gray-900/40 p-3">
       <div className="flex items-center justify-between mb-2">
-        <div className="text-xs font-bold text-gray-300 uppercase tracking-wider">{title}</div>
+        <div className="text-xs font-bold text-gray-300 uppercase tracking-wider truncate">{title}</div>
         {formation && (
           <span className="text-[10px] font-mono px-2 py-0.5 bg-gray-800 rounded-md text-amber-300">
             {formation}
@@ -160,14 +189,14 @@ function LineupColumn({
       </div>
       <div className="space-y-1">
         {starters.map((p) => (
-          <PlayerRow key={p.id} {...p} />
+          <PlayerRow key={p.id} {...p} onPick={() => onPick(p)} />
         ))}
       </div>
       {subs.length > 0 && (
         <>
           <div className="text-[10px] uppercase tracking-wider text-gray-600 mt-3 mb-1">Subs</div>
           <div className="space-y-1">
-            {subs.map((p) => <PlayerRow key={p.id} {...p} dim />)}
+            {subs.map((p) => <PlayerRow key={p.id} {...p} dim onPick={() => onPick(p)} />)}
           </div>
         </>
       )}
@@ -176,19 +205,27 @@ function LineupColumn({
 }
 
 function PlayerRow({
-  name, shirt, position, captain, dim,
+  name, shirt, position, captain, dim, onPick,
 }: {
   name: string; shirt: number | null; position: string | null; captain: boolean; dim?: boolean;
+  onPick: () => void;
 }) {
   return (
-    <div className={`flex items-center gap-2 text-xs ${dim ? "text-gray-500" : "text-gray-200"}`}>
-      <span className="inline-flex items-center justify-center w-6 h-5 rounded bg-gray-800 text-[10px] font-mono text-gray-400">
+    <button
+      type="button"
+      onClick={onPick}
+      className={`group w-full flex items-center gap-2 text-xs rounded-lg px-1.5 py-1 -mx-1.5 transition
+        hover:bg-amber-500/10 active:scale-[0.98]
+        ${dim ? "text-gray-500 hover:text-gray-300" : "text-gray-200 hover:text-white"}`}
+    >
+      <span className="inline-flex items-center justify-center w-6 h-5 rounded bg-gray-800 text-[10px] font-mono text-gray-400 shrink-0">
         {shirt ?? "—"}
       </span>
-      <span className="flex-1 truncate">{name}</span>
+      <span className="flex-1 truncate text-left">{name}</span>
       {captain && <span className="text-[9px] font-bold text-amber-400 ring-1 ring-amber-400/40 rounded px-1">C</span>}
       {position && <span className="text-[9px] text-gray-500 uppercase">{position}</span>}
-    </div>
+      <ChevronRight className="size-3 text-gray-700 group-hover:text-amber-400 transition shrink-0" />
+    </button>
   );
 }
 
