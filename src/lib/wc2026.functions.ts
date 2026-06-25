@@ -533,9 +533,139 @@ export const getWc2026Match = createServerFn({ method: "GET" })
     }
   });
 
+// ===================== PLAYER PROFILE =====================
+
+export type Wc2026PlayerProfile = {
+  id: number;
+  name: string;
+  fullName: string | null;
+  headshot: string | null;
+  jersey: string | null;
+  position: string | null;
+  team: { id: number | null; name: string | null; logo: string | null } | null;
+  birthDate: string | null;
+  age: number | null;
+  birthplace: string | null;
+  nationality: string | null;
+  heightCm: number | null;
+  weightKg: number | null;
+  bio: { label: string; value: string }[];
+  stats: { group: string; rows: { name: string; value: string }[] }[];
+  espnUrl: string | null;
+};
+
+function pickHeadshot(a: any): string | null {
+  return a?.headshot?.href ?? a?.headshot ?? a?.image?.href ?? null;
+}
+
+export const getWc2026PlayerProfile = createServerFn({ method: "GET" })
+  .inputValidator((d: unknown) => {
+    const id = Number((d as any)?.playerId);
+    if (!Number.isFinite(id) || id <= 0) throw new Error("playerId required");
+    return { playerId: id };
+  })
+  .handler(async ({ data }) => {
+    const tryLeagues = ["fifa.world", "all"];
+    let overview: any = null;
+    let stats: any = null;
+    let lastErr: string | null = null;
+    for (const lg of tryLeagues) {
+      try {
+        overview = await espnGet(
+          `https://site.web.api.espn.com/apis/common/v3/sports/soccer/${lg}/athletes/${data.playerId}`,
+          DEFAULT_TTL_MS,
+        );
+        if (overview) break;
+      } catch (e) {
+        lastErr = e instanceof Error ? e.message : String(e);
+      }
+    }
+    if (!overview) {
+      return {
+        profile: null as Wc2026PlayerProfile | null,
+        error: lastErr ?? "Player not found",
+      };
+    }
+    // stats endpoint (optional — many WC players have no aggregated stats)
+    try {
+      stats = await espnGet(
+        `https://site.web.api.espn.com/apis/common/v3/sports/soccer/all/athletes/${data.playerId}/stats`,
+        DEFAULT_TTL_MS,
+      );
+    } catch {
+      stats = null;
+    }
+
+    const a = overview?.athlete ?? overview;
+    const teamRaw = a?.team ?? overview?.team ?? null;
+    const profile: Wc2026PlayerProfile = {
+      id: Number(a?.id ?? data.playerId),
+      name: a?.displayName ?? a?.fullName ?? "",
+      fullName: a?.fullName ?? null,
+      headshot: pickHeadshot(a),
+      jersey: a?.jersey ?? null,
+      position: a?.position?.displayName ?? a?.position?.name ?? a?.position?.abbreviation ?? null,
+      team: teamRaw
+        ? {
+            id: Number(teamRaw?.id ?? 0) || null,
+            name: teamRaw?.displayName ?? teamRaw?.name ?? null,
+            logo: teamRaw?.logo ?? teamRaw?.logos?.[0]?.href ?? null,
+          }
+        : null,
+      birthDate: a?.dateOfBirth ?? a?.birthDate ?? null,
+      age: typeof a?.age === "number" ? a.age : null,
+      birthplace:
+        [a?.birthPlace?.city, a?.birthPlace?.state, a?.birthPlace?.country]
+          .filter(Boolean)
+          .join(", ") || null,
+      nationality: a?.citizenship ?? a?.nationality ?? a?.birthPlace?.country ?? null,
+      heightCm: typeof a?.height === "number" ? Math.round(a.height) : null,
+      weightKg: typeof a?.weight === "number" ? Math.round(a.weight) : null,
+      bio: [],
+      stats: [],
+      espnUrl: a?.links?.find?.((l: any) => /player/i.test(l?.rel?.join?.(" ") ?? ""))?.href ?? null,
+    };
+
+    // Fold a small bio block
+    const bio = profile.bio;
+    if (profile.position) bio.push({ label: "Position", value: profile.position });
+    if (profile.jersey) bio.push({ label: "Jersey", value: `#${profile.jersey}` });
+    if (profile.team?.name) bio.push({ label: "Club", value: profile.team.name });
+    if (profile.nationality) bio.push({ label: "Nationality", value: profile.nationality });
+    if (profile.birthDate) {
+      const d = new Date(profile.birthDate);
+      const ageStr = profile.age != null ? ` (${profile.age})` : "";
+      bio.push({ label: "Born", value: `${d.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" })}${ageStr}` });
+    }
+    if (profile.birthplace) bio.push({ label: "Birthplace", value: profile.birthplace });
+    if (profile.heightCm) bio.push({ label: "Height", value: `${profile.heightCm} cm` });
+    if (profile.weightKg) bio.push({ label: "Weight", value: `${profile.weightKg} kg` });
+
+    // Stats: ESPN returns categories[].stats[] OR splits.categories[].stats[]
+    try {
+      const cats: any[] =
+        stats?.categories ??
+        stats?.splits?.categories ??
+        a?.statistics?.splits?.categories ??
+        [];
+      for (const c of cats) {
+        const rows = (c?.stats ?? []).map((s: any) => ({
+          name: s?.displayName ?? s?.name ?? "",
+          value: String(s?.displayValue ?? s?.value ?? "—"),
+        })).filter((r: any) => r.name);
+        if (rows.length) {
+          profile.stats.push({ group: c?.displayName ?? c?.name ?? "Stats", rows });
+        }
+      }
+    } catch {}
+
+    return { profile, error: null as string | null };
+  });
+
 // ===================== ADMIN: clear cache =====================
 
 export const clearWc2026Cache = createServerFn({ method: "POST" }).handler(async () => {
   cache.clear();
   return { ok: true, clearedAt: new Date().toISOString() };
 });
+
