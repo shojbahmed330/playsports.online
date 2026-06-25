@@ -238,6 +238,13 @@ function CricketScoresPage() {
               active={league === "all"}
               onClick={() => navigate({ search: (prev: { tab: "live" | "today" | "upcoming" | "results"; date: string; league: string; fmt: "any" | "t20" | "odi" | "test" }) => ({ ...prev, league: "all" }) })}
             />
+            <FilterButton
+              label="Internationals"
+              emoji="🌍"
+              active={league === "internationals"}
+              onClick={() => navigate({ search: (prev: { tab: "live" | "today" | "upcoming" | "results"; date: string; league: string; fmt: "any" | "t20" | "odi" | "test" }) => ({ ...prev, league: "internationals" }) })}
+              accent="text-sky-300"
+            />
             {CRICKET_LEAGUES.map((l) => (
               <FilterButton
                 key={l.id}
@@ -248,6 +255,7 @@ function CricketScoresPage() {
                 accent={l.accent}
               />
             ))}
+
             <span className="mx-1 h-5 w-px bg-white/10" />
             {(["any", "t20", "odi", "test"] as const).map((f) => {
               const meta = FORMAT_META[f];
