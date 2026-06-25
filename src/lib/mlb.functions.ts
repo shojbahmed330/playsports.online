@@ -496,6 +496,33 @@ export type MlbProbable = {
   teamAbbr: string | null;
 };
 
+export type MlbWinProbPoint = {
+  idx: number;
+  homeWinPct: number;     // 0..1
+  inning: string;         // "Top 5th"
+  text: string;
+  awayScore: number | null;
+  homeScore: number | null;
+  scoring: boolean;
+};
+
+export type MlbPlay = {
+  id: string;
+  inning: string;            // "Top 5th"
+  inningNumber: number;
+  isTopInning: boolean;
+  text: string;              // play description
+  type: string | null;       // "Single", "Strikeout", etc.
+  scoring: boolean;
+  awayScore: number | null;
+  homeScore: number | null;
+  outs: number | null;
+  batterId: string | null;
+  batterName: string | null;
+  pitcherId: string | null;
+  pitcherName: string | null;
+};
+
 export type MlbGameSummary = {
   id: string;
   status: "pre" | "in" | "post";
@@ -514,6 +541,8 @@ export type MlbGameSummary = {
   boxscore: MlbBoxGroup[];
   probables: { home: MlbProbable | null; away: MlbProbable | null };
   leaders: Array<{ teamAbbr: string; name: string; athleteId: string; headshot: string | null; displayValue: string; label: string }>;
+  winProbability: MlbWinProbPoint[];
+  plays: MlbPlay[];
 };
 
 function pickInnings(team: any): (number | null)[] {
