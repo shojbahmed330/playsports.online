@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { CricketSubNav } from "@/components/cricket/CricketSubNav";
+import { SportNav } from "@/components/sports/SportNav";
 import { IplSubNav } from "@/components/ipl/IplSubNav";
 
 /** Shared chrome for every /cricket/ipl/* sub-route. */
@@ -8,15 +8,17 @@ export function IplPageShell({
   subtitle,
   right,
   children,
+  liveCount,
 }: {
   title: string;
   subtitle?: string;
   right?: ReactNode;
   children: ReactNode;
+  liveCount?: number;
 }) {
   return (
     <div className="min-h-screen bg-background text-white">
-      <CricketSubNav />
+      <SportNav liveCount={liveCount} />
       <IplSubNav />
       <header className="max-w-7xl mx-auto px-3 sm:px-6 pt-6">
         <div className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-3 sm:flex sm:flex-wrap sm:justify-between">
