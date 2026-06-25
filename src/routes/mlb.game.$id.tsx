@@ -7,6 +7,8 @@ import { getMlbGame, type MlbProbable, type MlbLinescoreTeam, type MlbGameSummar
 import { MlbLinescore } from "@/components/mlb/MlbLinescore";
 import { MlbBoxScore } from "@/components/mlb/MlbBoxScore";
 import { MlbScoringPlays } from "@/components/mlb/MlbScoringPlays";
+import { MlbWinProbabilityChart } from "@/components/mlb/MlbWinProbabilityChart";
+import { MlbPlayByPlay } from "@/components/mlb/MlbPlayByPlay";
 import { formatLocalTime, relativeDay } from "@/lib/time";
 
 export const Route = createFileRoute("/mlb/game/$id")({
@@ -32,7 +34,7 @@ function GamePage() {
     staleTime: 10_000,
   });
 
-  const [tab, setTab] = useState<"box" | "plays" | "info">("box");
+  const [tab, setTab] = useState<"box" | "plays" | "pbp" | "wp" | "info">("box");
 
   if (q.isLoading) {
     return <div className="space-y-3"><div className="h-40 rounded-2xl bg-card animate-pulse" /><div className="h-72 rounded-2xl bg-card animate-pulse" /></div>;
@@ -99,17 +101,28 @@ function GamePage() {
       {/* Linescore */}
       {!isPre && <MlbLinescore home={s.home} away={s.away} innings={s.inningCount} />}
 
+      {/* Win probability chart — surfaced above tabs for live/post */}
+      {!isPre && s.winProbability.length > 1 && (
+        <MlbWinProbabilityChart data={s.winProbability} home={s.home} away={s.away} />
+      )}
+
       {/* Tabs */}
       {!isPre && (
-        <div className="flex items-center gap-1 border-b border-border">
+        <div className="flex items-center gap-1 border-b border-border overflow-x-auto">
           <TabBtn label="Boxscore" active={tab === "box"} onClick={() => setTab("box")} />
-          <TabBtn label={`Scoring Plays (${s.scoringPlays.length})`} active={tab === "plays"} onClick={() => setTab("plays")} />
+          <TabBtn label={`Scoring (${s.scoringPlays.length})`} active={tab === "plays"} onClick={() => setTab("plays")} />
+          <TabBtn label={`All Plays (${s.plays.length})`} active={tab === "pbp"} onClick={() => setTab("pbp")} />
+          {s.winProbability.length > 1 && (
+            <TabBtn label="Win Prob" active={tab === "wp"} onClick={() => setTab("wp")} />
+          )}
           <TabBtn label="Game Info" active={tab === "info"} onClick={() => setTab("info")} />
         </div>
       )}
 
       {!isPre && tab === "box" && <MlbBoxScore groups={s.boxscore} />}
       {!isPre && tab === "plays" && <MlbScoringPlays plays={s.scoringPlays} />}
+      {!isPre && tab === "pbp" && <MlbPlayByPlay plays={s.plays} />}
+      {!isPre && tab === "wp" && <MlbWinProbabilityChart data={s.winProbability} home={s.home} away={s.away} />}
       {(!isPre && tab === "info") || isPre ? <GameInfo s={s} /> : null}
     </div>
   );
