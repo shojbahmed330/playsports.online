@@ -201,15 +201,18 @@ function Cell({ label, value, accent }: { label: string; value: number; accent?:
 function AddPicker({
   onPick,
   exclude,
+  goals,
 }: {
   onPick: (p: { name: string; country: string }) => void;
   exclude: { name: string; country: string }[];
+  goals: GoalRow[];
 }) {
   const [open, setOpen] = useState(false);
+  const index = useMemo(() => buildPlayerIndex(goals), [goals]);
   const excludeKeys = new Set(exclude.map((p) => playerKey(p.name, p.country)));
-  const options = PLAYER_INDEX.filter(
-    (p) => !excludeKeys.has(playerKey(p.name, p.country)),
-  ).slice(0, 200);
+  const options = index
+    .filter((p) => !excludeKeys.has(playerKey(p.name, p.country)))
+    .slice(0, 200);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
