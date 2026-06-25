@@ -95,6 +95,21 @@ export function isCuratedLeague(id: string | null | undefined): boolean {
   return !!id && CURATED_LEAGUE_IDS.has(String(id));
 }
 
+// Active bilateral / international tour series IDs on ESPN.
+// ESPN's global cricket scoreboard is empty and there's no public
+// "all bilaterals" endpoint — we maintain known active tour IDs and
+// query each one alongside the franchise leagues. Add new tours as they start.
+export const BILATERAL_SERIES_IDS: string[] = [
+  "1496491", // New Zealand tour of England 2026
+  "1496488", // India tour of England 2026
+  "1496563", // Pakistan tour of England 2026
+  "1528677", // England tour of Australia 2026/27
+  "1532475", // Australia tour of Bangladesh 2026
+  "1538292", // Sri Lanka tour of West Indies 2026
+  "1517705", // West Indies / Afghanistan in UAE 2025/26
+  "1527147", // Afghanistan tour of India 2026
+];
+
 export const FORMAT_META: Record<CricketLeague["format"] | "any", { label: string; color: string }> = {
   any:  { label: "All",   color: "bg-white/10 text-white" },
   t20:  { label: "T20",   color: "bg-fuchsia-500/15 text-fuchsia-300 ring-fuchsia-500/30" },
