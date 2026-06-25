@@ -66,7 +66,8 @@ export function GameCard({ game, linkTo }: { game: SportGame; linkTo?: string })
           </span>
         )}
       </div>
-    </div>
+    </Wrapper>
+
   );
 }
 
