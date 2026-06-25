@@ -126,9 +126,9 @@ function PlayersPage() {
 }
 
 function cap(s: string) { return s[0].toUpperCase() + s.slice(1); }
-function chip(active: boolean, color: "fuchsia") {
+function chip(active: boolean, _color: "fuchsia") {
   return [
     "px-3 py-1 rounded-full text-[11px] font-bold ring-1 transition",
-    active ? `bg-gradient-to-r from-${color}-500 to-purple-500 text-white ring-white/20` : "bg-white/5 text-gray-300 ring-white/10 hover:bg-white/10",
+    active ? "bg-gradient-to-r from-fuchsia-500 to-purple-500 text-white ring-white/20" : "bg-white/5 text-gray-300 ring-white/10 hover:bg-white/10",
   ].join(" ");
 }
