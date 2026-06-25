@@ -1,5 +1,7 @@
 import { Trophy, Flame } from "lucide-react";
 import type { IplLeader } from "@/lib/ipl.functions";
+import { PlayerLink } from "@/components/cricket/PlayerLink";
+
 
 type Props = {
   orange: IplLeader[];
