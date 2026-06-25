@@ -7,6 +7,16 @@ import { getMlbTeams } from "@/lib/mlb.functions";
 import { TeamCard } from "@/components/mlb/TeamCard";
 
 export const Route = createFileRoute("/mlb/teams")({
+  head: () => ({
+    meta: [
+      { title: "MLB Teams — All 30 Franchises" },
+      { name: "description", content: "Every MLB team with logo, league, division, schedule, roster, leaders, injuries and season stats." },
+      { property: "og:title", content: "MLB Teams — All 30 Franchises" },
+      { property: "og:description", content: "Every MLB team with schedule, roster, leaders and season stats." },
+      { property: "og:url", content: "https://allsportslive.lovable.app/mlb/teams" },
+    ],
+    links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/mlb/teams" }],
+  }),
   component: TeamsPage,
 });
 
