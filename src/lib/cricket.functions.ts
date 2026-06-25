@@ -227,25 +227,37 @@ export const getMultiCricketToday = createServerFn({ method: "GET" })
       /* fall through to curated */
     }
 
-    // 2) Curated series + active bilateral tours — fills gaps and tags league.
-    const seriesToFetch = Array.from(new Set([...data.leagueIds, ...BILATERAL_SERIES_IDS]));
-    const results = await Promise.all(
-      seriesToFetch.map(async (id) => {
-        try {
-          const raw = (await apiGet(`/${id}/scoreboard`, 30_000)) as any;
-          const leagueMeta = raw?.leagues?.[0] ?? {};
-          const league = {
-            id: String(leagueMeta.id ?? id),
-            name: leagueMeta.name ?? "",
-            abbr: leagueMeta.abbreviation ?? "",
-          };
-          const events: any[] = raw?.events ?? [];
-          return events.map((e) => mapMatch(e, league));
-        } catch {
-          return [] as CricketMatch[];
-        }
-      }),
+    // 2) Curated series + a capped set of active bilateral tours.
+    // Cloudflare Workers cap outbound subrequests (~50/invocation); 491 in
+    // parallel hangs the hub, so we fan out in bounded batches.
+    const MAX_BILATERAL = 30;
+    const seriesToFetch = Array.from(
+      new Set([...data.leagueIds, ...BILATERAL_SERIES_IDS.slice(0, MAX_BILATERAL)]),
     );
+
+    const CONCURRENCY = 8;
+    const results: CricketMatch[][] = [];
+    for (let i = 0; i < seriesToFetch.length; i += CONCURRENCY) {
+      const batch = seriesToFetch.slice(i, i + CONCURRENCY);
+      const part = await Promise.all(
+        batch.map(async (id) => {
+          try {
+            const raw = (await apiGet(`/${id}/scoreboard`, 30_000)) as any;
+            const leagueMeta = raw?.leagues?.[0] ?? {};
+            const league = {
+              id: String(leagueMeta.id ?? id),
+              name: leagueMeta.name ?? "",
+              abbr: leagueMeta.abbreviation ?? "",
+            };
+            const events: any[] = raw?.events ?? [];
+            return events.map((e) => mapMatch(e, league));
+          } catch {
+            return [] as CricketMatch[];
+          }
+        }),
+      );
+      results.push(...part);
+    }
     for (const list of results) {
       for (const m of list) {
         if (!m.id || seenIds.has(m.id)) continue;
