@@ -147,8 +147,11 @@ function MatchPage() {
             </p>
           </div>
         ) : (
-          innings.map((inn) => <InningsCard key={`${inn.battingTeamId}-${inn.period}`} inn={inn} />)
+          innings.map((inn) => <InningsCard key={`${inn.battingTeamId}-${inn.period}`} inn={inn} onPlayer={setPlayerId} />)
         )}
+
+        <CricketPlayerSheet athleteId={playerId} leagueId={leagueId} onClose={() => setPlayerId(null)} />
+
 
         {commentary.length > 0 && (
           <section className="space-y-3">
