@@ -504,6 +504,54 @@ export const getIplLeaders = createServerFn({ method: "GET" })
     return out;
   });
 
+// ─── Playoff brackets ────────────────────────────────
+// Extract the IPL playoff stage (Qualifier 1, Eliminator, Qualifier 2, Final)
+// from a given season by classifying match descriptions.
+export type IplBracketMatch = {
+  stage: "Qualifier 1" | "Eliminator" | "Qualifier 2" | "Final";
+  match: IplMatchLite | null;
+};
+
+function classifyStage(desc: string): IplBracketMatch["stage"] | null {
+  const d = desc.toLowerCase();
+  if (/\bfinal\b/.test(d) && !/qualifier|eliminator/.test(d)) return "Final";
+  if (/qualifier\s*1|1st\s*qualifier/.test(d)) return "Qualifier 1";
+  if (/qualifier\s*2|2nd\s*qualifier/.test(d)) return "Qualifier 2";
+  if (/eliminator/.test(d)) return "Eliminator";
+  return null;
+}
+
+export const getIplPlayoffs = createServerFn({ method: "GET" })
+  .inputValidator((d: { year?: number | "current" }) => ({ year: d.year ?? "current" as const }))
+  .handler(async ({ data }) => {
+    const id = resolveSeasonId(data.year);
+    const ck = `__ipl_playoffs__${id}`;
+    const hit = cache.get(ck);
+    if (hit && Date.now() - hit.at < hit.ttl)
+      return hit.data as { year: typeof data.year; bracket: IplBracketMatch[] };
+
+    let matches: IplMatchLite[] = [];
+    try {
+      const raw = (await apiGet(`/${id}/scoreboard`, 60_000)) as any;
+      matches = (raw?.events ?? []).map(mapMatch);
+    } catch {
+      return { year: data.year, bracket: [] as IplBracketMatch[] };
+    }
+
+    const slots: IplBracketMatch["stage"][] = ["Qualifier 1", "Eliminator", "Qualifier 2", "Final"];
+    const bracket: IplBracketMatch[] = slots.map((stage) => ({ stage, match: null }));
+    for (const m of matches) {
+      const stage = classifyStage(m.description ?? "");
+      if (!stage) continue;
+      const slot = bracket.find((b) => b.stage === stage);
+      if (slot && !slot.match) slot.match = m;
+    }
+    const out = { year: data.year, bracket };
+    cache.set(ck, { at: Date.now(), ttl: 5 * 60_000, data: out });
+    return out;
+  });
+
+
 // Distinguish a batting-side stat node from a bowling-side one so "runs"
 // only counts runs scored (not runs conceded).
 function nodeIsBatting(node: any): boolean {

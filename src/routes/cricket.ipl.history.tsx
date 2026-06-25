@@ -1,9 +1,9 @@
 import { useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
-import { Trophy, Award, Search, ChevronDown, Sparkles } from "lucide-react";
+import { useSuspenseQuery, useQuery, queryOptions } from "@tanstack/react-query";
+import { Trophy, Award, Search, ChevronDown, Sparkles, GitBranch } from "lucide-react";
 import { IplPageShell } from "@/components/ipl/IplPageShell";
-import { getIplHistory } from "@/lib/ipl.functions";
+import { getIplHistory, getIplPlayoffs, IPL_SEASON_IDS, type IplBracketMatch } from "@/lib/ipl.functions";
 import franchises from "@/data/cricket/ipl/franchises.json";
 import auctions from "@/data/cricket/ipl/auctions.json";
 
@@ -12,6 +12,16 @@ const qo = queryOptions({
   queryFn: () => getIplHistory(),
   staleTime: 60 * 60_000,
 });
+
+const bracketQo = (year: number | "current") =>
+  queryOptions({
+    queryKey: ["ipl", "playoffs", year],
+    queryFn: () => getIplPlayoffs({ data: { year } }),
+    staleTime: 10 * 60_000,
+  });
+
+const KNOWN_BRACKET_YEARS = new Set<number | "current">(IPL_SEASON_IDS.map((s) => s.year));
+
 
 type Era = { id: string; label: string; range: [number, number] };
 const ERAS: Era[] = [
@@ -45,6 +55,7 @@ function HistoryPage() {
   const [team, setTeam] = useState<string>("all");
   const [era, setEra] = useState<string>("all");
   const [openYear, setOpenYear] = useState<number | null>(null);
+  const [openBracket, setOpenBracket] = useState<number | null>(null);
 
   const teams = useMemo(() => {
     const set = new Set<string>();
@@ -219,6 +230,21 @@ function HistoryPage() {
                   )}
                 </div>
               )}
+
+              {/* Expandable: playoff bracket */}
+              {KNOWN_BRACKET_YEARS.has(s.year) && (
+                <div className="border-t border-white/5">
+                  <button
+                    type="button"
+                    onClick={() => setOpenBracket(openBracket === s.year ? null : s.year)}
+                    className="flex w-full items-center justify-between gap-2 px-4 py-2.5 text-[11px] font-bold uppercase tracking-widest text-white/60 hover:bg-white/[0.03]"
+                  >
+                    <span className="flex items-center gap-1.5"><GitBranch className="size-3.5 text-fuchsia-300" /> Playoff bracket</span>
+                    <ChevronDown className={`size-4 transition-transform ${openBracket === s.year ? "rotate-180" : ""}`} />
+                  </button>
+                  {openBracket === s.year && <BracketPanel year={s.year} />}
+                </div>
+              )}
             </li>
           );
         })}
@@ -257,3 +283,47 @@ function AuctionCard({ tone, label, h }: { tone: "amber" | "violet"; label: stri
     </div>
   );
 }
+
+function BracketPanel({ year }: { year: number }) {
+  const q = useQuery(bracketQo(year));
+  if (q.isLoading) {
+    return <div className="px-4 pb-4 text-[11px] text-white/50">Loading bracket…</div>;
+  }
+  const bracket = q.data?.bracket ?? [];
+  const empty = bracket.every((b) => !b.match);
+  if (empty) {
+    return <div className="px-4 pb-4 text-[11px] text-white/50">No playoff matches available for this season.</div>;
+  }
+  return (
+    <div className="grid gap-2 px-4 pb-4 sm:grid-cols-2">
+      {bracket.map((b) => <BracketCell key={b.stage} b={b} />)}
+    </div>
+  );
+}
+
+function BracketCell({ b }: { b: IplBracketMatch }) {
+  const m = b.match;
+  const stageTone =
+    b.stage === "Final" ? "ring-amber-300/40 bg-amber-400/10 text-amber-100"
+    : b.stage === "Eliminator" ? "ring-rose-300/30 bg-rose-500/10 text-rose-100"
+    : "ring-fuchsia-300/30 bg-fuchsia-500/10 text-fuchsia-100";
+  return (
+    <div className={`rounded-lg p-3 ring-1 ${stageTone}`}>
+      <div className="text-[9px] font-black uppercase tracking-widest opacity-90">{b.stage}</div>
+      {m ? (
+        <>
+          <div className="mt-1 flex items-center justify-between gap-2 text-xs font-bold text-white">
+            <span className="truncate">{m.home.shortName || m.home.name || "TBD"}</span>
+            <span className="opacity-60">vs</span>
+            <span className="truncate text-right">{m.away.shortName || m.away.name || "TBD"}</span>
+          </div>
+          <div className="mt-1 text-[10px] text-white/65">{m.shortDetail || m.statusDetail}</div>
+          {m.venue && <div className="text-[10px] text-white/45">{m.venue}</div>}
+        </>
+      ) : (
+        <div className="mt-1 text-[11px] text-white/50">Not scheduled.</div>
+      )}
+    </div>
+  );
+}
+

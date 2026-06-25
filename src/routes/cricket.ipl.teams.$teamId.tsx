@@ -1,32 +1,35 @@
 import { useMemo, useState } from "react";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useSuspenseQuery, useQuery, queryOptions } from "@tanstack/react-query";
-import { MapPin, Crown } from "lucide-react";
+import { MapPin, Crown, Calendar } from "lucide-react";
 import { IplPageShell } from "@/components/ipl/IplPageShell";
 import { CricketMatchCard } from "@/components/cricket/CricketMatchCard";
 import { CricketPlayerSheet } from "@/components/cricket/CricketPlayerSheet";
 import { toCricketMatch } from "@/components/ipl/toCricketMatch";
-import { getIplTeam, getIplTeamSquad } from "@/lib/ipl.functions";
+import { getIplTeam, getIplTeamSquad, IPL_SEASON_IDS } from "@/lib/ipl.functions";
 import history from "@/data/cricket/ipl/history.json";
 import captainsData from "@/data/cricket/ipl/captains.json";
 
-const qo = (teamId: string) =>
+type SeasonYear = number | "current";
+
+const qo = (teamId: string, year: SeasonYear) =>
   queryOptions({
-    queryKey: ["ipl", "team", teamId],
-    queryFn: () => getIplTeam({ data: { teamId } }),
+    queryKey: ["ipl", "team", teamId, year],
+    queryFn: () => getIplTeam({ data: { teamId, year } }),
     staleTime: 60_000,
   });
 
-const squadQo = (teamId: string) =>
+const squadQo = (teamId: string, year: SeasonYear) =>
   queryOptions({
-    queryKey: ["ipl", "team", teamId, "squad"],
-    queryFn: () => getIplTeamSquad({ data: { teamId } }),
+    queryKey: ["ipl", "team", teamId, "squad", year],
+    queryFn: () => getIplTeamSquad({ data: { teamId, year } }),
     staleTime: 5 * 60_000,
   });
 
+
 export const Route = createFileRoute("/cricket/ipl/teams/$teamId")({
   loader: async ({ context, params }) => {
-    const data = await context.queryClient.ensureQueryData(qo(params.teamId));
+    const data = await context.queryClient.ensureQueryData(qo(params.teamId, "current"));
     if (!data.team) throw notFound();
     return data;
   },
@@ -55,8 +58,9 @@ export const Route = createFileRoute("/cricket/ipl/teams/$teamId")({
 
 function TeamPage() {
   const { teamId } = Route.useParams();
-  const { data } = useSuspenseQuery(qo(teamId));
-  const squadQ = useQuery(squadQo(teamId));
+  const [seasonYear, setSeasonYear] = useState<SeasonYear>("current");
+  const { data } = useSuspenseQuery(qo(teamId, seasonYear));
+  const squadQ = useQuery(squadQo(teamId, seasonYear));
   const t = data.team!;
   const [activeAthlete, setActiveAthlete] = useState<string | null>(null);
   const [tab, setTab] = useState<"overview" | "squad" | "fixtures" | "h2h" | "titles">("overview");
@@ -131,6 +135,24 @@ function TeamPage() {
           <Stat label="Titles" value={String(t.titles)} highlight />
         </dl>
       </section>
+
+      {/* Season selector */}
+      <div className="mt-6 flex items-center gap-2">
+        <Calendar className="size-3.5 text-white/40" />
+        <label className="text-[10px] font-black uppercase tracking-widest text-white/40">Season</label>
+        <select
+          value={String(seasonYear)}
+          onChange={(e) => setSeasonYear(e.target.value === "current" ? "current" : Number(e.target.value))}
+          className="rounded-md border border-white/10 bg-gray-900/70 px-2.5 py-1 text-xs font-bold text-white focus:border-white/30 focus:outline-none"
+        >
+          {IPL_SEASON_IDS.map((s) => (
+            <option key={String(s.year)} value={String(s.year)}>
+              {s.year === "current" ? "Current season" : s.year}
+            </option>
+          ))}
+        </select>
+        {squadQ.isFetching && <span className="text-[10px] text-white/40">Loading…</span>}
+      </div>
 
       {/* Tabs */}
       <div className="mt-6 flex gap-1 overflow-x-auto rounded-full bg-white/[0.04] p-1 ring-1 ring-white/10 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
