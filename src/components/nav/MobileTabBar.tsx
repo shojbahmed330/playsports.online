@@ -43,7 +43,7 @@ export function MobileTabBar({
               <li key={`${t.to}-${t.label}`}>
                 <Link
                   to={t.to}
-                  search={t.search ? (prev) => ({ ...prev, ...t.search }) : undefined}
+                  search={t.search ? ((prev: Record<string, unknown>) => ({ ...prev, ...t.search })) : undefined}
                   className={[
                     "relative flex flex-col items-center justify-center gap-0.5 py-2 text-[10px] font-semibold",
                     active ? a.active : "text-white/55 hover:text-white/80",
