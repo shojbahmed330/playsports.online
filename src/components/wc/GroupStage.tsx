@@ -3,16 +3,22 @@ import { flagOf } from "@/lib/flags";
 import { MatchCard } from "./MatchCard";
 
 const GROUP_ACCENT: Record<string, { bar: string; grad: string; ring: string }> = {
-  A: { bar: "bg-amber-500",  grad: "from-amber-500 to-amber-400",   ring: "ring-amber-500/30" },
-  B: { bar: "bg-blue-500",   grad: "from-blue-600 to-blue-500",     ring: "ring-blue-500/30" },
-  C: { bar: "bg-green-500",  grad: "from-green-600 to-green-500",   ring: "ring-green-500/30" },
-  D: { bar: "bg-red-500",    grad: "from-red-600 to-red-500",       ring: "ring-red-500/30" },
-  E: { bar: "bg-purple-500", grad: "from-purple-600 to-purple-500", ring: "ring-purple-500/30" },
-  F: { bar: "bg-cyan-500",   grad: "from-cyan-600 to-cyan-500",     ring: "ring-cyan-500/30" },
-  G: { bar: "bg-pink-500",   grad: "from-pink-600 to-pink-500",     ring: "ring-pink-500/30" },
-  H: { bar: "bg-orange-500", grad: "from-orange-600 to-orange-500", ring: "ring-orange-500/30" },
+  A: { bar: "bg-amber-500",   grad: "from-amber-500 to-amber-400",     ring: "ring-amber-500/30" },
+  B: { bar: "bg-blue-500",    grad: "from-blue-600 to-blue-500",       ring: "ring-blue-500/30" },
+  C: { bar: "bg-green-500",   grad: "from-green-600 to-green-500",     ring: "ring-green-500/30" },
+  D: { bar: "bg-red-500",     grad: "from-red-600 to-red-500",         ring: "ring-red-500/30" },
+  E: { bar: "bg-purple-500",  grad: "from-purple-600 to-purple-500",   ring: "ring-purple-500/30" },
+  F: { bar: "bg-cyan-500",    grad: "from-cyan-600 to-cyan-500",       ring: "ring-cyan-500/30" },
+  G: { bar: "bg-pink-500",    grad: "from-pink-600 to-pink-500",       ring: "ring-pink-500/30" },
+  H: { bar: "bg-orange-500",  grad: "from-orange-600 to-orange-500",   ring: "ring-orange-500/30" },
+  I: { bar: "bg-teal-500",    grad: "from-teal-600 to-teal-500",       ring: "ring-teal-500/30" },
+  J: { bar: "bg-rose-500",    grad: "from-rose-600 to-rose-500",       ring: "ring-rose-500/30" },
+  K: { bar: "bg-indigo-500",  grad: "from-indigo-600 to-indigo-500",   ring: "ring-indigo-500/30" },
+  L: { bar: "bg-lime-500",    grad: "from-lime-600 to-lime-500",       ring: "ring-lime-500/30" },
 };
-const NUM_TO_LETTER: Record<string, string> = { "1": "A", "2": "B", "3": "C", "4": "D", "5": "E", "6": "F", "7": "G", "8": "H" };
+const NUM_TO_LETTER: Record<string, string> = {
+  "1":"A","2":"B","3":"C","4":"D","5":"E","6":"F","7":"G","8":"H","9":"I","10":"J","11":"K","12":"L",
+};
 
 function groupLetterOf(name: string): string {
   const raw = name.toUpperCase().replace(/^GROUP\s*/, "").trim();
@@ -20,7 +26,7 @@ function groupLetterOf(name: string): string {
 }
 
 function matchGroupLetter(round: string): string | null {
-  const m = round.toUpperCase().match(/GROUP\s*([A-H0-9]+)/);
+  const m = round.toUpperCase().match(/GROUP\s*([A-Z0-9]+)/);
   if (!m) return null;
   const tok = m[1];
   return NUM_TO_LETTER[tok] ?? tok;
