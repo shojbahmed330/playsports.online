@@ -276,7 +276,9 @@ export function Wc2026GroupsView({ filter = "all", team, date, onDateChange }: {
     () => filterByDateKey(wcMatchesAllFiltered, date),
     [wcMatchesAllFiltered, date],
   );
-  const wcMatches = date ? wcMatchesForDate : wcMatchesAllFiltered;
+  // Group cards always show every fixture; the date-filtered subset renders
+  // in a dedicated "Matches on this date" panel above.
+  const wcMatches = wcMatchesAllFiltered;
 
 
   const [activeMatch, setActiveMatch] = useState<WCMatch | null>(null);
