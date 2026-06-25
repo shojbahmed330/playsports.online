@@ -111,7 +111,7 @@ function PlayersPage() {
                     <span className="text-gray-600">·</span>
                     <span className="text-gray-400">{r.format.toUpperCase()}</span>
                   </div>
-                  <div className="font-extrabold leading-tight truncate">{r.player}</div>
+                  <PlayerLink name={r.player} className="font-extrabold leading-tight truncate block">{r.player}</PlayerLink>
                   <div className="text-[11px] text-gray-500 truncate font-mono">{r.team}</div>
                 </div>
                 <div className="text-right">
