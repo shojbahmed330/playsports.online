@@ -18,6 +18,7 @@ import { Countdown } from "./Countdown";
 import { GameGridSkeleton, StandingsSkeleton } from "./Skeletons";
 import { AdSlot } from "@/components/ads/AdSlot";
 import { formatLocalTime, relativeDay } from "@/lib/time";
+import { Breadcrumbs } from "@/components/nav/Breadcrumbs";
 
 type TabKey = "scores" | "standings" | "news";
 type Filter = "all" | "live" | "upcoming" | "final";
@@ -82,6 +83,9 @@ export function LeaguePage({ sport }: { sport: SportConfig }) {
   return (
     <div className="min-h-screen">
       <SportNav />
+      <Breadcrumbs />
+
+
 
       {/* HERO */}
       <section className={`relative overflow-hidden border-b border-border bg-gradient-to-br ${sport.bgGrad}`}>
