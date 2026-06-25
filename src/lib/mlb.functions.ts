@@ -29,8 +29,28 @@ export type MlbTeam = {
   record: string | null;
   venue: string | null;
   division: string | null;
+  standingSummary: string | null;
 };
 
+export type MlbTeamStat = { name: string; abbr: string; value: string };
+export type MlbTeamLeader = {
+  category: string;
+  displayValue: string;
+  athleteId: string | null;
+  athleteName: string;
+  headshot: string | null;
+  position: string | null;
+};
+export type MlbInjury = {
+  athleteId: string | null;
+  athleteName: string;
+  position: string | null;
+  status: string;
+  type: string | null;
+  detail: string | null;
+  date: string | null;
+  headshot: string | null;
+};
 export type MlbRosterPlayer = {
   id: string;
   name: string;
