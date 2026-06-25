@@ -61,21 +61,34 @@ export function pickSeeds(groups: Wc2026Group[]): R32Seeds {
   return { winners, runners, bestThirds };
 }
 
+function teamLabel(seed: Wc2026StandingRow | null, slotHint: string): {
+  id: number; name: string; code: string;
+} {
+  if (seed) {
+    return { id: seed.team.id, name: seed.team.name, code: seed.team.code };
+  }
+  return { id: 0, name: slotHint, code: "TBD" };
+}
+
 function toMatch(
   i: number,
-  home: Wc2026StandingRow,
-  away: Wc2026StandingRow,
+  home: Wc2026StandingRow | null,
+  away: Wc2026StandingRow | null,
+  homeHint: string,
+  awayHint: string,
 ): WCMatch {
   const sched = SCHEDULE[i] ?? null;
   const startMs = sched ? new Date(sched.dateISO).getTime() : NaN;
   const matchNo = sched?.matchNo ?? 1000 + i;
+  const h = teamLabel(home, homeHint);
+  const a = teamLabel(away, awayHint);
   return {
     id: -9000 - (i + 1),
     tournament_year: 2026,
     round: "Round of 32",
     match_number: matchNo,
-    home_team: home.team.name,
-    away_team: away.team.name,
+    home_team: h.name,
+    away_team: a.name,
     home_score: null,
     away_score: null,
     home_score_pen: null,
@@ -89,24 +102,28 @@ function toMatch(
 }
 
 /**
- * Compute 16 predicted R32 fixtures from current group standings.
- * Returns [] when not enough groups have entries to form 32 seeds.
+ * Compute 16 predicted R32 fixtures. Always returns 16 rows — slots without
+ * resolved seeds render with TBD placeholders so users see the schedule even
+ * before the group stage settles.
  */
 export function computeR32(groups: Wc2026Group[]): WCMatch[] {
-  if (groups.length < 12) return [];
   const { winners, runners, bestThirds } = pickSeeds(groups);
-  if (winners.length < 12 || runners.length < 12 || bestThirds.length < 8) {
-    return [];
-  }
-  const seeds: Wc2026StandingRow[] = [...winners, ...runners, ...bestThirds];
-  if (seeds.length < 32) return [];
+  // Build 32-slot seed list; pad with nulls when standings are partial.
+  const seeds: (Wc2026StandingRow | null)[] = Array.from({ length: 32 }, () => null);
+  for (let i = 0; i < 12; i++) seeds[i] = winners[i] ?? null;        // 0..11  winners
+  for (let i = 0; i < 12; i++) seeds[12 + i] = runners[i] ?? null;   // 12..23 runners-up
+  for (let i = 0; i < 8; i++) seeds[24 + i] = bestThirds[i] ?? null; // 24..31 best 3rds
+
+  const hintFor = (idx: number): string => {
+    if (idx < 12) return `Winner Group ${String.fromCharCode(65 + idx)}`;
+    if (idx < 24) return `Runner-up Group ${String.fromCharCode(65 + (idx - 12))}`;
+    return `Best 3rd #${idx - 23}`;
+  };
 
   // Snake pairing: #1 vs #32, #2 vs #31, …, #16 vs #17
   const out: WCMatch[] = [];
   for (let i = 0; i < 16; i++) {
-    const home = seeds[i];
-    const away = seeds[31 - i];
-    out.push(toMatch(i, home, away));
+    out.push(toMatch(i, seeds[i], seeds[31 - i], hintFor(i), hintFor(31 - i)));
   }
   return out;
 }
