@@ -201,8 +201,21 @@ function TeamScoreBlock({ t }: { t: import("@/lib/cricket.functions").CricketMat
   );
 }
 
-function InningsCard({ inn }: { inn: CricketInningsDetail }) {
+function InningsCard({ inn, onPlayer }: { inn: CricketInningsDetail; onPlayer: (id: string) => void }) {
+  const PlayerBtn = ({ id, name, children }: { id: string; name: string; children?: React.ReactNode }) =>
+    id ? (
+      <button
+        type="button"
+        onClick={() => onPlayer(id)}
+        className="text-left hover:text-emerald-300 hover:underline underline-offset-2 transition truncate"
+      >
+        {name}{children}
+      </button>
+    ) : (
+      <span className="truncate">{name}{children}</span>
+    );
   return (
+
     <section className="rounded-2xl border border-gray-800 overflow-hidden">
       <header className="flex items-center justify-between gap-2 px-4 py-3 bg-gray-900/70 border-b border-gray-800">
         <h3 className="text-sm font-bold">
