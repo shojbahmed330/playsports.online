@@ -3,7 +3,9 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Trophy, Award, Target } from "lucide-react";
 import { SportNav } from "@/components/sports/SportNav";
 import { CricketSubNav } from "@/components/cricket/CricketSubNav";
+import { PlayerLink } from "@/components/cricket/PlayerLink";
 import history from "@/data/cricket/history.json";
+
 
 type Champ = { year: number; champion: string; runnerUp: string; host?: string; venue?: string; result?: string };
 type Stat = { player: string; country: string; matches: number; runs?: number; wickets?: number; avg: number; hundreds?: number };
