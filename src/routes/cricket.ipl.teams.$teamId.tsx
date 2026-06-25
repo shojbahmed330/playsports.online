@@ -211,6 +211,68 @@ function TeamPage() {
           </div>
         )}
       </section>
+      {/* Head-to-head this season */}
+      <section className="mt-8">
+        <h3 className="mb-3 px-1 text-base font-black tracking-tight text-white">
+          Head-to-head this season
+        </h3>
+        {h2h.length === 0 ? (
+          <p className="px-1 text-sm text-white/60">No opponents tracked yet.</p>
+        ) : (
+          <ul className="grid gap-2 sm:grid-cols-2">
+            {h2h.map((o) => {
+              const total = o.w + o.l + o.nr;
+              const winPct = total ? Math.round((o.w / total) * 100) : 0;
+              return (
+                <li
+                  key={o.id}
+                  className="overflow-hidden rounded-xl bg-white/[0.04] p-3 ring-1 ring-white/10"
+                >
+                  <div className="flex items-center gap-3">
+                    {o.logo ? (
+                      <img src={o.logo} alt="" className="size-9 rounded-md bg-black/30 object-contain p-1 ring-1 ring-white/10" />
+                    ) : (
+                      <div className="size-9 rounded-md bg-black/30 ring-1 ring-white/10" />
+                    )}
+                    <div className="min-w-0 flex-1">
+                      <div className="truncate text-sm font-bold text-white">vs {o.name}</div>
+                      <div className="text-[11px] text-white/55">
+                        {total} meeting{total === 1 ? "" : "s"} · {winPct}% win rate
+                      </div>
+                    </div>
+                    <div className="flex shrink-0 items-center gap-1 text-[11px] font-black">
+                      <span className="rounded bg-emerald-500/15 px-1.5 py-0.5 text-emerald-300">{o.w}W</span>
+                      <span className="rounded bg-rose-500/15 px-1.5 py-0.5 text-rose-300">{o.l}L</span>
+                      {o.nr > 0 && <span className="rounded bg-white/10 px-1.5 py-0.5 text-white/70">{o.nr}NR</span>}
+                    </div>
+                  </div>
+                  {/* Win rate bar */}
+                  <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-white/10">
+                    <div
+                      className="h-full"
+                      style={{
+                        width: `${winPct}%`,
+                        background: `linear-gradient(90deg, ${t.primary}, ${t.secondary})`,
+                      }}
+                    />
+                  </div>
+                  {o.last && (
+                    <div className="mt-1.5 text-[10px] text-white/50">
+                      Last: {o.last.shortDetail || o.last.statusDetail}
+                    </div>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </section>
+
+      <CricketPlayerSheet
+        athleteId={activeAthlete}
+        leagueId="8048"
+        onClose={() => setActiveAthlete(null)}
+      />
     </IplPageShell>
   );
 }
