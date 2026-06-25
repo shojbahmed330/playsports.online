@@ -496,6 +496,33 @@ export type MlbProbable = {
   teamAbbr: string | null;
 };
 
+export type MlbWinProbPoint = {
+  idx: number;
+  homeWinPct: number;     // 0..1
+  inning: string;         // "Top 5th"
+  text: string;
+  awayScore: number | null;
+  homeScore: number | null;
+  scoring: boolean;
+};
+
+export type MlbPlay = {
+  id: string;
+  inning: string;            // "Top 5th"
+  inningNumber: number;
+  isTopInning: boolean;
+  text: string;              // play description
+  type: string | null;       // "Single", "Strikeout", etc.
+  scoring: boolean;
+  awayScore: number | null;
+  homeScore: number | null;
+  outs: number | null;
+  batterId: string | null;
+  batterName: string | null;
+  pitcherId: string | null;
+  pitcherName: string | null;
+};
+
 export type MlbGameSummary = {
   id: string;
   status: "pre" | "in" | "post";
@@ -514,6 +541,8 @@ export type MlbGameSummary = {
   boxscore: MlbBoxGroup[];
   probables: { home: MlbProbable | null; away: MlbProbable | null };
   leaders: Array<{ teamAbbr: string; name: string; athleteId: string; headshot: string | null; displayValue: string; label: string }>;
+  winProbability: MlbWinProbPoint[];
+  plays: MlbPlay[];
 };
 
 function pickInnings(team: any): (number | null)[] {
@@ -671,6 +700,49 @@ export const getMlbGame = createServerFn({ method: "GET" })
       const broadcast = (comp?.broadcasts ?? []).map((b: any) => (b?.names ?? [b?.media?.shortName]).filter(Boolean).join("/")).filter(Boolean).join(" · ") || null;
       const attendance = typeof comp?.attendance === "number" ? comp.attendance : null;
 
+      // Win Probability
+      const wpRaw: any[] = raw?.winprobability ?? [];
+      const playsRaw: any[] = raw?.plays ?? [];
+      const playsById = new Map<string, any>();
+      for (const p of playsRaw) {
+        if (p?.id) playsById.set(String(p.id), p);
+      }
+      const winProbability: MlbWinProbPoint[] = wpRaw.map((w, idx) => {
+        const play = w?.playId ? playsById.get(String(w.playId)) : null;
+        return {
+          idx,
+          homeWinPct: typeof w?.homeWinPercentage === "number" ? w.homeWinPercentage : 0.5,
+          inning: play?.period?.displayValue ?? "",
+          text: play?.text ?? "",
+          awayScore: play?.awayScore != null ? Number(play.awayScore) : null,
+          homeScore: play?.homeScore != null ? Number(play.homeScore) : null,
+          scoring: !!play?.scoringPlay,
+        };
+      });
+
+      // Full play-by-play
+      const plays: MlbPlay[] = playsRaw.map((p) => {
+        const part = p?.participants ?? [];
+        const batter = part.find((x: any) => (x?.type ?? "").toLowerCase() === "batter") ?? part[0];
+        const pitcher = part.find((x: any) => (x?.type ?? "").toLowerCase() === "pitcher");
+        return {
+          id: String(p?.id ?? `${p?.period?.number}-${p?.sequenceNumber}`),
+          inning: p?.period?.displayValue ?? "",
+          inningNumber: p?.period?.number ?? 0,
+          isTopInning: !!p?.period?.type?.startsWith?.("T") || (p?.period?.displayValue ?? "").toLowerCase().startsWith("top"),
+          text: p?.text ?? "",
+          type: p?.type?.text ?? p?.type?.type ?? null,
+          scoring: !!p?.scoringPlay,
+          awayScore: p?.awayScore != null ? Number(p.awayScore) : null,
+          homeScore: p?.homeScore != null ? Number(p.homeScore) : null,
+          outs: typeof p?.outs === "number" ? p.outs : null,
+          batterId: batter?.athlete?.id ? String(batter.athlete.id) : null,
+          batterName: batter?.athlete?.displayName ?? null,
+          pitcherId: pitcher?.athlete?.id ? String(pitcher.athlete.id) : null,
+          pitcherName: pitcher?.athlete?.displayName ?? null,
+        };
+      });
+
       const summary: MlbGameSummary = {
         id: String(header?.id ?? data.id),
         status,
@@ -689,6 +761,8 @@ export const getMlbGame = createServerFn({ method: "GET" })
         boxscore: box,
         probables: { home: probableFrom(homeC), away: probableFrom(awayC) },
         leaders,
+        winProbability,
+        plays,
       };
 
       return { summary, error: null as string | null };
