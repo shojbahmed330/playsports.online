@@ -387,9 +387,10 @@ export function Wc2026KnockoutView({ filter = "all", team, date, onDateChange }:
 
   const { teams: myTeams } = useMyTeams();
   const wcMatches = useMemo(
-    () => applyFilter(wcMatchesWithR32, filter, team, myTeams),
-    [wcMatchesWithR32, filter, team, myTeams],
+    () => filterByDateKey(applyFilter(wcMatchesWithR32, filter, team, myTeams), date),
+    [wcMatchesWithR32, filter, team, myTeams, date],
   );
+
   const groupedKnockout = useMemo(() => {
     const order: RoundKey[] = ["round_of_32", "round_of_16", "quarter_final", "semi_final", "third_place", "final"];
     const m: Partial<Record<RoundKey, WCMatch[]>> = {};
