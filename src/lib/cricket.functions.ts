@@ -817,20 +817,115 @@ function ageFromDob(dob: string | null): number | null {
   return Math.floor(diff / (365.25 * 24 * 3600 * 1000));
 }
 
+// Scrape ESPNcricinfo Statsguru "Career averages" tables — free, unlimited, no key.
+// One row per format (Test=1, ODI=2, T20I=3) × type (batting/bowling).
+const STATSGURU_UA =
+  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0 Safari/537.36";
+
+async function fetchStatsguruRow(
+  playerId: string,
+  cls: number,
+  type: "batting" | "bowling",
+): Promise<Record<string, string> | null> {
+  const url = `https://stats.espncricinfo.com/ci/engine/player/${playerId}.html?class=${cls};template=results;type=${type}`;
+  try {
+    const res = await fetch(url, {
+      headers: {
+        "user-agent": STATSGURU_UA,
+        accept: "text/html,application/xhtml+xml",
+        "accept-language": "en-US,en;q=0.9",
+      },
+    });
+    if (!res.ok) return null;
+    const html = await res.text();
+    const tableRe = /<table[^>]*class="engineTable"[^>]*>([\s\S]*?)<\/table>/g;
+    let m: RegExpExecArray | null;
+    while ((m = tableRe.exec(html))) {
+      const body = m[1];
+      if (!/Career averages/i.test(body)) continue;
+      const rows = [...body.matchAll(/<tr[^>]*>([\s\S]*?)<\/tr>/g)].map((r) =>
+        [...r[1].matchAll(/<t[hd][^>]*>([\s\S]*?)<\/t[hd]>/g)].map((c) =>
+          c[1]
+            .replace(/<[^>]+>/g, " ")
+            .replace(/&nbsp;/g, " ")
+            .replace(/&amp;/g, "&")
+            .replace(/\s+/g, " ")
+            .trim(),
+        ),
+      );
+      if (rows.length < 2) return null;
+      const header = rows[0];
+      const data = rows[1];
+      const obj: Record<string, string> = {};
+      header.forEach((h, i) => { if (h) obj[h] = data[i] ?? ""; });
+      return obj;
+    }
+  } catch { /* ignore */ }
+  return null;
+}
+
+async function fetchStatsguruCareer(playerId: string): Promise<CricketCareerStat[]> {
+  if (!/^\d+$/.test(playerId)) return [];
+  const FORMATS = [
+    { cls: 1, label: "Test" },
+    { cls: 2, label: "ODI" },
+    { cls: 3, label: "T20I" },
+  ] as const;
+  const tasks = FORMATS.flatMap((f) => [
+    fetchStatsguruRow(playerId, f.cls, "batting").then((row) => ({ fmt: f.label, type: "batting" as const, row })),
+    fetchStatsguruRow(playerId, f.cls, "bowling").then((row) => ({ fmt: f.label, type: "bowling" as const, row })),
+  ]);
+  const results = await Promise.all(tasks);
+  const byFmt = new Map<string, CricketCareerStat>();
+  for (const r of results) {
+    if (!r.row) continue;
+    const cur = byFmt.get(r.fmt) ?? {
+      format: r.fmt,
+      matches: null, runs: null, battingAvg: null, strikeRate: null,
+      hundreds: null, fifties: null, highScore: null,
+      wickets: null, bowlingAvg: null, economy: null, bestBowling: null,
+    };
+    const row = r.row;
+    if (r.type === "batting") {
+      cur.matches = numOrNull(row["Mat"]) ?? cur.matches;
+      cur.runs = numOrNull(row["Runs"]);
+      cur.battingAvg = numOrNull(row["Ave"]);
+      cur.strikeRate = numOrNull(row["SR"]);
+      cur.hundreds = numOrNull(row["100"]);
+      cur.fifties = numOrNull(row["50"]);
+      cur.highScore = row["HS"] || null;
+    } else {
+      if (cur.matches == null) cur.matches = numOrNull(row["Mat"]);
+      cur.wickets = numOrNull(row["Wkts"]);
+      cur.bowlingAvg = numOrNull(row["Ave"]);
+      cur.economy = numOrNull(row["Econ"]);
+      cur.bestBowling = row["BBI"] || row["BBM"] || null;
+    }
+    byFmt.set(r.fmt, cur);
+  }
+  const order = ["Test", "ODI", "T20I"];
+  return [...byFmt.values()]
+    .filter((c) => c.runs != null || c.wickets != null || (c.matches != null && c.matches > 0))
+    .sort((a, b) => order.indexOf(a.format) - order.indexOf(b.format));
+}
+
 export const getCricketPlayer = createServerFn({ method: "GET" })
   .inputValidator((d: { athleteId: string; leagueId?: string }) => d)
   .handler(async ({ data }) => {
     try {
       // ESPN's working public athlete endpoint (cricket): site.web.api common/v3
       const url = `https://site.web.api.espn.com/apis/common/v3/sports/cricket/athletes/${data.athleteId}`;
-      const res = await fetch(url, { headers: { accept: "application/json" } });
-      if (!res.ok) {
+      const [bioRes, career] = await Promise.all([
+        fetch(url, { headers: { accept: "application/json" } }),
+        fetchStatsguruCareer(data.athleteId),
+      ]);
+      if (!bioRes.ok) {
         return {
           profile: null as CricketPlayerProfile | null,
-          error: `ESPN ${res.status}`,
+          error: `ESPN ${bioRes.status}`,
         };
       }
-      const raw = (await res.json()) as any;
+      const raw = (await bioRes.json()) as any;
       const a = raw?.athlete ?? raw ?? {};
       const team = a?.team ?? {};
       const bat = Array.isArray(a.batStyle) ? a.batStyle[0]?.description : a.batStyle?.description ?? a.batStyle;
@@ -843,15 +938,7 @@ export const getCricketPlayer = createServerFn({ method: "GET" })
       } else if (a.dateOfBirth) {
         dob = String(a.dateOfBirth);
       }
-      // Stats endpoint (often empty for cricket, but try)
-      let career: CricketCareerStat[] = [];
-      try {
-        const sres = await fetch(`https://site.web.api.espn.com/apis/common/v3/sports/cricket/athletes/${data.athleteId}/stats`);
-        if (sres.ok) {
-          const sjson = await sres.json();
-          career = parseAthleteStats(sjson);
-        }
-      } catch { /* ignore */ }
+
 
       const profile: CricketPlayerProfile = {
         id: String(a.id ?? data.athleteId),
