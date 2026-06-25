@@ -15,6 +15,8 @@ import { GameGridSkeleton } from "@/components/sports/Skeletons";
 import { formatLocalTime, relativeDay } from "@/lib/time";
 import { AdSlot } from "@/components/ads/AdSlot";
 import { CricketSlate } from "@/components/cricket/CricketSlate";
+import { getMultiCricketToday, type CricketMatch } from "@/lib/cricket.functions";
+import { CRICKET_LEAGUES } from "@/lib/cricket-leagues";
 import { HeroSpotlight } from "@/components/home/HeroSpotlight";
 import { PulseStrip } from "@/components/home/PulseStrip";
 import { SportCard, FifaCard, CricketCard } from "@/components/home/SportCard";
@@ -83,6 +85,20 @@ function HubPage() {
     );
   }, [wcQ.data]);
 
+  // Cricket slate for the cross-sport "In your zone" strip
+  const cricketFn = useServerFn(getMultiCricketToday);
+  const cricketIds = useMemo(() => CRICKET_LEAGUES.map((l) => l.id), []);
+  const cricketQ = useQuery({
+    queryKey: ["cricket", "slate", cricketIds.join(",")],
+    queryFn: () => cricketFn({ data: { leagueIds: cricketIds } }),
+    staleTime: 30_000,
+    retry: 1,
+    refetchInterval: (qq) => {
+      const d = qq.state.data as { matches?: CricketMatch[] } | undefined;
+      return d?.matches?.some((m) => m.status === "in") ? 25_000 : false;
+    },
+  });
+
   const totalToday = all.length;
 
   return (
@@ -104,6 +120,7 @@ function HubPage() {
         <TodayInZoneStrip
           espnByLeague={byLeague}
           wcFixtures={wcQ.data?.fixtures ?? []}
+          cricketMatches={cricketQ.data?.matches ?? []}
           sports={SPORT_LIST}
         />
 
