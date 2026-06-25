@@ -176,7 +176,7 @@ function TabBtn({ label, active, onClick }: { label: string; active: boolean; on
   );
 }
 
-function GameInfo({ s }: { s: NonNullable<ReturnType<typeof useGameData>> }) {
+function GameInfo({ s }: { s: MlbGameSummary }) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
       {s.venue.name && (
