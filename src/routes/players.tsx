@@ -27,6 +27,7 @@ import { PlayerSubNav } from "@/components/players/PlayerSubNav";
 import { FilterBar, ActiveFilterChips } from "@/components/players/FilterBar";
 import { FilterSheet } from "@/components/players/FilterSheet";
 import { PlayerProfileSheet } from "@/components/players/PlayerProfileSheet";
+import { Wc2026Podium } from "@/components/players/Wc2026Podium";
 
 const CompareView = lazy(() =>
   import("@/components/players/CompareView").then((m) => ({ default: m.CompareView })),
