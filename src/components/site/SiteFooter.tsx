@@ -43,7 +43,8 @@ export function SiteFooter() {
 
         {/* Main grid */}
         <div className="px-6 py-10 lg:px-12 lg:py-12">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-12 [&>*:not(:first-child)]:hidden sm:[&>*:not(:first-child)]:block">
+            {/* Mobile renders only brand; the 3-col strip below handles the rest */}
             {/* Brand + newsletter */}
             <div className="space-y-6">
               <div>
