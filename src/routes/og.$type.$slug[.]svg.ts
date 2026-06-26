@@ -101,7 +101,8 @@ export const Route = createFileRoute("/og/$type/$slug.svg")({
   server: {
     handlers: {
       GET: async ({ params }) => {
-        const svg = render(params as Params);
+        const p = params as Record<string, string>;
+        const svg = render({ type: p.type, slug: p["slug.svg"] ?? p.slug ?? "" });
         return new Response(svg, {
           headers: {
             "Content-Type": "image/svg+xml; charset=utf-8",
