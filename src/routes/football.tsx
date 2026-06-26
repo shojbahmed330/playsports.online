@@ -68,8 +68,28 @@ export const Route = createFileRoute("/football")({
       ],
     };
   },
+  loader: async ({ context }) => {
+    await Promise.all([
+      context.queryClient
+        .prefetchQuery({
+          queryKey: ["wc2026", "fixtures"],
+          queryFn: () => getWc2026Fixtures(),
+          staleTime: 20_000,
+        })
+        .catch(() => null),
+      context.queryClient
+        .prefetchQuery({
+          queryKey: ["wc2026", "standings"],
+          queryFn: () => getWc2026Standings(),
+          staleTime: 60_000,
+        })
+        .catch(() => null),
+    ]);
+    return null;
+  },
   component: Index,
 });
+
 
 function classifyRound(round: string): RoundKey | "group" | null {
   const r = round.toLowerCase().trim();
