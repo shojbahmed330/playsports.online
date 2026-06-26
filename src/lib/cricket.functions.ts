@@ -220,27 +220,7 @@ export const getMultiCricketToday = createServerFn({ method: "GET" })
     const seenIds = new Set<string>();
     const all: CricketMatch[] = [];
 
-    // 1) Global scoreboard (covers live + soon + recent across all series).
-    try {
-      const raw = (await apiGet(`/scoreboard`, 30_000)) as any;
-      const events: any[] = raw?.events ?? [];
-      for (const e of events) {
-        const lm = e?.league ?? e?.leagues?.[0] ?? raw?.leagues?.[0] ?? {};
-        const league = {
-          id: String(lm.id ?? "global"),
-          name: lm.name ?? "Cricket",
-          abbr: lm.abbreviation ?? "",
-        };
-        const m = mapMatch(e, league);
-        if (!m.id || seenIds.has(m.id)) continue;
-        seenIds.add(m.id);
-        all.push(m);
-      }
-    } catch {
-      /* fall through to curated */
-    }
-
-    // 2) Curated series + a capped set of active bilateral tours.
+    // Fan out global scoreboard + curated/bilateral series in parallel.
     // Cloudflare Workers cap outbound subrequests (~50/invocation); 491 in
     // parallel hangs the hub, so we fan out in bounded batches.
     const MAX_BILATERAL = 30;
@@ -248,30 +228,59 @@ export const getMultiCricketToday = createServerFn({ method: "GET" })
       new Set([...data.leagueIds, ...BILATERAL_SERIES_IDS.slice(0, MAX_BILATERAL)]),
     );
 
-    const CONCURRENCY = 8;
-    const results: CricketMatch[][] = [];
-    for (let i = 0; i < seriesToFetch.length; i += CONCURRENCY) {
-      const batch = seriesToFetch.slice(i, i + CONCURRENCY);
-      const part = await Promise.all(
-        batch.map(async (id) => {
-          try {
-            const raw = (await apiGet(`/${id}/scoreboard`, 30_000)) as any;
-            const leagueMeta = raw?.leagues?.[0] ?? {};
-            const league = {
-              id: String(leagueMeta.id ?? id),
-              name: leagueMeta.name ?? "",
-              abbr: leagueMeta.abbreviation ?? "",
-            };
-            const events: any[] = raw?.events ?? [];
-            return events.map((e) => mapMatch(e, league));
-          } catch {
-            return [] as CricketMatch[];
-          }
-        }),
-      );
-      results.push(...part);
+    const globalTask = (async () => {
+      try {
+        const raw = (await apiGet(`/scoreboard`, 30_000)) as any;
+        const events: any[] = raw?.events ?? [];
+        return events.map((e) => {
+          const lm = e?.league ?? e?.leagues?.[0] ?? raw?.leagues?.[0] ?? {};
+          const league = {
+            id: String(lm.id ?? "global"),
+            name: lm.name ?? "Cricket",
+            abbr: lm.abbreviation ?? "",
+          };
+          return mapMatch(e, league);
+        });
+      } catch {
+        return [] as CricketMatch[];
+      }
+    })();
+
+    const CONCURRENCY = 16;
+    const seriesTask = (async () => {
+      const out: CricketMatch[][] = [];
+      for (let i = 0; i < seriesToFetch.length; i += CONCURRENCY) {
+        const batch = seriesToFetch.slice(i, i + CONCURRENCY);
+        const part = await Promise.all(
+          batch.map(async (id) => {
+            try {
+              const raw = (await apiGet(`/${id}/scoreboard`, 30_000)) as any;
+              const leagueMeta = raw?.leagues?.[0] ?? {};
+              const league = {
+                id: String(leagueMeta.id ?? id),
+                name: leagueMeta.name ?? "",
+                abbr: leagueMeta.abbreviation ?? "",
+              };
+              const events: any[] = raw?.events ?? [];
+              return events.map((e) => mapMatch(e, league));
+            } catch {
+              return [] as CricketMatch[];
+            }
+          }),
+        );
+        out.push(...part);
+      }
+      return out;
+    })();
+
+    const [globalList, seriesLists] = await Promise.all([globalTask, seriesTask]);
+
+    for (const m of globalList) {
+      if (!m.id || seenIds.has(m.id)) continue;
+      seenIds.add(m.id);
+      all.push(m);
     }
-    for (const list of results) {
+    for (const list of seriesLists) {
       for (const m of list) {
         if (!m.id || seenIds.has(m.id)) continue;
         seenIds.add(m.id);
@@ -283,6 +292,7 @@ export const getMultiCricketToday = createServerFn({ method: "GET" })
     setEdgeCache(all.some((m) => m.status === "in"));
     return { matches: all };
   });
+
 
 
 // Per-match detail (full scorecard + rosters)
