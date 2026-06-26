@@ -26,8 +26,29 @@ export const Route = createFileRoute("/mlb/")({
       ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "MLB", path: "/mlb" }])),
     ],
   }),
+  loader: async ({ context }) => {
+    const day = todayYmd();
+    await Promise.all([
+      context.queryClient
+        .prefetchQuery({
+          queryKey: ["mlb", "sb", day],
+          queryFn: () => getScoreboard({ data: { sportPath: "baseball/mlb", league: "MLB", yyyymmdd: day } }),
+          staleTime: 20_000,
+        })
+        .catch(() => null),
+      context.queryClient
+        .prefetchQuery({
+          queryKey: ["mlb", "st"],
+          queryFn: () => getStandings({ data: { sportPath: "baseball/mlb" } }),
+          staleTime: 60 * 60_000,
+        })
+        .catch(() => null),
+    ]);
+    return null;
+  },
   component: MlbToday,
 });
+
 
 function MlbToday() {
   const sbFn = useServerFn(getScoreboard);
