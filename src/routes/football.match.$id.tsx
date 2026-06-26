@@ -7,6 +7,19 @@ import { LiveMatchCenter } from "@/components/wc/LiveMatchCenter";
 import { WatchLivePanel } from "@/components/wc/WatchLivePanel";
 
 export const Route = createFileRoute("/football/match/$id")({
+  head: ({ params }) => {
+    const url = `https://allsportslive.lovable.app/football/match/${params.id}`;
+    return {
+      meta: [
+        { title: "FIFA World Cup 2026 Match — Live Score & Lineups" },
+        { name: "description", content: "Live FIFA World Cup 2026 match: score, lineups, key events, broadcast info and where to watch." },
+        { property: "og:title", content: "FIFA World Cup 2026 — Live Match" },
+        { property: "og:description", content: "Live score, lineups and broadcast info." },
+        { property: "og:url", content: url },
+      ],
+      links: [{ rel: "canonical", href: url }],
+    };
+  },
   component: MatchPage,
 });
 

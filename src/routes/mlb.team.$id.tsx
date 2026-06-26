@@ -13,6 +13,19 @@ import {
 import { formatLocalTime, relativeDay } from "@/lib/time";
 
 export const Route = createFileRoute("/mlb/team/$id")({
+  head: ({ params }) => {
+    const url = `https://allsportslive.lovable.app/mlb/team/${params.id}`;
+    return {
+      meta: [
+        { title: "MLB Team — Schedule, Roster, Stats & Injuries" },
+        { name: "description", content: "MLB team profile with full schedule, active roster, team stats, leaders and the latest injury report." },
+        { property: "og:title", content: "MLB Team Profile" },
+        { property: "og:description", content: "Schedule, roster, leaders, team stats and injuries." },
+        { property: "og:url", content: url },
+      ],
+      links: [{ rel: "canonical", href: url }],
+    };
+  },
   component: TeamPage,
 });
 
