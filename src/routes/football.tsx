@@ -24,6 +24,8 @@ import { applyFilter, uniqueTeams, useMyTeams, type FootballFilter } from "@/lib
 import { SiteFooter } from "@/components/home/SiteFooter";
 import { Breadcrumbs } from "@/components/nav/Breadcrumbs";
 import { breadcrumbList, collectionPage, ldScript } from "@/lib/seo/jsonld";
+import { getWc2026Fixtures, getWc2026Standings } from "@/lib/wc2026.functions";
+
 
 
 const GROUP_MATCHES_BY_YEAR = groupMatchesData as Record<string, WCMatch[]>;
