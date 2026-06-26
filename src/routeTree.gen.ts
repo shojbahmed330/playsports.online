@@ -46,6 +46,7 @@ import { Route as CricketIplIndexRouteImport } from './routes/cricket.ipl.index'
 import { Route as VsSportMatchupRouteImport } from './routes/vs.$sport.$matchup'
 import { Route as TeamSportSlugRouteImport } from './routes/team.$sport.$slug'
 import { Route as PlayerSportSlugRouteImport } from './routes/player.$sport.$slug'
+import { Route as OgTypeSlugDotsvgRouteImport } from './routes/og.$type.$slug[.]svg'
 import { Route as MlbTeamIdRouteImport } from './routes/mlb.team.$id'
 import { Route as MlbPlayerIdRouteImport } from './routes/mlb.player.$id'
 import { Route as MlbGameIdRouteImport } from './routes/mlb.game.$id'
@@ -246,6 +247,11 @@ const PlayerSportSlugRoute = PlayerSportSlugRouteImport.update({
   path: '/player/$sport/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OgTypeSlugDotsvgRoute = OgTypeSlugDotsvgRouteImport.update({
+  id: '/og/$type/$slug.svg',
+  path: '/og/$type/$slug.svg',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MlbTeamIdRoute = MlbTeamIdRouteImport.update({
   id: '/team/$id',
   path: '/team/$id',
@@ -362,6 +368,7 @@ export interface FileRoutesByFullPath {
   '/mlb/game/$id': typeof MlbGameIdRoute
   '/mlb/player/$id': typeof MlbPlayerIdRoute
   '/mlb/team/$id': typeof MlbTeamIdRoute
+  '/og/$type/$slug.svg': typeof OgTypeSlugDotsvgRoute
   '/player/$sport/$slug': typeof PlayerSportSlugRoute
   '/team/$sport/$slug': typeof TeamSportSlugRoute
   '/vs/$sport/$matchup': typeof VsSportMatchupRoute
@@ -413,6 +420,7 @@ export interface FileRoutesByTo {
   '/mlb/game/$id': typeof MlbGameIdRoute
   '/mlb/player/$id': typeof MlbPlayerIdRoute
   '/mlb/team/$id': typeof MlbTeamIdRoute
+  '/og/$type/$slug.svg': typeof OgTypeSlugDotsvgRoute
   '/player/$sport/$slug': typeof PlayerSportSlugRoute
   '/team/$sport/$slug': typeof TeamSportSlugRoute
   '/vs/$sport/$matchup': typeof VsSportMatchupRoute
@@ -467,6 +475,7 @@ export interface FileRoutesById {
   '/mlb/game/$id': typeof MlbGameIdRoute
   '/mlb/player/$id': typeof MlbPlayerIdRoute
   '/mlb/team/$id': typeof MlbTeamIdRoute
+  '/og/$type/$slug.svg': typeof OgTypeSlugDotsvgRoute
   '/player/$sport/$slug': typeof PlayerSportSlugRoute
   '/team/$sport/$slug': typeof TeamSportSlugRoute
   '/vs/$sport/$matchup': typeof VsSportMatchupRoute
@@ -522,6 +531,7 @@ export interface FileRouteTypes {
     | '/mlb/game/$id'
     | '/mlb/player/$id'
     | '/mlb/team/$id'
+    | '/og/$type/$slug.svg'
     | '/player/$sport/$slug'
     | '/team/$sport/$slug'
     | '/vs/$sport/$matchup'
@@ -573,6 +583,7 @@ export interface FileRouteTypes {
     | '/mlb/game/$id'
     | '/mlb/player/$id'
     | '/mlb/team/$id'
+    | '/og/$type/$slug.svg'
     | '/player/$sport/$slug'
     | '/team/$sport/$slug'
     | '/vs/$sport/$matchup'
@@ -626,6 +637,7 @@ export interface FileRouteTypes {
     | '/mlb/game/$id'
     | '/mlb/player/$id'
     | '/mlb/team/$id'
+    | '/og/$type/$slug.svg'
     | '/player/$sport/$slug'
     | '/team/$sport/$slug'
     | '/vs/$sport/$matchup'
@@ -654,6 +666,7 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TermsRoute: typeof TermsRoute
   ArchiveSportYearRoute: typeof ArchiveSportYearRoute
+  OgTypeSlugDotsvgRoute: typeof OgTypeSlugDotsvgRoute
   PlayerSportSlugRoute: typeof PlayerSportSlugRoute
   TeamSportSlugRoute: typeof TeamSportSlugRoute
   VsSportMatchupRoute: typeof VsSportMatchupRoute
@@ -920,6 +933,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PlayerSportSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/og/$type/$slug.svg': {
+      id: '/og/$type/$slug.svg'
+      path: '/og/$type/$slug.svg'
+      fullPath: '/og/$type/$slug.svg'
+      preLoaderRoute: typeof OgTypeSlugDotsvgRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/mlb/team/$id': {
       id: '/mlb/team/$id'
       path: '/team/$id'
@@ -1127,6 +1147,7 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TermsRoute: TermsRoute,
   ArchiveSportYearRoute: ArchiveSportYearRoute,
+  OgTypeSlugDotsvgRoute: OgTypeSlugDotsvgRoute,
   PlayerSportSlugRoute: PlayerSportSlugRoute,
   TeamSportSlugRoute: TeamSportSlugRoute,
   VsSportMatchupRoute: VsSportMatchupRoute,

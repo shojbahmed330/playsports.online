@@ -24,6 +24,11 @@ export const Route = createFileRoute("/vs/$sport/$matchup")({
         { property: "og:title", content: title },
         { property: "og:description", content: desc },
         { property: "og:url", content: canonical(path) },
+        { property: "og:image", content: canonical(`/og/vs/${params.matchup}.svg`) },
+        { property: "og:image:width", content: "1200" },
+        { property: "og:image:height", content: "630" },
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:image", content: canonical(`/og/vs/${params.matchup}.svg`) },
       ],
       links: [{ rel: "canonical", href: canonical(path) }],
       scripts: [
