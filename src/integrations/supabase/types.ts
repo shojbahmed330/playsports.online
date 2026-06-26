@@ -14,6 +14,66 @@ export type Database = {
   }
   public: {
     Tables: {
+      affiliate_links: {
+        Row: {
+          active: boolean
+          click_count: number
+          created_at: string
+          cta_label: string
+          description: string | null
+          geo_restrict: string[] | null
+          id: string
+          image_url: string | null
+          league_slug: string | null
+          network: string
+          placement: string
+          priority: number
+          sport: string | null
+          team_slug: string | null
+          title: string
+          updated_at: string
+          url: string
+        }
+        Insert: {
+          active?: boolean
+          click_count?: number
+          created_at?: string
+          cta_label?: string
+          description?: string | null
+          geo_restrict?: string[] | null
+          id?: string
+          image_url?: string | null
+          league_slug?: string | null
+          network: string
+          placement?: string
+          priority?: number
+          sport?: string | null
+          team_slug?: string | null
+          title: string
+          updated_at?: string
+          url: string
+        }
+        Update: {
+          active?: boolean
+          click_count?: number
+          created_at?: string
+          cta_label?: string
+          description?: string | null
+          geo_restrict?: string[] | null
+          id?: string
+          image_url?: string | null
+          league_slug?: string | null
+          network?: string
+          placement?: string
+          priority?: number
+          sport?: string | null
+          team_slug?: string | null
+          title?: string
+          updated_at?: string
+          url?: string
+        }
+        Relationships: []
+      }
       contact_messages: {
         Row: {
           body: string
@@ -83,6 +143,69 @@ export type Database = {
           key?: string
           updated_at?: string
           value?: Json
+        }
+        Relationships: []
+      }
+      sponsored_slots: {
+        Row: {
+          active: boolean
+          clicks: number
+          created_at: string
+          description: string | null
+          ends_at: string | null
+          id: string
+          image_url: string | null
+          impressions: number
+          priority: number
+          ref_id: string | null
+          slot_type: string
+          sponsor_logo_url: string | null
+          sponsor_name: string
+          sport: string | null
+          starts_at: string
+          target_url: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          clicks?: number
+          created_at?: string
+          description?: string | null
+          ends_at?: string | null
+          id?: string
+          image_url?: string | null
+          impressions?: number
+          priority?: number
+          ref_id?: string | null
+          slot_type: string
+          sponsor_logo_url?: string | null
+          sponsor_name: string
+          sport?: string | null
+          starts_at?: string
+          target_url: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          clicks?: number
+          created_at?: string
+          description?: string | null
+          ends_at?: string | null
+          id?: string
+          image_url?: string | null
+          impressions?: number
+          priority?: number
+          ref_id?: string | null
+          slot_type?: string
+          sponsor_logo_url?: string | null
+          sponsor_name?: string
+          sport?: string | null
+          starts_at?: string
+          target_url?: string
+          title?: string
+          updated_at?: string
         }
         Relationships: []
       }
