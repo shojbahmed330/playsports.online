@@ -214,6 +214,7 @@ export const getWc2026Fixtures = createServerFn({ method: "GET" }).handler(async
     )) as { events?: any[] };
     const fixtures: Wc2026Fixture[] = (raw.events ?? []).map(mapEvent);
     fixtures.sort((a, b) => a.startTs - b.startTs);
+    setEdgeCache(fixtures.some((f) => f.status === "inprogress"));
     return { fixtures, error: null as string | null };
   } catch (e) {
     return {
@@ -222,6 +223,7 @@ export const getWc2026Fixtures = createServerFn({ method: "GET" }).handler(async
     };
   }
 });
+
 
 // ===================== STANDINGS =====================
 
