@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as UnsubscribeRouteImport } from './routes/unsubscribe'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as PrivacyRouteImport } from './routes/privacy'
@@ -61,7 +62,13 @@ import { Route as CricketIplHistoryRouteImport } from './routes/cricket.ipl.hist
 import { Route as ArchiveSportYearRouteImport } from './routes/archive.$sport.$year'
 import { Route as CricketIplTeamsIndexRouteImport } from './routes/cricket.ipl.teams.index'
 import { Route as CricketIplTeamsTeamIdRouteImport } from './routes/cricket.ipl.teams.$teamId'
+import { Route as ApiPublicHooksWeeklyDigestRouteImport } from './routes/api/public/hooks/weekly-digest'
 
+const UnsubscribeRoute = UnsubscribeRouteImport.update({
+  id: '/unsubscribe',
+  path: '/unsubscribe',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
   path: '/terms',
@@ -322,6 +329,12 @@ const CricketIplTeamsTeamIdRoute = CricketIplTeamsTeamIdRouteImport.update({
   path: '/ipl/teams/$teamId',
   getParentRoute: () => CricketRoute,
 } as any)
+const ApiPublicHooksWeeklyDigestRoute =
+  ApiPublicHooksWeeklyDigestRouteImport.update({
+    id: '/api/public/hooks/weekly-digest',
+    path: '/api/public/hooks/weekly-digest',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -341,6 +354,7 @@ export interface FileRoutesByFullPath {
   '/privacy': typeof PrivacyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
+  '/unsubscribe': typeof UnsubscribeRoute
   '/cricket/history': typeof CricketHistoryRoute
   '/cricket/players': typeof CricketPlayersRoute
   '/cricket/rankings': typeof CricketRankingsRoute
@@ -374,6 +388,7 @@ export interface FileRoutesByFullPath {
   '/vs/$sport/$matchup': typeof VsSportMatchupRoute
   '/cricket/ipl/': typeof CricketIplIndexRoute
   '/cricket/series/': typeof CricketSeriesIndexRoute
+  '/api/public/hooks/weekly-digest': typeof ApiPublicHooksWeeklyDigestRoute
   '/cricket/ipl/teams/$teamId': typeof CricketIplTeamsTeamIdRoute
   '/cricket/ipl/teams/': typeof CricketIplTeamsIndexRoute
 }
@@ -393,6 +408,7 @@ export interface FileRoutesByTo {
   '/privacy': typeof PrivacyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
+  '/unsubscribe': typeof UnsubscribeRoute
   '/cricket/history': typeof CricketHistoryRoute
   '/cricket/players': typeof CricketPlayersRoute
   '/cricket/rankings': typeof CricketRankingsRoute
@@ -426,6 +442,7 @@ export interface FileRoutesByTo {
   '/vs/$sport/$matchup': typeof VsSportMatchupRoute
   '/cricket/ipl': typeof CricketIplIndexRoute
   '/cricket/series': typeof CricketSeriesIndexRoute
+  '/api/public/hooks/weekly-digest': typeof ApiPublicHooksWeeklyDigestRoute
   '/cricket/ipl/teams/$teamId': typeof CricketIplTeamsTeamIdRoute
   '/cricket/ipl/teams': typeof CricketIplTeamsIndexRoute
 }
@@ -448,6 +465,7 @@ export interface FileRoutesById {
   '/privacy': typeof PrivacyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
+  '/unsubscribe': typeof UnsubscribeRoute
   '/cricket/history': typeof CricketHistoryRoute
   '/cricket/players': typeof CricketPlayersRoute
   '/cricket/rankings': typeof CricketRankingsRoute
@@ -481,6 +499,7 @@ export interface FileRoutesById {
   '/vs/$sport/$matchup': typeof VsSportMatchupRoute
   '/cricket/ipl/': typeof CricketIplIndexRoute
   '/cricket/series/': typeof CricketSeriesIndexRoute
+  '/api/public/hooks/weekly-digest': typeof ApiPublicHooksWeeklyDigestRoute
   '/cricket/ipl/teams/$teamId': typeof CricketIplTeamsTeamIdRoute
   '/cricket/ipl/teams/': typeof CricketIplTeamsIndexRoute
 }
@@ -504,6 +523,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/sitemap.xml'
     | '/terms'
+    | '/unsubscribe'
     | '/cricket/history'
     | '/cricket/players'
     | '/cricket/rankings'
@@ -537,6 +557,7 @@ export interface FileRouteTypes {
     | '/vs/$sport/$matchup'
     | '/cricket/ipl/'
     | '/cricket/series/'
+    | '/api/public/hooks/weekly-digest'
     | '/cricket/ipl/teams/$teamId'
     | '/cricket/ipl/teams/'
   fileRoutesByTo: FileRoutesByTo
@@ -556,6 +577,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/sitemap.xml'
     | '/terms'
+    | '/unsubscribe'
     | '/cricket/history'
     | '/cricket/players'
     | '/cricket/rankings'
@@ -589,6 +611,7 @@ export interface FileRouteTypes {
     | '/vs/$sport/$matchup'
     | '/cricket/ipl'
     | '/cricket/series'
+    | '/api/public/hooks/weekly-digest'
     | '/cricket/ipl/teams/$teamId'
     | '/cricket/ipl/teams'
   id:
@@ -610,6 +633,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/sitemap.xml'
     | '/terms'
+    | '/unsubscribe'
     | '/cricket/history'
     | '/cricket/players'
     | '/cricket/rankings'
@@ -643,6 +667,7 @@ export interface FileRouteTypes {
     | '/vs/$sport/$matchup'
     | '/cricket/ipl/'
     | '/cricket/series/'
+    | '/api/public/hooks/weekly-digest'
     | '/cricket/ipl/teams/$teamId'
     | '/cricket/ipl/teams/'
   fileRoutesById: FileRoutesById
@@ -665,15 +690,24 @@ export interface RootRouteChildren {
   PrivacyRoute: typeof PrivacyRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TermsRoute: typeof TermsRoute
+  UnsubscribeRoute: typeof UnsubscribeRoute
   ArchiveSportYearRoute: typeof ArchiveSportYearRoute
   OgTypeSlugDotsvgRoute: typeof OgTypeSlugDotsvgRoute
   PlayerSportSlugRoute: typeof PlayerSportSlugRoute
   TeamSportSlugRoute: typeof TeamSportSlugRoute
   VsSportMatchupRoute: typeof VsSportMatchupRoute
+  ApiPublicHooksWeeklyDigestRoute: typeof ApiPublicHooksWeeklyDigestRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/unsubscribe': {
+      id: '/unsubscribe'
+      path: '/unsubscribe'
+      fullPath: '/unsubscribe'
+      preLoaderRoute: typeof UnsubscribeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/terms': {
       id: '/terms'
       path: '/terms'
@@ -1038,6 +1072,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CricketIplTeamsTeamIdRouteImport
       parentRoute: typeof CricketRoute
     }
+    '/api/public/hooks/weekly-digest': {
+      id: '/api/public/hooks/weekly-digest'
+      path: '/api/public/hooks/weekly-digest'
+      fullPath: '/api/public/hooks/weekly-digest'
+      preLoaderRoute: typeof ApiPublicHooksWeeklyDigestRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -1146,11 +1187,13 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyRoute: PrivacyRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TermsRoute: TermsRoute,
+  UnsubscribeRoute: UnsubscribeRoute,
   ArchiveSportYearRoute: ArchiveSportYearRoute,
   OgTypeSlugDotsvgRoute: OgTypeSlugDotsvgRoute,
   PlayerSportSlugRoute: PlayerSportSlugRoute,
   TeamSportSlugRoute: TeamSportSlugRoute,
   VsSportMatchupRoute: VsSportMatchupRoute,
+  ApiPublicHooksWeeklyDigestRoute: ApiPublicHooksWeeklyDigestRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
