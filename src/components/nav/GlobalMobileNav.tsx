@@ -26,7 +26,16 @@ const HUB_TABS: MobileTab[] = [
   { to: "/",         label: "Home",     Icon: Home,    match: (p) => p === "/" },
   { to: "/football", label: "Football", Icon: Goal,    match: (p) => p.startsWith("/football") || p.startsWith("/players") },
   { to: "/cricket",  label: "Cricket",  Icon: Activity,match: (p) => p.startsWith("/cricket") },
-  { to: "/mlb",      label: "More",     Icon: Flame,   match: (p) => p.startsWith("/mlb") || p.startsWith("/nba") || p.startsWith("/nhl") || p.startsWith("/mls") },
+  {
+    to: "/mlb", label: "More", Icon: Flame,
+    match: (p) => p.startsWith("/mlb") || p.startsWith("/nba") || p.startsWith("/nhl") || p.startsWith("/mls"),
+    items: [
+      { to: "/mlb", label: "MLB", emoji: "⚾" },
+      { to: "/nba", label: "NBA", emoji: "🏀" },
+      { to: "/nhl", label: "NHL", emoji: "🏒" },
+      { to: "/mls", label: "MLS", emoji: "⚽" },
+    ],
+  },
 ];
 
 // ---------- FOOTBALL ----------
