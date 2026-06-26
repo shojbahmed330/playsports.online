@@ -75,8 +75,8 @@ export function SportNav({ liveCount = 0 }: { liveCount?: number }) {
           <div className="flex items-center gap-2 sm:hidden">
             {liveCount > 0 && <LiveChip count={liveCount} />}
             {showStatsChip && <StatsChip pathname={pathname} />}
-            {isAdmin && <AdminChip />}
           </div>
+
         </div>
 
         {/* Tabs — single-row horizontal scroll on mobile, inline on desktop */}
