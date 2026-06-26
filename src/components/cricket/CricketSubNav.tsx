@@ -83,8 +83,9 @@ export function CricketSubNav() {
                     key={t.to}
                     to={t.to}
                     ref={active ? activeRef : undefined}
+                    aria-current={active ? "page" : undefined}
                     className={[
-                      "shrink-0 snap-start group inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] sm:text-xs font-bold ring-1 transition-all duration-200",
+                      "tap-target shrink-0 snap-start group inline-flex items-center justify-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] sm:text-xs font-bold ring-1 transition-all duration-200",
                       active
                         ? `bg-gradient-to-r ${t.grad} text-white ring-white/15 shadow-[0_6px_18px_-6px_rgba(0,0,0,0.55)] scale-[1.02]`
                         : `bg-white/[0.04] hover:bg-white/[0.09] ${t.accent} ring-white/10 hover:ring-white/20 hover:-translate-y-0.5`,
