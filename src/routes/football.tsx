@@ -286,8 +286,8 @@ function Index() {
       <Breadcrumbs />
 
 
-      {/* HERO — live-aware for 2026, classic for archive years */}
-      {year === 2026 ? (
+      {/* HERO — live-aware for the active WC year, classic for archive years */}
+      {year === LIVE_YEAR ? (
         <>
           <FootballHero />
           <section className="relative overflow-hidden border-b border-border">
@@ -317,7 +317,7 @@ function Index() {
               FIFA World Cup <span className="text-gold">Archive</span>
             </h1>
             <p className="mt-3 sm:mt-4 text-sm sm:text-lg text-muted-foreground max-w-xl mx-auto px-2">
-              Complete tournament history from <span className="text-foreground font-semibold">1930</span> to <span className="text-foreground font-semibold">2026</span>. Every match, every champion.
+              Complete tournament history from <span className="text-foreground font-semibold">1930</span> to <span className="text-foreground font-semibold">{LIVE_YEAR}</span>. Every match, every champion.
             </p>
             <div className="mt-8 sm:mt-10">
               <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-3">Select Tournament</div>
@@ -329,11 +329,11 @@ function Index() {
 
       {/* CONTENT */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-14 space-y-8">
-        {year === 2026 ? (
+        {year === LIVE_YEAR ? (
           <>
             <div className="flex justify-center">
               <div className="bg-gray-800/50 rounded-full px-4 py-1 text-xs text-gray-400">
-                2026 World Cup • 48 teams • USA · Canada · Mexico •{" "}
+                {LIVE_YEAR} World Cup • {FOOTBALL_WC.seasonWindows[LIVE_YEAR]?.teams ?? 48} teams • {FOOTBALL_WC.seasonWindows[LIVE_YEAR]?.host ?? ""} •{" "}
                 <span className="text-red-300 font-semibold">Live data</span>
               </div>
             </div>
