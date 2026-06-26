@@ -162,7 +162,9 @@ function RootComponent() {
       {/* Site-wide top banner — shows on every route once AdSense is configured. */}
       <AdSlot slot="header" className="px-4" />
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      <main id="main-content" tabIndex={-1} className="focus:outline-none">
+        <Outlet />
+      </main>
       {/* Site-wide bottom banner. */}
       <AdSlot slot="footer" className="px-4" />
       <SiteFooter />
