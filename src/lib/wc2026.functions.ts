@@ -1,5 +1,18 @@
 import { createServerFn } from "@tanstack/react-start";
+import { setResponseHeader } from "@tanstack/react-start/server";
 import { FOOTBALL_WC, liveWcYear } from "@/lib/tournament-config";
+
+function setEdgeCache(hasLive: boolean) {
+  try {
+    setResponseHeader(
+      "Cache-Control",
+      hasLive
+        ? "public, s-maxage=20, stale-while-revalidate=60"
+        : "public, s-maxage=300, stale-while-revalidate=900",
+    );
+  } catch {}
+}
+
 
 // ESPN public API (free, no key) replaces the paid Sofascore/RapidAPI feed.
 // FIFA World Cup league slug = "fifa.world".
