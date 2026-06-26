@@ -14,6 +14,8 @@ import { Countdown } from "@/components/sports/Countdown";
 import { GameGridSkeleton } from "@/components/sports/Skeletons";
 import { formatLocalTime, relativeDay } from "@/lib/time";
 import { AdSlot } from "@/components/ads/AdSlot";
+import { SponsoredHero } from "@/components/affiliates/SponsoredHero";
+import { AffiliateStrip } from "@/components/affiliates/AffiliateStrip";
 import { CricketSlate } from "@/components/cricket/CricketSlate";
 import { getMultiCricketToday, type CricketMatch } from "@/lib/cricket.functions";
 import { CRICKET_LEAGUES } from "@/lib/cricket-leagues";
@@ -126,6 +128,7 @@ function HubPage() {
       <PulseStrip items={liveGames} />
 
       <main id="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 py-10 space-y-12">
+        <SponsoredHero slotType="banner" />
         {/* TODAY IN YOUR ZONE — TZ-aware cross-sport strip */}
         <TodayInZoneStrip
           espnByLeague={byLeague}
@@ -190,6 +193,9 @@ function HubPage() {
         <CricketSlate />
 
         <AdSlot slot="in_content" layout="in-article" />
+
+        <AffiliateStrip placement="homepage" heading="Fan shop & partners" />
+
 
         {/* UPCOMING TODAY */}
         {liveQ.isLoading ? (
