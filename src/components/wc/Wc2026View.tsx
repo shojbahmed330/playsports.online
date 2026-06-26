@@ -471,15 +471,22 @@ export function Wc2026KnockoutView({ filter = "all", team, date, onDateChange }:
   }, [wcMatchesRaw, sQ.data]);
 
   const { teams: myTeams } = useMyTeams();
+  // Knockout bracket is structural — never filter it by date. Date filter only
+  // narrows the live ticker / per-day list, otherwise selecting "today" would
+  // hide R32 fixtures scheduled later in the week and surface the EmptyBox.
+  const wcMatchesBracket = useMemo(
+    () => applyFilter(wcMatchesWithR32, filter, team, myTeams),
+    [wcMatchesWithR32, filter, team, myTeams],
+  );
   const wcMatches = useMemo(
-    () => filterByDateKey(applyFilter(wcMatchesWithR32, filter, team, myTeams), date),
-    [wcMatchesWithR32, filter, team, myTeams, date],
+    () => filterByDateKey(wcMatchesBracket, date),
+    [wcMatchesBracket, date],
   );
 
   const groupedKnockout = useMemo(() => {
     const order: RoundKey[] = ["round_of_32", "round_of_16", "quarter_final", "semi_final", "third_place", "final"];
     const m: Partial<Record<RoundKey, WCMatch[]>> = {};
-    for (const match of wcMatches) {
+    for (const match of wcMatchesBracket) {
       const k = classifyKnockout(match.round);
       if (!k) continue;
       (m[k] ||= []).push(match);
@@ -487,7 +494,8 @@ export function Wc2026KnockoutView({ filter = "all", team, date, onDateChange }:
     return order
       .filter((r) => (m[r]?.length ?? 0) > 0)
       .map((r) => [r, m[r]!] as const);
-  }, [wcMatches]);
+  }, [wcMatchesBracket]);
+
 
   const [activeMatch, setActiveMatch] = useState<WCMatch | null>(null);
 
