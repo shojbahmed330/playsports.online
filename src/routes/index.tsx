@@ -50,8 +50,39 @@ export const Route = createFileRoute("/")({
     ],
     links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/" }],
   }),
+  loader: async ({ context }) => {
+    // SSR prefetch — prime React Query cache so HTML arrives with live scores already rendered.
+    // Each prime is independent and never throws (server fns already return {error} shapes).
+    const sportsInput = SPORT_LIST.map((s) => ({ path: s.path, league: s.label }));
+    const cricketIds = CRICKET_LEAGUES.map((l) => l.id);
+    await Promise.all([
+      context.queryClient
+        .prefetchQuery({
+          queryKey: ["hub", "today", sportsInput.map((s) => s.league).join(",")],
+          queryFn: () => getMultiSportToday({ data: { sports: sportsInput } }),
+          staleTime: 30_000,
+        })
+        .catch(() => null),
+      context.queryClient
+        .prefetchQuery({
+          queryKey: ["wc2026", "fixtures"],
+          queryFn: () => getWc2026Fixtures(),
+          staleTime: 20_000,
+        })
+        .catch(() => null),
+      context.queryClient
+        .prefetchQuery({
+          queryKey: ["cricket", "slate", cricketIds.join(",")],
+          queryFn: () => getMultiCricketToday({ data: { leagueIds: cricketIds } }),
+          staleTime: 30_000,
+        })
+        .catch(() => null),
+    ]);
+    return null;
+  },
   component: HubPage,
 });
+
 
 function HubPage() {
   const multiFn = useServerFn(getMultiSportToday);
