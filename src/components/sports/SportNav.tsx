@@ -29,8 +29,8 @@ const SPORT_GRADS: Record<string, { grad: string; accent: string }> = {
 };
 
 export function SportNav({ liveCount = 0 }: { liveCount?: number }) {
-  const { isAdmin } = useAuth();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+
 
   const sportTabs: Tab[] = SPORT_LIST.map((s) => ({
     to: `/${s.slug}`,
