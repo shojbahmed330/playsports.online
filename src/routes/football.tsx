@@ -59,6 +59,10 @@ export const Route = createFileRoute("/football")({
         { property: "og:url", content: "https://allsportslive.lovable.app/football" },
       ],
       links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/football" }],
+      scripts: [
+        ldScript(collectionPage({ name: `FIFA World Cup ${cur} — Live & Archive`, description: `FIFA World Cup ${cur} live scores, bracket and historical archive 1930–${cur}.`, path: "/football" })),
+        ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "Football", path: "/football" }])),
+      ],
     };
   },
   component: Index,
