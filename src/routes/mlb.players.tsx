@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useMemo, useState } from "react";
 import { getMlbLeaders, searchMlbPlayers } from "@/lib/mlb.functions";
+import { currentSeason } from "@/lib/tournament-config";
 import { LeaderBoard } from "@/components/mlb/LeaderBoard";
 
 export const Route = createFileRoute("/mlb/players")({
@@ -23,7 +24,7 @@ function LeadersPage() {
   const leadersFn = useServerFn(getMlbLeaders);
   const searchFn = useServerFn(searchMlbPlayers);
 
-  const [season, setSeason] = useState(new Date().getFullYear());
+  const [season, setSeason] = useState(currentSeason("mlb"));
   const [group, setGroup] = useState<"batting" | "pitching">("batting");
   const [query, setQuery] = useState("");
   const [debounced, setDebounced] = useState("");

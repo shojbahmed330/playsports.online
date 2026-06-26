@@ -370,7 +370,8 @@ async function buildLeadersForSeason(season: number) {
 export const getMlbLeaders = createServerFn({ method: "GET" })
   .inputValidator((d: { season?: number }) => d)
   .handler(async ({ data }) => {
-    const requested = data.season ?? new Date().getFullYear();
+    const { currentSeason } = await import("@/lib/tournament-config");
+    const requested = data.season ?? currentSeason("mlb");
     try {
       let used = requested;
       let res = await buildLeadersForSeason(used);
@@ -968,7 +969,8 @@ export type MlbGameLogSeason = {
 export const getMlbAthleteGameLog = createServerFn({ method: "GET" })
   .inputValidator((d: { id: string; season?: number }) => d)
   .handler(async ({ data }) => {
-    const season = data.season ?? new Date().getFullYear();
+    const { currentSeason } = await import("@/lib/tournament-config");
+    const season = data.season ?? currentSeason("mlb");
     try {
       const url = `${CORE}/athletes/${data.id}/gamelog?season=${season}`;
       const raw = (await get(url, 15 * 60_000)) as any;
