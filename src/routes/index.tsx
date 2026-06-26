@@ -25,18 +25,26 @@ import { WatchLivePanel } from "@/components/wc/WatchLivePanel";
 import { TodayInZoneStrip } from "@/components/home/TodayInZoneStrip";
 import { HallOfChampionsStrip } from "@/components/home/HallOfChampionsStrip";
 
+const HOME_OG_IMAGE = "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/110e40cc-d990-48af-a996-8f46b9fd0f97/id-preview-f9e73043--3e33a21e-e132-4b69-83ee-be28f3bc4583.lovable.app-1782037338724.png";
+
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Sports Hub — Live Scores, Standings & News" },
+      { title: "AllSportsLive — Live Scores Across MLB, NBA, NHL, MLS, Cricket & FIFA" },
       {
         name: "description",
         content:
-          "Your home for live MLB, NBA, NHL, MLS scores and the complete FIFA World Cup archive — all in one place.",
+          "Your home for live MLB, NBA, NHL, MLS, Cricket & IPL scores plus the complete FIFA World Cup archive 1930–2026.",
       },
-      { property: "og:title", content: "Sports Hub — Live Scores Across MLB, NBA, NHL, MLS & FIFA" },
+      { property: "og:title", content: "AllSportsLive — Live Scores Across MLB, NBA, NHL, MLS, Cricket & FIFA" },
       { property: "og:description", content: "Live scoreboards, standings, news and the full FIFA World Cup archive 1930–2026." },
+      { property: "og:url", content: "https://allsportslive.lovable.app/" },
+      { property: "og:image", content: HOME_OG_IMAGE },
+      { name: "twitter:image", content: HOME_OG_IMAGE },
+      { name: "twitter:title", content: "AllSportsLive — Live Scores & FIFA World Cup Archive" },
+      { name: "twitter:description", content: "Live MLB, NBA, NHL, MLS, Cricket & IPL scores plus FIFA World Cup 1930–2026." },
     ],
+    links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/" }],
   }),
   component: HubPage,
 });
