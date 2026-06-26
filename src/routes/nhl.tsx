@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { LeaguePage } from "@/components/sports/LeaguePage";
 import { SPORTS } from "@/lib/sports-config";
+import { breadcrumbList, collectionPage, ldScript } from "@/lib/seo/jsonld";
 
 export const Route = createFileRoute("/nhl")({
   head: () => ({
@@ -12,6 +13,10 @@ export const Route = createFileRoute("/nhl")({
       { property: "og:url", content: "https://allsportslive.lovable.app/nhl" },
     ],
     links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/nhl" }],
+    scripts: [
+      ldScript(collectionPage({ name: "NHL — Live Scores & Standings", description: "NHL scores, division standings and headlines.", path: "/nhl" })),
+      ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "NHL", path: "/nhl" }])),
+    ],
   }),
   component: () => <LeaguePage sport={SPORTS.nhl} />,
 });

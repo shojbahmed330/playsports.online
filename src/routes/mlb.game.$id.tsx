@@ -10,6 +10,7 @@ import { MlbScoringPlays } from "@/components/mlb/MlbScoringPlays";
 import { MlbWinProbabilityChart } from "@/components/mlb/MlbWinProbabilityChart";
 import { MlbPlayByPlay } from "@/components/mlb/MlbPlayByPlay";
 import { formatLocalTime, relativeDay } from "@/lib/time";
+import { breadcrumbList, ldScript, sportsEvent } from "@/lib/seo/jsonld";
 
 export const Route = createFileRoute("/mlb/game/$id")({
   head: ({ params }) => {
@@ -23,6 +24,10 @@ export const Route = createFileRoute("/mlb/game/$id")({
         { property: "og:url", content: url },
       ],
       links: [{ rel: "canonical", href: url }],
+      scripts: [
+        ldScript(sportsEvent({ name: `MLB Game ${params.id}`, path: `/mlb/game/${params.id}`, sport: "Baseball" })),
+        ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "MLB", path: "/mlb" }, { name: "Game", path: `/mlb/game/${params.id}` }])),
+      ],
     };
   },
   component: GamePage,

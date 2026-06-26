@@ -11,6 +11,7 @@ import {
   type MlbInjury,
 } from "@/lib/mlb.functions";
 import { formatLocalTime, relativeDay } from "@/lib/time";
+import { breadcrumbList, ldScript, sportsTeam } from "@/lib/seo/jsonld";
 
 export const Route = createFileRoute("/mlb/team/$id")({
   head: ({ params }) => {
@@ -24,6 +25,10 @@ export const Route = createFileRoute("/mlb/team/$id")({
         { property: "og:url", content: url },
       ],
       links: [{ rel: "canonical", href: url }],
+      scripts: [
+        ldScript(sportsTeam({ name: `MLB Team ${params.id}`, path: `/mlb/team/${params.id}`, sport: "Baseball", league: "Major League Baseball" })),
+        ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "MLB", path: "/mlb" }, { name: "Teams", path: "/mlb/teams" }, { name: "Team", path: `/mlb/team/${params.id}` }])),
+      ],
     };
   },
   component: TeamPage,

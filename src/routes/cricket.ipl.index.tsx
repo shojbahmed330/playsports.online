@@ -13,6 +13,7 @@ import {
   getIplLeaders,
 } from "@/lib/ipl.functions";
 import { formatLocalTime, relativeDay } from "@/lib/time";
+import { breadcrumbList, collectionPage, ldScript } from "@/lib/seo/jsonld";
 
 const overviewQO = queryOptions({
   queryKey: ["ipl", "overview"],
@@ -46,6 +47,10 @@ export const Route = createFileRoute("/cricket/ipl/")({
       { property: "og:url", content: "https://allsportslive.lovable.app/cricket/ipl" },
     ],
     links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/cricket/ipl" }],
+    scripts: [
+      ldScript(collectionPage({ name: "Indian Premier League — Live Scores & Stats", description: "IPL live scores, standings, Orange & Purple Cap leaders and history.", path: "/cricket/ipl" })),
+      ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "Cricket", path: "/cricket" }, { name: "IPL", path: "/cricket/ipl" }])),
+    ],
   }),
   loader: ({ context }) =>
     Promise.all([

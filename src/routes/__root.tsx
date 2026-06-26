@@ -102,6 +102,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           },
         }),
       },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          name: "AllSportsLive",
+          url: "https://allsportslive.lovable.app",
+          description: "Live scores, stats and historical archives across football, cricket, baseball, basketball, hockey and soccer.",
+        }),
+      },
     ],
     links: [
       {

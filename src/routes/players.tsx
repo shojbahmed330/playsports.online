@@ -11,6 +11,7 @@ import cardsData from "@/data/wc_cards.json";
 import fifaRankings from "@/data/fifa_rankings.json";
 import { getFifaRankings } from "@/lib/wc2026.functions";
 import { useMergedGoals, type GoalRow } from "@/lib/use-merged-goals";
+import { breadcrumbList, collectionPage, ldScript } from "@/lib/seo/jsonld";
 
 import {
   playersSearchSchema,
@@ -61,6 +62,10 @@ export const Route = createFileRoute("/players")({
       { property: "og:url", content: "https://allsportslive.lovable.app/players" },
     ],
     links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/players" }],
+    scripts: [
+      ldScript(collectionPage({ name: "Player Statistics — FIFA World Cup", description: "All-time and live FIFA World Cup top scorers, card leaders and player records.", path: "/players" })),
+      ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "Players", path: "/players" }])),
+    ],
   }),
   component: PlayersPage,
 });

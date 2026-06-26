@@ -12,6 +12,7 @@ import { AdSlot } from "@/components/ads/AdSlot";
 import { CricketMatchCard } from "@/components/cricket/CricketMatchCard";
 import { getMultiCricketToday, type CricketMatch } from "@/lib/cricket.functions";
 import { CRICKET_LEAGUES, CRICKET_LEAGUE_BY_ID, type CricketLeague } from "@/lib/cricket-leagues";
+import { breadcrumbList, collectionPage, ldScript } from "@/lib/seo/jsonld";
 
 
 export const Route = createFileRoute("/cricket/")({
@@ -24,6 +25,10 @@ export const Route = createFileRoute("/cricket/")({
       { property: "og:url", content: "https://allsportslive.lovable.app/cricket" },
     ],
     links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/cricket" }],
+    scripts: [
+      ldScript(collectionPage({ name: "Cricket — Live Scores, Series & Players", description: "Cricket hub: live scores, series, players, rankings and records.", path: "/cricket" })),
+      ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "Cricket", path: "/cricket" }])),
+    ],
   }),
   component: CricketIndex,
 });

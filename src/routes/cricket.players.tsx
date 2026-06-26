@@ -5,6 +5,7 @@ import { SportNav } from "@/components/sports/SportNav";
 import { CricketSubNav } from "@/components/cricket/CricketSubNav";
 import { PlayerLink } from "@/components/cricket/PlayerLink";
 import rankings from "@/data/cricket/rankings.json";
+import { breadcrumbList, collectionPage, ldScript } from "@/lib/seo/jsonld";
 
 
 export const Route = createFileRoute("/cricket/players")({
@@ -17,6 +18,10 @@ export const Route = createFileRoute("/cricket/players")({
       { property: "og:url", content: "https://allsportslive.lovable.app/cricket/players" },
     ],
     links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/cricket/players" }],
+    scripts: [
+      ldScript(collectionPage({ name: "Cricket Players — Top Performers", description: "Top-ranked cricket batters, bowlers and all-rounders across formats.", path: "/cricket/players" })),
+      ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "Cricket", path: "/cricket" }, { name: "Players", path: "/cricket/players" }])),
+    ],
   }),
   component: PlayersPage,
 });

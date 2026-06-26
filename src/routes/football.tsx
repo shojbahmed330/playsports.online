@@ -23,6 +23,7 @@ import { FootballFilterBar } from "@/components/football/FootballFilterBar";
 import { applyFilter, uniqueTeams, useMyTeams, type FootballFilter } from "@/lib/football-filters";
 import { SiteFooter } from "@/components/home/SiteFooter";
 import { Breadcrumbs } from "@/components/nav/Breadcrumbs";
+import { breadcrumbList, collectionPage, ldScript } from "@/lib/seo/jsonld";
 
 
 const GROUP_MATCHES_BY_YEAR = groupMatchesData as Record<string, WCMatch[]>;
@@ -59,6 +60,10 @@ export const Route = createFileRoute("/football")({
         { property: "og:url", content: "https://allsportslive.lovable.app/football" },
       ],
       links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/football" }],
+      scripts: [
+        ldScript(collectionPage({ name: `FIFA World Cup ${cur} — Live & Archive`, description: `FIFA World Cup ${cur} live scores, bracket and historical archive 1930–${cur}.`, path: "/football" })),
+        ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "Football", path: "/football" }])),
+      ],
     };
   },
   component: Index,
