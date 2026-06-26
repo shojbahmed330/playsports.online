@@ -5,6 +5,7 @@ import { SportNav } from "@/components/sports/SportNav";
 import { CricketSubNav } from "@/components/cricket/CricketSubNav";
 import { PlayerLink } from "@/components/cricket/PlayerLink";
 import records from "@/data/cricket/records.json";
+import { breadcrumbList, collectionPage, ldScript } from "@/lib/seo/jsonld";
 
 
 export const Route = createFileRoute("/cricket/records")({
@@ -17,6 +18,10 @@ export const Route = createFileRoute("/cricket/records")({
       { property: "og:url", content: "https://allsportslive.lovable.app/cricket/records" },
     ],
     links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/cricket/records" }],
+    scripts: [
+      ldScript(collectionPage({ name: "All-time Cricket Records", description: "Runs, wickets, centuries and partnership records across Test, ODI and T20I.", path: "/cricket/records" })),
+      ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "Cricket", path: "/cricket" }, { name: "Records", path: "/cricket/records" }])),
+    ],
   }),
   component: RecordsPage,
 });
