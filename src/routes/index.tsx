@@ -1,8 +1,9 @@
 import { useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { Trophy, Flame, ArrowRight, MapPin, Clock, CheckCircle2, X } from "lucide-react";
+
 import { SPORT_LIST, type SportConfig } from "@/lib/sports-config";
 import { getMultiSportToday, type SportGame } from "@/lib/espn.functions";
 import { getWc2026Fixtures, type Wc2026Fixture } from "@/lib/wc2026.functions";
@@ -49,8 +50,39 @@ export const Route = createFileRoute("/")({
     ],
     links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/" }],
   }),
+  loader: async ({ context }) => {
+    // SSR prefetch — prime React Query cache so HTML arrives with live scores already rendered.
+    // Each prime is independent and never throws (server fns already return {error} shapes).
+    const sportsInput = SPORT_LIST.map((s) => ({ path: s.path, league: s.label }));
+    const cricketIds = CRICKET_LEAGUES.map((l) => l.id);
+    await Promise.all([
+      context.queryClient
+        .prefetchQuery({
+          queryKey: ["hub", "today", sportsInput.map((s) => s.league).join(",")],
+          queryFn: () => getMultiSportToday({ data: { sports: sportsInput } }),
+          staleTime: 30_000,
+        })
+        .catch(() => null),
+      context.queryClient
+        .prefetchQuery({
+          queryKey: ["wc2026", "fixtures"],
+          queryFn: () => getWc2026Fixtures(),
+          staleTime: 20_000,
+        })
+        .catch(() => null),
+      context.queryClient
+        .prefetchQuery({
+          queryKey: ["cricket", "slate", cricketIds.join(",")],
+          queryFn: () => getMultiCricketToday({ data: { leagueIds: cricketIds } }),
+          staleTime: 30_000,
+        })
+        .catch(() => null),
+    ]);
+    return null;
+  },
   component: HubPage,
 });
+
 
 function HubPage() {
   const multiFn = useServerFn(getMultiSportToday);
@@ -61,12 +93,14 @@ function HubPage() {
     queryFn: () => multiFn({ data: { sports: sportsInput } }),
     staleTime: 30_000,
     retry: 1,
+    placeholderData: keepPreviousData,
     refetchInterval: (q) => {
       const data = q.state.data as { byLeague?: Record<string, SportGame[]> } | undefined;
       const any = Object.values(data?.byLeague ?? {}).flat().some((g) => g.status === "in");
       return any ? 30_000 : false;
     },
   });
+
 
   const byLeague = liveQ.data?.byLeague ?? {};
 
@@ -87,7 +121,9 @@ function HubPage() {
     queryFn: () => wcFn(),
     staleTime: 20_000,
     retry: 1,
+    placeholderData: keepPreviousData,
   });
+
   const wcFeatured = useMemo<Wc2026Fixture | null>(() => {
     const list = wcQ.data?.fixtures ?? [];
     return (
@@ -105,10 +141,12 @@ function HubPage() {
     queryFn: () => cricketFn({ data: { leagueIds: cricketIds } }),
     staleTime: 30_000,
     retry: 1,
+    placeholderData: keepPreviousData,
     refetchInterval: (qq) => {
       const d = qq.state.data as { matches?: CricketMatch[] } | undefined;
       return d?.matches?.some((m) => m.status === "in") ? 25_000 : false;
     },
+
   });
 
   const totalToday = all.length;

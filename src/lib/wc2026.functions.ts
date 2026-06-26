@@ -1,5 +1,18 @@
 import { createServerFn } from "@tanstack/react-start";
+import { setResponseHeader } from "@tanstack/react-start/server";
 import { FOOTBALL_WC, liveWcYear } from "@/lib/tournament-config";
+
+function setEdgeCache(hasLive: boolean) {
+  try {
+    setResponseHeader(
+      "Cache-Control",
+      hasLive
+        ? "public, s-maxage=20, stale-while-revalidate=60"
+        : "public, s-maxage=300, stale-while-revalidate=900",
+    );
+  } catch {}
+}
+
 
 // ESPN public API (free, no key) replaces the paid Sofascore/RapidAPI feed.
 // FIFA World Cup league slug = "fifa.world".
@@ -201,6 +214,7 @@ export const getWc2026Fixtures = createServerFn({ method: "GET" }).handler(async
     )) as { events?: any[] };
     const fixtures: Wc2026Fixture[] = (raw.events ?? []).map(mapEvent);
     fixtures.sort((a, b) => a.startTs - b.startTs);
+    setEdgeCache(fixtures.some((f) => f.status === "inprogress"));
     return { fixtures, error: null as string | null };
   } catch (e) {
     return {
@@ -209,6 +223,7 @@ export const getWc2026Fixtures = createServerFn({ method: "GET" }).handler(async
     };
   }
 });
+
 
 // ===================== STANDINGS =====================
 

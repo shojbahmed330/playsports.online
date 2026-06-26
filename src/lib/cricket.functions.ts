@@ -1,5 +1,18 @@
 import { createServerFn } from "@tanstack/react-start";
+import { setResponseHeader } from "@tanstack/react-start/server";
 import { isCuratedLeague, BILATERAL_SERIES_IDS } from "./cricket-leagues";
+
+function setEdgeCache(hasLive: boolean) {
+  try {
+    setResponseHeader(
+      "Cache-Control",
+      hasLive
+        ? "public, s-maxage=20, stale-while-revalidate=60"
+        : "public, s-maxage=120, stale-while-revalidate=300",
+    );
+  } catch {}
+}
+
 
 // ESPN's public cricket API. Cricket is structured per-series:
 //   /cricket/{seriesId}/scoreboard
@@ -267,8 +280,10 @@ export const getMultiCricketToday = createServerFn({ method: "GET" })
     }
 
     all.sort((a, b) => a.startTs - b.startTs);
+    setEdgeCache(all.some((m) => m.status === "in"));
     return { matches: all };
   });
+
 
 // Per-match detail (full scorecard + rosters)
 export type CricketBatter = {
