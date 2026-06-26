@@ -3,6 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { getMlbPostseason } from "@/lib/mlb.functions";
+import { currentSeason } from "@/lib/tournament-config";
 import { MlbPostseasonBracket } from "@/components/mlb/MlbPostseasonBracket";
 
 export const Route = createFileRoute("/mlb/postseason")({
@@ -15,7 +16,7 @@ export const Route = createFileRoute("/mlb/postseason")({
   component: PostseasonPage,
 });
 
-const CURRENT = new Date().getFullYear();
+const CURRENT = currentSeason("mlb");
 const YEARS = Array.from({ length: 10 }, (_, i) => CURRENT - i);
 
 function PostseasonPage() {
