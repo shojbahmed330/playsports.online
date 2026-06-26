@@ -30,6 +30,7 @@ export const Route = createFileRoute("/team/$sport/$slug")({
         { property: "og:image:height", content: "630" },
         { name: "twitter:card", content: "summary_large_image" },
         { name: "twitter:image", content: canonical(`/og/team/${params.slug}.svg`) },
+      ],
       links: [{ rel: "canonical", href: canonical(path) }],
       scripts: [
         ldScript(sportsTeam({ name: team.name, path, sport: "Football", league: "FIFA World Cup" })),
