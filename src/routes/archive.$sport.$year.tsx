@@ -27,6 +27,11 @@ export const Route = createFileRoute("/archive/$sport/$year")({
         { property: "og:description", content: desc },
         { property: "og:url", content: canonical(path) },
         { property: "og:type", content: "article" },
+        { property: "og:image", content: canonical(`/og/archive/${params.year}--${params.sport}.svg`) },
+        { property: "og:image:width", content: "1200" },
+        { property: "og:image:height", content: "630" },
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:image", content: canonical(`/og/archive/${params.year}--${params.sport}.svg`) },
       ],
       links: [{ rel: "canonical", href: canonical(path) }],
       scripts: [
