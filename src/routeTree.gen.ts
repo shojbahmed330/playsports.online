@@ -13,12 +13,14 @@ import { Route as UnsubscribeRouteImport } from './routes/unsubscribe'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as PremiumRouteImport } from './routes/premium'
 import { Route as PlayersRouteImport } from './routes/players'
 import { Route as NhlRouteImport } from './routes/nhl'
 import { Route as NbaRouteImport } from './routes/nba'
 import { Route as MlsRouteImport } from './routes/mls'
 import { Route as MlbRouteImport } from './routes/mlb'
 import { Route as FootballRouteImport } from './routes/football'
+import { Route as FeedDotxmlRouteImport } from './routes/feed[.]xml'
 import { Route as DisclaimerRouteImport } from './routes/disclaimer'
 import { Route as CricketRouteImport } from './routes/cricket'
 import { Route as CookiesRouteImport } from './routes/cookies'
@@ -84,6 +86,11 @@ const PrivacyRoute = PrivacyRouteImport.update({
   path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PremiumRoute = PremiumRouteImport.update({
+  id: '/premium',
+  path: '/premium',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PlayersRoute = PlayersRouteImport.update({
   id: '/players',
   path: '/players',
@@ -112,6 +119,11 @@ const MlbRoute = MlbRouteImport.update({
 const FootballRoute = FootballRouteImport.update({
   id: '/football',
   path: '/football',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FeedDotxmlRoute = FeedDotxmlRouteImport.update({
+  id: '/feed.xml',
+  path: '/feed.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DisclaimerRoute = DisclaimerRouteImport.update({
@@ -345,12 +357,14 @@ export interface FileRoutesByFullPath {
   '/cookies': typeof CookiesRoute
   '/cricket': typeof CricketRouteWithChildren
   '/disclaimer': typeof DisclaimerRoute
+  '/feed.xml': typeof FeedDotxmlRoute
   '/football': typeof FootballRouteWithChildren
   '/mlb': typeof MlbRouteWithChildren
   '/mls': typeof MlsRoute
   '/nba': typeof NbaRoute
   '/nhl': typeof NhlRoute
   '/players': typeof PlayersRoute
+  '/premium': typeof PremiumRoute
   '/privacy': typeof PrivacyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
@@ -400,11 +414,13 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/cookies': typeof CookiesRoute
   '/disclaimer': typeof DisclaimerRoute
+  '/feed.xml': typeof FeedDotxmlRoute
   '/football': typeof FootballRouteWithChildren
   '/mls': typeof MlsRoute
   '/nba': typeof NbaRoute
   '/nhl': typeof NhlRoute
   '/players': typeof PlayersRoute
+  '/premium': typeof PremiumRoute
   '/privacy': typeof PrivacyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
@@ -456,12 +472,14 @@ export interface FileRoutesById {
   '/cookies': typeof CookiesRoute
   '/cricket': typeof CricketRouteWithChildren
   '/disclaimer': typeof DisclaimerRoute
+  '/feed.xml': typeof FeedDotxmlRoute
   '/football': typeof FootballRouteWithChildren
   '/mlb': typeof MlbRouteWithChildren
   '/mls': typeof MlsRoute
   '/nba': typeof NbaRoute
   '/nhl': typeof NhlRoute
   '/players': typeof PlayersRoute
+  '/premium': typeof PremiumRoute
   '/privacy': typeof PrivacyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
@@ -514,12 +532,14 @@ export interface FileRouteTypes {
     | '/cookies'
     | '/cricket'
     | '/disclaimer'
+    | '/feed.xml'
     | '/football'
     | '/mlb'
     | '/mls'
     | '/nba'
     | '/nhl'
     | '/players'
+    | '/premium'
     | '/privacy'
     | '/sitemap.xml'
     | '/terms'
@@ -569,11 +589,13 @@ export interface FileRouteTypes {
     | '/contact'
     | '/cookies'
     | '/disclaimer'
+    | '/feed.xml'
     | '/football'
     | '/mls'
     | '/nba'
     | '/nhl'
     | '/players'
+    | '/premium'
     | '/privacy'
     | '/sitemap.xml'
     | '/terms'
@@ -624,12 +646,14 @@ export interface FileRouteTypes {
     | '/cookies'
     | '/cricket'
     | '/disclaimer'
+    | '/feed.xml'
     | '/football'
     | '/mlb'
     | '/mls'
     | '/nba'
     | '/nhl'
     | '/players'
+    | '/premium'
     | '/privacy'
     | '/sitemap.xml'
     | '/terms'
@@ -681,12 +705,14 @@ export interface RootRouteChildren {
   CookiesRoute: typeof CookiesRoute
   CricketRoute: typeof CricketRouteWithChildren
   DisclaimerRoute: typeof DisclaimerRoute
+  FeedDotxmlRoute: typeof FeedDotxmlRoute
   FootballRoute: typeof FootballRouteWithChildren
   MlbRoute: typeof MlbRouteWithChildren
   MlsRoute: typeof MlsRoute
   NbaRoute: typeof NbaRoute
   NhlRoute: typeof NhlRoute
   PlayersRoute: typeof PlayersRoute
+  PremiumRoute: typeof PremiumRoute
   PrivacyRoute: typeof PrivacyRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TermsRoute: typeof TermsRoute
@@ -729,6 +755,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/premium': {
+      id: '/premium'
+      path: '/premium'
+      fullPath: '/premium'
+      preLoaderRoute: typeof PremiumRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/players': {
       id: '/players'
       path: '/players'
@@ -769,6 +802,13 @@ declare module '@tanstack/react-router' {
       path: '/football'
       fullPath: '/football'
       preLoaderRoute: typeof FootballRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/feed.xml': {
+      id: '/feed.xml'
+      path: '/feed.xml'
+      fullPath: '/feed.xml'
+      preLoaderRoute: typeof FeedDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/disclaimer': {
@@ -1178,12 +1218,14 @@ const rootRouteChildren: RootRouteChildren = {
   CookiesRoute: CookiesRoute,
   CricketRoute: CricketRouteWithChildren,
   DisclaimerRoute: DisclaimerRoute,
+  FeedDotxmlRoute: FeedDotxmlRoute,
   FootballRoute: FootballRouteWithChildren,
   MlbRoute: MlbRouteWithChildren,
   MlsRoute: MlsRoute,
   NbaRoute: NbaRoute,
   NhlRoute: NhlRoute,
   PlayersRoute: PlayersRoute,
+  PremiumRoute: PremiumRoute,
   PrivacyRoute: PrivacyRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TermsRoute: TermsRoute,

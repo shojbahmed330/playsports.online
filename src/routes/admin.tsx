@@ -21,6 +21,7 @@ import { Wc2026HighlightsCard } from "@/components/admin/Wc2026HighlightsCard";
 import { AffiliateLinksCard } from "@/components/admin/AffiliateLinksCard";
 import { SponsoredSlotsCard } from "@/components/admin/SponsoredSlotsCard";
 import { NewsletterDigestCard } from "@/components/admin/NewsletterDigestCard";
+import { MembershipsCard } from "@/components/admin/MembershipsCard";
 
 const GROUP_MATCHES_BY_YEAR = groupMatchesData as Record<string, WCMatch[]>;
 type AdminMatch = WCMatch & { _bundled?: boolean };
@@ -261,6 +262,9 @@ function AdminShell() {
 
         {/* Phase 5 — weekly newsletter digest */}
         <NewsletterDigestCard />
+
+        {/* Phase 6 — paid memberships (ad-free) */}
+        <MembershipsCard />
 
 
         {/* Auto-seed from bundled YouTube dataset */}
