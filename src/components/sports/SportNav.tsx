@@ -1,7 +1,7 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Trophy, ShieldCheck, BarChart3 } from "lucide-react";
+import { Trophy, BarChart3 } from "lucide-react";
 import { SPORT_LIST } from "@/lib/sports-config";
-import { useAuth } from "@/hooks/use-auth";
+
 
 type Tab = {
   to: string;
@@ -29,8 +29,8 @@ const SPORT_GRADS: Record<string, { grad: string; accent: string }> = {
 };
 
 export function SportNav({ liveCount = 0 }: { liveCount?: number }) {
-  const { isAdmin } = useAuth();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+
 
   const sportTabs: Tab[] = SPORT_LIST.map((s) => ({
     to: `/${s.slug}`,
@@ -75,8 +75,8 @@ export function SportNav({ liveCount = 0 }: { liveCount?: number }) {
           <div className="flex items-center gap-2 sm:hidden">
             {liveCount > 0 && <LiveChip count={liveCount} />}
             {showStatsChip && <StatsChip pathname={pathname} />}
-            {isAdmin && <AdminChip />}
           </div>
+
         </div>
 
         {/* Tabs — single-row horizontal scroll on mobile, inline on desktop */}
@@ -98,8 +98,8 @@ export function SportNav({ liveCount = 0 }: { liveCount?: number }) {
         <div className="hidden sm:flex items-center gap-2">
           {liveCount > 0 && <LiveChip count={liveCount} />}
           {showStatsChip && <StatsChip pathname={pathname} />}
-          {isAdmin && <AdminChip />}
         </div>
+
       </div>
     </header>
   );
@@ -132,16 +132,6 @@ function LiveChip({ count }: { count: number }) {
   );
 }
 
-function AdminChip() {
-  return (
-    <Link
-      to="/admin"
-      className="px-2.5 py-1 rounded-full text-[10px] font-bold text-emerald-300 hover:text-emerald-200 bg-emerald-500/10 hover:bg-emerald-500/20 ring-1 ring-emerald-500/30 transition-colors inline-flex items-center gap-1"
-    >
-      <ShieldCheck className="size-3" /> Admin
-    </Link>
-  );
-}
 
 type StatsTarget = {
   to: string;
