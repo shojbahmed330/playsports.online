@@ -1,13 +1,19 @@
 import { createServerFn } from "@tanstack/react-start";
+import { FOOTBALL_WC, liveWcYear } from "@/lib/tournament-config";
 
 // ESPN public API (free, no key) replaces the paid Sofascore/RapidAPI feed.
-// FIFA World Cup league slug = "fifa.world". 2026 tournament window:
-// June 11 – July 19, 2026 (USA / Canada / Mexico, 48 teams).
+// FIFA World Cup league slug = "fifa.world".
+// SEASON + WC_RANGE are now derived from tournament-config so the next
+// World Cup (2030, 2034, …) auto-takes over without code changes.
 const ESPN_SITE = "https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world";
 const ESPN_CORE = "https://site.api.espn.com/apis/v2/sports/soccer/fifa.world";
 const ESPN_WEB  = "https://site.web.api.espn.com/apis/common/v3/sports/soccer/fifa.world";
-const SEASON = 2026;
-const WC_RANGE = "20260611-20260719";
+const SEASON = liveWcYear();
+const WC_RANGE = (() => {
+  const w = FOOTBALL_WC.seasonWindows[SEASON];
+  if (!w) return "20260611-20260719"; // safety fallback
+  return `${w.start.replace(/-/g, "")}-${w.end.replace(/-/g, "")}`;
+})();
 
 const DEFAULT_TTL_MS = 60 * 60 * 1000;
 const LIVE_TTL_MS = 20 * 1000;
