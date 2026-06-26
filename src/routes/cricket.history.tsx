@@ -76,7 +76,7 @@ function HistoryPage() {
         </div>
       </div>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10 space-y-8">
+      <main id="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10 space-y-8">
         {/* Hero */}
         <section className="relative overflow-hidden rounded-3xl border border-emerald-500/20 bg-gradient-to-br from-emerald-950 via-slate-900 to-amber-950 p-5 sm:p-8">
           <div className="flex items-start gap-3 mb-3">

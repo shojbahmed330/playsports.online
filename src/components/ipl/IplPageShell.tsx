@@ -32,7 +32,7 @@ export function IplPageShell({
           {right && <div className="shrink-0">{right}</div>}
         </div>
       </header>
-      <main className="max-w-7xl mx-auto px-3 sm:px-6 py-6">{children}</main>
+      <main id="main-content" className="max-w-7xl mx-auto px-3 sm:px-6 py-6">{children}</main>
     </div>
   );
 }

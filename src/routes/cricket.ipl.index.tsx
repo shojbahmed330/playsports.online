@@ -86,7 +86,7 @@ function IplHome() {
         totalTitles={historyData.seasons.length}
       />
 
-      <main className="max-w-7xl mx-auto px-3 sm:px-6 py-6 space-y-8">
+      <main id="main-content" className="max-w-7xl mx-auto px-3 sm:px-6 py-6 space-y-8">
         {overview.error && (
           <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-200">
             Live IPL feed temporarily unavailable — historical sections remain available.

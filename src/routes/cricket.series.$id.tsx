@@ -114,7 +114,7 @@ function SeriesPage() {
         </div>
       </section>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-10">
+      <main id="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-10">
         {q.isLoading ? (
           <GameGridSkeleton />
         ) : matches.length === 0 ? (
