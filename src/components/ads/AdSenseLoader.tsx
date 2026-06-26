@@ -1,13 +1,19 @@
 import { useEffect } from "react";
 import { useAdSenseSettings } from "@/lib/site-settings";
+import { useConsent } from "@/lib/consent";
 
 /**
  * Injects the Google AdSense loader script (pagead) once when AdSense is
- * enabled in site_settings. Mount this once in the root layout.
+ * enabled in site_settings AND the user has consented to advertising
+ * (or hasn't decided yet — Google's own non-personalized fallback applies).
  */
 export function AdSenseLoader() {
   const { data } = useAdSenseSettings();
-  const enabled = data?.enabled && /^ca-pub-\d+$/.test(data?.client ?? "");
+  const { choice } = useConsent();
+  const configured = data?.enabled && /^ca-pub-\d+$/.test(data?.client ?? "");
+  // Block ads outright only when the user explicitly rejected advertising.
+  const blocked = choice.decided && !choice.advertising;
+  const enabled = configured && !blocked;
 
   useEffect(() => {
     if (typeof window === "undefined") return;

@@ -14,6 +14,7 @@ import { toast } from "sonner";
 import videoSeed from "@/data/wc_video_seed.json";
 import groupMatchesData from "@/data/wc_group_matches.json";
 import { AdSenseAdminCard } from "@/components/admin/AdSenseAdminCard";
+import { MonetizationCard } from "@/components/admin/MonetizationCard";
 import { getWc2026Fixtures, type Wc2026Fixture } from "@/lib/wc2026.functions";
 import { fetch2026VideoMap, set2026Video, videoKey } from "@/lib/wc-2026-videos";
 import { Wc2026HighlightsCard } from "@/components/admin/Wc2026HighlightsCard";
@@ -245,6 +246,9 @@ function AdminShell() {
 
         {/* Google AdSense control */}
         <AdSenseAdminCard />
+
+        {/* Monetization & site (analytics, consent, newsletter, legal copy, identity) */}
+        <MonetizationCard />
 
         {/* Auto-seed from bundled YouTube dataset */}
         <SeedFromDataset />
