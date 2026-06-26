@@ -4,6 +4,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Trophy, Loader2, ChevronDown, Users, Swords, Goal, Calendar } from "lucide-react";
 import { SportNav } from "@/components/sports/SportNav";
 import { supabase, WC_YEARS, type WCTournament, type WCMatch, type WCGroup } from "@/lib/supabase";
+import { pickCurrentWcYear, liveWcYear, FOOTBALL_WC } from "@/lib/tournament-config";
 import { TournamentInfoCard } from "@/components/wc/TournamentInfoCard";
 import { GroupStage } from "@/components/wc/GroupStage";
 import { MatchCard, type RoundKey } from "@/components/wc/MatchCard";
@@ -47,16 +48,19 @@ export const Route = createFileRoute("/football")({
     };
   },
 
-  head: () => ({
-    meta: [
-      { title: "FIFA World Cup 2026 — Live Scores, Bracket & Archive 1930–2026" },
-      { name: "description", content: "Live FIFA World Cup 2026 fixtures, group standings, knockout bracket and complete tournament history from 1930 to 2026." },
-      { property: "og:title", content: "FIFA World Cup 2026 — Live Scores & Complete Archive" },
-      { property: "og:description", content: "Live 2026 fixtures with kickoff countdowns, full bracket, top scorers and historical tournaments." },
-      { property: "og:url", content: "https://allsportslive.lovable.app/football" },
-    ],
-    links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/football" }],
-  }),
+  head: () => {
+    const cur = pickCurrentWcYear();
+    return {
+      meta: [
+        { title: `FIFA World Cup ${cur} — Live Scores, Bracket & Archive 1930–${cur}` },
+        { name: "description", content: `Live FIFA World Cup ${cur} fixtures, group standings, knockout bracket and complete tournament history from 1930 to ${cur}.` },
+        { property: "og:title", content: `FIFA World Cup ${cur} — Live Scores & Complete Archive` },
+        { property: "og:description", content: `Live ${cur} fixtures with kickoff countdowns, full bracket, top scorers and historical tournaments.` },
+        { property: "og:url", content: "https://allsportslive.lovable.app/football" },
+      ],
+      links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/football" }],
+    };
+  },
   component: Index,
 });
 
@@ -84,7 +88,8 @@ function Index() {
   // header (SportNav) handles admin chip itself
   const navigate = useNavigate({ from: "/football" });
   const search = Route.useSearch();
-  const initialYear = search.year ?? 2026;
+  const LIVE_YEAR = liveWcYear();
+  const initialYear = search.year ?? LIVE_YEAR;
   const [year, setYear] = useState<number>(initialYear);
   const [activeMatch, setActiveMatch] = useState<WCMatch | null>(null);
   const initialTab: SubNavTab = search.tab ?? "knockout";
@@ -122,10 +127,10 @@ function Index() {
     navigate({ search: (prev: FootballSearch) => ({ ...prev, team: t }), replace: true });
   };
 
-  // Reset to knockout when leaving 2026 — scorers tab is 2026-only.
+  // Reset to knockout when leaving the live year — scorers tab is live-year only.
   useEffect(() => {
-    if (year !== 2026 && tab === "scorers") setTab("knockout");
-  }, [year, tab]);
+    if (year !== LIVE_YEAR && tab === "scorers") setTab("knockout");
+  }, [year, tab, LIVE_YEAR]);
 
   useEffect(() => {
     try {
@@ -281,8 +286,8 @@ function Index() {
       <Breadcrumbs />
 
 
-      {/* HERO — live-aware for 2026, classic for archive years */}
-      {year === 2026 ? (
+      {/* HERO — live-aware for the active WC year, classic for archive years */}
+      {year === LIVE_YEAR ? (
         <>
           <FootballHero />
           <section className="relative overflow-hidden border-b border-border">
@@ -312,7 +317,7 @@ function Index() {
               FIFA World Cup <span className="text-gold">Archive</span>
             </h1>
             <p className="mt-3 sm:mt-4 text-sm sm:text-lg text-muted-foreground max-w-xl mx-auto px-2">
-              Complete tournament history from <span className="text-foreground font-semibold">1930</span> to <span className="text-foreground font-semibold">2026</span>. Every match, every champion.
+              Complete tournament history from <span className="text-foreground font-semibold">1930</span> to <span className="text-foreground font-semibold">{LIVE_YEAR}</span>. Every match, every champion.
             </p>
             <div className="mt-8 sm:mt-10">
               <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-3">Select Tournament</div>
@@ -324,11 +329,11 @@ function Index() {
 
       {/* CONTENT */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-14 space-y-8">
-        {year === 2026 ? (
+        {year === LIVE_YEAR ? (
           <>
             <div className="flex justify-center">
               <div className="bg-gray-800/50 rounded-full px-4 py-1 text-xs text-gray-400">
-                2026 World Cup • 48 teams • USA · Canada · Mexico •{" "}
+                {LIVE_YEAR} World Cup • {FOOTBALL_WC.seasonWindows[LIVE_YEAR]?.teams ?? 48} teams • {FOOTBALL_WC.seasonWindows[LIVE_YEAR]?.host ?? ""} •{" "}
                 <span className="text-red-300 font-semibold">Live data</span>
               </div>
             </div>
