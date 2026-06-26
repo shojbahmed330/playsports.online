@@ -7,6 +7,7 @@ import { OrangePurpleCap } from "@/components/ipl/OrangePurpleCap";
 import { PlayerLink } from "@/components/cricket/PlayerLink";
 
 import { getIplLeaders, getIplHistory, IPL_SEASON_IDS } from "@/lib/ipl.functions";
+import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
 
 const searchSchema = z.object({
   year: z.union([z.literal("current"), z.coerce.number()]).default("current"),
@@ -46,6 +47,7 @@ export const Route = createFileRoute("/cricket/ipl/players")({
       { property: "og:url", content: "https://allsportslive.lovable.app/cricket/ipl/players" },
     ],
     links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/cricket/ipl/players" }],
+    scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "Cricket", path: "/cricket" }, { name: "IPL", path: "/cricket/ipl" }, { name: "Players", path: "/cricket/ipl/players" }]))],
   }),
   validateSearch: zodValidator(searchSchema),
   loaderDeps: ({ search }) => ({ year: search.year }),

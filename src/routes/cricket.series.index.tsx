@@ -9,6 +9,7 @@ import { SportNav } from "@/components/sports/SportNav";
 import { CricketSubNav } from "@/components/cricket/CricketSubNav";
 import { getCricketSeriesList, getBilateralSeriesList, type BilateralTour } from "@/lib/cricket.functions";
 import { CRICKET_LEAGUE_BY_ID } from "@/lib/cricket-leagues";
+import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
 
 
 const search = z.object({
@@ -27,6 +28,7 @@ export const Route = createFileRoute("/cricket/series/")({
       { property: "og:url", content: "https://allsportslive.lovable.app/cricket/series" },
     ],
     links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/cricket/series" }],
+    scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "Cricket", path: "/cricket" }, { name: "Series", path: "/cricket/series" }]))],
   }),
   component: SeriesIndex,
 });

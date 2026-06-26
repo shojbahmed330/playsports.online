@@ -4,6 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { getSportNews } from "@/lib/espn.functions";
 import { MlbNewsHub } from "@/components/mlb/MlbNewsHub";
 import { GameGridSkeleton } from "@/components/sports/Skeletons";
+import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
 
 export const Route = createFileRoute("/mlb/news")({
   head: () => ({
@@ -15,6 +16,7 @@ export const Route = createFileRoute("/mlb/news")({
       { property: "og:url", content: "https://allsportslive.lovable.app/mlb/news" },
     ],
     links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/mlb/news" }],
+    scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "MLB", path: "/mlb" }, { name: "News", path: "/mlb/news" }]))],
   }),
   component: NewsPage,
 });

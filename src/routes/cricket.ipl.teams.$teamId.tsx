@@ -12,6 +12,7 @@ import { toCricketMatch } from "@/components/ipl/toCricketMatch";
 import { getIplTeam, getIplTeamSquad, IPL_SEASON_IDS } from "@/lib/ipl.functions";
 import history from "@/data/cricket/ipl/history.json";
 import captainsData from "@/data/cricket/ipl/captains.json";
+import { breadcrumbList, sportsTeam, ldScript } from "@/lib/seo/jsonld";
 
 type SeasonYear = number | "current";
 
@@ -38,6 +39,7 @@ export const Route = createFileRoute("/cricket/ipl/teams/$teamId")({
   },
   head: ({ params, loaderData }) => {
     const url = `https://allsportslive.lovable.app/cricket/ipl/teams/${params.teamId}`;
+    const teamName = loaderData?.team?.name ?? "IPL Team";
     return {
       meta: loaderData?.team
         ? [
@@ -50,8 +52,19 @@ export const Route = createFileRoute("/cricket/ipl/teams/$teamId")({
           ]
         : [{ title: "IPL Team" }, { property: "og:url", content: url }],
       links: [{ rel: "canonical", href: url }],
+      scripts: [
+        ldScript(sportsTeam({ name: teamName, path: `/cricket/ipl/teams/${params.teamId}`, sport: "Cricket", league: "Indian Premier League" })),
+        ldScript(breadcrumbList([
+          { name: "Home", path: "/" },
+          { name: "Cricket", path: "/cricket" },
+          { name: "IPL", path: "/cricket/ipl" },
+          { name: "Teams", path: "/cricket/ipl/teams" },
+          { name: teamName, path: `/cricket/ipl/teams/${params.teamId}` },
+        ])),
+      ],
     };
   },
+
   notFoundComponent: () => (
     <IplPageShell title="Team not found">
       <p className="text-white/60">That franchise does not exist. <Link to="/cricket/ipl/teams" className="underline">Back to teams</Link>.</p>

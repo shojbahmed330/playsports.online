@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { getMlbLeaders, searchMlbPlayers } from "@/lib/mlb.functions";
 import { currentSeason } from "@/lib/tournament-config";
 import { LeaderBoard } from "@/components/mlb/LeaderBoard";
+import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
 
 export const Route = createFileRoute("/mlb/players")({
   head: () => ({
@@ -16,6 +17,7 @@ export const Route = createFileRoute("/mlb/players")({
       { property: "og:url", content: "https://allsportslive.lovable.app/mlb/players" },
     ],
     links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/mlb/players" }],
+    scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "MLB", path: "/mlb" }, { name: "Players", path: "/mlb/players" }]))],
   }),
   component: LeadersPage,
 });

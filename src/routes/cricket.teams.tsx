@@ -8,6 +8,7 @@ import { SportNav } from "@/components/sports/SportNav";
 import { CricketSubNav } from "@/components/cricket/CricketSubNav";
 import { getCricketTeamsForLeague, type CricketTeamSummary } from "@/lib/cricket.functions";
 import { CRICKET_LEAGUES } from "@/lib/cricket-leagues";
+import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
 
 export const Route = createFileRoute("/cricket/teams")({
   head: () => ({
@@ -19,6 +20,7 @@ export const Route = createFileRoute("/cricket/teams")({
       { property: "og:url", content: "https://allsportslive.lovable.app/cricket/teams" },
     ],
     links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/cricket/teams" }],
+    scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "Cricket", path: "/cricket" }, { name: "Teams", path: "/cricket/teams" }]))],
   }),
   component: TeamsIndex,
 });

@@ -5,6 +5,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { getMlbPostseason } from "@/lib/mlb.functions";
 import { currentSeason } from "@/lib/tournament-config";
 import { MlbPostseasonBracket } from "@/components/mlb/MlbPostseasonBracket";
+import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
 
 export const Route = createFileRoute("/mlb/postseason")({
   head: () => ({
@@ -16,6 +17,7 @@ export const Route = createFileRoute("/mlb/postseason")({
       { property: "og:url", content: "https://allsportslive.lovable.app/mlb/postseason" },
     ],
     links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/mlb/postseason" }],
+    scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "MLB", path: "/mlb" }, { name: "Postseason", path: "/mlb/postseason" }]))],
   }),
   component: PostseasonPage,
 });

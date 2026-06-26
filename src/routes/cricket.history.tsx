@@ -5,6 +5,7 @@ import { SportNav } from "@/components/sports/SportNav";
 import { CricketSubNav } from "@/components/cricket/CricketSubNav";
 import { PlayerLink } from "@/components/cricket/PlayerLink";
 import history from "@/data/cricket/history.json";
+import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
 
 
 type Champ = { year: number; champion: string; runnerUp: string; host?: string; venue?: string; result?: string };
@@ -31,6 +32,7 @@ export const Route = createFileRoute("/cricket/history")({
       { property: "og:url", content: "https://allsportslive.lovable.app/cricket/history" },
     ],
     links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/cricket/history" }],
+    scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "Cricket", path: "/cricket" }, { name: "History", path: "/cricket/history" }]))],
   }),
   component: HistoryPage,
 });

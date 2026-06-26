@@ -3,6 +3,7 @@ import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
 import { IplPageShell } from "@/components/ipl/IplPageShell";
 import { TeamCrest } from "@/components/cricket/TeamCrest";
 import { getIplTeams } from "@/lib/ipl.functions";
+import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
 
 
 const teamsQO = queryOptions({
@@ -21,6 +22,7 @@ export const Route = createFileRoute("/cricket/ipl/teams/")({
       { property: "og:url", content: "https://allsportslive.lovable.app/cricket/ipl/teams" },
     ],
     links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/cricket/ipl/teams" }],
+    scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "Cricket", path: "/cricket" }, { name: "IPL", path: "/cricket/ipl" }, { name: "Teams", path: "/cricket/ipl/teams" }]))],
   }),
   loader: ({ context }) => context.queryClient.ensureQueryData(teamsQO),
   component: TeamsPage,
