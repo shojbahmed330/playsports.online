@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Flame, Play, Trophy, ArrowRight } from "lucide-react";
 import type { SportGame } from "@/lib/espn.functions";
@@ -36,11 +36,23 @@ export function HeroSpotlight({
       : extraSlides.slice(0, 5);
 
   const [idx, setIdx] = useState(0);
+  const [paused, setPaused] = useState(false);
   useEffect(() => {
-    if (slides.length < 2) return;
+    if (slides.length < 2 || paused) return;
     const id = window.setInterval(() => setIdx((i) => (i + 1) % slides.length), 5000);
     return () => window.clearInterval(id);
-  }, [slides.length]);
+  }, [slides.length, paused]);
+
+  // Swipe gestures (mobile)
+  const touchX = useRef<number | null>(null);
+  const onTouchStart = (e: React.TouchEvent) => { touchX.current = e.touches[0].clientX; };
+  const onTouchEnd = (e: React.TouchEvent) => {
+    if (touchX.current == null) return;
+    const dx = e.changedTouches[0].clientX - touchX.current;
+    touchX.current = null;
+    if (Math.abs(dx) < 40 || slides.length < 2) return;
+    setIdx((i) => (dx < 0 ? (i + 1) % slides.length : (i - 1 + slides.length) % slides.length));
+  };
 
   const totalLive = liveGames.length;
 
@@ -129,10 +141,20 @@ export function HeroSpotlight({
           {/* Right: rotating spotlight */}
           <div className="relative">
             {slides.length > 0 ? (
-              <div className="relative h-[280px] sm:h-[300px]">
+              <div
+                className="relative h-[280px] sm:h-[300px] touch-pan-y"
+                onTouchStart={onTouchStart}
+                onTouchEnd={onTouchEnd}
+                onMouseEnter={() => setPaused(true)}
+                onMouseLeave={() => setPaused(false)}
+                role="region"
+                aria-roledescription="carousel"
+                aria-label="Featured matches"
+              >
                 {slides.map((s, i) => (
                   <div
                     key={i}
+                    aria-hidden={i !== idx}
                     className={`absolute inset-0 transition-all duration-700 ${
                       i === idx
                         ? "opacity-100 translate-y-0 scale-100"
@@ -148,11 +170,17 @@ export function HeroSpotlight({
                       <button
                         key={i}
                         onClick={() => setIdx(i)}
-                        aria-label={`Slide ${i + 1}`}
-                        className={`h-1 rounded-full transition-all ${
-                          i === idx ? "w-6 bg-amber-400" : "w-1.5 bg-white/30"
-                        }`}
-                      />
+                        aria-label={`Show slide ${i + 1} of ${slides.length}`}
+                        aria-current={i === idx}
+                        className={`tap-target grid place-items-center rounded-full transition-all`}
+                      >
+                        <span
+                          aria-hidden
+                          className={`block h-1 rounded-full transition-all ${
+                            i === idx ? "w-6 bg-amber-400" : "w-1.5 bg-white/30"
+                          }`}
+                        />
+                      </button>
                     ))}
                   </div>
                 )}
