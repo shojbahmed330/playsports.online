@@ -125,6 +125,9 @@ function HubPage() {
           sports={SPORT_LIST}
         />
 
+        {/* HALL OF CHAMPIONS — cross-sport reigning titleholders */}
+        <HallOfChampionsStrip />
+
         {/* SPORT CARDS 2.0 */}
         <section className="space-y-4 animate-fade-in">
           <div className="flex items-end justify-between">
