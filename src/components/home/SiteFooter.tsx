@@ -57,3 +57,26 @@ export function SiteFooter() {
     </footer>
   );
 }
+
+function FooterCol({
+  title,
+  accent,
+  muted,
+  children,
+}: {
+  title: string;
+  accent: string;
+  muted?: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className={`relative rounded-xl border border-border/60 bg-gradient-to-b ${accent} p-3 sm:p-4 min-w-0`}>
+      <div className="text-[10px] sm:text-[11px] uppercase tracking-[0.18em] font-bold text-gray-300 mb-2 sm:mb-3 truncate">
+        {title}
+      </div>
+      <ul className={`space-y-1.5 text-[11px] sm:text-xs leading-snug ${muted ? "text-gray-500" : "text-gray-300"} break-words`}>
+        {children}
+      </ul>
+    </div>
+  );
+}
