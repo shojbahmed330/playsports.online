@@ -72,6 +72,24 @@ function CricketIndex() {
     return { all: bil, live, next };
   }, [allMatches]);
 
+  // Auto-discovered series: any league appearing in live ESPN data that
+  // isn't in our curated CRICKET_LEAGUES list. Keeps the hub current
+  // when ESPN launches a new tour/franchise season without a code update.
+  const discovered = useMemo(() => {
+    const map = new Map<string, { id: string; name: string; abbr: string; live: number; total: number }>();
+    for (const m of allMatches) {
+      if (!m.leagueId || m.leagueId === "global") continue;
+      if (CRICKET_LEAGUE_BY_ID[m.leagueId]) continue;
+      const key = m.leagueId;
+      const existing = map.get(key) ?? { id: key, name: m.leagueName || "International series", abbr: m.leagueAbbr || "", live: 0, total: 0 };
+      existing.total += 1;
+      if (m.status === "in") existing.live += 1;
+      if (!existing.name && m.leagueName) existing.name = m.leagueName;
+      map.set(key, existing);
+    }
+    return Array.from(map.values()).sort((a, b) => (b.live - a.live) || (b.total - a.total)).slice(0, 8);
+  }, [allMatches]);
+
 
   return (
     <div className="min-h-screen">
