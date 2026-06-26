@@ -104,27 +104,75 @@ export type Database = {
         }
         Relationships: []
       }
+      digest_runs: {
+        Row: {
+          created_at: string
+          error: string | null
+          html: string
+          id: string
+          recipient_count: number
+          sent_at: string | null
+          sent_count: number
+          status: string
+          story_count: number
+          subject: string
+        }
+        Insert: {
+          created_at?: string
+          error?: string | null
+          html: string
+          id?: string
+          recipient_count?: number
+          sent_at?: string | null
+          sent_count?: number
+          status?: string
+          story_count?: number
+          subject: string
+        }
+        Update: {
+          created_at?: string
+          error?: string | null
+          html?: string
+          id?: string
+          recipient_count?: number
+          sent_at?: string | null
+          sent_count?: number
+          status?: string
+          story_count?: number
+          subject?: string
+        }
+        Relationships: []
+      }
       newsletter_subscribers: {
         Row: {
           consent_marketing: boolean
           created_at: string
           email: string
           id: string
+          last_sent_at: string | null
           source: string | null
+          status: string
+          unsubscribe_token: string
         }
         Insert: {
           consent_marketing?: boolean
           created_at?: string
           email: string
           id?: string
+          last_sent_at?: string | null
           source?: string | null
+          status?: string
+          unsubscribe_token?: string
         }
         Update: {
           consent_marketing?: boolean
           created_at?: string
           email?: string
           id?: string
+          last_sent_at?: string | null
           source?: string | null
+          status?: string
+          unsubscribe_token?: string
         }
         Relationships: []
       }
