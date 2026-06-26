@@ -141,10 +141,20 @@ export function HeroSpotlight({
           {/* Right: rotating spotlight */}
           <div className="relative">
             {slides.length > 0 ? (
-              <div className="relative h-[280px] sm:h-[300px]">
+              <div
+                className="relative h-[280px] sm:h-[300px] touch-pan-y"
+                onTouchStart={onTouchStart}
+                onTouchEnd={onTouchEnd}
+                onMouseEnter={() => setPaused(true)}
+                onMouseLeave={() => setPaused(false)}
+                role="region"
+                aria-roledescription="carousel"
+                aria-label="Featured matches"
+              >
                 {slides.map((s, i) => (
                   <div
                     key={i}
+                    aria-hidden={i !== idx}
                     className={`absolute inset-0 transition-all duration-700 ${
                       i === idx
                         ? "opacity-100 translate-y-0 scale-100"
@@ -160,11 +170,17 @@ export function HeroSpotlight({
                       <button
                         key={i}
                         onClick={() => setIdx(i)}
-                        aria-label={`Slide ${i + 1}`}
-                        className={`h-1 rounded-full transition-all ${
-                          i === idx ? "w-6 bg-amber-400" : "w-1.5 bg-white/30"
-                        }`}
-                      />
+                        aria-label={`Show slide ${i + 1} of ${slides.length}`}
+                        aria-current={i === idx}
+                        className={`tap-target grid place-items-center rounded-full transition-all`}
+                      >
+                        <span
+                          aria-hidden
+                          className={`block h-1 rounded-full transition-all ${
+                            i === idx ? "w-6 bg-amber-400" : "w-1.5 bg-white/30"
+                          }`}
+                        />
+                      </button>
                     ))}
                   </div>
                 )}
