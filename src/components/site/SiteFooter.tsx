@@ -60,7 +60,7 @@ export function SiteFooter() {
 
             {/* Live Coverage */}
             <FooterCol title="Live Coverage">
-              <ul className="grid grid-cols-2 gap-y-1 gap-x-4 text-sm">
+              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-y-1 gap-x-4 text-xs sm:text-sm">
                 {SPORTS.map((s) => (
                   <li key={`${s.to}-${s.label}`}>
                     <Link
