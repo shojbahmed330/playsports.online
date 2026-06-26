@@ -273,5 +273,8 @@ export const getMultiSportToday = createServerFn({ method: "GET" })
         }
       }),
     );
+    const hasLive = Object.values(out).flat().some((g) => g.status === "in");
+    setEdgeCache(hasLive);
     return { byLeague: out };
   });
+
