@@ -71,7 +71,14 @@ export const Route = createFileRoute("/sitemap.xml")({
     handlers: {
       GET: async () => {
         const today = new Date().toISOString().slice(0, 10);
-        const urls = STATIC_ROUTES.map((e) =>
+        const programmatic: SitemapEntry[] = [
+          ...listTeams().map((t) => ({ path: `/team/${t.sport}/${t.slug}`, changefreq: "weekly" as const, priority: "0.6" })),
+          ...listPlayers().map((p) => ({ path: `/player/${p.sport}/${p.slug}`, changefreq: "monthly" as const, priority: "0.5" })),
+          ...listH2H().map((h) => ({ path: `/vs/${h.sport}/${h.slug}`, changefreq: "monthly" as const, priority: "0.5" })),
+          ...listArchives().map((a) => ({ path: `/archive/${a.sport}/${a.year}`, changefreq: "yearly" as const, priority: "0.6" })),
+        ];
+        const all = [...STATIC_ROUTES, ...programmatic];
+        const urls = all.map((e) =>
           [
             `  <url>`,
             `    <loc>${BASE_URL}${e.path}</loc>`,
@@ -83,6 +90,7 @@ export const Route = createFileRoute("/sitemap.xml")({
             .filter(Boolean)
             .join("\n"),
         );
+
 
         const xml = [
           `<?xml version="1.0" encoding="UTF-8"?>`,
