@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { getMlbAthlete } from "@/lib/mlb.functions";
 import { PlayerProfile } from "@/components/mlb/PlayerProfile";
+import { athlete, breadcrumbList, ldScript } from "@/lib/seo/jsonld";
 
 export const Route = createFileRoute("/mlb/player/$id")({
   head: ({ params }) => {
@@ -16,6 +17,10 @@ export const Route = createFileRoute("/mlb/player/$id")({
         { property: "og:url", content: url },
       ],
       links: [{ rel: "canonical", href: url }],
+      scripts: [
+        ldScript(athlete({ name: `MLB Player ${params.id}`, path: `/mlb/player/${params.id}`, sport: "Baseball" })),
+        ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "MLB", path: "/mlb" }, { name: "Players", path: "/mlb/players" }, { name: "Player", path: `/mlb/player/${params.id}` }])),
+      ],
     };
   },
   component: PlayerPage,
