@@ -461,10 +461,55 @@ export const getCricketMatchDetail = createServerFn({ method: "GET" })
             const outs = nVal(p.stats, "outs");
             if (!batted && balls === 0 && runs === 0 && !notouts && !outs) continue;
             const sr = nVal(p.stats, "strikeRate");
-            const dismissalText: string | null =
-              p.node?.batting?.outDetails?.shortText ??
-              p.node?.batting?.outDetails?.details?.shortText ??
+            const batNode =
+              p.node?.statistics?.batting ??
+              p.node?.batting ??
               null;
+            const od = batNode?.outDetails ?? null;
+            const card: string = String(od?.dismissalCard ?? "").toLowerCase();
+            const bowlerName: string =
+              od?.bowler?.displayName ?? od?.bowler?.lastName ?? "";
+            const fielderNames: string[] = Array.isArray(od?.fielders)
+              ? od.fielders
+                  .map((f: any) => f?.displayName ?? f?.lastName ?? "")
+                  .filter(Boolean)
+              : [];
+            const buildFromCard = (): string | null => {
+              if (!card) return null;
+              if (card === "bowled") return bowlerName ? `b ${bowlerName}` : "bowled";
+              if (card === "lbw") return bowlerName ? `lbw b ${bowlerName}` : "lbw";
+              if (card === "caught" || card === "caughtfielder")
+                return `c ${fielderNames[0] ?? "fielder"}${bowlerName ? ` b ${bowlerName}` : ""}`;
+              if (card === "caughtkeeper" || card === "caught behind")
+                return `c †${fielderNames[0] ?? "wk"}${bowlerName ? ` b ${bowlerName}` : ""}`;
+              if (card === "caught and bowled" || card === "caughtandbowled" || card === "caught & bowled")
+                return bowlerName ? `c & b ${bowlerName}` : "c & b";
+              if (card === "stumped") return `st †${fielderNames[0] ?? "wk"}${bowlerName ? ` b ${bowlerName}` : ""}`;
+              if (card === "run out" || card === "runout")
+                return `run out${fielderNames.length ? ` (${fielderNames.join("/")})` : ""}`;
+              if (card === "hit wicket" || card === "hitwicket")
+                return bowlerName ? `hit wkt b ${bowlerName}` : "hit wicket";
+              if (card === "retired hurt" || card === "retiredhurt") return "retired hurt";
+              if (card === "retired not out") return "retired not out";
+              if (card === "obstructing the field") return "obstructing the field";
+              if (card === "handled the ball") return "handled the ball";
+              if (card === "timed out" || card === "timedout") return "timed out";
+              if (card === "hit the ball twice") return "hit the ball twice";
+              return card;
+            };
+            const raw =
+              od?.shortText ??
+              od?.details?.shortText ??
+              od?.text ??
+              null;
+            const cleaned = typeof raw === "string" ? raw.trim() : raw;
+            const dismissalText: string | null =
+              (cleaned && cleaned.length > 0 ? cleaned : null) ?? buildFromCard();
+            const isNotOut =
+              notouts > 0 ||
+              (batted > 0 && outs === 0 && !dismissalText) ||
+              card === "not out" ||
+              card === "notout";
             batters.push({
               id: String(p.athlete.id ?? ""),
               name: p.athlete.displayName ?? p.athlete.fullName ?? "",
@@ -474,8 +519,8 @@ export const getCricketMatchDetail = createServerFn({ method: "GET" })
               fours: nVal(p.stats, "fours"),
               sixes: nVal(p.stats, "sixes"),
               strikeRate: sr || (balls > 0 ? Number(((runs * 100) / balls).toFixed(2)) : 0),
-              dismissal: dismissalText,
-              notOut: notouts > 0 || (batted > 0 && outs === 0),
+              dismissal: isNotOut ? "not out" : dismissalText,
+              notOut: isNotOut,
             });
           }
         }
