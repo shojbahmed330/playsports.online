@@ -148,6 +148,44 @@ function CricketIndex() {
           </div>
         </section>
 
+        {/* Auto-discovered active series (not in the curated registry). */}
+        {discovered.length > 0 && (
+          <section>
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-lg font-bold flex items-center gap-2">
+                <Globe2 className="size-5 text-sky-300" /> Also active now
+                <span className="text-[10px] uppercase tracking-wider font-bold text-sky-300/80 px-1.5 py-0.5 rounded bg-sky-500/10 ring-1 ring-sky-500/30">auto</span>
+              </h2>
+              <Link to="/cricket/series" className="text-xs font-bold text-sky-300 hover:text-sky-200 inline-flex items-center gap-1">
+                All series <ChevronRight className="size-3.5" />
+              </Link>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+              {discovered.map((d) => (
+                <Link
+                  key={d.id}
+                  to="/cricket/series/$id"
+                  params={{ id: d.id }}
+                  className="group relative overflow-hidden rounded-2xl p-4 bg-gradient-to-br from-sky-950/40 via-slate-900 to-emerald-950/30 border border-gray-800 hover:border-sky-500/40 transition-all hover:-translate-y-0.5"
+                >
+                  {d.live > 0 && (
+                    <span className="absolute top-2.5 right-2.5 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-500/20 ring-1 ring-red-500/40 text-[10px] font-bold text-red-300">
+                      <span className="size-1 rounded-full bg-red-500 animate-pulse" /> {d.live} live
+                    </span>
+                  )}
+                  <div className="text-[10px] uppercase tracking-wider font-bold text-sky-300 mb-1">{d.abbr || "Series"}</div>
+                  <div className="text-sm font-extrabold leading-tight line-clamp-2">{d.name}</div>
+                  <div className="mt-2 inline-flex items-center gap-1 text-[10px] font-bold text-sky-300 group-hover:gap-2 transition-all">
+                    {d.total} match{d.total === 1 ? "" : "es"} <ChevronRight className="size-3" />
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
+
+
+
         {q.isLoading ? (
           <Section icon={<Clock className="size-5 text-amber-400" />} title="Loading cricket slate…">
             <GameGridSkeleton />
