@@ -145,6 +145,12 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:rounded-md focus:bg-primary focus:px-3 focus:py-2 focus:text-sm focus:font-semibold focus:text-primary-foreground focus:shadow-lg"
+      >
+        Skip to main content
+      </a>
       <AdSenseLoader />
       {/* Site-wide top banner — shows on every route once AdSense is configured. */}
       <AdSlot slot="header" className="px-4" />
@@ -157,4 +163,5 @@ function RootComponent() {
       <Toaster position="bottom-right" theme="dark" richColors />
     </QueryClientProvider>
   );
+
 }
