@@ -11,7 +11,7 @@ import { GameGridSkeleton } from "@/components/sports/Skeletons";
 import { AdSlot } from "@/components/ads/AdSlot";
 import { CricketMatchCard } from "@/components/cricket/CricketMatchCard";
 import { getMultiCricketToday, type CricketMatch } from "@/lib/cricket.functions";
-import { CRICKET_LEAGUES, type CricketLeague } from "@/lib/cricket-leagues";
+import { CRICKET_LEAGUES, CRICKET_LEAGUE_BY_ID, type CricketLeague } from "@/lib/cricket-leagues";
 
 
 export const Route = createFileRoute("/cricket/")({
