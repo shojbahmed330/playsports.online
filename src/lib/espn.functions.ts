@@ -1,4 +1,20 @@
 import { createServerFn } from "@tanstack/react-start";
+import { setResponseHeader } from "@tanstack/react-start/server";
+
+/** Set a status-aware shared edge cache header. */
+function setEdgeCache(hasLive: boolean) {
+  try {
+    setResponseHeader(
+      "Cache-Control",
+      hasLive
+        ? "public, s-maxage=20, stale-while-revalidate=60"
+        : "public, s-maxage=120, stale-while-revalidate=300",
+    );
+  } catch {
+    /* not in a request context (e.g. test) — ignore */
+  }
+}
+
 
 // ESPN's public "site.api" — same source ESPN.com itself uses.
 // No API key, works on Cloudflare Workers (pure fetch).
