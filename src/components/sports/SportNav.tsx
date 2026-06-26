@@ -132,16 +132,6 @@ function LiveChip({ count }: { count: number }) {
   );
 }
 
-function AdminChip() {
-  return (
-    <Link
-      to="/admin"
-      className="px-2.5 py-1 rounded-full text-[10px] font-bold text-emerald-300 hover:text-emerald-200 bg-emerald-500/10 hover:bg-emerald-500/20 ring-1 ring-emerald-500/30 transition-colors inline-flex items-center gap-1"
-    >
-      <ShieldCheck className="size-3" /> Admin
-    </Link>
-  );
-}
 
 type StatsTarget = {
   to: string;
