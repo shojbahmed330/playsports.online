@@ -77,7 +77,7 @@ export function SiteFooter() {
 
             {/* Information */}
             <FooterCol title="Information">
-              <ul className="text-sm">
+              <ul className="text-xs sm:text-sm">
                 {INFO.map((l) => (
                   <li key={l.to}>
                     <Link
