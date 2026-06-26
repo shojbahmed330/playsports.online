@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Flame, Play, Trophy, ArrowRight } from "lucide-react";
 import type { SportGame } from "@/lib/espn.functions";
