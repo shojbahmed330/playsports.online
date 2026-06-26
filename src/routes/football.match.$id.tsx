@@ -5,6 +5,7 @@ import { ChevronLeft, Loader2, ChevronDown, Tv } from "lucide-react";
 import { getWc2026Match } from "@/lib/wc2026.functions";
 import { LiveMatchCenter } from "@/components/wc/LiveMatchCenter";
 import { WatchLivePanel } from "@/components/wc/WatchLivePanel";
+import { breadcrumbList, ldScript, sportsEvent } from "@/lib/seo/jsonld";
 
 export const Route = createFileRoute("/football/match/$id")({
   head: ({ params }) => {
@@ -18,6 +19,10 @@ export const Route = createFileRoute("/football/match/$id")({
         { property: "og:url", content: url },
       ],
       links: [{ rel: "canonical", href: url }],
+      scripts: [
+        ldScript(sportsEvent({ name: `FIFA World Cup 2026 — Match ${params.id}`, path: `/football/match/${params.id}`, sport: "Soccer" })),
+        ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "Football", path: "/football" }, { name: "Match", path: `/football/match/${params.id}` }])),
+      ],
     };
   },
   component: MatchPage,
