@@ -105,10 +105,11 @@ export function SportNav({ liveCount = 0 }: { liveCount?: number }) {
 
 function NavPill({ tab, active }: { tab: Tab; active: boolean }) {
   return (
-    <a
-      href={tab.to}
+    <Link
+      to={tab.to}
+      aria-current={active ? "page" : undefined}
       className={[
-        "group relative inline-flex items-center gap-1.5 rounded-full text-xs font-bold transition-all duration-200",
+        "tap-target group relative inline-flex items-center justify-center gap-1.5 rounded-full text-xs font-bold transition-all duration-200",
         "px-3 py-1.5 sm:px-3.5 sm:py-1.5",
         active
           ? `bg-gradient-to-r ${tab.grad} text-white shadow-[0_4px_18px_-4px_rgba(0,0,0,0.55)] ring-1 ring-white/15 scale-[1.02]`
@@ -117,7 +118,7 @@ function NavPill({ tab, active }: { tab: Tab; active: boolean }) {
     >
       <span aria-hidden className="text-sm leading-none">{tab.emoji}</span>
       <span className="tracking-wide">{tab.label}</span>
-    </a>
+    </Link>
   );
 }
 
