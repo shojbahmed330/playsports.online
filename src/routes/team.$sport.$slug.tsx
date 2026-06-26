@@ -65,7 +65,7 @@ function TeamPage() {
       <section className="mt-8">
         <h2 className="text-xl font-semibold mb-3">Top Scorers for {team.name}</h2>
         <ul className="divide-y rounded-lg border">
-          {stats.topScorers.map((p) => (
+          {stats.topScorers.map((p: { name: string; goals: number }) => (
             <li key={p.name} className="flex justify-between px-4 py-2">
               <Link to="/player/$sport/$slug" params={{ sport: "football_wc", slug: slug(p.name) }} className="hover:underline">{p.name}</Link>
               <span className="font-mono">{p.goals}</span>
@@ -79,7 +79,7 @@ function TeamPage() {
       <section className="mt-8">
         <h2 className="text-xl font-semibold mb-3">Recent World Cup Matches</h2>
         <ul className="space-y-2">
-          {stats.recentMatches.map((m, i) => (
+          {stats.recentMatches.map((m: any, i: number) => (
             <li key={i} className="flex justify-between border rounded px-3 py-2 text-sm">
               <span>{m.match_date} · {m.round}</span>
               <span className="font-medium">{m.home_team} {m.home_score}–{m.away_score} {m.away_team}</span>
@@ -91,7 +91,7 @@ function TeamPage() {
       <section className="mt-8">
         <h2 className="text-xl font-semibold mb-3">Tournament Appearances</h2>
         <div className="flex flex-wrap gap-2">
-          {stats.years.map((y) => (
+          {stats.years.map((y: number) => (
             <Link key={y} to="/archive/$sport/$year" params={{ sport: "football_wc", year: String(y) }} className="px-3 py-1 rounded-full bg-muted text-sm hover:bg-accent">{y}</Link>
           ))}
         </div>

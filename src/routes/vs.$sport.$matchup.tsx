@@ -44,7 +44,7 @@ function H2HPage() {
   const { h2h, matches } = Route.useLoaderData();
   // tally
   let aW = 0, bW = 0, dr = 0, aG = 0, bG = 0;
-  matches.forEach((m) => {
+  matches.forEach((m: any) => {
     const aHome = m.home_team === h2h.teamA;
     const aScore = aHome ? m.home_score : m.away_score;
     const bScore = aHome ? m.away_score : m.home_score;
@@ -84,7 +84,7 @@ function H2HPage() {
       <section className="mt-8">
         <h2 className="text-xl font-semibold mb-3">All Meetings</h2>
         <ul className="space-y-2">
-          {matches.map((m, i) => (
+          {matches.map((m: any, i: number) => (
             <li key={i} className="flex justify-between border rounded px-3 py-2 text-sm">
               <span>{m.match_date} · WC {m.tournament_year}</span>
               <span className="font-medium">{m.home_team} {m.home_score}–{m.away_score} {m.away_team}</span>

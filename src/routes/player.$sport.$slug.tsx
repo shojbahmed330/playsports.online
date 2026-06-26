@@ -66,7 +66,7 @@ function PlayerPage() {
       <section className="mt-8">
         <h2 className="text-xl font-semibold mb-3">Goals by Tournament</h2>
         <ul className="divide-y rounded-lg border">
-          {stats.byYear.map((y) => (
+          {stats.byYear.map((y: { year: number; goals: number }) => (
             <li key={y.year} className="flex justify-between px-4 py-2">
               <Link to="/archive/$sport/$year" params={{ sport: "football_wc", year: String(y.year) }} className="hover:underline">World Cup {y.year}</Link>
               <span className="font-mono">{y.goals} goal{y.goals === 1 ? "" : "s"}</span>
