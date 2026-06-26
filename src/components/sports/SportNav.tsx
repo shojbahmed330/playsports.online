@@ -1,7 +1,7 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Trophy, ShieldCheck, BarChart3 } from "lucide-react";
+import { Trophy, BarChart3 } from "lucide-react";
 import { SPORT_LIST } from "@/lib/sports-config";
-import { useAuth } from "@/hooks/use-auth";
+
 
 type Tab = {
   to: string;
