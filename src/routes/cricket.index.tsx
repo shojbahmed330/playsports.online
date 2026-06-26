@@ -30,8 +30,20 @@ export const Route = createFileRoute("/cricket/")({
       ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "Cricket", path: "/cricket" }])),
     ],
   }),
+  loader: async ({ context }) => {
+    const leagueIds = CRICKET_LEAGUES.map((l) => l.id);
+    await context.queryClient
+      .prefetchQuery({
+        queryKey: ["cricket", "today", leagueIds.join(",")],
+        queryFn: () => getMultiCricketToday({ data: { leagueIds } }),
+        staleTime: 20_000,
+      })
+      .catch(() => null);
+    return null;
+  },
   component: CricketIndex,
 });
+
 
 function CricketIndex() {
   const multiFn = useServerFn(getMultiCricketToday);
