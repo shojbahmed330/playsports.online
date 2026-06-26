@@ -61,6 +61,10 @@ export const Route = createFileRoute("/players")({
       { property: "og:url", content: "https://allsportslive.lovable.app/players" },
     ],
     links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/players" }],
+    scripts: [
+      ldScript(collectionPage({ name: "Player Statistics — FIFA World Cup", description: "All-time and live FIFA World Cup top scorers, card leaders and player records.", path: "/players" })),
+      ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "Players", path: "/players" }])),
+    ],
   }),
   component: PlayersPage,
 });
