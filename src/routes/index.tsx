@@ -141,10 +141,12 @@ function HubPage() {
     queryFn: () => cricketFn({ data: { leagueIds: cricketIds } }),
     staleTime: 30_000,
     retry: 1,
+    placeholderData: keepPreviousData,
     refetchInterval: (qq) => {
       const d = qq.state.data as { matches?: CricketMatch[] } | undefined;
       return d?.matches?.some((m) => m.status === "in") ? 25_000 : false;
     },
+
   });
 
   const totalToday = all.length;
