@@ -23,6 +23,7 @@ import { FootballFilterBar } from "@/components/football/FootballFilterBar";
 import { applyFilter, uniqueTeams, useMyTeams, type FootballFilter } from "@/lib/football-filters";
 import { SiteFooter } from "@/components/home/SiteFooter";
 import { Breadcrumbs } from "@/components/nav/Breadcrumbs";
+import { breadcrumbList, collectionPage, ldScript } from "@/lib/seo/jsonld";
 
 
 const GROUP_MATCHES_BY_YEAR = groupMatchesData as Record<string, WCMatch[]>;
