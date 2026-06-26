@@ -15,6 +15,9 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AdSenseLoader } from "../components/ads/AdSenseLoader";
 import { AdSlot } from "../components/ads/AdSlot";
 import { GlobalMobileNav } from "../components/nav/GlobalMobileNav";
+import { AnalyticsLoader } from "../components/site/AnalyticsLoader";
+import { CookieConsent } from "../components/site/CookieConsent";
+import { SiteFooter } from "../components/site/SiteFooter";
 
 function NotFoundComponent() {
   return (
@@ -155,14 +158,17 @@ function RootComponent() {
         Skip to main content
       </a>
       <AdSenseLoader />
+      <AnalyticsLoader />
       {/* Site-wide top banner — shows on every route once AdSense is configured. */}
       <AdSlot slot="header" className="px-4" />
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
       {/* Site-wide bottom banner. */}
       <AdSlot slot="footer" className="px-4" />
+      <SiteFooter />
       {/* Always-on mobile bottom nav — picks tabs based on current route. */}
       <GlobalMobileNav />
+      <CookieConsent />
       <Toaster position="bottom-right" theme="dark" richColors />
     </QueryClientProvider>
   );

@@ -24,6 +24,7 @@ import { SiteFooter } from "@/components/home/SiteFooter";
 import { WatchLivePanel } from "@/components/wc/WatchLivePanel";
 import { TodayInZoneStrip } from "@/components/home/TodayInZoneStrip";
 import { HallOfChampionsStrip } from "@/components/home/HallOfChampionsStrip";
+import { NewsletterCard } from "@/components/site/NewsletterCard";
 
 const HOME_OG_IMAGE = "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/110e40cc-d990-48af-a996-8f46b9fd0f97/id-preview-f9e73043--3e33a21e-e132-4b69-83ee-be28f3bc4583.lovable.app-1782037338724.png";
 
@@ -135,6 +136,10 @@ function HubPage() {
 
         {/* HALL OF CHAMPIONS — cross-sport reigning titleholders */}
         <HallOfChampionsStrip />
+
+        {/* NEWSLETTER */}
+        <NewsletterCard source="homepage" />
+
 
         {/* SPORT CARDS 2.0 */}
         <section className="space-y-4 animate-fade-in">

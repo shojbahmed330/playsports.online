@@ -18,6 +18,14 @@ const STATIC_ROUTES: SitemapEntry[] = [
   { path: "/", changefreq: "hourly", priority: "1.0" },
   { path: "/players", changefreq: "daily", priority: "0.8" },
 
+  // Trust / info
+  { path: "/about", changefreq: "monthly", priority: "0.4" },
+  { path: "/contact", changefreq: "monthly", priority: "0.4" },
+  { path: "/privacy", changefreq: "monthly", priority: "0.3" },
+  { path: "/terms", changefreq: "monthly", priority: "0.3" },
+  { path: "/cookies", changefreq: "monthly", priority: "0.3" },
+  { path: "/disclaimer", changefreq: "monthly", priority: "0.3" },
+
   // Football / FIFA World Cup
   { path: "/football", changefreq: "hourly", priority: "0.9" },
 
