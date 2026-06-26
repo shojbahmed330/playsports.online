@@ -93,12 +93,14 @@ function HubPage() {
     queryFn: () => multiFn({ data: { sports: sportsInput } }),
     staleTime: 30_000,
     retry: 1,
+    placeholderData: keepPreviousData,
     refetchInterval: (q) => {
       const data = q.state.data as { byLeague?: Record<string, SportGame[]> } | undefined;
       const any = Object.values(data?.byLeague ?? {}).flat().some((g) => g.status === "in");
       return any ? 30_000 : false;
     },
   });
+
 
   const byLeague = liveQ.data?.byLeague ?? {};
 
