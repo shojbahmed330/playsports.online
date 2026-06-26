@@ -121,7 +121,9 @@ function HubPage() {
     queryFn: () => wcFn(),
     staleTime: 20_000,
     retry: 1,
+    placeholderData: keepPreviousData,
   });
+
   const wcFeatured = useMemo<Wc2026Fixture | null>(() => {
     const list = wcQ.data?.fixtures ?? [];
     return (
