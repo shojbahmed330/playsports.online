@@ -6,7 +6,7 @@ function esc(s: string) {
   return s.replace(/[<>&'"]/g, (c) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", "'": "&apos;", '"': "&quot;" }[c]!));
 }
 
-export const Route = createFileRoute("/feed[.]xml")({
+export const Route = createFileRoute("/feed.xml")({
   server: {
     handlers: {
       GET: async () => {
