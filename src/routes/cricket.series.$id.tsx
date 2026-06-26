@@ -9,6 +9,7 @@ import { GameGridSkeleton } from "@/components/sports/Skeletons";
 import { CricketMatchCard } from "@/components/cricket/CricketMatchCard";
 import { getCricketScoreboard, type CricketMatch } from "@/lib/cricket.functions";
 import { CRICKET_LEAGUE_BY_ID } from "@/lib/cricket-leagues";
+import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
 
 export const Route = createFileRoute("/cricket/series/$id")({
   head: ({ params }) => {
@@ -24,8 +25,17 @@ export const Route = createFileRoute("/cricket/series/$id")({
         { property: "og:url", content: url },
       ],
       links: [{ rel: "canonical", href: url }],
+      scripts: [
+        ldScript(breadcrumbList([
+          { name: "Home", path: "/" },
+          { name: "Cricket", path: "/cricket" },
+          { name: "Series", path: "/cricket/series" },
+          { name, path: `/cricket/series/${params.id}` },
+        ])),
+      ],
     };
   },
+
   component: SeriesPage,
   errorComponent: ({ error }) => (
     <div className="min-h-screen grid place-items-center p-6 text-center">
