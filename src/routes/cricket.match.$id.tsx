@@ -10,6 +10,7 @@ import { ScoreFlip } from "@/components/sports/ScoreFlip";
 import { CricketPlayerSheet } from "@/components/cricket/CricketPlayerSheet";
 import { getCricketMatchDetail, type CricketInningsDetail } from "@/lib/cricket.functions";
 import { formatLocalTime, relativeDay } from "@/lib/time";
+import { breadcrumbList, sportsEvent, ldScript } from "@/lib/seo/jsonld";
 
 
 const searchSchema = z.object({
@@ -30,8 +31,18 @@ export const Route = createFileRoute("/cricket/match/$id")({
         { property: "og:url", content: url },
       ],
       links: [{ rel: "canonical", href: url }],
+      scripts: [
+        ldScript(sportsEvent({ name: `Cricket Match ${params.id}`, path: `/cricket/match/${params.id}`, sport: "Cricket" })),
+        ldScript(breadcrumbList([
+          { name: "Home", path: "/" },
+          { name: "Cricket", path: "/cricket" },
+          { name: "Scores", path: "/cricket/scores" },
+          { name: "Match", path: `/cricket/match/${params.id}` },
+        ])),
+      ],
     };
   },
+
   component: MatchPage,
   errorComponent: ({ error }) => (
     <div className="min-h-screen grid place-items-center p-6 text-center">
