@@ -158,7 +158,7 @@ function TeamBlock({ t, align }: { t: MlbLinescoreTeam; align: "left" | "right" 
   return (
     <div className={`flex items-center gap-3 ${align === "right" ? "justify-end flex-row-reverse text-right" : ""}`}>
       <div className="size-14 sm:size-16 rounded-xl bg-white/10 ring-1 ring-white/20 grid place-items-center shrink-0">
-        {t.logo ? <img src={t.logo} alt="" className="size-11 object-contain" /> : <span className="text-xs font-bold text-white">{t.abbr}</span>}
+        {t.logo ? <img loading="lazy" decoding="async" src={t.logo} alt="" className="size-11 object-contain" /> : <span className="text-xs font-bold text-white">{t.abbr}</span>}
       </div>
       <div className="min-w-0">
         <div className="text-[10px] uppercase tracking-wider text-white/70 font-bold">{t.abbr}{t.record ? ` · ${t.record}` : ""}</div>
@@ -178,7 +178,7 @@ function ProbableCard({ p }: { p: MlbProbable | null }) {
   const content = (
     <div className="flex items-center gap-3 rounded-xl bg-white/[0.03] ring-1 ring-border p-3 hover:ring-[#d50032]/40 transition">
       <div className="size-12 rounded-full bg-white/5 ring-1 ring-white/10 overflow-hidden shrink-0 grid place-items-center">
-        {p.headshot ? <img src={p.headshot} alt="" className="size-full object-cover" /> : <span className="text-[10px] text-muted-foreground">⚾</span>}
+        {p.headshot ? <img loading="lazy" decoding="async" src={p.headshot} alt="" className="size-full object-cover" /> : <span className="text-[10px] text-muted-foreground">⚾</span>}
       </div>
       <div className="min-w-0">
         <div className="text-[10px] uppercase tracking-wider text-[#f7e6c4] font-bold">{p.teamAbbr ?? "Probable"}</div>
@@ -241,7 +241,7 @@ function GameInfo({ s }: { s: MlbGameSummary }) {
               <li key={i}>
                 <Link to="/mlb/player/$id" params={{ id: l.athleteId }} className="flex items-center gap-3 rounded-lg hover:bg-white/[0.04] p-2">
                   <div className="size-9 rounded-full bg-white/5 ring-1 ring-white/10 overflow-hidden grid place-items-center shrink-0">
-                    {l.headshot ? <img src={l.headshot} alt="" className="size-full object-cover" /> : <span className="text-[10px] text-muted-foreground">{l.teamAbbr}</span>}
+                    {l.headshot ? <img loading="lazy" decoding="async" src={l.headshot} alt="" className="size-full object-cover" /> : <span className="text-[10px] text-muted-foreground">{l.teamAbbr}</span>}
                   </div>
                   <div className="min-w-0 flex-1">
                     <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">{l.label} · {l.teamAbbr}</div>

@@ -75,7 +75,7 @@ function TeamPage() {
         <div className="relative flex items-center gap-4">
           <div className="size-20 sm:size-24 rounded-2xl bg-white/15 ring-1 ring-white/20 grid place-items-center shrink-0">
             {team.logo ? (
-              <img src={team.logo} alt="" className="size-16 object-contain" />
+              <img loading="lazy" decoding="async" src={team.logo} alt="" className="size-16 object-contain" />
             ) : (
               <span className="text-xl font-bold">{team.abbr}</span>
             )}
@@ -255,7 +255,7 @@ function LeaderRow({ l }: { l: MlbTeamLeader }) {
   const inner = (
     <div className="flex items-center gap-3 rounded-xl bg-white/[0.02] hover:bg-white/[0.05] ring-1 ring-border p-2">
       {l.headshot ? (
-        <img src={l.headshot} alt="" className="size-9 rounded-full object-cover bg-white/10" />
+        <img loading="lazy" decoding="async" src={l.headshot} alt="" className="size-9 rounded-full object-cover bg-white/10" />
       ) : (
         <div className="size-9 rounded-full bg-white/10" />
       )}
@@ -396,7 +396,7 @@ function InjuriesTab({ injuries }: { injuries: MlbInjury[] }) {
         const inner = (
           <div className="flex items-start gap-3 p-3 hover:bg-white/[0.03]">
             {i.headshot ? (
-              <img src={i.headshot} alt="" className="size-10 rounded-full object-cover bg-white/10 shrink-0" />
+              <img loading="lazy" decoding="async" src={i.headshot} alt="" className="size-10 rounded-full object-cover bg-white/10 shrink-0" />
             ) : (
               <div className="size-10 rounded-full bg-white/10 shrink-0" />
             )}
@@ -447,7 +447,7 @@ function ScheduleRow({ g }: { g: MlbScheduleGame }) {
         <span className="text-[10px] uppercase font-bold text-muted-foreground w-6 shrink-0">
           {g.homeAway === "home" ? "vs" : "@"}
         </span>
-        {g.opponent.logo && <img src={g.opponent.logo} alt="" className="size-5 object-contain" />}
+        {g.opponent.logo && <img loading="lazy" decoding="async" src={g.opponent.logo} alt="" className="size-5 object-contain" />}
         <span className="text-sm font-semibold text-white truncate">{g.opponent.name}</span>
       </div>
       <div className="text-xs font-bold tabular-nums w-20 text-right">

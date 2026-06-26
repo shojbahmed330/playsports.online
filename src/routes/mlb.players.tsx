@@ -253,7 +253,7 @@ function SearchResults({
             <div className="min-w-0 flex-1">
               <div className="text-sm font-bold text-white truncate">{h.name}</div>
               <div className="text-[11px] text-muted-foreground flex items-center gap-1.5 truncate">
-                {h.teamLogo && <img src={h.teamLogo} alt="" className="size-3.5 object-contain" />}
+                {h.teamLogo && <img loading="lazy" decoding="async" src={h.teamLogo} alt="" className="size-3.5 object-contain" />}
                 <span className="truncate">{h.teamName ?? h.teamAbbr ?? "Free Agent"}</span>
                 {h.position && <span>· {h.position}</span>}
               </div>

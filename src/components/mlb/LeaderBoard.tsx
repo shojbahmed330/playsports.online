@@ -31,7 +31,7 @@ export function LeaderBoard({ category, compact = false }: { category: MlbLeader
               <div className="min-w-0 flex-1">
                 <div className="text-sm font-semibold text-white truncate">{e.athleteName}</div>
                 <div className="text-[10px] text-muted-foreground flex items-center gap-1.5">
-                  {e.teamLogo && <img src={e.teamLogo} alt="" className="size-3 object-contain" />}
+                  {e.teamLogo && <img loading="lazy" decoding="async" src={e.teamLogo} alt="" className="size-3 object-contain" />}
                   <span>{e.teamAbbr ?? "—"}</span>
                   {e.position && <span>· {e.position}</span>}
                 </div>

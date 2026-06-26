@@ -32,7 +32,7 @@ export function PlayerProfile({ athlete, career }: { athlete: MlbAthlete; career
         <div className="relative p-6 grid grid-cols-[auto_minmax(0,1fr)] gap-5 items-center">
           <div className="size-24 sm:size-28 rounded-2xl bg-white/10 ring-1 ring-white/20 overflow-hidden grid place-items-center shrink-0">
             {athlete.headshot ? (
-              <img src={athlete.headshot} alt={athlete.name} className="size-full object-cover" />
+              <img loading="lazy" decoding="async" src={athlete.headshot} alt={athlete.name} className="size-full object-cover" />
             ) : (
               <span className="text-3xl">⚾</span>
             )}

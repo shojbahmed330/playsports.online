@@ -77,7 +77,7 @@ export function GameLogTable({ athleteId }: { athleteId: string }) {
                     <td className="px-3 py-2 text-gray-200 whitespace-nowrap">
                       <span className="text-muted-foreground mr-1">{r.homeAway === "away" ? "@" : "vs"}</span>
                       {r.opponentLogo ? (
-                        <img src={r.opponentLogo} alt="" className="inline-block size-4 mr-1 align-middle" />
+                        <img loading="lazy" decoding="async" src={r.opponentLogo} alt="" className="inline-block size-4 mr-1 align-middle" />
                       ) : null}
                       <span className="font-semibold">{r.opponentAbbr ?? "—"}</span>
                     </td>

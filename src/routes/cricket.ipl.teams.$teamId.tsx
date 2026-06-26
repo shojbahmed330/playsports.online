@@ -147,7 +147,7 @@ function TeamPage() {
             <p className="mt-1 text-sm opacity-85">{t.homeGround}</p>
           </div>
           {t.logo && (
-            <img src={t.logo} alt="" className="h-24 w-24 sm:h-28 sm:w-28 shrink-0 rounded-2xl bg-black/30 object-contain p-2 ring-1 ring-white/25 shadow-[0_12px_30px_-10px_rgba(0,0,0,0.7)]" />
+            <img loading="lazy" decoding="async" src={t.logo} alt="" className="h-24 w-24 sm:h-28 sm:w-28 shrink-0 rounded-2xl bg-black/30 object-contain p-2 ring-1 ring-white/25 shadow-[0_12px_30px_-10px_rgba(0,0,0,0.7)]" />
           )}
         </div>
         <dl className="relative mt-5 grid grid-cols-2 gap-2 text-xs sm:grid-cols-4">

@@ -28,7 +28,7 @@ export function MlbBoxScore({ groups }: { groups: MlbBoxGroup[] }) {
           return (
             <div key={tAbbr + tab} className="rounded-2xl bg-card ring-1 ring-border overflow-hidden">
               <div className="px-4 py-2.5 border-b border-border flex items-center gap-2 bg-gradient-to-r from-[#002d72]/30 to-transparent">
-                {g.teamLogo && <img src={g.teamLogo} alt="" className="size-5 object-contain" />}
+                {g.teamLogo && <img loading="lazy" decoding="async" src={g.teamLogo} alt="" className="size-5 object-contain" />}
                 <h3 className="text-sm font-bold text-white">{tAbbr} · {tab === "batting" ? "Batting" : "Pitching"}</h3>
               </div>
               <div className="overflow-x-auto">
