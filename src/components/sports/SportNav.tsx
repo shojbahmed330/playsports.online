@@ -86,10 +86,12 @@ export function SportNav({ liveCount = 0 }: { liveCount?: number }) {
               t.to === "/"
                 ? pathname === "/"
                 : pathname === t.to || pathname.startsWith(t.to + "/");
-            return <NavPill key={t.to} tab={t} active={active} />;
+            return (
+              <div key={t.to} className="snap-start shrink-0">
+                <NavPill tab={t} active={active} />
+              </div>
+            );
           })}
-          {/* On the Hub, surface every sport so users can jump in. */}
-          {onHub ? null : null}
         </nav>
 
         {/* desktop-only chips */}
