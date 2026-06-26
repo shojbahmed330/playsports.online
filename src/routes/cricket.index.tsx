@@ -11,7 +11,7 @@ import { GameGridSkeleton } from "@/components/sports/Skeletons";
 import { AdSlot } from "@/components/ads/AdSlot";
 import { CricketMatchCard } from "@/components/cricket/CricketMatchCard";
 import { getMultiCricketToday, type CricketMatch } from "@/lib/cricket.functions";
-import { CRICKET_LEAGUES, type CricketLeague } from "@/lib/cricket-leagues";
+import { CRICKET_LEAGUES, CRICKET_LEAGUE_BY_ID, type CricketLeague } from "@/lib/cricket-leagues";
 
 
 export const Route = createFileRoute("/cricket/")({
@@ -72,6 +72,24 @@ function CricketIndex() {
     return { all: bil, live, next };
   }, [allMatches]);
 
+  // Auto-discovered series: any league appearing in live ESPN data that
+  // isn't in our curated CRICKET_LEAGUES list. Keeps the hub current
+  // when ESPN launches a new tour/franchise season without a code update.
+  const discovered = useMemo(() => {
+    const map = new Map<string, { id: string; name: string; abbr: string; live: number; total: number }>();
+    for (const m of allMatches) {
+      if (!m.leagueId || m.leagueId === "global") continue;
+      if (CRICKET_LEAGUE_BY_ID[m.leagueId]) continue;
+      const key = m.leagueId;
+      const existing = map.get(key) ?? { id: key, name: m.leagueName || "International series", abbr: m.leagueAbbr || "", live: 0, total: 0 };
+      existing.total += 1;
+      if (m.status === "in") existing.live += 1;
+      if (!existing.name && m.leagueName) existing.name = m.leagueName;
+      map.set(key, existing);
+    }
+    return Array.from(map.values()).sort((a, b) => (b.live - a.live) || (b.total - a.total)).slice(0, 8);
+  }, [allMatches]);
+
 
   return (
     <div className="min-h-screen">
@@ -129,6 +147,44 @@ function CricketIndex() {
             ))}
           </div>
         </section>
+
+        {/* Auto-discovered active series (not in the curated registry). */}
+        {discovered.length > 0 && (
+          <section>
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-lg font-bold flex items-center gap-2">
+                <Globe2 className="size-5 text-sky-300" /> Also active now
+                <span className="text-[10px] uppercase tracking-wider font-bold text-sky-300/80 px-1.5 py-0.5 rounded bg-sky-500/10 ring-1 ring-sky-500/30">auto</span>
+              </h2>
+              <Link to="/cricket/series" className="text-xs font-bold text-sky-300 hover:text-sky-200 inline-flex items-center gap-1">
+                All series <ChevronRight className="size-3.5" />
+              </Link>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+              {discovered.map((d) => (
+                <Link
+                  key={d.id}
+                  to="/cricket/series/$id"
+                  params={{ id: d.id }}
+                  className="group relative overflow-hidden rounded-2xl p-4 bg-gradient-to-br from-sky-950/40 via-slate-900 to-emerald-950/30 border border-gray-800 hover:border-sky-500/40 transition-all hover:-translate-y-0.5"
+                >
+                  {d.live > 0 && (
+                    <span className="absolute top-2.5 right-2.5 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-500/20 ring-1 ring-red-500/40 text-[10px] font-bold text-red-300">
+                      <span className="size-1 rounded-full bg-red-500 animate-pulse" /> {d.live} live
+                    </span>
+                  )}
+                  <div className="text-[10px] uppercase tracking-wider font-bold text-sky-300 mb-1">{d.abbr || "Series"}</div>
+                  <div className="text-sm font-extrabold leading-tight line-clamp-2">{d.name}</div>
+                  <div className="mt-2 inline-flex items-center gap-1 text-[10px] font-bold text-sky-300 group-hover:gap-2 transition-all">
+                    {d.total} match{d.total === 1 ? "" : "es"} <ChevronRight className="size-3" />
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
+
+
 
         {q.isLoading ? (
           <Section icon={<Clock className="size-5 text-amber-400" />} title="Loading cricket slate…">
