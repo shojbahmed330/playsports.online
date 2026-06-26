@@ -280,8 +280,10 @@ export const getMultiCricketToday = createServerFn({ method: "GET" })
     }
 
     all.sort((a, b) => a.startTs - b.startTs);
+    setEdgeCache(all.some((m) => m.status === "in"));
     return { matches: all };
   });
+
 
 // Per-match detail (full scorecard + rosters)
 export type CricketBatter = {
