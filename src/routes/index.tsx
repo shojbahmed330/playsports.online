@@ -1,8 +1,9 @@
 import { useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { Trophy, Flame, ArrowRight, MapPin, Clock, CheckCircle2, X } from "lucide-react";
+
 import { SPORT_LIST, type SportConfig } from "@/lib/sports-config";
 import { getMultiSportToday, type SportGame } from "@/lib/espn.functions";
 import { getWc2026Fixtures, type Wc2026Fixture } from "@/lib/wc2026.functions";
