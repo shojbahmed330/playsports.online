@@ -18,6 +18,8 @@ import { MonetizationCard } from "@/components/admin/MonetizationCard";
 import { getWc2026Fixtures, type Wc2026Fixture } from "@/lib/wc2026.functions";
 import { fetch2026VideoMap, set2026Video, videoKey } from "@/lib/wc-2026-videos";
 import { Wc2026HighlightsCard } from "@/components/admin/Wc2026HighlightsCard";
+import { AffiliateLinksCard } from "@/components/admin/AffiliateLinksCard";
+import { SponsoredSlotsCard } from "@/components/admin/SponsoredSlotsCard";
 
 const GROUP_MATCHES_BY_YEAR = groupMatchesData as Record<string, WCMatch[]>;
 type AdminMatch = WCMatch & { _bundled?: boolean };
@@ -249,6 +251,13 @@ function AdminShell() {
 
         {/* Monetization & site (analytics, consent, newsletter, legal copy, identity) */}
         <MonetizationCard />
+
+        {/* Affiliate links manager (Phase 2) */}
+        <AffiliateLinksCard />
+
+        {/* Sponsored slot manager (Phase 2) */}
+        <SponsoredSlotsCard />
+
 
         {/* Auto-seed from bundled YouTube dataset */}
         <SeedFromDataset />

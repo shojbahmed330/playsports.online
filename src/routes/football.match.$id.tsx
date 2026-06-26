@@ -6,6 +6,8 @@ import { getWc2026Match } from "@/lib/wc2026.functions";
 import { LiveMatchCenter } from "@/components/wc/LiveMatchCenter";
 import { WatchLivePanel } from "@/components/wc/WatchLivePanel";
 import { breadcrumbList, ldScript, sportsEvent } from "@/lib/seo/jsonld";
+import { AffiliateStrip } from "@/components/affiliates/AffiliateStrip";
+import { AdSlot } from "@/components/ads/AdSlot";
 
 export const Route = createFileRoute("/football/match/$id")({
   head: ({ params }) => {
@@ -107,6 +109,8 @@ function MatchPage() {
                 </div>
               )}
             </section>
+            <AffiliateStrip placement="match_footer" sport="football" heading="Shop the matchup" />
+            <AdSlot slot="in_content" layout="in-article" />
           </>
         )}
       </main>

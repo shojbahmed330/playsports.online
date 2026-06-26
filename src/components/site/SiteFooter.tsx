@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useIdentitySettings } from "@/lib/site-settings";
+import { AffiliateDisclosure } from "@/components/affiliates/AffiliateDisclosure";
 
 const LEGAL = [
   { to: "/about", label: "About" },
@@ -27,6 +28,9 @@ export function SiteFooter() {
 
   return (
     <footer className="mt-16 border-t border-border bg-card/30">
+      <div className="mx-auto max-w-6xl px-4 pt-6">
+        <AffiliateDisclosure />
+      </div>
       <div className="mx-auto max-w-6xl px-4 py-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
         <div>
           <div className="font-bold text-foreground">AllSportsLive</div>
