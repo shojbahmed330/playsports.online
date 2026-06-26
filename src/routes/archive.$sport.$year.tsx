@@ -59,7 +59,7 @@ function ArchivePage() {
         </p>
       )}
 
-      <AffiliateStrip placement="archive" sport="football" />
+      <AffiliateStrip placement="inline" sport="football" />
 
       <section className="mt-6">
         <h2 className="text-xl font-semibold mb-3">Top Scorers</h2>
@@ -73,7 +73,7 @@ function ArchivePage() {
         </ul>
       </section>
 
-      <AdSlot slot="article_mid" />
+      <AdSlot slot="in_content" />
 
       <section className="mt-8">
         <h2 className="text-xl font-semibold mb-3">All Matches ({stats.matches.length})</h2>

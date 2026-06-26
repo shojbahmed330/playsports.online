@@ -61,7 +61,7 @@ function PlayerPage() {
         <Stat label="Own goals" value={stats.og} />
       </div>
 
-      <AffiliateStrip placement="player_hub" sport="football" />
+      <AffiliateStrip placement="inline" sport="football" />
 
       <section className="mt-8">
         <h2 className="text-xl font-semibold mb-3">Goals by Tournament</h2>
@@ -75,7 +75,7 @@ function PlayerPage() {
         </ul>
       </section>
 
-      <AdSlot slot="article_mid" />
+      <AdSlot slot="in_content" />
 
       <section className="mt-8 prose dark:prose-invert max-w-none">
         <h2>About {player.name} at the World Cup</h2>

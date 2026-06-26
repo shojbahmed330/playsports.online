@@ -60,7 +60,7 @@ function TeamPage() {
         <Stat label="Goals (GF-GA)" value={`${stats.gf}-${stats.ga}`} />
       </div>
 
-      <AffiliateStrip placement="team_hub" sport="football" />
+      <AffiliateStrip placement="inline" sport="football" />
 
       <section className="mt-8">
         <h2 className="text-xl font-semibold mb-3">Top Scorers for {team.name}</h2>
@@ -74,7 +74,7 @@ function TeamPage() {
         </ul>
       </section>
 
-      <AdSlot slot="article_mid" />
+      <AdSlot slot="in_content" />
 
       <section className="mt-8">
         <h2 className="text-xl font-semibold mb-3">Recent World Cup Matches</h2>

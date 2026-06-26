@@ -79,7 +79,7 @@ function H2HPage() {
 
       <p className="text-sm text-muted-foreground mb-4">Aggregate goals: {h2h.teamA} {aG} — {bG} {h2h.teamB}</p>
 
-      <AffiliateStrip placement="h2h" sport="football" />
+      <AffiliateStrip placement="inline" sport="football" />
 
       <section className="mt-8">
         <h2 className="text-xl font-semibold mb-3">All Meetings</h2>
@@ -93,7 +93,7 @@ function H2HPage() {
         </ul>
       </section>
 
-      <AdSlot slot="article_mid" />
+      <AdSlot slot="in_content" />
 
       <section className="mt-8 flex gap-2">
         <Link to="/team/$sport/$slug" params={{ sport: "football_wc", slug: slug(h2h.teamA) }} className="px-3 py-2 rounded border hover:bg-accent">View {h2h.teamA}</Link>
