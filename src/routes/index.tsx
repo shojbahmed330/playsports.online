@@ -23,6 +23,7 @@ import { SportCard, FifaCard, CricketCard } from "@/components/home/SportCard";
 import { SiteFooter } from "@/components/home/SiteFooter";
 import { WatchLivePanel } from "@/components/wc/WatchLivePanel";
 import { TodayInZoneStrip } from "@/components/home/TodayInZoneStrip";
+import { HallOfChampionsStrip } from "@/components/home/HallOfChampionsStrip";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -123,6 +124,9 @@ function HubPage() {
           cricketMatches={cricketQ.data?.matches ?? []}
           sports={SPORT_LIST}
         />
+
+        {/* HALL OF CHAMPIONS — cross-sport reigning titleholders */}
+        <HallOfChampionsStrip />
 
         {/* SPORT CARDS 2.0 */}
         <section className="space-y-4 animate-fade-in">
