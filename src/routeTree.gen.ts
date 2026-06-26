@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as PlayersRouteImport } from './routes/players'
 import { Route as NhlRouteImport } from './routes/nhl'
 import { Route as NbaRouteImport } from './routes/nba'
@@ -50,6 +51,11 @@ import { Route as CricketIplHistoryRouteImport } from './routes/cricket.ipl.hist
 import { Route as CricketIplTeamsIndexRouteImport } from './routes/cricket.ipl.teams.index'
 import { Route as CricketIplTeamsTeamIdRouteImport } from './routes/cricket.ipl.teams.$teamId'
 
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PlayersRoute = PlayersRouteImport.update({
   id: '/players',
   path: '/players',
@@ -262,6 +268,7 @@ export interface FileRoutesByFullPath {
   '/nba': typeof NbaRoute
   '/nhl': typeof NhlRoute
   '/players': typeof PlayersRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/cricket/history': typeof CricketHistoryRoute
   '/cricket/players': typeof CricketPlayersRoute
   '/cricket/rankings': typeof CricketRankingsRoute
@@ -302,6 +309,7 @@ export interface FileRoutesByTo {
   '/nba': typeof NbaRoute
   '/nhl': typeof NhlRoute
   '/players': typeof PlayersRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/cricket/history': typeof CricketHistoryRoute
   '/cricket/players': typeof CricketPlayersRoute
   '/cricket/rankings': typeof CricketRankingsRoute
@@ -345,6 +353,7 @@ export interface FileRoutesById {
   '/nba': typeof NbaRoute
   '/nhl': typeof NhlRoute
   '/players': typeof PlayersRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/cricket/history': typeof CricketHistoryRoute
   '/cricket/players': typeof CricketPlayersRoute
   '/cricket/rankings': typeof CricketRankingsRoute
@@ -389,6 +398,7 @@ export interface FileRouteTypes {
     | '/nba'
     | '/nhl'
     | '/players'
+    | '/sitemap.xml'
     | '/cricket/history'
     | '/cricket/players'
     | '/cricket/rankings'
@@ -429,6 +439,7 @@ export interface FileRouteTypes {
     | '/nba'
     | '/nhl'
     | '/players'
+    | '/sitemap.xml'
     | '/cricket/history'
     | '/cricket/players'
     | '/cricket/rankings'
@@ -471,6 +482,7 @@ export interface FileRouteTypes {
     | '/nba'
     | '/nhl'
     | '/players'
+    | '/sitemap.xml'
     | '/cricket/history'
     | '/cricket/players'
     | '/cricket/rankings'
@@ -514,10 +526,18 @@ export interface RootRouteChildren {
   NbaRoute: typeof NbaRoute
   NhlRoute: typeof NhlRoute
   PlayersRoute: typeof PlayersRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/players': {
       id: '/players'
       path: '/players'
@@ -899,6 +919,7 @@ const rootRouteChildren: RootRouteChildren = {
   NbaRoute: NbaRoute,
   NhlRoute: NhlRoute,
   PlayersRoute: PlayersRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
