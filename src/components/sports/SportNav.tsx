@@ -98,8 +98,8 @@ export function SportNav({ liveCount = 0 }: { liveCount?: number }) {
         <div className="hidden sm:flex items-center gap-2">
           {liveCount > 0 && <LiveChip count={liveCount} />}
           {showStatsChip && <StatsChip pathname={pathname} />}
-          {isAdmin && <AdminChip />}
         </div>
+
       </div>
     </header>
   );
