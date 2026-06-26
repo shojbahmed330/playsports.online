@@ -368,14 +368,14 @@ function TeamBlock({
   return (
     <div className={`flex items-center gap-2 ${align === "right" ? "justify-end" : "justify-start"}`}>
       {align === "left" && id ? (
-        <img src={wc2026TeamLogo(id)} alt={code} className="size-10 object-contain" />
+        <img loading="lazy" decoding="async" src={wc2026TeamLogo(id)} alt={code} className="size-10 object-contain" />
       ) : null}
       <div className={align === "right" ? "text-right" : "text-left"}>
         <div className="text-sm font-bold text-white">{name || code}</div>
         <div className="text-[10px] text-gray-500 uppercase tracking-wider">{code}</div>
       </div>
       {align === "right" && id ? (
-        <img src={wc2026TeamLogo(id)} alt={code} className="size-10 object-contain" />
+        <img loading="lazy" decoding="async" src={wc2026TeamLogo(id)} alt={code} className="size-10 object-contain" />
       ) : null}
     </div>
   );

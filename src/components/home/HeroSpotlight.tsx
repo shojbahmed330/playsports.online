@@ -259,7 +259,7 @@ function TeamRow({ flag, logo, name, score }: { flag?: string; logo?: string | n
   return (
     <div className="flex items-center gap-3">
       {logo ? (
-        <img src={logo} alt="" className="size-7 shrink-0 object-contain" />
+        <img loading="lazy" decoding="async" src={logo} alt="" className="size-7 shrink-0 object-contain" />
       ) : (
         <span className="text-2xl shrink-0">{flag ?? "🏟️"}</span>
       )}

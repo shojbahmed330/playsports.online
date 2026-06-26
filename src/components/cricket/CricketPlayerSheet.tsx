@@ -110,7 +110,7 @@ export function CricketPlayerSheet({ athleteId, leagueId, onClose }: Props) {
                   )}
                   <div className="mt-2 flex flex-wrap gap-1.5">
                     {p.team && (
-                      <Pill icon={<img src={p.teamLogo ?? ""} alt="" className="size-3 inline" />}>
+                      <Pill icon={<img loading="lazy" decoding="async" src={p.teamLogo ?? ""} alt="" className="size-3 inline" />}>
                         {p.team}
                       </Pill>
                     )}

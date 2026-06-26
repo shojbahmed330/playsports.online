@@ -128,7 +128,7 @@ function MlbToday() {
                   {g.rows.map((r, i) => (
                     <li key={r.teamId} className="flex items-center gap-3 px-4 py-2 text-sm">
                       <span className="w-4 text-xs text-muted-foreground tabular-nums">{i + 1}</span>
-                      {r.logo && <img src={r.logo} alt="" className="size-5 object-contain" />}
+                      {r.logo && <img loading="lazy" decoding="async" src={r.logo} alt="" className="size-5 object-contain" />}
                       <span className="flex-1 font-semibold text-white truncate">{r.team}</span>
                       <span className="text-xs tabular-nums text-muted-foreground">
                         {r.wins}-{r.losses}

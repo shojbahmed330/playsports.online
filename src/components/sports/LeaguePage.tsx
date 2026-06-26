@@ -343,7 +343,7 @@ function FeaturedRow({ t, live }: { t: import("@/lib/espn.functions").SportTeam;
   return (
     <div className="flex items-center gap-3">
       <div className="size-9 rounded-lg bg-white/5 grid place-items-center overflow-hidden ring-1 ring-white/10">
-        {t.logo ? <img src={t.logo} alt="" className="size-7 object-contain" /> : <span className="text-[10px] text-gray-400">{t.abbr}</span>}
+        {t.logo ? <img loading="lazy" decoding="async" src={t.logo} alt="" className="size-7 object-contain" /> : <span className="text-[10px] text-gray-400">{t.abbr}</span>}
       </div>
       <div className="flex-1 min-w-0">
         <div className="text-sm font-semibold text-white truncate">{t.name}</div>

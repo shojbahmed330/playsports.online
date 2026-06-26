@@ -50,7 +50,7 @@ function Row({ team }: { team: SportGame["home"] }) {
   return (
     <div className="flex items-center gap-2 py-1">
       {team.logo ? (
-        <img src={team.logo} alt="" className="size-5 shrink-0 object-contain" />
+        <img loading="lazy" decoding="async" src={team.logo} alt="" className="size-5 shrink-0 object-contain" />
       ) : (
         <span className="size-5 shrink-0 rounded bg-gray-800" />
       )}

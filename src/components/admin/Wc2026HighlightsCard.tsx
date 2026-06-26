@@ -177,7 +177,7 @@ export function Wc2026HighlightsCard() {
           <div className="mt-3 max-h-72 overflow-auto divide-y divide-border rounded-lg border border-border bg-background/40">
             {matches.map((m) => (
               <div key={m.video.videoId} className="flex items-center gap-3 px-3 py-2 text-xs">
-                <img src={m.video.thumbnail} alt="" className="w-14 h-9 rounded object-cover shrink-0" />
+                <img loading="lazy" decoding="async" src={m.video.thumbnail} alt="" className="w-14 h-9 rounded object-cover shrink-0" />
                 <div className="flex-1 min-w-0">
                   <div className="truncate font-medium">{m.video.title}</div>
                   <div className="text-[10px] text-muted-foreground mt-0.5">

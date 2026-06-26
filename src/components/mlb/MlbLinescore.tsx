@@ -31,7 +31,7 @@ export function MlbLinescore({
               <tr key={t.id} className="hover:bg-white/[0.03]">
                 <td className="px-3 py-2 sticky left-0 bg-card z-10">
                   <div className="flex items-center gap-2">
-                    {t.logo && <img src={t.logo} alt="" className="size-5 object-contain" />}
+                    {t.logo && <img loading="lazy" decoding="async" src={t.logo} alt="" className="size-5 object-contain" />}
                     <span className="font-bold text-white">{t.abbr}</span>
                   </div>
                 </td>
