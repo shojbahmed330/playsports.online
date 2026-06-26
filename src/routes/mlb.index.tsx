@@ -9,6 +9,7 @@ import { GameCard } from "@/components/sports/GameCard";
 import { LeaderBoard } from "@/components/mlb/LeaderBoard";
 import { AdSlot } from "@/components/ads/AdSlot";
 import { todayYmd } from "@/components/sports/DateScrubber";
+import { breadcrumbList, collectionPage, ldScript } from "@/lib/seo/jsonld";
 
 export const Route = createFileRoute("/mlb/")({
   head: () => ({
@@ -20,6 +21,10 @@ export const Route = createFileRoute("/mlb/")({
       { property: "og:url", content: "https://allsportslive.lovable.app/mlb" },
     ],
     links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/mlb" }],
+    scripts: [
+      ldScript(collectionPage({ name: "MLB — Live Scores, Standings & Leaders", description: "Major League Baseball hub: scores, standings, leaders and news.", path: "/mlb" })),
+      ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "MLB", path: "/mlb" }])),
+    ],
   }),
   component: MlbToday,
 });
