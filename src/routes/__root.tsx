@@ -114,10 +114,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
     ],
     links: [
-      {
-        rel: "stylesheet",
-        href: appCss,
-      },
+      { rel: "stylesheet", href: appCss },
+      // Preconnect to the hosts we hit on first paint (ESPN APIs + CDN, Sofascore via RapidAPI, AdSense).
+      { rel: "preconnect", href: "https://site.api.espn.com", crossOrigin: "anonymous" },
+      { rel: "preconnect", href: "https://a.espncdn.com", crossOrigin: "anonymous" },
+      { rel: "dns-prefetch", href: "https://sports.core.api.espn.com" },
+      { rel: "dns-prefetch", href: "https://pagead2.googlesyndication.com" },
+      { rel: "dns-prefetch", href: "https://qooamytkkxeyfmmqirsy.supabase.co" },
     ],
   }),
   shellComponent: RootShell,
