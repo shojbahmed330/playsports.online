@@ -146,7 +146,7 @@ function MatchPage() {
         </div>
       </section>
 
-      <main className="max-w-5xl mx-auto px-4 sm:px-6 py-8 space-y-8">
+      <main id="main-content" className="max-w-5xl mx-auto px-4 sm:px-6 py-8 space-y-8">
         {innings.length === 0 ? (
           <div className="rounded-2xl border border-dashed border-gray-800 p-10 text-center bg-gray-900/40">
             <Activity className="mx-auto size-10 opacity-30 mb-3" />

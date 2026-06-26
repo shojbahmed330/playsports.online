@@ -134,7 +134,7 @@ export function LeaguePage({ sport }: { sport: SportConfig }) {
         </div>
       </div>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-10">
+      <main id="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-10">
         {tab === "scores" && (
           <section className="space-y-4 tab-slide">
             <DateScrubber selected={day} onChange={setDay} />

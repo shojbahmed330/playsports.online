@@ -333,7 +333,7 @@ function Index() {
       )}
 
       {/* CONTENT */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-14 space-y-8">
+      <main id="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-14 space-y-8">
         {year === LIVE_YEAR ? (
           <>
             <div className="flex justify-center">

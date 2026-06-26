@@ -106,7 +106,7 @@ function CricketIndex() {
       <CricketHero matches={allMatches} liveCount={liveAll} />
       <LivePulseStrip matches={allMatches} />
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-10">
+      <main id="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-10">
         {/* International Cricket — bilateral tours */}
         {(internationals.live.length > 0 || internationals.next.length > 0) && (
           <section className="relative overflow-hidden rounded-2xl border border-sky-500/20 bg-gradient-to-br from-sky-950/40 via-background to-emerald-950/30 p-4 sm:p-5">

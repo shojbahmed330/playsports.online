@@ -124,7 +124,7 @@ function HubPage() {
 
       <PulseStrip items={liveGames} />
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-10 space-y-12">
+      <main id="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 py-10 space-y-12">
         {/* TODAY IN YOUR ZONE — TZ-aware cross-sport strip */}
         <TodayInZoneStrip
           espnByLeague={byLeague}
