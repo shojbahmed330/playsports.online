@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { useAdSenseSettings, type AdSenseSlotKey } from "@/lib/site-settings";
+import { useMembership } from "@/hooks/use-membership";
 
 declare global {
   interface Window {
@@ -23,12 +24,13 @@ type Props = {
  */
 export function AdSlot({ slot, layout = "default", className, minHeight = 100 }: Props) {
   const { data } = useAdSenseSettings();
+  const { membership } = useMembership();
   const insRef = useRef<HTMLModElement | null>(null);
   const pushedRef = useRef(false);
 
   const client = data?.client;
   const slotId = data?.slots?.[slot];
-  const enabled = !!data?.enabled && !!client && !!slotId;
+  const enabled = !!data?.enabled && !!client && !!slotId && !membership.active;
 
   useEffect(() => {
     if (!enabled || pushedRef.current) return;
