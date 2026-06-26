@@ -2,6 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { LeaguePage } from "@/components/sports/LeaguePage";
 import { SPORTS } from "@/lib/sports-config";
 import { breadcrumbList, collectionPage, ldScript } from "@/lib/seo/jsonld";
+import { getScoreboard, getStandings } from "@/lib/espn.functions";
+import { todayYmd } from "@/components/sports/DateScrubber";
 
 export const Route = createFileRoute("/nhl")({
   head: () => ({
@@ -18,5 +20,21 @@ export const Route = createFileRoute("/nhl")({
       ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "NHL", path: "/nhl" }])),
     ],
   }),
+  loader: async ({ context }) => {
+    const day = todayYmd();
+    await Promise.all([
+      context.queryClient.prefetchQuery({
+        queryKey: ["espn", "nhl", "scoreboard", day],
+        queryFn: () => getScoreboard({ data: { sportPath: "hockey/nhl", league: "NHL", yyyymmdd: day } }),
+        staleTime: 30_000,
+      }).catch(() => null),
+      context.queryClient.prefetchQuery({
+        queryKey: ["espn", "nhl", "standings"],
+        queryFn: () => getStandings({ data: { sportPath: "hockey/nhl" } }),
+        staleTime: 60 * 60_000,
+      }).catch(() => null),
+    ]);
+    return null;
+  },
   component: () => <LeaguePage sport={SPORTS.nhl} />,
 });
