@@ -58,7 +58,9 @@ export const Route = createFileRoute("/players")({
         property: "og:description",
         content: "Top scorers, records, player comparisons — 1930 to 2026.",
       },
+      { property: "og:url", content: "https://allsportslive.lovable.app/players" },
     ],
+    links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/players" }],
   }),
   component: PlayersPage,
 });

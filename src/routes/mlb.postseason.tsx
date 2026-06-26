@@ -11,7 +11,11 @@ export const Route = createFileRoute("/mlb/postseason")({
     meta: [
       { title: "MLB Postseason Bracket — Wild Card, ALDS/NLDS, ALCS/NLCS, World Series" },
       { name: "description", content: "Live MLB playoff bracket: Wild Card, Division Series, League Championship, and World Series with series scores and game-by-game results." },
+      { property: "og:title", content: "MLB Postseason Bracket" },
+      { property: "og:description", content: "Wild Card → Division Series → LCS → World Series with live updates." },
+      { property: "og:url", content: "https://allsportslive.lovable.app/mlb/postseason" },
     ],
+    links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/mlb/postseason" }],
   }),
   component: PostseasonPage,
 });

@@ -17,11 +17,13 @@ import { CRICKET_LEAGUES, CRICKET_LEAGUE_BY_ID, type CricketLeague } from "@/lib
 export const Route = createFileRoute("/cricket/")({
   head: () => ({
     meta: [
-      { title: "Live Cricket Scores, Fixtures & Stats — Sports Hub" },
+      { title: "Live Cricket Scores, Fixtures & Stats — AllSportsLive" },
       { name: "description", content: "Live cricket scoreboards, fixtures, series, players, rankings and records across IPL, ICC World Cup, Big Bash, PSL and more." },
       { property: "og:title", content: "Cricket — Live Scores, Series & Players" },
       { property: "og:description", content: "Live scores, fixtures, results, players and records from every major cricket competition." },
+      { property: "og:url", content: "https://allsportslive.lovable.app/cricket" },
     ],
+    links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/cricket" }],
   }),
   component: CricketIndex,
 });

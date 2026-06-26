@@ -19,12 +19,19 @@ const searchSchema = z.object({
 export const Route = createFileRoute("/cricket/match/$id")({
   validateSearch: searchSchema,
   loaderDeps: ({ search }) => ({ leagueId: search.leagueId }),
-  head: () => ({
-    meta: [
-      { title: "Live Cricket Scorecard — Sports Hub" },
-      { name: "description", content: "Live cricket scorecard, batting and bowling figures, commentary and lineups." },
-    ],
-  }),
+  head: ({ params }) => {
+    const url = `https://allsportslive.lovable.app/cricket/match/${params.id}`;
+    return {
+      meta: [
+        { title: "Live Cricket Scorecard — AllSportsLive" },
+        { name: "description", content: "Live cricket scorecard, batting and bowling figures, commentary and lineups." },
+        { property: "og:title", content: "Live Cricket Scorecard" },
+        { property: "og:description", content: "Live scorecard, commentary and lineups." },
+        { property: "og:url", content: url },
+      ],
+      links: [{ rel: "canonical", href: url }],
+    };
+  },
   component: MatchPage,
   errorComponent: ({ error }) => (
     <div className="min-h-screen grid place-items-center p-6 text-center">

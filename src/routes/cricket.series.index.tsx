@@ -22,7 +22,11 @@ export const Route = createFileRoute("/cricket/series/")({
     meta: [
       { title: "Cricket Series — IPL, BBL, World Cups & more" },
       { name: "description", content: "All major cricket series, live counts, and fixtures." },
+      { property: "og:title", content: "Cricket Series Hub" },
+      { property: "og:description", content: "Every major cricket series with live fixture counts." },
+      { property: "og:url", content: "https://allsportslive.lovable.app/cricket/series" },
     ],
+    links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/cricket/series" }],
   }),
   component: SeriesIndex,
 });

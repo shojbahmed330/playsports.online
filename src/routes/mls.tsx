@@ -5,11 +5,13 @@ import { SPORTS } from "@/lib/sports-config";
 export const Route = createFileRoute("/mls")({
   head: () => ({
     meta: [
-      { title: "MLS Scores, Standings & News — Sports Hub" },
+      { title: "MLS Scores, Standings & News — AllSportsLive" },
       { name: "description", content: "Live Major League Soccer scoreboard, Eastern and Western conference standings, and breaking soccer news from ESPN." },
       { property: "og:title", content: "MLS — Live Scores & Standings" },
       { property: "og:description", content: "Today's MLS games, conference standings, and headlines." },
+      { property: "og:url", content: "https://allsportslive.lovable.app/mls" },
     ],
+    links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/mls" }],
   }),
   component: () => <LeaguePage sport={SPORTS.mls} />,
 });

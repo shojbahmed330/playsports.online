@@ -12,7 +12,11 @@ export const Route = createFileRoute("/cricket/records")({
     meta: [
       { title: "All-time Cricket Records — Runs, Wickets & Centuries" },
       { name: "description", content: "All-time cricket records across Test, ODI and T20I." },
+      { property: "og:title", content: "All-time Cricket Records" },
+      { property: "og:description", content: "Runs, wickets, centuries and partnerships across formats." },
+      { property: "og:url", content: "https://allsportslive.lovable.app/cricket/records" },
     ],
+    links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/cricket/records" }],
   }),
   component: RecordsPage,
 });

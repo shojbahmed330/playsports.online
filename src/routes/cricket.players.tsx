@@ -12,7 +12,11 @@ export const Route = createFileRoute("/cricket/players")({
     meta: [
       { title: "Cricket Players — Top batters, bowlers & all-rounders" },
       { name: "description", content: "Top-ranked cricket players across T20I, ODI and Test formats." },
+      { property: "og:title", content: "Cricket Players — Top Performers" },
+      { property: "og:description", content: "Top-ranked batters, bowlers and all-rounders across formats." },
+      { property: "og:url", content: "https://allsportslive.lovable.app/cricket/players" },
     ],
+    links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/cricket/players" }],
   }),
   component: PlayersPage,
 });
