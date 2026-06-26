@@ -43,7 +43,7 @@ export function SiteFooter() {
 
         {/* Main grid */}
         <div className="px-6 py-10 lg:px-12 lg:py-12">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-12">
+          <div className="grid grid-cols-3 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-8 lg:gap-12 [&>:first-child]:col-span-3 md:[&>:first-child]:col-span-1">
             {/* Brand + newsletter */}
             <div className="space-y-6">
               <div>
@@ -60,7 +60,7 @@ export function SiteFooter() {
 
             {/* Live Coverage */}
             <FooterCol title="Live Coverage">
-              <ul className="grid grid-cols-2 gap-y-1 gap-x-4 text-sm">
+              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-y-1 gap-x-4 text-xs sm:text-sm">
                 {SPORTS.map((s) => (
                   <li key={`${s.to}-${s.label}`}>
                     <Link
@@ -77,7 +77,7 @@ export function SiteFooter() {
 
             {/* Information */}
             <FooterCol title="Information">
-              <ul className="text-sm">
+              <ul className="text-xs sm:text-sm">
                 {INFO.map((l) => (
                   <li key={l.to}>
                     <Link
@@ -161,7 +161,7 @@ export function SiteFooter() {
 function FooterCol({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div>
-      <h3 className="text-xs font-bold uppercase tracking-widest text-foreground mb-5">
+      <h3 className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-foreground mb-3 sm:mb-5 truncate">
         {title}
       </h3>
       {children}
