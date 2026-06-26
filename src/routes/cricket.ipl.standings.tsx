@@ -5,6 +5,7 @@ import { zodValidator } from "@tanstack/zod-adapter";
 import { z } from "zod";
 import { IplPageShell } from "@/components/ipl/IplPageShell";
 import { getIplSeason, IPL_SEASON_IDS } from "@/lib/ipl.functions";
+import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
 
 const searchSchema = z.object({
   year: z.union([z.literal("current"), z.coerce.number()]).default("current"),
@@ -28,6 +29,7 @@ export const Route = createFileRoute("/cricket/ipl/standings")({
       { property: "og:url", content: "https://allsportslive.lovable.app/cricket/ipl/standings" },
     ],
     links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/cricket/ipl/standings" }],
+    scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "Cricket", path: "/cricket" }, { name: "IPL", path: "/cricket/ipl" }, { name: "Standings", path: "/cricket/ipl/standings" }]))],
   }),
   validateSearch: zodValidator(searchSchema),
   loaderDeps: ({ search }) => ({ year: search.year }),

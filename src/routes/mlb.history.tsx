@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { HistoryTimeline } from "@/components/mlb/HistoryTimeline";
 import { MlbSeasonLeaderHistory } from "@/components/mlb/MlbSeasonLeaderHistory";
+import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
 
 export const Route = createFileRoute("/mlb/history")({
   head: () => ({
@@ -12,6 +13,7 @@ export const Route = createFileRoute("/mlb/history")({
       { property: "og:url", content: "https://allsportslive.lovable.app/mlb/history" },
     ],
     links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/mlb/history" }],
+    scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "MLB", path: "/mlb" }, { name: "History", path: "/mlb/history" }]))],
   }),
   component: HistoryPage,
 });

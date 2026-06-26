@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import { Search } from "lucide-react";
 import { getMlbTeams } from "@/lib/mlb.functions";
 import { TeamCard } from "@/components/mlb/TeamCard";
+import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
 
 export const Route = createFileRoute("/mlb/teams")({
   head: () => ({
@@ -16,6 +17,7 @@ export const Route = createFileRoute("/mlb/teams")({
       { property: "og:url", content: "https://allsportslive.lovable.app/mlb/teams" },
     ],
     links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/mlb/teams" }],
+    scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "MLB", path: "/mlb" }, { name: "Teams", path: "/mlb/teams" }]))],
   }),
   component: TeamsPage,
 });

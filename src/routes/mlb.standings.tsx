@@ -4,6 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { getMlbStandingsPro } from "@/lib/mlb.functions";
 import { MlbStandingsPro } from "@/components/mlb/MlbStandingsPro";
 import { StandingsSkeleton } from "@/components/sports/Skeletons";
+import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
 
 export const Route = createFileRoute("/mlb/standings")({
   head: () => ({
@@ -15,6 +16,7 @@ export const Route = createFileRoute("/mlb/standings")({
       { property: "og:url", content: "https://allsportslive.lovable.app/mlb/standings" },
     ],
     links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/mlb/standings" }],
+    scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "MLB", path: "/mlb" }, { name: "Standings", path: "/mlb/standings" }]))],
   }),
   component: StandingsPage,
 });

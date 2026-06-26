@@ -11,6 +11,7 @@ import { GameGridSkeleton } from "@/components/sports/Skeletons";
 import { CricketMatchCard } from "@/components/cricket/CricketMatchCard";
 import { getMultiCricketToday, type CricketMatch } from "@/lib/cricket.functions";
 import { CRICKET_LEAGUES, FORMAT_META } from "@/lib/cricket-leagues";
+import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
 
 type Tab = "live" | "today" | "upcoming" | "results";
 
@@ -32,6 +33,7 @@ export const Route = createFileRoute("/cricket/scores")({
       { property: "og:url", content: "https://allsportslive.lovable.app/cricket/scores" },
     ],
     links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/cricket/scores" }],
+    scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "Cricket", path: "/cricket" }, { name: "Scores", path: "/cricket/scores" }]))],
   }),
   component: CricketScoresPage,
 });

@@ -7,6 +7,7 @@ import { SportNav } from "@/components/sports/SportNav";
 import { CricketSubNav } from "@/components/cricket/CricketSubNav";
 import { PlayerLink } from "@/components/cricket/PlayerLink";
 import rankings from "@/data/cricket/rankings.json";
+import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
 
 
 const search = z.object({
@@ -25,6 +26,7 @@ export const Route = createFileRoute("/cricket/rankings")({
       { property: "og:url", content: "https://allsportslive.lovable.app/cricket/rankings" },
     ],
     links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/cricket/rankings" }],
+    scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "Cricket", path: "/cricket" }, { name: "Rankings", path: "/cricket/rankings" }]))],
   }),
   component: RankingsPage,
 });

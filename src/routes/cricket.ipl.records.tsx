@@ -6,6 +6,7 @@ import { IplPageShell } from "@/components/ipl/IplPageShell";
 import { PlayerLink } from "@/components/cricket/PlayerLink";
 import records from "@/data/cricket/ipl/records.json";
 import { getIplLeaders, IPL_SEASON_IDS } from "@/lib/ipl.functions";
+import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
 
 
 type Record = {
@@ -37,6 +38,7 @@ export const Route = createFileRoute("/cricket/ipl/records")({
       { property: "og:url", content: "https://allsportslive.lovable.app/cricket/ipl/records" },
     ],
     links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/cricket/ipl/records" }],
+    scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "Cricket", path: "/cricket" }, { name: "IPL", path: "/cricket/ipl" }, { name: "Records", path: "/cricket/ipl/records" }]))],
   }),
   component: RecordsPage,
 });

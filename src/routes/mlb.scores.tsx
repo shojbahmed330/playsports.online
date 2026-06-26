@@ -7,6 +7,7 @@ import { getScoreboard, type SportGame } from "@/lib/espn.functions";
 import { GameCard } from "@/components/sports/GameCard";
 import { DateScrubber, todayYmd } from "@/components/sports/DateScrubber";
 import { GameGridSkeleton } from "@/components/sports/Skeletons";
+import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
 
 type Filter = "all" | "live" | "upcoming" | "final";
 
@@ -20,6 +21,7 @@ export const Route = createFileRoute("/mlb/scores")({
       { property: "og:url", content: "https://allsportslive.lovable.app/mlb/scores" },
     ],
     links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/mlb/scores" }],
+    scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "MLB", path: "/mlb" }, { name: "Scores", path: "/mlb/scores" }]))],
   }),
   component: ScoresPage,
 });

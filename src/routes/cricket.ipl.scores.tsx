@@ -6,6 +6,7 @@ import { IplPageShell } from "@/components/ipl/IplPageShell";
 import { CricketMatchCard } from "@/components/cricket/CricketMatchCard";
 import { toCricketMatch } from "@/components/ipl/toCricketMatch";
 import { getIplSeason, IPL_SEASON_IDS, type IplMatchLite } from "@/lib/ipl.functions";
+import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
 
 const searchSchema = z.object({
   year: z.union([z.literal("current"), z.coerce.number()]).default("current"),
@@ -30,6 +31,7 @@ export const Route = createFileRoute("/cricket/ipl/scores")({
       { property: "og:url", content: "https://allsportslive.lovable.app/cricket/ipl/scores" },
     ],
     links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/cricket/ipl/scores" }],
+    scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "Cricket", path: "/cricket" }, { name: "IPL", path: "/cricket/ipl" }, { name: "Scores", path: "/cricket/ipl/scores" }]))],
   }),
   validateSearch: zodValidator(searchSchema),
   loaderDeps: ({ search }) => ({ year: search.year }),

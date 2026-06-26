@@ -7,6 +7,7 @@ import { PlayerLink } from "@/components/cricket/PlayerLink";
 import { getIplHistory, getIplPlayoffs, IPL_SEASON_IDS, type IplBracketMatch } from "@/lib/ipl.functions";
 import franchises from "@/data/cricket/ipl/franchises.json";
 import auctions from "@/data/cricket/ipl/auctions.json";
+import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
 
 
 const qo = queryOptions({
@@ -48,6 +49,7 @@ export const Route = createFileRoute("/cricket/ipl/history")({
       { property: "og:url", content: "https://allsportslive.lovable.app/cricket/ipl/history" },
     ],
     links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/cricket/ipl/history" }],
+    scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "Cricket", path: "/cricket" }, { name: "IPL", path: "/cricket/ipl" }, { name: "History", path: "/cricket/ipl/history" }]))],
   }),
   loader: ({ context }) => context.queryClient.ensureQueryData(qo),
   component: HistoryPage,
