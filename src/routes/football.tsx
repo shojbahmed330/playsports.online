@@ -4,6 +4,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Trophy, Loader2, ChevronDown, Users, Swords, Goal, Calendar } from "lucide-react";
 import { SportNav } from "@/components/sports/SportNav";
 import { supabase, WC_YEARS, type WCTournament, type WCMatch, type WCGroup } from "@/lib/supabase";
+import { pickCurrentWcYear, liveWcYear, FOOTBALL_WC } from "@/lib/tournament-config";
 import { TournamentInfoCard } from "@/components/wc/TournamentInfoCard";
 import { GroupStage } from "@/components/wc/GroupStage";
 import { MatchCard, type RoundKey } from "@/components/wc/MatchCard";
@@ -47,16 +48,19 @@ export const Route = createFileRoute("/football")({
     };
   },
 
-  head: () => ({
-    meta: [
-      { title: "FIFA World Cup 2026 — Live Scores, Bracket & Archive 1930–2026" },
-      { name: "description", content: "Live FIFA World Cup 2026 fixtures, group standings, knockout bracket and complete tournament history from 1930 to 2026." },
-      { property: "og:title", content: "FIFA World Cup 2026 — Live Scores & Complete Archive" },
-      { property: "og:description", content: "Live 2026 fixtures with kickoff countdowns, full bracket, top scorers and historical tournaments." },
-      { property: "og:url", content: "https://allsportslive.lovable.app/football" },
-    ],
-    links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/football" }],
-  }),
+  head: () => {
+    const cur = pickCurrentWcYear();
+    return {
+      meta: [
+        { title: `FIFA World Cup ${cur} — Live Scores, Bracket & Archive 1930–${cur}` },
+        { name: "description", content: `Live FIFA World Cup ${cur} fixtures, group standings, knockout bracket and complete tournament history from 1930 to ${cur}.` },
+        { property: "og:title", content: `FIFA World Cup ${cur} — Live Scores & Complete Archive` },
+        { property: "og:description", content: `Live ${cur} fixtures with kickoff countdowns, full bracket, top scorers and historical tournaments.` },
+        { property: "og:url", content: "https://allsportslive.lovable.app/football" },
+      ],
+      links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/football" }],
+    };
+  },
   component: Index,
 });
 
@@ -84,7 +88,8 @@ function Index() {
   // header (SportNav) handles admin chip itself
   const navigate = useNavigate({ from: "/football" });
   const search = Route.useSearch();
-  const initialYear = search.year ?? 2026;
+  const LIVE_YEAR = liveWcYear();
+  const initialYear = search.year ?? LIVE_YEAR;
   const [year, setYear] = useState<number>(initialYear);
   const [activeMatch, setActiveMatch] = useState<WCMatch | null>(null);
   const initialTab: SubNavTab = search.tab ?? "knockout";
@@ -122,10 +127,10 @@ function Index() {
     navigate({ search: (prev: FootballSearch) => ({ ...prev, team: t }), replace: true });
   };
 
-  // Reset to knockout when leaving 2026 — scorers tab is 2026-only.
+  // Reset to knockout when leaving the live year — scorers tab is live-year only.
   useEffect(() => {
-    if (year !== 2026 && tab === "scorers") setTab("knockout");
-  }, [year, tab]);
+    if (year !== LIVE_YEAR && tab === "scorers") setTab("knockout");
+  }, [year, tab, LIVE_YEAR]);
 
   useEffect(() => {
     try {
