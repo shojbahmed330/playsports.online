@@ -54,9 +54,7 @@ function AuthPage() {
           <div className="inline-flex size-12 rounded-xl bg-gold/15 ring-1 ring-gold/30 items-center justify-center">
             <Trophy className="size-6 text-gold" />
           </div>
-          <h1 className="text-2xl font-bold mt-3">
-            {mode === "signin" ? "Admin Sign In" : "Create Account"}
-          </h1>
+          <h1 className="text-2xl font-bold mt-3">Admin Sign In</h1>
           <p className="text-sm text-muted-foreground mt-1">
             Archive management access
           </p>
@@ -89,7 +87,7 @@ function AuthPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 minLength={6}
-                autoComplete={mode === "signup" ? "new-password" : "current-password"}
+                autoComplete="current-password"
                 className="w-full pl-9 pr-3 py-2.5 rounded-lg bg-background border border-input focus:border-gold focus:outline-none text-sm"
                 placeholder="••••••••"
               />
@@ -102,21 +100,14 @@ function AuthPage() {
             className="w-full py-2.5 rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 text-black font-semibold text-sm hover:from-amber-400 hover:to-amber-500 disabled:opacity-60 inline-flex items-center justify-center gap-2"
           >
             {busy && <Loader2 className="size-4 animate-spin" />}
-            {mode === "signin" ? "Sign In" : "Sign Up"}
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
-            className="w-full text-xs text-muted-foreground hover:text-foreground pt-2"
-          >
-            {mode === "signin" ? "No account? Create one" : "Already have an account? Sign in"}
+            Sign In
           </button>
         </form>
 
         <p className="text-[10px] text-center text-muted-foreground mt-4">
-          Admin role is granted automatically based on the registered email.
+          Admin access is restricted. New accounts cannot be created from this page.
         </p>
+
       </div>
     </div>
   );
