@@ -36,11 +36,23 @@ export function HeroSpotlight({
       : extraSlides.slice(0, 5);
 
   const [idx, setIdx] = useState(0);
+  const [paused, setPaused] = useState(false);
   useEffect(() => {
-    if (slides.length < 2) return;
+    if (slides.length < 2 || paused) return;
     const id = window.setInterval(() => setIdx((i) => (i + 1) % slides.length), 5000);
     return () => window.clearInterval(id);
-  }, [slides.length]);
+  }, [slides.length, paused]);
+
+  // Swipe gestures (mobile)
+  const touchX = useRef<number | null>(null);
+  const onTouchStart = (e: React.TouchEvent) => { touchX.current = e.touches[0].clientX; };
+  const onTouchEnd = (e: React.TouchEvent) => {
+    if (touchX.current == null) return;
+    const dx = e.changedTouches[0].clientX - touchX.current;
+    touchX.current = null;
+    if (Math.abs(dx) < 40 || slides.length < 2) return;
+    setIdx((i) => (dx < 0 ? (i + 1) % slides.length : (i - 1 + slides.length) % slides.length));
+  };
 
   const totalLive = liveGames.length;
 
