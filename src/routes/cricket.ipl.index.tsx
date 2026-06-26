@@ -13,6 +13,7 @@ import {
   getIplLeaders,
 } from "@/lib/ipl.functions";
 import { formatLocalTime, relativeDay } from "@/lib/time";
+import { breadcrumbList, collectionPage, ldScript } from "@/lib/seo/jsonld";
 
 const overviewQO = queryOptions({
   queryKey: ["ipl", "overview"],
