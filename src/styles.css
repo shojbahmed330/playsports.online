@@ -19,8 +19,12 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 10px);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
   --color-popover: var(--popover);
@@ -40,33 +44,57 @@
   --color-ring: var(--ring);
   --color-gold: var(--gold);
   --color-gold-foreground: var(--gold-foreground);
+  --color-live: var(--live);
+  --color-accent-football: var(--accent-football);
+  --color-accent-cricket: var(--accent-cricket);
+  --color-accent-mlb: var(--accent-mlb);
+  --color-accent-nba: var(--accent-nba);
+  --color-accent-nhl: var(--accent-nhl);
+  --color-accent-mls: var(--accent-mls);
   --font-sans: "Inter", system-ui, sans-serif;
+  --font-display: "Sora Variable", "Inter", system-ui, sans-serif;
 }
 
 :root {
-  --radius: 0.625rem;
-  /* Dark theme by default — FIFA archive */
-  --background: oklch(0.16 0.025 264);   /* #0a0e1a */
+  --radius: 0.75rem;
+  /* Stadium-night dark theme */
+  --background: oklch(0.16 0.02 255);
   --foreground: oklch(0.985 0 0);
-  --card: oklch(0.22 0.025 264);          /* #111827 */
+  --surface: oklch(0.20 0.022 255);
+  --surface-2: oklch(0.24 0.022 255);
+  --surface-3: oklch(0.28 0.022 255);
+  --card: oklch(0.22 0.022 255);
   --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.22 0.025 264);
+  --popover: oklch(0.22 0.022 255);
   --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.78 0.16 75);         /* gold #f59e0b */
+  --primary: oklch(0.78 0.16 75);
   --primary-foreground: oklch(0.18 0.02 264);
   --secondary: oklch(0.28 0.02 264);
   --secondary-foreground: oklch(0.985 0 0);
   --muted: oklch(0.28 0.02 264);
-  --muted-foreground: oklch(0.7 0.015 264);
+  --muted-foreground: oklch(0.74 0.015 264);
   --accent: oklch(0.32 0.02 264);
   --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.62 0.22 27);     /* red #dc2626 */
+  --destructive: oklch(0.62 0.22 27);
   --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(0.3 0.02 264);
-  --input: oklch(0.3 0.02 264);
+  --border: oklch(0.32 0.02 264);
+  --input: oklch(0.32 0.02 264);
   --ring: oklch(0.78 0.16 75);
   --gold: oklch(0.78 0.16 75);
   --gold-foreground: oklch(0.18 0.02 264);
+  --live: oklch(0.68 0.22 22);
+  /* Per-sport accent tokens */
+  --accent-football: oklch(0.78 0.16 75);
+  --accent-cricket: oklch(0.74 0.16 155);
+  --accent-mlb: oklch(0.72 0.17 250);
+  --accent-nba: oklch(0.72 0.18 35);
+  --accent-nhl: oklch(0.72 0.18 320);
+  --accent-mls: oklch(0.74 0.16 155);
+  /* Shadows & gradients */
+  --shadow-elevated: 0 10px 30px -10px rgb(0 0 0 / 0.55);
+  --gradient-hero: linear-gradient(135deg, oklch(0.22 0.04 260) 0%, oklch(0.16 0.02 255) 60%);
+  --gradient-card: linear-gradient(160deg, oklch(0.24 0.03 260) 0%, oklch(0.20 0.02 255) 100%);
+  --tap-target: 44px;
 }
 
 @layer base {
@@ -74,11 +102,37 @@
     border-color: var(--color-border);
   }
   html, body {
-    background-color: #0a0e1a;
+    background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
   }
+  h1, h2, h3, .font-display {
+    font-family: var(--font-display);
+    letter-spacing: -0.01em;
+  }
+  /* Global visible focus ring — accessibility AA */
+  :focus-visible {
+    outline: 2px solid var(--color-ring);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+  /* Form inputs inherit focus ring via Tailwind shadcn defaults, but elevate visibility */
+  button:focus-visible, a:focus-visible, [role="button"]:focus-visible, [role="tab"]:focus-visible {
+    outline: 2px solid var(--color-ring);
+    outline-offset: 2px;
+  }
+}
+
+@utility tap-target {
+  min-height: var(--tap-target);
+  min-width: var(--tap-target);
+}
+
+@utility edge-fade-x {
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 20px, #000 calc(100% - 20px), transparent);
+          mask-image: linear-gradient(to right, transparent, #000 20px, #000 calc(100% - 20px), transparent);
 }
 
 @utility scrollbar-thin {
