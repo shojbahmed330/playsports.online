@@ -14,13 +14,16 @@ export const Route = createFileRoute("/cricket/series/$id")({
   head: ({ params }) => {
     const l = CRICKET_LEAGUE_BY_ID[params.id];
     const name = l?.longName ?? "Cricket Series";
+    const url = `https://allsportslive.lovable.app/cricket/series/${params.id}`;
     return {
       meta: [
         { title: `${name} — Fixtures, Results & Squads` },
         { name: "description", content: `Complete ${name} fixtures, live scores and recent results.` },
         { property: "og:title", content: `${name} — Cricket Hub` },
         { property: "og:description", content: `Live scores and full schedule for ${name}.` },
+        { property: "og:url", content: url },
       ],
+      links: [{ rel: "canonical", href: url }],
     };
   },
   component: SeriesPage,

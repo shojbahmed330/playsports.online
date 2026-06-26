@@ -5,6 +5,19 @@ import { getMlbAthlete } from "@/lib/mlb.functions";
 import { PlayerProfile } from "@/components/mlb/PlayerProfile";
 
 export const Route = createFileRoute("/mlb/player/$id")({
+  head: ({ params }) => {
+    const url = `https://allsportslive.lovable.app/mlb/player/${params.id}`;
+    return {
+      meta: [
+        { title: "MLB Player Profile — Career Stats & Game Logs" },
+        { name: "description", content: "MLB player profile with career batting and pitching stats, season splits, and recent game logs." },
+        { property: "og:title", content: "MLB Player Profile" },
+        { property: "og:description", content: "Career stats, season splits and recent game logs." },
+        { property: "og:url", content: url },
+      ],
+      links: [{ rel: "canonical", href: url }],
+    };
+  },
   component: PlayerPage,
 });
 

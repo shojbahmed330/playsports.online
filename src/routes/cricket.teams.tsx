@@ -14,7 +14,11 @@ export const Route = createFileRoute("/cricket/teams")({
     meta: [
       { title: "Cricket Teams — Squads across IPL, BBL, PSL & World Cups" },
       { name: "description", content: "Browse cricket teams across major leagues and international series." },
+      { property: "og:title", content: "Cricket Teams" },
+      { property: "og:description", content: "Squads across major leagues and international series." },
+      { property: "og:url", content: "https://allsportslive.lovable.app/cricket/teams" },
     ],
+    links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/cricket/teams" }],
   }),
   component: TeamsIndex,
 });

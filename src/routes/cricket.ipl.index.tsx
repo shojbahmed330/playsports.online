@@ -43,7 +43,9 @@ export const Route = createFileRoute("/cricket/ipl/")({
       { name: "description", content: "IPL hub with live scores, standings, Orange & Purple Cap leaderboards, franchise titles and full season history from 2008." },
       { property: "og:title", content: "IPL — Live Scores, Standings & Records" },
       { property: "og:description", content: "Live IPL action, franchise stats, Orange and Purple Cap leaders and complete history." },
+      { property: "og:url", content: "https://allsportslive.lovable.app/cricket/ipl" },
     ],
+    links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/cricket/ipl" }],
   }),
   loader: ({ context }) =>
     Promise.all([

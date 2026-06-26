@@ -20,7 +20,11 @@ export const Route = createFileRoute("/cricket/rankings")({
     meta: [
       { title: "ICC Cricket Rankings — Teams, Batters, Bowlers & All-rounders" },
       { name: "description", content: "Official ICC rankings across T20I, ODI and Test." },
+      { property: "og:title", content: "ICC Cricket Rankings" },
+      { property: "og:description", content: "Team and player rankings across T20I, ODI and Test." },
+      { property: "og:url", content: "https://allsportslive.lovable.app/cricket/rankings" },
     ],
+    links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/cricket/rankings" }],
   }),
   component: RankingsPage,
 });

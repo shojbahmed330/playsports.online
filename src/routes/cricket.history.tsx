@@ -26,7 +26,11 @@ export const Route = createFileRoute("/cricket/history")({
     meta: [
       { title: "Cricket History & Records — World Cup, IPL, BBL, PSL" },
       { name: "description", content: "Champions, runs and wickets records for the ICC World Cup, T20 World Cup, IPL, BBL and PSL — full hall of fame." },
+      { property: "og:title", content: "Cricket History & Records" },
+      { property: "og:description", content: "Champions and records across the ICC World Cup, IPL, BBL and PSL." },
+      { property: "og:url", content: "https://allsportslive.lovable.app/cricket/history" },
     ],
+    links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/cricket/history" }],
   }),
   component: HistoryPage,
 });

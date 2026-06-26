@@ -34,7 +34,9 @@ export const Route = createFileRoute("/cricket/ipl/records")({
       { name: "description", content: "All-time IPL records: most runs, fastest century, best bowling, highest team total, most catches and more." },
       { property: "og:title", content: "IPL Records" },
       { property: "og:description", content: "Every key IPL record — batting, bowling, team and fielding." },
+      { property: "og:url", content: "https://allsportslive.lovable.app/cricket/ipl/records" },
     ],
+    links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/cricket/ipl/records" }],
   }),
   component: RecordsPage,
 });

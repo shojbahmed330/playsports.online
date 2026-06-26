@@ -29,7 +29,9 @@ export const Route = createFileRoute("/cricket/scores")({
       { name: "description", content: "Live cricket scores plus today's fixtures, upcoming matches and recent results across IPL, ICC events, BBL, PSL and more." },
       { property: "og:title", content: "Cricket Scores — Live & Fixtures" },
       { property: "og:description", content: "Auto-refreshing cricket scores and fixtures by date, format and series." },
+      { property: "og:url", content: "https://allsportslive.lovable.app/cricket/scores" },
     ],
+    links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/cricket/scores" }],
   }),
   component: CricketScoresPage,
 });

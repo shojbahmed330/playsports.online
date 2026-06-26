@@ -12,12 +12,19 @@ import { MlbPlayByPlay } from "@/components/mlb/MlbPlayByPlay";
 import { formatLocalTime, relativeDay } from "@/lib/time";
 
 export const Route = createFileRoute("/mlb/game/$id")({
-  head: ({ params }) => ({
-    meta: [
-      { title: `MLB Game · Boxscore & Live Updates — ${params.id}` },
-      { name: "description", content: "Live MLB boxscore: inning-by-inning linescore, batting and pitching stats, scoring plays, probables, venue, weather, odds." },
-    ],
-  }),
+  head: ({ params }) => {
+    const url = `https://allsportslive.lovable.app/mlb/game/${params.id}`;
+    return {
+      meta: [
+        { title: `MLB Game · Boxscore & Live Updates` },
+        { name: "description", content: "Live MLB boxscore: inning-by-inning linescore, batting and pitching stats, scoring plays, probables, venue, weather, odds." },
+        { property: "og:title", content: "MLB Game · Live Boxscore" },
+        { property: "og:description", content: "Inning-by-inning linescore, batting & pitching stats, scoring plays." },
+        { property: "og:url", content: url },
+      ],
+      links: [{ rel: "canonical", href: url }],
+    };
+  },
   component: GamePage,
 });
 

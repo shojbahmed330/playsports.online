@@ -36,16 +36,22 @@ export const Route = createFileRoute("/cricket/ipl/teams/$teamId")({
     if (!data.team) throw notFound();
     return data;
   },
-  head: ({ loaderData }) => ({
-    meta: loaderData?.team
-      ? [
-          { title: `${loaderData.team.name} — IPL Franchise` },
-          { name: "description", content: `${loaderData.team.name} squad, fixtures, titles and franchise stats.` },
-          { property: "og:title", content: `${loaderData.team.name} — IPL` },
-          { property: "og:image", content: loaderData.team.logo },
-        ]
-      : [{ title: "IPL Team" }],
-  }),
+  head: ({ params, loaderData }) => {
+    const url = `https://allsportslive.lovable.app/cricket/ipl/teams/${params.teamId}`;
+    return {
+      meta: loaderData?.team
+        ? [
+            { title: `${loaderData.team.name} — IPL Franchise` },
+            { name: "description", content: `${loaderData.team.name} squad, fixtures, titles and franchise stats.` },
+            { property: "og:title", content: `${loaderData.team.name} — IPL` },
+            { property: "og:description", content: `Squad, fixtures and title history for ${loaderData.team.name}.` },
+            { property: "og:url", content: url },
+            { property: "og:image", content: loaderData.team.logo },
+          ]
+        : [{ title: "IPL Team" }, { property: "og:url", content: url }],
+      links: [{ rel: "canonical", href: url }],
+    };
+  },
   notFoundComponent: () => (
     <IplPageShell title="Team not found">
       <p className="text-white/60">That franchise does not exist. <Link to="/cricket/ipl/teams" className="underline">Back to teams</Link>.</p>
