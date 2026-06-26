@@ -79,8 +79,8 @@ export function SportNav({ liveCount = 0 }: { liveCount?: number }) {
           </div>
         </div>
 
-        {/* Tabs — wrap on mobile (no horizontal scroll), inline on desktop */}
-        <nav className="flex flex-wrap sm:flex-nowrap items-center gap-1.5 sm:gap-1 sm:ml-auto">
+        {/* Tabs — single-row horizontal scroll on mobile, inline on desktop */}
+        <nav className="-mx-3 sm:mx-0 px-3 sm:px-0 flex sm:flex-nowrap items-center gap-1.5 sm:gap-1 sm:ml-auto overflow-x-auto no-scrollbar [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden snap-x snap-mandatory">
           {tabs.map((t) => {
             const active =
               t.to === "/"
