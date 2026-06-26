@@ -30,12 +30,12 @@ export function MobileTabBar({
   return (
     <>
       {/* spacer so fixed bar doesn't cover content */}
-      <div aria-hidden className="h-16 sm:hidden" />
+      <div aria-hidden className="h-[68px] sm:hidden" />
       <nav
         aria-label="Section quick nav"
-        className="sm:hidden fixed bottom-0 inset-x-0 z-40 border-t border-white/10 bg-background/95 backdrop-blur-md pb-[env(safe-area-inset-bottom)]"
+        className="sm:hidden fixed bottom-0 inset-x-0 z-40 border-t border-white/10 bg-background/95 backdrop-blur-md pb-[env(safe-area-inset-bottom)] shadow-[0_-4px_20px_rgba(0,0,0,0.4)]"
       >
-        <ul className="grid grid-cols-4">
+        <ul className={`grid`} style={{ gridTemplateColumns: `repeat(${tabs.length}, minmax(0, 1fr))` }}>
           {tabs.map((t) => {
             const active = t.match ? t.match(pathname, search) : pathname === t.to;
             const Icon = t.Icon;
@@ -44,15 +44,17 @@ export function MobileTabBar({
                 <Link
                   to={t.to}
                   search={t.search ? ((prev: Record<string, unknown>) => ({ ...prev, ...t.search })) : undefined}
+                  aria-current={active ? "page" : undefined}
+                  aria-label={t.label}
                   className={[
-                    "relative flex flex-col items-center justify-center gap-0.5 py-2 text-[10px] font-semibold",
-                    active ? a.active : "text-white/55 hover:text-white/80",
+                    "tap-target relative flex flex-col items-center justify-center gap-0.5 py-2 text-[10px] font-semibold transition-colors",
+                    active ? a.active : "text-white/60 hover:text-white/90 active:text-white",
                   ].join(" ")}
                 >
                   {active && (
-                    <span className={`absolute top-0 h-0.5 w-8 rounded-full ${a.bar}`} />
+                    <span aria-hidden className={`absolute top-0 h-0.5 w-10 rounded-full ${a.bar}`} />
                   )}
-                  <Icon className="size-5" />
+                  <Icon className="size-5" aria-hidden />
                   <span className="tracking-wide">{t.label}</span>
                 </Link>
               </li>
