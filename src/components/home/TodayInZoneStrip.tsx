@@ -152,9 +152,9 @@ function Chip({ item }: { item: Item }) {
         search={{ year: 2026 }}
         className="shrink-0 min-w-[180px] max-w-[220px] rounded-xl border border-amber-500/30 bg-amber-500/[0.06] hover:bg-amber-500/[0.12] hover:border-amber-400/60 transition-colors px-3 py-2"
       >
-        <div className="flex items-center justify-between mb-1">
-          <span className="text-[9px] uppercase tracking-wider font-bold text-amber-300">⚽ FIFA {f.group ? `· ${f.group}` : ""}</span>
-          <span className="text-[10px] font-bold text-gray-400">
+        <div className="flex items-center justify-between gap-2 mb-1">
+          <span className="text-[9px] uppercase tracking-wider font-bold text-amber-300 truncate min-w-0">⚽ FIFA {f.group ? `· ${f.group}` : ""}</span>
+          <span className="text-[10px] font-bold text-gray-400 shrink-0 whitespace-nowrap">
             {live ? <span className="text-red-300">{f.minute ? `${f.minute}'` : "LIVE"}</span>
               : finished ? "FT"
               : fmtTime(f.startTs * 1000)}
