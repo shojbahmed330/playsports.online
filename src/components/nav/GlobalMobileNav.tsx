@@ -1,6 +1,6 @@
 import { useRouterState } from "@tanstack/react-router";
 import {
-  Home, Trophy, Calendar, Users, Swords, Goal, CalendarDays,
+  Home, Trophy, Calendar, Swords, Goal, CalendarDays,
   BarChart3, Shield, User, ListOrdered, Activity, Flame,
 } from "lucide-react";
 import { MobileTabBar, type MobileTab } from "./MobileTabBar";
@@ -100,15 +100,23 @@ const NBA_TABS: MobileTab[] = [
     match: (p) => p.startsWith("/nba/leaders") || p.startsWith("/nba/player") || p.startsWith("/nba/teams") || p.startsWith("/nba/team") || p.startsWith("/nba/history") || p.startsWith("/nba/news") },
 ];
 
-// ---------- Other ESPN leagues (NHL / MLS) ----------
-function leagueTabs(base: "/nhl" | "/mls"): MobileTab[] {
-  return [
-    { to: base,                label: "Today",     Icon: Home,        match: (p) => p === base || p === `${base}/` },
-    { to: `${base}/scores`,    label: "Scores",    Icon: Calendar,    match: (p) => p.startsWith(`${base}/scores`) },
-    { to: `${base}/standings`, label: "Standings", Icon: ListOrdered, match: (p) => p.startsWith(`${base}/standings`) },
-    { to: `${base}/teams`,     label: "Teams",     Icon: Users,       match: (p) => p.startsWith(`${base}/teams`) || p.startsWith(`${base}/team`) },
-  ];
-}
+// ---------- NHL ----------
+const NHL_TABS: MobileTab[] = [
+  { to: "/nhl",           label: "Today",   Icon: Home,        match: (p) => p === "/nhl" || p === "/nhl/" },
+  { to: "/nhl/scores",    label: "Scores",  Icon: Calendar,    match: (p) => p.startsWith("/nhl/scores") || p.startsWith("/nhl/game") },
+  { to: "/nhl/standings", label: "Table",   Icon: ListOrdered, match: (p) => p.startsWith("/nhl/standings") },
+  { to: "/nhl/leaders",   label: "Leaders", Icon: BarChart3,
+    match: (p) => p.startsWith("/nhl/leaders") || p.startsWith("/nhl/player") || p.startsWith("/nhl/teams") || p.startsWith("/nhl/team") || p.startsWith("/nhl/history") || p.startsWith("/nhl/news") },
+];
+
+// ---------- MLS ----------
+const MLS_TABS: MobileTab[] = [
+  { to: "/mls",           label: "Today",   Icon: Home,        match: (p) => p === "/mls" || p === "/mls/" },
+  { to: "/mls/scores",    label: "Scores",  Icon: Calendar,    match: (p) => p.startsWith("/mls/scores") || p.startsWith("/mls/game") },
+  { to: "/mls/standings", label: "Table",   Icon: ListOrdered, match: (p) => p.startsWith("/mls/standings") },
+  { to: "/mls/leaders",   label: "Leaders", Icon: BarChart3,
+    match: (p) => p.startsWith("/mls/leaders") || p.startsWith("/mls/player") || p.startsWith("/mls/teams") || p.startsWith("/mls/team") || p.startsWith("/mls/history") || p.startsWith("/mls/news") },
+];
 
 function pickTabs(pathname: string): Picked {
   // hidden on auth-style chrome
@@ -120,9 +128,9 @@ function pickTabs(pathname: string): Picked {
                                            return { tabs: FOOTBALL_TABS, accent: "amber" };
   if (pathname.startsWith("/mlb"))         return { tabs: MLB_TABS, accent: "sky" };
   if (pathname.startsWith("/nba"))         return { tabs: NBA_TABS, accent: "amber" };
+  if (pathname.startsWith("/nhl"))         return { tabs: NHL_TABS, accent: "fuchsia" };
+  if (pathname.startsWith("/mls"))         return { tabs: MLS_TABS, accent: "emerald" };
 
-  if (pathname.startsWith("/nhl"))         return { tabs: leagueTabs("/nhl"), accent: "fuchsia" };
-  if (pathname.startsWith("/mls"))         return { tabs: leagueTabs("/mls"), accent: "emerald" };
 
   // hub / unknown → top-level switcher so users can always navigate
   return { tabs: HUB_TABS, accent: "amber" };
