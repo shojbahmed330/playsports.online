@@ -455,29 +455,26 @@ export const getMlsTeam = createServerFn({ method: "GET" })
   });
 
 // ───────── Leaders ─────────
-// Note: ESPN MLS stat keys live under `offensive` and `defensive` and `general`
+// ESPN soccer stat keys (best-effort; we tolerate empty arrays gracefully).
 const OFFENSIVE: Array<{ key: string; label: string; sortDir?: "asc" | "desc" }> = [
-  { key: "avgPoints", label: "Points / Game" },
-  { key: "avgAssists", label: "Assists / Game" },
-  { key: "threePointFieldGoalsMade", label: "3PT Made (Total)" },
-  { key: "fieldGoalPct", label: "FG %" },
-  { key: "threePointFieldGoalPct", label: "3PT %" },
-  { key: "freeThrowPct", label: "FT %" },
-  { key: "points", label: "Total Points" },
-  { key: "assists", label: "Total Assists" },
+  { key: "totalGoals", label: "Goals" },
+  { key: "goalAssists", label: "Assists" },
+  { key: "totalShots", label: "Shots" },
+  { key: "shotsOnTarget", label: "Shots on Target" },
+  { key: "totalPasses", label: "Passes" },
+  { key: "accuratePasses", label: "Accurate Passes" },
 ];
 const DEFENSIVE: Array<{ key: string; label: string; sortDir?: "asc" | "desc" }> = [
-  { key: "avgRebounds", label: "Rebounds / Game" },
-  { key: "avgSteals", label: "Steals / Game" },
-  { key: "avgBlocks", label: "Blocks / Game" },
-  { key: "rebounds", label: "Total Rebounds" },
-  { key: "steals", label: "Total Steals" },
-  { key: "blocks", label: "Total Blocks" },
+  { key: "totalTackles", label: "Tackles" },
+  { key: "interceptions", label: "Interceptions" },
+  { key: "foulsCommitted", label: "Fouls" },
+  { key: "yellowCards", label: "Yellow Cards" },
+  { key: "redCards", label: "Red Cards" },
 ];
 const GENERAL: Array<{ key: string; label: string; sortDir?: "asc" | "desc" }> = [
-  { key: "avgMinutes", label: "Minutes / Game" },
-  { key: "doubleDouble", label: "Double-Doubles" },
-  { key: "tripleDouble", label: "Triple-Doubles" },
+  { key: "saves", label: "Goalkeeper Saves" },
+  { key: "cleanSheet", label: "Clean Sheets" },
+  { key: "appearances", label: "Appearances" },
 ];
 
 async function fetchMlsLeaderCategory(
