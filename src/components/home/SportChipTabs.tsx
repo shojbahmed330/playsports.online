@@ -2,15 +2,14 @@ import { SPORT_LIST } from "@/lib/sports-config";
 
 export type SportFilter = "all" | "football" | "cricket" | "mlb" | "nba" | "nhl" | "mls";
 
-const TABS: { id: SportFilter; emoji: string; label: string; bangla: string }[] = [
-  { id: "all", emoji: "🏆", label: "All", bangla: "সব" },
-  { id: "football", emoji: "⚽", label: "Football", bangla: "ফুটবল" },
-  { id: "cricket", emoji: "🏏", label: "Cricket", bangla: "ক্রিকেট" },
+const TABS: { id: SportFilter; emoji: string; label: string }[] = [
+  { id: "all", emoji: "🏆", label: "All" },
+  { id: "football", emoji: "⚽", label: "Football" },
+  { id: "cricket", emoji: "🏏", label: "Cricket" },
   ...SPORT_LIST.map((s) => ({
     id: s.slug as SportFilter,
     emoji: s.emoji,
     label: s.label,
-    bangla: "",
   })),
 ];
 
@@ -48,11 +47,6 @@ export function SportChipTabs({
               >
                 <span className="text-sm leading-none">{t.emoji}</span>
                 <span>{t.label}</span>
-                {t.bangla && (
-                  <span className={`text-[10px] hidden sm:inline ${active ? "text-gray-800/80" : "text-gray-500"}`}>
-                    · {t.bangla}
-                  </span>
-                )}
                 {count != null && count > 0 && (
                   <span
                     className={`ml-0.5 inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full text-[10px] font-bold ${
