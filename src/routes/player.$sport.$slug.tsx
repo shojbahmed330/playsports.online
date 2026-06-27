@@ -66,7 +66,7 @@ function PlayerPage() {
         <Stat label="Own goals" value={stats.og} />
       </div>
 
-      <AffiliateStrip placement="inline" sport="football" />
+      <AffiliateStrip placement="inline" sport={Route.useParams().sport} />
 
       <section className="mt-8">
         <h2 className="text-xl font-semibold mb-3">Goals by Tournament</h2>
