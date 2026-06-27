@@ -259,7 +259,7 @@ function HubPage() {
           ) : filteredUpcoming.length > 0 ? (
             <Section
               icon={<Clock className="size-5 text-amber-400" />}
-              title="Upcoming today · পরবর্তী খেলা"
+              title="Upcoming today"
               badge={`${filteredUpcoming.length} game${filteredUpcoming.length === 1 ? "" : "s"}`}
               badgeTone="amber"
             >
