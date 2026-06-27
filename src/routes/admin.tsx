@@ -25,6 +25,7 @@ import { NewsletterDigestCard } from "@/components/admin/NewsletterDigestCard";
 import { MembershipsCard } from "@/components/admin/MembershipsCard";
 import { AdminSidebar, type AdminSection } from "@/components/admin/AdminSidebar";
 import { OverviewPanel } from "@/components/admin/OverviewPanel";
+import { SectionStatusStrip } from "@/components/admin/SectionStatusStrip";
 
 
 const GROUP_MATCHES_BY_YEAR = groupMatchesData as Record<string, WCMatch[]>;
@@ -249,7 +250,7 @@ function AdminShell() {
           )}
 
           {section === "monetize" && (
-            <SectionShell title="Monetize" hint="AdSense · Affiliates · Sponsored placements · Memberships">
+            <SectionShell section="monetize" title="Monetize" hint="AdSense · Affiliates · Sponsored placements · Memberships">
               <AdSenseAdminCard />
               <AffiliateLinksCard />
               <SponsoredSlotsCard />
@@ -258,26 +259,28 @@ function AdminShell() {
           )}
 
           {section === "audience" && (
-            <SectionShell title="Audience" hint="Newsletter signups & weekly digest">
+            <SectionShell section="audience" title="Audience" hint="Newsletter signups & weekly digest">
               <NewsletterDigestCard />
             </SectionShell>
           )}
 
           {section === "content" && (
-            <SectionShell title="Content" hint="Auto-seed videos & 2026 highlights">
+            <SectionShell section="content" title="Content" hint="Auto-seed videos & 2026 highlights">
               <SeedFromDataset />
               <Wc2026HighlightsCard />
             </SectionShell>
           )}
 
           {section === "settings" && (
-            <SectionShell title="Settings" hint="Site identity, analytics, consent, legal pages">
+            <SectionShell section="settings" title="Settings" hint="Site identity, analytics, consent, legal pages">
               <MonetizationCard />
             </SectionShell>
           )}
 
           {section === "matches" && (
             <SectionShell
+              section="matches"
+              matchStats={stats}
               title="Matches"
               hint="World Cup video library — paste a YouTube/Vimeo/mp4 link per match"
             >
@@ -367,17 +370,22 @@ function AdminShell() {
 }
 
 function SectionShell({
-  title, hint, children,
+  title, hint, section, matchStats, children,
 }: {
   title: string;
   hint: string;
+  section: AdminSection;
+  matchStats?: { total: number; withVideo: number; missing: number };
   children: ReactNode;
 }) {
   return (
     <div className="space-y-5">
-      <header>
-        <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight">{title}</h2>
-        <p className="text-sm text-muted-foreground mt-1">{hint}</p>
+      <header className="space-y-3">
+        <div>
+          <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight">{title}</h2>
+          <p className="text-sm text-muted-foreground mt-1">{hint}</p>
+        </div>
+        <SectionStatusStrip section={section} matchStats={matchStats} />
       </header>
       <div className="space-y-5">{children}</div>
     </div>
