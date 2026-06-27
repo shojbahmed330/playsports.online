@@ -62,7 +62,7 @@ export function ForYouStrip({
     <section className="space-y-3" aria-labelledby="for-you-heading">
       <div className="flex items-center justify-between">
         <h2 id="for-you-heading" className="text-xs uppercase tracking-[0.2em] font-bold text-muted-foreground">
-          For you · আপনার জন্য
+          For you
         </h2>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
