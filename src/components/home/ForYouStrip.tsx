@@ -69,21 +69,8 @@ export function ForYouStrip({
         <Slot
           tone="red"
           icon={<Flame className="size-4" />}
-          label="Live now · এখন লাইভ"
-          item={live}
-          fallback="No live match right now"
-        />
-        <Slot
-          tone="amber"
-          icon={<Clock className="size-4" />}
-          label="Next up · পরবর্তী"
-          item={next}
-          fallback="Nothing scheduled"
-        />
-        <Slot
-          tone="gray"
-          icon={<CheckCircle2 className="size-4" />}
-          label="Just finished · সদ্য শেষ"
+          label="Live now"
+
           item={recent}
           fallback="No recent results"
         />
