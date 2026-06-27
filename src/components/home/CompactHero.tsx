@@ -155,7 +155,7 @@ function EspnHero({ t, live }: { t: Tagged; live: boolean }) {
               to={`/${sport.slug}` as "/mlb" | "/nba" | "/nhl" | "/mls"}
               className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-full ${sport.chipBg} ring-1 ${sport.ring} ${sport.accent} text-[11px] sm:text-xs font-bold hover:scale-[1.03] transition-transform`}
             >
-              {live ? "Watch · দেখুন" : "Details"} <ArrowRight className="size-3" />
+              {live ? "Watch" : "Details"} <ArrowRight className="size-3" />
             </Link>
           </div>
         </div>
