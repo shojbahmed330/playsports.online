@@ -250,7 +250,7 @@ function AdminShell() {
           )}
 
           {section === "monetize" && (
-            <SectionShell title="Monetize" hint="AdSense · Affiliates · Sponsored placements · Memberships">
+            <SectionShell section="monetize" title="Monetize" hint="AdSense · Affiliates · Sponsored placements · Memberships">
               <AdSenseAdminCard />
               <AffiliateLinksCard />
               <SponsoredSlotsCard />
@@ -259,26 +259,28 @@ function AdminShell() {
           )}
 
           {section === "audience" && (
-            <SectionShell title="Audience" hint="Newsletter signups & weekly digest">
+            <SectionShell section="audience" title="Audience" hint="Newsletter signups & weekly digest">
               <NewsletterDigestCard />
             </SectionShell>
           )}
 
           {section === "content" && (
-            <SectionShell title="Content" hint="Auto-seed videos & 2026 highlights">
+            <SectionShell section="content" title="Content" hint="Auto-seed videos & 2026 highlights">
               <SeedFromDataset />
               <Wc2026HighlightsCard />
             </SectionShell>
           )}
 
           {section === "settings" && (
-            <SectionShell title="Settings" hint="Site identity, analytics, consent, legal pages">
+            <SectionShell section="settings" title="Settings" hint="Site identity, analytics, consent, legal pages">
               <MonetizationCard />
             </SectionShell>
           )}
 
           {section === "matches" && (
             <SectionShell
+              section="matches"
+              matchStats={stats}
               title="Matches"
               hint="World Cup video library — paste a YouTube/Vimeo/mp4 link per match"
             >
