@@ -1,0 +1,40 @@
+/* NHL design tokens — hardwood + Spalding orange + electric blue */
+:root {
+  --nhl-orange: #c8102e;
+  --nhl-orange-deep: #9f1c30;
+  --nhl-blue: #041e42;
+  --nhl-blue-deep: #020c1e;
+  --nhl-red: #c8102e;
+  --nhl-hardwood: #c08850;
+  --nhl-hardwood-deep: #8a5a32;
+  --gradient-nhl: linear-gradient(135deg, var(--nhl-blue-deep) 0%, var(--nhl-blue) 45%, var(--nhl-orange-deep) 100%);
+  --gradient-nhl-soft: linear-gradient(135deg, rgba(23,64,139,0.35) 0%, rgba(245,132,38,0.22) 100%);
+}
+
+.bg-nhl-hero { background: var(--gradient-nhl); }
+.bg-nhl-soft { background: var(--gradient-nhl-soft); }
+.ring-nhl { box-shadow: 0 0 0 1px rgba(245,132,38,0.25); }
+
+/* Subtle hardwood floor lines */
+.nhl-hardwood {
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      transparent 0,
+      transparent 22px,
+      rgba(192,136,80,0.06) 22px,
+      rgba(192,136,80,0.06) 23px
+    );
+}
+
+@keyframes nhl-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(245,132,38,0.55); }
+  50%      { box-shadow: 0 0 0 8px rgba(245,132,38,0); }
+}
+.nhl-live-pulse { animation: nhl-pulse 1.6s ease-out infinite; }
+
+@keyframes nhlSheen {
+  0%   { transform: translateX(-30%); }
+  100% { transform: translateX(30%); }
+}
+.nhl-sheen { animation: nhlSheen 7s linear infinite; }

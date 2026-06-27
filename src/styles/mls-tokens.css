@@ -1,0 +1,40 @@
+/* MLS design tokens — hardwood + Spalding orange + electric blue */
+:root {
+  --mls-orange: #ed1c24;
+  --mls-orange-deep: #a91419;
+  --mls-blue: #001f5b;
+  --mls-blue-deep: #000914;
+  --mls-red: #c8102e;
+  --mls-hardwood: #c08850;
+  --mls-hardwood-deep: #8a5a32;
+  --gradient-mls: linear-gradient(135deg, var(--mls-blue-deep) 0%, var(--mls-blue) 45%, var(--mls-orange-deep) 100%);
+  --gradient-mls-soft: linear-gradient(135deg, rgba(23,64,139,0.35) 0%, rgba(245,132,38,0.22) 100%);
+}
+
+.bg-mls-hero { background: var(--gradient-mls); }
+.bg-mls-soft { background: var(--gradient-mls-soft); }
+.ring-mls { box-shadow: 0 0 0 1px rgba(245,132,38,0.25); }
+
+/* Subtle hardwood floor lines */
+.mls-hardwood {
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      transparent 0,
+      transparent 22px,
+      rgba(192,136,80,0.06) 22px,
+      rgba(192,136,80,0.06) 23px
+    );
+}
+
+@keyframes mls-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(245,132,38,0.55); }
+  50%      { box-shadow: 0 0 0 8px rgba(245,132,38,0); }
+}
+.mls-live-pulse { animation: mls-pulse 1.6s ease-out infinite; }
+
+@keyframes mlsSheen {
+  0%   { transform: translateX(-30%); }
+  100% { transform: translateX(30%); }
+}
+.mls-sheen { animation: mlsSheen 7s linear infinite; }

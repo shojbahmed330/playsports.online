@@ -12,6 +12,8 @@
 @import "./styles/mlb-tokens.css";
 @import "./styles/ipl-tokens.css";
 @import "./styles/nba-tokens.css";
+@import "./styles/nhl-tokens.css";
+@import "./styles/mls-tokens.css";
 
 @custom-variant dark (&:is(.dark *));
 
