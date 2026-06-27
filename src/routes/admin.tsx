@@ -4,8 +4,9 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import {
   Trophy, Loader2, LogOut, Search, ChevronDown, Save, Check,
-  Filter, ExternalLink, ArrowLeft, ShieldCheck, AlertTriangle, Sparkles,
+  Filter, ExternalLink, ArrowLeft, ShieldCheck, AlertTriangle, Sparkles, Command,
 } from "lucide-react";
+import { CommandPalette } from "@/components/admin/CommandPalette";
 import { supabase, WC_YEARS, type WCMatch } from "@/lib/supabase";
 import { flagOf } from "@/lib/flags";
 import { useAuth } from "@/hooks/use-auth";
@@ -93,6 +94,19 @@ function AdminShell() {
   const [search, setSearch] = useState("");
   const [missingOnly, setMissingOnly] = useState(false);
   const [section, setSection] = useState<AdminSection>("overview");
+  const [paletteOpen, setPaletteOpen] = useState(false);
+
+  // ⌘K / Ctrl+K to open quick jump.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setPaletteOpen((v) => !v);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
 
   const fixturesFn = useServerFn(getWc2026Fixtures);
 
@@ -190,8 +204,24 @@ function AdminShell() {
               <div className="text-[10px] uppercase tracking-[0.18em] text-gold">AllSportsLive Control</div>
             </div>
           </div>
-          <div className="flex items-center gap-3">
-            <span className="hidden sm:block text-xs text-muted-foreground truncate max-w-[200px]">
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setPaletteOpen(true)}
+              className="hidden sm:inline-flex items-center gap-2 px-3 py-1.5 rounded-md text-xs bg-card border border-border hover:border-gold/40 text-muted-foreground hover:text-foreground transition"
+              aria-label="Open quick jump"
+            >
+              <Search className="size-3.5" />
+              <span>Quick jump…</span>
+              <kbd className="ml-1 text-[10px] px-1.5 py-0.5 rounded bg-muted font-mono">⌘K</kbd>
+            </button>
+            <button
+              onClick={() => setPaletteOpen(true)}
+              className="sm:hidden size-9 grid place-items-center rounded-md bg-card border border-border text-muted-foreground"
+              aria-label="Open quick jump"
+            >
+              <Command className="size-4" />
+            </button>
+            <span className="hidden md:block text-xs text-muted-foreground truncate max-w-[200px]">
               {user?.email}
             </span>
             <button
@@ -203,6 +233,12 @@ function AdminShell() {
           </div>
         </div>
       </header>
+
+      <CommandPalette
+        open={paletteOpen}
+        onClose={() => setPaletteOpen(false)}
+        onJump={(s) => setSection(s)}
+      />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 lg:py-8 lg:flex lg:gap-8">
         <AdminSidebar active={section} onChange={setSection} />
