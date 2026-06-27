@@ -1,40 +1,34 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { LeaguePage } from "@/components/sports/LeaguePage";
-import { SPORTS } from "@/lib/sports-config";
-import { breadcrumbList, collectionPage, ldScript } from "@/lib/seo/jsonld";
-import { getScoreboard, getStandings } from "@/lib/espn.functions";
-import { todayYmd } from "@/components/sports/DateScrubber";
+import { createFileRoute, Outlet } from "@tanstack/react-router";
+import { SportNav } from "@/components/sports/SportNav";
+import { NbaHero } from "@/components/nba/NbaHero";
+import { NbaSubNav } from "@/components/nba/NbaSubNav";
+import { Breadcrumbs } from "@/components/nav/Breadcrumbs";
 
-export const Route = createFileRoute("/mls")({
+export const Route = createFileRoute("/nba")({
   head: () => ({
     meta: [
-      { title: "MLS Scores, Standings & News — AllSportsLive" },
-      { name: "description", content: "Live Major League Soccer scoreboard, Eastern and Western conference standings, and breaking soccer news from ESPN." },
-      { property: "og:title", content: "MLS — Live Scores & Standings" },
-      { property: "og:description", content: "Today's MLS games, conference standings, and headlines." },
-      { property: "og:url", content: "https://allsportslive.lovable.app/mls" },
-    ],
-    links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/mls" }],
-    scripts: [
-      ldScript(collectionPage({ name: "MLS — Live Scores & Standings", description: "MLS scores, conference standings and headlines.", path: "/mls" })),
-      ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "MLS", path: "/mls" }])),
+      { title: "NBA Hub — Live Scores, Standings, Players, History" },
+      { name: "description", content: "Live NBA scoreboard, conference standings, team profiles, statistical leaders, player careers, and championship history." },
+      { property: "og:title", content: "NBA Pro Hub — Live Scores · Stats · Careers · History" },
+      { property: "og:description", content: "Everything NBA — live games, standings, teams, leaders, player stats, championships." },
     ],
   }),
-  loader: async ({ context }) => {
-    const day = todayYmd();
-    await Promise.all([
-      context.queryClient.prefetchQuery({
-        queryKey: ["espn", "mls", "scoreboard", day],
-        queryFn: () => getScoreboard({ data: { sportPath: "soccer/usa.1", league: "MLS", yyyymmdd: day } }),
-        staleTime: 30_000,
-      }).catch(() => null),
-      context.queryClient.prefetchQuery({
-        queryKey: ["espn", "mls", "standings"],
-        queryFn: () => getStandings({ data: { sportPath: "soccer/usa.1" } }),
-        staleTime: 60 * 60_000,
-      }).catch(() => null),
-    ]);
-    return null;
-  },
-  component: () => <LeaguePage sport={SPORTS.mls} />,
+  component: NbaLayout,
 });
+
+function NbaLayout() {
+  return (
+    <div className="min-h-screen pb-16 sm:pb-0">
+      <SportNav />
+      <Breadcrumbs />
+      <NbaHero />
+      <NbaSubNav />
+      <main id="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+        <Outlet />
+      </main>
+      <footer className="border-t border-border mt-10 py-8 text-center text-xs text-muted-foreground">
+        Data from ESPN's public sports feed · Auto-refreshes while games are live
+      </footer>
+    </div>
+  );
+}
