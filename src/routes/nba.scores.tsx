@@ -47,7 +47,7 @@ function NbaScores() {
 
   return (
     <div className="space-y-5">
-      <DateScrubber value={day} onChange={setDay} />
+      <DateScrubber selected={day} onChange={setDay} />
       <div className="flex flex-wrap items-center gap-2">
         {(["all", "live", "upcoming", "final"] as Filter[]).map((f) => (
           <button

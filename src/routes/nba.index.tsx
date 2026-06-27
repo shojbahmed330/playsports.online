@@ -122,7 +122,7 @@ function NbaToday() {
         )}
       </section>
 
-      <AdSlot placement="in_content" />
+      <AdSlot slot="in_content" />
 
       {previewStandings.length > 0 && (
         <section className="space-y-3">
