@@ -3,6 +3,9 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { Trophy, Flame, ArrowRight, MapPin, Clock, CheckCircle2, X } from "lucide-react";
+import { CompactHero } from "@/components/home/CompactHero";
+import { StatusBar } from "@/components/home/StatusBar";
+import { SportChipTabs, type SportFilter } from "@/components/home/SportChipTabs";
 
 import { SPORT_LIST, type SportConfig } from "@/lib/sports-config";
 import { getMultiSportToday, type SportGame } from "@/lib/espn.functions";
