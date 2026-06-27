@@ -9,6 +9,7 @@ import { CricketHero } from "@/components/cricket/CricketHero";
 import { LivePulseStrip } from "@/components/cricket/LivePulseStrip";
 import { GameGridSkeleton } from "@/components/sports/Skeletons";
 import { AdSlot } from "@/components/ads/AdSlot";
+import { AffiliateStrip } from "@/components/affiliates/AffiliateStrip";
 import { CricketMatchCard } from "@/components/cricket/CricketMatchCard";
 import { getMultiCricketToday, type CricketMatch } from "@/lib/cricket.functions";
 import { CRICKET_LEAGUES, CRICKET_LEAGUE_BY_ID, type CricketLeague } from "@/lib/cricket-leagues";
@@ -270,6 +271,8 @@ function CricketIndex() {
             )}
           </>
         )}
+
+        <AffiliateStrip placement="homepage" sport="cricket" heading="Cricket gear & partners" />
       </main>
 
       <footer className="border-t border-border mt-10 py-8 text-center text-xs text-muted-foreground">

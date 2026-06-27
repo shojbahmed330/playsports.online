@@ -64,7 +64,7 @@ function ArchivePage() {
         </p>
       )}
 
-      <AffiliateStrip placement="inline" sport="football" />
+      <AffiliateStrip placement="inline" sport={Route.useParams().sport} />
 
       <section className="mt-6">
         <h2 className="text-xl font-semibold mb-3">Top Scorers</h2>

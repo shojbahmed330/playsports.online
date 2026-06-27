@@ -65,7 +65,7 @@ function TeamPage() {
         <Stat label="Goals (GF-GA)" value={`${stats.gf}-${stats.ga}`} />
       </div>
 
-      <AffiliateStrip placement="inline" sport="football" />
+      <AffiliateStrip placement="inline" sport={Route.useParams().sport} />
 
       <section className="mt-8">
         <h2 className="text-xl font-semibold mb-3">Top Scorers for {team.name}</h2>

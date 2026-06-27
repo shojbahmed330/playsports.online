@@ -1,5 +1,6 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { supabase } from "./supabase";
+import { detectCountry } from "./geo";
 
 export type Network = "amazon" | "fanatics" | "sportsbook" | "generic";
 export type Placement =
@@ -58,31 +59,51 @@ export type AffiliateCtx = {
 
 const FIVE_MIN = 1000 * 60 * 5;
 
+/** Normalize incoming sport string (e.g. "football_wc", "cricket_t20") to an
+ *  affiliate-row sport key ("football", "cricket", "mlb", "nba", "nhl", "mls"). */
+export function normalizeAffiliateSport(s?: string | null): string | undefined {
+  if (!s) return undefined;
+  const lower = s.toLowerCase();
+  if (lower.startsWith("football") || lower === "soccer" || lower === "wc") return "football";
+  if (lower.startsWith("cricket") || lower === "ipl") return "cricket";
+  if (lower.startsWith("mlb") || lower === "baseball") return "mlb";
+  if (lower.startsWith("nba") || lower === "basketball") return "nba";
+  if (lower.startsWith("nhl") || lower === "hockey") return "nhl";
+  if (lower.startsWith("mls")) return "mls";
+  return lower;
+}
+
 export function useAffiliateLinks(ctx: AffiliateCtx) {
+  // Stable cache key — derive country once per call site if not passed.
+  const country =
+    ctx.country ??
+    (typeof window !== "undefined" ? detectCountry() : undefined);
+  const sport = normalizeAffiliateSport(ctx.sport);
+  const resolved: AffiliateCtx = { ...ctx, sport, country };
   return useQuery({
-    queryKey: ["affiliate_links", ctx],
+    queryKey: ["affiliate_links", resolved],
     staleTime: FIVE_MIN,
     queryFn: async (): Promise<AffiliateLink[]> => {
       const { data, error } = await supabase
         .from("affiliate_links")
         .select("*")
         .eq("active", true)
-        .eq("placement", ctx.placement)
+        .eq("placement", resolved.placement)
         .order("priority", { ascending: false })
         .limit(20);
       if (error || !data) return [];
       const rows = data as unknown as AffiliateLink[];
       return rows
-        .filter((r) => !r.sport || r.sport === "all" || r.sport === ctx.sport)
-        .filter((r) => !r.team_slug || r.team_slug === ctx.team_slug)
-        .filter((r) => !r.league_slug || r.league_slug === ctx.league_slug)
+        .filter((r) => !r.sport || r.sport === "all" || r.sport === resolved.sport)
+        .filter((r) => !r.team_slug || r.team_slug === resolved.team_slug)
+        .filter((r) => !r.league_slug || r.league_slug === resolved.league_slug)
         .filter(
           (r) =>
             !r.geo_restrict ||
             r.geo_restrict.length === 0 ||
-            (ctx.country && r.geo_restrict.includes(ctx.country)),
+            (resolved.country && r.geo_restrict.includes(resolved.country)),
         )
-        .slice(0, ctx.limit ?? 4);
+        .slice(0, resolved.limit ?? 4);
     },
   });
 }
@@ -114,35 +135,44 @@ export function useSponsoredSlots(
   });
 }
 
-/** Increment click count (best-effort; ignore errors). */
-export async function trackAffiliateClick(id: string) {
+function postClick(kind: "affiliate" | "sponsored", id: string) {
+  if (typeof window === "undefined") return;
   try {
-    await supabase.rpc("noop").throwOnError;
-  } catch {
-    /* no-op */
-  }
-  // Use a fire-and-forget update via REST (no RPC; rely on RLS public update? No — table is admin-write).
-  // So we just log to localStorage for analytics; real counts can come from GA4 outbound link events.
+    const body = JSON.stringify({ kind, id });
+    const url = "/api/public/track-click";
+    const ok =
+      "sendBeacon" in navigator &&
+      navigator.sendBeacon(url, new Blob([body], { type: "application/json" }));
+    if (!ok) {
+      void fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body,
+        keepalive: true,
+      }).catch(() => null);
+    }
+  } catch { /* ignore */ }
+}
+
+/** Increment click count in DB + fire gtag event (best effort). */
+export function trackAffiliateClick(id: string) {
+  postClick("affiliate", id);
   try {
     if (typeof window !== "undefined") {
       const w = window as unknown as { gtag?: (...a: unknown[]) => void };
       w.gtag?.("event", "affiliate_click", { link_id: id });
     }
-  } catch {
-    /* ignore */
-  }
+  } catch { /* ignore */ }
 }
 
-export async function trackSponsoredClick(id: string) {
+export function trackSponsoredClick(id: string) {
+  postClick("sponsored", id);
   try {
     if (typeof window !== "undefined") {
       const w = window as unknown as { gtag?: (...a: unknown[]) => void };
       w.gtag?.("event", "sponsored_click", { slot_id: id });
     }
-  } catch {
-    /* ignore */
-  }
-  void id;
+  } catch { /* ignore */ }
 }
 
 // =========== Admin CRUD ===========

@@ -4,6 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { getMlbAthlete } from "@/lib/mlb.functions";
 import { PlayerProfile } from "@/components/mlb/PlayerProfile";
 import { athlete, breadcrumbList, ldScript } from "@/lib/seo/jsonld";
+import { AffiliateStrip } from "@/components/affiliates/AffiliateStrip";
 
 export const Route = createFileRoute("/mlb/player/$id")({
   head: ({ params }) => {
@@ -37,5 +38,12 @@ function PlayerPage() {
   if (!q.data?.athlete) {
     return <div className="text-sm text-muted-foreground">Player not found.</div>;
   }
-  return <PlayerProfile athlete={q.data.athlete} career={q.data.career} />;
+  return (
+    <>
+      <PlayerProfile athlete={q.data.athlete} career={q.data.career} />
+      <div className="max-w-5xl mx-auto px-4">
+        <AffiliateStrip placement="player_footer" sport="mlb" heading="MLB gear & partners" />
+      </div>
+    </>
+  );
 }

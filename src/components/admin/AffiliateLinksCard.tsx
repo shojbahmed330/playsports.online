@@ -200,7 +200,7 @@ export function AffiliateLinksCard() {
               <div className="flex-1 min-w-0">
                 <div className="font-semibold truncate">{l.title}</div>
                 <div className="text-muted-foreground truncate">
-                  {l.sport ?? "any"} · pri {l.priority} {l.geo_restrict?.length ? `· ${l.geo_restrict.join(",")}` : ""}
+                  {l.sport ?? "any"} · pri {l.priority} · {l.click_count ?? 0} clicks {l.geo_restrict?.length ? `· ${l.geo_restrict.join(",")}` : ""}
                 </div>
               </div>
               <a

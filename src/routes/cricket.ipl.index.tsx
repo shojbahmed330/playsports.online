@@ -14,6 +14,7 @@ import {
 } from "@/lib/ipl.functions";
 import { formatLocalTime, relativeDay } from "@/lib/time";
 import { breadcrumbList, collectionPage, ldScript } from "@/lib/seo/jsonld";
+import { AffiliateStrip } from "@/components/affiliates/AffiliateStrip";
 
 const overviewQO = queryOptions({
   queryKey: ["ipl", "overview"],
@@ -152,6 +153,8 @@ function IplHome() {
             </ul>
           </div>
         </Section>
+
+        <AffiliateStrip placement="homepage" sport="cricket" heading="IPL jerseys & partners" />
       </main>
     </div>
   );

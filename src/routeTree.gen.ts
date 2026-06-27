@@ -62,6 +62,7 @@ import { Route as CricketIplRecordsRouteImport } from './routes/cricket.ipl.reco
 import { Route as CricketIplPlayersRouteImport } from './routes/cricket.ipl.players'
 import { Route as CricketIplHistoryRouteImport } from './routes/cricket.ipl.history'
 import { Route as ArchiveSportYearRouteImport } from './routes/archive.$sport.$year'
+import { Route as ApiPublicTrackClickRouteImport } from './routes/api/public/track-click'
 import { Route as CricketIplTeamsIndexRouteImport } from './routes/cricket.ipl.teams.index'
 import { Route as CricketIplTeamsTeamIdRouteImport } from './routes/cricket.ipl.teams.$teamId'
 import { Route as ApiPublicHooksWeeklyDigestRouteImport } from './routes/api/public/hooks/weekly-digest'
@@ -331,6 +332,11 @@ const ArchiveSportYearRoute = ArchiveSportYearRouteImport.update({
   path: '/archive/$sport/$year',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicTrackClickRoute = ApiPublicTrackClickRouteImport.update({
+  id: '/api/public/track-click',
+  path: '/api/public/track-click',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CricketIplTeamsIndexRoute = CricketIplTeamsIndexRouteImport.update({
   id: '/ipl/teams/',
   path: '/ipl/teams/',
@@ -384,6 +390,7 @@ export interface FileRoutesByFullPath {
   '/mlb/teams': typeof MlbTeamsRoute
   '/cricket/': typeof CricketIndexRoute
   '/mlb/': typeof MlbIndexRoute
+  '/api/public/track-click': typeof ApiPublicTrackClickRoute
   '/archive/$sport/$year': typeof ArchiveSportYearRoute
   '/cricket/ipl/history': typeof CricketIplHistoryRoute
   '/cricket/ipl/players': typeof CricketIplPlayersRoute
@@ -440,6 +447,7 @@ export interface FileRoutesByTo {
   '/mlb/teams': typeof MlbTeamsRoute
   '/cricket': typeof CricketIndexRoute
   '/mlb': typeof MlbIndexRoute
+  '/api/public/track-click': typeof ApiPublicTrackClickRoute
   '/archive/$sport/$year': typeof ArchiveSportYearRoute
   '/cricket/ipl/history': typeof CricketIplHistoryRoute
   '/cricket/ipl/players': typeof CricketIplPlayersRoute
@@ -499,6 +507,7 @@ export interface FileRoutesById {
   '/mlb/teams': typeof MlbTeamsRoute
   '/cricket/': typeof CricketIndexRoute
   '/mlb/': typeof MlbIndexRoute
+  '/api/public/track-click': typeof ApiPublicTrackClickRoute
   '/archive/$sport/$year': typeof ArchiveSportYearRoute
   '/cricket/ipl/history': typeof CricketIplHistoryRoute
   '/cricket/ipl/players': typeof CricketIplPlayersRoute
@@ -559,6 +568,7 @@ export interface FileRouteTypes {
     | '/mlb/teams'
     | '/cricket/'
     | '/mlb/'
+    | '/api/public/track-click'
     | '/archive/$sport/$year'
     | '/cricket/ipl/history'
     | '/cricket/ipl/players'
@@ -615,6 +625,7 @@ export interface FileRouteTypes {
     | '/mlb/teams'
     | '/cricket'
     | '/mlb'
+    | '/api/public/track-click'
     | '/archive/$sport/$year'
     | '/cricket/ipl/history'
     | '/cricket/ipl/players'
@@ -673,6 +684,7 @@ export interface FileRouteTypes {
     | '/mlb/teams'
     | '/cricket/'
     | '/mlb/'
+    | '/api/public/track-click'
     | '/archive/$sport/$year'
     | '/cricket/ipl/history'
     | '/cricket/ipl/players'
@@ -717,6 +729,7 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TermsRoute: typeof TermsRoute
   UnsubscribeRoute: typeof UnsubscribeRoute
+  ApiPublicTrackClickRoute: typeof ApiPublicTrackClickRoute
   ArchiveSportYearRoute: typeof ArchiveSportYearRoute
   OgTypeSlugDotsvgRoute: typeof OgTypeSlugDotsvgRoute
   PlayerSportSlugRoute: typeof PlayerSportSlugRoute
@@ -1098,6 +1111,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ArchiveSportYearRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/track-click': {
+      id: '/api/public/track-click'
+      path: '/api/public/track-click'
+      fullPath: '/api/public/track-click'
+      preLoaderRoute: typeof ApiPublicTrackClickRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/cricket/ipl/teams/': {
       id: '/cricket/ipl/teams/'
       path: '/ipl/teams'
@@ -1230,6 +1250,7 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TermsRoute: TermsRoute,
   UnsubscribeRoute: UnsubscribeRoute,
+  ApiPublicTrackClickRoute: ApiPublicTrackClickRoute,
   ArchiveSportYearRoute: ArchiveSportYearRoute,
   OgTypeSlugDotsvgRoute: OgTypeSlugDotsvgRoute,
   PlayerSportSlugRoute: PlayerSportSlugRoute,
@@ -1240,13 +1261,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

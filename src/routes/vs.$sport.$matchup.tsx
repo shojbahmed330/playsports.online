@@ -84,7 +84,7 @@ function H2HPage() {
 
       <p className="text-sm text-muted-foreground mb-4">Aggregate goals: {h2h.teamA} {aG} — {bG} {h2h.teamB}</p>
 
-      <AffiliateStrip placement="inline" sport="football" />
+      <AffiliateStrip placement="inline" sport={Route.useParams().sport} />
 
       <section className="mt-8">
         <h2 className="text-xl font-semibold mb-3">All Meetings</h2>
