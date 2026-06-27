@@ -26,11 +26,16 @@ export function FootballCoachmark({ force = false }: { force?: boolean }) {
   const [step, setStep] = useState(0);
 
   useEffect(() => {
-    if (force) { setOpen(true); return; }
+    if (force) { setOpen(true); setStep(0); return; }
     try {
       if (localStorage.getItem(STORAGE_KEY) !== "1") {
         // Delay a tick so the page paints first.
-        const t = setTimeout(() => setOpen(true), 600);
+        const t = setTimeout(() => {
+          setOpen(true);
+          // Mark as seen the moment we show it, so a refresh mid-tour
+          // doesn't re-trigger on the next visit.
+          try { localStorage.setItem(STORAGE_KEY, "1"); } catch { /* ignore */ }
+        }, 600);
         return () => clearTimeout(t);
       }
     } catch { /* ignore */ }
