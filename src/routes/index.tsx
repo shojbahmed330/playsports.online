@@ -154,117 +154,164 @@ function HubPage() {
 
   const totalToday = all.length;
 
+  const [filter, setFilter] = useState<SportFilter>("all");
+
+  // Per-sport counts for chip tabs
+  const wcLiveCount = (wcQ.data?.fixtures ?? []).filter((f) => f.status === "inprogress").length;
+  const cricketLiveCount = (cricketQ.data?.matches ?? []).filter((m) => m.status === "in").length;
+  const counts: Partial<Record<SportFilter, number>> = {
+    all: totalLive + wcLiveCount + cricketLiveCount,
+    football: wcLiveCount,
+    cricket: cricketLiveCount,
+    mlb: (byLeague["MLB"] ?? []).filter((g) => g.status === "in").length,
+    nba: (byLeague["NBA"] ?? []).filter((g) => g.status === "in").length,
+    nhl: (byLeague["NHL"] ?? []).filter((g) => g.status === "in").length,
+    mls: (byLeague["MLS"] ?? []).filter((g) => g.status === "in").length,
+  };
+
+  // Filter ESPN tagged lists by selected sport
+  const espnSlugs: SportFilter[] = ["mlb", "nba", "nhl", "mls"];
+  const filterMatches = (slug: string): boolean => {
+    if (filter === "all") return true;
+    if (espnSlugs.includes(filter)) return slug === filter;
+    return false; // football/cricket filter hides ESPN games
+  };
+  const filteredLive = liveGames.filter((x) => filterMatches(x.sport.slug));
+  const filteredUpcoming = upcomingGames.filter((x) => filterMatches(x.sport.slug));
+  const filteredFinals = finalGames.filter((x) => filterMatches(x.sport.slug));
+
+  const showFootball = filter === "all" || filter === "football";
+  const showCricket = filter === "all" || filter === "cricket";
+  const showEspn = filter === "all" || espnSlugs.includes(filter);
+
   return (
     <div className="min-h-screen">
       <SportNav liveCount={totalLive} />
       <LiveTicker items={liveGames} />
 
-      <HeroSpotlight
+      {/* 1. COMPACT HERO — single most important match */}
+      <CompactHero
         liveGames={liveGames}
         upcomingGames={upcomingGames}
-        totalToday={totalToday}
         wcFeatured={wcFeatured}
       />
 
-      <PulseStrip items={liveGames} />
+      {/* 2. STATUS BAR — thin one-liner with TZ + counts */}
+      <StatusBar
+        liveCount={totalLive + wcLiveCount + cricketLiveCount}
+        upcomingCount={upcomingGames.length}
+        totalToday={totalToday + (wcQ.data?.fixtures?.length ?? 0)}
+      />
 
-      <main id="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 py-10 space-y-12">
-        <SponsoredHero slotType="banner" />
-        {/* TODAY IN YOUR ZONE — TZ-aware cross-sport strip */}
-        <TodayInZoneStrip
-          espnByLeague={byLeague}
-          wcFixtures={wcQ.data?.fixtures ?? []}
-          cricketMatches={cricketQ.data?.matches ?? []}
-          sports={SPORT_LIST}
-        />
+      {/* 3. STICKY SPORT TABS */}
+      <SportChipTabs value={filter} onChange={setFilter} counts={counts} />
 
-        {/* HALL OF CHAMPIONS — cross-sport reigning titleholders */}
-        <HallOfChampionsStrip />
+      <main id="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-8 sm:space-y-10">
+        {/* PULSE STRIP — live matches mini-cards (only when 'all' or live exists) */}
+        {filter === "all" && <PulseStrip items={liveGames} />}
 
-        {/* NEWSLETTER */}
-        <NewsletterCard source="homepage" />
-
-
-        {/* SPORT CARDS 2.0 */}
-        <section className="space-y-4 animate-fade-in">
-          <div className="flex items-end justify-between">
-            <div>
-              <h2 className="text-xs uppercase tracking-[0.2em] text-muted-foreground font-bold">
-                Choose a sport
-              </h2>
-              <p className="text-lg sm:text-xl font-extrabold mt-1">Jump into any league</p>
-            </div>
-          </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-            <FifaCard />
-            <CricketCard />
-            {SPORT_LIST.map((s) => {
-              const games = byLeague[s.label] ?? [];
-              const next = games.filter((g) => g.status === "pre").sort((a, b) => a.startTs - b.startTs)[0] ?? null;
-              const recent = games.filter((g) => g.status === "post").sort((a, b) => b.startTs - a.startTs)[0] ?? null;
-              return (
-                <SportCard
-                  key={s.slug}
-                  sport={s}
-                  liveCount={games.filter((g) => g.status === "in").length}
-                  next={next}
-                  recent={recent}
-                />
-              );
-            })}
-          </div>
-        </section>
-
-        {/* LIVE NOW (full grid below pulse strip) */}
-        {liveGames.length > 0 && (
+        {/* LIVE NOW — full grid */}
+        {filteredLive.length > 0 && (
           <Section
             icon={<Flame className="size-5 text-red-400" />}
-            title="Live right now"
-            badge={`${liveGames.length} game${liveGames.length === 1 ? "" : "s"}`}
+            title="Live right now · এখন লাইভ"
+            badge={`${filteredLive.length} game${filteredLive.length === 1 ? "" : "s"}`}
             badgeTone="red"
           >
-            <TaggedGrid items={liveGames} />
+            <TaggedGrid items={filteredLive} />
           </Section>
+        )}
+
+        {/* TODAY IN YOUR ZONE — TZ-aware cross-sport strip (only on All) */}
+        {filter === "all" && (
+          <TodayInZoneStrip
+            espnByLeague={byLeague}
+            wcFixtures={wcQ.data?.fixtures ?? []}
+            cricketMatches={cricketQ.data?.matches ?? []}
+            sports={SPORT_LIST}
+          />
         )}
 
         {/* FIFA SLATE */}
-        <FootballSlate />
+        {showFootball && <FootballSlate />}
 
         {/* CRICKET SLATE */}
-        <CricketSlate />
+        {showCricket && <CricketSlate />}
+
+        {/* UPCOMING TODAY (ESPN) */}
+        {showEspn && (
+          liveQ.isLoading ? (
+            <Section icon={<Clock className="size-5 text-amber-400" />} title="Loading today's slate · আজকের slate লোড হচ্ছে…">
+              <GameGridSkeleton />
+            </Section>
+          ) : filteredUpcoming.length > 0 ? (
+            <Section
+              icon={<Clock className="size-5 text-amber-400" />}
+              title="Upcoming today · পরবর্তী খেলা"
+              badge={`${filteredUpcoming.length} game${filteredUpcoming.length === 1 ? "" : "s"}`}
+              badgeTone="amber"
+            >
+              <TaggedGrid items={filteredUpcoming.slice(0, 9)} />
+            </Section>
+          ) : null
+        )}
+
+        {/* RECENT FINALS (ESPN) */}
+        {showEspn && filteredFinals.length > 0 && (
+          <Section
+            icon={<CheckCircle2 className="size-5 text-gray-400" />}
+            title="Recent finals · সদ্য শেষ"
+            badge={`${filteredFinals.length}`}
+            badgeTone="muted"
+          >
+            <TaggedGrid items={filteredFinals.slice(0, 6)} />
+          </Section>
+        )}
+
+        {/* SPONSORED — moved below content */}
+        <SponsoredHero slotType="banner" />
 
         <AdSlot slot="in_content" layout="in-article" />
 
+        {/* SPORT HUB CARDS — doors into every league */}
+        {filter === "all" && (
+          <section className="space-y-4 animate-fade-in">
+            <div className="flex items-end justify-between">
+              <div>
+                <h2 className="text-xs uppercase tracking-[0.2em] text-muted-foreground font-bold">
+                  Choose a sport · খেলা বেছে নিন
+                </h2>
+                <p className="text-lg sm:text-xl font-extrabold mt-1">Jump into any league</p>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+              <FifaCard />
+              <CricketCard />
+              {SPORT_LIST.map((s) => {
+                const games = byLeague[s.label] ?? [];
+                const next = games.filter((g) => g.status === "pre").sort((a, b) => a.startTs - b.startTs)[0] ?? null;
+                const recent = games.filter((g) => g.status === "post").sort((a, b) => b.startTs - a.startTs)[0] ?? null;
+                return (
+                  <SportCard
+                    key={s.slug}
+                    sport={s}
+                    liveCount={games.filter((g) => g.status === "in").length}
+                    next={next}
+                    recent={recent}
+                  />
+                );
+              })}
+            </div>
+          </section>
+        )}
+
+        {/* HALL OF CHAMPIONS */}
+        {filter === "all" && <HallOfChampionsStrip />}
+
         <AffiliateStrip placement="homepage" heading="Fan shop & partners" />
 
-
-        {/* UPCOMING TODAY */}
-        {liveQ.isLoading ? (
-          <Section icon={<Clock className="size-5 text-amber-400" />} title="Loading today's slate…">
-            <GameGridSkeleton />
-          </Section>
-        ) : upcomingGames.length > 0 ? (
-          <Section
-            icon={<Clock className="size-5 text-amber-400" />}
-            title="Upcoming today"
-            badge={`${upcomingGames.length} game${upcomingGames.length === 1 ? "" : "s"}`}
-            badgeTone="amber"
-          >
-            <TaggedGrid items={upcomingGames.slice(0, 9)} />
-          </Section>
-        ) : null}
-
-        {/* RECENT FINALS */}
-        {finalGames.length > 0 && (
-          <Section
-            icon={<CheckCircle2 className="size-5 text-gray-400" />}
-            title="Recent finals"
-            badge={`${finalGames.length}`}
-            badgeTone="muted"
-          >
-            <TaggedGrid items={finalGames.slice(0, 6)} />
-          </Section>
-        )}
+        {/* NEWSLETTER */}
+        <NewsletterCard source="homepage" />
       </main>
 
       {/* Floating Watch Live */}
@@ -276,6 +323,7 @@ function HubPage() {
     </div>
   );
 }
+
 
 function Section({
   icon,
