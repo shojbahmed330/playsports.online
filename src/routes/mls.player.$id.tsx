@@ -1,35 +1,35 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { getNbaAthlete } from "@/lib/nba.functions";
+import { getMlsAthlete } from "@/lib/mls.functions";
 import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
 
-export const Route = createFileRoute("/nba/player/$id")({
+export const Route = createFileRoute("/mls/player/$id")({
   head: ({ params }) => ({
     meta: [
-      { title: `NBA Player ${params.id} — Bio & Career Stats` },
+      { title: `MLS Player ${params.id} — Bio & Career Stats` },
       { name: "description", content: "Player biography and full career averages." },
     ],
-    links: [{ rel: "canonical", href: `https://allsportslive.lovable.app/nba/player/${params.id}` }],
+    links: [{ rel: "canonical", href: `https://allsportslive.lovable.app/mls/player/${params.id}` }],
     scripts: [ldScript(breadcrumbList([
-      { name: "Home", path: "/" }, { name: "NBA", path: "/nba" }, { name: "Players", path: "/nba/leaders" }, { name: params.id, path: `/nba/player/${params.id}` },
+      { name: "Home", path: "/" }, { name: "MLS", path: "/mls" }, { name: "Players", path: "/mls/leaders" }, { name: params.id, path: `/mls/player/${params.id}` },
     ]))],
   }),
   loader: async ({ context, params }) => {
     await context.queryClient.prefetchQuery({
-      queryKey: ["nba", "athlete", params.id],
-      queryFn: () => getNbaAthlete({ data: { id: params.id } }),
+      queryKey: ["mls", "athlete", params.id],
+      queryFn: () => getMlsAthlete({ data: { id: params.id } }),
       staleTime: 60 * 60_000,
     }).catch(() => null);
     return null;
   },
-  component: NbaPlayer,
+  component: MlsPlayer,
 });
 
-function NbaPlayer() {
+function MlsPlayer() {
   const { id } = Route.useParams();
-  const fn = useServerFn(getNbaAthlete);
-  const q = useQuery({ queryKey: ["nba", "athlete", id], queryFn: () => fn({ data: { id } }), staleTime: 60 * 60_000 });
+  const fn = useServerFn(getMlsAthlete);
+  const q = useQuery({ queryKey: ["mls", "athlete", id], queryFn: () => fn({ data: { id } }), staleTime: 60 * 60_000 });
 
   if (q.isLoading) return <div className="h-64 rounded-2xl ring-1 ring-border bg-card animate-pulse" />;
   const a = q.data?.athlete;
@@ -42,7 +42,7 @@ function NbaPlayer() {
         <div className="flex items-center gap-4">
           {a.headshot && <img src={a.headshot} alt="" className="size-24 sm:size-32 rounded-2xl object-cover bg-muted" />}
           <div className="min-w-0 flex-1">
-            <div className="text-[10px] uppercase tracking-[0.22em] text-orange-300 font-bold">{a.team?.name ?? "NBA Player"}</div>
+            <div className="text-[10px] uppercase tracking-[0.22em] text-orange-300 font-bold">{a.team?.name ?? "MLS Player"}</div>
             <h1 className="text-2xl sm:text-4xl font-extrabold text-white truncate">{a.name}</h1>
             <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground mt-1">
               {a.jersey && <span>#{a.jersey}</span>}
@@ -55,7 +55,7 @@ function NbaPlayer() {
               {a.birthplace && <span>{a.birthplace}</span>}
             </div>
             {a.team && (
-              <Link to="/nba/team/$id" params={{ id: a.team.id }} className="inline-flex items-center gap-2 mt-2 text-xs text-orange-300 hover:text-orange-200">
+              <Link to="/mls/team/$id" params={{ id: a.team.id }} className="inline-flex items-center gap-2 mt-2 text-xs text-orange-300 hover:text-orange-200">
                 {a.team.logo && <img src={a.team.logo} alt="" className="size-4 object-contain" />}
                 View team →
               </Link>

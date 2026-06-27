@@ -2,33 +2,33 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useMemo, useState } from "react";
-import { getNbaScoreboard } from "@/lib/nba.functions";
+import { getNhlScoreboard } from "@/lib/nhl.functions";
 import { GameCard } from "@/components/sports/GameCard";
 import { DateScrubber, todayYmd } from "@/components/sports/DateScrubber";
 import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
 
-export const Route = createFileRoute("/nba/scores")({
+export const Route = createFileRoute("/nhl/scores")({
   head: () => ({
     meta: [
-      { title: "NBA Scoreboard — Live & Recent Games" },
-      { name: "description", content: "Browse every NBA game by date with live scores, quarters, and matchup details." },
-      { property: "og:url", content: "https://allsportslive.lovable.app/nba/scores" },
+      { title: "NHL Scoreboard — Live & Recent Games" },
+      { name: "description", content: "Browse every NHL game by date with live scores, quarters, and matchup details." },
+      { property: "og:url", content: "https://allsportslive.lovable.app/nhl/scores" },
     ],
-    links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/nba/scores" }],
-    scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "NBA", path: "/nba" }, { name: "Scores", path: "/nba/scores" }]))],
+    links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/nhl/scores" }],
+    scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "NHL", path: "/nhl" }, { name: "Scores", path: "/nhl/scores" }]))],
   }),
-  component: NbaScores,
+  component: NhlScores,
 });
 
 type Filter = "all" | "live" | "upcoming" | "final";
 
-function NbaScores() {
+function NhlScores() {
   const [day, setDay] = useState(todayYmd());
   const [filter, setFilter] = useState<Filter>("all");
-  const sbFn = useServerFn(getNbaScoreboard);
+  const sbFn = useServerFn(getNhlScoreboard);
 
   const sbQ = useQuery({
-    queryKey: ["nba", "scores", day],
+    queryKey: ["nhl", "scores", day],
     queryFn: () => sbFn({ data: { yyyymmdd: day } }),
     staleTime: 20_000,
     refetchInterval: (q) => {
@@ -73,7 +73,7 @@ function NbaScores() {
       )}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
         {filtered.map((g) => (
-          <GameCard key={g.id} game={g as any} linkTo={`/nba/game/${g.id}`} />
+          <GameCard key={g.id} game={g as any} linkTo={`/nhl/game/${g.id}`} />
         ))}
       </div>
     </div>

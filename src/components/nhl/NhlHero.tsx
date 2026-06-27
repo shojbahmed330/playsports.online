@@ -1,14 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { getNbaScoreboard } from "@/lib/nba.functions";
+import { getNhlScoreboard } from "@/lib/nhl.functions";
 import { todayYmd } from "@/components/sports/DateScrubber";
 import { Radio, Calendar, CheckCircle2 } from "lucide-react";
 
-export function NbaHero() {
-  const sbFn = useServerFn(getNbaScoreboard);
+export function NhlHero() {
+  const sbFn = useServerFn(getNhlScoreboard);
   const day = todayYmd();
   const sbQ = useQuery({
-    queryKey: ["nba", "hero-sb", day],
+    queryKey: ["nhl", "hero-sb", day],
     queryFn: () => sbFn({ data: { yyyymmdd: day } }),
     staleTime: 30_000,
     refetchInterval: (q) => {
@@ -22,8 +22,8 @@ export function NbaHero() {
   const post = games.filter((g) => g.status === "post").length;
 
   return (
-    <section className="relative overflow-hidden border-b border-border bg-nba-hero">
-      <div aria-hidden className="absolute inset-0 nba-hardwood opacity-50" />
+    <section className="relative overflow-hidden border-b border-border bg-nhl-hero">
+      <div aria-hidden className="absolute inset-0 nhl-hardwood opacity-50" />
       <div
         aria-hidden
         className="absolute inset-0 opacity-60"
@@ -34,7 +34,7 @@ export function NbaHero() {
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute -inset-x-1/3 top-0 h-full opacity-25 nba-sheen"
+        className="pointer-events-none absolute -inset-x-1/3 top-0 h-full opacity-25 nhl-sheen"
         style={{
           background:
             "linear-gradient(115deg, transparent 30%, rgba(255,255,255,0.18) 50%, transparent 70%)",
@@ -43,14 +43,14 @@ export function NbaHero() {
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-5 sm:py-9">
         <div className="flex items-center gap-3 sm:gap-4">
           <div className="size-12 sm:size-20 rounded-2xl bg-orange-500/15 ring-1 ring-orange-400/40 grid place-items-center text-3xl sm:text-5xl shrink-0 backdrop-blur animate-scale-in">
-            🏀
+            🏒
           </div>
           <div className="min-w-0 flex-1">
             <div className="text-[10px] sm:text-[11px] uppercase tracking-[0.22em] sm:tracking-[0.25em] text-orange-200 font-bold">
               National Basketball Association
             </div>
             <h1 className="text-xl sm:text-4xl font-extrabold tracking-tight text-white truncate">
-              NBA Pro Hub
+              NHL Pro Hub
             </h1>
             <p className="hidden sm:block text-sm text-white/70 mt-1">
               Live scores · Standings · Teams · Leaders · Player careers · Champions history

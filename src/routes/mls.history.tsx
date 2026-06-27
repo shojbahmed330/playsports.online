@@ -1,22 +1,22 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Trophy } from "lucide-react";
-import data from "@/data/nba/history.json";
+import data from "@/data/mls/history.json";
 import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
 
-export const Route = createFileRoute("/nba/history")({
+export const Route = createFileRoute("/mls/history")({
   head: () => ({
     meta: [
-      { title: "NBA Championship History — Every Finals Winner" },
-      { name: "description", content: "Complete list of NBA Finals champions, runners-up, results, and Finals MVPs across the modern era." },
-      { property: "og:url", content: "https://allsportslive.lovable.app/nba/history" },
+      { title: "MLS Championship History — Every Finals Winner" },
+      { name: "description", content: "Complete list of MLS Finals champions, runners-up, results, and Finals MVPs across the modern era." },
+      { property: "og:url", content: "https://allsportslive.lovable.app/mls/history" },
     ],
-    links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/nba/history" }],
-    scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "NBA", path: "/nba" }, { name: "History", path: "/nba/history" }]))],
+    links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/mls/history" }],
+    scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "MLS", path: "/mls" }, { name: "History", path: "/mls/history" }]))],
   }),
-  component: NbaHistory,
+  component: MlsHistory,
 });
 
-function NbaHistory() {
+function MlsHistory() {
   return (
     <div className="space-y-6">
       <header className="rounded-3xl ring-1 ring-border bg-card overflow-hidden p-6 bg-gradient-to-br from-[#17408b]/30 via-transparent to-[#f58426]/15">
@@ -24,7 +24,7 @@ function NbaHistory() {
           <Trophy className="size-7 text-orange-300" />
           <div>
             <div className="text-[10px] uppercase tracking-[0.22em] text-orange-300 font-bold">Hall of Champions</div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-white">NBA Finals History</h1>
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-white">MLS Finals History</h1>
             <p className="text-xs text-muted-foreground mt-1">Larry O'Brien Trophy winners, runners-up & Finals MVPs.</p>
           </div>
         </div>

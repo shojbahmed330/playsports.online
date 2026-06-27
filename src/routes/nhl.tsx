@@ -1,28 +1,28 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { SportNav } from "@/components/sports/SportNav";
-import { NbaHero } from "@/components/nba/NbaHero";
-import { NbaSubNav } from "@/components/nba/NbaSubNav";
+import { NhlHero } from "@/components/nhl/NhlHero";
+import { NhlSubNav } from "@/components/nhl/NhlSubNav";
 import { Breadcrumbs } from "@/components/nav/Breadcrumbs";
 
-export const Route = createFileRoute("/nba")({
+export const Route = createFileRoute("/nhl")({
   head: () => ({
     meta: [
-      { title: "NBA Hub — Live Scores, Standings, Players, History" },
-      { name: "description", content: "Live NBA scoreboard, conference standings, team profiles, statistical leaders, player careers, and championship history." },
-      { property: "og:title", content: "NBA Pro Hub — Live Scores · Stats · Careers · History" },
-      { property: "og:description", content: "Everything NBA — live games, standings, teams, leaders, player stats, championships." },
+      { title: "NHL Hub — Live Scores, Standings, Players, History" },
+      { name: "description", content: "Live NHL scoreboard, conference standings, team profiles, statistical leaders, player careers, and championship history." },
+      { property: "og:title", content: "NHL Pro Hub — Live Scores · Stats · Careers · History" },
+      { property: "og:description", content: "Everything NHL — live games, standings, teams, leaders, player stats, championships." },
     ],
   }),
-  component: NbaLayout,
+  component: NhlLayout,
 });
 
-function NbaLayout() {
+function NhlLayout() {
   return (
     <div className="min-h-screen pb-16 sm:pb-0">
       <SportNav />
       <Breadcrumbs />
-      <NbaHero />
-      <NbaSubNav />
+      <NhlHero />
+      <NhlSubNav />
       <main id="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
         <Outlet />
       </main>

@@ -3,37 +3,37 @@ import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { Users, Calendar, AlertCircle, BarChart3 } from "lucide-react";
-import { getNbaTeam } from "@/lib/nba.functions";
+import { getNhlTeam } from "@/lib/nhl.functions";
 import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
 
-export const Route = createFileRoute("/nba/team/$id")({
+export const Route = createFileRoute("/nhl/team/$id")({
   head: ({ params }) => ({
     meta: [
-      { title: `NBA Team ${params.id} — Roster, Schedule & Leaders` },
+      { title: `NHL Team ${params.id} — Roster, Schedule & Leaders` },
       { name: "description", content: "Team profile with roster, full schedule, leaders, and injury report." },
     ],
-    links: [{ rel: "canonical", href: `https://allsportslive.lovable.app/nba/team/${params.id}` }],
+    links: [{ rel: "canonical", href: `https://allsportslive.lovable.app/nhl/team/${params.id}` }],
     scripts: [ldScript(breadcrumbList([
-      { name: "Home", path: "/" }, { name: "NBA", path: "/nba" }, { name: "Teams", path: "/nba/teams" }, { name: params.id, path: `/nba/team/${params.id}` },
+      { name: "Home", path: "/" }, { name: "NHL", path: "/nhl" }, { name: "Teams", path: "/nhl/teams" }, { name: params.id, path: `/nhl/team/${params.id}` },
     ]))],
   }),
   loader: async ({ context, params }) => {
     await context.queryClient.prefetchQuery({
-      queryKey: ["nba", "team", params.id],
-      queryFn: () => getNbaTeam({ data: { id: params.id } }),
+      queryKey: ["nhl", "team", params.id],
+      queryFn: () => getNhlTeam({ data: { id: params.id } }),
       staleTime: 30 * 60_000,
     }).catch(() => null);
     return null;
   },
-  component: NbaTeamPage,
+  component: NhlTeamPage,
 });
 
 type Tab = "schedule" | "roster" | "leaders" | "injuries";
 
-function NbaTeamPage() {
+function NhlTeamPage() {
   const { id } = Route.useParams();
-  const fn = useServerFn(getNbaTeam);
-  const q = useQuery({ queryKey: ["nba", "team", id], queryFn: () => fn({ data: { id } }), staleTime: 30 * 60_000 });
+  const fn = useServerFn(getNhlTeam);
+  const q = useQuery({ queryKey: ["nhl", "team", id], queryFn: () => fn({ data: { id } }), staleTime: 30 * 60_000 });
   const [tab, setTab] = useState<Tab>("schedule");
 
   if (q.isLoading) return <div className="h-64 rounded-2xl ring-1 ring-border bg-card animate-pulse" />;
@@ -55,7 +55,7 @@ function NbaTeamPage() {
         <div className="relative flex items-center gap-4">
           {team.logo && <img src={team.logo} alt={team.name} className="size-20 sm:size-24 object-contain drop-shadow-2xl" />}
           <div className="min-w-0">
-            <div className="text-[10px] uppercase tracking-[0.22em] text-white/70 font-bold">{team.conference ?? team.division ?? "NBA"}</div>
+            <div className="text-[10px] uppercase tracking-[0.22em] text-white/70 font-bold">{team.conference ?? team.division ?? "NHL"}</div>
             <h1 className="text-2xl sm:text-4xl font-extrabold text-white truncate">{team.name}</h1>
             <div className="flex items-center gap-3 text-xs text-white/85 mt-1">
               {team.record && <span className="font-bold">{team.record}</span>}
@@ -100,7 +100,7 @@ function NbaTeamPage() {
                 {roster.map((p) => (
                   <tr key={p.id} className="border-b border-border/40 hover:bg-white/[0.03]">
                     <td className="py-2 pl-3">
-                      <Link to="/nba/player/$id" params={{ id: p.id }} className="flex items-center gap-2 font-medium text-white hover:text-orange-300 transition">
+                      <Link to="/nhl/player/$id" params={{ id: p.id }} className="flex items-center gap-2 font-medium text-white hover:text-orange-300 transition">
                         {p.headshot && <img src={p.headshot} alt="" className="size-7 rounded-full bg-muted object-cover" loading="lazy" />}
                         <span className="truncate">{p.name}</span>
                       </Link>
@@ -127,7 +127,7 @@ function NbaTeamPage() {
               {l.headshot && <img src={l.headshot} alt="" className="size-12 rounded-full bg-muted object-cover" loading="lazy" />}
               <div className="min-w-0 flex-1">
                 <div className="text-[10px] uppercase tracking-wider text-orange-300/80 font-bold">{l.category}</div>
-                <Link to={l.athleteId ? "/nba/player/$id" : "/nba"} params={l.athleteId ? { id: l.athleteId } : ({} as any)} className="text-sm font-bold text-white hover:text-orange-300 transition truncate block">
+                <Link to={l.athleteId ? "/nhl/player/$id" : "/nhl"} params={l.athleteId ? { id: l.athleteId } : ({} as any)} className="text-sm font-bold text-white hover:text-orange-300 transition truncate block">
                   {l.athleteName}
                 </Link>
                 <div className="text-xs text-muted-foreground">{l.position ?? "—"}</div>
@@ -149,7 +149,7 @@ function NbaTeamPage() {
                   {inj.headshot && <img src={inj.headshot} alt="" className="size-9 rounded-full bg-muted object-cover" loading="lazy" />}
                   <div className="min-w-0 flex-1">
                     {inj.athleteId ? (
-                      <Link to="/nba/player/$id" params={{ id: inj.athleteId }} className="text-sm font-semibold text-white hover:text-orange-300 transition">
+                      <Link to="/nhl/player/$id" params={{ id: inj.athleteId }} className="text-sm font-semibold text-white hover:text-orange-300 transition">
                         {inj.athleteName}
                       </Link>
                     ) : <span className="text-sm font-semibold text-white">{inj.athleteName}</span>}
@@ -192,7 +192,7 @@ function ScheduleList({ title, rows }: { title: string; rows: any[] }) {
             <li key={g.id} className="px-3 py-2.5 flex items-center gap-3 text-sm">
               <span className="text-[10px] uppercase tracking-wider text-muted-foreground w-12">{g.homeAway === "home" ? "vs" : "@"}</span>
               {g.opponent.logo && <img src={g.opponent.logo} alt="" className="size-6 object-contain" loading="lazy" />}
-              <Link to="/nba/team/$id" params={{ id: g.opponent.id }} className="flex-1 truncate font-medium text-white hover:text-orange-300 transition">
+              <Link to="/nhl/team/$id" params={{ id: g.opponent.id }} className="flex-1 truncate font-medium text-white hover:text-orange-300 transition">
                 {g.opponent.name}
               </Link>
               {g.result ? (
@@ -200,7 +200,7 @@ function ScheduleList({ title, rows }: { title: string; rows: any[] }) {
               ) : (
                 <span className="text-[11px] text-muted-foreground">{new Date(g.startTs).toLocaleString(undefined, { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}</span>
               )}
-              <Link to={"/nba/game/" + g.id} className="text-[10px] uppercase tracking-wider text-orange-300 hover:text-orange-200">Box →</Link>
+              <Link to={"/nhl/game/" + g.id} className="text-[10px] uppercase tracking-wider text-orange-300 hover:text-orange-200">Box →</Link>
             </li>
           ))}
         </ul>

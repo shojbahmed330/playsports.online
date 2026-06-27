@@ -3,16 +3,16 @@ import { Calendar, Trophy, Users, BarChart3, Newspaper, History, Home, ListOrder
 import { useEffect, useRef } from "react";
 
 const TABS = [
-  { to: "/nba",           label: "Today",     icon: Home,        exact: true  as boolean },
-  { to: "/nba/scores",    label: "Scores",    icon: Calendar,    exact: false as boolean },
-  { to: "/nba/standings", label: "Standings", icon: ListOrdered, exact: false as boolean },
-  { to: "/nba/teams",     label: "Teams",     icon: Users,       exact: false as boolean },
-  { to: "/nba/leaders",   label: "Leaders",   icon: BarChart3,   exact: false as boolean },
-  { to: "/nba/history",   label: "History",   icon: Trophy,      exact: false as boolean },
-  { to: "/nba/news",      label: "News",      icon: Newspaper,   exact: false as boolean },
+  { to: "/mls",           label: "Today",     icon: Home,        exact: true  as boolean },
+  { to: "/mls/scores",    label: "Scores",    icon: Calendar,    exact: false as boolean },
+  { to: "/mls/standings", label: "Standings", icon: ListOrdered, exact: false as boolean },
+  { to: "/mls/teams",     label: "Teams",     icon: Users,       exact: false as boolean },
+  { to: "/mls/leaders",   label: "Leaders",   icon: BarChart3,   exact: false as boolean },
+  { to: "/mls/history",   label: "History",   icon: Trophy,      exact: false as boolean },
+  { to: "/mls/news",      label: "News",      icon: Newspaper,   exact: false as boolean },
 ] as const;
 
-export function NbaSubNav() {
+export function MlsSubNav() {
   const { pathname } = useLocation();
   const navRef = useRef<HTMLDivElement>(null);
   const activeRef = useRef<HTMLAnchorElement>(null);
@@ -33,7 +33,7 @@ export function NbaSubNav() {
         <nav
           ref={navRef}
           className="flex items-center gap-1.5 overflow-x-auto no-scrollbar snap-x snap-mandatory py-2 scroll-smooth"
-          aria-label="NBA sections"
+          aria-label="MLS sections"
         >
           {TABS.map((t) => {
             const active = t.exact ? (pathname === t.to || pathname === t.to + "/") : pathname.startsWith(t.to);

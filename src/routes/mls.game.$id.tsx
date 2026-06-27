@@ -3,41 +3,41 @@ import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { Radio } from "lucide-react";
-import { getNbaGame } from "@/lib/nba.functions";
-import { NbaLinescore } from "@/components/nba/NbaLinescore";
-import { NbaBoxScore } from "@/components/nba/NbaBoxScore";
-import { NbaPlayByPlay } from "@/components/nba/NbaPlayByPlay";
+import { getMlsGame } from "@/lib/mls.functions";
+import { MlsLinescore } from "@/components/mls/MlsLinescore";
+import { MlsBoxScore } from "@/components/mls/MlsBoxScore";
+import { MlsPlayByPlay } from "@/components/mls/MlsPlayByPlay";
 import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
 
-export const Route = createFileRoute("/nba/game/$id")({
+export const Route = createFileRoute("/mls/game/$id")({
   head: ({ params }) => ({
     meta: [
-      { title: `NBA Game ${params.id} — Box Score & Play-by-Play` },
-      { name: "description", content: "Live box score, scoring plays, and full play-by-play for this NBA game." },
+      { title: `MLS Game ${params.id} — Box Score & Play-by-Play` },
+      { name: "description", content: "Live box score, scoring plays, and full play-by-play for this MLS game." },
     ],
-    links: [{ rel: "canonical", href: `https://allsportslive.lovable.app/nba/game/${params.id}` }],
+    links: [{ rel: "canonical", href: `https://allsportslive.lovable.app/mls/game/${params.id}` }],
     scripts: [ldScript(breadcrumbList([
-      { name: "Home", path: "/" }, { name: "NBA", path: "/nba" }, { name: "Scores", path: "/nba/scores" }, { name: params.id, path: `/nba/game/${params.id}` },
+      { name: "Home", path: "/" }, { name: "MLS", path: "/mls" }, { name: "Scores", path: "/mls/scores" }, { name: params.id, path: `/mls/game/${params.id}` },
     ]))],
   }),
   loader: async ({ context, params }) => {
     await context.queryClient.prefetchQuery({
-      queryKey: ["nba", "game", params.id],
-      queryFn: () => getNbaGame({ data: { id: params.id } }),
+      queryKey: ["mls", "game", params.id],
+      queryFn: () => getMlsGame({ data: { id: params.id } }),
       staleTime: 15_000,
     }).catch(() => null);
     return null;
   },
-  component: NbaGame,
+  component: MlsGame,
 });
 
 type Tab = "summary" | "box" | "pbp";
 
-function NbaGame() {
+function MlsGame() {
   const { id } = Route.useParams();
-  const fn = useServerFn(getNbaGame);
+  const fn = useServerFn(getMlsGame);
   const q = useQuery({
-    queryKey: ["nba", "game", id],
+    queryKey: ["mls", "game", id],
     queryFn: () => fn({ data: { id } }),
     staleTime: 15_000,
     refetchInterval: (qq) => {
@@ -62,7 +62,7 @@ function NbaGame() {
             <div className="text-[10px] uppercase tracking-[0.22em] text-orange-300 font-bold">{s.shortDetail || s.statusDetail}</div>
             {live && (
               <span className="inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[10px] font-bold bg-rose-500/15 text-rose-300 ring-1 ring-rose-500/40">
-                <Radio className="size-3 nba-live-pulse rounded-full" /> LIVE
+                <Radio className="size-3 mls-live-pulse rounded-full" /> LIVE
               </span>
             )}
           </div>
@@ -80,7 +80,7 @@ function NbaGame() {
         </div>
       </div>
 
-      <NbaLinescore home={s.home} away={s.away} periodCount={s.periodCount} />
+      <MlsLinescore home={s.home} away={s.away} periodCount={s.periodCount} />
 
       {/* Tabs */}
       <div className="inline-flex rounded-xl bg-card ring-1 ring-border p-1 flex-wrap">
@@ -97,7 +97,7 @@ function NbaGame() {
               <h3 className="text-sm font-bold text-white mb-2">Game leaders</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                 {s.leaders.slice(0, 12).map((l, i) => (
-                  <Link key={i} to="/nba/player/$id" params={{ id: l.athleteId }} className="rounded-xl ring-1 ring-border bg-card p-3 flex items-center gap-3 hover:ring-orange-400/40 transition">
+                  <Link key={i} to="/mls/player/$id" params={{ id: l.athleteId }} className="rounded-xl ring-1 ring-border bg-card p-3 flex items-center gap-3 hover:ring-orange-400/40 transition">
                     {l.headshot && <img src={l.headshot} alt="" className="size-10 rounded-full object-cover bg-muted" />}
                     <div className="min-w-0 flex-1">
                       <div className="text-[10px] uppercase tracking-wider text-orange-300/80 font-bold">{l.teamAbbr} · {l.label}</div>
@@ -136,8 +136,8 @@ function NbaGame() {
         </div>
       )}
 
-      {tab === "box" && <div className="tab-slide"><NbaBoxScore groups={s.boxscore} /></div>}
-      {tab === "pbp" && <div className="tab-slide"><NbaPlayByPlay plays={s.plays} /></div>}
+      {tab === "box" && <div className="tab-slide"><MlsBoxScore groups={s.boxscore} /></div>}
+      {tab === "pbp" && <div className="tab-slide"><MlsPlayByPlay plays={s.plays} /></div>}
     </div>
   );
 }
@@ -147,7 +147,7 @@ function TeamSide({ team, align = "left" }: { team: any; align?: "left" | "right
     <div className={`flex items-center gap-3 min-w-0 ${align === "right" ? "justify-end" : ""}`}>
       {align === "left" && team.logo && <img src={team.logo} alt="" className="size-12 sm:size-16 object-contain" />}
       <div className={`min-w-0 ${align === "right" ? "text-right" : ""}`}>
-        <Link to="/nba/team/$id" params={{ id: team.id }} className="text-base sm:text-xl font-bold text-white truncate block hover:text-orange-300 transition">
+        <Link to="/mls/team/$id" params={{ id: team.id }} className="text-base sm:text-xl font-bold text-white truncate block hover:text-orange-300 transition">
           {team.shortName || team.name}
         </Link>
         {team.record && <div className="text-[11px] text-muted-foreground">{team.record}</div>}

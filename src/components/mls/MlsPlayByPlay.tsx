@@ -1,9 +1,9 @@
 import { useMemo, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Trophy } from "lucide-react";
-import type { NbaPlay } from "@/lib/nba.functions";
+import type { MlsPlay } from "@/lib/mls.functions";
 
-export function NbaPlayByPlay({ plays }: { plays: NbaPlay[] }) {
+export function MlsPlayByPlay({ plays }: { plays: MlsPlay[] }) {
   const periods = useMemo(() => {
     const set = new Set<number>();
     plays.forEach((p) => p.periodNumber && set.add(p.periodNumber));
@@ -43,7 +43,7 @@ export function NbaPlayByPlay({ plays }: { plays: NbaPlay[] }) {
             <div className="flex-1 min-w-0">
               <div className="text-gray-100 leading-snug">
                 {p.athleteId ? (
-                  <Link to="/nba/player/$id" params={{ id: p.athleteId }} className="hover:text-orange-300 transition">
+                  <Link to="/mls/player/$id" params={{ id: p.athleteId }} className="hover:text-orange-300 transition">
                     {p.text}
                   </Link>
                 ) : p.text}

@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import type { NbaBoxGroup, NbaBoxRow } from "@/lib/nba.functions";
+import type { MlsBoxGroup, MlsBoxRow } from "@/lib/mls.functions";
 
-export function NbaBoxScore({ groups }: { groups: NbaBoxGroup[] }) {
+export function MlsBoxScore({ groups }: { groups: MlsBoxGroup[] }) {
   const [activeIdx, setActiveIdx] = useState(0);
   if (!groups.length) {
     return <div className="rounded-2xl border border-dashed border-border p-8 text-center text-sm text-muted-foreground bg-card/40">Box score not available yet.</div>;
@@ -29,7 +29,7 @@ export function NbaBoxScore({ groups }: { groups: NbaBoxGroup[] }) {
   );
 }
 
-function Table({ group }: { group: NbaBoxGroup }) {
+function Table({ group }: { group: MlsBoxGroup }) {
   const starters = group.rows.filter((r) => r.starter);
   const bench = group.rows.filter((r) => !r.starter);
   return (
@@ -74,11 +74,11 @@ function SectionHeader({ label, span }: { label: string; span: number }) {
   );
 }
 
-function Row({ row, headers }: { row: NbaBoxRow; headers: string[] }) {
+function Row({ row, headers }: { row: MlsBoxRow; headers: string[] }) {
   return (
     <tr className="border-b border-border/40 hover:bg-white/[0.03] transition">
       <td className="py-2 pl-3 sticky left-0 bg-card z-10">
-        <Link to="/nba/player/$id" params={{ id: row.athleteId }} className="font-medium text-white hover:text-orange-300 transition">
+        <Link to="/mls/player/$id" params={{ id: row.athleteId }} className="font-medium text-white hover:text-orange-300 transition">
           {row.name}{row.pos ? <span className="text-muted-foreground ml-1 text-[10px]">{row.pos}</span> : null}
         </Link>
       </td>

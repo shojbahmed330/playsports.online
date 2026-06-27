@@ -1,8 +1,8 @@
-import type { NbaLinescoreTeam } from "@/lib/nba.functions";
+import type { NhlLinescoreTeam } from "@/lib/nhl.functions";
 
-export function NbaLinescore({ home, away, periodCount }: { home: NbaLinescoreTeam; away: NbaLinescoreTeam; periodCount: number }) {
+export function NhlLinescore({ home, away, periodCount }: { home: NhlLinescoreTeam; away: NhlLinescoreTeam; periodCount: number }) {
   const periods = Array.from({ length: Math.max(periodCount, 4) }, (_, i) => i);
-  function row(team: NbaLinescoreTeam) {
+  function row(team: NhlLinescoreTeam) {
     return (
       <tr className={team.winner ? "bg-orange-500/[0.05]" : ""}>
         <td className="py-2 pl-3 sticky left-0 bg-card z-10">

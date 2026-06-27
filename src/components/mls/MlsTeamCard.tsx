@@ -1,12 +1,12 @@
 import { Link } from "@tanstack/react-router";
-import type { NbaTeam } from "@/lib/nba.functions";
+import type { MlsTeam } from "@/lib/mls.functions";
 
-export function NbaTeamCard({ team }: { team: NbaTeam }) {
+export function MlsTeamCard({ team }: { team: MlsTeam }) {
   const bg = team.color ?? "#17408b";
   const alt = team.alt ?? "#f58426";
   return (
     <Link
-      to="/nba/team/$id"
+      to="/mls/team/$id"
       params={{ id: team.id }}
       className="group relative rounded-2xl overflow-hidden ring-1 ring-border bg-card hover:ring-orange-400/50 transition-all hover:-translate-y-0.5"
     >

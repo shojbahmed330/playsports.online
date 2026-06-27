@@ -5,22 +5,22 @@ import { getSportNews } from "@/lib/espn.functions";
 import { NewsRail } from "@/components/sports/NewsRail";
 import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
 
-export const Route = createFileRoute("/nba/news")({
+export const Route = createFileRoute("/mls/news")({
   head: () => ({
     meta: [
-      { title: "NBA News — Latest Headlines" },
-      { name: "description", content: "Latest NBA news, rumors, and analysis from ESPN's feed." },
-      { property: "og:url", content: "https://allsportslive.lovable.app/nba/news" },
+      { title: "MLS News — Latest Headlines" },
+      { name: "description", content: "Latest MLS news, rumors, and analysis from ESPN's feed." },
+      { property: "og:url", content: "https://allsportslive.lovable.app/mls/news" },
     ],
-    links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/nba/news" }],
-    scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "NBA", path: "/nba" }, { name: "News", path: "/nba/news" }]))],
+    links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/mls/news" }],
+    scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "MLS", path: "/mls" }, { name: "News", path: "/mls/news" }]))],
   }),
-  component: NbaNews,
+  component: MlsNews,
 });
 
-function NbaNews() {
+function MlsNews() {
   const fn = useServerFn(getSportNews);
-  const q = useQuery({ queryKey: ["nba", "news", "all"], queryFn: () => fn({ data: { sportPath: "basketball/nba", limit: 40 } }), staleTime: 30 * 60_000 });
+  const q = useQuery({ queryKey: ["mls", "news", "all"], queryFn: () => fn({ data: { sportPath: "soccer/usa.1", limit: 40 } }), staleTime: 30 * 60_000 });
   const items = q.data?.items ?? [];
   if (q.isLoading) {
     return (

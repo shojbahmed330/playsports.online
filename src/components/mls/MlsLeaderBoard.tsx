@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
-import type { NbaLeaderCategory } from "@/lib/nba.functions";
+import type { MlsLeaderCategory } from "@/lib/mls.functions";
 
-export function NbaLeaderBoard({ category, compact = false }: { category: NbaLeaderCategory; compact?: boolean }) {
+export function MlsLeaderBoard({ category, compact = false }: { category: MlsLeaderCategory; compact?: boolean }) {
   return (
     <div className="rounded-2xl bg-card ring-1 ring-border overflow-hidden">
       <div className="px-4 py-3 border-b border-border flex items-center justify-between bg-gradient-to-r from-[#17408b]/40 to-transparent">
@@ -12,7 +12,7 @@ export function NbaLeaderBoard({ category, compact = false }: { category: NbaLea
         {category.entries.slice(0, compact ? 5 : 10).map((e) => (
           <li key={`${category.key}-${e.rank}-${e.athleteId}`}>
             <Link
-              to="/nba/player/$id"
+              to="/mls/player/$id"
               params={{ id: e.athleteId }}
               className="flex items-center gap-3 px-4 py-2.5 hover:bg-white/[0.04] transition-colors"
             >

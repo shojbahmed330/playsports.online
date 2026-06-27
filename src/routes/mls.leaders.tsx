@@ -2,36 +2,36 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
-import { getNbaLeaders } from "@/lib/nba.functions";
-import { NbaLeaderBoard } from "@/components/nba/NbaLeaderBoard";
+import { getMlsLeaders } from "@/lib/mls.functions";
+import { MlsLeaderBoard } from "@/components/mls/MlsLeaderBoard";
 import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
 
-export const Route = createFileRoute("/nba/leaders")({
+export const Route = createFileRoute("/mls/leaders")({
   head: () => ({
     meta: [
-      { title: "NBA Leaders — Points, Assists, Rebounds, Steals, Blocks" },
-      { name: "description", content: "NBA statistical leaders across scoring, playmaking, rebounding and defense. Updated daily from ESPN's feed." },
-      { property: "og:url", content: "https://allsportslive.lovable.app/nba/leaders" },
+      { title: "MLS Leaders — Points, Assists, Rebounds, Steals, Blocks" },
+      { name: "description", content: "MLS statistical leaders across scoring, playmaking, rebounding and defense. Updated daily from ESPN's feed." },
+      { property: "og:url", content: "https://allsportslive.lovable.app/mls/leaders" },
     ],
-    links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/nba/leaders" }],
-    scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "NBA", path: "/nba" }, { name: "Leaders", path: "/nba/leaders" }]))],
+    links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/mls/leaders" }],
+    scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "MLS", path: "/mls" }, { name: "Leaders", path: "/mls/leaders" }]))],
   }),
   loader: async ({ context }) => {
     await context.queryClient.prefetchQuery({
-      queryKey: ["nba", "ld"],
-      queryFn: () => getNbaLeaders({ data: {} }),
+      queryKey: ["mls", "ld"],
+      queryFn: () => getMlsLeaders({ data: {} }),
       staleTime: 60 * 60_000,
     }).catch(() => null);
     return null;
   },
-  component: NbaLeaders,
+  component: MlsLeaders,
 });
 
 type Group = "offensive" | "defensive" | "general";
 
-function NbaLeaders() {
-  const fn = useServerFn(getNbaLeaders);
-  const q = useQuery({ queryKey: ["nba", "ld"], queryFn: () => fn({ data: {} }), staleTime: 60 * 60_000 });
+function MlsLeaders() {
+  const fn = useServerFn(getMlsLeaders);
+  const q = useQuery({ queryKey: ["mls", "ld"], queryFn: () => fn({ data: {} }), staleTime: 60 * 60_000 });
   const [group, setGroup] = useState<Group>("offensive");
 
   if (q.isLoading) {
@@ -63,7 +63,7 @@ function NbaLeaders() {
         <div className="rounded-2xl border border-dashed border-border p-8 text-center text-sm text-muted-foreground bg-card/40">No leaders available for this category.</div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          {cats.map((c) => <NbaLeaderBoard key={c.key} category={c} />)}
+          {cats.map((c) => <MlsLeaderBoard key={c.key} category={c} />)}
         </div>
       )}
     </div>

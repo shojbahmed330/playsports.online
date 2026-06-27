@@ -1,34 +1,34 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { getNbaStandingsPro } from "@/lib/nba.functions";
-import { NbaStandingsPro } from "@/components/nba/NbaStandingsPro";
+import { getMlsStandingsPro } from "@/lib/mls.functions";
+import { MlsStandingsPro } from "@/components/mls/MlsStandingsPro";
 import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
 
-export const Route = createFileRoute("/nba/standings")({
+export const Route = createFileRoute("/mls/standings")({
   head: () => ({
     meta: [
-      { title: "NBA Standings — East & West Conference" },
+      { title: "MLS Standings — East & West Conference" },
       { name: "description", content: "Live Eastern and Western Conference standings with division breakdowns, streaks, last 10, and point differential." },
-      { property: "og:url", content: "https://allsportslive.lovable.app/nba/standings" },
+      { property: "og:url", content: "https://allsportslive.lovable.app/mls/standings" },
     ],
-    links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/nba/standings" }],
-    scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "NBA", path: "/nba" }, { name: "Standings", path: "/nba/standings" }]))],
+    links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/mls/standings" }],
+    scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "MLS", path: "/mls" }, { name: "Standings", path: "/mls/standings" }]))],
   }),
   loader: async ({ context }) => {
     await context.queryClient.prefetchQuery({
-      queryKey: ["nba", "st"],
-      queryFn: () => getNbaStandingsPro(),
+      queryKey: ["mls", "st"],
+      queryFn: () => getMlsStandingsPro(),
       staleTime: 30 * 60_000,
     }).catch(() => null);
     return null;
   },
-  component: NbaStandings,
+  component: MlsStandings,
 });
 
-function NbaStandings() {
-  const fn = useServerFn(getNbaStandingsPro);
-  const q = useQuery({ queryKey: ["nba", "st"], queryFn: () => fn(), staleTime: 30 * 60_000 });
+function MlsStandings() {
+  const fn = useServerFn(getMlsStandingsPro);
+  const q = useQuery({ queryKey: ["mls", "st"], queryFn: () => fn(), staleTime: 30 * 60_000 });
   if (q.isLoading) {
     return (
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
@@ -36,5 +36,5 @@ function NbaStandings() {
       </div>
     );
   }
-  return <NbaStandingsPro conferences={q.data?.conferences ?? []} />;
+  return <MlsStandingsPro conferences={q.data?.conferences ?? []} />;
 }

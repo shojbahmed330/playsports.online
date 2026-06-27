@@ -1,10 +1,10 @@
 import { createServerFn } from "@tanstack/react-start";
 import { setResponseHeader } from "@tanstack/react-start/server";
 
-const SITE = "https://site.api.espn.com/apis/site/v2/sports/basketball/nba";
-const CORE = "https://site.web.api.espn.com/apis/common/v3/sports/basketball/nba";
+const SITE = "https://site.api.espn.com/apis/site/v2/sports/hockey/nhl";
+const CORE = "https://site.web.api.espn.com/apis/common/v3/sports/hockey/nhl";
 const STATS_BYATHLETE =
-  "https://site.web.api.espn.com/apis/common/v3/sports/basketball/nba/statistics/byathlete";
+  "https://site.web.api.espn.com/apis/common/v3/sports/hockey/nhl/statistics/byathlete";
 
 type CacheEntry = { at: number; ttl: number; data: unknown };
 const cache = new Map<string, CacheEntry>();
@@ -12,7 +12,7 @@ const cache = new Map<string, CacheEntry>();
 async function get(url: string, ttlMs: number): Promise<unknown> {
   const hit = cache.get(url);
   if (hit && Date.now() - hit.at < hit.ttl) return hit.data;
-  const res = await fetch(url, { headers: { "user-agent": "lovable-nba/1.0" } });
+  const res = await fetch(url, { headers: { "user-agent": "lovable-nhl/1.0" } });
   if (!res.ok) throw new Error(`ESPN ${res.status} ${url}`);
   const json = await res.json();
   cache.set(url, { at: Date.now(), ttl: ttlMs, data: json });
@@ -31,7 +31,7 @@ function setEdge(hasLive: boolean) {
 }
 
 // ───────── DTOs ─────────
-export type NbaTeam = {
+export type NhlTeam = {
   id: string;
   name: string;
   shortName: string;
@@ -47,7 +47,7 @@ export type NbaTeam = {
   standingSummary: string | null;
 };
 
-export type NbaRosterPlayer = {
+export type NhlRosterPlayer = {
   id: string;
   name: string;
   jersey: string | null;
@@ -59,7 +59,7 @@ export type NbaRosterPlayer = {
   experience: string | null;
 };
 
-export type NbaScheduleGame = {
+export type NhlScheduleGame = {
   id: string;
   startTs: number;
   status: "pre" | "in" | "post";
@@ -70,7 +70,7 @@ export type NbaScheduleGame = {
   venue: string | null;
 };
 
-export type NbaTeamLeader = {
+export type NhlTeamLeader = {
   category: string;
   displayValue: string;
   athleteId: string | null;
@@ -79,7 +79,7 @@ export type NbaTeamLeader = {
   position: string | null;
 };
 
-export type NbaInjury = {
+export type NhlInjury = {
   athleteId: string | null;
   athleteName: string;
   position: string | null;
@@ -90,7 +90,7 @@ export type NbaInjury = {
   headshot: string | null;
 };
 
-export type NbaLeaderEntry = {
+export type NhlLeaderEntry = {
   rank: number;
   athleteId: string;
   athleteName: string;
@@ -101,14 +101,14 @@ export type NbaLeaderEntry = {
   headshot: string | null;
 };
 
-export type NbaLeaderCategory = {
+export type NhlLeaderCategory = {
   key: string;
   label: string;
   group: "offensive" | "defensive" | "general";
-  entries: NbaLeaderEntry[];
+  entries: NhlLeaderEntry[];
 };
 
-export type NbaAthlete = {
+export type NhlAthlete = {
   id: string;
   name: string;
   firstName: string;
@@ -128,17 +128,17 @@ export type NbaAthlete = {
   draft: string | null;
 };
 
-export type NbaCareerRow = {
+export type NhlCareerRow = {
   season: string;
   team: string;
   stats: Record<string, string>;
 };
-export type NbaCareer = {
+export type NhlCareer = {
   headers: string[];
-  rows: NbaCareerRow[];
+  rows: NhlCareerRow[];
 };
 
-export type NbaStandingRow = {
+export type NhlStandingRow = {
   teamId: string;
   team: string;
   shortName: string;
@@ -158,11 +158,11 @@ export type NbaStandingRow = {
   diff: number | null;
   playoffPct: string | null;
 };
-export type NbaDivision = { name: string; rows: NbaStandingRow[] };
-export type NbaConference = { name: string; abbr: string; divisions: NbaDivision[] };
+export type NhlDivision = { name: string; rows: NhlStandingRow[] };
+export type NhlConference = { name: string; abbr: string; divisions: NhlDivision[] };
 
 // Game summary
-export type NbaLinescoreTeam = {
+export type NhlLinescoreTeam = {
   id: string;
   abbr: string;
   name: string;
@@ -175,23 +175,23 @@ export type NbaLinescoreTeam = {
   periods: (number | null)[];
 };
 
-export type NbaBoxRow = {
+export type NhlBoxRow = {
   athleteId: string;
   name: string;
   pos: string | null;
   starter: boolean;
   stats: Record<string, string>;
 };
-export type NbaBoxGroup = {
+export type NhlBoxGroup = {
   teamId: string;
   teamAbbr: string;
   teamLogo: string | null;
   headers: string[];
-  rows: NbaBoxRow[];
+  rows: NhlBoxRow[];
   totals: Record<string, string>;
 };
 
-export type NbaScoringPlay = {
+export type NhlScoringPlay = {
   id: string;
   period: string;
   clock: string;
@@ -201,7 +201,7 @@ export type NbaScoringPlay = {
   teamAbbr: string | null;
 };
 
-export type NbaPlay = {
+export type NhlPlay = {
   id: string;
   period: string;
   periodNumber: number;
@@ -216,7 +216,7 @@ export type NbaPlay = {
   teamAbbr: string | null;
 };
 
-export type NbaGameSummary = {
+export type NhlGameSummary = {
   id: string;
   status: "pre" | "in" | "post";
   statusDetail: string;
@@ -226,17 +226,17 @@ export type NbaGameSummary = {
   broadcast: string | null;
   attendance: number | null;
   odds: { provider: string | null; details: string | null; overUnder: number | null } | null;
-  home: NbaLinescoreTeam;
-  away: NbaLinescoreTeam;
+  home: NhlLinescoreTeam;
+  away: NhlLinescoreTeam;
   periodCount: number;
-  scoringPlays: NbaScoringPlay[];
-  boxscore: NbaBoxGroup[];
+  scoringPlays: NhlScoringPlay[];
+  boxscore: NhlBoxGroup[];
   leaders: Array<{ teamAbbr: string; name: string; athleteId: string; headshot: string | null; displayValue: string; label: string }>;
-  plays: NbaPlay[];
+  plays: NhlPlay[];
 };
 
 // ───────── Scoreboard (pass-through with edge cache) ─────────
-export const getNbaScoreboard = createServerFn({ method: "GET" })
+export const getNhlScoreboard = createServerFn({ method: "GET" })
   .inputValidator((d: { yyyymmdd?: string }) => d)
   .handler(async ({ data }) => {
     try {
@@ -293,17 +293,17 @@ function mapEvent(e: any) {
     home: team(home),
     away: team(away),
     broadcast,
-    league: "NBA",
+    league: "NHL",
   };
 }
 
 // ───────── All teams ─────────
-export const getNbaTeams = createServerFn({ method: "GET" })
+export const getNhlTeams = createServerFn({ method: "GET" })
   .handler(async () => {
     try {
       const raw = (await get(`${SITE}/teams`, 6 * 60 * 60_000)) as any;
       const list = raw?.sports?.[0]?.leagues?.[0]?.teams ?? [];
-      const teams: NbaTeam[] = list.map((s: any) => {
+      const teams: NhlTeam[] = list.map((s: any) => {
         const t = s?.team ?? {};
         return {
           id: String(t.id ?? ""),
@@ -321,15 +321,15 @@ export const getNbaTeams = createServerFn({ method: "GET" })
           standingSummary: null,
         };
       });
-      teams.sort((a: NbaTeam, b: NbaTeam) => a.name.localeCompare(b.name));
+      teams.sort((a: NhlTeam, b: NhlTeam) => a.name.localeCompare(b.name));
       return { teams, error: null as string | null };
     } catch (e) {
-      return { teams: [] as NbaTeam[], error: e instanceof Error ? e.message : "Unknown" };
+      return { teams: [] as NhlTeam[], error: e instanceof Error ? e.message : "Unknown" };
     }
   });
 
 // ───────── Team detail + schedule + roster ─────────
-export const getNbaTeam = createServerFn({ method: "GET" })
+export const getNhlTeam = createServerFn({ method: "GET" })
   .inputValidator((d: { id: string }) => d)
   .handler(async ({ data }) => {
     try {
@@ -340,7 +340,7 @@ export const getNbaTeam = createServerFn({ method: "GET" })
         get(`${SITE}/teams/${data.id}/injuries`, 30 * 60_000).catch(() => null) as Promise<any>,
       ]);
       const t = teamRaw?.team ?? {};
-      const team: NbaTeam = {
+      const team: NhlTeam = {
         id: String(t.id ?? data.id),
         name: t.displayName ?? "",
         shortName: t.shortDisplayName ?? "",
@@ -357,7 +357,7 @@ export const getNbaTeam = createServerFn({ method: "GET" })
       };
 
       const leadersRaw: any[] = t?.leaders ?? [];
-      const leaders: NbaTeamLeader[] = [];
+      const leaders: NhlTeamLeader[] = [];
       for (const cat of leadersRaw) {
         const top = cat?.leaders?.[0];
         if (!top) continue;
@@ -372,7 +372,7 @@ export const getNbaTeam = createServerFn({ method: "GET" })
       }
 
       const injuriesList: any[] = injuriesRaw?.injuries ?? [];
-      const injuries: NbaInjury[] = [];
+      const injuries: NhlInjury[] = [];
       for (const group of injuriesList) {
         const items: any[] = group?.injuries ?? (Array.isArray(group) ? group : []);
         for (const inj of items) {
@@ -391,7 +391,7 @@ export const getNbaTeam = createServerFn({ method: "GET" })
       }
 
       const evs: any[] = scheduleRaw?.events ?? [];
-      const schedule: NbaScheduleGame[] = evs.map((e: any) => {
+      const schedule: NhlScheduleGame[] = evs.map((e: any) => {
         const comp = e?.competitions?.[0] ?? {};
         const home = (comp.competitors ?? []).find((c: any) => c.homeAway === "home") ?? {};
         const away = (comp.competitors ?? []).find((c: any) => c.homeAway === "away") ?? {};
@@ -420,10 +420,10 @@ export const getNbaTeam = createServerFn({ method: "GET" })
           result,
           venue: comp?.venue?.fullName ?? null,
         };
-      }).sort((a: NbaScheduleGame, b: NbaScheduleGame) => a.startTs - b.startTs);
+      }).sort((a: NhlScheduleGame, b: NhlScheduleGame) => a.startTs - b.startTs);
 
       const groups: any[] = rosterRaw?.athletes ?? [];
-      const roster: NbaRosterPlayer[] = [];
+      const roster: NhlRosterPlayer[] = [];
       for (const g of groups) {
         const items: any[] = g?.items ?? [];
         for (const a of items) {
@@ -444,18 +444,18 @@ export const getNbaTeam = createServerFn({ method: "GET" })
       return { team, schedule, roster, leaders, injuries, error: null as string | null };
     } catch (e) {
       return {
-        team: null as NbaTeam | null,
-        schedule: [] as NbaScheduleGame[],
-        roster: [] as NbaRosterPlayer[],
-        leaders: [] as NbaTeamLeader[],
-        injuries: [] as NbaInjury[],
+        team: null as NhlTeam | null,
+        schedule: [] as NhlScheduleGame[],
+        roster: [] as NhlRosterPlayer[],
+        leaders: [] as NhlTeamLeader[],
+        injuries: [] as NhlInjury[],
         error: e instanceof Error ? e.message : "Unknown",
       };
     }
   });
 
 // ───────── Leaders ─────────
-// Note: ESPN NBA stat keys live under `offensive` and `defensive` and `general`
+// Note: ESPN NHL stat keys live under `offensive` and `defensive` and `general`
 const OFFENSIVE: Array<{ key: string; label: string; sortDir?: "asc" | "desc" }> = [
   { key: "avgPoints", label: "Points / Game" },
   { key: "avgAssists", label: "Assists / Game" },
@@ -480,13 +480,13 @@ const GENERAL: Array<{ key: string; label: string; sortDir?: "asc" | "desc" }> =
   { key: "tripleDouble", label: "Triple-Doubles" },
 ];
 
-async function fetchNbaLeaderCategory(
+async function fetchNhlLeaderCategory(
   season: number,
   group: "offensive" | "defensive" | "general",
   key: string,
   sortDir: "asc" | "desc",
   label: string,
-): Promise<NbaLeaderCategory | null> {
+): Promise<NhlLeaderCategory | null> {
   try {
     const url = `${STATS_BYATHLETE}?season=${season}&seasontype=2&category=${group}&sort=${group}.${key}:${sortDir}&limit=25`;
     const raw = (await get(url, 60 * 60_000)) as any;
@@ -494,7 +494,7 @@ async function fetchNbaLeaderCategory(
     if (!athletes.length) return null;
     const meta = (raw?.categories ?? []).find((c: any) => c?.name === group);
     const idx: number = meta?.names?.indexOf?.(key) ?? -1;
-    const entries: NbaLeaderEntry[] = athletes.map((row: any, i: number) => {
+    const entries: NhlLeaderEntry[] = athletes.map((row: any, i: number) => {
       const a = row?.athlete ?? {};
       const cat = (row?.categories ?? []).find((c: any) => c?.name === group);
       const value = idx >= 0 ? (cat?.totals?.[idx] ?? String(cat?.values?.[idx] ?? "")) : "";
@@ -515,35 +515,35 @@ async function fetchNbaLeaderCategory(
   }
 }
 
-async function buildNbaLeadersForSeason(season: number) {
+async function buildNhlLeadersForSeason(season: number) {
   const [off, def, gen] = await Promise.all([
-    Promise.all(OFFENSIVE.map((c) => fetchNbaLeaderCategory(season, "offensive", c.key, c.sortDir ?? "desc", c.label))),
-    Promise.all(DEFENSIVE.map((c) => fetchNbaLeaderCategory(season, "defensive", c.key, c.sortDir ?? "desc", c.label))),
-    Promise.all(GENERAL.map((c) => fetchNbaLeaderCategory(season, "general", c.key, c.sortDir ?? "desc", c.label))),
+    Promise.all(OFFENSIVE.map((c) => fetchNhlLeaderCategory(season, "offensive", c.key, c.sortDir ?? "desc", c.label))),
+    Promise.all(DEFENSIVE.map((c) => fetchNhlLeaderCategory(season, "defensive", c.key, c.sortDir ?? "desc", c.label))),
+    Promise.all(GENERAL.map((c) => fetchNhlLeaderCategory(season, "general", c.key, c.sortDir ?? "desc", c.label))),
   ]);
   return {
-    offensive: off.filter((c): c is NbaLeaderCategory => !!c && c.entries.length > 0),
-    defensive: def.filter((c): c is NbaLeaderCategory => !!c && c.entries.length > 0),
-    general: gen.filter((c): c is NbaLeaderCategory => !!c && c.entries.length > 0),
+    offensive: off.filter((c): c is NhlLeaderCategory => !!c && c.entries.length > 0),
+    defensive: def.filter((c): c is NhlLeaderCategory => !!c && c.entries.length > 0),
+    general: gen.filter((c): c is NhlLeaderCategory => !!c && c.entries.length > 0),
   };
 }
 
-export const getNbaLeaders = createServerFn({ method: "GET" })
+export const getNhlLeaders = createServerFn({ method: "GET" })
   .inputValidator((d: { season?: number }) => d)
   .handler(async ({ data }) => {
     let requested: number;
     try {
       const { currentSeason } = await import("@/lib/tournament-config");
-      requested = data.season ?? currentSeason("nba");
+      requested = data.season ?? currentSeason("nhl");
     } catch {
       requested = data.season ?? new Date().getFullYear();
     }
     try {
       let used = requested;
-      let res = await buildNbaLeadersForSeason(used);
+      let res = await buildNhlLeadersForSeason(used);
       if (!res.offensive.length && !res.defensive.length && !res.general.length) {
         used = requested - 1;
-        res = await buildNbaLeadersForSeason(used);
+        res = await buildNhlLeadersForSeason(used);
       }
       return {
         season: used,
@@ -557,16 +557,16 @@ export const getNbaLeaders = createServerFn({ method: "GET" })
       return {
         season: requested,
         requestedSeason: requested,
-        offensive: [] as NbaLeaderCategory[],
-        defensive: [] as NbaLeaderCategory[],
-        general: [] as NbaLeaderCategory[],
+        offensive: [] as NhlLeaderCategory[],
+        defensive: [] as NhlLeaderCategory[],
+        general: [] as NhlLeaderCategory[],
         error: e instanceof Error ? e.message : "Unknown",
       };
     }
   });
 
 // ───────── Athlete ─────────
-export const getNbaAthlete = createServerFn({ method: "GET" })
+export const getNhlAthlete = createServerFn({ method: "GET" })
   .inputValidator((d: { id: string }) => d)
   .handler(async ({ data }) => {
     try {
@@ -576,7 +576,7 @@ export const getNbaAthlete = createServerFn({ method: "GET" })
       ]);
       const a = bioRaw?.athlete ?? bioRaw ?? {};
       const team = a?.team ?? null;
-      const athlete: NbaAthlete = {
+      const athlete: NhlAthlete = {
         id: String(a.id ?? data.id),
         name: a.displayName ?? a.fullName ?? "",
         firstName: a.firstName ?? "",
@@ -603,12 +603,12 @@ export const getNbaAthlete = createServerFn({ method: "GET" })
 
       const categories: any[] = statsRaw?.categories ?? [];
       const pick = categories[0];
-      let career: NbaCareer = { headers: [], rows: [] };
+      let career: NhlCareer = { headers: [], rows: [] };
       if (pick) {
         const labels: string[] = pick.labels ?? pick.names ?? [];
         const headers: string[] = labels.slice(0, 12);
         const statSets: any[] = pick.statistics ?? pick.totals ?? [];
-        const rows: NbaCareerRow[] = [];
+        const rows: NhlCareerRow[] = [];
         for (const s of statSets) {
           const seasonName = s?.season?.displayName ?? s?.season?.year ?? s?.displayName ?? "";
           if (!seasonName) continue;
@@ -627,15 +627,15 @@ export const getNbaAthlete = createServerFn({ method: "GET" })
       return { athlete, career, error: null as string | null };
     } catch (e) {
       return {
-        athlete: null as NbaAthlete | null,
-        career: { headers: [], rows: [] } as NbaCareer,
+        athlete: null as NhlAthlete | null,
+        career: { headers: [], rows: [] } as NhlCareer,
         error: e instanceof Error ? e.message : "Unknown",
       };
     }
   });
 
 // ───────── Standings Pro ─────────
-function rowFromEntry(e: any): NbaStandingRow {
+function rowFromEntry(e: any): NhlStandingRow {
   const stats: any[] = e?.stats ?? [];
   const find = (k: string) =>
     stats.find((s: any) => s?.name === k || s?.shortDisplayName === k || s?.type === k);
@@ -670,24 +670,24 @@ function rowFromEntry(e: any): NbaStandingRow {
   };
 }
 
-export const getNbaStandingsPro = createServerFn({ method: "GET" })
+export const getNhlStandingsPro = createServerFn({ method: "GET" })
   .handler(async () => {
     try {
-      const url = "https://site.web.api.espn.com/apis/v2/sports/basketball/nba/standings?level=3";
+      const url = "https://site.web.api.espn.com/apis/v2/sports/hockey/nhl/standings?level=3";
       const raw = (await get(url, 30 * 60_000)) as any;
-      const conferences: NbaConference[] = [];
+      const conferences: NhlConference[] = [];
       for (const conf of raw?.children ?? []) {
-        const divisions: NbaDivision[] = [];
+        const divisions: NhlDivision[] = [];
         for (const div of conf?.children ?? []) {
           const entries = div?.standings?.entries ?? [];
           const rows = entries.map(rowFromEntry);
-          rows.sort((a: NbaStandingRow, b: NbaStandingRow) => (b.pct ?? 0) - (a.pct ?? 0));
+          rows.sort((a: NhlStandingRow, b: NhlStandingRow) => (b.pct ?? 0) - (a.pct ?? 0));
           divisions.push({ name: div.name ?? "Division", rows });
         }
         // Fallback: some shapes only have entries at conference level
         if (!divisions.length && conf?.standings?.entries?.length) {
           const rows = conf.standings.entries.map(rowFromEntry);
-          rows.sort((a: NbaStandingRow, b: NbaStandingRow) => (b.pct ?? 0) - (a.pct ?? 0));
+          rows.sort((a: NhlStandingRow, b: NhlStandingRow) => (b.pct ?? 0) - (a.pct ?? 0));
           divisions.push({ name: conf.name ?? "Conference", rows });
         }
         conferences.push({
@@ -698,7 +698,7 @@ export const getNbaStandingsPro = createServerFn({ method: "GET" })
       }
       return { conferences, error: null as string | null };
     } catch (e) {
-      return { conferences: [] as NbaConference[], error: e instanceof Error ? e.message : "Unknown" };
+      return { conferences: [] as NhlConference[], error: e instanceof Error ? e.message : "Unknown" };
     }
   });
 
@@ -708,7 +708,7 @@ function pickPeriods(team: any): (number | null)[] {
   return linescores.map((l) => (typeof l?.value === "number" ? l.value : l?.value != null ? Number(l.value) : null));
 }
 
-export const getNbaGame = createServerFn({ method: "GET" })
+export const getNhlGame = createServerFn({ method: "GET" })
   .inputValidator((d: { id: string }) => d)
   .handler(async ({ data }) => {
     try {
@@ -724,7 +724,7 @@ export const getNbaGame = createServerFn({ method: "GET" })
       const hasLive = status === "in";
       setEdge(hasLive);
 
-      function buildTeam(c: any): NbaLinescoreTeam {
+      function buildTeam(c: any): NhlLinescoreTeam {
         const t = c?.team ?? {};
         return {
           id: String(t.id ?? ""),
@@ -744,7 +744,7 @@ export const getNbaGame = createServerFn({ method: "GET" })
       const periodCount = Math.max(home.periods.length, away.periods.length, 4);
 
       const scoringRaw: any[] = raw?.scoringPlays ?? [];
-      const scoringPlays: NbaScoringPlay[] = scoringRaw.map((p) => ({
+      const scoringPlays: NhlScoringPlay[] = scoringRaw.map((p) => ({
         id: String(p?.id ?? `${p?.period?.number}-${p?.sequenceNumber}`),
         period: p?.period?.displayValue ?? (p?.period?.number ? `Q${p.period.number}` : ""),
         clock: p?.clock?.displayValue ?? "",
@@ -754,17 +754,17 @@ export const getNbaGame = createServerFn({ method: "GET" })
         teamAbbr: p?.team?.abbreviation ?? null,
       }));
 
-      // Boxscore — NBA shape: boxscore.players[] -> { team, statistics: [{ names, athletes:[{athlete, stats, starter}], totals }] }
+      // Boxscore — NHL shape: boxscore.players[] -> { team, statistics: [{ names, athletes:[{athlete, stats, starter}], totals }] }
       const boxscoreTeams: any[] = raw?.boxscore?.players ?? [];
-      const box: NbaBoxGroup[] = [];
+      const box: NhlBoxGroup[] = [];
       for (const t of boxscoreTeams) {
         const team = t?.team ?? {};
         const groups: any[] = t?.statistics ?? [];
-        // NBA usually has one group per team
+        // NHL usually has one group per team
         for (const g of groups) {
           const headers: string[] = (g?.names ?? g?.labels ?? []).slice(0, 14);
           const athletesRaw: any[] = g?.athletes ?? [];
-          const rows: NbaBoxRow[] = athletesRaw.filter((a) => a?.athlete?.id).map((a) => {
+          const rows: NhlBoxRow[] = athletesRaw.filter((a) => a?.athlete?.id).map((a) => {
             const stats: string[] = a?.stats ?? [];
             const map: Record<string, string> = {};
             headers.forEach((h, i) => { map[h] = stats[i] ?? "—"; });
@@ -791,7 +791,7 @@ export const getNbaGame = createServerFn({ method: "GET" })
       }
 
       const leadersRaw: any[] = raw?.leaders ?? comp?.leaders ?? [];
-      const leaders: NbaGameSummary["leaders"] = [];
+      const leaders: NhlGameSummary["leaders"] = [];
       for (const teamBlock of leadersRaw) {
         const tAbbr = teamBlock?.team?.abbreviation ?? "";
         const cats: any[] = teamBlock?.leaders ?? [];
@@ -825,7 +825,7 @@ export const getNbaGame = createServerFn({ method: "GET" })
       const attendance = typeof comp?.attendance === "number" ? comp.attendance : null;
 
       const playsRaw: any[] = raw?.plays ?? [];
-      const plays: NbaPlay[] = playsRaw.map((p) => {
+      const plays: NhlPlay[] = playsRaw.map((p) => {
         const part = p?.participants ?? [];
         const ath = part[0]?.athlete;
         return {
@@ -844,7 +844,7 @@ export const getNbaGame = createServerFn({ method: "GET" })
         };
       });
 
-      const summary: NbaGameSummary = {
+      const summary: NhlGameSummary = {
         id: String(header?.id ?? data.id),
         status,
         statusDetail: comp?.status?.type?.detail ?? comp?.status?.type?.description ?? "",
@@ -866,7 +866,7 @@ export const getNbaGame = createServerFn({ method: "GET" })
       return { summary, error: null as string | null };
     } catch (e) {
       return {
-        summary: null as NbaGameSummary | null,
+        summary: null as NhlGameSummary | null,
         error: e instanceof Error ? e.message : "Unknown",
       };
     }

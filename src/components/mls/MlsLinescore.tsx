@@ -1,8 +1,8 @@
-import type { NbaLinescoreTeam } from "@/lib/nba.functions";
+import type { MlsLinescoreTeam } from "@/lib/mls.functions";
 
-export function NbaLinescore({ home, away, periodCount }: { home: NbaLinescoreTeam; away: NbaLinescoreTeam; periodCount: number }) {
+export function MlsLinescore({ home, away, periodCount }: { home: MlsLinescoreTeam; away: MlsLinescoreTeam; periodCount: number }) {
   const periods = Array.from({ length: Math.max(periodCount, 4) }, (_, i) => i);
-  function row(team: NbaLinescoreTeam) {
+  function row(team: MlsLinescoreTeam) {
     return (
       <tr className={team.winner ? "bg-orange-500/[0.05]" : ""}>
         <td className="py-2 pl-3 sticky left-0 bg-card z-10">

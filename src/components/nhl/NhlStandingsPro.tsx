@@ -1,11 +1,11 @@
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { Trophy, Eye, EyeOff, Layers, Flag } from "lucide-react";
-import type { NbaConference, NbaStandingRow } from "@/lib/nba.functions";
+import type { NhlConference, NhlStandingRow } from "@/lib/nhl.functions";
 
 type View = "division" | "conference";
 
-export function NbaStandingsPro({ conferences }: { conferences: NbaConference[] }) {
+export function NhlStandingsPro({ conferences }: { conferences: NhlConference[] }) {
   const [view, setView] = useState<View>("division");
   const [expanded, setExpanded] = useState(false);
 
@@ -77,7 +77,7 @@ function Tab({ active, onClick, icon, label }: { active: boolean; onClick: () =>
 function Card({
   title, badge, rows, expanded, showSeed = false,
 }: {
-  title: string; badge?: string; rows: NbaStandingRow[]; expanded: boolean; showSeed?: boolean;
+  title: string; badge?: string; rows: NhlStandingRow[]; expanded: boolean; showSeed?: boolean;
 }) {
   return (
     <div className="rounded-2xl ring-1 ring-border bg-card overflow-hidden">
@@ -118,7 +118,7 @@ function Card({
                     {playoff ? <Trophy className="size-3.5 text-orange-300" /> : (seed ?? i + 1)}
                   </td>
                   <td>
-                    <Link to="/nba/team/$id" params={{ id: r.teamId }} className="flex items-center gap-2 py-0.5 group">
+                    <Link to="/nhl/team/$id" params={{ id: r.teamId }} className="flex items-center gap-2 py-0.5 group">
                       {r.logo && <img src={r.logo} alt="" loading="lazy" className="size-5 object-contain" />}
                       <span className={`truncate font-medium text-white group-hover:text-orange-300 transition ${playin ? "italic" : ""}`}>
                         {r.shortName || r.team}
