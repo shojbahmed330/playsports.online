@@ -497,8 +497,6 @@ function FootballSlate() {
     return { live, today, tomorrow, later, upcoming, recent };
   }, [q.data]);
 
-  const featured = buckets.live[0] ?? buckets.today[0] ?? buckets.tomorrow[0] ?? buckets.upcoming[0] ?? null;
-
   return (
     <section className="space-y-4">
       <div className="flex items-center justify-between flex-wrap gap-2">
@@ -520,8 +518,6 @@ function FootballSlate() {
         </div>
       </div>
 
-      {/* FEATURED SPOTLIGHT */}
-      {featured && <FeaturedFootballCard f={featured} />}
 
       {q.isLoading ? (
         <div className="rounded-xl border border-dashed border-gray-800 p-6 text-center text-xs text-gray-500 bg-gray-900/40">
