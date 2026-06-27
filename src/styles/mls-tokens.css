@@ -1,9 +1,9 @@
 /* MLS design tokens — hardwood + Spalding orange + electric blue */
 :root {
-  --mls-orange: #f58426;
-  --mls-orange-deep: #c2410c;
-  --mls-blue: #17408b;
-  --mls-blue-deep: #0b2552;
+  --mls-orange: #ed1c24;
+  --mls-orange-deep: #a91419;
+  --mls-blue: #001f5b;
+  --mls-blue-deep: #000914;
   --mls-red: #c8102e;
   --mls-hardwood: #c08850;
   --mls-hardwood-deep: #8a5a32;

@@ -57,7 +57,7 @@ function MlsGame() {
     <div className="space-y-5">
       {/* Header */}
       <div className="rounded-3xl ring-1 ring-border bg-card overflow-hidden">
-        <div className="p-4 sm:p-6 bg-gradient-to-br from-[#17408b]/25 via-transparent to-[#f58426]/15">
+        <div className="p-4 sm:p-6 bg-gradient-to-br from-[#001f5b]/25 via-transparent to-[#ed1c24]/15">
           <div className="flex items-center justify-between gap-3 mb-3">
             <div className="text-[10px] uppercase tracking-[0.22em] text-orange-300 font-bold">{s.shortDetail || s.statusDetail}</div>
             {live && (

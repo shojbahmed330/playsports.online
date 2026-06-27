@@ -2,8 +2,8 @@ import { Link } from "@tanstack/react-router";
 import type { MlsTeam } from "@/lib/mls.functions";
 
 export function MlsTeamCard({ team }: { team: MlsTeam }) {
-  const bg = team.color ?? "#17408b";
-  const alt = team.alt ?? "#f58426";
+  const bg = team.color ?? "#001f5b";
+  const alt = team.alt ?? "#ed1c24";
   return (
     <Link
       to="/mls/team/$id"

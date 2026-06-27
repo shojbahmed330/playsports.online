@@ -1,0 +1,21 @@
+{
+  "champions": [
+    { "season": "2024", "champion": "LA Galaxy",            "runnerUp": "New York Red Bulls",     "fmvp": "Gastón Brugman",    "result": "2–1" },
+    { "season": "2023", "champion": "Columbus Crew",        "runnerUp": "LAFC",                   "fmvp": "Cucho Hernández",   "result": "2–1" },
+    { "season": "2022", "champion": "LAFC",                 "runnerUp": "Philadelphia Union",     "fmvp": "Maxime Crépeau",    "result": "3–3 (3–0 pens)" },
+    { "season": "2021", "champion": "New York City FC",     "runnerUp": "Portland Timbers",       "fmvp": "Sean Johnson",      "result": "1–1 (4–2 pens)" },
+    { "season": "2020", "champion": "Columbus Crew",        "runnerUp": "Seattle Sounders",       "fmvp": "Lucas Zelarayán",   "result": "3–0" },
+    { "season": "2019", "champion": "Seattle Sounders",     "runnerUp": "Toronto FC",             "fmvp": "Víctor Rodríguez",  "result": "3–1" },
+    { "season": "2018", "champion": "Atlanta United",       "runnerUp": "Portland Timbers",       "fmvp": "Josef Martínez",    "result": "2–0" },
+    { "season": "2017", "champion": "Toronto FC",           "runnerUp": "Seattle Sounders",       "fmvp": "Jozy Altidore",     "result": "2–0" },
+    { "season": "2016", "champion": "Seattle Sounders",     "runnerUp": "Toronto FC",             "fmvp": "Stefan Frei",       "result": "0–0 (5–4 pens)" },
+    { "season": "2015", "champion": "Portland Timbers",     "runnerUp": "Columbus Crew",          "fmvp": "Diego Valeri",      "result": "2–1" },
+    { "season": "2014", "champion": "LA Galaxy",            "runnerUp": "New England Revolution", "fmvp": "Robbie Keane",      "result": "2–1 (a.e.t.)" },
+    { "season": "2013", "champion": "Sporting Kansas City", "runnerUp": "Real Salt Lake",         "fmvp": "Aurélien Collin",   "result": "1–1 (7–6 pens)" },
+    { "season": "2012", "champion": "LA Galaxy",            "runnerUp": "Houston Dynamo",         "fmvp": "Omar Gonzalez",     "result": "3–1" },
+    { "season": "2011", "champion": "LA Galaxy",            "runnerUp": "Houston Dynamo",         "fmvp": "Landon Donovan",    "result": "1–0" },
+    { "season": "2010", "champion": "Colorado Rapids",      "runnerUp": "FC Dallas",              "fmvp": "Conor Casey",       "result": "2–1 (a.e.t.)" },
+    { "season": "2009", "champion": "Real Salt Lake",       "runnerUp": "LA Galaxy",              "fmvp": "Nick Rimando",      "result": "1–1 (5–4 pens)" },
+    { "season": "2008", "champion": "Columbus Crew",        "runnerUp": "New York Red Bulls",     "fmvp": "Guillermo Barros Schelotto", "result": "3–1" }
+  ]
+}

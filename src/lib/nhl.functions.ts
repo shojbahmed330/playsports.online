@@ -747,7 +747,7 @@ export const getNhlGame = createServerFn({ method: "GET" })
       const scoringRaw: any[] = raw?.scoringPlays ?? [];
       const scoringPlays: NhlScoringPlay[] = scoringRaw.map((p) => ({
         id: String(p?.id ?? `${p?.period?.number}-${p?.sequenceNumber}`),
-        period: p?.period?.displayValue ?? (p?.period?.number ? `Q${p.period.number}` : ""),
+        period: p?.period?.displayValue ?? (p?.period?.number ? `P${p.period.number}` : ""),
         clock: p?.clock?.displayValue ?? "",
         text: p?.text ?? "",
         awayScore: p?.awayScore != null ? Number(p.awayScore) : null,

@@ -19,7 +19,7 @@ export const Route = createFileRoute("/nhl/history")({
 function NhlHistory() {
   return (
     <div className="space-y-6">
-      <header className="rounded-3xl ring-1 ring-border bg-card overflow-hidden p-6 bg-gradient-to-br from-[#17408b]/30 via-transparent to-[#f58426]/15">
+      <header className="rounded-3xl ring-1 ring-border bg-card overflow-hidden p-6 bg-gradient-to-br from-[#041e42]/30 via-transparent to-[#c8102e]/15">
         <div className="flex items-center gap-3">
           <Trophy className="size-7 text-orange-300" />
           <div>
@@ -43,7 +43,7 @@ function NhlHistory() {
               </tr>
             </thead>
             <tbody>
-              {data.champions.map((row) => (
+              {data.champions.map((row: any) => (
                 <tr key={row.season} className="border-b border-border/40 hover:bg-white/[0.03]">
                   <td className="py-2 pl-3 font-bold text-orange-300 tabular-nums">{row.season}</td>
                   <td className="text-white font-semibold">{row.champion}</td>

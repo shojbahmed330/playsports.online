@@ -26,7 +26,7 @@ export function MlsSubNav() {
   }, [pathname]);
 
   return (
-    <div className="border-b border-border bg-gradient-to-r from-[#0b2552]/80 via-background to-[#c2410c]/30 sticky top-16 z-20 backdrop-blur">
+    <div className="border-b border-border bg-gradient-to-r from-[#000914]/80 via-background to-[#a91419]/30 sticky top-16 z-20 backdrop-blur">
       <div className="relative max-w-7xl mx-auto px-2 sm:px-6">
         <div aria-hidden className="pointer-events-none absolute left-0 top-0 bottom-0 w-6 bg-gradient-to-r from-background to-transparent sm:hidden" />
         <div aria-hidden className="pointer-events-none absolute right-0 top-0 bottom-0 w-6 bg-gradient-to-l from-background to-transparent sm:hidden" />
@@ -47,7 +47,7 @@ export function MlsSubNav() {
                 className={[
                   "tap-target snap-start shrink-0 inline-flex items-center justify-center gap-1.5 px-3 sm:px-3.5 py-2 rounded-full text-[11px] sm:text-xs font-bold ring-1 transition-all active:scale-95",
                   active
-                    ? "bg-gradient-to-r from-[#17408b] to-[#f58426] text-white ring-orange-300/40 shadow-[0_4px_20px_-6px_rgba(245,132,38,0.7)] scale-[1.02]"
+                    ? "bg-gradient-to-r from-[#001f5b] to-[#ed1c24] text-white ring-orange-300/40 shadow-[0_4px_20px_-6px_rgba(245,132,38,0.7)] scale-[1.02]"
                     : "bg-white/[0.04] hover:bg-white/[0.09] ring-white/10 hover:ring-white/25 text-gray-200",
                 ].join(" ")}
               >

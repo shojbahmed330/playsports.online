@@ -49,7 +49,7 @@ function NhlTeamPage() {
       {/* Team header */}
       <div
         className="rounded-3xl ring-1 ring-border overflow-hidden p-5 sm:p-7 relative"
-        style={{ background: `linear-gradient(135deg, ${team.color ?? "#17408b"} 0%, ${team.alt ?? "#f58426"} 100%)` }}
+        style={{ background: `linear-gradient(135deg, ${team.color ?? "#041e42"} 0%, ${team.alt ?? "#c8102e"} 100%)` }}
       >
         <div aria-hidden className="absolute inset-0 bg-black/30" />
         <div className="relative flex items-center gap-4">

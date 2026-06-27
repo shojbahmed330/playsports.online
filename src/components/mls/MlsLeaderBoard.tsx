@@ -4,7 +4,7 @@ import type { MlsLeaderCategory } from "@/lib/mls.functions";
 export function MlsLeaderBoard({ category, compact = false }: { category: MlsLeaderCategory; compact?: boolean }) {
   return (
     <div className="rounded-2xl bg-card ring-1 ring-border overflow-hidden">
-      <div className="px-4 py-3 border-b border-border flex items-center justify-between bg-gradient-to-r from-[#17408b]/40 to-transparent">
+      <div className="px-4 py-3 border-b border-border flex items-center justify-between bg-gradient-to-r from-[#001f5b]/40 to-transparent">
         <h3 className="text-sm font-bold text-white">{category.label}</h3>
         <span className="text-[10px] uppercase tracking-wider text-orange-300/80 font-semibold">{category.group}</span>
       </div>

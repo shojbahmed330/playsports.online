@@ -1,9 +1,9 @@
 /* NHL design tokens — hardwood + Spalding orange + electric blue */
 :root {
-  --nhl-orange: #f58426;
-  --nhl-orange-deep: #c2410c;
-  --nhl-blue: #17408b;
-  --nhl-blue-deep: #0b2552;
+  --nhl-orange: #c8102e;
+  --nhl-orange-deep: #9f1c30;
+  --nhl-blue: #041e42;
+  --nhl-blue-deep: #020c1e;
   --nhl-red: #c8102e;
   --nhl-hardwood: #c08850;
   --nhl-hardwood-deep: #8a5a32;

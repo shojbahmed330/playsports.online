@@ -38,7 +38,7 @@ function NhlPlayer() {
 
   return (
     <div className="space-y-6">
-      <div className="rounded-3xl ring-1 ring-border bg-card overflow-hidden p-5 sm:p-7 relative bg-gradient-to-br from-[#17408b]/30 via-transparent to-[#f58426]/20">
+      <div className="rounded-3xl ring-1 ring-border bg-card overflow-hidden p-5 sm:p-7 relative bg-gradient-to-br from-[#041e42]/30 via-transparent to-[#c8102e]/20">
         <div className="flex items-center gap-4">
           {a.headshot && <img src={a.headshot} alt="" className="size-24 sm:size-32 rounded-2xl object-cover bg-muted" />}
           <div className="min-w-0 flex-1">

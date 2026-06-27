@@ -1,7 +1,7 @@
 import type { NhlLinescoreTeam } from "@/lib/nhl.functions";
 
 export function NhlLinescore({ home, away, periodCount }: { home: NhlLinescoreTeam; away: NhlLinescoreTeam; periodCount: number }) {
-  const periods = Array.from({ length: Math.max(periodCount, 4) }, (_, i) => i);
+  const periods = Array.from({ length: Math.max(periodCount, 3) }, (_, i) => i);
   function row(team: NhlLinescoreTeam) {
     return (
       <tr className={team.winner ? "bg-orange-500/[0.05]" : ""}>
@@ -15,7 +15,7 @@ export function NhlLinescore({ home, away, periodCount }: { home: NhlLinescoreTe
           </div>
         </td>
         {periods.map((i) => {
-          const label = i < 4 ? `Q${i + 1}` : `OT${i - 3}`;
+          const label = i < 3 ? `P${i + 1}` : `OT${i - 2}`;
           const v = team.periods[i];
           return (
             <td key={label} className="text-center tabular-nums px-2 text-gray-200">{v ?? "–"}</td>
@@ -33,7 +33,7 @@ export function NhlLinescore({ home, away, periodCount }: { home: NhlLinescoreTe
             <tr>
               <th className="text-left py-2 pl-3 sticky left-0 bg-card z-10">Team</th>
               {periods.map((i) => {
-                const label = i < 4 ? `Q${i + 1}` : `OT${i - 3}`;
+                const label = i < 3 ? `P${i + 1}` : `OT${i - 2}`;
                 return <th key={label} className="text-center px-2">{label}</th>;
               })}
               <th className="text-right pr-4">T</th>

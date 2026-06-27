@@ -2,8 +2,8 @@ import { Link } from "@tanstack/react-router";
 import type { NhlTeam } from "@/lib/nhl.functions";
 
 export function NhlTeamCard({ team }: { team: NhlTeam }) {
-  const bg = team.color ?? "#17408b";
-  const alt = team.alt ?? "#f58426";
+  const bg = team.color ?? "#041e42";
+  const alt = team.alt ?? "#c8102e";
   return (
     <Link
       to="/nhl/team/$id"

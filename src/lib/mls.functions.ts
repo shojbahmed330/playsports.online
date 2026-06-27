@@ -743,7 +743,7 @@ export const getMlsGame = createServerFn({ method: "GET" })
       const scoringRaw: any[] = raw?.scoringPlays ?? [];
       const scoringPlays: MlsScoringPlay[] = scoringRaw.map((p) => ({
         id: String(p?.id ?? `${p?.period?.number}-${p?.sequenceNumber}`),
-        period: p?.period?.displayValue ?? (p?.period?.number ? `Q${p.period.number}` : ""),
+        period: p?.period?.displayValue ?? (p?.period?.number ? `${p.period.number}H` : ""),
         clock: p?.clock?.displayValue ?? "",
         text: p?.text ?? "",
         awayScore: p?.awayScore != null ? Number(p.awayScore) : null,

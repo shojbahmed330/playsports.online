@@ -1,0 +1,26 @@
+{
+  "champions": [
+    { "season": "2023-24", "champion": "Florida Panthers",       "runnerUp": "Edmonton Oilers",       "fmvp": "Sergei Bobrovsky", "result": "4–3" },
+    { "season": "2022-23", "champion": "Vegas Golden Knights",   "runnerUp": "Florida Panthers",      "fmvp": "Jonathan Marchessault", "result": "4–1" },
+    { "season": "2021-22", "champion": "Colorado Avalanche",     "runnerUp": "Tampa Bay Lightning",   "fmvp": "Cale Makar", "result": "4–2" },
+    { "season": "2020-21", "champion": "Tampa Bay Lightning",    "runnerUp": "Montréal Canadiens",    "fmvp": "Andrei Vasilevskiy", "result": "4–1" },
+    { "season": "2019-20", "champion": "Tampa Bay Lightning",    "runnerUp": "Dallas Stars",          "fmvp": "Victor Hedman", "result": "4–2" },
+    { "season": "2018-19", "champion": "St. Louis Blues",        "runnerUp": "Boston Bruins",         "fmvp": "Ryan O'Reilly", "result": "4–3" },
+    { "season": "2017-18", "champion": "Washington Capitals",    "runnerUp": "Vegas Golden Knights",  "fmvp": "Alexander Ovechkin", "result": "4–1" },
+    { "season": "2016-17", "champion": "Pittsburgh Penguins",    "runnerUp": "Nashville Predators",   "fmvp": "Sidney Crosby", "result": "4–2" },
+    { "season": "2015-16", "champion": "Pittsburgh Penguins",    "runnerUp": "San Jose Sharks",       "fmvp": "Sidney Crosby", "result": "4–2" },
+    { "season": "2014-15", "champion": "Chicago Blackhawks",     "runnerUp": "Tampa Bay Lightning",   "fmvp": "Duncan Keith", "result": "4–2" },
+    { "season": "2013-14", "champion": "Los Angeles Kings",      "runnerUp": "New York Rangers",      "fmvp": "Justin Williams", "result": "4–1" },
+    { "season": "2012-13", "champion": "Chicago Blackhawks",     "runnerUp": "Boston Bruins",         "fmvp": "Patrick Kane", "result": "4–2" },
+    { "season": "2011-12", "champion": "Los Angeles Kings",      "runnerUp": "New Jersey Devils",     "fmvp": "Jonathan Quick", "result": "4–2" },
+    { "season": "2010-11", "champion": "Boston Bruins",          "runnerUp": "Vancouver Canucks",     "fmvp": "Tim Thomas", "result": "4–3" },
+    { "season": "2009-10", "champion": "Chicago Blackhawks",     "runnerUp": "Philadelphia Flyers",   "fmvp": "Jonathan Toews", "result": "4–2" },
+    { "season": "2008-09", "champion": "Pittsburgh Penguins",    "runnerUp": "Detroit Red Wings",     "fmvp": "Evgeni Malkin", "result": "4–3" },
+    { "season": "2007-08", "champion": "Detroit Red Wings",      "runnerUp": "Pittsburgh Penguins",   "fmvp": "Henrik Zetterberg", "result": "4–2" },
+    { "season": "2006-07", "champion": "Anaheim Ducks",          "runnerUp": "Ottawa Senators",       "fmvp": "Scott Niedermayer", "result": "4–1" },
+    { "season": "2005-06", "champion": "Carolina Hurricanes",    "runnerUp": "Edmonton Oilers",       "fmvp": "Cam Ward", "result": "4–3" },
+    { "season": "2003-04", "champion": "Tampa Bay Lightning",    "runnerUp": "Calgary Flames",        "fmvp": "Brad Richards", "result": "4–3" },
+    { "season": "2002-03", "champion": "New Jersey Devils",      "runnerUp": "Mighty Ducks of Anaheim", "fmvp": "Jean-Sébastien Giguère", "result": "4–3" },
+    { "season": "2001-02", "champion": "Detroit Red Wings",      "runnerUp": "Carolina Hurricanes",   "fmvp": "Nicklas Lidström", "result": "4–1" }
+  ]
+}

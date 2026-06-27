@@ -30,7 +30,7 @@ export function NhlPlayByPlay({ plays }: { plays: NhlPlay[] }) {
           <Trophy className="size-3" /> Scoring only
         </Pill>
         {periods.map((p) => (
-          <Pill key={p} active={filter === p} onClick={() => setFilter(p)}>Q{p}</Pill>
+          <Pill key={p} active={filter === p} onClick={() => setFilter(p)}>P{p}</Pill>
         ))}
       </div>
       <ol className="rounded-2xl ring-1 ring-border bg-card divide-y divide-border overflow-hidden">
