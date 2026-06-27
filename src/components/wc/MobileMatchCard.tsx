@@ -64,12 +64,15 @@ export function MobileMatchCard({
   const timeStr = date ? fmtTime(date) : null;
   const dayStr = date ? fmtDateShort(date) : null;
 
-  return (
-    <button
-      onClick={onClick}
-      className={`group relative w-full text-left rounded-2xl overflow-hidden bg-gray-950 border transition-all active:scale-[0.99] shadow-lg
-        ${match.predicted ? "border-dashed border-sky-500/40 hover:border-sky-400/60" : "border-white/[0.08] hover:border-amber-500/40"}`}
-    >
+  // Real 2026 ESPN matches navigate directly to the dedicated match page
+  // (video + lineups + events). Historical / predicted rows still open the
+  // in-page modal via onClick.
+  const isRealEspn = match.tournament_year === 2026 && !match.predicted && match.id > 0;
+
+  const cardClass = `group relative w-full text-left rounded-2xl overflow-hidden bg-gray-950 border transition-all active:scale-[0.99] shadow-lg block
+    ${match.predicted ? "border-dashed border-sky-500/40 hover:border-sky-400/60" : "border-white/[0.08] hover:border-amber-500/40"}`;
+
+  const inner = (
       {/* dual confederation top-accent */}
       <div className="flex h-1">
         <div className={`flex-1 conf-${homeConf}`} />
