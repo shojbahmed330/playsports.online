@@ -448,10 +448,10 @@ function Index() {
             {/* TABS */}
             <div className="flex justify-center">
               <div className="bg-gray-900 rounded-2xl p-1 inline-flex gap-1 border border-gray-800">
-                <TabBtn active={tab === "groups"} onClick={() => setTab("groups")} icon={<Users className="size-4" />}>
+                <TabBtn active={tab === "groups"} onClick={() => setTabUser("groups")} icon={<Users className="size-4" />}>
                   Group Stage
                 </TabBtn>
-                <TabBtn active={tab === "knockout"} onClick={() => setTab("knockout")} icon={<Swords className="size-4" />}>
+                <TabBtn active={tab === "knockout"} onClick={() => setTabUser("knockout")} icon={<Swords className="size-4" />}>
                   Knockout Bracket
                 </TabBtn>
               </div>
@@ -495,12 +495,17 @@ function Index() {
         )}
       </main>
 
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 -mt-4 mb-6 flex justify-center">
+        <ReplayTourButton onReplay={() => setReplayTour(true)} />
+      </div>
+
       <SiteFooter />
 
 
       <MatchModal match={activeMatch} onClose={() => setActiveMatch(null)} />
 
-      
+      <FootballCoachmark force={replayTour} />
+      <BackToTopFab />
     </div>
   );
 }
