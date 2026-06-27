@@ -51,10 +51,10 @@ function WcHero({ f, live }: { f: Wc2026Fixture; live: boolean }) {
             {live ? (
               <>
                 <span className="size-1.5 rounded-full bg-red-500 animate-pulse" />
-                <span>Live · লাইভ</span>
+                <span>Live</span>
               </>
             ) : (
-              <span>Up next · পরবর্তী</span>
+              <span>Up next</span>
             )}
             <span className="text-amber-200/60">· {f.group}</span>
           </span>
