@@ -66,39 +66,57 @@ export function LegalLayout({
   title,
   intro,
   body,
+  defaultBody,
   loading,
+  updated,
   children,
 }: {
   title: string;
   intro?: string;
   body?: string;
+  defaultBody?: string;
   loading?: boolean;
+  updated?: string;
   children?: ReactNode;
 }) {
+  const effective = body && body.trim().length > 0 ? body : defaultBody;
   return (
-    <main id="main-content" className="min-h-screen pb-24">
-      <div className="mx-auto max-w-3xl px-4 py-10">
-        <div className="text-xs text-muted-foreground">
-          <Link to="/" className="hover:text-foreground">
+    <main id="main-content" className="min-h-screen pb-24 bg-gradient-to-b from-background via-background to-background/60">
+      <div className="mx-auto max-w-3xl px-4 pt-8 pb-10">
+        <nav className="text-xs text-muted-foreground" aria-label="Breadcrumb">
+          <Link to="/" className="hover:text-foreground transition-colors">
             Home
-          </Link>{" "}
-          / <span className="text-foreground">{title}</span>
-        </div>
-        <h1 className="mt-3 text-3xl sm:text-4xl font-bold tracking-tight">{title}</h1>
-        {intro && (
-          <p className="mt-2 text-sm text-muted-foreground">{intro}</p>
-        )}
+          </Link>
+          <span className="mx-1.5 opacity-50">/</span>
+          <span className="text-foreground">{title}</span>
+        </nav>
 
-        <div className="mt-6 prose-asl">
+        <header className="mt-5 border-b border-border/60 pb-6">
+          <div className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-emerald-500/90 font-semibold">
+            <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            AllSportsLive
+          </div>
+          <h1 className="mt-2 text-3xl sm:text-4xl font-bold tracking-tight">{title}</h1>
+          {intro && (
+            <p className="mt-3 text-base text-muted-foreground max-w-2xl leading-relaxed">{intro}</p>
+          )}
+          {updated && (
+            <p className="mt-3 text-[11px] uppercase tracking-widest text-muted-foreground/80">
+              Last updated · {updated}
+            </p>
+          )}
+        </header>
+
+        <article className="mt-6 prose-asl">
           {loading ? (
             <div className="text-muted-foreground inline-flex items-center gap-2 text-sm">
               <Loader2 className="size-4 animate-spin" /> Loading…
             </div>
-          ) : body !== undefined ? (
-            renderBody(body)
+          ) : effective ? (
+            renderBody(effective)
           ) : null}
           {children}
-        </div>
+        </article>
       </div>
     </main>
   );
