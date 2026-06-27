@@ -368,17 +368,22 @@ function AdminShell() {
 }
 
 function SectionShell({
-  title, hint, children,
+  title, hint, section, matchStats, children,
 }: {
   title: string;
   hint: string;
+  section: AdminSection;
+  matchStats?: { total: number; withVideo: number; missing: number };
   children: ReactNode;
 }) {
   return (
     <div className="space-y-5">
-      <header>
-        <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight">{title}</h2>
-        <p className="text-sm text-muted-foreground mt-1">{hint}</p>
+      <header className="space-y-3">
+        <div>
+          <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight">{title}</h2>
+          <p className="text-sm text-muted-foreground mt-1">{hint}</p>
+        </div>
+        <SectionStatusStrip section={section} matchStats={matchStats} />
       </header>
       <div className="space-y-5">{children}</div>
     </div>
