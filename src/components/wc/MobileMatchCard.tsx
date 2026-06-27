@@ -73,6 +73,8 @@ export function MobileMatchCard({
     ${match.predicted ? "border-dashed border-sky-500/40 hover:border-sky-400/60" : "border-white/[0.08] hover:border-amber-500/40"}`;
 
   const inner = (
+    <>
+
       {/* dual confederation top-accent */}
       <div className="flex h-1">
         <div className={`flex-1 conf-${homeConf}`} />
