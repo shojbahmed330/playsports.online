@@ -22,6 +22,9 @@ import { AffiliateLinksCard } from "@/components/admin/AffiliateLinksCard";
 import { SponsoredSlotsCard } from "@/components/admin/SponsoredSlotsCard";
 import { NewsletterDigestCard } from "@/components/admin/NewsletterDigestCard";
 import { MembershipsCard } from "@/components/admin/MembershipsCard";
+import { AdminSidebar, type AdminSection } from "@/components/admin/AdminSidebar";
+import { OverviewPanel } from "@/components/admin/OverviewPanel";
+
 
 const GROUP_MATCHES_BY_YEAR = groupMatchesData as Record<string, WCMatch[]>;
 type AdminMatch = WCMatch & { _bundled?: boolean };
