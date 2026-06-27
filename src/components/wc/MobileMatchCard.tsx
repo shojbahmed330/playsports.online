@@ -64,12 +64,17 @@ export function MobileMatchCard({
   const timeStr = date ? fmtTime(date) : null;
   const dayStr = date ? fmtDateShort(date) : null;
 
-  return (
-    <button
-      onClick={onClick}
-      className={`group relative w-full text-left rounded-2xl overflow-hidden bg-gray-950 border transition-all active:scale-[0.99] shadow-lg
-        ${match.predicted ? "border-dashed border-sky-500/40 hover:border-sky-400/60" : "border-white/[0.08] hover:border-amber-500/40"}`}
-    >
+  // Real 2026 ESPN matches navigate directly to the dedicated match page
+  // (video + lineups + events). Historical / predicted rows still open the
+  // in-page modal via onClick.
+  const isRealEspn = match.tournament_year === 2026 && !match.predicted && match.id > 0;
+
+  const cardClass = `group relative w-full text-left rounded-2xl overflow-hidden bg-gray-950 border transition-all active:scale-[0.99] shadow-lg block
+    ${match.predicted ? "border-dashed border-sky-500/40 hover:border-sky-400/60" : "border-white/[0.08] hover:border-amber-500/40"}`;
+
+  const inner = (
+    <>
+
       {/* dual confederation top-accent */}
       <div className="flex h-1">
         <div className={`flex-1 conf-${homeConf}`} />
@@ -177,22 +182,36 @@ export function MobileMatchCard({
 
       </div>
 
-      {/* Open match centre quick link for 2026 fixtures — only real ESPN events */}
-      {match.tournament_year === 2026 && !match.predicted && match.id > 0 && (
-        <Link
-          to="/football/match/$id"
-          params={{ id: String(match.id) }}
-          onClick={(e) => e.stopPropagation()}
-          className="block text-center text-[10px] py-1.5 bg-gradient-to-r from-amber-500/10 to-amber-500/5 text-amber-300 border-t border-white/5 hover:bg-amber-500/20"
-        >
+      {/* Footer hint — kept inside the same card so the whole card is one big tap target */}
+      {isRealEspn && (
+        <div className="block text-center text-[10px] py-1.5 bg-gradient-to-r from-amber-500/10 to-amber-500/5 text-amber-300 border-t border-white/5">
           Open Match Centre →
-        </Link>
+        </div>
       )}
       {match.predicted && (
         <div className="text-center text-[10px] py-1.5 bg-sky-500/[0.06] text-sky-300 border-t border-sky-500/20">
           Tap for fixture preview
         </div>
       )}
+    </>
+  );
+
+  if (isRealEspn) {
+    return (
+      <Link
+        to="/football/match/$id"
+        params={{ id: String(match.id) }}
+        className={cardClass}
+      >
+        {inner}
+      </Link>
+    );
+  }
+
+  return (
+    <button onClick={onClick} className={cardClass} type="button">
+      {inner}
     </button>
   );
 }
+
