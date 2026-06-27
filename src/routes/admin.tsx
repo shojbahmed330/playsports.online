@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import {
@@ -15,13 +15,16 @@ import videoSeed from "@/data/wc_video_seed.json";
 import groupMatchesData from "@/data/wc_group_matches.json";
 import { AdSenseAdminCard } from "@/components/admin/AdSenseAdminCard";
 import { MonetizationCard } from "@/components/admin/MonetizationCard";
-import { getWc2026Fixtures, type Wc2026Fixture } from "@/lib/wc2026.functions";
+import { getWc2026Fixtures } from "@/lib/wc2026.functions";
 import { fetch2026VideoMap, set2026Video, videoKey } from "@/lib/wc-2026-videos";
 import { Wc2026HighlightsCard } from "@/components/admin/Wc2026HighlightsCard";
 import { AffiliateLinksCard } from "@/components/admin/AffiliateLinksCard";
 import { SponsoredSlotsCard } from "@/components/admin/SponsoredSlotsCard";
 import { NewsletterDigestCard } from "@/components/admin/NewsletterDigestCard";
 import { MembershipsCard } from "@/components/admin/MembershipsCard";
+import { AdminSidebar, type AdminSection } from "@/components/admin/AdminSidebar";
+import { OverviewPanel } from "@/components/admin/OverviewPanel";
+
 
 const GROUP_MATCHES_BY_YEAR = groupMatchesData as Record<string, WCMatch[]>;
 type AdminMatch = WCMatch & { _bundled?: boolean };
@@ -89,8 +92,10 @@ function AdminShell() {
   const [year, setYear] = useState<number>(2026);
   const [search, setSearch] = useState("");
   const [missingOnly, setMissingOnly] = useState(false);
+  const [section, setSection] = useState<AdminSection>("overview");
 
   const fixturesFn = useServerFn(getWc2026Fixtures);
+
 
   const matches = useQuery({
     queryKey: ["admin_wc_matches", year],
@@ -173,7 +178,7 @@ function AdminShell() {
     <div className="min-h-screen">
       {/* Header */}
       <header className="sticky top-0 z-30 border-b border-border bg-background/85 backdrop-blur">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Link to="/" className="size-9 rounded-lg bg-gold/15 grid place-items-center ring-1 ring-gold/30 hover:ring-gold/50">
               <Trophy className="size-5 text-gold" />
@@ -182,7 +187,7 @@ function AdminShell() {
               <div className="text-sm font-bold tracking-wide inline-flex items-center gap-1.5">
                 Admin <ShieldCheck className="size-3.5 text-emerald-400" />
               </div>
-              <div className="text-[10px] uppercase tracking-[0.18em] text-gold">FIFA WC Archive</div>
+              <div className="text-[10px] uppercase tracking-[0.18em] text-gold">AllSportsLive Control</div>
             </div>
           </div>
           <div className="flex items-center gap-3">
@@ -199,115 +204,150 @@ function AdminShell() {
         </div>
       </header>
 
-      <main id="main-content" className="max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-6">
-        {/* Controls */}
-        <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:justify-between">
-          <div className="flex items-center gap-2">
-            <label className="text-[11px] uppercase tracking-widest text-muted-foreground">Tournament</label>
-            <div className="relative">
-              <select
-                value={year}
-                onChange={(e) => setYear(Number(e.target.value))}
-                className="appearance-none pl-3 pr-9 py-2 rounded-lg bg-card border border-border text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-gold"
-              >
-                {WC_YEARS.slice().reverse().map((y) => (
-                  <option key={y} value={y}>{y} World Cup</option>
-                ))}
-              </select>
-              <ChevronDown className="size-4 text-gold absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-            </div>
-          </div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 lg:py-8 lg:flex lg:gap-8">
+        <AdminSidebar active={section} onChange={setSection} />
 
-          <div className="flex items-center gap-2 flex-1 sm:max-w-md">
-            <div className="relative flex-1">
-              <Search className="size-4 text-muted-foreground absolute left-2.5 top-1/2 -translate-y-1/2" />
-              <input
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search team or round…"
-                className="w-full pl-8 pr-3 py-2 rounded-lg bg-card border border-border text-sm focus:outline-none focus:border-gold"
-              />
-            </div>
-            <button
-              onClick={() => setMissingOnly((v) => !v)}
-              className={`px-3 py-2 rounded-lg text-xs inline-flex items-center gap-1.5 border transition-colors ${
-                missingOnly
-                  ? "bg-amber-500/15 border-amber-500/40 text-amber-300"
-                  : "bg-card border-border text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              <Filter className="size-3.5" /> Missing only
-            </button>
-          </div>
-        </div>
-
-        {/* Stat strip */}
-        <div className="grid grid-cols-3 gap-3">
-          <Stat label="Total matches" value={stats.total} tone="default" />
-          <Stat label="With video" value={stats.withVideo} tone="good" />
-          <Stat label="Missing video" value={stats.missing} tone="warn" />
-        </div>
-
-        {/* Google AdSense control */}
-        <AdSenseAdminCard />
-
-        {/* Monetization & site (analytics, consent, newsletter, legal copy, identity) */}
-        <MonetizationCard />
-
-        {/* Affiliate links manager (Phase 2) */}
-        <AffiliateLinksCard />
-
-        {/* Sponsored slot manager (Phase 2) */}
-        <SponsoredSlotsCard />
-
-        {/* Phase 5 — weekly newsletter digest */}
-        <NewsletterDigestCard />
-
-        {/* Phase 6 — paid memberships (ad-free) */}
-        <MembershipsCard />
-
-
-        {/* Auto-seed from bundled YouTube dataset */}
-        <SeedFromDataset />
-
-        {/* 2026 highlight auto-import from Robi Axiata YouTube channel */}
-        {year === 2026 && <Wc2026HighlightsCard />}
-
-
-
-        {/* Match table */}
-        <div className="rounded-2xl border border-border bg-card/40 overflow-hidden">
-          {matches.isLoading ? (
-            <div className="p-12 text-center text-sm text-muted-foreground">
-              <Loader2 className="size-6 mx-auto animate-spin mb-2" /> Loading {year} matches…
-            </div>
-          ) : matches.error ? (
-            <div className="p-8 text-center text-sm text-red-400">
-              Failed to load matches.
-            </div>
-          ) : filtered.length === 0 ? (
-            <div className="p-12 text-center text-sm text-muted-foreground">
-              {(matches.data?.length ?? 0) === 0
-                ? `No matches in DB for ${year} yet.`
-                : "No matches match your filters."}
-            </div>
-          ) : (
-            <div className="divide-y divide-border">
-              {filtered.map((m) => (
-                <MatchRow key={m.id} match={m} year={year} />
-              ))}
-            </div>
+        <main id="main-content" className="flex-1 min-w-0 space-y-6 mt-4 lg:mt-0">
+          {section === "overview" && (
+            <OverviewPanel matchStats={stats} onJump={setSection} />
           )}
-        </div>
 
-        <p className="text-[11px] text-muted-foreground text-center">
-          Group-stage rows from the bundled dataset are shown alongside knockout matches.
-          Saving a video URL for a bundled row inserts it into the database automatically.
-        </p>
-      </main>
+          {section === "monetize" && (
+            <SectionShell title="Monetize" hint="AdSense · Affiliates · Sponsored placements · Memberships">
+              <AdSenseAdminCard />
+              <AffiliateLinksCard />
+              <SponsoredSlotsCard />
+              <MembershipsCard />
+            </SectionShell>
+          )}
+
+          {section === "audience" && (
+            <SectionShell title="Audience" hint="Newsletter signups & weekly digest">
+              <NewsletterDigestCard />
+            </SectionShell>
+          )}
+
+          {section === "content" && (
+            <SectionShell title="Content" hint="Auto-seed videos & 2026 highlights">
+              <SeedFromDataset />
+              <Wc2026HighlightsCard />
+            </SectionShell>
+          )}
+
+          {section === "settings" && (
+            <SectionShell title="Settings" hint="Site identity, analytics, consent, legal pages">
+              <MonetizationCard />
+            </SectionShell>
+          )}
+
+          {section === "matches" && (
+            <SectionShell
+              title="Matches"
+              hint="World Cup video library — paste a YouTube/Vimeo/mp4 link per match"
+            >
+              {/* Tournament + search controls */}
+              <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:justify-between">
+                <div className="flex items-center gap-2">
+                  <label className="text-[11px] uppercase tracking-widest text-muted-foreground">Tournament</label>
+                  <div className="relative">
+                    <select
+                      value={year}
+                      onChange={(e) => setYear(Number(e.target.value))}
+                      className="appearance-none pl-3 pr-9 py-2 rounded-lg bg-card border border-border text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-gold"
+                    >
+                      {WC_YEARS.slice().reverse().map((y) => (
+                        <option key={y} value={y}>{y} World Cup</option>
+                      ))}
+                    </select>
+                    <ChevronDown className="size-4 text-gold absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 flex-1 sm:max-w-md">
+                  <div className="relative flex-1">
+                    <Search className="size-4 text-muted-foreground absolute left-2.5 top-1/2 -translate-y-1/2" />
+                    <input
+                      value={search}
+                      onChange={(e) => setSearch(e.target.value)}
+                      placeholder="Search team or round…"
+                      className="w-full pl-8 pr-3 py-2 rounded-lg bg-card border border-border text-sm focus:outline-none focus:border-gold"
+                    />
+                  </div>
+                  <button
+                    onClick={() => setMissingOnly((v) => !v)}
+                    className={`px-3 py-2 rounded-lg text-xs inline-flex items-center gap-1.5 border transition-colors ${
+                      missingOnly
+                        ? "bg-amber-500/15 border-amber-500/40 text-amber-300"
+                        : "bg-card border-border text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    <Filter className="size-3.5" /> Missing only
+                  </button>
+                </div>
+              </div>
+
+              {/* Stat strip */}
+              <div className="grid grid-cols-3 gap-3">
+                <Stat label="Total" value={stats.total} tone="default" />
+                <Stat label="With video" value={stats.withVideo} tone="good" />
+                <Stat label="Missing" value={stats.missing} tone="warn" />
+              </div>
+
+              {/* Match table */}
+              <div className="rounded-2xl border border-border bg-card/40 overflow-hidden">
+                {matches.isLoading ? (
+                  <div className="p-12 text-center text-sm text-muted-foreground">
+                    <Loader2 className="size-6 mx-auto animate-spin mb-2" /> Loading {year} matches…
+                  </div>
+                ) : matches.error ? (
+                  <div className="p-8 text-center text-sm text-red-400">
+                    Failed to load matches.
+                  </div>
+                ) : filtered.length === 0 ? (
+                  <div className="p-12 text-center text-sm text-muted-foreground">
+                    {(matches.data?.length ?? 0) === 0
+                      ? `No matches in DB for ${year} yet.`
+                      : "No matches match your filters."}
+                  </div>
+                ) : (
+                  <div className="divide-y divide-border">
+                    {filtered.map((m) => (
+                      <MatchRow key={m.id} match={m} year={year} />
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <p className="text-[11px] text-muted-foreground text-center">
+                Group-stage rows from the bundled dataset are shown alongside knockout matches.
+                Saving a video URL for a bundled row inserts it into the database automatically.
+              </p>
+            </SectionShell>
+          )}
+        </main>
+      </div>
     </div>
   );
 }
+
+function SectionShell({
+  title, hint, children,
+}: {
+  title: string;
+  hint: string;
+  children: ReactNode;
+}) {
+  return (
+    <div className="space-y-5">
+      <header>
+        <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight">{title}</h2>
+        <p className="text-sm text-muted-foreground mt-1">{hint}</p>
+      </header>
+      <div className="space-y-5">{children}</div>
+    </div>
+  );
+}
+
 
 function Stat({ label, value, tone }: { label: string; value: number; tone: "default" | "good" | "warn" }) {
   const colors = {
