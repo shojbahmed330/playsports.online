@@ -335,7 +335,7 @@ function SectionShell({
 }: {
   title: string;
   hint: string;
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   return (
     <div className="space-y-5">
