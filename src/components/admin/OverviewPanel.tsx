@@ -10,6 +10,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import type { AdminSection } from "./AdminSidebar";
+import { ActivityLog } from "./ActivityLog";
 
 type Tone = "default" | "warn" | "info" | "good";
 
@@ -99,6 +100,9 @@ export function OverviewPanel({
           <Quick label="Edit identity & legal" onClick={() => onJump("settings")} />
         </div>
       </section>
+
+      {/* Recent activity */}
+      <ActivityLog onJump={onJump} />
     </div>
   );
 }
