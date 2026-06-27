@@ -209,8 +209,18 @@ function HubPage() {
       <SportChipTabs value={filter} onChange={setFilter} counts={counts} />
 
       <main id="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-8 sm:space-y-10">
-        {/* PULSE STRIP — live matches mini-cards (only when 'all' or live exists) */}
-        {filter === "all" && <PulseStrip items={liveGames} />}
+        {/* FOR YOU — quick-scan 3 cards (only on All filter) */}
+        {filter === "all" && (
+          <ForYouStrip
+            liveGames={liveGames}
+            upcomingGames={upcomingGames}
+            finalGames={finalGames}
+            wcFixtures={wcQ.data?.fixtures ?? []}
+          />
+        )}
+
+        {/* PULSE STRIP — live matches mini-cards */}
+        {filter === "all" && liveGames.length > 0 && <PulseStrip items={liveGames} />}
 
         {/* LIVE NOW — full grid */}
         {filteredLive.length > 0 && (
@@ -240,7 +250,7 @@ function HubPage() {
         {/* CRICKET SLATE */}
         {showCricket && <CricketSlate />}
 
-        {/* UPCOMING TODAY (ESPN) */}
+        {/* UPCOMING TODAY (ESPN) — progressive disclosure */}
         {showEspn && (
           liveQ.isLoading ? (
             <Section icon={<Clock className="size-5 text-amber-400" />} title="Loading today's slate · আজকের slate লোড হচ্ছে…">
@@ -253,12 +263,14 @@ function HubPage() {
               badge={`${filteredUpcoming.length} game${filteredUpcoming.length === 1 ? "" : "s"}`}
               badgeTone="amber"
             >
-              <TaggedGrid items={filteredUpcoming.slice(0, 9)} />
+              <ShowMore initialCount={6} step={6} totalCount={filteredUpcoming.length}>
+                {(n) => <TaggedGrid items={filteredUpcoming.slice(0, n)} />}
+              </ShowMore>
             </Section>
           ) : null
         )}
 
-        {/* RECENT FINALS (ESPN) */}
+        {/* RECENT FINALS (ESPN) — progressive disclosure */}
         {showEspn && filteredFinals.length > 0 && (
           <Section
             icon={<CheckCircle2 className="size-5 text-gray-400" />}
@@ -266,9 +278,12 @@ function HubPage() {
             badge={`${filteredFinals.length}`}
             badgeTone="muted"
           >
-            <TaggedGrid items={filteredFinals.slice(0, 6)} />
+            <ShowMore initialCount={6} step={6} totalCount={filteredFinals.length}>
+              {(n) => <TaggedGrid items={filteredFinals.slice(0, n)} />}
+            </ShowMore>
           </Section>
         )}
+
 
         {/* SPONSORED — moved below content */}
         <SponsoredHero slotType="banner" />
