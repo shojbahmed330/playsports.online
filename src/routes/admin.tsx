@@ -92,8 +92,10 @@ function AdminShell() {
   const [year, setYear] = useState<number>(2026);
   const [search, setSearch] = useState("");
   const [missingOnly, setMissingOnly] = useState(false);
+  const [section, setSection] = useState<AdminSection>("overview");
 
   const fixturesFn = useServerFn(getWc2026Fixtures);
+
 
   const matches = useQuery({
     queryKey: ["admin_wc_matches", year],
