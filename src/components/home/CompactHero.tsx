@@ -92,7 +92,7 @@ function WcHero({ f, live }: { f: Wc2026Fixture; live: boolean }) {
               search={{ year: 2026 }}
               className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-amber-500 hover:bg-amber-400 text-gray-950 text-[11px] sm:text-xs font-bold transition-colors"
             >
-              {live ? "Watch · দেখুন" : "Details"} <ArrowRight className="size-3" />
+              {live ? "Watch" : "Details"} <ArrowRight className="size-3" />
             </Link>
           </div>
         </div>
