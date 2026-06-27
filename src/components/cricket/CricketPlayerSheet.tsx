@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { X, User, Calendar, MapPin, Shirt, Activity, Loader2, AlertCircle } from "lucide-react";
 import { getCricketPlayer, type CricketCareerStat } from "@/lib/cricket.functions";
+import { AffiliateStrip } from "@/components/affiliates/AffiliateStrip";
 
 type Props = {
   athleteId: string | null;
@@ -153,11 +154,15 @@ export function CricketPlayerSheet({ athleteId, leagueId, onClose }: Props) {
             </section>
 
             {p.description && (
-              <section className="px-5 pb-6">
+              <section className="px-5 pb-4">
                 <div className="text-[10px] uppercase tracking-[0.18em] font-bold text-emerald-300 mb-1">About</div>
                 <p className="text-xs text-muted-foreground leading-relaxed line-clamp-6">{p.description}</p>
               </section>
             )}
+
+            <div className="px-5 pb-6">
+              <AffiliateStrip placement="player_footer" sport="cricket" heading="Cricket gear & partners" />
+            </div>
           </>
         )}
       </aside>
