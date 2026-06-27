@@ -96,17 +96,17 @@ function TimelineTab({ matchId, live }: { matchId: number; live: boolean }) {
     return <EmptyNote label="No events yet. Kickoff coming soon." />;
   }
   return (
-    <div className="space-y-2">
+    <div className="space-y-2 w-full min-w-0 overflow-hidden">
       {events.map((ev) => (
         <div
           key={String(ev.id)}
-          className="grid grid-cols-[1fr_36px_1fr] items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-white/[0.02]"
+          className="grid grid-cols-[minmax(0,1fr)_36px_minmax(0,1fr)] items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-white/[0.02] min-w-0"
         >
-          {ev.team === "home" ? <EventRow ev={ev} side="home" /> : <div />}
-          <div className="text-center text-[10px] text-gray-500 font-mono">
+          {ev.team === "home" ? <EventRow ev={ev} side="home" /> : <div className="min-w-0" />}
+          <div className="text-center text-[10px] text-gray-500 font-mono shrink-0">
             {ev.minute != null ? `${ev.minute}'` : ""}
           </div>
-          {ev.team === "away" ? <EventRow ev={ev} side="away" /> : <div />}
+          {ev.team === "away" ? <EventRow ev={ev} side="away" /> : <div className="min-w-0" />}
         </div>
       ))}
     </div>
