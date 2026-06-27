@@ -384,16 +384,29 @@ function Index() {
               </div>
             </div>
 
-            <FootballSubNav active={tab} onChange={setTab} />
+            <FootballSubNav
+              active={tab}
+              onChange={setTabUser}
+              badges={{
+                groups: pulse.groupTodayCount > 0
+                  ? { count: pulse.groupTodayCount, live: pulse.liveCount > 0, label: `${pulse.groupTodayCount} group game${pulse.groupTodayCount === 1 ? "" : "s"} today` }
+                  : undefined,
+                knockout: pulse.knockoutTodayCount > 0
+                  ? { count: pulse.knockoutTodayCount, live: pulse.liveCount > 0, label: pulse.finalToday ? "Final today" : `${pulse.knockoutTodayCount} knockout today` }
+                  : undefined,
+              }}
+            />
 
             {tab !== "scorers" && (
-              <FootballFilterBar
-                filter={filter}
-                onFilterChange={setFilter}
-                team={teamFilter}
-                onTeamChange={setTeamFilter}
-                teamOptions={[]}
-              />
+              <div className="sticky top-[7.5rem] z-10 -mx-4 sm:mx-0 px-4 sm:px-0 py-2 backdrop-blur bg-background/85 sm:bg-transparent sm:backdrop-blur-0 sm:py-0 sm:static">
+                <FootballFilterBar
+                  filter={filter}
+                  onFilterChange={setFilter}
+                  team={teamFilter}
+                  onTeamChange={setTeamFilter}
+                  teamOptions={[]}
+                />
+              </div>
             )}
 
             <AdSlot slot="in_content" layout="in-article" />
