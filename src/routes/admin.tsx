@@ -4,8 +4,9 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import {
   Trophy, Loader2, LogOut, Search, ChevronDown, Save, Check,
-  Filter, ExternalLink, ArrowLeft, ShieldCheck, AlertTriangle, Sparkles,
+  Filter, ExternalLink, ArrowLeft, ShieldCheck, AlertTriangle, Sparkles, Command,
 } from "lucide-react";
+import { CommandPalette } from "@/components/admin/CommandPalette";
 import { supabase, WC_YEARS, type WCMatch } from "@/lib/supabase";
 import { flagOf } from "@/lib/flags";
 import { useAuth } from "@/hooks/use-auth";
