@@ -42,8 +42,12 @@ export function GroupStage({
 }) {
   if (groups.length === 0) {
     return (
-      <div className="rounded-2xl border border-dashed border-gray-800 p-12 text-center text-sm text-gray-500 bg-gray-900/40">
-        Group stage data coming soon for {year}.
+      <div className="rounded-2xl border border-dashed border-gray-800 p-10 sm:p-12 text-center bg-gray-900/40">
+        <div className="text-5xl mb-3">⚽</div>
+        <div className="text-sm font-semibold text-foreground">Groups not drawn yet for {year}</div>
+        <p className="text-xs text-muted-foreground mt-1 max-w-sm mx-auto">
+          Standings will appear here as soon as FIFA publishes the draw or the first match kicks off.
+        </p>
       </div>
     );
   }
@@ -107,13 +111,13 @@ export function GroupStage({
                 <thead>
                   <tr className="text-gray-500 text-[10px] uppercase border-b border-gray-800">
                     <th className="text-left font-medium pb-2">Team</th>
-                    <th className="font-medium pb-2 w-7">P</th>
-                    <th className="font-medium pb-2 w-7">W</th>
-                    <th className="font-medium pb-2 w-7">D</th>
-                    <th className="font-medium pb-2 w-7">L</th>
-                    <th className="font-medium pb-2 w-8">GF</th>
-                    <th className="font-medium pb-2 w-8">GA</th>
-                    <th className="font-medium pb-2 w-9">Pts</th>
+                    <th title="Played" className="font-medium pb-2 w-7 cursor-help">P</th>
+                    <th title="Won" className="font-medium pb-2 w-7 cursor-help">W</th>
+                    <th title="Drawn" className="font-medium pb-2 w-7 cursor-help">D</th>
+                    <th title="Lost" className="font-medium pb-2 w-7 cursor-help">L</th>
+                    <th title="Goals For" className="font-medium pb-2 w-8 cursor-help">GF</th>
+                    <th title="Goals Against" className="font-medium pb-2 w-8 cursor-help">GA</th>
+                    <th title="Points (Win = 3, Draw = 1)" className="font-medium pb-2 w-9 cursor-help">Pts</th>
                   </tr>
                 </thead>
                 <tbody>

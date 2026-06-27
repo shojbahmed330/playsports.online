@@ -17,9 +17,12 @@ import { toast } from "sonner";
 import { AdSlot } from "@/components/ads/AdSlot";
 import { Wc2026GroupsView, Wc2026KnockoutView } from "@/components/wc/Wc2026View";
 import { FootballHero } from "@/components/football/FootballHero";
-import { FootballSubNav, type SubNavTab } from "@/components/football/FootballSubNav";
+import { FootballSubNav, type SubNavTab, type SubNavBadges } from "@/components/football/FootballSubNav";
 import { Wc2026ScorersPanel } from "@/components/football/Wc2026ScorersPanel";
 import { FootballFilterBar } from "@/components/football/FootballFilterBar";
+import { FootballCoachmark, ReplayTourButton } from "@/components/football/FootballCoachmark";
+import { BackToTopFab } from "@/components/football/BackToTopFab";
+import { useWc2026Pulse } from "@/lib/use-wc2026-pulse";
 import { applyFilter, uniqueTeams, useMyTeams, type FootballFilter } from "@/lib/football-filters";
 import { SiteFooter } from "@/components/home/SiteFooter";
 import { Breadcrumbs } from "@/components/nav/Breadcrumbs";
@@ -121,7 +124,9 @@ function Index() {
   const [activeMatch, setActiveMatch] = useState<WCMatch | null>(null);
   const initialTab: SubNavTab = search.tab ?? "knockout";
   const [tab, setTab] = useState<SubNavTab>(initialTab);
+  const [userPickedTab, setUserPickedTab] = useState<boolean>(!!search.tab);
   const [hintSeen, setHintSeen] = useState(true);
+  const [replayTour, setReplayTour] = useState(0);
 
   const filter: FootballFilter = search.filter ?? "all";
   const teamFilter = search.team;
@@ -129,6 +134,9 @@ function Index() {
   const setDateFilter = (d: string | undefined) => {
     navigate({ search: (prev: FootballSearch) => ({ ...prev, date: d }), replace: true });
   };
+
+  // Live pulse — drives tab badges + smart-default selection
+  const pulse = useWc2026Pulse();
 
 
   // Sync URL ?year= and ?tab= when changed
@@ -143,9 +151,20 @@ function Index() {
   }, [tab, navigate]);
   // External tab change (e.g. from MobileTabBar Link) → adopt into state
   useEffect(() => {
-    if (search.tab && search.tab !== tab) setTab(search.tab);
+    if (search.tab && search.tab !== tab) { setTab(search.tab); setUserPickedTab(true); }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search.tab]);
+
+  // Smart-stage auto-detect — only when the user hasn't picked a tab yet.
+  useEffect(() => {
+    if (userPickedTab || pulse.loading || year !== LIVE_YEAR) return;
+    if (pulse.finalToday) { setTab("knockout"); return; }
+    if (pulse.knockoutTodayCount > 0) { setTab("knockout"); return; }
+    if (pulse.groupTodayCount > 0) { setTab("groups"); return; }
+    if (pulse.groupStageOver && pulse.hasKnockout) { setTab("knockout"); return; }
+  }, [pulse, userPickedTab, year, LIVE_YEAR]);
+
+  const setTabUser = (t: SubNavTab) => { setUserPickedTab(true); setTab(t); };
 
   const setFilter = (f: FootballFilter) => {
     navigate({ search: (prev: FootballSearch) => ({ ...prev, filter: f === "all" ? undefined : f }), replace: true });
@@ -365,16 +384,29 @@ function Index() {
               </div>
             </div>
 
-            <FootballSubNav active={tab} onChange={setTab} />
+            <FootballSubNav
+              active={tab}
+              onChange={setTabUser}
+              badges={{
+                groups: pulse.groupTodayCount > 0
+                  ? { count: pulse.groupTodayCount, live: pulse.liveCount > 0, label: `${pulse.groupTodayCount} group game${pulse.groupTodayCount === 1 ? "" : "s"} today` }
+                  : undefined,
+                knockout: pulse.knockoutTodayCount > 0
+                  ? { count: pulse.knockoutTodayCount, live: pulse.liveCount > 0, label: pulse.finalToday ? "Final today" : `${pulse.knockoutTodayCount} knockout today` }
+                  : undefined,
+              }}
+            />
 
             {tab !== "scorers" && (
-              <FootballFilterBar
-                filter={filter}
-                onFilterChange={setFilter}
-                team={teamFilter}
-                onTeamChange={setTeamFilter}
-                teamOptions={[]}
-              />
+              <div className="sticky top-[7.5rem] z-10 -mx-4 sm:mx-0 px-4 sm:px-0 py-2 backdrop-blur bg-background/85 sm:bg-transparent sm:backdrop-blur-0 sm:py-0 sm:static">
+                <FootballFilterBar
+                  filter={filter}
+                  onFilterChange={setFilter}
+                  team={teamFilter}
+                  onTeamChange={setTeamFilter}
+                  teamOptions={[]}
+                />
+              </div>
             )}
 
             <AdSlot slot="in_content" layout="in-article" />
@@ -416,10 +448,10 @@ function Index() {
             {/* TABS */}
             <div className="flex justify-center">
               <div className="bg-gray-900 rounded-2xl p-1 inline-flex gap-1 border border-gray-800">
-                <TabBtn active={tab === "groups"} onClick={() => setTab("groups")} icon={<Users className="size-4" />}>
+                <TabBtn active={tab === "groups"} onClick={() => setTabUser("groups")} icon={<Users className="size-4" />}>
                   Group Stage
                 </TabBtn>
-                <TabBtn active={tab === "knockout"} onClick={() => setTab("knockout")} icon={<Swords className="size-4" />}>
+                <TabBtn active={tab === "knockout"} onClick={() => setTabUser("knockout")} icon={<Swords className="size-4" />}>
                   Knockout Bracket
                 </TabBtn>
               </div>
@@ -463,12 +495,17 @@ function Index() {
         )}
       </main>
 
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 -mt-4 mb-6 flex justify-center">
+        <ReplayTourButton onReplay={() => setReplayTour((n) => n + 1)} />
+      </div>
+
       <SiteFooter />
 
 
       <MatchModal match={activeMatch} onClose={() => setActiveMatch(null)} />
 
-      
+      <FootballCoachmark key={replayTour > 0 ? `replay-${replayTour}` : "init"} force={replayTour > 0} />
+      <BackToTopFab />
     </div>
   );
 }
