@@ -226,7 +226,7 @@ function HubPage() {
         {filteredLive.length > 0 && (
           <Section
             icon={<Flame className="size-5 text-red-400" />}
-            title="Live right now · এখন লাইভ"
+            title="Live right now"
             badge={`${filteredLive.length} game${filteredLive.length === 1 ? "" : "s"}`}
             badgeTone="red"
           >
