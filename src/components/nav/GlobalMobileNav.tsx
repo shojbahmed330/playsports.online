@@ -91,8 +91,17 @@ const MLB_TABS: MobileTab[] = [
     match: (p) => p.startsWith("/mlb/players") || p.startsWith("/mlb/player") || p.startsWith("/mlb/teams") || p.startsWith("/mlb/team") || p.startsWith("/mlb/history") || p.startsWith("/mlb/news") },
 ];
 
-// ---------- Other ESPN leagues (NBA / NHL / MLS) ----------
-function leagueTabs(base: "/nba" | "/nhl" | "/mls"): MobileTab[] {
+// ---------- NBA ----------
+const NBA_TABS: MobileTab[] = [
+  { to: "/nba",           label: "Today",   Icon: Home,        match: (p) => p === "/nba" || p === "/nba/" },
+  { to: "/nba/scores",    label: "Scores",  Icon: Calendar,    match: (p) => p.startsWith("/nba/scores") || p.startsWith("/nba/game") },
+  { to: "/nba/standings", label: "Table",   Icon: ListOrdered, match: (p) => p.startsWith("/nba/standings") },
+  { to: "/nba/leaders",   label: "Leaders", Icon: BarChart3,
+    match: (p) => p.startsWith("/nba/leaders") || p.startsWith("/nba/player") || p.startsWith("/nba/teams") || p.startsWith("/nba/team") || p.startsWith("/nba/history") || p.startsWith("/nba/news") },
+];
+
+// ---------- Other ESPN leagues (NHL / MLS) ----------
+function leagueTabs(base: "/nhl" | "/mls"): MobileTab[] {
   return [
     { to: base,                label: "Today",     Icon: Home,        match: (p) => p === base || p === `${base}/` },
     { to: `${base}/scores`,    label: "Scores",    Icon: Calendar,    match: (p) => p.startsWith(`${base}/scores`) },
@@ -110,7 +119,8 @@ function pickTabs(pathname: string): Picked {
   if (pathname.startsWith("/football") || pathname.startsWith("/players"))
                                            return { tabs: FOOTBALL_TABS, accent: "amber" };
   if (pathname.startsWith("/mlb"))         return { tabs: MLB_TABS, accent: "sky" };
-  if (pathname.startsWith("/nba"))         return { tabs: leagueTabs("/nba"), accent: "sky" };
+  if (pathname.startsWith("/nba"))         return { tabs: NBA_TABS, accent: "amber" };
+
   if (pathname.startsWith("/nhl"))         return { tabs: leagueTabs("/nhl"), accent: "fuchsia" };
   if (pathname.startsWith("/mls"))         return { tabs: leagueTabs("/mls"), accent: "emerald" };
 
