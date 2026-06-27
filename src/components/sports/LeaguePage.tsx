@@ -17,6 +17,7 @@ import { SportNav } from "./SportNav";
 import { Countdown } from "./Countdown";
 import { GameGridSkeleton, StandingsSkeleton } from "./Skeletons";
 import { AdSlot } from "@/components/ads/AdSlot";
+import { AffiliateStrip } from "@/components/affiliates/AffiliateStrip";
 import { formatLocalTime, relativeDay } from "@/lib/time";
 import { Breadcrumbs } from "@/components/nav/Breadcrumbs";
 
@@ -202,6 +203,8 @@ export function LeaguePage({ sport }: { sport: SportConfig }) {
             )}
           </section>
         )}
+
+        <AffiliateStrip placement="homepage" sport={sport.slug} heading={`${sport.label} fan shop & partners`} />
       </main>
 
       <footer className="border-t border-border mt-10 py-8 text-center text-xs text-muted-foreground">
