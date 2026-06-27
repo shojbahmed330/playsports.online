@@ -514,8 +514,8 @@ export function Wc2026KnockoutView({ filter = "all", team, date, onDateChange }:
 
       {groupedKnockout.length === 0 ? (
         <EmptyBox
-          title="Knockout bracket not yet available"
-          body="The bracket will populate after the group stage ends."
+          title="Knockout bracket starts after the group stage"
+          body="Once group games wrap up, the Round of 32 lights up here automatically. Meanwhile, tap the Groups tab above to follow the qualification race."
         />
       ) : (
         <>
