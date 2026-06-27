@@ -143,7 +143,7 @@ function LineupsTab({
   const subs     = (arr: typeof l.home) => arr.filter((p) =>  p.substitute);
   return (
     <>
-      <div className="grid sm:grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 min-w-0">
         <LineupColumn
           title={homeTeam}
           formation={l.formationHome}
@@ -178,7 +178,7 @@ function LineupColumn({
   onPick: (p: PlayerSheetTarget) => void;
 }) {
   return (
-    <div className="rounded-xl border border-gray-800 bg-gray-900/40 p-3">
+    <div className="min-w-0 rounded-xl border border-gray-800 bg-gray-900/40 p-3 overflow-hidden">
       <div className="flex items-center justify-between mb-2">
         <div className="text-xs font-bold text-gray-300 uppercase tracking-wider truncate">{title}</div>
         {formation && (
@@ -214,16 +214,16 @@ function PlayerRow({
     <button
       type="button"
       onClick={onPick}
-      className={`group w-full flex items-center gap-2 text-xs rounded-lg px-1.5 py-1 -mx-1.5 transition
+      className={`group w-full min-w-0 flex items-center gap-2 text-xs rounded-lg px-1.5 py-1 -mx-1.5 transition
         hover:bg-amber-500/10 active:scale-[0.98]
         ${dim ? "text-gray-500 hover:text-gray-300" : "text-gray-200 hover:text-white"}`}
     >
       <span className="inline-flex items-center justify-center w-6 h-5 rounded bg-gray-800 text-[10px] font-mono text-gray-400 shrink-0">
         {shirt ?? "—"}
       </span>
-      <span className="flex-1 truncate text-left">{name}</span>
-      {captain && <span className="text-[9px] font-bold text-amber-400 ring-1 ring-amber-400/40 rounded px-1">C</span>}
-      {position && <span className="text-[9px] text-gray-500 uppercase">{position}</span>}
+      <span className="flex-1 min-w-0 truncate text-left">{name}</span>
+      {captain && <span className="shrink-0 text-[9px] font-bold text-amber-400 ring-1 ring-amber-400/40 rounded px-1">C</span>}
+      {position && <span className="shrink-0 text-[9px] text-gray-500 uppercase max-w-[3.5rem] truncate">{position}</span>}
       <ChevronRight className="size-3 text-gray-700 group-hover:text-amber-400 transition shrink-0" />
     </button>
   );
