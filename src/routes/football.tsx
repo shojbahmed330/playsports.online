@@ -126,7 +126,7 @@ function Index() {
   const [tab, setTab] = useState<SubNavTab>(initialTab);
   const [userPickedTab, setUserPickedTab] = useState<boolean>(!!search.tab);
   const [hintSeen, setHintSeen] = useState(true);
-  const [replayTour, setReplayTour] = useState(false);
+  const [replayTour, setReplayTour] = useState(0);
 
   const filter: FootballFilter = search.filter ?? "all";
   const teamFilter = search.team;
@@ -496,7 +496,7 @@ function Index() {
       </main>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 -mt-4 mb-6 flex justify-center">
-        <ReplayTourButton onReplay={() => setReplayTour(true)} />
+        <ReplayTourButton onReplay={() => setReplayTour((n) => n + 1)} />
       </div>
 
       <SiteFooter />
@@ -504,7 +504,7 @@ function Index() {
 
       <MatchModal match={activeMatch} onClose={() => setActiveMatch(null)} />
 
-      <FootballCoachmark force={replayTour} />
+      <FootballCoachmark key={replayTour > 0 ? `replay-${replayTour}` : "init"} force={replayTour > 0} />
       <BackToTopFab />
     </div>
   );
