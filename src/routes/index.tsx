@@ -296,7 +296,7 @@ function HubPage() {
             <div className="flex items-end justify-between">
               <div>
                 <h2 className="text-xs uppercase tracking-[0.2em] text-muted-foreground font-bold">
-                  Choose a sport · খেলা বেছে নিন
+                  Choose a sport
                 </h2>
                 <p className="text-lg sm:text-xl font-extrabold mt-1">Jump into any league</p>
               </div>
