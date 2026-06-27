@@ -274,7 +274,7 @@ function HubPage() {
         {showEspn && filteredFinals.length > 0 && (
           <Section
             icon={<CheckCircle2 className="size-5 text-gray-400" />}
-            title="Recent finals · সদ্য শেষ"
+            title="Recent finals"
             badge={`${filteredFinals.length}`}
             badgeTone="muted"
           >
