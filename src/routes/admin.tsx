@@ -94,6 +94,19 @@ function AdminShell() {
   const [search, setSearch] = useState("");
   const [missingOnly, setMissingOnly] = useState(false);
   const [section, setSection] = useState<AdminSection>("overview");
+  const [paletteOpen, setPaletteOpen] = useState(false);
+
+  // ⌘K / Ctrl+K to open quick jump.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setPaletteOpen((v) => !v);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
 
   const fixturesFn = useServerFn(getWc2026Fixtures);
 
