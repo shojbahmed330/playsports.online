@@ -37,10 +37,10 @@ export function ShowMore({
           >
             {canExpand ? (
               <>
-                {labelMore} · আরও দেখুন ({totalCount - visible})
+                {labelMore} ({totalCount - visible})
               </>
             ) : expanded ? (
-              <>{labelLess} · কম দেখুন</>
+              <>{labelLess}</>
             ) : null}
           </button>
         </div>

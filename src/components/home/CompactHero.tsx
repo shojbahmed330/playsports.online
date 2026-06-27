@@ -51,10 +51,10 @@ function WcHero({ f, live }: { f: Wc2026Fixture; live: boolean }) {
             {live ? (
               <>
                 <span className="size-1.5 rounded-full bg-red-500 animate-pulse" />
-                <span>Live · লাইভ</span>
+                <span>Live</span>
               </>
             ) : (
-              <span>Up next · পরবর্তী</span>
+              <span>Up next</span>
             )}
             <span className="text-amber-200/60">· {f.group}</span>
           </span>
@@ -92,7 +92,7 @@ function WcHero({ f, live }: { f: Wc2026Fixture; live: boolean }) {
               search={{ year: 2026 }}
               className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-amber-500 hover:bg-amber-400 text-gray-950 text-[11px] sm:text-xs font-bold transition-colors"
             >
-              {live ? "Watch · দেখুন" : "Details"} <ArrowRight className="size-3" />
+              {live ? "Watch" : "Details"} <ArrowRight className="size-3" />
             </Link>
           </div>
         </div>
@@ -112,10 +112,10 @@ function EspnHero({ t, live }: { t: Tagged; live: boolean }) {
             {live ? (
               <>
                 <span className="size-1.5 rounded-full bg-red-500 animate-pulse" />
-                <span>Live · লাইভ</span>
+                <span>Live</span>
               </>
             ) : (
-              <span>Up next · পরবর্তী</span>
+              <span>Up next</span>
             )}
           </span>
           <span className={`text-[10px] sm:text-xs font-bold ${sport.accent}`}>
@@ -155,7 +155,7 @@ function EspnHero({ t, live }: { t: Tagged; live: boolean }) {
               to={`/${sport.slug}` as "/mlb" | "/nba" | "/nhl" | "/mls"}
               className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-full ${sport.chipBg} ring-1 ${sport.ring} ${sport.accent} text-[11px] sm:text-xs font-bold hover:scale-[1.03] transition-transform`}
             >
-              {live ? "Watch · দেখুন" : "Details"} <ArrowRight className="size-3" />
+              {live ? "Watch" : "Details"} <ArrowRight className="size-3" />
             </Link>
           </div>
         </div>
@@ -170,7 +170,7 @@ function EmptyHero() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12 text-center">
         <Flame className="size-8 mx-auto text-gray-600 mb-3" />
         <h1 className="text-xl sm:text-2xl font-extrabold">No live matches right now</h1>
-        <p className="text-sm text-gray-400 mt-1">কোনো লাইভ খেলা নেই — নিচে আজকের পুরো slate দেখুন</p>
+        <p className="text-sm text-gray-400 mt-1">Browse today's full slate below</p>
       </div>
     </section>
   );

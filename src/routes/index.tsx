@@ -226,7 +226,7 @@ function HubPage() {
         {filteredLive.length > 0 && (
           <Section
             icon={<Flame className="size-5 text-red-400" />}
-            title="Live right now · এখন লাইভ"
+            title="Live right now"
             badge={`${filteredLive.length} game${filteredLive.length === 1 ? "" : "s"}`}
             badgeTone="red"
           >
@@ -253,13 +253,13 @@ function HubPage() {
         {/* UPCOMING TODAY (ESPN) — progressive disclosure */}
         {showEspn && (
           liveQ.isLoading ? (
-            <Section icon={<Clock className="size-5 text-amber-400" />} title="Loading today's slate · আজকের slate লোড হচ্ছে…">
+            <Section icon={<Clock className="size-5 text-amber-400" />} title="Loading today's slate…">
               <GameGridSkeleton />
             </Section>
           ) : filteredUpcoming.length > 0 ? (
             <Section
               icon={<Clock className="size-5 text-amber-400" />}
-              title="Upcoming today · পরবর্তী খেলা"
+              title="Upcoming today"
               badge={`${filteredUpcoming.length} game${filteredUpcoming.length === 1 ? "" : "s"}`}
               badgeTone="amber"
             >
@@ -274,7 +274,7 @@ function HubPage() {
         {showEspn && filteredFinals.length > 0 && (
           <Section
             icon={<CheckCircle2 className="size-5 text-gray-400" />}
-            title="Recent finals · সদ্য শেষ"
+            title="Recent finals"
             badge={`${filteredFinals.length}`}
             badgeTone="muted"
           >
@@ -296,7 +296,7 @@ function HubPage() {
             <div className="flex items-end justify-between">
               <div>
                 <h2 className="text-xs uppercase tracking-[0.2em] text-muted-foreground font-bold">
-                  Choose a sport · খেলা বেছে নিন
+                  Choose a sport
                 </h2>
                 <p className="text-lg sm:text-xl font-extrabold mt-1">Jump into any league</p>
               </div>

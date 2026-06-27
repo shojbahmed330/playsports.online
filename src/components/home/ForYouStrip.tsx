@@ -62,28 +62,15 @@ export function ForYouStrip({
     <section className="space-y-3" aria-labelledby="for-you-heading">
       <div className="flex items-center justify-between">
         <h2 id="for-you-heading" className="text-xs uppercase tracking-[0.2em] font-bold text-muted-foreground">
-          For you · আপনার জন্য
+          For you
         </h2>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <Slot
           tone="red"
           icon={<Flame className="size-4" />}
-          label="Live now · এখন লাইভ"
-          item={live}
-          fallback="No live match right now"
-        />
-        <Slot
-          tone="amber"
-          icon={<Clock className="size-4" />}
-          label="Next up · পরবর্তী"
-          item={next}
-          fallback="Nothing scheduled"
-        />
-        <Slot
-          tone="gray"
-          icon={<CheckCircle2 className="size-4" />}
-          label="Just finished · সদ্য শেষ"
+          label="Live now"
+
           item={recent}
           fallback="No recent results"
         />
