@@ -112,10 +112,10 @@ function EspnHero({ t, live }: { t: Tagged; live: boolean }) {
             {live ? (
               <>
                 <span className="size-1.5 rounded-full bg-red-500 animate-pulse" />
-                <span>Live · লাইভ</span>
+                <span>Live</span>
               </>
             ) : (
-              <span>Up next · পরবর্তী</span>
+              <span>Up next</span>
             )}
           </span>
           <span className={`text-[10px] sm:text-xs font-bold ${sport.accent}`}>
