@@ -180,22 +180,36 @@ export function MobileMatchCard({
 
       </div>
 
-      {/* Open match centre quick link for 2026 fixtures — only real ESPN events */}
-      {match.tournament_year === 2026 && !match.predicted && match.id > 0 && (
-        <Link
-          to="/football/match/$id"
-          params={{ id: String(match.id) }}
-          onClick={(e) => e.stopPropagation()}
-          className="block text-center text-[10px] py-1.5 bg-gradient-to-r from-amber-500/10 to-amber-500/5 text-amber-300 border-t border-white/5 hover:bg-amber-500/20"
-        >
+      {/* Footer hint — kept inside the same card so the whole card is one big tap target */}
+      {isRealEspn && (
+        <div className="block text-center text-[10px] py-1.5 bg-gradient-to-r from-amber-500/10 to-amber-500/5 text-amber-300 border-t border-white/5">
           Open Match Centre →
-        </Link>
+        </div>
       )}
       {match.predicted && (
         <div className="text-center text-[10px] py-1.5 bg-sky-500/[0.06] text-sky-300 border-t border-sky-500/20">
           Tap for fixture preview
         </div>
       )}
+    </>
+  );
+
+  if (isRealEspn) {
+    return (
+      <Link
+        to="/football/match/$id"
+        params={{ id: String(match.id) }}
+        className={cardClass}
+      >
+        {inner}
+      </Link>
+    );
+  }
+
+  return (
+    <button onClick={onClick} className={cardClass} type="button">
+      {inner}
     </button>
   );
 }
+
