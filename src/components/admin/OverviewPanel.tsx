@@ -100,6 +100,9 @@ export function OverviewPanel({
           <Quick label="Edit identity & legal" onClick={() => onJump("settings")} />
         </div>
       </section>
+
+      {/* Recent activity */}
+      <ActivityLog onJump={onJump} />
     </div>
   );
 }
