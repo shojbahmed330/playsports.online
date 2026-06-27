@@ -10,6 +10,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import type { AdminSection } from "./AdminSidebar";
+import { ActivityLog } from "./ActivityLog";
 
 type Tone = "default" | "warn" | "info" | "good";
 
