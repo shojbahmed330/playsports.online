@@ -17,9 +17,12 @@ import { toast } from "sonner";
 import { AdSlot } from "@/components/ads/AdSlot";
 import { Wc2026GroupsView, Wc2026KnockoutView } from "@/components/wc/Wc2026View";
 import { FootballHero } from "@/components/football/FootballHero";
-import { FootballSubNav, type SubNavTab } from "@/components/football/FootballSubNav";
+import { FootballSubNav, type SubNavTab, type SubNavBadges } from "@/components/football/FootballSubNav";
 import { Wc2026ScorersPanel } from "@/components/football/Wc2026ScorersPanel";
 import { FootballFilterBar } from "@/components/football/FootballFilterBar";
+import { FootballCoachmark, ReplayTourButton } from "@/components/football/FootballCoachmark";
+import { BackToTopFab } from "@/components/football/BackToTopFab";
+import { useWc2026Pulse } from "@/lib/use-wc2026-pulse";
 import { applyFilter, uniqueTeams, useMyTeams, type FootballFilter } from "@/lib/football-filters";
 import { SiteFooter } from "@/components/home/SiteFooter";
 import { Breadcrumbs } from "@/components/nav/Breadcrumbs";
@@ -121,7 +124,9 @@ function Index() {
   const [activeMatch, setActiveMatch] = useState<WCMatch | null>(null);
   const initialTab: SubNavTab = search.tab ?? "knockout";
   const [tab, setTab] = useState<SubNavTab>(initialTab);
+  const [userPickedTab, setUserPickedTab] = useState<boolean>(!!search.tab);
   const [hintSeen, setHintSeen] = useState(true);
+  const [replayTour, setReplayTour] = useState(false);
 
   const filter: FootballFilter = search.filter ?? "all";
   const teamFilter = search.team;
@@ -129,6 +134,9 @@ function Index() {
   const setDateFilter = (d: string | undefined) => {
     navigate({ search: (prev: FootballSearch) => ({ ...prev, date: d }), replace: true });
   };
+
+  // Live pulse — drives tab badges + smart-default selection
+  const pulse = useWc2026Pulse();
 
 
   // Sync URL ?year= and ?tab= when changed
@@ -143,9 +151,20 @@ function Index() {
   }, [tab, navigate]);
   // External tab change (e.g. from MobileTabBar Link) → adopt into state
   useEffect(() => {
-    if (search.tab && search.tab !== tab) setTab(search.tab);
+    if (search.tab && search.tab !== tab) { setTab(search.tab); setUserPickedTab(true); }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search.tab]);
+
+  // Smart-stage auto-detect — only when the user hasn't picked a tab yet.
+  useEffect(() => {
+    if (userPickedTab || pulse.loading || year !== LIVE_YEAR) return;
+    if (pulse.finalToday) { setTab("knockout"); return; }
+    if (pulse.knockoutTodayCount > 0) { setTab("knockout"); return; }
+    if (pulse.groupTodayCount > 0) { setTab("groups"); return; }
+    if (pulse.groupStageOver && pulse.hasKnockout) { setTab("knockout"); return; }
+  }, [pulse, userPickedTab, year, LIVE_YEAR]);
+
+  const setTabUser = (t: SubNavTab) => { setUserPickedTab(true); setTab(t); };
 
   const setFilter = (f: FootballFilter) => {
     navigate({ search: (prev: FootballSearch) => ({ ...prev, filter: f === "all" ? undefined : f }), replace: true });
