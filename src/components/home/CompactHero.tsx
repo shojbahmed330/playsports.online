@@ -170,7 +170,7 @@ function EmptyHero() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12 text-center">
         <Flame className="size-8 mx-auto text-gray-600 mb-3" />
         <h1 className="text-xl sm:text-2xl font-extrabold">No live matches right now</h1>
-        <p className="text-sm text-gray-400 mt-1">কোনো লাইভ খেলা নেই — নিচে আজকের পুরো slate দেখুন</p>
+        <p className="text-sm text-gray-400 mt-1">Browse today's full slate below</p>
       </div>
     </section>
   );
