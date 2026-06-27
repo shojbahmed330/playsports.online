@@ -6,6 +6,8 @@ import { Trophy, Flame, ArrowRight, MapPin, Clock, CheckCircle2, X } from "lucid
 import { CompactHero } from "@/components/home/CompactHero";
 import { StatusBar } from "@/components/home/StatusBar";
 import { SportChipTabs, type SportFilter } from "@/components/home/SportChipTabs";
+import { ForYouStrip } from "@/components/home/ForYouStrip";
+import { ShowMore } from "@/components/home/ShowMore";
 
 import { SPORT_LIST, type SportConfig } from "@/lib/sports-config";
 import { getMultiSportToday, type SportGame } from "@/lib/espn.functions";
