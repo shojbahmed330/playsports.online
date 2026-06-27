@@ -455,29 +455,30 @@ export const getNhlTeam = createServerFn({ method: "GET" })
   });
 
 // ───────── Leaders ─────────
-// Note: ESPN NHL stat keys live under `offensive` and `defensive` and `general`
+// ESPN NHL stat keys live under `offensive`, `defensive`, and `goaltending`.
+// We map `goaltending` into the `general` slot so the existing UI keeps working.
 const OFFENSIVE: Array<{ key: string; label: string; sortDir?: "asc" | "desc" }> = [
-  { key: "avgPoints", label: "Points / Game" },
-  { key: "avgAssists", label: "Assists / Game" },
-  { key: "threePointFieldGoalsMade", label: "3PT Made (Total)" },
-  { key: "fieldGoalPct", label: "FG %" },
-  { key: "threePointFieldGoalPct", label: "3PT %" },
-  { key: "freeThrowPct", label: "FT %" },
-  { key: "points", label: "Total Points" },
-  { key: "assists", label: "Total Assists" },
+  { key: "points", label: "Points" },
+  { key: "goals", label: "Goals" },
+  { key: "assists", label: "Assists" },
+  { key: "powerPlayGoals", label: "Power-Play Goals" },
+  { key: "shotsTotal", label: "Shots on Goal" },
+  { key: "gameWinningGoals", label: "Game-Winning Goals" },
+  { key: "shootingPct", label: "Shooting %" },
 ];
 const DEFENSIVE: Array<{ key: string; label: string; sortDir?: "asc" | "desc" }> = [
-  { key: "avgRebounds", label: "Rebounds / Game" },
-  { key: "avgSteals", label: "Steals / Game" },
-  { key: "avgBlocks", label: "Blocks / Game" },
-  { key: "rebounds", label: "Total Rebounds" },
-  { key: "steals", label: "Total Steals" },
-  { key: "blocks", label: "Total Blocks" },
+  { key: "plusMinus", label: "Plus / Minus" },
+  { key: "hits", label: "Hits" },
+  { key: "blockedShots", label: "Blocked Shots" },
+  { key: "takeaways", label: "Takeaways" },
+  { key: "penaltyMinutes", label: "Penalty Minutes" },
 ];
 const GENERAL: Array<{ key: string; label: string; sortDir?: "asc" | "desc" }> = [
-  { key: "avgMinutes", label: "Minutes / Game" },
-  { key: "doubleDouble", label: "Double-Doubles" },
-  { key: "tripleDouble", label: "Triple-Doubles" },
+  { key: "wins", label: "Goalie Wins" },
+  { key: "savePct", label: "Save %" },
+  { key: "goalsAgainstAverage", label: "GAA", sortDir: "asc" },
+  { key: "shutouts", label: "Shutouts" },
+  { key: "saves", label: "Saves" },
 ];
 
 async function fetchNhlLeaderCategory(
