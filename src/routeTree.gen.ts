@@ -60,6 +60,7 @@ import { Route as MlbPostseasonRouteImport } from './routes/mlb.postseason'
 import { Route as MlbPlayersRouteImport } from './routes/mlb.players'
 import { Route as MlbNewsRouteImport } from './routes/mlb.news'
 import { Route as MlbHistoryRouteImport } from './routes/mlb.history'
+import { Route as HighlightsSlugRouteImport } from './routes/highlights.$slug'
 import { Route as FootballMineRouteImport } from './routes/football.mine'
 import { Route as CricketTeamsRouteImport } from './routes/cricket.teams'
 import { Route as CricketScoresRouteImport } from './routes/cricket.scores'
@@ -70,6 +71,7 @@ import { Route as CricketHistoryRouteImport } from './routes/cricket.history'
 import { Route as CricketSeriesIndexRouteImport } from './routes/cricket.series.index'
 import { Route as CricketIplIndexRouteImport } from './routes/cricket.ipl.index'
 import { Route as VsSportMatchupRouteImport } from './routes/vs.$sport.$matchup'
+import { Route as TournamentsFifaWorldCup2026StageRouteImport } from './routes/tournaments.fifa-world-cup-2026.$stage'
 import { Route as TeamSportSlugRouteImport } from './routes/team.$sport.$slug'
 import { Route as PlayerSportSlugRouteImport } from './routes/player.$sport.$slug'
 import { Route as OgTypeSlugDotsvgRouteImport } from './routes/og.$type.$slug[.]svg'
@@ -85,6 +87,9 @@ import { Route as MlsGameIdRouteImport } from './routes/mls.game.$id'
 import { Route as MlbTeamIdRouteImport } from './routes/mlb.team.$id'
 import { Route as MlbPlayerIdRouteImport } from './routes/mlb.player.$id'
 import { Route as MlbGameIdRouteImport } from './routes/mlb.game.$id'
+import { Route as FootballTeamsSlugRouteImport } from './routes/football.teams.$slug'
+import { Route as FootballPlayersSlugRouteImport } from './routes/football.players.$slug'
+import { Route as FootballMatchesSlugRouteImport } from './routes/football.matches.$slug'
 import { Route as FootballMatchIdRouteImport } from './routes/football.match.$id'
 import { Route as CricketSeriesIdRouteImport } from './routes/cricket.series.$id'
 import { Route as CricketMatchIdRouteImport } from './routes/cricket.match.$id'
@@ -354,6 +359,11 @@ const MlbHistoryRoute = MlbHistoryRouteImport.update({
   path: '/history',
   getParentRoute: () => MlbRoute,
 } as any)
+const HighlightsSlugRoute = HighlightsSlugRouteImport.update({
+  id: '/highlights/$slug',
+  path: '/highlights/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const FootballMineRoute = FootballMineRouteImport.update({
   id: '/mine',
   path: '/mine',
@@ -404,6 +414,12 @@ const VsSportMatchupRoute = VsSportMatchupRouteImport.update({
   path: '/vs/$sport/$matchup',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TournamentsFifaWorldCup2026StageRoute =
+  TournamentsFifaWorldCup2026StageRouteImport.update({
+    id: '/tournaments/fifa-world-cup-2026/$stage',
+    path: '/tournaments/fifa-world-cup-2026/$stage',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const TeamSportSlugRoute = TeamSportSlugRouteImport.update({
   id: '/team/$sport/$slug',
   path: '/team/$sport/$slug',
@@ -478,6 +494,21 @@ const MlbGameIdRoute = MlbGameIdRouteImport.update({
   id: '/game/$id',
   path: '/game/$id',
   getParentRoute: () => MlbRoute,
+} as any)
+const FootballTeamsSlugRoute = FootballTeamsSlugRouteImport.update({
+  id: '/teams/$slug',
+  path: '/teams/$slug',
+  getParentRoute: () => FootballRoute,
+} as any)
+const FootballPlayersSlugRoute = FootballPlayersSlugRouteImport.update({
+  id: '/players/$slug',
+  path: '/players/$slug',
+  getParentRoute: () => FootballRoute,
+} as any)
+const FootballMatchesSlugRoute = FootballMatchesSlugRouteImport.update({
+  id: '/matches/$slug',
+  path: '/matches/$slug',
+  getParentRoute: () => FootballRoute,
 } as any)
 const FootballMatchIdRoute = FootballMatchIdRouteImport.update({
   id: '/match/$id',
@@ -575,6 +606,7 @@ export interface FileRoutesByFullPath {
   '/cricket/scores': typeof CricketScoresRoute
   '/cricket/teams': typeof CricketTeamsRoute
   '/football/mine': typeof FootballMineRoute
+  '/highlights/$slug': typeof HighlightsSlugRoute
   '/mlb/history': typeof MlbHistoryRoute
   '/mlb/news': typeof MlbNewsRoute
   '/mlb/players': typeof MlbPlayersRoute
@@ -615,6 +647,9 @@ export interface FileRoutesByFullPath {
   '/cricket/match/$id': typeof CricketMatchIdRoute
   '/cricket/series/$id': typeof CricketSeriesIdRoute
   '/football/match/$id': typeof FootballMatchIdRoute
+  '/football/matches/$slug': typeof FootballMatchesSlugRoute
+  '/football/players/$slug': typeof FootballPlayersSlugRoute
+  '/football/teams/$slug': typeof FootballTeamsSlugRoute
   '/mlb/game/$id': typeof MlbGameIdRoute
   '/mlb/player/$id': typeof MlbPlayerIdRoute
   '/mlb/team/$id': typeof MlbTeamIdRoute
@@ -630,6 +665,7 @@ export interface FileRoutesByFullPath {
   '/og/$type/$slug.svg': typeof OgTypeSlugDotsvgRoute
   '/player/$sport/$slug': typeof PlayerSportSlugRoute
   '/team/$sport/$slug': typeof TeamSportSlugRoute
+  '/tournaments/fifa-world-cup-2026/$stage': typeof TournamentsFifaWorldCup2026StageRoute
   '/vs/$sport/$matchup': typeof VsSportMatchupRoute
   '/cricket/ipl/': typeof CricketIplIndexRoute
   '/cricket/series/': typeof CricketSeriesIndexRoute
@@ -661,6 +697,7 @@ export interface FileRoutesByTo {
   '/cricket/scores': typeof CricketScoresRoute
   '/cricket/teams': typeof CricketTeamsRoute
   '/football/mine': typeof FootballMineRoute
+  '/highlights/$slug': typeof HighlightsSlugRoute
   '/mlb/history': typeof MlbHistoryRoute
   '/mlb/news': typeof MlbNewsRoute
   '/mlb/players': typeof MlbPlayersRoute
@@ -701,6 +738,9 @@ export interface FileRoutesByTo {
   '/cricket/match/$id': typeof CricketMatchIdRoute
   '/cricket/series/$id': typeof CricketSeriesIdRoute
   '/football/match/$id': typeof FootballMatchIdRoute
+  '/football/matches/$slug': typeof FootballMatchesSlugRoute
+  '/football/players/$slug': typeof FootballPlayersSlugRoute
+  '/football/teams/$slug': typeof FootballTeamsSlugRoute
   '/mlb/game/$id': typeof MlbGameIdRoute
   '/mlb/player/$id': typeof MlbPlayerIdRoute
   '/mlb/team/$id': typeof MlbTeamIdRoute
@@ -716,6 +756,7 @@ export interface FileRoutesByTo {
   '/og/$type/$slug.svg': typeof OgTypeSlugDotsvgRoute
   '/player/$sport/$slug': typeof PlayerSportSlugRoute
   '/team/$sport/$slug': typeof TeamSportSlugRoute
+  '/tournaments/fifa-world-cup-2026/$stage': typeof TournamentsFifaWorldCup2026StageRoute
   '/vs/$sport/$matchup': typeof VsSportMatchupRoute
   '/cricket/ipl': typeof CricketIplIndexRoute
   '/cricket/series': typeof CricketSeriesIndexRoute
@@ -753,6 +794,7 @@ export interface FileRoutesById {
   '/cricket/scores': typeof CricketScoresRoute
   '/cricket/teams': typeof CricketTeamsRoute
   '/football/mine': typeof FootballMineRoute
+  '/highlights/$slug': typeof HighlightsSlugRoute
   '/mlb/history': typeof MlbHistoryRoute
   '/mlb/news': typeof MlbNewsRoute
   '/mlb/players': typeof MlbPlayersRoute
@@ -793,6 +835,9 @@ export interface FileRoutesById {
   '/cricket/match/$id': typeof CricketMatchIdRoute
   '/cricket/series/$id': typeof CricketSeriesIdRoute
   '/football/match/$id': typeof FootballMatchIdRoute
+  '/football/matches/$slug': typeof FootballMatchesSlugRoute
+  '/football/players/$slug': typeof FootballPlayersSlugRoute
+  '/football/teams/$slug': typeof FootballTeamsSlugRoute
   '/mlb/game/$id': typeof MlbGameIdRoute
   '/mlb/player/$id': typeof MlbPlayerIdRoute
   '/mlb/team/$id': typeof MlbTeamIdRoute
@@ -808,6 +853,7 @@ export interface FileRoutesById {
   '/og/$type/$slug.svg': typeof OgTypeSlugDotsvgRoute
   '/player/$sport/$slug': typeof PlayerSportSlugRoute
   '/team/$sport/$slug': typeof TeamSportSlugRoute
+  '/tournaments/fifa-world-cup-2026/$stage': typeof TournamentsFifaWorldCup2026StageRoute
   '/vs/$sport/$matchup': typeof VsSportMatchupRoute
   '/cricket/ipl/': typeof CricketIplIndexRoute
   '/cricket/series/': typeof CricketSeriesIndexRoute
@@ -846,6 +892,7 @@ export interface FileRouteTypes {
     | '/cricket/scores'
     | '/cricket/teams'
     | '/football/mine'
+    | '/highlights/$slug'
     | '/mlb/history'
     | '/mlb/news'
     | '/mlb/players'
@@ -886,6 +933,9 @@ export interface FileRouteTypes {
     | '/cricket/match/$id'
     | '/cricket/series/$id'
     | '/football/match/$id'
+    | '/football/matches/$slug'
+    | '/football/players/$slug'
+    | '/football/teams/$slug'
     | '/mlb/game/$id'
     | '/mlb/player/$id'
     | '/mlb/team/$id'
@@ -901,6 +951,7 @@ export interface FileRouteTypes {
     | '/og/$type/$slug.svg'
     | '/player/$sport/$slug'
     | '/team/$sport/$slug'
+    | '/tournaments/fifa-world-cup-2026/$stage'
     | '/vs/$sport/$matchup'
     | '/cricket/ipl/'
     | '/cricket/series/'
@@ -932,6 +983,7 @@ export interface FileRouteTypes {
     | '/cricket/scores'
     | '/cricket/teams'
     | '/football/mine'
+    | '/highlights/$slug'
     | '/mlb/history'
     | '/mlb/news'
     | '/mlb/players'
@@ -972,6 +1024,9 @@ export interface FileRouteTypes {
     | '/cricket/match/$id'
     | '/cricket/series/$id'
     | '/football/match/$id'
+    | '/football/matches/$slug'
+    | '/football/players/$slug'
+    | '/football/teams/$slug'
     | '/mlb/game/$id'
     | '/mlb/player/$id'
     | '/mlb/team/$id'
@@ -987,6 +1042,7 @@ export interface FileRouteTypes {
     | '/og/$type/$slug.svg'
     | '/player/$sport/$slug'
     | '/team/$sport/$slug'
+    | '/tournaments/fifa-world-cup-2026/$stage'
     | '/vs/$sport/$matchup'
     | '/cricket/ipl'
     | '/cricket/series'
@@ -1023,6 +1079,7 @@ export interface FileRouteTypes {
     | '/cricket/scores'
     | '/cricket/teams'
     | '/football/mine'
+    | '/highlights/$slug'
     | '/mlb/history'
     | '/mlb/news'
     | '/mlb/players'
@@ -1063,6 +1120,9 @@ export interface FileRouteTypes {
     | '/cricket/match/$id'
     | '/cricket/series/$id'
     | '/football/match/$id'
+    | '/football/matches/$slug'
+    | '/football/players/$slug'
+    | '/football/teams/$slug'
     | '/mlb/game/$id'
     | '/mlb/player/$id'
     | '/mlb/team/$id'
@@ -1078,6 +1138,7 @@ export interface FileRouteTypes {
     | '/og/$type/$slug.svg'
     | '/player/$sport/$slug'
     | '/team/$sport/$slug'
+    | '/tournaments/fifa-world-cup-2026/$stage'
     | '/vs/$sport/$matchup'
     | '/cricket/ipl/'
     | '/cricket/series/'
@@ -1108,11 +1169,13 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TermsRoute: typeof TermsRoute
   UnsubscribeRoute: typeof UnsubscribeRoute
+  HighlightsSlugRoute: typeof HighlightsSlugRoute
   ApiPublicTrackClickRoute: typeof ApiPublicTrackClickRoute
   ArchiveSportYearRoute: typeof ArchiveSportYearRoute
   OgTypeSlugDotsvgRoute: typeof OgTypeSlugDotsvgRoute
   PlayerSportSlugRoute: typeof PlayerSportSlugRoute
   TeamSportSlugRoute: typeof TeamSportSlugRoute
+  TournamentsFifaWorldCup2026StageRoute: typeof TournamentsFifaWorldCup2026StageRoute
   VsSportMatchupRoute: typeof VsSportMatchupRoute
   ApiPublicHooksWeeklyDigestRoute: typeof ApiPublicHooksWeeklyDigestRoute
 }
@@ -1476,6 +1539,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MlbHistoryRouteImport
       parentRoute: typeof MlbRoute
     }
+    '/highlights/$slug': {
+      id: '/highlights/$slug'
+      path: '/highlights/$slug'
+      fullPath: '/highlights/$slug'
+      preLoaderRoute: typeof HighlightsSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/football/mine': {
       id: '/football/mine'
       path: '/mine'
@@ -1544,6 +1614,13 @@ declare module '@tanstack/react-router' {
       path: '/vs/$sport/$matchup'
       fullPath: '/vs/$sport/$matchup'
       preLoaderRoute: typeof VsSportMatchupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tournaments/fifa-world-cup-2026/$stage': {
+      id: '/tournaments/fifa-world-cup-2026/$stage'
+      path: '/tournaments/fifa-world-cup-2026/$stage'
+      fullPath: '/tournaments/fifa-world-cup-2026/$stage'
+      preLoaderRoute: typeof TournamentsFifaWorldCup2026StageRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/team/$sport/$slug': {
@@ -1650,6 +1727,27 @@ declare module '@tanstack/react-router' {
       fullPath: '/mlb/game/$id'
       preLoaderRoute: typeof MlbGameIdRouteImport
       parentRoute: typeof MlbRoute
+    }
+    '/football/teams/$slug': {
+      id: '/football/teams/$slug'
+      path: '/teams/$slug'
+      fullPath: '/football/teams/$slug'
+      preLoaderRoute: typeof FootballTeamsSlugRouteImport
+      parentRoute: typeof FootballRoute
+    }
+    '/football/players/$slug': {
+      id: '/football/players/$slug'
+      path: '/players/$slug'
+      fullPath: '/football/players/$slug'
+      preLoaderRoute: typeof FootballPlayersSlugRouteImport
+      parentRoute: typeof FootballRoute
+    }
+    '/football/matches/$slug': {
+      id: '/football/matches/$slug'
+      path: '/matches/$slug'
+      fullPath: '/football/matches/$slug'
+      preLoaderRoute: typeof FootballMatchesSlugRouteImport
+      parentRoute: typeof FootballRoute
     }
     '/football/match/$id': {
       id: '/football/match/$id'
@@ -1793,11 +1891,17 @@ const CricketRouteWithChildren =
 interface FootballRouteChildren {
   FootballMineRoute: typeof FootballMineRoute
   FootballMatchIdRoute: typeof FootballMatchIdRoute
+  FootballMatchesSlugRoute: typeof FootballMatchesSlugRoute
+  FootballPlayersSlugRoute: typeof FootballPlayersSlugRoute
+  FootballTeamsSlugRoute: typeof FootballTeamsSlugRoute
 }
 
 const FootballRouteChildren: FootballRouteChildren = {
   FootballMineRoute: FootballMineRoute,
   FootballMatchIdRoute: FootballMatchIdRoute,
+  FootballMatchesSlugRoute: FootballMatchesSlugRoute,
+  FootballPlayersSlugRoute: FootballPlayersSlugRoute,
+  FootballTeamsSlugRoute: FootballTeamsSlugRoute,
 }
 
 const FootballRouteWithChildren = FootballRoute._addFileChildren(
@@ -1940,11 +2044,13 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TermsRoute: TermsRoute,
   UnsubscribeRoute: UnsubscribeRoute,
+  HighlightsSlugRoute: HighlightsSlugRoute,
   ApiPublicTrackClickRoute: ApiPublicTrackClickRoute,
   ArchiveSportYearRoute: ArchiveSportYearRoute,
   OgTypeSlugDotsvgRoute: OgTypeSlugDotsvgRoute,
   PlayerSportSlugRoute: PlayerSportSlugRoute,
   TeamSportSlugRoute: TeamSportSlugRoute,
+  TournamentsFifaWorldCup2026StageRoute: TournamentsFifaWorldCup2026StageRoute,
   VsSportMatchupRoute: VsSportMatchupRoute,
   ApiPublicHooksWeeklyDigestRoute: ApiPublicHooksWeeklyDigestRoute,
 }

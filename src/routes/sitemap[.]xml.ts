@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 import { listTeams, listPlayers, listH2H, listArchives } from "@/lib/seo/programmatic";
+import { listMatchSlugs, listHighlights, WC2026_STAGES } from "@/lib/seo/entities";
 import {
   wc2026MatchUrls,
   mlbTeamUrls,
@@ -146,15 +147,43 @@ export const Route = createFileRoute("/sitemap.xml")({
 
         const programmatic: DynamicUrl[] = [
           ...wc2026MatchUrls(),
+          // Phase 2.1 canonical football landing pages
+          ...listMatchSlugs().map((m) => ({
+            path: `/football/matches/${m.slug}`,
+            lastmod: m.match_date?.slice(0, 10),
+            changefreq: "yearly" as const,
+            priority: "0.6",
+          })),
+          ...listTeams().map((t) => ({
+            path: `/football/teams/${t.slug}`,
+            changefreq: "weekly" as const,
+            priority: "0.7",
+          })),
+          ...listPlayers().map((p) => ({
+            path: `/football/players/${p.slug}`,
+            changefreq: "monthly" as const,
+            priority: "0.6",
+          })),
+          ...listHighlights().map((h) => ({
+            path: `/highlights/${h.slug}`,
+            changefreq: "monthly" as const,
+            priority: "0.6",
+          })),
+          ...WC2026_STAGES.map((s) => ({
+            path: `/tournaments/fifa-world-cup-2026/${s.slug}`,
+            changefreq: "daily" as const,
+            priority: "0.8",
+          })),
+          // Legacy multi-sport landing pages (redirect for football_wc)
           ...listTeams().map((t) => ({
             path: `/team/${t.sport}/${t.slug}`,
             changefreq: "weekly" as const,
-            priority: "0.6",
+            priority: "0.5",
           })),
           ...listPlayers().map((p) => ({
             path: `/player/${p.sport}/${p.slug}`,
             changefreq: "monthly" as const,
-            priority: "0.5",
+            priority: "0.4",
           })),
           ...listH2H().map((h) => ({
             path: `/vs/${h.sport}/${h.slug}`,
