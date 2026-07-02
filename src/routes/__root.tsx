@@ -159,6 +159,13 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
+  useEffect(() => {
+    // Registers the PWA service worker in production top-level windows only.
+    // Refuses (and unregisters stale SWs) in dev, iframes and Lovable preview.
+    void import("../lib/pwa-register").then((m) => m.registerPwa());
+  }, []);
+
+
   return (
     <QueryClientProvider client={queryClient}>
       <a
