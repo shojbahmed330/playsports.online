@@ -13,9 +13,11 @@ import {
 } from "@/components/ui/tabs";
 import {
   Goal, Square, AlertTriangle, RefreshCw, Users, BarChart3,
-  Activity, Loader2, Circle, ChevronRight,
+  Activity, Loader2, Circle, ChevronRight, MessageSquare,
 } from "lucide-react";
 import { PlayerProfileSheet, type PlayerSheetTarget } from "./PlayerProfileSheet";
+import { FormationPitch } from "@/components/football/FormationPitch";
+import { CommentaryFeed } from "@/components/football/CommentaryFeed";
 
 function isLive(status: string) {
   return status === "inprogress";
