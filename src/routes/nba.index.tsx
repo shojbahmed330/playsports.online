@@ -16,7 +16,12 @@ export const Route = createFileRoute("/nba/")({
       { title: "NBA Today — Live Scores, Standings, Leaders, News" },
       { name: "description", content: "Today's NBA games, standings snapshot, league leaders, and the latest basketball headlines in one hub." },
       { property: "og:title", content: "NBA Today — Live Scores, Standings, Leaders" },
+      { property: "og:description", content: "Today's NBA games, standings, league leaders and headlines." },
       { property: "og:url", content: "https://www.playsports.online/nba" },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/110e40cc-d990-48af-a996-8f46b9fd0f97/id-preview-f9e73043--3e33a21e-e132-4b69-83ee-be28f3bc4583.lovable.app-1782037338724.png" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "NBA Today — Live Scores, Standings, Leaders" },
+      { name: "twitter:description", content: "Today's NBA games, standings, league leaders and headlines." },
     ],
     links: [{ rel: "canonical", href: "https://www.playsports.online/nba" }],
     scripts: [
