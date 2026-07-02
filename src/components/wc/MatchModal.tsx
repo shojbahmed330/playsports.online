@@ -3,12 +3,12 @@ import { type WCMatch } from "@/lib/supabase";
 import { flagOf } from "@/lib/flags";
 import { useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { VideoPlayer } from "./VideoPlayer";
 import { LiveMatchCenter } from "./LiveMatchCenter";
 import { WatchLivePanel } from "./WatchLivePanel";
 import { ShareButton } from "@/components/football/ShareButton";
 import { StarTeamButton } from "@/components/football/StarTeamButton";
 import type { Wc2026Fixture } from "@/lib/wc2026.functions";
+import { MatchHighlightCard } from "./MatchHighlightCard";
 
 function winnerSide(m: WCMatch): "home" | "away" | "draw" {
   if (m.home_score_pen != null && m.away_score_pen != null) {
@@ -76,7 +76,7 @@ export function MatchModal({ match, onClose }: { match: WCMatch | null; onClose:
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-sm animate-in fade-in duration-200"
+      className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-sm animate-in fade-in duration-200"
       onClick={onClose}
     >
       <div
@@ -199,7 +199,11 @@ export function MatchModal({ match, onClose }: { match: WCMatch | null; onClose:
           {/* Video / highlights (skip for predicted) */}
           {!isPredicted && (
             <div className="px-5 sm:px-6 pt-4">
-              <VideoPlayer videoUrl={match.video_url} matchTitle={`${match.home_team} vs ${match.away_team}`} />
+              <MatchHighlightCard
+                home={match.home_team}
+                away={match.away_team}
+                videoUrl={match.video_url}
+              />
             </div>
           )}
 
@@ -210,9 +214,9 @@ export function MatchModal({ match, onClose }: { match: WCMatch | null; onClose:
                 fixture={{
                   id: match.id,
                   startTs: match.match_date ? Math.floor(new Date(match.match_date).getTime() / 1000) : 0,
-                  status: "notstarted",
-                  statusDesc: "",
-                  minute: null,
+                  status: match.status ?? "notstarted",
+                  statusDesc: match.statusDesc ?? "",
+                  minute: match.minute ?? null,
                   group: match.round,
                   venue: match.stadium,
                   city: match.city,

@@ -27,6 +27,9 @@ export type WCMatch = UiRow<Tables<"wc_matches">> & {
   predicted?: boolean;
   home_seed_label?: string | null;
   away_seed_label?: string | null;
+  status?: "notstarted" | "inprogress" | "finished" | string;
+  statusDesc?: string | null;
+  minute?: number | null;
 };
 
 export const WC_YEARS: number[] = [...FOOTBALL_WC.years];

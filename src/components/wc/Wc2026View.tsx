@@ -1,7 +1,6 @@
 import { useCallback, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { useNavigate } from "@tanstack/react-router";
 import { Loader2, Trophy } from "lucide-react";
 import {
   getWc2026Fixtures,
@@ -30,18 +29,13 @@ import { FootballPitchSkeleton, FootballEmptyBall } from "@/components/football/
 const HOUR = 60 * 60 * 1000;
 const LIVE_MS = 20 * 1000;
 
-// Shared click handler: real ESPN fixtures (id > 0) navigate to the dedicated
-// match centre; synthesized/predicted rows (negative ids) fall back to the
-// legacy modal so users still see the pairing context.
+// Shared click handler: group/knockout cards should open the in-page modal.
+// The dedicated match centre is still available from inside the modal, but the
+// first tap/click now always gives users the highlight/details popup they expect.
 function useWcPick(setModal: (m: WCMatch | null) => void) {
-  const navigate = useNavigate();
   return useCallback((m: WCMatch) => {
-    if (m.id > 0 && !m.predicted) {
-      navigate({ to: "/football/match/$id", params: { id: String(m.id) } });
-      return;
-    }
     setModal(m);
-  }, [navigate, setModal]);
+  }, [setModal]);
 }
 
 
@@ -173,6 +167,9 @@ function toWcMatches(
       stadium: f.venue,
       city: f.city,
       video_url: videoMap?.get(videoKey(f.home.name, f.away.name)) ?? null,
+      status: f.status,
+      statusDesc: f.statusDesc,
+      minute: f.minute,
     };
   });
 }
