@@ -27,7 +27,7 @@ export function FootballHero() {
     return () => clearInterval(id);
   }, []);
 
-  const countdown = pulse.next ? formatCountdown(pulse.next.startTs - Date.now()) : null;
+  const countdown = pulse.next ? formatCountdown(pulse.next.startTs * 1000 - Date.now()) : null;
   // Touch tick so re-renders flow (lint).
   void tick;
 
