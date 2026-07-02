@@ -80,7 +80,7 @@ export function MatchCard({
       {match.predicted && (
         <span
           title="Predicted from current standings — actual fixture will replace this once published"
-          className="absolute top-1.5 right-2 inline-flex items-center gap-1 text-[9px] font-bold bg-sky-500/15 text-sky-300 ring-1 ring-sky-400/40 rounded-full px-1.5 py-0.5"
+          className={`absolute ${match.video_url ? "top-7" : "top-1.5"} right-2 inline-flex items-center gap-1 text-[9px] font-bold bg-sky-500/15 text-sky-300 ring-1 ring-sky-400/40 rounded-full px-1.5 py-0.5`}
         >
           <span className="size-1 rounded-full bg-sky-400 animate-pulse" /> PREDICTED
         </span>
