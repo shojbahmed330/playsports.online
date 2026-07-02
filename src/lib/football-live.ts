@@ -19,22 +19,28 @@ const isFinal = (f: Wc2026Fixture) => {
   const s = (f.status || "").toLowerCase();
   return s === "post" || s === "ft" || s === "final" || s === "finished" || s === "aet" || s === "pen";
 };
+// startTs from wc2026.functions is stored in SECONDS (unix epoch seconds).
+const toMs = (ts: number) => (ts < 1e12 ? ts * 1000 : ts);
 const isToday = (ts: number) => {
-  const d = new Date(ts);
+  const d = new Date(toMs(ts));
   const n = new Date();
   return d.getFullYear() === n.getFullYear() && d.getMonth() === n.getMonth() && d.getDate() === n.getDate();
 };
 
 export function derivePulse(fixtures: Wc2026Fixture[] | undefined | null): FootballPulse {
   const list = fixtures ?? [];
+  const nowMs = Date.now();
   const live = list.filter(isLive);
   const todayList = list.filter((f) => isToday(f.startTs));
   const upcoming = list
-    .filter((f) => !isLive(f) && !isFinal(f) && f.startTs > Date.now())
+    .filter((f) => !isLive(f) && !isFinal(f) && toMs(f.startTs) > nowMs)
     .sort((a, b) => a.startTs - b.startTs);
   const recent = list.filter(isFinal).sort((a, b) => b.startTs - a.startTs).slice(0, 5);
   const next = upcoming[0] ?? null;
-  const goalsToday = todayList.reduce((acc, f) => acc + (f.home.goals ?? 0) + (f.away.goals ?? 0), 0);
+  // Goals today = only from matches that have actually kicked off (live or finished)
+  const goalsToday = todayList
+    .filter((f) => isLive(f) || isFinal(f))
+    .reduce((acc, f) => acc + (f.home.goals ?? 0) + (f.away.goals ?? 0), 0);
   const phase: FootballPulse["phase"] =
     live.length > 0 ? "live" : todayList.some((f) => !isFinal(f)) ? "today" : upcoming.length > 0 ? "upcoming" : "idle";
   return { live, today: todayList, upcoming, recent, next, goalsToday, phase };

@@ -27,7 +27,7 @@ export function FootballHero() {
     return () => clearInterval(id);
   }, []);
 
-  const countdown = pulse.next ? formatCountdown(pulse.next.startTs - Date.now()) : null;
+  const countdown = pulse.next ? formatCountdown(pulse.next.startTs * 1000 - Date.now()) : null;
   // Touch tick so re-renders flow (lint).
   void tick;
 
@@ -104,7 +104,7 @@ export function FootballHero() {
                 <Play className="size-4" />
                 <span className="truncate">
                   {flagOf(pulse.next.home.name)} {pulse.next.home.code} vs {pulse.next.away.code} {flagOf(pulse.next.away.name)}
-                  <span className="ml-2 text-amber-300">{formatLocalTime(pulse.next.startTs)}</span>
+                  <span className="ml-2 text-amber-300">{formatLocalTime(pulse.next.startTs * 1000)}</span>
                 </span>
               </a>
             )}
@@ -183,7 +183,7 @@ function FootballTicker({
                   kind === "live" ? "text-red-400" : kind === "up" ? "text-blue-300" : "text-gray-500"
                 }`}
               >
-                {kind === "live" ? "● LIVE" : kind === "up" ? formatLocalTime(f.startTs) : "FT"}
+                {kind === "live" ? "● LIVE" : kind === "up" ? formatLocalTime(f.startTs * 1000) : "FT"}
               </span>
               <span className="text-gray-300">
                 {flagOf(f.home.name)} {f.home.code}
