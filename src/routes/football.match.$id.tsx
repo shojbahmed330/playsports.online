@@ -55,6 +55,7 @@ function MatchPage() {
   const fx = q.data?.fixture;
   const title = fx ? `${fx.home.name} v ${fx.away.name}` : "Match Centre";
   const isLive = fx?.status === "inprogress";
+  useGoalAlerts(fx);
 
   return (
     <div className="min-h-dvh bg-black text-foreground pb-16 sm:pb-0">
