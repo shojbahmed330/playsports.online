@@ -2,26 +2,47 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { getNhlAthlete } from "@/lib/nhl.functions";
-import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
+import { athlete, breadcrumbList, ldScript } from "@/lib/seo/jsonld";
 
 export const Route = createFileRoute("/nhl/player/$id")({
-  head: ({ params }) => ({
-    meta: [
-      { title: `NHL Player ${params.id} — Bio & Career Stats` },
-      { name: "description", content: "Player biography and full career averages." },
-    ],
-    links: [{ rel: "canonical", href: `https://www.playsports.online/nhl/player/${params.id}` }],
-    scripts: [ldScript(breadcrumbList([
-      { name: "Home", path: "/" }, { name: "NHL", path: "/nhl" }, { name: "Players", path: "/nhl/leaders" }, { name: params.id, path: `/nhl/player/${params.id}` },
-    ]))],
-  }),
   loader: async ({ context, params }) => {
-    await context.queryClient.prefetchQuery({
-      queryKey: ["nhl", "athlete", params.id],
-      queryFn: () => getNhlAthlete({ data: { id: params.id } }),
-      staleTime: 60 * 60_000,
-    }).catch(() => null);
-    return null;
+    return await context.queryClient
+      .ensureQueryData({
+        queryKey: ["nhl", "athlete", params.id],
+        queryFn: () => getNhlAthlete({ data: { id: params.id } }),
+        staleTime: 60 * 60_000,
+      })
+      .catch(() => null);
+  },
+  head: ({ params, loaderData }) => {
+    const url = `https://www.playsports.online/nhl/player/${params.id}`;
+    const a = (loaderData as { athlete?: { name?: string; headshot?: string | null; team?: { name?: string } | null; position?: string | null } } | null)?.athlete ?? null;
+    const name = a?.name ?? `NHL Player ${params.id}`;
+    const teamPart = a?.team?.name ? ` — ${a.team.name}` : "";
+    const title = a ? `${name}${teamPart} — NHL Career Stats & Bio` : `NHL Player ${params.id} — Bio & Career Stats`;
+    const desc = a
+      ? `${name}${a.position ? ` (${a.position})` : ""}${teamPart} — biography and full career averages on PlaySports.`
+      : "Player biography and full career averages.";
+    return {
+      meta: [
+        { title },
+        { name: "description", content: desc },
+        { property: "og:title", content: title },
+        { property: "og:description", content: desc },
+        { property: "og:url", content: url },
+        ...(a?.headshot ? [{ property: "og:image", content: a.headshot }] : []),
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: desc },
+      ],
+      links: [{ rel: "canonical", href: url }],
+      scripts: [
+        ldScript(athlete({ name, path: `/nhl/player/${params.id}`, sport: "Ice Hockey", image: a?.headshot ?? undefined, team: a?.team?.name ?? undefined })),
+        ldScript(breadcrumbList([
+          { name: "Home", path: "/" }, { name: "NHL", path: "/nhl" }, { name: "Players", path: "/nhl/leaders" }, { name, path: `/nhl/player/${params.id}` },
+        ])),
+      ],
+    };
   },
   component: NhlPlayer,
 });
