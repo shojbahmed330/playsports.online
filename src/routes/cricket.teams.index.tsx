@@ -10,7 +10,7 @@ import { getCricketTeamsForLeague, type CricketTeamSummary } from "@/lib/cricket
 import { CRICKET_LEAGUES } from "@/lib/cricket-leagues";
 import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
 
-export const Route = createFileRoute("/cricket/teams")({
+export const Route = createFileRoute("/cricket/teams/")({
   head: () => ({
     meta: [
       { title: "Cricket Teams — Squads across IPL, BBL, PSL & World Cups" },

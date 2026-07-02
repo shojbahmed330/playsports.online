@@ -8,7 +8,7 @@ import rankings from "@/data/cricket/rankings.json";
 import { breadcrumbList, collectionPage, ldScript } from "@/lib/seo/jsonld";
 
 
-export const Route = createFileRoute("/cricket/players")({
+export const Route = createFileRoute("/cricket/players/")({
   head: () => ({
     meta: [
       { title: "Cricket Players — Top batters, bowlers & all-rounders" },
