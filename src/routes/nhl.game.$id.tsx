@@ -7,26 +7,54 @@ import { getNhlGame } from "@/lib/nhl.functions";
 import { NhlLinescore } from "@/components/nhl/NhlLinescore";
 import { NhlBoxScore } from "@/components/nhl/NhlBoxScore";
 import { NhlPlayByPlay } from "@/components/nhl/NhlPlayByPlay";
-import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
+import { breadcrumbList, ldScript, sportsEvent } from "@/lib/seo/jsonld";
 
 export const Route = createFileRoute("/nhl/game/$id")({
-  head: ({ params }) => ({
-    meta: [
-      { title: `NHL Game ${params.id} — Box Score & Play-by-Play` },
-      { name: "description", content: "Live box score, scoring plays, and full play-by-play for this NHL game." },
-    ],
-    links: [{ rel: "canonical", href: `https://www.playsports.online/nhl/game/${params.id}` }],
-    scripts: [ldScript(breadcrumbList([
-      { name: "Home", path: "/" }, { name: "NHL", path: "/nhl" }, { name: "Scores", path: "/nhl/scores" }, { name: params.id, path: `/nhl/game/${params.id}` },
-    ]))],
-  }),
   loader: async ({ context, params }) => {
-    await context.queryClient.prefetchQuery({
+    const data = await context.queryClient.ensureQueryData({
       queryKey: ["nhl", "game", params.id],
       queryFn: () => getNhlGame({ data: { id: params.id } }),
       staleTime: 15_000,
     }).catch(() => null);
-    return null;
+    return { summary: data?.summary ?? null };
+  },
+  head: ({ params, loaderData }) => {
+    const s = loaderData?.summary;
+    const away = s?.away?.shortName || s?.away?.name || s?.away?.abbr;
+    const home = s?.home?.shortName || s?.home?.name || s?.home?.abbr;
+    const matchup = away && home ? `${away} vs ${home}` : `NHL Game ${params.id}`;
+    const title = `${matchup} — NHL Box Score, Play-by-Play & Live Updates`;
+    const desc = away && home
+      ? `Live box score, scoring plays and full play-by-play for ${away} vs ${home}. Stats, leaders, venue and more on PlaySports.`
+      : "Live box score, scoring plays, and full play-by-play for this NHL game.";
+    const url = `https://www.playsports.online/nhl/game/${params.id}`;
+    return {
+      meta: [
+        { title },
+        { name: "description", content: desc },
+        { property: "og:title", content: matchup },
+        { property: "og:description", content: desc },
+        { property: "og:url", content: url },
+        { property: "og:type", content: "article" },
+        { name: "twitter:card", content: "summary_large_image" },
+      ],
+      links: [{ rel: "canonical", href: url }],
+      scripts: [
+        ldScript(breadcrumbList([
+          { name: "Home", path: "/" }, { name: "NHL", path: "/nhl" }, { name: "Scores", path: "/nhl/scores" }, { name: matchup, path: `/nhl/game/${params.id}` },
+        ])),
+        ldScript(sportsEvent({
+          name: matchup,
+          path: `/nhl/game/${params.id}`,
+          sport: "Ice Hockey",
+          startDate: s?.startTs ? new Date(s.startTs).toISOString() : undefined,
+          homeTeam: home ?? undefined,
+          awayTeam: away ?? undefined,
+          location: s?.venue?.name ?? undefined,
+          status: s?.status === "in" ? "live" : s?.status === "post" ? "ended" : "scheduled",
+        })),
+      ],
+    };
   },
   component: NhlGame,
 });
