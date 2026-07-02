@@ -39,7 +39,13 @@ export const Route = createFileRoute("/player/$sport/$slug")({
           { name: "Players", path: "/players" },
           { name: player.name, path },
         ])),
+        ldScript(faqPage([
+          { q: `How many World Cup goals has ${player.name} scored?`, a: `${player.name} has scored ${stats.goalsTotal} goal${stats.goalsTotal === 1 ? "" : "s"} at the FIFA World Cup${stats.pen > 0 ? `, including ${stats.pen} from the penalty spot` : ""}.` },
+          { q: `Which country does ${player.name} play for?`, a: `${player.name} represents ${player.team} at the FIFA World Cup.` },
+          { q: `In which World Cups has ${player.name} played?`, a: stats.years.length ? `${player.name} appeared at the FIFA World Cup in ${stats.years.join(", ")}.` : `${player.name}'s World Cup appearances are not on record.` },
+        ])),
       ],
+
     };
   },
   component: PlayerPage,
