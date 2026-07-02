@@ -8,9 +8,9 @@ export const Route = createFileRoute("/nba/history")({
     meta: [
       { title: "NBA Championship History — Every Finals Winner" },
       { name: "description", content: "Complete list of NBA Finals champions, runners-up, results, and Finals MVPs across the modern era." },
-      { property: "og:url", content: "https://allsportslive.lovable.app/nba/history" },
+      { property: "og:url", content: "https://www.playsports.online/nba/history" },
     ],
-    links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/nba/history" }],
+    links: [{ rel: "canonical", href: "https://www.playsports.online/nba/history" }],
     scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "NBA", path: "/nba" }, { name: "History", path: "/nba/history" }]))],
   }),
   component: NbaHistory,

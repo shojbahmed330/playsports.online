@@ -7,14 +7,14 @@ import { LegalLayout } from "@/components/site/LegalLayout";
 import { useContactSettings } from "@/lib/site-settings";
 import { submitContactMessage } from "@/lib/contact.functions";
 
-const URL = "https://allsportslive.lovable.app/contact";
+const URL = "https://www.playsports.online/contact";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
-      { title: "Contact — AllSportsLive" },
-      { name: "description", content: "Get in touch with the AllSportsLive team." },
-      { property: "og:title", content: "Contact — AllSportsLive" },
+      { title: "Contact — PlaySports" },
+      { name: "description", content: "Get in touch with the PlaySports team." },
+      { property: "og:title", content: "Contact — PlaySports" },
       { property: "og:url", content: URL },
     ],
     links: [{ rel: "canonical", href: URL }],

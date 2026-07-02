@@ -7,7 +7,7 @@ export const Route = createFileRoute("/unsubscribe")({
   component: UnsubPage,
   head: () => ({
     meta: [
-      { title: "Unsubscribe — AllSportsLive" },
+      { title: "Unsubscribe — PlaySports" },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -42,7 +42,7 @@ function UnsubPage() {
       {state === "idle" && (
         <>
           <p className="text-muted-foreground mb-6">
-            Click confirm to stop receiving the AllSportsLive weekly digest.
+            Click confirm to stop receiving the PlaySports weekly digest.
           </p>
           <button
             disabled={!token}

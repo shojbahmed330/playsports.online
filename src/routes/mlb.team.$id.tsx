@@ -15,7 +15,7 @@ import { breadcrumbList, ldScript, sportsTeam } from "@/lib/seo/jsonld";
 
 export const Route = createFileRoute("/mlb/team/$id")({
   head: ({ params }) => {
-    const url = `https://allsportslive.lovable.app/mlb/team/${params.id}`;
+    const url = `https://www.playsports.online/mlb/team/${params.id}`;
     return {
       meta: [
         { title: "MLB Team — Schedule, Roster, Stats & Injuries" },

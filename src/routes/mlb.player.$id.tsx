@@ -8,7 +8,7 @@ import { AffiliateStrip } from "@/components/affiliates/AffiliateStrip";
 
 export const Route = createFileRoute("/mlb/player/$id")({
   head: ({ params }) => {
-    const url = `https://allsportslive.lovable.app/mlb/player/${params.id}`;
+    const url = `https://www.playsports.online/mlb/player/${params.id}`;
     return {
       meta: [
         { title: "MLB Player Profile — Career Stats & Game Logs" },

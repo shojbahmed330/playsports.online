@@ -12,7 +12,7 @@ export const Route = createFileRoute("/nhl/team/$id")({
       { title: `NHL Team ${params.id} — Roster, Schedule & Leaders` },
       { name: "description", content: "Team profile with roster, full schedule, leaders, and injury report." },
     ],
-    links: [{ rel: "canonical", href: `https://allsportslive.lovable.app/nhl/team/${params.id}` }],
+    links: [{ rel: "canonical", href: `https://www.playsports.online/nhl/team/${params.id}` }],
     scripts: [ldScript(breadcrumbList([
       { name: "Home", path: "/" }, { name: "NHL", path: "/nhl" }, { name: "Teams", path: "/nhl/teams" }, { name: params.id, path: `/nhl/team/${params.id}` },
     ]))],

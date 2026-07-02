@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-const SITE = "https://allsportslive.lovable.app";
+const SITE = "https://www.playsports.online";
 
 function esc(s: string) {
   return s.replace(/[<>&'"]/g, (c) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", "'": "&apos;", '"': "&quot;" }[c]!));
@@ -22,7 +22,7 @@ export const Route = createFileRoute("/feed.xml")({
         const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
 <channel>
-<title>AllSportsLive — Top Stories</title>
+<title>PlaySports — Top Stories</title>
 <link>${SITE}</link>
 <description>Live scores, World Cup coverage, and player stats across football, cricket, MLB, NBA, NHL, and MLS.</description>
 <language>en-us</language>

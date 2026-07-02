@@ -18,9 +18,9 @@ export const Route = createFileRoute("/mlb/")({
       { name: "description", content: "Today's MLB games, standings snapshot, batting and pitching leaders, and the latest baseball headlines in one hub." },
       { property: "og:title", content: "MLB Today — Live Scores, Standings, Leaders" },
       { property: "og:description", content: "Today's MLB games, standings, leaders and headlines." },
-      { property: "og:url", content: "https://allsportslive.lovable.app/mlb" },
+      { property: "og:url", content: "https://www.playsports.online/mlb" },
     ],
-    links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/mlb" }],
+    links: [{ rel: "canonical", href: "https://www.playsports.online/mlb" }],
     scripts: [
       ldScript(collectionPage({ name: "MLB — Live Scores, Standings & Leaders", description: "Major League Baseball hub: scores, standings, leaders and news.", path: "/mlb" })),
       ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "MLB", path: "/mlb" }])),

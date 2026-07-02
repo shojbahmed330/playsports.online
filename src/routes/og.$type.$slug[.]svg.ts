@@ -86,7 +86,7 @@ function render({ type, slug }: Params): string {
   <g transform="translate(80, 530)">
     <circle cx="22" cy="22" r="22" fill="${accent}"/>
     <text x="14" y="30" font-family="-apple-system, Segoe UI, Roboto, sans-serif" font-size="24" font-weight="900" fill="#0b1220">AS</text>
-    <text x="62" y="22" font-family="-apple-system, Segoe UI, Roboto, sans-serif" font-size="22" font-weight="800" fill="#f1f5f9">allsportslive</text>
+    <text x="62" y="22" font-family="-apple-system, Segoe UI, Roboto, sans-serif" font-size="22" font-weight="800" fill="#f1f5f9">playsports</text>
     <text x="62" y="48" font-family="-apple-system, Segoe UI, Roboto, sans-serif" font-size="18" font-weight="500" fill="#94a3b8">Live scores · Stats · Archives</text>
   </g>
   <!-- corner decorative -->

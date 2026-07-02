@@ -70,9 +70,9 @@ export const Route = createFileRoute("/football")({
         { name: "description", content: `Live FIFA World Cup ${cur} fixtures, group standings, knockout bracket and complete tournament history from 1930 to ${cur}.` },
         { property: "og:title", content: `FIFA World Cup ${cur} — Live Scores & Complete Archive` },
         { property: "og:description", content: `Live ${cur} fixtures with kickoff countdowns, full bracket, top scorers and historical tournaments.` },
-        { property: "og:url", content: "https://allsportslive.lovable.app/football" },
+        { property: "og:url", content: "https://www.playsports.online/football" },
       ],
-      links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/football" }],
+      links: [{ rel: "canonical", href: "https://www.playsports.online/football" }],
       scripts: [
         ldScript(collectionPage({ name: `FIFA World Cup ${cur} — Live & Archive`, description: `FIFA World Cup ${cur} live scores, bracket and historical archive 1930–${cur}.`, path: "/football" })),
         ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "Football", path: "/football" }])),

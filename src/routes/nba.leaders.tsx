@@ -11,9 +11,9 @@ export const Route = createFileRoute("/nba/leaders")({
     meta: [
       { title: "NBA Leaders — Points, Assists, Rebounds, Steals, Blocks" },
       { name: "description", content: "NBA statistical leaders across scoring, playmaking, rebounding and defense. Updated daily from ESPN's feed." },
-      { property: "og:url", content: "https://allsportslive.lovable.app/nba/leaders" },
+      { property: "og:url", content: "https://www.playsports.online/nba/leaders" },
     ],
-    links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/nba/leaders" }],
+    links: [{ rel: "canonical", href: "https://www.playsports.online/nba/leaders" }],
     scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "NBA", path: "/nba" }, { name: "Leaders", path: "/nba/leaders" }]))],
   }),
   loader: async ({ context }) => {

@@ -2,7 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { createClient } from "@supabase/supabase-js";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
-const SITE = "https://allsportslive.lovable.app";
+const SITE = "https://www.playsports.online";
 
 function adminClient() {
   return createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!, {
@@ -74,11 +74,11 @@ function renderHtml(stories: Story[], unsubUrl: string) {
   return `<!doctype html><html><body style="margin:0;background:#0b1220;font-family:ui-sans-serif,system-ui,Arial;color:#e2e8f0;">
   <table width="100%" cellpadding="0" cellspacing="0"><tr><td align="center">
     <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;padding:32px 24px;">
-      <tr><td><h1 style="margin:0 0 4px;font-size:24px;color:#fff;">AllSportsLive — Weekly Digest</h1>
+      <tr><td><h1 style="margin:0 0 4px;font-size:24px;color:#fff;">PlaySports — Weekly Digest</h1>
         <div style="color:#94a3b8;font-size:13px;">Top stories from across the world of sport</div></td></tr>
       ${items}
       <tr><td style="padding-top:24px;font-size:12px;color:#64748b;">
-        You're receiving this because you subscribed at allsportslive.lovable.app.<br/>
+        You're receiving this because you subscribed at www.playsports.online.<br/>
         <a href="${unsubUrl}" style="color:#94a3b8;">Unsubscribe</a> · <a href="${SITE}" style="color:#94a3b8;">Visit site</a>
       </td></tr>
     </table></td></tr></table></body></html>`;
@@ -91,7 +91,7 @@ export const buildWeeklyDigest = createServerFn({ method: "POST" })
     const isAdmin = await context.supabase.rpc("has_role", { _user_id: context.userId, _role: "admin" });
     if (!isAdmin.data) throw new Error("Forbidden");
     const stories = await collectTopStories();
-    const subject = `AllSportsLive Weekly — ${new Date().toLocaleDateString("en-US", { month: "short", day: "numeric" })}`;
+    const subject = `PlaySports Weekly — ${new Date().toLocaleDateString("en-US", { month: "short", day: "numeric" })}`;
     const html = renderHtml(stories, `${SITE}/unsubscribe?token=PLACEHOLDER`);
     const admin = adminClient();
     const { count } = await admin

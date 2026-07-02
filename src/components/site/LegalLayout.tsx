@@ -94,7 +94,7 @@ export function LegalLayout({
         <header className="mt-5 border-b border-border/60 pb-6">
           <div className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-emerald-500/90 font-semibold">
             <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
-            AllSportsLive
+            PlaySports
           </div>
           <h1 className="mt-2 text-3xl sm:text-4xl font-bold tracking-tight">{title}</h1>
           {intro && (

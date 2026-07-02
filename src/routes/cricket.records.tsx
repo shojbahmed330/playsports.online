@@ -15,9 +15,9 @@ export const Route = createFileRoute("/cricket/records")({
       { name: "description", content: "All-time cricket records across Test, ODI and T20I." },
       { property: "og:title", content: "All-time Cricket Records" },
       { property: "og:description", content: "Runs, wickets, centuries and partnerships across formats." },
-      { property: "og:url", content: "https://allsportslive.lovable.app/cricket/records" },
+      { property: "og:url", content: "https://www.playsports.online/cricket/records" },
     ],
-    links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/cricket/records" }],
+    links: [{ rel: "canonical", href: "https://www.playsports.online/cricket/records" }],
     scripts: [
       ldScript(collectionPage({ name: "All-time Cricket Records", description: "Runs, wickets, centuries and partnership records across Test, ODI and T20I.", path: "/cricket/records" })),
       ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "Cricket", path: "/cricket" }, { name: "Records", path: "/cricket/records" }])),

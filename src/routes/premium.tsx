@@ -7,9 +7,9 @@ export const Route = createFileRoute("/premium")({
   component: PremiumPage,
   head: () => ({
     meta: [
-      { title: "Become a Supporter — AllSportsLive" },
-      { name: "description", content: "Support AllSportsLive and enjoy an ad-free experience across every sport hub." },
-      { property: "og:title", content: "Become a Supporter — AllSportsLive" },
+      { title: "Become a Supporter — PlaySports" },
+      { name: "description", content: "Support PlaySports and enjoy an ad-free experience across every sport hub." },
+      { property: "og:title", content: "Become a Supporter — PlaySports" },
       { property: "og:description", content: "Ad-free browsing, priority features, and direct support for independent sports coverage." },
     ],
   }),
@@ -25,7 +25,7 @@ function PremiumPage() {
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 text-amber-400 text-xs font-medium mb-4">
           <Sparkles className="size-3.5" /> Independent sports coverage
         </div>
-        <h1 className="text-4xl md:text-5xl font-bold mb-3">Support AllSportsLive</h1>
+        <h1 className="text-4xl md:text-5xl font-bold mb-3">Support PlaySports</h1>
         <p className="text-muted-foreground max-w-xl mx-auto">
           Keep live scores, player stats, and World Cup coverage free and ad-light for everyone.
           Supporters get an ad-free experience across the entire site.
@@ -67,7 +67,7 @@ function PremiumPage() {
           cta={
             session ? (
               <a
-                href="mailto:rajshahi.jibon@gmail.com?subject=AllSportsLive Supporter"
+                href="mailto:rajshahi.jibon@gmail.com?subject=PlaySports Supporter"
                 className="block w-full text-center px-4 py-2.5 rounded-lg bg-primary text-primary-foreground font-medium"
               >
                 <Heart className="inline size-4 mr-1" /> Become a Supporter

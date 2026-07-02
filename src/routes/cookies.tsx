@@ -2,14 +2,14 @@ import { createFileRoute } from "@tanstack/react-router";
 import { LegalLayout } from "@/components/site/LegalLayout";
 import { useLegalPage } from "@/lib/site-settings";
 
-const URL = "https://allsportslive.lovable.app/cookies";
+const URL = "https://www.playsports.online/cookies";
 
 export const Route = createFileRoute("/cookies")({
   head: () => ({
     meta: [
-      { title: "Cookie Policy — AllSportsLive" },
-      { name: "description", content: "What cookies AllSportsLive uses and how to manage them." },
-      { property: "og:title", content: "Cookie Policy — AllSportsLive" },
+      { title: "Cookie Policy — PlaySports" },
+      { name: "description", content: "What cookies PlaySports uses and how to manage them." },
+      { property: "og:title", content: "Cookie Policy — PlaySports" },
       { property: "og:url", content: URL },
     ],
     links: [{ rel: "canonical", href: URL }],

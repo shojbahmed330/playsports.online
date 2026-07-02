@@ -40,7 +40,7 @@ export type ConsentSettings = {
 export const DEFAULT_CONSENT: ConsentSettings = {
   enabled: true,
   banner_text:
-    "We use cookies to keep AllSportsLive fast, measure traffic, and show relevant ads. Manage your choice anytime from the footer.",
+    "We use cookies to keep PlaySports fast, measure traffic, and show relevant ads. Manage your choice anytime from the footer.",
 };
 
 // ============= Newsletter =============
@@ -67,14 +67,14 @@ export type IdentitySettings = {
 };
 export const DEFAULT_IDENTITY: IdentitySettings = {
   tagline: "Live scores, stats & the complete FIFA World Cup archive.",
-  footer_text: "© AllSportsLive. Data via ESPN, Sofascore & official league feeds.",
+  footer_text: "© PlaySports. Data via ESPN, Sofascore & official league feeds.",
   social: { x: "", youtube: "", reddit: "", instagram: "" },
 };
 
 // ============= Contact =============
 export type ContactSettings = { email: string; response_time: string };
 export const DEFAULT_CONTACT: ContactSettings = {
-  email: "hello@allsportslive.app",
+  email: "hello@playsports.online",
   response_time: "We reply within 2 business days.",
 };
 

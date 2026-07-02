@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 import { listTeams, listPlayers, listH2H, listArchives } from "@/lib/seo/programmatic";
 
-const BASE_URL = "https://allsportslive.lovable.app";
+const BASE_URL = "https://www.playsports.online";
 
 
 interface SitemapEntry {

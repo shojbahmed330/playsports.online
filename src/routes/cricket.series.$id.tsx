@@ -15,7 +15,7 @@ export const Route = createFileRoute("/cricket/series/$id")({
   head: ({ params }) => {
     const l = CRICKET_LEAGUE_BY_ID[params.id];
     const name = l?.longName ?? "Cricket Series";
-    const url = `https://allsportslive.lovable.app/cricket/series/${params.id}`;
+    const url = `https://www.playsports.online/cricket/series/${params.id}`;
     return {
       meta: [
         { title: `${name} — Fixtures, Results & Squads` },

@@ -10,9 +10,9 @@ export const Route = createFileRoute("/nba/teams")({
     meta: [
       { title: "NBA Teams — All 30 Franchises" },
       { name: "description", content: "All 30 NBA franchises with logos, colors, conference and quick links to roster and schedule." },
-      { property: "og:url", content: "https://allsportslive.lovable.app/nba/teams" },
+      { property: "og:url", content: "https://www.playsports.online/nba/teams" },
     ],
-    links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/nba/teams" }],
+    links: [{ rel: "canonical", href: "https://www.playsports.online/nba/teams" }],
     scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "NBA", path: "/nba" }, { name: "Teams", path: "/nba/teams" }]))],
   }),
   loader: async ({ context }) => {

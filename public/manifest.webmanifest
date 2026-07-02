@@ -1,6 +1,6 @@
 {
-  "name": "AllSportsLive — Live Scores & Stats",
-  "short_name": "AllSportsLive",
+  "name": "PlaySports — Live Scores & Stats",
+  "short_name": "PlaySports",
   "description": "Live scores, standings and stats across football, cricket, MLB, NBA, NHL and MLS — plus the full FIFA World Cup archive.",
   "start_url": "/",
   "scope": "/",

@@ -23,10 +23,10 @@ export const Route = createFileRoute("/cricket/match/$id")({
   validateSearch: searchSchema,
   loaderDeps: ({ search }) => ({ leagueId: search.leagueId }),
   head: ({ params }) => {
-    const url = `https://allsportslive.lovable.app/cricket/match/${params.id}`;
+    const url = `https://www.playsports.online/cricket/match/${params.id}`;
     return {
       meta: [
-        { title: "Live Cricket Scorecard — AllSportsLive" },
+        { title: "Live Cricket Scorecard — PlaySports" },
         { name: "description", content: "Live cricket scorecard, batting and bowling figures, commentary and lineups." },
         { property: "og:title", content: "Live Cricket Scorecard" },
         { property: "og:description", content: "Live scorecard, commentary and lineups." },
