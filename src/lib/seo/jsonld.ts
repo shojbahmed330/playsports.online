@@ -125,7 +125,33 @@ export function sportsOrganization(opts: { name: string; path: string; sport: st
   return node;
 }
 
+export function videoObject(opts: {
+  name: string;
+  description: string;
+  path: string;
+  thumbnailUrl: string;
+  uploadDate: string;
+  embedUrl?: string;
+  contentUrl?: string;
+  duration?: string;
+}) {
+  const node: Record<string, unknown> = {
+    "@context": "https://schema.org",
+    "@type": "VideoObject",
+    name: opts.name,
+    description: opts.description,
+    thumbnailUrl: opts.thumbnailUrl,
+    uploadDate: opts.uploadDate,
+    url: canonical(opts.path),
+  };
+  if (opts.embedUrl) node.embedUrl = opts.embedUrl;
+  if (opts.contentUrl) node.contentUrl = opts.contentUrl;
+  if (opts.duration) node.duration = opts.duration;
+  return node;
+}
+
 export function ldScript(data: unknown) {
   return { type: "application/ld+json" as const, children: JSON.stringify(data) };
 }
+
 
