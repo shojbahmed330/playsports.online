@@ -33,8 +33,26 @@ export function MobileBracket({
 }) {
   const [active, setActive] = useState<RoundKey>(rounds[0]?.round ?? "round_of_16");
   const stage = rounds.find((r) => r.round === active);
-
   const activeIdx = Math.max(0, rounds.findIndex((r) => r.round === active));
+
+  // Swipe left/right to change rounds
+  const touch = useRef<{ x: number; y: number } | null>(null);
+  const onTouchStart = (e: React.TouchEvent) => {
+    const t = e.touches[0];
+    touch.current = { x: t.clientX, y: t.clientY };
+  };
+  const onTouchEnd = (e: React.TouchEvent) => {
+    if (!touch.current) return;
+    const t = e.changedTouches[0];
+    const dx = t.clientX - touch.current.x;
+    const dy = t.clientY - touch.current.y;
+    touch.current = null;
+    if (Math.abs(dx) < 60 || Math.abs(dy) > 40) return;
+    if (dx < 0 && activeIdx < rounds.length - 1) setActive(rounds[activeIdx + 1].round);
+    if (dx > 0 && activeIdx > 0) setActive(rounds[activeIdx - 1].round);
+  };
+  const prev = () => activeIdx > 0 && setActive(rounds[activeIdx - 1].round);
+  const next = () => activeIdx < rounds.length - 1 && setActive(rounds[activeIdx + 1].round);
 
   return (
     <div className="md:hidden">
