@@ -1,7 +1,7 @@
 import { useRouterState } from "@tanstack/react-router";
 import {
   Home, Trophy, Calendar, Swords, Goal, CalendarDays,
-  BarChart3, Shield, User, ListOrdered, Activity, Flame, Star,
+  BarChart3, Shield, User, ListOrdered, Activity, Flame,
 } from "lucide-react";
 import { MobileTabBar, type MobileTab } from "./MobileTabBar";
 
