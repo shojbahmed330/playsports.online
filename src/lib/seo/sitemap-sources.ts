@@ -129,3 +129,45 @@ export async function cricketSeriesUrls(): Promise<DynamicUrl[]> {
     priority: "0.6",
   }));
 }
+
+// Phase 2.1 (cricket) — SSR SEO landing pages.
+export function cricketSeoTeamUrls(): DynamicUrl[] {
+  // Lazy require to keep this module tree-shakable at build.
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { listCricketTeams } = require("@/lib/seo/cricket-entities") as typeof import("@/lib/seo/cricket-entities");
+  return listCricketTeams().map((t) => ({
+    path: `/cricket/teams/${t.slug}`,
+    changefreq: "weekly" as const,
+    priority: t.isFranchise ? "0.75" : "0.7",
+  }));
+}
+
+export function cricketSeoPlayerUrls(): DynamicUrl[] {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { listCricketPlayers } = require("@/lib/seo/cricket-entities") as typeof import("@/lib/seo/cricket-entities");
+  return listCricketPlayers().map((p) => ({
+    path: `/cricket/players/${p.slug}`,
+    changefreq: "weekly" as const,
+    priority: "0.7",
+  }));
+}
+
+export function cricketSeoTournamentUrls(): DynamicUrl[] {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { listCricketTournaments } = require("@/lib/seo/cricket-entities") as typeof import("@/lib/seo/cricket-entities");
+  return listCricketTournaments().map((t) => ({
+    path: `/cricket/tournaments/${t.slug}`,
+    changefreq: "daily" as const,
+    priority: "0.8",
+  }));
+}
+
+export function cricketSeoRecordUrls(): DynamicUrl[] {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { listCricketRecordCategories } = require("@/lib/seo/cricket-entities") as typeof import("@/lib/seo/cricket-entities");
+  return listCricketRecordCategories().map((c) => ({
+    path: `/cricket/records/${c.id}`,
+    changefreq: "weekly" as const,
+    priority: "0.7",
+  }));
+}
