@@ -85,7 +85,7 @@ export const Route = createFileRoute("/cricket/players/$slug")({
 });
 
 function CricketPlayerProfile() {
-  const { player } = Route.useLoaderData();
+  const { player } = Route.useLoaderData() as { player: import("@/lib/seo/cricket-entities").CricketPlayerEntity };
   const related = listCricketPlayers()
     .filter((p) => p.slug !== player.slug && (!player.country || p.country === player.country))
     .slice(0, 8);

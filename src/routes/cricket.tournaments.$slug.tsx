@@ -134,7 +134,7 @@ function buildFaqs(t: ReturnType<typeof getCricketTournamentBySlug>): Array<{ q:
 }
 
 function TournamentPage() {
-  const { t } = Route.useLoaderData();
+  const { t } = Route.useLoaderData() as { t: NonNullable<ReturnType<typeof import("@/lib/seo/cricket-entities").getCricketTournamentBySlug>> };
   const others = listCricketTournaments().filter((x) => x.slug !== t.slug).slice(0, 8);
 
   return (

@@ -112,7 +112,7 @@ function buildFaqs(cat: ReturnType<typeof getCricketRecordCategory>): Array<{ q:
 }
 
 function RecordCategoryPage() {
-  const { cat } = Route.useLoaderData();
+  const { cat } = Route.useLoaderData() as { cat: NonNullable<ReturnType<typeof import("@/lib/seo/cricket-entities").getCricketRecordCategory>> };
   const others = listCricketRecordCategories().filter((c) => c.id !== cat.id);
 
   return (
