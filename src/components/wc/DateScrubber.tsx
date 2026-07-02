@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { CalendarDays, ChevronDown, ChevronLeft, ChevronRight, X } from "lucide-react";
 import type { WCMatch } from "@/lib/supabase";
 import { dateKeyInTz, fmtDateChip } from "@/lib/timezone";
