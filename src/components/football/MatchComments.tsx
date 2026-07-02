@@ -64,7 +64,7 @@ export function MatchComments({ matchId }: { matchId: number }) {
       if (!user) throw new Error("Not signed in");
       const text = body.trim();
       if (text.length === 0 || text.length > 500) throw new Error("1–500 characters required");
-      const { error } = await supabase.from("match_comments" as never).insert({
+      const { error } = await (supabase as any).from("match_comments").insert({
         user_id: user.id,
         match_id: matchId,
         sport: "football",
@@ -80,7 +80,7 @@ export function MatchComments({ matchId }: { matchId: number }) {
 
   const del = useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase.from("match_comments" as never).delete().eq("id", id);
+      const { error } = await (supabase as any).from("match_comments").delete().eq("id", id);
       if (error) throw error;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["match-comments", matchId] }),
