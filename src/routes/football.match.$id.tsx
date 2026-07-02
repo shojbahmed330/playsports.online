@@ -79,7 +79,10 @@ function MatchPage() {
               <span className="size-1.5 rounded-full bg-red-500 animate-pulse" /> Live
             </span>
           ) : fx?.status === "notstarted" ? (
-            <AddToCalendarButton fx={fx} compact />
+            <div className="flex items-center gap-1.5">
+              <MatchReminderBell fx={fx} />
+              <AddToCalendarButton fx={fx} compact />
+            </div>
           ) : (
             <span className="shrink-0 text-[10px] uppercase tracking-widest text-gray-600">2026</span>
           )}
