@@ -104,7 +104,7 @@ export function FootballHero() {
                 <Play className="size-4" />
                 <span className="truncate">
                   {flagOf(pulse.next.home.name)} {pulse.next.home.code} vs {pulse.next.away.code} {flagOf(pulse.next.away.name)}
-                  <span className="ml-2 text-amber-300">{formatLocalTime(pulse.next.startTs)}</span>
+                  <span className="ml-2 text-amber-300">{formatLocalTime(pulse.next.startTs * 1000)}</span>
                 </span>
               </a>
             )}
