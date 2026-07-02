@@ -4,26 +4,46 @@ import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { Users, Calendar, AlertCircle, BarChart3 } from "lucide-react";
 import { getNhlTeam } from "@/lib/nhl.functions";
-import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
+import { breadcrumbList, ldScript, sportsTeam } from "@/lib/seo/jsonld";
 
 export const Route = createFileRoute("/nhl/team/$id")({
-  head: ({ params }) => ({
-    meta: [
-      { title: `NHL Team ${params.id} — Roster, Schedule & Leaders` },
-      { name: "description", content: "Team profile with roster, full schedule, leaders, and injury report." },
-    ],
-    links: [{ rel: "canonical", href: `https://www.playsports.online/nhl/team/${params.id}` }],
-    scripts: [ldScript(breadcrumbList([
-      { name: "Home", path: "/" }, { name: "NHL", path: "/nhl" }, { name: "Teams", path: "/nhl/teams" }, { name: params.id, path: `/nhl/team/${params.id}` },
-    ]))],
-  }),
   loader: async ({ context, params }) => {
-    await context.queryClient.prefetchQuery({
-      queryKey: ["nhl", "team", params.id],
-      queryFn: () => getNhlTeam({ data: { id: params.id } }),
-      staleTime: 30 * 60_000,
-    }).catch(() => null);
-    return null;
+    return await context.queryClient
+      .ensureQueryData({
+        queryKey: ["nhl", "team", params.id],
+        queryFn: () => getNhlTeam({ data: { id: params.id } }),
+        staleTime: 30 * 60_000,
+      })
+      .catch(() => null);
+  },
+  head: ({ params, loaderData }) => {
+    const url = `https://www.playsports.online/nhl/team/${params.id}`;
+    const team = (loaderData as { team?: { name?: string; logo?: string | null } } | null)?.team ?? null;
+    const teamName = team?.name ?? `NHL Team ${params.id}`;
+    const title = team ? `${team.name} — Roster, Schedule, Leaders & Injuries` : `NHL Team ${params.id} — Roster, Schedule & Leaders`;
+    const desc = team
+      ? `${team.name} roster, full schedule, team leaders and the latest injury report on PlaySports.`
+      : "NHL team profile with roster, full schedule, leaders, and injury report.";
+    return {
+      meta: [
+        { title },
+        { name: "description", content: desc },
+        { property: "og:title", content: title },
+        { property: "og:description", content: desc },
+        { property: "og:url", content: url },
+        ...(team?.logo ? [{ property: "og:image", content: team.logo }] : []),
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: desc },
+      ],
+      links: [{ rel: "canonical", href: url }],
+      scripts: [
+        ldScript(sportsTeam({ name: teamName, path: `/nhl/team/${params.id}`, sport: "Ice Hockey", league: "National Hockey League" })),
+        ldScript(breadcrumbList([
+          { name: "Home", path: "/" }, { name: "NHL", path: "/nhl" }, { name: "Teams", path: "/nhl/teams" }, { name: teamName, path: `/nhl/team/${params.id}` },
+        ])),
+      ],
+    };
   },
   component: NhlTeamPage,
 });

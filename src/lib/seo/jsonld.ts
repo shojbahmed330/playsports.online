@@ -58,7 +58,7 @@ export function sportsEvent(opts: {
   return node;
 }
 
-export function athlete(opts: { name: string; path: string; sport: string; team?: string }) {
+export function athlete(opts: { name: string; path: string; sport: string; team?: string; image?: string }) {
   const node: Record<string, unknown> = {
     "@context": "https://schema.org",
     "@type": "Person",
@@ -67,11 +67,12 @@ export function athlete(opts: { name: string; path: string; sport: string; team?
     url: canonical(opts.path),
     knowsAbout: opts.sport,
   };
+  if (opts.image) node.image = opts.image;
   if (opts.team) node.memberOf = { "@type": "SportsTeam", name: opts.team };
   return node;
 }
 
-export function sportsTeam(opts: { name: string; path: string; sport: string; league?: string }) {
+export function sportsTeam(opts: { name: string; path: string; sport: string; league?: string; logo?: string }) {
   const node: Record<string, unknown> = {
     "@context": "https://schema.org",
     "@type": "SportsTeam",
@@ -79,6 +80,7 @@ export function sportsTeam(opts: { name: string; path: string; sport: string; le
     url: canonical(opts.path),
     sport: opts.sport,
   };
+  if (opts.logo) node.logo = opts.logo;
   if (opts.league) node.memberOf = { "@type": "SportsOrganization", name: opts.league };
   return node;
 }

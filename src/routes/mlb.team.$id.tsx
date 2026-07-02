@@ -14,20 +14,39 @@ import { formatLocalTime, relativeDay } from "@/lib/time";
 import { breadcrumbList, ldScript, sportsTeam } from "@/lib/seo/jsonld";
 
 export const Route = createFileRoute("/mlb/team/$id")({
-  head: ({ params }) => {
+  loader: async ({ context, params }) => {
+    return await context.queryClient
+      .ensureQueryData({
+        queryKey: ["mlb", "team", params.id],
+        queryFn: () => getMlbTeam({ data: { id: params.id } }),
+        staleTime: 10 * 60_000,
+      })
+      .catch(() => null);
+  },
+  head: ({ params, loaderData }) => {
     const url = `https://www.playsports.online/mlb/team/${params.id}`;
+    const team = loaderData?.team ?? null;
+    const teamName = team?.name ?? `MLB Team ${params.id}`;
+    const title = team ? `${team.name} — Schedule, Roster, Stats & Injuries` : "MLB Team — Schedule, Roster, Stats & Injuries";
+    const desc = team
+      ? `${team.name} full schedule, active roster, team stats, leaders and the latest injury report on PlaySports.`
+      : "MLB team profile with full schedule, active roster, team stats, leaders and the latest injury report.";
     return {
       meta: [
-        { title: "MLB Team — Schedule, Roster, Stats & Injuries" },
-        { name: "description", content: "MLB team profile with full schedule, active roster, team stats, leaders and the latest injury report." },
-        { property: "og:title", content: "MLB Team Profile" },
-        { property: "og:description", content: "Schedule, roster, leaders, team stats and injuries." },
+        { title },
+        { name: "description", content: desc },
+        { property: "og:title", content: title },
+        { property: "og:description", content: desc },
         { property: "og:url", content: url },
+        ...(team?.logo ? [{ property: "og:image", content: team.logo }] : []),
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: desc },
       ],
       links: [{ rel: "canonical", href: url }],
       scripts: [
-        ldScript(sportsTeam({ name: `MLB Team ${params.id}`, path: `/mlb/team/${params.id}`, sport: "Baseball", league: "Major League Baseball" })),
-        ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "MLB", path: "/mlb" }, { name: "Teams", path: "/mlb/teams" }, { name: "Team", path: `/mlb/team/${params.id}` }])),
+        ldScript(sportsTeam({ name: teamName, path: `/mlb/team/${params.id}`, sport: "Baseball", league: "Major League Baseball" })),
+        ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "MLB", path: "/mlb" }, { name: "Teams", path: "/mlb/teams" }, { name: teamName, path: `/mlb/team/${params.id}` }])),
       ],
     };
   },

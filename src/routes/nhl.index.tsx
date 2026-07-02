@@ -14,9 +14,14 @@ export const Route = createFileRoute("/nhl/")({
   head: () => ({
     meta: [
       { title: "NHL Today — Live Scores, Standings, Leaders, News" },
-      { name: "description", content: "Today's NHL games, standings snapshot, league leaders, and the latest basketball headlines in one hub." },
+      { name: "description", content: "Today's NHL games, standings snapshot, league leaders, and the latest hockey headlines in one hub." },
       { property: "og:title", content: "NHL Today — Live Scores, Standings, Leaders" },
+      { property: "og:description", content: "Today's NHL games, standings, league leaders and hockey headlines." },
       { property: "og:url", content: "https://www.playsports.online/nhl" },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/110e40cc-d990-48af-a996-8f46b9fd0f97/id-preview-f9e73043--3e33a21e-e132-4b69-83ee-be28f3bc4583.lovable.app-1782037338724.png" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "NHL Today — Live Scores, Standings, Leaders" },
+      { name: "twitter:description", content: "Today's NHL games, standings, league leaders and hockey headlines." },
     ],
     links: [{ rel: "canonical", href: "https://www.playsports.online/nhl" }],
     scripts: [

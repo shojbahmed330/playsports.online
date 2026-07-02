@@ -4,26 +4,46 @@ import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { Users, Calendar, AlertCircle, BarChart3 } from "lucide-react";
 import { getNbaTeam } from "@/lib/nba.functions";
-import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
+import { breadcrumbList, ldScript, sportsTeam } from "@/lib/seo/jsonld";
 
 export const Route = createFileRoute("/nba/team/$id")({
-  head: ({ params }) => ({
-    meta: [
-      { title: `NBA Team ${params.id} — Roster, Schedule & Leaders` },
-      { name: "description", content: "Team profile with roster, full schedule, leaders, and injury report." },
-    ],
-    links: [{ rel: "canonical", href: `https://www.playsports.online/nba/team/${params.id}` }],
-    scripts: [ldScript(breadcrumbList([
-      { name: "Home", path: "/" }, { name: "NBA", path: "/nba" }, { name: "Teams", path: "/nba/teams" }, { name: params.id, path: `/nba/team/${params.id}` },
-    ]))],
-  }),
   loader: async ({ context, params }) => {
-    await context.queryClient.prefetchQuery({
-      queryKey: ["nba", "team", params.id],
-      queryFn: () => getNbaTeam({ data: { id: params.id } }),
-      staleTime: 30 * 60_000,
-    }).catch(() => null);
-    return null;
+    return await context.queryClient
+      .ensureQueryData({
+        queryKey: ["nba", "team", params.id],
+        queryFn: () => getNbaTeam({ data: { id: params.id } }),
+        staleTime: 30 * 60_000,
+      })
+      .catch(() => null);
+  },
+  head: ({ params, loaderData }) => {
+    const url = `https://www.playsports.online/nba/team/${params.id}`;
+    const team = (loaderData as { team?: { name?: string; logo?: string | null } } | null)?.team ?? null;
+    const teamName = team?.name ?? `NBA Team ${params.id}`;
+    const title = team ? `${team.name} — Roster, Schedule, Leaders & Injuries` : `NBA Team ${params.id} — Roster, Schedule & Leaders`;
+    const desc = team
+      ? `${team.name} roster, full schedule, team leaders and the latest injury report on PlaySports.`
+      : "NBA team profile with roster, full schedule, leaders, and injury report.";
+    return {
+      meta: [
+        { title },
+        { name: "description", content: desc },
+        { property: "og:title", content: title },
+        { property: "og:description", content: desc },
+        { property: "og:url", content: url },
+        ...(team?.logo ? [{ property: "og:image", content: team.logo }] : []),
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: desc },
+      ],
+      links: [{ rel: "canonical", href: url }],
+      scripts: [
+        ldScript(sportsTeam({ name: teamName, path: `/nba/team/${params.id}`, sport: "Basketball", league: "National Basketball Association" })),
+        ldScript(breadcrumbList([
+          { name: "Home", path: "/" }, { name: "NBA", path: "/nba" }, { name: "Teams", path: "/nba/teams" }, { name: teamName, path: `/nba/team/${params.id}` },
+        ])),
+      ],
+    };
   },
   component: NbaTeamPage,
 });
