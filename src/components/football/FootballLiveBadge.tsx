@@ -40,7 +40,7 @@ function LiveBadgeInner() {
     <Link
       to="/football/match/$id"
       params={{ id: String(live.id) }}
-      className="fixed bottom-20 sm:bottom-4 right-3 sm:right-4 z-40 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-red-600 to-rose-500 pl-2 pr-3 py-1.5 shadow-[0_10px_30px_rgba(239,68,68,0.4)] ring-1 ring-red-400/40 hover:scale-[1.03] transition-transform"
+      className="fixed bottom-[calc(env(safe-area-inset-bottom,0px)+5.25rem)] sm:bottom-4 right-3 sm:right-4 z-40 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-red-600 to-rose-500 pl-2 pr-3 py-1.5 shadow-[0_10px_30px_rgba(239,68,68,0.4)] ring-1 ring-red-400/40 hover:scale-[1.03] transition-transform"
       aria-label={`Watch live: ${label}`}
     >
       <span className="relative flex size-2 shrink-0">
