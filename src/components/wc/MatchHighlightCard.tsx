@@ -51,14 +51,22 @@ function matchVideo(videos: YtVideo[], home: string, away: string): YtVideo | nu
   return null;
 }
 
-export function MatchHighlightCard({ home, away }: { home: string; away: string }) {
+export function MatchHighlightCard({
+  home,
+  away,
+  videoUrl = null,
+}: {
+  home: string;
+  away: string;
+  videoUrl?: string | null;
+}) {
   const mapQ = useQuery({
     queryKey: ["wc2026", "video-map"],
     queryFn: () => fetch2026VideoMap(),
     staleTime: 5 * 60_000,
   });
 
-  const stored = mapQ.data?.get(videoKey(home, away)) ?? null;
+  const stored = videoUrl ?? mapQ.data?.get(videoKey(home, away)) ?? null;
 
   // Fallback: scan @robi_axiata YouTube channel and fuzzy-match on team names.
   const channelFn = useServerFn(getChannelHighlights);

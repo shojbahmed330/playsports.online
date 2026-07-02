@@ -12,7 +12,7 @@ const STEPS = [
   {
     icon: MousePointerClick,
     title: "Tap any match card",
-    body: "Opens the full match centre — lineups, live events, stats and where to watch.",
+    body: "Opens a match popup first — highlights, score, live events and where to watch.",
   },
   {
     icon: Star,
@@ -62,9 +62,9 @@ export function FootballCoachmark({ force = false }: { force?: boolean }) {
   const isLast = step === STEPS.length - 1;
 
   return (
-    <div className="fixed inset-0 z-[90] flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm animate-in fade-in duration-150">
+    <div className="pointer-events-none fixed inset-0 z-[90] flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm animate-in fade-in duration-150">
       <div
-        className="w-full sm:max-w-sm m-3 sm:m-0 rounded-2xl border border-amber-500/40 bg-gradient-to-br from-gray-950 to-gray-900 shadow-[0_20px_60px_rgba(245,158,11,0.25)] overflow-hidden animate-in slide-in-from-bottom sm:zoom-in-95 duration-200"
+        className="pointer-events-auto w-full sm:max-w-sm m-3 sm:m-0 rounded-2xl border border-amber-500/40 bg-gradient-to-br from-gray-950 to-gray-900 shadow-[0_20px_60px_rgba(245,158,11,0.25)] overflow-hidden animate-in slide-in-from-bottom sm:zoom-in-95 duration-200"
         role="dialog"
         aria-label="Quick tour"
       >

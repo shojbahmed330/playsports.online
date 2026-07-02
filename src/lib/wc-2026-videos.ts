@@ -9,8 +9,56 @@ import bundledHighlights from "@/data/wc2026_highlights.json";
  */
 
 export function videoKey(home: string, away: string) {
-  const pair = [home.toLowerCase().trim(), away.toLowerCase().trim()].sort();
+  const pair = [canonicalTeamKey(home), canonicalTeamKey(away)].sort();
   return pair.join("|");
+}
+
+function baseTeamKey(s: string) {
+  return s
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/&/g, " and ")
+    .replace(/[^a-z0-9]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+const TEAM_CANONICAL: Record<string, string> = {
+  usa: "united states",
+  us: "united states",
+  "u s a": "united states",
+  "united states of america": "united states",
+  korea: "south korea",
+  "korea republic": "south korea",
+  "republic of korea": "south korea",
+  turkiye: "turkey",
+  turkiyee: "turkey",
+  czechia: "czech republic",
+  "cote d ivoire": "ivory coast",
+  "cote divoire": "ivory coast",
+  "cote dvoire": "ivory coast",
+  "ivory coast": "ivory coast",
+  "bosnia herzegovina": "bosnia and herzegovina",
+  "bosnia and herzegovina": "bosnia and herzegovina",
+  bih: "bosnia and herzegovina",
+  "congo dr": "dr congo",
+  "congo d r": "dr congo",
+  "democratic republic of congo": "dr congo",
+  cod: "dr congo",
+  "cabo verde": "cape verde",
+  curacao: "curacao",
+};
+
+function canonicalTeamKey(team: string) {
+  const k = baseTeamKey(team);
+  return TEAM_CANONICAL[k] ?? k;
+}
+
+function addVideo(out: Map<string, string>, rawKey: string, url: string) {
+  const [a, b] = rawKey.split("|");
+  if (!a || !b) return;
+  out.set(videoKey(a, b), url);
 }
 
 type VideoMap = Record<string, string>;
@@ -30,7 +78,7 @@ export async function fetch2026VideoMap(): Promise<Map<string, string>> {
   const out = new Map<string, string>();
   // 0) Bundled highlights (curated from @robi_axiata) — baseline.
   for (const [k, v] of Object.entries(bundledHighlights as Record<string, string>)) {
-    if (v) out.set(k, v);
+    if (v) addVideo(out, k, v);
   }
   // 1) Anything that *did* get saved to wc_matches in the past — keep honouring it.
   const { data } = await supabase
@@ -43,7 +91,7 @@ export async function fetch2026VideoMap(): Promise<Map<string, string>> {
   }
   // 2) Primary store — site_settings (works without a wc_tournaments row).
   const map = await readMap();
-  for (const [k, v] of Object.entries(map)) if (v) out.set(k, v);
+  for (const [k, v] of Object.entries(map)) if (v) addVideo(out, k, v);
   return out;
 }
 
