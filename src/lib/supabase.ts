@@ -1,20 +1,7 @@
-import { createClient } from "@supabase/supabase-js";
-
-// Publishable anon key — safe to expose in frontend code.
-const SUPABASE_URL = "https://vagqeperdsumxwukwbes.supabase.co";
-const SUPABASE_ANON_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZhZ3FlcGVyZHN1bXh3dWt3YmVzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE5NzM1NjcsImV4cCI6MjA5NzU0OTU2N30.NGV1fXknh7dqhjld8lr65tZGgEWhZ7BktzEfRshCSs4";
-
-// Session persistence enabled so admin login survives page reloads.
-// `storage: undefined` on the server avoids referencing window during SSR.
-export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-  auth: {
-    persistSession: typeof window !== "undefined",
-    autoRefreshToken: typeof window !== "undefined",
-    storage: typeof window !== "undefined" ? window.localStorage : undefined,
-    detectSessionInUrl: typeof window !== "undefined",
-  },
-});
+// Re-exports the project's real Supabase client so legacy imports
+// (`@/lib/supabase`) keep working. The actual client is auto-generated at
+// `@/integrations/supabase/client` and reads env vars — never hardcode URLs/keys here.
+export { supabase } from "@/integrations/supabase/client";
 
 export type WCTournament = {
   year: number;
