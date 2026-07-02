@@ -26,7 +26,7 @@ async function fetchPredictions(matchId: number): Promise<LeaderRow[]> {
     .eq("match_id", matchId)
     .order("points", { ascending: false })
     .limit(50);
-  const rows = (preds ?? []) as PredictionRow[];
+  const rows = (preds ?? []) as unknown as PredictionRow[];
   if (rows.length === 0) return [];
   const ids = Array.from(new Set(rows.map((r) => r.user_id)));
   const { data: profiles } = await supabase
@@ -34,7 +34,7 @@ async function fetchPredictions(matchId: number): Promise<LeaderRow[]> {
     .select("user_id,handle")
     .in("user_id", ids);
   const map = new Map<string, string>();
-  for (const p of (profiles ?? []) as { user_id: string; handle: string }[]) {
+  for (const p of (profiles ?? []) as unknown as { user_id: string; handle: string }[]) {
     map.set(p.user_id, p.handle);
   }
   return rows.map((r) => ({ ...r, handle: map.get(r.user_id) ?? null }));
