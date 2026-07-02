@@ -12,9 +12,9 @@ export const Route = createFileRoute("/nba/scores")({
     meta: [
       { title: "NBA Scoreboard — Live & Recent Games" },
       { name: "description", content: "Browse every NBA game by date with live scores, quarters, and matchup details." },
-      { property: "og:url", content: "https://allsportslive.lovable.app/nba/scores" },
+      { property: "og:url", content: "https://www.playsports.online/nba/scores" },
     ],
-    links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/nba/scores" }],
+    links: [{ rel: "canonical", href: "https://www.playsports.online/nba/scores" }],
     scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "NBA", path: "/nba" }, { name: "Scores", path: "/nba/scores" }]))],
   }),
   component: NbaScores,

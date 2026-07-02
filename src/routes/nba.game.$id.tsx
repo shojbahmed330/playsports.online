@@ -15,7 +15,7 @@ export const Route = createFileRoute("/nba/game/$id")({
       { title: `NBA Game ${params.id} — Box Score & Play-by-Play` },
       { name: "description", content: "Live box score, scoring plays, and full play-by-play for this NBA game." },
     ],
-    links: [{ rel: "canonical", href: `https://allsportslive.lovable.app/nba/game/${params.id}` }],
+    links: [{ rel: "canonical", href: `https://www.playsports.online/nba/game/${params.id}` }],
     scripts: [ldScript(breadcrumbList([
       { name: "Home", path: "/" }, { name: "NBA", path: "/nba" }, { name: "Scores", path: "/nba/scores" }, { name: params.id, path: `/nba/game/${params.id}` },
     ]))],

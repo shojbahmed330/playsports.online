@@ -10,7 +10,7 @@ export const Route = createFileRoute("/nba/player/$id")({
       { title: `NBA Player ${params.id} — Bio & Career Stats` },
       { name: "description", content: "Player biography and full career averages." },
     ],
-    links: [{ rel: "canonical", href: `https://allsportslive.lovable.app/nba/player/${params.id}` }],
+    links: [{ rel: "canonical", href: `https://www.playsports.online/nba/player/${params.id}` }],
     scripts: [ldScript(breadcrumbList([
       { name: "Home", path: "/" }, { name: "NBA", path: "/nba" }, { name: "Players", path: "/nba/leaders" }, { name: params.id, path: `/nba/player/${params.id}` },
     ]))],

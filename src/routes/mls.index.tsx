@@ -16,9 +16,9 @@ export const Route = createFileRoute("/mls/")({
       { title: "MLS Today — Live Scores, Standings, Leaders, News" },
       { name: "description", content: "Today's MLS games, standings snapshot, league leaders, and the latest basketball headlines in one hub." },
       { property: "og:title", content: "MLS Today — Live Scores, Standings, Leaders" },
-      { property: "og:url", content: "https://allsportslive.lovable.app/mls" },
+      { property: "og:url", content: "https://www.playsports.online/mls" },
     ],
-    links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/mls" }],
+    links: [{ rel: "canonical", href: "https://www.playsports.online/mls" }],
     scripts: [
       ldScript(collectionPage({ name: "MLS — Live Scores, Standings & Leaders", description: "MLS hub: scores, standings, leaders and news.", path: "/mls" })),
       ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "MLS", path: "/mls" }])),

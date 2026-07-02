@@ -37,7 +37,7 @@ export function buildMatchIcs(opts: {
   const lines = [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
-    "PRODID:-//AllSportsLive//WC2026//EN",
+    "PRODID:-//PlaySports//WC2026//EN",
     "CALSCALE:GREGORIAN",
     "METHOD:PUBLISH",
     "BEGIN:VEVENT",

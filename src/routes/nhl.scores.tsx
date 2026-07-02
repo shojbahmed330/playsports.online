@@ -12,9 +12,9 @@ export const Route = createFileRoute("/nhl/scores")({
     meta: [
       { title: "NHL Scoreboard — Live & Recent Games" },
       { name: "description", content: "Browse every NHL game by date with live scores, quarters, and matchup details." },
-      { property: "og:url", content: "https://allsportslive.lovable.app/nhl/scores" },
+      { property: "og:url", content: "https://www.playsports.online/nhl/scores" },
     ],
-    links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/nhl/scores" }],
+    links: [{ rel: "canonical", href: "https://www.playsports.online/nhl/scores" }],
     scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "NHL", path: "/nhl" }, { name: "Scores", path: "/nhl/scores" }]))],
   }),
   component: NhlScores,

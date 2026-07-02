@@ -6,7 +6,7 @@ export function AddToCalendarButton({ fx, compact = false }: { fx: Wc2026Fixture
   if (!fx || fx.status !== "notstarted") return null;
   const startMs = fx.startTs * 1000;
   const title = `${fx.home.name} v ${fx.away.name} — FIFA World Cup 2026`;
-  const url = `https://allsportslive.lovable.app/football/match/${fx.id}`;
+  const url = `https://www.playsports.online/football/match/${fx.id}`;
 
   const onClick = () => {
     const ics = buildMatchIcs({

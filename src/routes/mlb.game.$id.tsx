@@ -14,7 +14,7 @@ import { breadcrumbList, ldScript, sportsEvent } from "@/lib/seo/jsonld";
 
 export const Route = createFileRoute("/mlb/game/$id")({
   head: ({ params }) => {
-    const url = `https://allsportslive.lovable.app/mlb/game/${params.id}`;
+    const url = `https://www.playsports.online/mlb/game/${params.id}`;
     return {
       meta: [
         { title: `MLB Game · Boxscore & Live Updates` },

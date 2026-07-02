@@ -10,9 +10,9 @@ export const Route = createFileRoute("/nba/news")({
     meta: [
       { title: "NBA News — Latest Headlines" },
       { name: "description", content: "Latest NBA news, rumors, and analysis from ESPN's feed." },
-      { property: "og:url", content: "https://allsportslive.lovable.app/nba/news" },
+      { property: "og:url", content: "https://www.playsports.online/nba/news" },
     ],
-    links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/nba/news" }],
+    links: [{ rel: "canonical", href: "https://www.playsports.online/nba/news" }],
     scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "NBA", path: "/nba" }, { name: "News", path: "/nba/news" }]))],
   }),
   component: NbaNews,

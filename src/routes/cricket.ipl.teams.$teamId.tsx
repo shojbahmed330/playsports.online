@@ -38,7 +38,7 @@ export const Route = createFileRoute("/cricket/ipl/teams/$teamId")({
     return data;
   },
   head: ({ params, loaderData }) => {
-    const url = `https://allsportslive.lovable.app/cricket/ipl/teams/${params.teamId}`;
+    const url = `https://www.playsports.online/cricket/ipl/teams/${params.teamId}`;
     const teamName = loaderData?.team?.name ?? "IPL Team";
     return {
       meta: loaderData?.team

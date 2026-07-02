@@ -17,7 +17,7 @@ export const Route = createFileRoute("/archive/$sport/$year")({
     if (!loaderData) return {};
     const { year, stats } = loaderData;
     const path = `/archive/${params.sport}/${params.year}`;
-    const title = `FIFA World Cup ${year} — Results, Top Scorers, Champion | AllSportsLive`;
+    const title = `FIFA World Cup ${year} — Results, Top Scorers, Champion | PlaySports`;
     const desc = `Complete archive of the ${year} FIFA World Cup: ${stats.matches.length} matches, ${stats.goals.length} goals, top scorers${stats.champion ? `, champion ${stats.champion.champion}` : ""}.`;
     return {
       meta: [

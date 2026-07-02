@@ -2,10 +2,10 @@ import { createFileRoute } from "@tanstack/react-router";
 import { LegalLayout } from "@/components/site/LegalLayout";
 import { useLegalPage } from "@/lib/site-settings";
 
-const URL = "https://allsportslive.lovable.app/privacy";
+const URL = "https://www.playsports.online/privacy";
 
 const DEFAULT_BODY = `## Summary
-We respect your privacy. AllSportsLive only collects what's needed to run the site — your timezone, optional newsletter email, and standard analytics. We never sell personal data.
+We respect your privacy. PlaySports only collects what's needed to run the site — your timezone, optional newsletter email, and standard analytics. We never sell personal data.
 
 ## Information we collect
 - **Automatic** — IP address, browser type, device, pages viewed and timestamps via standard server logs and Google Analytics 4.
@@ -41,7 +41,7 @@ We never sell your data. We share data only with:
 You can request access, correction or deletion of your data at any time by emailing us via the Contact page. EU/UK users have additional rights under GDPR.
 
 ## Children
-AllSportsLive is not directed at children under 13. We do not knowingly collect data from children.
+PlaySports is not directed at children under 13. We do not knowingly collect data from children.
 
 ## Changes to this policy
 We may update this policy as the platform evolves. Material changes will be announced on the site.
@@ -52,9 +52,9 @@ Privacy questions? Use the **Contact** page and we'll respond within 2 business 
 export const Route = createFileRoute("/privacy")({
   head: () => ({
     meta: [
-      { title: "Privacy Policy — AllSportsLive" },
-      { name: "description", content: "How AllSportsLive collects, uses and protects your data — covering analytics, AdSense, newsletter, and affiliate links." },
-      { property: "og:title", content: "Privacy Policy — AllSportsLive" },
+      { title: "Privacy Policy — PlaySports" },
+      { name: "description", content: "How PlaySports collects, uses and protects your data — covering analytics, AdSense, newsletter, and affiliate links." },
+      { property: "og:title", content: "Privacy Policy — PlaySports" },
       { property: "og:description", content: "Transparent privacy practices for analytics, advertising, newsletter and affiliate links." },
       { property: "og:url", content: URL },
     ],

@@ -39,21 +39,21 @@ const HOME_OG_IMAGE = "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/110e4
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "AllSportsLive — Live Scores Across MLB, NBA, NHL, MLS, Cricket & FIFA" },
+      { title: "PlaySports — Live Scores Across MLB, NBA, NHL, MLS, Cricket & FIFA" },
       {
         name: "description",
         content:
           "Your home for live MLB, NBA, NHL, MLS, Cricket & IPL scores plus the complete FIFA World Cup archive 1930–2026.",
       },
-      { property: "og:title", content: "AllSportsLive — Live Scores Across MLB, NBA, NHL, MLS, Cricket & FIFA" },
+      { property: "og:title", content: "PlaySports — Live Scores Across MLB, NBA, NHL, MLS, Cricket & FIFA" },
       { property: "og:description", content: "Live scoreboards, standings, news and the full FIFA World Cup archive 1930–2026." },
-      { property: "og:url", content: "https://allsportslive.lovable.app/" },
+      { property: "og:url", content: "https://www.playsports.online/" },
       { property: "og:image", content: HOME_OG_IMAGE },
       { name: "twitter:image", content: HOME_OG_IMAGE },
-      { name: "twitter:title", content: "AllSportsLive — Live Scores & FIFA World Cup Archive" },
+      { name: "twitter:title", content: "PlaySports — Live Scores & FIFA World Cup Archive" },
       { name: "twitter:description", content: "Live MLB, NBA, NHL, MLS, Cricket & IPL scores plus FIFA World Cup 1930–2026." },
     ],
-    links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/" }],
+    links: [{ rel: "canonical", href: "https://www.playsports.online/" }],
   }),
   loader: async ({ context }) => {
     // SSR prefetch — prime React Query cache so HTML arrives with live scores already rendered.

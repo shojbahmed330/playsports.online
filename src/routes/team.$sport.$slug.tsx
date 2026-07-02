@@ -15,7 +15,7 @@ export const Route = createFileRoute("/team/$sport/$slug")({
     if (!loaderData) return {};
     const { team, stats } = loaderData;
     const path = `/team/${params.sport}/${params.slug}`;
-    const title = `${team.name} — World Cup History, Stats, Top Scorers | AllSportsLive`;
+    const title = `${team.name} — World Cup History, Stats, Top Scorers | PlaySports`;
     const desc = `${team.name} at the FIFA World Cup: ${stats.matchesPlayed} matches, ${stats.w}W-${stats.d}D-${stats.l}L, ${stats.goalsTotal} goals scored. Tournament appearances, leading goal-scorers, recent results.`;
     return {
       meta: [

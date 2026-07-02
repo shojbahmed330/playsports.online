@@ -132,7 +132,7 @@ export function SiteFooter() {
                 )}
               </div>
               <p className="mt-6 text-xs text-muted-foreground/80 leading-tight italic">
-                AllSportsLive is not affiliated with any official sports league, team, or athletic organization.
+                PlaySports is not affiliated with any official sports league, team, or athletic organization.
               </p>
             </FooterCol>
           </div>
@@ -141,7 +141,7 @@ export function SiteFooter() {
           <div className="border-t border-border mt-10 pt-6 flex flex-col md:flex-row justify-between items-center gap-3 text-xs tracking-wide text-muted-foreground text-center md:text-left">
             <p>
               {id?.footer_text?.replace("©", `© ${year}`) ??
-                `© ${year} AllSportsLive Media Group. All rights reserved.`}
+                `© ${year} PlaySports Media Group. All rights reserved.`}
             </p>
             <div className="flex items-center gap-3">
               <span className="inline-flex items-center gap-1.5">

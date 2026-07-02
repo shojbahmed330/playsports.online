@@ -24,7 +24,7 @@ export function collectionPage(opts: { name: string; description: string; path: 
     name: opts.name,
     description: opts.description,
     url: canonical(opts.path),
-    isPartOf: { "@type": "WebSite", name: "AllSportsLive", url: SITE_URL },
+    isPartOf: { "@type": "WebSite", name: "PlaySports", url: SITE_URL },
   };
 }
 

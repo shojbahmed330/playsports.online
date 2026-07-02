@@ -11,9 +11,9 @@ export const Route = createFileRoute("/nhl/leaders")({
     meta: [
       { title: "NHL Leaders — Points, Assists, Rebounds, Steals, Blocks" },
       { name: "description", content: "NHL statistical leaders across scoring, playmaking, rebounding and defense. Updated daily from ESPN's feed." },
-      { property: "og:url", content: "https://allsportslive.lovable.app/nhl/leaders" },
+      { property: "og:url", content: "https://www.playsports.online/nhl/leaders" },
     ],
-    links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/nhl/leaders" }],
+    links: [{ rel: "canonical", href: "https://www.playsports.online/nhl/leaders" }],
     scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "NHL", path: "/nhl" }, { name: "Leaders", path: "/nhl/leaders" }]))],
   }),
   loader: async ({ context }) => {

@@ -15,9 +15,9 @@ export const Route = createFileRoute("/cricket/players")({
       { name: "description", content: "Top-ranked cricket players across T20I, ODI and Test formats." },
       { property: "og:title", content: "Cricket Players — Top Performers" },
       { property: "og:description", content: "Top-ranked batters, bowlers and all-rounders across formats." },
-      { property: "og:url", content: "https://allsportslive.lovable.app/cricket/players" },
+      { property: "og:url", content: "https://www.playsports.online/cricket/players" },
     ],
-    links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/cricket/players" }],
+    links: [{ rel: "canonical", href: "https://www.playsports.online/cricket/players" }],
     scripts: [
       ldScript(collectionPage({ name: "Cricket Players — Top Performers", description: "Top-ranked cricket batters, bowlers and all-rounders across formats.", path: "/cricket/players" })),
       ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "Cricket", path: "/cricket" }, { name: "Players", path: "/cricket/players" }])),

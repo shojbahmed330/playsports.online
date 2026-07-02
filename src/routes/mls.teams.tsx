@@ -10,9 +10,9 @@ export const Route = createFileRoute("/mls/teams")({
     meta: [
       { title: "MLS Teams — All 30 Franchises" },
       { name: "description", content: "All 30 MLS franchises with logos, colors, conference and quick links to roster and schedule." },
-      { property: "og:url", content: "https://allsportslive.lovable.app/mls/teams" },
+      { property: "og:url", content: "https://www.playsports.online/mls/teams" },
     ],
-    links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/mls/teams" }],
+    links: [{ rel: "canonical", href: "https://www.playsports.online/mls/teams" }],
     scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "MLS", path: "/mls" }, { name: "Teams", path: "/mls/teams" }]))],
   }),
   loader: async ({ context }) => {

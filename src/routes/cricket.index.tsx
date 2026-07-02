@@ -19,13 +19,13 @@ import { breadcrumbList, collectionPage, ldScript } from "@/lib/seo/jsonld";
 export const Route = createFileRoute("/cricket/")({
   head: () => ({
     meta: [
-      { title: "Live Cricket Scores, Fixtures & Stats — AllSportsLive" },
+      { title: "Live Cricket Scores, Fixtures & Stats — PlaySports" },
       { name: "description", content: "Live cricket scoreboards, fixtures, series, players, rankings and records across IPL, ICC World Cup, Big Bash, PSL and more." },
       { property: "og:title", content: "Cricket — Live Scores, Series & Players" },
       { property: "og:description", content: "Live scores, fixtures, results, players and records from every major cricket competition." },
-      { property: "og:url", content: "https://allsportslive.lovable.app/cricket" },
+      { property: "og:url", content: "https://www.playsports.online/cricket" },
     ],
-    links: [{ rel: "canonical", href: "https://allsportslive.lovable.app/cricket" }],
+    links: [{ rel: "canonical", href: "https://www.playsports.online/cricket" }],
     scripts: [
       ldScript(collectionPage({ name: "Cricket — Live Scores, Series & Players", description: "Cricket hub: live scores, series, players, rankings and records.", path: "/cricket" })),
       ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "Cricket", path: "/cricket" }])),

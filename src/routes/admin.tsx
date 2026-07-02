@@ -202,7 +202,7 @@ function AdminShell() {
               <div className="text-sm font-bold tracking-wide inline-flex items-center gap-1.5">
                 Admin <ShieldCheck className="size-3.5 text-emerald-400" />
               </div>
-              <div className="text-[10px] uppercase tracking-[0.18em] text-gold">AllSportsLive Control</div>
+              <div className="text-[10px] uppercase tracking-[0.18em] text-gold">PlaySports Control</div>
             </div>
           </div>
           <div className="flex items-center gap-2">

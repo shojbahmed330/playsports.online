@@ -27,8 +27,8 @@ import { MatchHighlightCard } from "@/components/wc/MatchHighlightCard";
 
 export const Route = createFileRoute("/football/match/$id")({
   head: ({ params }) => {
-    const url = `https://allsportslive.lovable.app/football/match/${params.id}`;
-    const ogImage = `https://allsportslive.lovable.app/og/match/match-${params.id}--FIFA%20World%20Cup%202026%20%C2%B7%20Live%20score%20%26%20lineups.svg`;
+    const url = `https://www.playsports.online/football/match/${params.id}`;
+    const ogImage = `https://www.playsports.online/og/match/match-${params.id}--FIFA%20World%20Cup%202026%20%C2%B7%20Live%20score%20%26%20lineups.svg`;
     return {
       meta: [
         { title: "FIFA World Cup 2026 Match — Live Score & Lineups" },
