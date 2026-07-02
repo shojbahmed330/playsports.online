@@ -9,7 +9,7 @@ import { GameCard } from "@/components/sports/GameCard";
 import { LeaderBoard } from "@/components/mlb/LeaderBoard";
 import { AdSlot } from "@/components/ads/AdSlot";
 import { todayYmd } from "@/components/sports/DateScrubber";
-import { breadcrumbList, collectionPage, ldScript } from "@/lib/seo/jsonld";
+import { breadcrumbList, collectionPage, sportsOrganization, faqPage, ldScript } from "@/lib/seo/jsonld";
 
 export const Route = createFileRoute("/mlb/")({
   head: () => ({
@@ -27,8 +27,15 @@ export const Route = createFileRoute("/mlb/")({
     links: [{ rel: "canonical", href: "https://www.playsports.online/mlb" }],
     scripts: [
       ldScript(collectionPage({ name: "MLB — Live Scores, Standings & Leaders", description: "Major League Baseball hub: scores, standings, leaders and news.", path: "/mlb" })),
+      ldScript(sportsOrganization({ name: "Major League Baseball", path: "/mlb", sport: "Baseball" })),
       ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "MLB", path: "/mlb" }])),
+      ldScript(faqPage([
+        { q: "How can I follow live MLB scores?", a: "PlaySports shows every MLB game with live inning-by-inning scores, pitching matchups and win probability, refreshed in real time from ESPN." },
+        { q: "Where do I find MLB standings and division leaders?", a: "The MLB standings page lists AL and NL divisions with wins, losses, run differential and playoff seeding, updated after every game." },
+        { q: "Does PlaySports cover MLB postseason?", a: "Yes — Wild Card, Division Series, Championship Series and the World Series all have dedicated bracket, box-score and highlight coverage." },
+      ])),
     ],
+
   }),
   loader: async ({ context }) => {
     const day = todayYmd();

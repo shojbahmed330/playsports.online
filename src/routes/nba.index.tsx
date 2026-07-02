@@ -8,7 +8,7 @@ import { GameCard } from "@/components/sports/GameCard";
 import { NbaLeaderBoard } from "@/components/nba/NbaLeaderBoard";
 import { AdSlot } from "@/components/ads/AdSlot";
 import { todayYmd } from "@/components/sports/DateScrubber";
-import { breadcrumbList, collectionPage, ldScript } from "@/lib/seo/jsonld";
+import { breadcrumbList, collectionPage, sportsOrganization, faqPage, ldScript } from "@/lib/seo/jsonld";
 
 export const Route = createFileRoute("/nba/")({
   head: () => ({
@@ -26,8 +26,15 @@ export const Route = createFileRoute("/nba/")({
     links: [{ rel: "canonical", href: "https://www.playsports.online/nba" }],
     scripts: [
       ldScript(collectionPage({ name: "NBA — Live Scores, Standings & Leaders", description: "NBA hub: scores, standings, leaders and news.", path: "/nba" })),
+      ldScript(sportsOrganization({ name: "National Basketball Association", path: "/nba", sport: "Basketball" })),
       ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "NBA", path: "/nba" }])),
+      ldScript(faqPage([
+        { q: "Where can I watch live NBA scores?", a: "PlaySports shows every NBA game with live quarter-by-quarter scoring, lead tracker and box scores, refreshed every few seconds from ESPN." },
+        { q: "How do NBA conference standings work?", a: "The NBA is split into Eastern and Western Conferences; the top eight seeds from each conference make the playoffs, with seeds 7–10 going through the Play-In Tournament." },
+        { q: "Does PlaySports cover the NBA Finals and playoffs?", a: "Yes — full playoff bracket, series scores, MVP race and championship history are all on PlaySports." },
+      ])),
     ],
+
   }),
   loader: async ({ context }) => {
     const day = todayYmd();
