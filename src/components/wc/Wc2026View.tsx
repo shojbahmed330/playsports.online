@@ -30,6 +30,21 @@ import { FootballPitchSkeleton, FootballEmptyBall } from "@/components/football/
 const HOUR = 60 * 60 * 1000;
 const LIVE_MS = 20 * 1000;
 
+// Shared click handler: real ESPN fixtures (id > 0) navigate to the dedicated
+// match centre; synthesized/predicted rows (negative ids) fall back to the
+// legacy modal so users still see the pairing context.
+function useWcPick(setModal: (m: WCMatch | null) => void) {
+  const navigate = useNavigate();
+  return useCallback((m: WCMatch) => {
+    if (m.id > 0 && !m.predicted) {
+      navigate({ to: "/football/match/$id", params: { id: String(m.id) } });
+      return;
+    }
+    setModal(m);
+  }, [navigate, setModal]);
+}
+
+
 // ──────────────────────────────────────────────────────────────
 // Adapters: SofaScore shape → app's WCGroup / WCMatch shapes so
 // the 2026 view renders with the exact same components & styling
