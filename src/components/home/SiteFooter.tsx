@@ -5,7 +5,7 @@ import { AdSlot } from "@/components/ads/AdSlot";
 
 export function SiteFooter() {
   return (
-    <footer className="border-t border-border mt-12 bg-gradient-to-b from-transparent to-gray-950/60">
+    <footer className="border-t border-border mt-6 sm:mt-8 bg-gradient-to-b from-transparent to-gray-950/60">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
         <AdSlot slot="footer" />
       </div>
