@@ -146,12 +146,9 @@ function Chip({ item }: { item: Item }) {
     const f = item.fixture;
     const live = f.status === "inprogress";
     const finished = f.status === "finished";
-    return (
-      <Link
-        to="/football"
-        search={{ year: 2026 }}
-        className="shrink-0 min-w-[180px] max-w-[220px] rounded-xl border border-amber-500/30 bg-amber-500/[0.06] hover:bg-amber-500/[0.12] hover:border-amber-400/60 transition-colors px-3 py-2"
-      >
+    const deepLink = f.id > 0;
+    const body = (
+      <>
         <div className="flex items-center justify-between gap-2 mb-1">
           <span className="text-[9px] uppercase tracking-wider font-bold text-amber-300 truncate min-w-0">⚽ FIFA {f.group ? `· ${f.group}` : ""}</span>
           <span className="text-[10px] font-bold text-gray-400 shrink-0 whitespace-nowrap">
@@ -162,7 +159,13 @@ function Chip({ item }: { item: Item }) {
         </div>
         <Team name={f.home.name} score={live || finished ? f.home.goals : null} />
         <Team name={f.away.name} score={live || finished ? f.away.goals : null} />
-      </Link>
+      </>
+    );
+    const cls = "shrink-0 min-w-[180px] max-w-[220px] rounded-xl border border-amber-500/30 bg-amber-500/[0.06] hover:bg-amber-500/[0.12] hover:border-amber-400/60 transition-colors px-3 py-2";
+    return deepLink ? (
+      <Link to="/football/match/$id" params={{ id: String(f.id) }} className={cls}>{body}</Link>
+    ) : (
+      <Link to="/football" search={{ year: 2026 }} className={cls}>{body}</Link>
     );
   }
   if (item.kind === "cricket") {

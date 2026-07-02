@@ -40,6 +40,7 @@ export function CompactHero({
 
 function WcHero({ f, live }: { f: Wc2026Fixture; live: boolean }) {
   const startMs = f.startTs * 1000;
+  const deepLink = f.id > 0;
   return (
     <section className="relative overflow-hidden border-b border-amber-500/20 bg-gradient-to-br from-amber-950/60 via-gray-950 to-red-950/40">
       <div className="absolute inset-0 opacity-25 pointer-events-none" aria-hidden style={{
@@ -61,23 +62,18 @@ function WcHero({ f, live }: { f: Wc2026Fixture; live: boolean }) {
           <span className="text-[10px] sm:text-xs font-bold text-amber-200">FIFA WC 2026</span>
         </div>
 
-        <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 sm:gap-6">
-          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-            <span className="text-3xl sm:text-5xl shrink-0">{flagOf(f.home.name)}</span>
-            <span className="truncate text-sm sm:text-xl font-extrabold">{f.home.name}</span>
-          </div>
-          <div className="text-3xl sm:text-5xl font-black text-amber-300 tabular-nums whitespace-nowrap">
-            {live || f.status === "finished" ? (
-              <>{f.home.goals ?? 0} <span className="text-gray-600">:</span> {f.away.goals ?? 0}</>
-            ) : (
-              <span className="text-amber-400/80 text-base sm:text-lg">{formatLocalTime(startMs)}</span>
-            )}
-          </div>
-          <div className="flex items-center gap-2 sm:gap-3 min-w-0 justify-end">
-            <span className="truncate text-sm sm:text-xl font-extrabold text-right">{f.away.name}</span>
-            <span className="text-3xl sm:text-5xl shrink-0">{flagOf(f.away.name)}</span>
-          </div>
-        </div>
+        {deepLink ? (
+          <Link
+            to="/football/match/$id"
+            params={{ id: String(f.id) }}
+            className="block group -mx-2 px-2 rounded-xl hover:bg-white/[0.02] transition-colors"
+            aria-label={`Open ${f.home.name} v ${f.away.name}`}
+          >
+            <HeroScoreBoard f={f} live={live} startMs={startMs} />
+          </Link>
+        ) : (
+          <HeroScoreBoard f={f} live={live} startMs={startMs} />
+        )}
 
         <div className="mt-4 flex items-center justify-between flex-wrap gap-2 text-[11px] sm:text-xs text-gray-400">
           <span className="inline-flex items-center gap-1.5 min-w-0 truncate">
@@ -87,17 +83,49 @@ function WcHero({ f, live }: { f: Wc2026Fixture; live: boolean }) {
             {!live && f.status !== "finished" && (
               <span className="text-amber-200">{relativeDay(startMs)} · <Countdown ts={startMs} /></span>
             )}
-            <Link
-              to="/football"
-              search={{ year: 2026 }}
-              className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-amber-500 hover:bg-amber-400 text-gray-950 text-[11px] sm:text-xs font-bold transition-colors"
-            >
-              {live ? "Watch" : "Details"} <ArrowRight className="size-3" />
-            </Link>
+            {deepLink ? (
+              <Link
+                to="/football/match/$id"
+                params={{ id: String(f.id) }}
+                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-amber-500 hover:bg-amber-400 text-gray-950 text-[11px] sm:text-xs font-bold transition-colors"
+              >
+                {live ? "Watch" : "Match centre"} <ArrowRight className="size-3" />
+              </Link>
+            ) : (
+              <Link
+                to="/football"
+                search={{ year: 2026 }}
+                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-amber-500 hover:bg-amber-400 text-gray-950 text-[11px] sm:text-xs font-bold transition-colors"
+              >
+                Details <ArrowRight className="size-3" />
+              </Link>
+            )}
           </div>
         </div>
       </div>
     </section>
+  );
+}
+
+function HeroScoreBoard({ f, live, startMs }: { f: Wc2026Fixture; live: boolean; startMs: number }) {
+  return (
+    <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 sm:gap-6">
+      <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+        <span className="text-3xl sm:text-5xl shrink-0">{flagOf(f.home.name)}</span>
+        <span className="truncate text-sm sm:text-xl font-extrabold">{f.home.name}</span>
+      </div>
+      <div className="text-3xl sm:text-5xl font-black text-amber-300 tabular-nums whitespace-nowrap">
+        {live || f.status === "finished" ? (
+          <>{f.home.goals ?? 0} <span className="text-gray-600">:</span> {f.away.goals ?? 0}</>
+        ) : (
+          <span className="text-amber-400/80 text-base sm:text-lg">{formatLocalTime(startMs)}</span>
+        )}
+      </div>
+      <div className="flex items-center gap-2 sm:gap-3 min-w-0 justify-end">
+        <span className="truncate text-sm sm:text-xl font-extrabold text-right">{f.away.name}</span>
+        <span className="text-3xl sm:text-5xl shrink-0">{flagOf(f.away.name)}</span>
+      </div>
+    </div>
   );
 }
 
