@@ -20,7 +20,7 @@ type LeaderRow = PredictionRow & { handle: string | null };
 
 async function fetchPredictions(matchId: number): Promise<LeaderRow[]> {
   const { data: preds } = await supabase
-    .from("match_predictions" as never)
+    .from("match_predictions" as any)
     .select("id,user_id,home_score,away_score,points,settled")
     .eq("sport", "football")
     .eq("match_id", matchId)
@@ -30,7 +30,7 @@ async function fetchPredictions(matchId: number): Promise<LeaderRow[]> {
   if (rows.length === 0) return [];
   const ids = Array.from(new Set(rows.map((r) => r.user_id)));
   const { data: profiles } = await supabase
-    .from("public_profiles" as never)
+    .from("public_profiles" as any)
     .select("user_id,handle")
     .in("user_id", ids);
   const map = new Map<string, string>();
@@ -42,7 +42,7 @@ async function fetchPredictions(matchId: number): Promise<LeaderRow[]> {
 
 async function fetchMyPrediction(matchId: number, userId: string): Promise<PredictionRow | null> {
   const { data } = await supabase
-    .from("match_predictions" as never)
+    .from("match_predictions" as any)
     .select("id,user_id,home_score,away_score,points,settled")
     .eq("sport", "football")
     .eq("match_id", matchId)
@@ -86,7 +86,7 @@ export function MatchPrediction({ fx }: { fx: Wc2026Fixture }) {
         away_score: a,
       };
       const { error } = await supabase
-        .from("match_predictions" as never)
+        .from("match_predictions" as any)
         .upsert(payload, { onConflict: "user_id,match_id,sport" });
       if (error) throw error;
     },

@@ -16,7 +16,7 @@ type CommentWithHandle = CommentRow & { handle: string | null };
 
 async function fetchComments(matchId: number): Promise<CommentWithHandle[]> {
   const { data } = await supabase
-    .from("match_comments" as never)
+    .from("match_comments" as any)
     .select("id,user_id,body,hidden,created_at")
     .eq("sport", "football")
     .eq("match_id", matchId)
@@ -27,7 +27,7 @@ async function fetchComments(matchId: number): Promise<CommentWithHandle[]> {
   if (rows.length === 0) return [];
   const ids = Array.from(new Set(rows.map((r) => r.user_id)));
   const { data: profiles } = await supabase
-    .from("public_profiles" as never)
+    .from("public_profiles" as any)
     .select("user_id,handle")
     .in("user_id", ids);
   const map = new Map<string, string>();

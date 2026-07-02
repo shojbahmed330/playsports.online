@@ -17,7 +17,7 @@ export function HandleSetup() {
     enabled: !!user,
     queryFn: async () => {
       const { data } = await supabase
-        .from("public_profiles" as never)
+        .from("public_profiles" as any)
         .select("handle")
         .eq("user_id", user!.id)
         .maybeSingle();
@@ -38,7 +38,7 @@ export function HandleSetup() {
       const handle = value.trim();
       if (handle.length < 2 || handle.length > 24) throw new Error("2–24 characters");
       const { error } = await supabase
-        .from("public_profiles" as never)
+        .from("public_profiles" as any)
         .upsert({ user_id: user.id, handle });
       if (error) throw error;
     },
