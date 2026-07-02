@@ -143,6 +143,78 @@ export type Database = {
         }
         Relationships: []
       }
+      match_comments: {
+        Row: {
+          body: string
+          created_at: string
+          hidden: boolean
+          id: string
+          match_id: number
+          sport: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          hidden?: boolean
+          id?: string
+          match_id: number
+          sport?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          hidden?: boolean
+          id?: string
+          match_id?: number
+          sport?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      match_predictions: {
+        Row: {
+          away_score: number
+          created_at: string
+          home_score: number
+          id: string
+          match_id: number
+          points: number
+          settled: boolean
+          sport: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          away_score: number
+          created_at?: string
+          home_score: number
+          id?: string
+          match_id: number
+          points?: number
+          settled?: boolean
+          sport?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          away_score?: number
+          created_at?: string
+          home_score?: number
+          id?: string
+          match_id?: number
+          points?: number
+          settled?: boolean
+          sport?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       memberships: {
         Row: {
           created_at: string
@@ -203,6 +275,27 @@ export type Database = {
           source?: string | null
           status?: string
           unsubscribe_token?: string
+        }
+        Relationships: []
+      }
+      public_profiles: {
+        Row: {
+          created_at: string
+          handle: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          handle: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          handle?: string
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }

@@ -40,7 +40,8 @@ function buildLabels({ type, slug }: Params): { eyebrow: string; title: string; 
     case "archive":
       return { eyebrow: `ARCHIVE ${ctx ? "· " + ctx.toUpperCase() : ""}`, title: `World Cup ${pretty}`, subtitle: "Champion · Top scorers · Full results", accent: "#34d399" };
     case "match":
-      return { eyebrow: "MATCH CENTRE", title: pretty || "Live Match", subtitle: "Lineups · Live commentary · Stats", accent: "#ef4444" };
+      return { eyebrow: "MATCH CENTRE", title: pretty || "Live Match", subtitle: ctx ? decodeURIComponent(ctx) : "Lineups · Live commentary · Stats", accent: "#ef4444" };
+
     default:
       return { eyebrow: "ALLSPORTSLIVE", title: pretty || "All Sports, One Place", subtitle: "Football · Cricket · MLB · NBA · NHL · MLS", accent: "#22d3ee" };
   }

@@ -19,11 +19,15 @@ import { VenueCard } from "@/components/football/VenueCard";
 import { MomentumChart } from "@/components/football/MomentumChart";
 import { WinProbabilityChart } from "@/components/football/WinProbabilityChart";
 import { OfficialsCard } from "@/components/football/OfficialsCard";
+import { MatchPrediction } from "@/components/football/MatchPrediction";
+import { MatchComments } from "@/components/football/MatchComments";
+import { HandleSetup } from "@/components/football/HandleSetup";
 import { useGoalAlerts } from "@/hooks/use-goal-alerts";
 
 export const Route = createFileRoute("/football/match/$id")({
   head: ({ params }) => {
     const url = `https://allsportslive.lovable.app/football/match/${params.id}`;
+    const ogImage = `https://allsportslive.lovable.app/og/match/match-${params.id}--FIFA%20World%20Cup%202026%20%C2%B7%20Live%20score%20%26%20lineups.svg`;
     return {
       meta: [
         { title: "FIFA World Cup 2026 Match — Live Score & Lineups" },
@@ -31,6 +35,11 @@ export const Route = createFileRoute("/football/match/$id")({
         { property: "og:title", content: "FIFA World Cup 2026 — Live Match" },
         { property: "og:description", content: "Live score, lineups and broadcast info." },
         { property: "og:url", content: url },
+        { property: "og:image", content: ogImage },
+        { property: "og:image:width", content: "1200" },
+        { property: "og:image:height", content: "630" },
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:image", content: ogImage },
       ],
       links: [{ rel: "canonical", href: url }],
       scripts: [
@@ -138,6 +147,10 @@ function MatchPage() {
             </section>
 
             <OtherMatchesToday currentId={matchId} />
+
+            <HandleSetup />
+            <MatchPrediction fx={fx} />
+            <MatchComments matchId={matchId} />
 
             <AffiliateStrip placement="match_footer" sport="football" heading="Shop the matchup" />
             <AdSlot slot="in_content" layout="in-article" />
