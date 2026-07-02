@@ -534,8 +534,8 @@ function MatchRow({ match, year }: { match: AdminMatch; year: number }) {
         await set2026Video(match.home_team, match.away_team, newUrl);
       } else if (isBundled) {
         // Bundled row not yet in DB — insert the full row with the video URL.
-        const { _bundled: _b, id: _id, ...rest } = match;
-        void _b; void _id;
+        const { _bundled: _b, id: _id, predicted: _p, home_seed_label: _hs, away_seed_label: _as, ...rest } = match;
+        void _b; void _id; void _p; void _hs; void _as;
         const res = await supabase
           .from("wc_matches")
           .insert({ ...rest, video_url: newUrl });
