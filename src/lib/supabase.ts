@@ -53,7 +53,15 @@ type WcGroupsRow = {
 type WcTables = {
   wc_matches: {
     Row: WcMatchesRow;
-    Insert: Partial<WcMatchesRow> & { id?: number };
+    // Allow UI-only fields (predicted, seed labels) on Insert — they're
+    // stripped before hitting the DB by callers.
+    Insert: Partial<WcMatchesRow> & {
+      id?: number;
+      predicted?: boolean;
+      home_seed_label?: string | null;
+      away_seed_label?: string | null;
+      [key: string]: unknown;
+    };
     Update: Partial<WcMatchesRow>;
     Relationships: [];
   };
