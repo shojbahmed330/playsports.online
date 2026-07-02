@@ -17,15 +17,17 @@ export const Route = createFileRoute("/vs/$sport/$matchup")({
     const path = `/vs/${params.sport}/${params.matchup}`;
     // compute tallies for FAQ answers
     let aW = 0, bW = 0, dr = 0;
-    type Last = { year: number; home: string; away: string; hs: number; as: number };
-    let last: Last | null = null;
+    let aW = 0, bW = 0, dr = 0;
     matches.forEach((m: { home_team: string; away_team: string; home_score: number; away_score: number; tournament_year: number }) => {
       const aHome = m.home_team === h2h.teamA;
       const aS = aHome ? m.home_score : m.away_score;
       const bS = aHome ? m.away_score : m.home_score;
       if (aS > bS) aW++; else if (aS < bS) bW++; else dr++;
-      last = { year: m.tournament_year, home: m.home_team, away: m.away_team, hs: m.home_score, as: m.away_score };
     });
+    const lastM = matches[matches.length - 1] as { home_team: string; away_team: string; home_score: number; away_score: number; tournament_year: number } | undefined;
+    const lastStr = lastM
+      ? `Their most recent World Cup meeting was at the ${lastM.tournament_year} tournament: ${lastM.home_team} ${lastM.home_score}–${lastM.away_score} ${lastM.away_team}.`
+      : "No previous World Cup meeting on record.";
     const title = `${h2h.teamA} vs ${h2h.teamB} — World Cup Head-to-Head Record | PlaySports`;
     const desc = `${h2h.teamA} vs ${h2h.teamB} at the FIFA World Cup: ${matches.length} meeting${matches.length === 1 ? "" : "s"}, ${h2h.teamA} ${aW}W · ${dr}D · ${h2h.teamB} ${bW}W. Full history, scores and tournaments.`;
     return {
