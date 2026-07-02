@@ -1,8 +1,13 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import { CalendarDays, ChevronLeft, ChevronRight, Dot, X } from "lucide-react";
+import { useMemo, useState } from "react";
+import { CalendarDays, ChevronDown, ChevronLeft, ChevronRight, X } from "lucide-react";
 import type { WCMatch } from "@/lib/supabase";
 import { dateKeyInTz, fmtDateChip } from "@/lib/timezone";
 import { TimezonePicker, useTimezone } from "./TimezonePicker";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+} from "@/components/ui/dropdown-menu";
 
 // YYYY-MM-DD in the *active timezone* so chips match what the user sees on
 // each card. Re-keyed when the user switches timezone via useTimezone().
@@ -48,21 +53,8 @@ export function DateScrubber({ matches, value, onChange, className = "" }: DateS
   }, [matches, tz]);
 
   const today = todayKey();
-  const scrollerRef = useRef<HTMLDivElement | null>(null);
   const [pickerOpen, setPickerOpen] = useState(false);
 
-  // Auto-centre today (or first upcoming) on mount / when dates change — desktop scroller only
-  useEffect(() => {
-    const el = scrollerRef.current;
-    if (!el) return;
-    const target = value ?? (dates.includes(today) ? today : dates.find((d) => d >= today) ?? dates[0]);
-    if (!target) return;
-    const chip = el.querySelector<HTMLElement>(`[data-date="${target}"]`);
-    if (chip) {
-      const left = chip.offsetLeft - el.clientWidth / 2 + chip.clientWidth / 2;
-      el.scrollTo({ left: Math.max(0, left), behavior: "smooth" });
-    }
-  }, [dates, value, today]);
 
   if (dates.length === 0) return null;
 
@@ -195,65 +187,132 @@ export function DateScrubber({ matches, value, onChange, className = "" }: DateS
         </div>
       </div>
 
-      {/* ─────────────── DESKTOP: original horizontal scroller ─────────────── */}
-      <div
-        ref={scrollerRef}
-        className="hidden sm:flex gap-2 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-1 -mx-1 px-1
-          [scrollbar-width:none] [-ms-overflow-style:none]
-          [&::-webkit-scrollbar]:hidden"
-      >
+      {/* ─────────────── DESKTOP: stylish dropdown ─────────────── */}
+      <div className="hidden sm:flex items-center gap-2">
         <button
           type="button"
-          onClick={() => onChange(undefined)}
-          className={`shrink-0 snap-start min-w-[64px] rounded-xl border px-3 py-2 text-center transition-all
-            ${value === undefined
-              ? "border-amber-500 bg-amber-500/15 text-amber-300 shadow-[0_0_0_3px_rgba(245,158,11,0.12)]"
-              : "border-gray-800 bg-gray-900/60 text-gray-400 hover:border-amber-500/40 hover:text-amber-300"}`}
+          disabled={!prevDate}
+          onClick={() => prevDate && onChange(prevDate)}
+          className="flex items-center justify-center h-11 w-9 rounded-xl border border-white/10 bg-gray-900/60 text-gray-300 hover:border-amber-500/40 hover:text-amber-300 transition disabled:opacity-30"
+          aria-label="Previous match day"
         >
-          <div className="text-[9px] font-bold tracking-wider opacity-80">ALL</div>
-          <div className="text-base font-black leading-none mt-0.5">{matches.length}</div>
-          <div className="text-[9px] mt-1 opacity-70">DATES</div>
+          <ChevronLeft className="size-4" />
         </button>
 
-        {dates.map((d) => {
-          const { weekday, day, month } = fmtChip(d);
-          const active = value === d;
-          const isToday = d === today;
-          const isLive = livePred.has(d);
-          const isPast = d < today;
-          return (
-            <button
-              key={d}
-              type="button"
-              data-date={d}
-              onClick={() => onChange(active ? undefined : d)}
-              className={`relative shrink-0 snap-start min-w-[64px] rounded-xl border px-3 py-2 text-center transition-all
-                ${active
-                  ? "border-amber-500 bg-amber-500/15 text-amber-300 shadow-[0_0_0_3px_rgba(245,158,11,0.12)]"
-                  : isToday
-                    ? "border-amber-500/60 bg-amber-500/5 text-amber-200 hover:bg-amber-500/10"
-                    : isPast
-                      ? "border-gray-800 bg-gray-950/60 text-gray-500 hover:border-gray-700 hover:text-gray-300"
-                      : "border-gray-800 bg-gray-900/60 text-gray-300 hover:border-amber-500/40 hover:text-amber-200"}`}
-            >
-              {isLive && (
-                <span className="absolute -top-1 -right-1 flex items-center justify-center">
-                  <span className="absolute size-3 rounded-full bg-red-500/60 animate-ping" />
-                  <span className="relative size-2 rounded-full bg-red-500" />
-                </span>
-              )}
-              <div className={`text-[9px] font-bold tracking-wider ${active ? "" : "opacity-80"}`}>{weekday}</div>
-              <div className="text-lg font-black leading-none mt-0.5">{day}</div>
-              <div className="text-[9px] mt-0.5 opacity-70">{month}</div>
-              <div className={`mt-1 flex items-center justify-center gap-0.5 text-[9px] font-bold
-                ${active ? "text-amber-400" : "text-gray-500"}`}>
-                <Dot className="size-2.5 -mx-1" />
-                {countByDate.get(d)}
+        <DropdownMenu>
+          <DropdownMenuTrigger
+            className={`group flex-1 max-w-md relative inline-flex items-center gap-3 rounded-xl border px-4 py-2 text-left transition-all shadow-lg
+              ${value
+                ? "border-amber-500 bg-gradient-to-r from-amber-500/20 to-orange-500/10 shadow-amber-500/20"
+                : "border-white/10 bg-gray-900/70 hover:border-amber-500/40"}`}
+          >
+            <CalendarDays className={`size-5 shrink-0 ${value || isDisplayToday ? "text-amber-300" : "text-gray-400"}`} />
+            <div className="min-w-0 flex-1">
+              <div className={`text-[10px] font-bold tracking-[0.18em] uppercase truncate
+                ${value ? "text-amber-300" : isDisplayToday ? "text-amber-300/90" : "text-gray-400"}`}>
+                {value ? display.weekday : isDisplayToday ? "Today" : display.weekday}
+                <span className="ml-1 opacity-60">· {display.month}</span>
               </div>
-            </button>
-          );
-        })}
+              <div className={`text-xl font-black leading-tight tabular-nums truncate flex items-baseline gap-2
+                ${value ? "text-amber-200" : "text-white"}`}>
+                {display.day}
+                <span className="text-[11px] font-bold tracking-wider opacity-60">
+                  {countByDate.get(displayKey) ?? 0} match{(countByDate.get(displayKey) ?? 0) === 1 ? "" : "es"}
+                </span>
+              </div>
+            </div>
+            {livePred.size > 0 && (
+              <span className="relative inline-flex items-center justify-center shrink-0">
+                <span className="absolute size-3 rounded-full bg-red-500/60 animate-ping" />
+                <span className="relative size-1.5 rounded-full bg-red-500 ring-2 ring-black" />
+              </span>
+            )}
+            <ChevronDown className="size-4 text-gray-400 group-data-[state=open]:rotate-180 transition-transform" />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent
+            align="center"
+            sideOffset={8}
+            className="w-[min(90vw,540px)] max-h-[70vh] overflow-y-auto border-white/10 bg-gray-950/95 backdrop-blur-xl p-3 shadow-2xl shadow-black/60"
+          >
+            <div className="flex items-center justify-between mb-2 px-1">
+              <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-amber-400">Pick a match day</span>
+              <span className="text-[10px] text-gray-500 tabular-nums">{dates.length} days · {matches.length} matches</span>
+            </div>
+            <div className="grid grid-cols-4 gap-1.5">
+              <button
+                type="button"
+                onClick={() => onChange(undefined)}
+                className={`rounded-xl border p-2 text-center transition
+                  ${value === undefined
+                    ? "border-amber-500 bg-amber-500/15 text-amber-300"
+                    : "border-white/10 bg-gray-900/60 text-gray-300 hover:border-amber-500/40"}`}
+              >
+                <div className="text-[9px] font-bold tracking-wider opacity-80">ALL</div>
+                <div className="text-base font-black leading-tight mt-0.5">{matches.length}</div>
+                <div className="text-[9px] opacity-60">dates</div>
+              </button>
+              {dates.map((d) => {
+                const { weekday, day, month } = fmtChip(d);
+                const active = value === d;
+                const isToday = d === today;
+                const isLive = livePred.has(d);
+                const isPast = d < today;
+                return (
+                  <button
+                    key={d}
+                    type="button"
+                    data-date={d}
+                    onClick={() => onChange(d)}
+                    className={`relative rounded-xl border p-2 text-center transition
+                      ${active
+                        ? "border-amber-500 bg-amber-500/15 text-amber-300 shadow-[0_0_0_2px_rgba(245,158,11,0.15)]"
+                        : isToday
+                          ? "border-amber-500/60 bg-amber-500/5 text-amber-200 hover:bg-amber-500/10"
+                          : isPast
+                            ? "border-white/5 bg-gray-950/60 text-gray-500 hover:border-white/10 hover:text-gray-300"
+                            : "border-white/10 bg-gray-900/60 text-gray-300 hover:border-amber-500/40 hover:text-amber-200"}`}
+                  >
+                    {isLive && (
+                      <span className="absolute top-1 right-1 flex items-center justify-center">
+                        <span className="absolute size-2.5 rounded-full bg-red-500/60 animate-ping" />
+                        <span className="relative size-1.5 rounded-full bg-red-500" />
+                      </span>
+                    )}
+                    <div className="text-[9px] font-bold tracking-wider opacity-80">{weekday}</div>
+                    <div className="text-lg font-black leading-tight mt-0.5 tabular-nums">{day}</div>
+                    <div className="text-[9px] opacity-60">{month}</div>
+                    <div className="text-[9px] font-bold opacity-70 mt-0.5">{countByDate.get(d)}m</div>
+                  </button>
+                );
+              })}
+            </div>
+          </DropdownMenuContent>
+        </DropdownMenu>
+
+        <button
+          type="button"
+          disabled={!nextDate}
+          onClick={() => nextDate && onChange(nextDate)}
+          className="flex items-center justify-center h-11 w-9 rounded-xl border border-white/10 bg-gray-900/60 text-gray-300 hover:border-amber-500/40 hover:text-amber-300 transition disabled:opacity-30"
+          aria-label="Next match day"
+        >
+          <ChevronRight className="size-4" />
+        </button>
+
+        {dates.includes(today) && (
+          <button
+            type="button"
+            onClick={() => onChange(today)}
+            className={`h-11 shrink-0 rounded-xl px-3 border text-[11px] font-bold uppercase tracking-widest transition
+              ${value === today
+                ? "border-amber-500 bg-amber-500/15 text-amber-300"
+                : "border-amber-500/40 bg-amber-500/5 text-amber-200 hover:bg-amber-500/10"}`}
+          >
+            Today · {countByDate.get(today) ?? 0}
+          </button>
+        )}
       </div>
+
 
       {/* ─────────────── MOBILE: full-screen date picker sheet ─────────────── */}
       {pickerOpen && (
