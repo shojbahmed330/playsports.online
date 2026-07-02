@@ -29,6 +29,7 @@ import { SiteFooter } from "@/components/home/SiteFooter";
 import { Breadcrumbs } from "@/components/nav/Breadcrumbs";
 import { breadcrumbList, collectionPage, ldScript } from "@/lib/seo/jsonld";
 import { getWc2026Fixtures, getWc2026Standings } from "@/lib/wc2026.functions";
+import { findClassicWcVideoUrl } from "@/lib/wc-video-seed";
 
 
 
@@ -38,6 +39,12 @@ const FILTER_VALUES: FootballFilter[] = ["all", "live", "today", "my"];
 const TAB_VALUES: SubNavTab[] = ["today", "groups", "knockout", "scorers"];
 
 type FootballSearch = { year?: number; filter?: FootballFilter; team?: string; tab?: SubNavTab; date?: string };
+
+function withClassicVideo(m: WCMatch): WCMatch {
+  if (m.video_url) return m;
+  const fallback = findClassicWcVideoUrl(m.tournament_year, m.home_team, m.away_team);
+  return fallback ? { ...m, video_url: fallback } : m;
+}
 
 export const Route = createFileRoute("/football")({
   validateSearch: (s: Record<string, unknown>): FootballSearch => {
@@ -231,21 +238,28 @@ function Index() {
 
   // Merge group-stage fixtures from bundled dataset (DB only has knockout rows).
   const allMatches = useMemo<WCMatch[]>(() => {
-    const dbMatches = matches.data ?? [];
+    const dbMatches = (matches.data ?? []).map(withClassicVideo);
     const seen = new Set(
       dbMatches.map((m) => `${m.home_team}|${m.away_team}|${m.round}`),
     );
-    const groupRows = (GROUP_MATCHES_BY_YEAR[String(year)] ?? []).filter(
-      (m) => !seen.has(`${m.home_team}|${m.away_team}|${m.round}`),
-    );
+    const groupRows = (GROUP_MATCHES_BY_YEAR[String(year)] ?? [])
+      .filter((m) => !seen.has(`${m.home_team}|${m.away_team}|${m.round}`))
+      .map(withClassicVideo);
     return [...dbMatches, ...groupRows];
   }, [matches.data, year]);
+
+  const knockoutMatches = useMemo<WCMatch[]>(
+    () => (matches.data ?? []).map(withClassicVideo),
+    [matches.data],
+  );
+
+  const openArchiveMatch = (m: WCMatch) => setActiveMatch(withClassicVideo(m));
 
   // Build the bracket backwards from the final so each visual slot follows the
   // actual winner path instead of chronological match_number order.
   const grouped = useMemo(() => {
     const buckets: Record<string, WCMatch[]> = {};
-    for (const m of matches.data ?? []) {
+    for (const m of knockoutMatches) {
       const k = classifyRound(m.round);
       if (!k || k === "group") continue;
       (buckets[k] ||= []).push(m);
@@ -307,7 +321,7 @@ function Index() {
       final: fn,
       third_place: (buckets.third_place ?? []).slice().sort(sortByNum),
     } as Partial<Record<RoundKey, WCMatch[]>>;
-  }, [matches.data]);
+  }, [knockoutMatches]);
 
   const knockoutRounds: RoundKey[] = useMemo(() => {
     const order: RoundKey[] = ["round_of_16", "quarter_final", "semi_final", "final"];
@@ -473,7 +487,7 @@ function Index() {
 
             {tab === "groups" ? (
               <section key="groups" className="wc-tab-content">
-                <GroupStage groups={groups.data ?? []} matches={allMatches} year={year} onPick={setActiveMatch} />
+                <GroupStage groups={groups.data ?? []} matches={allMatches} year={year} onPick={openArchiveMatch} />
               </section>
             ) : (
               <section key="knockout" className="wc-tab-content">
@@ -487,7 +501,7 @@ function Index() {
                     <div className="hidden md:block relative left-1/2 -translate-x-1/2 w-screen px-4 lg:px-8">
                       <SymmetricBracket
                         grouped={grouped}
-                        onPick={setActiveMatch}
+                        onPick={openArchiveMatch}
                         showHint={!hintSeen}
                         onDismissHint={dismissHint}
                       />
@@ -496,7 +510,7 @@ function Index() {
                     {/* Mobile vertical bracket with stage chips */}
                     <MobileBracket
                       rounds={knockoutRounds.map((r) => ({ round: r, matches: grouped[r] ?? [] }))}
-                      onPick={setActiveMatch}
+                      onPick={openArchiveMatch}
                     />
                   </>
                 )}
