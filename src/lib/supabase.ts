@@ -13,8 +13,7 @@ export { supabase } from "@/integrations/supabase/client";
 // `created_at` / `updated_at` are DB-managed; UI literals (predictions,
 // seed brackets, seeded fixtures) don't set them, so mark them optional
 // on the shared UI type. DB reads still satisfy this shape.
-type UiRow<T> = Omit<T, "created_at" | "updated_at" | "id"> & {
-  id?: T extends { id: infer I } ? I : never;
+type UiRow<T> = Omit<T, "created_at" | "updated_at"> & {
   created_at?: string;
   updated_at?: string;
 };
