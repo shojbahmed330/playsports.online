@@ -16,10 +16,10 @@ export function FootballLiveBadge() {
   // this badge above it instead of overlapping.
   const stackAboveWatch = pathname === "/";
 
-  return <LiveBadgeInner />;
+  return <LiveBadgeInner stackAboveWatch={stackAboveWatch} />;
 }
 
-function LiveBadgeInner() {
+function LiveBadgeInner({ stackAboveWatch }: { stackAboveWatch: boolean }) {
   const pulse = useWc2026Pulse();
   const fn = useServerFn(getWc2026Fixtures);
   const q = useQuery({
