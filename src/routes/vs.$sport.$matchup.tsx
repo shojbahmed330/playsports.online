@@ -17,7 +17,6 @@ export const Route = createFileRoute("/vs/$sport/$matchup")({
     const path = `/vs/${params.sport}/${params.matchup}`;
     // compute tallies for FAQ answers
     let aW = 0, bW = 0, dr = 0;
-    let aW = 0, bW = 0, dr = 0;
     matches.forEach((m: { home_team: string; away_team: string; home_score: number; away_score: number; tournament_year: number }) => {
       const aHome = m.home_team === h2h.teamA;
       const aS = aHome ? m.home_score : m.away_score;
