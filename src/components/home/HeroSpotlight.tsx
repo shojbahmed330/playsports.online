@@ -101,7 +101,7 @@ export function HeroSpotlight({
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.05]">
               One{" "}
               <span className="bg-gradient-to-r from-amber-300 via-yellow-400 to-orange-400 bg-clip-text text-transparent">
-                Sports Hub
+                PlaySports
               </span>
               .<br />
               Every Game. Every Score.

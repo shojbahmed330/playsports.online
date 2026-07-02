@@ -13,7 +13,7 @@ export function SiteFooter() {
         {/* Brand row */}
         <div className="mb-6 pb-6 border-b border-border/60">
           <div className="inline-flex items-center gap-2 font-extrabold text-base">
-            <Trophy className="size-4 text-amber-400" /> Sports Hub
+            <Trophy className="size-4 text-amber-400" /> PlaySports
           </div>
           <p className="mt-2 text-xs text-gray-500 leading-relaxed max-w-xl">
             Live scores, standings, news and the complete FIFA World Cup archive — 1930 to 2026.
@@ -52,7 +52,7 @@ export function SiteFooter() {
         </div>
       </div>
       <div className="border-t border-border/60 py-4 text-center text-[11px] text-gray-500">
-        © {new Date().getFullYear()} Sports Hub · Built with ❤️ for sports fans worldwide
+        © {new Date().getFullYear()} PlaySports · Built with ❤️ for sports fans worldwide
       </div>
     </footer>
   );
