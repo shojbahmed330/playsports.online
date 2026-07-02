@@ -1,9 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
-import { Whistle, Users } from "lucide-react";
+import { Flag, Users } from "lucide-react";
 import { getWc2026MatchOfficials } from "@/lib/wc2026.functions";
 
-// lucide-react doesn't export `Whistle` in every version; guard with Users fallback below if needed.
-const RefIcon = (Whistle ?? Users) as typeof Users;
+const RefIcon = Flag;
 
 export function OfficialsCard({ matchId }: { matchId: number }) {
   const q = useQuery({
