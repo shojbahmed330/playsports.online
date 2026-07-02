@@ -1,3 +1,20 @@
+-- =====================================================================
+-- AllSportsLive — full backend schema for self-hosted Supabase
+-- Run this ONCE on your own Supabase project (vagqeperdsumxwukwbes)
+-- via: Supabase Dashboard → SQL Editor → New query → Paste → Run
+--
+-- What it creates:
+--   • Tables: affiliate_links, contact_messages, digest_runs,
+--            memberships, newsletter_subscribers, site_settings,
+--            sponsored_slots, user_roles
+--   • Enum: app_role (admin | moderator | user)
+--   • Functions: has_role, handle_new_user_role, touch_updated_at
+--   • Row Level Security + policies + GRANTs
+--
+-- After running: set the admin email inside handle_new_user_role() if
+-- you want a different email to auto-become admin on signup.
+-- =====================================================================
+
 --
 -- PostgreSQL database dump
 --
@@ -545,3 +562,27 @@ ALTER TABLE public.user_roles ENABLE ROW LEVEL SECURITY;
 --
 
 
+ALTER TABLE public.site_settings ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.contact_messages ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.digest_runs ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.newsletter_subscribers ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.memberships ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.user_roles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.affiliate_links ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.sponsored_slots ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Admins write site settings" ON public.site_settings FOR ALL TO authenticated USING (has_role(auth.uid(), 'admin'::app_role)) WITH CHECK (has_role(auth.uid(), 'admin'::app_role));
+CREATE POLICY "Public read site settings" ON public.site_settings FOR SELECT TO anon,authenticated USING (true);
+CREATE POLICY "Admins delete contact" ON public.contact_messages FOR DELETE TO authenticated USING (has_role(auth.uid(), 'admin'::app_role));
+CREATE POLICY "Admins read contact" ON public.contact_messages FOR SELECT TO authenticated USING (has_role(auth.uid(), 'admin'::app_role));
+CREATE POLICY "Anyone can submit contact" ON public.contact_messages FOR INSERT TO anon,authenticated WITH CHECK ((((char_length(name) >= 1) AND (char_length(name) <= 100)) AND ((char_length(email) >= 3) AND (char_length(email) <= 255)) AND ((char_length(body) >= 1) AND (char_length(body) <= 4000))));
+CREATE POLICY "Admins view digest runs" ON public.digest_runs FOR SELECT TO authenticated USING (has_role(auth.uid(), 'admin'::app_role));
+CREATE POLICY "Admins delete subscribers" ON public.newsletter_subscribers FOR DELETE TO authenticated USING (has_role(auth.uid(), 'admin'::app_role));
+CREATE POLICY "Admins read subscribers" ON public.newsletter_subscribers FOR SELECT TO authenticated USING (has_role(auth.uid(), 'admin'::app_role));
+CREATE POLICY "Anyone can subscribe" ON public.newsletter_subscribers FOR INSERT TO anon,authenticated WITH CHECK (((char_length(email) >= 3) AND (char_length(email) <= 255)));
+CREATE POLICY "Admins manage memberships" ON public.memberships FOR ALL TO authenticated USING (has_role(auth.uid(), 'admin'::app_role)) WITH CHECK (has_role(auth.uid(), 'admin'::app_role));
+CREATE POLICY "Users read own membership" ON public.memberships FOR SELECT TO authenticated USING (((auth.uid() = user_id) OR has_role(auth.uid(), 'admin'::app_role)));
+CREATE POLICY "Users read their own roles" ON public.user_roles FOR SELECT TO authenticated USING ((user_id = auth.uid()));
+CREATE POLICY "Admins manage affiliate links" ON public.affiliate_links FOR ALL TO authenticated USING (has_role(auth.uid(), 'admin'::app_role)) WITH CHECK (has_role(auth.uid(), 'admin'::app_role));
+CREATE POLICY "Public reads active affiliate links" ON public.affiliate_links FOR SELECT TO anon,authenticated USING ((active = true));
+CREATE POLICY "Admins manage sponsored slots" ON public.sponsored_slots FOR ALL TO authenticated USING (has_role(auth.uid(), 'admin'::app_role)) WITH CHECK (has_role(auth.uid(), 'admin'::app_role));
+CREATE POLICY "Public reads active sponsored slots" ON public.sponsored_slots FOR SELECT TO anon,authenticated USING (((active = true) AND ((ends_at IS NULL) OR (ends_at > now()))));
