@@ -171,3 +171,15 @@ export function cricketSeoRecordUrls(): DynamicUrl[] {
     priority: "0.7",
   }));
 }
+
+export function cricketSeoHighlightUrls(): DynamicUrl[] {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { listCricketHighlights } = require("@/lib/seo/cricket-entities") as typeof import("@/lib/seo/cricket-entities");
+  return listCricketHighlights().map((h) => ({
+    path: `/cricket/highlights/${h.slug}`,
+    lastmod: h.date,
+    changefreq: "monthly" as const,
+    priority: "0.75",
+  }));
+}
+
