@@ -700,6 +700,21 @@ ON CONFLICT DO NOTHING;
 
 
 --
+-- Seed default site settings if they do not already exist.
+--
+
+INSERT INTO public.site_settings (key, value) VALUES
+  ('adsense', '{"enabled":false,"client":"","slots":{},"auto_ads":false}'::jsonb),
+  ('analytics', '{"enabled":false,"ga4_measurement_id":"","gtm_container_id":"","gsc_verification":""}'::jsonb),
+  ('consent', '{"enabled":true,"banner_text":"We use cookies to keep AllSportsLive fast, measure traffic, and show relevant ads. You can change your choice anytime in the footer.","accept_label":"Accept all","reject_label":"Reject non-essential","manage_label":"Manage preferences"}'::jsonb),
+  ('newsletter', '{"enabled":true,"mode":"native","beehiiv_pub_id":"","headline":"Daily Slate in Your Inbox","sub":"Tomorrow''s biggest games and last night''s scores — every morning at 8am ET."}'::jsonb),
+  ('identity', '{"tagline":"Live scores, stats & the complete FIFA World Cup archive.","footer_text":"© AllSportsLive. Data via ESPN, Sofascore & official league feeds.","social":{"x":"","youtube":"","reddit":"","instagram":""}}'::jsonb),
+  ('contact', '{"email":"hello@allsportslive.app","response_time":"We reply within 2 business days."}'::jsonb),
+  ('affiliate_disclosure', '{"enabled":true,"text":"As an Amazon Associate and partner with Fanatics and licensed sportsbooks, we earn from qualifying purchases and signups. Bet responsibly. 21+ where applicable."}'::jsonb)
+ON CONFLICT (key) DO NOTHING;
+
+
+--
 -- Name: contact_messages Admins delete contact; Type: POLICY; Schema: public; Owner: -
 --
 
