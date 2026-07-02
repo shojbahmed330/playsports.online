@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Radio, Calendar, Goal, Clock, Play } from "lucide-react";
+import { Trophy, Radio, Calendar, Goal, Clock, Play } from "lucide-react";
 import { getWc2026Fixtures } from "@/lib/wc2026.functions";
 import { derivePulse } from "@/lib/football-live";
 import { formatCountdown, formatLocalTime } from "@/lib/time";
