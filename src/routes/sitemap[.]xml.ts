@@ -2,6 +2,9 @@ import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 import { listTeams, listPlayers, listH2H, listArchives } from "@/lib/seo/programmatic";
 import { listMatchSlugs, listHighlights, WC2026_STAGES } from "@/lib/seo/entities";
+import { listLeaderboardUrls } from "@/lib/seo/leaderboards";
+import { listGuides } from "@/content/guides";
+import { KEYWORD_TARGETS, priorityFromVolume } from "@/lib/seo/keyword-map";
 import {
   wc2026MatchUrls,
   mlbTeamUrls,
@@ -173,6 +176,32 @@ export const Route = createFileRoute("/sitemap.xml")({
             path: `/tournaments/fifa-world-cup-2026/${s.slug}`,
             changefreq: "daily" as const,
             priority: "0.8",
+          })),
+          // Phase 2.2 — Tournament leaderboards (top-scorers / yellow-cards / red-cards)
+          ...listLeaderboardUrls().map((u) => ({
+            path: `/tournaments/${u.tournament}/${u.leaderboard}`,
+            changefreq: "weekly" as const,
+            priority: "0.7",
+          })),
+          // Phase 2.2 — Evergreen guides
+          ...listGuides().map((g) => ({
+            path: `/guides/${g.slug}`,
+            lastmod: g.updated,
+            changefreq: "monthly" as const,
+            priority: "0.7",
+          })),
+          // Phase 2.2 — Live hubs
+          { path: "/live/today", changefreq: "always" as const, priority: "0.8" },
+          ...["football", "cricket", "mlb", "nba", "nhl", "mls"].map((s) => ({
+            path: `/live/${s}`,
+            changefreq: "always" as const,
+            priority: "0.7",
+          })),
+          // Phase 2.2 — Keyword-target priority boost (overrides earlier entries via dedupe first-writer)
+          ...KEYWORD_TARGETS.map((k) => ({
+            path: k.url,
+            changefreq: "weekly" as const,
+            priority: priorityFromVolume(k.volume),
           })),
           // Legacy multi-sport landing pages (redirect for football_wc)
           ...listTeams().map((t) => ({
