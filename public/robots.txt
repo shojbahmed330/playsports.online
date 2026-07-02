@@ -1,6 +1,185 @@
+# PlaySports — robots.txt
+# https://www.playsports.online
+# Phase 1.2 — AI-friendly crawler policy
+# Last reviewed: 2026-07-02
+
+# =============================================================
+# Default policy — every crawler that respects robots.txt
+# =============================================================
 User-agent: *
+Allow: /
+# Private / user-scoped surfaces
+Disallow: /admin
+Disallow: /admin/
+Disallow: /auth
+Disallow: /auth/
+Disallow: /mine
+Disallow: /mine/
+Disallow: /premium
+Disallow: /premium/
+# Internal API + server routes — not meant for search indexes
+Disallow: /api/
+# Query-string variants of already-indexed pages
+Disallow: /*?utm_*
+Disallow: /*?ref=
+Disallow: /*?fbclid=
+Disallow: /*?gclid=
+
+# =============================================================
+# Search engines — explicit allow with crawl-delay tuning
+# =============================================================
+User-agent: Googlebot
 Allow: /
 Disallow: /admin
 Disallow: /auth
+Disallow: /mine
+Disallow: /premium
+Disallow: /api/
 
+User-agent: Googlebot-Image
+Allow: /
+
+User-agent: Googlebot-News
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+Disallow: /admin
+Disallow: /auth
+Disallow: /mine
+Disallow: /premium
+Disallow: /api/
+
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: YandexBot
+Allow: /
+
+User-agent: Baiduspider
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+# =============================================================
+# AI search + answer engines (explicit allowlist)
+# We WANT PlaySports to surface inside ChatGPT, Perplexity, Gemini,
+# Claude, Copilot, Grok and other answer engines. These bots read
+# robots.txt strictly — an unlisted agent falls back to `*` above.
+# =============================================================
+
+# OpenAI — SearchGPT / ChatGPT browsing
+User-agent: OAI-SearchBot
+Allow: /
+
+# OpenAI — training / dataset crawler (opt-in signal)
+User-agent: GPTBot
+Allow: /
+
+# OpenAI — ChatGPT "browse" on-demand fetches
+User-agent: ChatGPT-User
+Allow: /
+
+# Anthropic — Claude web browsing + indexing
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+# Perplexity — answer engine
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+# Google — Gemini / Vertex AI training + answers
+User-agent: Google-Extended
+Allow: /
+
+# Common Crawl — powers most open-source LLM datasets
+User-agent: CCBot
+Allow: /
+
+# Meta — Llama training crawler
+User-agent: Meta-ExternalAgent
+Allow: /
+
+User-agent: FacebookBot
+Allow: /
+
+# Bytedance / TikTok — Doubao model crawler
+User-agent: Bytespider
+Allow: /
+
+# Amazon — Alexa / Rufus / Bedrock
+User-agent: Amazonbot
+Allow: /
+
+# You.com
+User-agent: YouBot
+Allow: /
+
+# Cohere
+User-agent: cohere-ai
+Allow: /
+
+# Apple — Apple Intelligence extended crawl
+User-agent: Applebot-Extended
+Allow: /
+
+# Diffbot — powers many enterprise AI knowledge graphs
+User-agent: Diffbot
+Allow: /
+
+# Timpi — decentralised search
+User-agent: TimpiBot
+Allow: /
+
+# Mistral AI
+User-agent: MistralAI-User
+Allow: /
+
+# xAI — Grok
+User-agent: Grok
+Allow: /
+
+# =============================================================
+# Social preview crawlers (rich embeds)
+# =============================================================
+User-agent: Twitterbot
+Allow: /
+
+User-agent: facebookexternalhit
+Allow: /
+
+User-agent: LinkedInBot
+Allow: /
+
+User-agent: WhatsApp
+Allow: /
+
+User-agent: TelegramBot
+Allow: /
+
+User-agent: Discordbot
+Allow: /
+
+User-agent: SkypeUriPreview
+Allow: /
+
+User-agent: Slackbot
+Allow: /
+
+# =============================================================
+# Sitemaps
+# =============================================================
 Sitemap: https://www.playsports.online/sitemap.xml

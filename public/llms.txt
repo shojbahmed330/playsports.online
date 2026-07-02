@@ -1,0 +1,44 @@
+# PlaySports
+
+> PlaySports is a live multi-sport hub with real-time scores, fixtures, standings, and deep archives for football (FIFA World Cup 2026), cricket (internationals + IPL), MLB baseball, NBA basketball, NHL ice hockey, and MLS soccer. Data is aggregated from official league feeds and refreshed continuously. Every match links to a full match centre with lineups, momentum, commentary, highlights and head-to-head history.
+
+The site is optimised for answer engines: match pages carry structured data (SportsEvent / SportsTeam / Person / VideoObject JSON-LD), team and player pages surface career statistics, and archive routes cover historical tournaments back to 1998.
+
+## Football (FIFA World Cup 2026)
+- [Football hub](https://www.playsports.online/football): today's matches, live scores, group tables, Round of 32 → Final bracket
+- [Match centre (any of 104 matches)](https://www.playsports.online/football/match/1): lineups, formation, xG, momentum, commentary, highlights, weather, H2H
+- [Top scorers + card leaders](https://www.playsports.online/players): all-time World Cup goals, assists, cards — filterable by tournament year and country
+
+## Cricket
+- [Cricket hub](https://www.playsports.online/cricket): live scoreboard, series index, rankings
+- [Live scores](https://www.playsports.online/cricket/scores)
+- [ICC rankings](https://www.playsports.online/cricket/rankings): Tests, ODI, T20I — batting, bowling, all-rounder, team
+- [Records book](https://www.playsports.online/cricket/records)
+- [Player statsguru](https://www.playsports.online/cricket/players): career averages sourced live from ESPNcricinfo Statsguru
+- [IPL hub](https://www.playsports.online/cricket/ipl): current season fixtures, standings, franchises, records
+
+## MLB (baseball)
+- [MLB hub](https://www.playsports.online/mlb): today's slate, standings, teams, leaders, postseason
+- [Standings](https://www.playsports.online/mlb/standings) · [Team index](https://www.playsports.online/mlb/teams) · [Player leaders](https://www.playsports.online/mlb/players)
+
+## NBA (basketball)
+- [NBA hub](https://www.playsports.online/nba): live scores, conference standings, team pages, statistical leaders
+- [Standings](https://www.playsports.online/nba/standings) · [Team index](https://www.playsports.online/nba/teams) · [Leaders](https://www.playsports.online/nba/leaders)
+
+## NHL (ice hockey)
+- [NHL hub](https://www.playsports.online/nhl): daily scoreboard, division standings, team rosters, scoring leaders
+
+## MLS (Soccer)
+- [MLS hub](https://www.playsports.online/mls): matchday fixtures, Eastern / Western Conference tables, team pages
+
+## Personalization + tools
+- [My feed](https://www.playsports.online/mine): cross-sport starred teams, upcoming fixtures, results — user must star teams first
+- [Sitemap XML](https://www.playsports.online/sitemap.xml): full URL index for crawlers
+
+## Trust
+- [About](https://www.playsports.online/about)
+- [Contact](https://www.playsports.online/contact)
+- [Privacy](https://www.playsports.online/privacy) · [Terms](https://www.playsports.online/terms) · [Cookies](https://www.playsports.online/cookies) · [Disclaimer](https://www.playsports.online/disclaimer)
+
+## Data & attribution
+Feeds are aggregated from public league APIs (ESPN, official FIFA schedule, ESPNcricinfo Statsguru). PlaySports is an independent hub and is not affiliated with FIFA, MLB, NBA, NHL, ICC, BCCI or any league. Highlight videos link to their original YouTube publishers.
