@@ -10,9 +10,11 @@ import { getWc2026Fixtures } from "@/lib/wc2026.functions";
 
 export function FootballLiveBadge() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  // Hide on football pages entirely (redundant with in-page cues), and on
-  // the homepage where WatchLivePanel already floats in the same slot.
-  if (pathname.startsWith("/football") || pathname === "/") return null;
+  // Hide on football pages entirely (redundant with in-page cues).
+  if (pathname.startsWith("/football")) return null;
+  // On the homepage, WatchLivePanel already floats at bottom-right; stack
+  // this badge above it instead of overlapping.
+  const stackAboveWatch = pathname === "/";
 
   return <LiveBadgeInner />;
 }
