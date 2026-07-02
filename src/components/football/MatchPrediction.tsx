@@ -48,7 +48,7 @@ async function fetchMyPrediction(matchId: number, userId: string): Promise<Predi
     .eq("match_id", matchId)
     .eq("user_id", userId)
     .maybeSingle();
-  return (data as PredictionRow | null) ?? null;
+  return (data as unknown as PredictionRow | null) ?? null;
 }
 
 export function MatchPrediction({ fx }: { fx: Wc2026Fixture }) {
