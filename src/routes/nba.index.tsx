@@ -8,7 +8,7 @@ import { GameCard } from "@/components/sports/GameCard";
 import { NbaLeaderBoard } from "@/components/nba/NbaLeaderBoard";
 import { AdSlot } from "@/components/ads/AdSlot";
 import { todayYmd } from "@/components/sports/DateScrubber";
-import { breadcrumbList, collectionPage, ldScript } from "@/lib/seo/jsonld";
+import { breadcrumbList, collectionPage, sportsOrganization, faqPage, ldScript } from "@/lib/seo/jsonld";
 
 export const Route = createFileRoute("/nba/")({
   head: () => ({
