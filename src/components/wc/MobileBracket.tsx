@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import type { WCMatch } from "@/lib/supabase";
 import type { RoundKey } from "./MatchCard";
 import { MobileMatchCard } from "./MobileMatchCard";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const ROUND_LABEL: Record<RoundKey, string> = {
   round_of_32:   "R32",
@@ -32,55 +33,92 @@ export function MobileBracket({
 }) {
   const [active, setActive] = useState<RoundKey>(rounds[0]?.round ?? "round_of_16");
   const stage = rounds.find((r) => r.round === active);
-
   const activeIdx = Math.max(0, rounds.findIndex((r) => r.round === active));
 
-  return (
-    <div className="md:hidden">
-      {/* Round progress rail — gives a sense of where in the bracket you are */}
-      <div className="flex items-center gap-1.5 px-1 mb-2">
-        {rounds.map((r, i) => {
-          const isPast = i < activeIdx;
-          const isOn = i === activeIdx;
-          return (
-            <div key={r.round} className="flex items-center gap-1.5 min-w-0">
-              <span
-                className={`block size-2 rounded-full shrink-0 ${
-                  isOn ? "bg-amber-400 ring-2 ring-amber-400/30" : isPast ? "bg-amber-500/40" : "bg-gray-700"
-                }`}
-              />
-              {i < rounds.length - 1 && (
-                <span className={`block h-px w-5 ${isPast ? "bg-amber-500/40" : "bg-gray-800"}`} />
-              )}
-            </div>
-          );
-        })}
-        <span className="ml-auto text-[10px] uppercase tracking-[0.18em] text-amber-400 font-bold">
-          {ROUND_LABEL[active]}
-        </span>
-      </div>
+  // Swipe left/right to change rounds
+  const touch = useRef<{ x: number; y: number } | null>(null);
+  const onTouchStart = (e: React.TouchEvent) => {
+    const t = e.touches[0];
+    touch.current = { x: t.clientX, y: t.clientY };
+  };
+  const onTouchEnd = (e: React.TouchEvent) => {
+    if (!touch.current) return;
+    const t = e.changedTouches[0];
+    const dx = t.clientX - touch.current.x;
+    const dy = t.clientY - touch.current.y;
+    touch.current = null;
+    if (Math.abs(dx) < 60 || Math.abs(dy) > 40) return;
+    if (dx < 0 && activeIdx < rounds.length - 1) setActive(rounds[activeIdx + 1].round);
+    if (dx > 0 && activeIdx > 0) setActive(rounds[activeIdx - 1].round);
+  };
+  const prev = () => activeIdx > 0 && setActive(rounds[activeIdx - 1].round);
+  const next = () => activeIdx < rounds.length - 1 && setActive(rounds[activeIdx + 1].round);
 
-      {/* stage chips */}
-      <div className="flex gap-2 overflow-x-auto snap-x px-1 pb-2 -mx-1" style={{ scrollbarWidth: "none" }}>
-        {rounds.map(({ round, matches }) => {
-          const isActive = round === active;
-          return (
-            <button
-              key={round}
-              onClick={() => setActive(round)}
-              className={`snap-center shrink-0 px-3 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wider transition-all ${
-                isActive
-                  ? "bg-gradient-to-r from-amber-500 to-amber-600 text-black shadow-md shadow-amber-500/30"
-                  : "bg-gray-900 text-gray-400 ring-1 ring-gray-800"
-              }`}
-            >
-              {ROUND_LABEL[round]}
-              <span className={`ml-1 text-[9px] ${isActive ? "text-black/70" : "text-gray-600"}`}>
-                {matches.length}
-              </span>
-            </button>
-          );
-        })}
+  return (
+    <div className="md:hidden" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
+      {/* Sticky round header: progress rail + chip row */}
+      <div className="sticky top-14 z-20 -mx-3 px-3 pt-2 pb-2 bg-black/85 backdrop-blur-md border-b border-white/5">
+        <div className="flex items-center gap-1.5 px-1 mb-2">
+          <button
+            type="button"
+            onClick={prev}
+            disabled={activeIdx === 0}
+            aria-label="Previous round"
+            className="grid size-6 place-items-center rounded-full text-gray-400 hover:text-amber-300 disabled:opacity-30 disabled:pointer-events-none"
+          >
+            <ChevronLeft className="size-4" />
+          </button>
+          {rounds.map((r, i) => {
+            const isPast = i < activeIdx;
+            const isOn = i === activeIdx;
+            return (
+              <div key={r.round} className="flex items-center gap-1.5 min-w-0">
+                <span
+                  className={`block size-2 rounded-full shrink-0 ${
+                    isOn ? "bg-amber-400 ring-2 ring-amber-400/30" : isPast ? "bg-amber-500/40" : "bg-gray-700"
+                  }`}
+                />
+                {i < rounds.length - 1 && (
+                  <span className={`block h-px w-4 ${isPast ? "bg-amber-500/40" : "bg-gray-800"}`} />
+                )}
+              </div>
+            );
+          })}
+          <button
+            type="button"
+            onClick={next}
+            disabled={activeIdx === rounds.length - 1}
+            aria-label="Next round"
+            className="grid size-6 place-items-center rounded-full text-gray-400 hover:text-amber-300 disabled:opacity-30 disabled:pointer-events-none"
+          >
+            <ChevronRight className="size-4" />
+          </button>
+          <span className="ml-auto text-[10px] uppercase tracking-[0.18em] text-amber-400 font-bold tabular-nums">
+            {activeIdx + 1}/{rounds.length} · {ROUND_LABEL[active]}
+          </span>
+        </div>
+
+        <div className="flex gap-2 overflow-x-auto snap-x px-1 -mx-1" style={{ scrollbarWidth: "none" }}>
+          {rounds.map(({ round, matches }) => {
+            const isActive = round === active;
+            return (
+              <button
+                key={round}
+                onClick={() => setActive(round)}
+                className={`snap-center shrink-0 px-3 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wider transition-all ${
+                  isActive
+                    ? "bg-gradient-to-r from-amber-500 to-amber-600 text-black shadow-md shadow-amber-500/30"
+                    : "bg-gray-900 text-gray-400 ring-1 ring-gray-800"
+                }`}
+              >
+                {ROUND_LABEL[round]}
+                <span className={`ml-1 text-[9px] ${isActive ? "text-black/70" : "text-gray-600"}`}>
+                  {matches.length}
+                </span>
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {stage && (
@@ -90,7 +128,7 @@ export function MobileBracket({
               {ROUND_FULL[stage.round]}
             </div>
             <div className="text-[10px] text-gray-600 mt-0.5">
-              {stage.matches.length} match{stage.matches.length === 1 ? "" : "es"} · tap any card for details
+              {stage.matches.length} match{stage.matches.length === 1 ? "" : "es"} · swipe ← → to change round
             </div>
           </div>
           <div className="space-y-3 relative">
