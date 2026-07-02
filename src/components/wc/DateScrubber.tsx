@@ -1,8 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { CalendarDays, ChevronLeft, ChevronRight, Dot, X } from "lucide-react";
+import { CalendarDays, ChevronDown, ChevronLeft, ChevronRight, X } from "lucide-react";
 import type { WCMatch } from "@/lib/supabase";
 import { dateKeyInTz, fmtDateChip } from "@/lib/timezone";
 import { TimezonePicker, useTimezone } from "./TimezonePicker";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+} from "@/components/ui/dropdown-menu";
 
 // YYYY-MM-DD in the *active timezone* so chips match what the user sees on
 // each card. Re-keyed when the user switches timezone via useTimezone().
