@@ -183,7 +183,7 @@ function FootballTicker({
                   kind === "live" ? "text-red-400" : kind === "up" ? "text-blue-300" : "text-gray-500"
                 }`}
               >
-                {kind === "live" ? "● LIVE" : kind === "up" ? formatLocalTime(f.startTs) : "FT"}
+                {kind === "live" ? "● LIVE" : kind === "up" ? formatLocalTime(f.startTs * 1000) : "FT"}
               </span>
               <span className="text-gray-300">
                 {flagOf(f.home.name)} {f.home.code}
