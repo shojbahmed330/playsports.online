@@ -64,7 +64,7 @@ export function SportNav({ liveCount = 0 }: { liveCount?: number }) {
               <Trophy className="size-5 text-black" />
             </div>
             <div className="leading-tight">
-              <div className="text-sm font-bold tracking-wide">Sports Hub</div>
+              <div className="text-sm font-bold tracking-wide">PlaySports</div>
               <div className="text-[10px] uppercase tracking-[0.18em] text-amber-400">
                 Live · Stats · Archive
               </div>
