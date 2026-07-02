@@ -137,6 +137,7 @@ function Index() {
   const [userPickedTab, setUserPickedTab] = useState<boolean>(!!search.tab);
   const [hintSeen, setHintSeen] = useState(true);
   const [replayTour, setReplayTour] = useState(0);
+  const [pickerOpen, setPickerOpen] = useState(false);
 
   const filter: FootballFilter = search.filter ?? "all";
   const teamFilter = search.team;
