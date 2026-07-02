@@ -1,7 +1,7 @@
 import { createFileRoute, notFound, Link } from "@tanstack/react-router";
 import { findH2H, h2hMatches } from "@/lib/seo/programmatic";
 import { canonical } from "@/lib/seo/canonical";
-import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
+import { breadcrumbList, faqPage, ldScript } from "@/lib/seo/jsonld";
 import { AffiliateStrip } from "@/components/affiliates/AffiliateStrip";
 import { AdSlot } from "@/components/ads/AdSlot";
 
@@ -15,8 +15,20 @@ export const Route = createFileRoute("/vs/$sport/$matchup")({
     if (!loaderData) return {};
     const { h2h, matches } = loaderData;
     const path = `/vs/${params.sport}/${params.matchup}`;
-    const title = `${h2h.teamA} vs ${h2h.teamB} — Head-to-Head Record at the FIFA World Cup`;
-    const desc = `${h2h.teamA} and ${h2h.teamB} have met ${matches.length} time${matches.length === 1 ? "" : "s"} at the FIFA World Cup. Full historical record, last meeting, scores and tournaments.`;
+    // compute tallies for FAQ answers
+    let aW = 0, bW = 0, dr = 0;
+    matches.forEach((m: { home_team: string; away_team: string; home_score: number; away_score: number; tournament_year: number }) => {
+      const aHome = m.home_team === h2h.teamA;
+      const aS = aHome ? m.home_score : m.away_score;
+      const bS = aHome ? m.away_score : m.home_score;
+      if (aS > bS) aW++; else if (aS < bS) bW++; else dr++;
+    });
+    const lastM = matches[matches.length - 1] as { home_team: string; away_team: string; home_score: number; away_score: number; tournament_year: number } | undefined;
+    const lastStr = lastM
+      ? `Their most recent World Cup meeting was at the ${lastM.tournament_year} tournament: ${lastM.home_team} ${lastM.home_score}–${lastM.away_score} ${lastM.away_team}.`
+      : "No previous World Cup meeting on record.";
+    const title = `${h2h.teamA} vs ${h2h.teamB} — World Cup Head-to-Head Record | PlaySports`;
+    const desc = `${h2h.teamA} vs ${h2h.teamB} at the FIFA World Cup: ${matches.length} meeting${matches.length === 1 ? "" : "s"}, ${h2h.teamA} ${aW}W · ${dr}D · ${h2h.teamB} ${bW}W. Full history, scores and tournaments.`;
     return {
       meta: [
         { title },
@@ -37,9 +49,15 @@ export const Route = createFileRoute("/vs/$sport/$matchup")({
           { name: "Football", path: "/football" },
           { name: `${h2h.teamA} vs ${h2h.teamB}`, path },
         ])),
+        ldScript(faqPage([
+          { q: `How many times have ${h2h.teamA} and ${h2h.teamB} met at the World Cup?`, a: `${h2h.teamA} and ${h2h.teamB} have met ${matches.length} time${matches.length === 1 ? "" : "s"} at the FIFA World Cup finals.` },
+          { q: `What is the ${h2h.teamA} vs ${h2h.teamB} World Cup head-to-head record?`, a: `${h2h.teamA} ${aW} wins, ${h2h.teamB} ${bW} wins, ${dr} draw${dr === 1 ? "" : "s"} across ${matches.length} World Cup meeting${matches.length === 1 ? "" : "s"}.` },
+          { q: `When did ${h2h.teamA} last play ${h2h.teamB} at the World Cup?`, a: lastStr },
+        ])),
       ],
     };
   },
+
   component: H2HPage,
   errorComponent: ({ error }) => <div className="p-6">Error: {error.message}</div>,
   notFoundComponent: () => <div className="p-6">Matchup not found.</div>,

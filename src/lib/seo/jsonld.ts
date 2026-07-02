@@ -85,6 +85,47 @@ export function sportsTeam(opts: { name: string; path: string; sport: string; le
   return node;
 }
 
+export function faqPage(items: Array<{ q: string; a: string }>) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: items.map((it) => ({
+      "@type": "Question",
+      name: it.q,
+      acceptedAnswer: { "@type": "Answer", text: it.a },
+    })),
+  };
+}
+
+export function itemList(opts: { name: string; path: string; items: Array<{ name: string; path: string }> }) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: opts.name,
+    url: canonical(opts.path),
+    numberOfItems: opts.items.length,
+    itemListElement: opts.items.map((it, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: it.name,
+      url: canonical(it.path),
+    })),
+  };
+}
+
+export function sportsOrganization(opts: { name: string; path: string; sport: string; logo?: string }) {
+  const node: Record<string, unknown> = {
+    "@context": "https://schema.org",
+    "@type": "SportsOrganization",
+    name: opts.name,
+    url: canonical(opts.path),
+    sport: opts.sport,
+  };
+  if (opts.logo) node.logo = opts.logo;
+  return node;
+}
+
 export function ldScript(data: unknown) {
   return { type: "application/ld+json" as const, children: JSON.stringify(data) };
 }
+

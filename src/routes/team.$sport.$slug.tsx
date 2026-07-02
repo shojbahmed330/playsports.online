@@ -1,9 +1,10 @@
 import { createFileRoute, notFound, Link } from "@tanstack/react-router";
-import { findTeam, teamStats } from "@/lib/seo/programmatic";
+import { findTeam, teamStats, listTeams } from "@/lib/seo/programmatic";
 import { canonical } from "@/lib/seo/canonical";
-import { breadcrumbList, sportsTeam, ldScript } from "@/lib/seo/jsonld";
+import { breadcrumbList, sportsTeam, faqPage, itemList, ldScript } from "@/lib/seo/jsonld";
 import { AffiliateStrip } from "@/components/affiliates/AffiliateStrip";
 import { AdSlot } from "@/components/ads/AdSlot";
+
 
 export const Route = createFileRoute("/team/$sport/$slug")({
   loader: ({ params }) => {
@@ -39,7 +40,22 @@ export const Route = createFileRoute("/team/$sport/$slug")({
           { name: "Football", path: "/football" },
           { name: team.name, path },
         ])),
+        ldScript(itemList({
+          name: `${team.name} top World Cup scorers`,
+          path,
+          items: stats.topScorers.slice(0, 10).map((p: { name: string; goals: number }) => ({
+            name: `${p.name} (${p.goals} goals)`,
+            path: `/player/football_wc/${p.name.toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")}`,
+          })),
+        })),
+        ldScript(faqPage([
+          { q: `How many World Cup matches has ${team.name} played?`, a: `${team.name} has played ${stats.matchesPlayed} FIFA World Cup matches across ${stats.years.length} tournament appearances, with a record of ${stats.w} wins, ${stats.d} draws and ${stats.l} losses.` },
+          { q: `Who is ${team.name}'s all-time top World Cup scorer?`, a: stats.topScorers[0] ? `${stats.topScorers[0].name} leads ${team.name} with ${stats.topScorers[0].goals} World Cup goals.` : `${team.name} does not yet have a leading World Cup scorer on record.` },
+          { q: `How many World Cup goals has ${team.name} scored?`, a: `${team.name} has scored ${stats.gf} goals and conceded ${stats.ga} at the FIFA World Cup finals.` },
+          { q: `When did ${team.name} appear at the World Cup?`, a: stats.years.length ? `${team.name} appeared at the FIFA World Cup in ${stats.years.join(", ")}.` : `${team.name} has no recorded World Cup appearances yet.` },
+        ])),
       ],
+
     };
   },
   component: TeamPage,
@@ -101,9 +117,35 @@ function TeamPage() {
           ))}
         </div>
       </section>
+
+      <section className="mt-8">
+        <h2 className="text-xl font-semibold mb-3">Frequently asked about {team.name} at the World Cup</h2>
+        <div className="space-y-3">
+          {[
+            { q: `How many World Cup matches has ${team.name} played?`, a: `${team.name} has played ${stats.matchesPlayed} FIFA World Cup matches across ${stats.years.length} tournament appearances, with a record of ${stats.w} wins, ${stats.d} draws and ${stats.l} losses.` },
+            { q: `Who is ${team.name}'s all-time top World Cup scorer?`, a: stats.topScorers[0] ? `${stats.topScorers[0].name} leads ${team.name} with ${stats.topScorers[0].goals} World Cup goals.` : `${team.name} does not yet have a leading World Cup scorer on record.` },
+            { q: `How many World Cup goals has ${team.name} scored?`, a: `${team.name} has scored ${stats.gf} goals and conceded ${stats.ga} at the FIFA World Cup finals.` },
+          ].map((f) => (
+            <details key={f.q} className="rounded-lg border px-4 py-3">
+              <summary className="font-medium cursor-pointer">{f.q}</summary>
+              <p className="mt-2 text-sm text-muted-foreground">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </section>
+
+      <section className="mt-8">
+        <h2 className="text-xl font-semibold mb-3">Explore more World Cup teams</h2>
+        <div className="flex flex-wrap gap-2">
+          {listTeams().filter((t) => t.slug !== Route.useParams().slug).slice(0, 20).map((t) => (
+            <Link key={t.slug} to="/team/$sport/$slug" params={{ sport: "football_wc", slug: t.slug }} className="px-3 py-1 rounded-full bg-muted text-xs hover:bg-accent">{t.name}</Link>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }
+
 
 function Stat({ label, value }: { label: string; value: number | string }) {
   return (

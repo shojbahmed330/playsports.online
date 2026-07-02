@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { TeamCrest } from "@/components/cricket/TeamCrest";
-import { useQuery } from "@tanstack/react-query";
+import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState, type ReactNode } from "react";
 import { ArrowLeft, MapPin, Tv, Trophy, Activity } from "lucide-react";
@@ -19,29 +19,66 @@ const searchSchema = z.object({
   leagueId: z.string().default("8048"),
 });
 
+const detailOpts = (leagueId: string, eventId: string) =>
+  queryOptions({
+    queryKey: ["cricket", "match", leagueId, eventId],
+    queryFn: () => getCricketMatchDetail({ data: { leagueId, eventId } }),
+    staleTime: 15_000,
+  });
+
 export const Route = createFileRoute("/cricket/match/$id")({
   validateSearch: searchSchema,
   loaderDeps: ({ search }) => ({ leagueId: search.leagueId }),
-  head: ({ params }) => {
+  loader: async ({ params, deps, context }) => {
+    try {
+      return await context.queryClient.ensureQueryData(detailOpts(deps.leagueId, params.id));
+    } catch {
+      return { match: null, innings: [], commentary: [], error: null } as unknown as Awaited<ReturnType<typeof getCricketMatchDetail>>;
+    }
+  },
+  head: ({ params, loaderData }) => {
     const url = `https://www.playsports.online/cricket/match/${params.id}`;
+    const m = loaderData?.match;
+    let title = "Live Cricket Scorecard — PlaySports";
+    let desc = "Live cricket scorecard, batting and bowling figures, commentary and lineups.";
+    const jsonld: unknown[] = [];
+    if (m) {
+      const vs = `${m.away.name} vs ${m.home.name}`;
+      const ctx = m.leagueName || m.leagueAbbr || "Cricket";
+      const statusTag = m.status === "in" ? "Live Scorecard" : m.status === "post" ? "Result & Scorecard" : "Preview & Scorecard";
+      title = `${vs} — ${ctx} ${statusTag} | PlaySports`;
+      desc = `${vs} in ${ctx}${m.venue ? ` at ${m.venue}${m.city ? `, ${m.city}` : ""}` : ""}. ${m.status === "post" && m.note ? m.note + ". " : ""}Live scorecard, batting/bowling figures, commentary and lineups.`;
+      jsonld.push(sportsEvent({
+        name: `${vs} — ${ctx}`,
+        path: `/cricket/match/${params.id}`,
+        sport: "Cricket",
+        startDate: m.startTs ? new Date(m.startTs).toISOString() : undefined,
+        homeTeam: m.home.name,
+        awayTeam: m.away.name,
+        location: m.venue ? `${m.venue}${m.city ? `, ${m.city}` : ""}` : undefined,
+        status: m.status === "in" ? "live" : m.status === "post" ? "ended" : "scheduled",
+      }));
+    } else {
+      jsonld.push(sportsEvent({ name: `Cricket Match ${params.id}`, path: `/cricket/match/${params.id}`, sport: "Cricket" }));
+    }
+    jsonld.push(breadcrumbList([
+      { name: "Home", path: "/" },
+      { name: "Cricket", path: "/cricket" },
+      { name: "Scores", path: "/cricket/scores" },
+      { name: m ? `${m.away.abbr} vs ${m.home.abbr}` : "Match", path: `/cricket/match/${params.id}` },
+    ]));
     return {
       meta: [
-        { title: "Live Cricket Scorecard — PlaySports" },
-        { name: "description", content: "Live cricket scorecard, batting and bowling figures, commentary and lineups." },
-        { property: "og:title", content: "Live Cricket Scorecard" },
-        { property: "og:description", content: "Live scorecard, commentary and lineups." },
+        { title },
+        { name: "description", content: desc },
+        { property: "og:title", content: title },
+        { property: "og:description", content: desc },
         { property: "og:url", content: url },
+        { property: "og:type", content: "article" },
+        { name: "twitter:card", content: "summary_large_image" },
       ],
       links: [{ rel: "canonical", href: url }],
-      scripts: [
-        ldScript(sportsEvent({ name: `Cricket Match ${params.id}`, path: `/cricket/match/${params.id}`, sport: "Cricket" })),
-        ldScript(breadcrumbList([
-          { name: "Home", path: "/" },
-          { name: "Cricket", path: "/cricket" },
-          { name: "Scores", path: "/cricket/scores" },
-          { name: "Match", path: `/cricket/match/${params.id}` },
-        ])),
-      ],
+      scripts: jsonld.map((n) => ldScript(n)),
     };
   },
 
@@ -64,10 +101,9 @@ function MatchPage() {
   const { id } = Route.useParams();
   const { leagueId } = Route.useSearch();
   const fn = useServerFn(getCricketMatchDetail);
-  const q = useQuery({
-    queryKey: ["cricket", "match", leagueId, id],
+  const q = useSuspenseQuery({
+    ...detailOpts(leagueId, id),
     queryFn: () => fn({ data: { leagueId, eventId: id } }),
-    staleTime: 5_000,
     refetchInterval: (qq) => {
       const d = qq.state.data as { match?: { status: string } | null } | undefined;
       return d?.match?.status === "in" ? 10_000 : false;
@@ -79,6 +115,8 @@ function MatchPage() {
   const innings = q.data?.innings ?? [];
   const commentary = q.data?.commentary ?? [];
   const [playerId, setPlayerId] = useState<string | null>(null);
+
+
 
 
   if (q.isLoading) {
