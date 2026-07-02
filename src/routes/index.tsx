@@ -208,7 +208,7 @@ function HubPage() {
       {/* 3. STICKY SPORT TABS */}
       <SportChipTabs value={filter} onChange={setFilter} counts={counts} />
 
-      <main id="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-8 sm:space-y-10">
+      <main id="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 pt-6 sm:pt-8 pb-2 sm:pb-4 space-y-8 sm:space-y-10">
         {/* FOR YOU — quick-scan 3 cards (only on All filter) */}
         {filter === "all" && (
           <ForYouStrip
