@@ -12,6 +12,31 @@ export type Database = {
   __InternalSupabase: {
     PostgrestVersion: "14.5"
   }
+  graphql_public: {
+    Tables: {
+      [_ in never]: never
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      graphql: {
+        Args: {
+          extensions?: Json
+          operationName?: string
+          query?: string
+          variables?: Json
+        }
+        Returns: Json
+      }
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
   public: {
     Tables: {
       affiliate_links: {
@@ -308,9 +333,157 @@ export type Database = {
         }
         Relationships: []
       }
+      wc_appearances: {
+        Row: {
+          assists: number | null
+          clean_sheets: number | null
+          country: string
+          goals: number | null
+          id: number
+          matches_played: number | null
+          minutes_played: number | null
+          player_name: string
+          red_cards: number | null
+          tournament_year: number | null
+          yellow_cards: number | null
+        }
+        Insert: {
+          assists?: number | null
+          clean_sheets?: number | null
+          country: string
+          goals?: number | null
+          id?: number
+          matches_played?: number | null
+          minutes_played?: number | null
+          player_name: string
+          red_cards?: number | null
+          tournament_year?: number | null
+          yellow_cards?: number | null
+        }
+        Update: {
+          assists?: number | null
+          clean_sheets?: number | null
+          country?: string
+          goals?: number | null
+          id?: number
+          matches_played?: number | null
+          minutes_played?: number | null
+          player_name?: string
+          red_cards?: number | null
+          tournament_year?: number | null
+          yellow_cards?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wc_appearances_tournament_year_fkey"
+            columns: ["tournament_year"]
+            isOneToOne: false
+            referencedRelation: "wc_tournaments"
+            referencedColumns: ["year"]
+          },
+        ]
+      }
+      wc_cards: {
+        Row: {
+          card_type: string | null
+          country: string
+          id: number
+          match_id: number | null
+          minute: number | null
+          player_name: string
+          reason: string | null
+          tournament_year: number | null
+        }
+        Insert: {
+          card_type?: string | null
+          country: string
+          id?: number
+          match_id?: number | null
+          minute?: number | null
+          player_name: string
+          reason?: string | null
+          tournament_year?: number | null
+        }
+        Update: {
+          card_type?: string | null
+          country?: string
+          id?: number
+          match_id?: number | null
+          minute?: number | null
+          player_name?: string
+          reason?: string | null
+          tournament_year?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wc_cards_match_id_fkey"
+            columns: ["match_id"]
+            isOneToOne: false
+            referencedRelation: "wc_matches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "wc_cards_tournament_year_fkey"
+            columns: ["tournament_year"]
+            isOneToOne: false
+            referencedRelation: "wc_tournaments"
+            referencedColumns: ["year"]
+          },
+        ]
+      }
+      wc_goals: {
+        Row: {
+          country: string
+          extra_minute: number | null
+          goal_type: string | null
+          id: number
+          match_id: number | null
+          match_period: string | null
+          minute: number | null
+          player_name: string
+          tournament_year: number | null
+        }
+        Insert: {
+          country: string
+          extra_minute?: number | null
+          goal_type?: string | null
+          id?: number
+          match_id?: number | null
+          match_period?: string | null
+          minute?: number | null
+          player_name: string
+          tournament_year?: number | null
+        }
+        Update: {
+          country?: string
+          extra_minute?: number | null
+          goal_type?: string | null
+          id?: number
+          match_id?: number | null
+          match_period?: string | null
+          minute?: number | null
+          player_name?: string
+          tournament_year?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wc_goals_match_id_fkey"
+            columns: ["match_id"]
+            isOneToOne: false
+            referencedRelation: "wc_matches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "wc_goals_tournament_year_fkey"
+            columns: ["tournament_year"]
+            isOneToOne: false
+            referencedRelation: "wc_tournaments"
+            referencedColumns: ["year"]
+          },
+        ]
+      }
       wc_groups: {
         Row: {
-          created_at: string
           drawn: number | null
           goals_against: number | null
           goals_for: number | null
@@ -322,12 +495,10 @@ export type Database = {
           position: number | null
           qualified: boolean | null
           team: string
-          tournament_year: number
-          updated_at: string
+          tournament_year: number | null
           won: number | null
         }
         Insert: {
-          created_at?: string
           drawn?: number | null
           goals_against?: number | null
           goals_for?: number | null
@@ -339,12 +510,10 @@ export type Database = {
           position?: number | null
           qualified?: boolean | null
           team: string
-          tournament_year: number
-          updated_at?: string
+          tournament_year?: number | null
           won?: number | null
         }
         Update: {
-          created_at?: string
           drawn?: number | null
           goals_against?: number | null
           goals_for?: number | null
@@ -356,8 +525,7 @@ export type Database = {
           position?: number | null
           qualified?: boolean | null
           team?: string
-          tournament_year?: number
-          updated_at?: string
+          tournament_year?: number | null
           won?: number | null
         }
         Relationships: [
@@ -370,13 +538,49 @@ export type Database = {
           },
         ]
       }
+      wc_match_events: {
+        Row: {
+          event_type: string | null
+          id: number
+          match_id: number | null
+          minute: number | null
+          player_name: string | null
+          team: string | null
+        }
+        Insert: {
+          event_type?: string | null
+          id?: number
+          match_id?: number | null
+          minute?: number | null
+          player_name?: string | null
+          team?: string | null
+        }
+        Update: {
+          event_type?: string | null
+          id?: number
+          match_id?: number | null
+          minute?: number | null
+          player_name?: string | null
+          team?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wc_match_events_match_id_fkey"
+            columns: ["match_id"]
+            isOneToOne: false
+            referencedRelation: "wc_matches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       wc_matches: {
         Row: {
           away_score: number | null
           away_score_pen: number | null
           away_team: string
           city: string | null
-          created_at: string
+          created_at: string | null
+          group_name: string | null
           home_score: number | null
           home_score_pen: number | null
           home_team: string
@@ -385,8 +589,7 @@ export type Database = {
           match_number: number | null
           round: string
           stadium: string | null
-          tournament_year: number
-          updated_at: string
+          tournament_year: number | null
           video_url: string | null
         }
         Insert: {
@@ -394,7 +597,8 @@ export type Database = {
           away_score_pen?: number | null
           away_team: string
           city?: string | null
-          created_at?: string
+          created_at?: string | null
+          group_name?: string | null
           home_score?: number | null
           home_score_pen?: number | null
           home_team: string
@@ -403,8 +607,7 @@ export type Database = {
           match_number?: number | null
           round: string
           stadium?: string | null
-          tournament_year: number
-          updated_at?: string
+          tournament_year?: number | null
           video_url?: string | null
         }
         Update: {
@@ -412,7 +615,8 @@ export type Database = {
           away_score_pen?: number | null
           away_team?: string
           city?: string | null
-          created_at?: string
+          created_at?: string | null
+          group_name?: string | null
           home_score?: number | null
           home_score_pen?: number | null
           home_team?: string
@@ -421,8 +625,7 @@ export type Database = {
           match_number?: number | null
           round?: string
           stadium?: string | null
-          tournament_year?: number
-          updated_at?: string
+          tournament_year?: number | null
           video_url?: string | null
         }
         Relationships: [
@@ -435,35 +638,129 @@ export type Database = {
           },
         ]
       }
+      wc_players: {
+        Row: {
+          country: string
+          created_at: string | null
+          date_of_birth: string | null
+          id: number
+          name: string
+          player_id: string | null
+          position: string | null
+        }
+        Insert: {
+          country: string
+          created_at?: string | null
+          date_of_birth?: string | null
+          id?: number
+          name: string
+          player_id?: string | null
+          position?: string | null
+        }
+        Update: {
+          country?: string
+          created_at?: string | null
+          date_of_birth?: string | null
+          id?: number
+          name?: string
+          player_id?: string | null
+          position?: string | null
+        }
+        Relationships: []
+      }
+      wc_squads: {
+        Row: {
+          country: string
+          id: number
+          is_captain: boolean | null
+          player_name: string
+          position: string | null
+          shirt_number: number | null
+          tournament_year: number | null
+        }
+        Insert: {
+          country: string
+          id?: number
+          is_captain?: boolean | null
+          player_name: string
+          position?: string | null
+          shirt_number?: number | null
+          tournament_year?: number | null
+        }
+        Update: {
+          country?: string
+          id?: number
+          is_captain?: boolean | null
+          player_name?: string
+          position?: string | null
+          shirt_number?: number | null
+          tournament_year?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wc_squads_tournament_year_fkey"
+            columns: ["tournament_year"]
+            isOneToOne: false
+            referencedRelation: "wc_tournaments"
+            referencedColumns: ["year"]
+          },
+        ]
+      }
+      wc_teams: {
+        Row: {
+          flag_code: string | null
+          id: number
+          name: string
+          tournament_year: number | null
+        }
+        Insert: {
+          flag_code?: string | null
+          id?: number
+          name: string
+          tournament_year?: number | null
+        }
+        Update: {
+          flag_code?: string | null
+          id?: number
+          name?: string
+          tournament_year?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wc_teams_tournament_year_fkey"
+            columns: ["tournament_year"]
+            isOneToOne: false
+            referencedRelation: "wc_tournaments"
+            referencedColumns: ["year"]
+          },
+        ]
+      }
       wc_tournaments: {
         Row: {
           champion: string | null
-          created_at: string
           fourth_place: string | null
-          host_country: string | null
+          host_country: string
+          id: number
           runner_up: string | null
           third_place: string | null
-          updated_at: string
           year: number
         }
         Insert: {
           champion?: string | null
-          created_at?: string
           fourth_place?: string | null
-          host_country?: string | null
+          host_country: string
+          id?: number
           runner_up?: string | null
           third_place?: string | null
-          updated_at?: string
           year: number
         }
         Update: {
           champion?: string | null
-          created_at?: string
           fourth_place?: string | null
-          host_country?: string | null
+          host_country?: string
+          id?: number
           runner_up?: string | null
           third_place?: string | null
-          updated_at?: string
           year?: number
         }
         Relationships: []
@@ -608,6 +905,9 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
+  graphql_public: {
+    Enums: {},
+  },
   public: {
     Enums: {
       app_role: ["admin", "moderator", "user"],
