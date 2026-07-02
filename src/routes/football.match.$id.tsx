@@ -116,6 +116,9 @@ function MatchPage() {
           <>
             <LiveMatchCenter fixture={fx} />
 
+            <MatchHighlightCard home={fx.home.name} away={fx.away.name} />
+
+
             <WinProbabilityChart fx={fx} />
             <MomentumChart fx={fx} />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
