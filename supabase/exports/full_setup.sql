@@ -429,6 +429,54 @@ END $mig$;
 
 
 --
+-- Name: wc_tournaments wc_tournaments_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+DO $mig$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'wc_tournaments_pkey') THEN
+    ALTER TABLE ONLY public.wc_tournaments
+    ADD CONSTRAINT wc_tournaments_pkey PRIMARY KEY (year);
+  END IF;
+END $mig$;
+
+
+--
+-- Name: wc_matches wc_matches_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+DO $mig$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'wc_matches_pkey') THEN
+    ALTER TABLE ONLY public.wc_matches
+    ADD CONSTRAINT wc_matches_pkey PRIMARY KEY (id);
+  END IF;
+END $mig$;
+
+
+--
+-- Name: wc_groups wc_groups_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+DO $mig$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'wc_groups_pkey') THEN
+    ALTER TABLE ONLY public.wc_groups
+    ADD CONSTRAINT wc_groups_pkey PRIMARY KEY (id);
+  END IF;
+END $mig$;
+
+
+--
+-- Name: wc_groups wc_groups_tournament_year_group_name_team_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+DO $mig$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'wc_groups_tournament_year_group_name_team_key') THEN
+    ALTER TABLE ONLY public.wc_groups
+    ADD CONSTRAINT wc_groups_tournament_year_group_name_team_key UNIQUE (tournament_year, group_name, team);
+  END IF;
+END $mig$;
+
+
+--
 -- Name: contact_messages_created_at_idx; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -454,6 +502,27 @@ CREATE INDEX IF NOT EXISTS newsletter_subscribers_created_at_idx ON public.newsl
 --
 
 CREATE UNIQUE INDEX IF NOT EXISTS newsletter_subscribers_unsub_token_idx ON public.newsletter_subscribers USING btree (unsubscribe_token);
+
+
+--
+-- Name: wc_matches_year_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX IF NOT EXISTS wc_matches_year_idx ON public.wc_matches USING btree (tournament_year);
+
+
+--
+-- Name: wc_matches_date_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX IF NOT EXISTS wc_matches_date_idx ON public.wc_matches USING btree (match_date);
+
+
+--
+-- Name: wc_groups_year_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX IF NOT EXISTS wc_groups_year_idx ON public.wc_groups USING btree (tournament_year);
 
 
 --
