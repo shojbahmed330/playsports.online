@@ -105,7 +105,7 @@ function StagePage() {
       <section className="mt-4">
         <h2 className="text-xl font-semibold mb-3">Matches in this stage</h2>
         <ul className="divide-y rounded-lg border">
-          {stage.matches.map((m) => (
+          {stage.matches.map((m: { matchNo: number; dateISO?: string; stadium?: string; city?: string }) => (
             <li key={m.matchNo} className="flex justify-between items-center px-4 py-2">
               <Link
                 to="/football/match/$id"

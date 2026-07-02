@@ -110,7 +110,7 @@ function FootballTeamPage() {
       <section className="mt-8">
         <h2 className="text-xl font-semibold mb-3">Recent World Cup Matches</h2>
         <ul className="space-y-2">
-          {stats.recentMatches.map((m, i: number) => (
+          {stats.recentMatches.map((m: { match_date?: string; round?: string; home_team: string; home_score: number; away_score: number; away_team: string }, i: number) => (
             <li key={i} className="flex justify-between border rounded px-3 py-2 text-sm">
               <span>{m.match_date} · {m.round}</span>
               <span className="font-medium">
