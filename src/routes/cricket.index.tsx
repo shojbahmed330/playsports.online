@@ -28,8 +28,15 @@ export const Route = createFileRoute("/cricket/")({
     links: [{ rel: "canonical", href: "https://www.playsports.online/cricket" }],
     scripts: [
       ldScript(collectionPage({ name: "Cricket — Live Scores, Series & Players", description: "Cricket hub: live scores, series, players, rankings and records.", path: "/cricket" })),
+      ldScript(sportsOrganization({ name: "International Cricket", path: "/cricket", sport: "Cricket" })),
       ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "Cricket", path: "/cricket" }])),
+      ldScript(faqPage([
+        { q: "Which cricket competitions does PlaySports cover?", a: "PlaySports covers international cricket (ICC World Cup, Champions Trophy, bilateral series), T20 leagues (IPL, PSL, BBL, CPL, The Hundred) and domestic first-class competitions with live scores and full scorecards." },
+        { q: "How often do cricket scores update?", a: "Live cricket scorecards on PlaySports refresh every 10–15 seconds while play is in progress, with ball-by-ball commentary when available." },
+        { q: "Can I see player career stats?", a: "Yes — batting and bowling career records from ESPNcricinfo Statsguru are shown on every player profile linked from live scorecards." },
+      ])),
     ],
+
   }),
   loader: async ({ context }) => {
     const leagueIds = CRICKET_LEAGUES.map((l) => l.id);
