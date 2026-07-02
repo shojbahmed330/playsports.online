@@ -1,27 +1,8 @@
-import { createClient } from "@supabase/supabase-js";
-
-// ⚠️ LEGACY WORLD CUP ARCHIVE BACKEND ⚠️
-// This is a SEPARATE, read-only Supabase project that hosts the historical
-// FIFA World Cup dataset (wc_matches, wc_tournaments, wc_groups, wc2026_*).
-// It is NOT the project's main Lovable Cloud backend — for auth, memberships,
-// admin, newsletter, affiliates, digest, etc. use:
-//   import { supabase } from "@/integrations/supabase/client";
-//
-// If you want to fully own this data, migrate these tables into Lovable Cloud
-// and swap this import out — until then this client stays hardcoded because
-// the anon key belongs to a different Supabase org.
-const SUPABASE_URL = "https://vagqeperdsumxwukwbes.supabase.co";
-const SUPABASE_ANON_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZhZ3FlcGVyZHN1bXh3dWt3YmVzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE5NzM1NjcsImV4cCI6MjA5NzU0OTU2N30.NGV1fXknh7dqhjld8lr65tZGgEWhZ7BktzEfRshCSs4";
-
-export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-  auth: {
-    persistSession: typeof window !== "undefined",
-    autoRefreshToken: typeof window !== "undefined",
-    storage: typeof window !== "undefined" ? window.localStorage : undefined,
-    detectSessionInUrl: typeof window !== "undefined",
-  },
-});
+// Single source of truth for the browser Supabase client.
+// The env-driven client at `@/integrations/supabase/client` connects to
+// your own Supabase project (vagqeperdsumxwukwbes) via VITE_SUPABASE_*
+// env vars — see `.env`. Everything re-exports from here.
+export { supabase } from "@/integrations/supabase/client";
 
 export type WCTournament = {
   year: number;
@@ -68,6 +49,4 @@ export type WCGroup = {
 };
 
 import { FOOTBALL_WC } from "./tournament-config";
-
-/** Single source of truth — see src/lib/tournament-config.ts. */
 export const WC_YEARS: number[] = [...FOOTBALL_WC.years];
