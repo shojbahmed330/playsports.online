@@ -18,6 +18,7 @@ import { GlobalMobileNav } from "../components/nav/GlobalMobileNav";
 import { AnalyticsLoader } from "../components/site/AnalyticsLoader";
 import { CookieConsent } from "../components/site/CookieConsent";
 import { SiteFooter } from "../components/site/SiteFooter";
+import { FootballLiveBadge } from "../components/football/FootballLiveBadge";
 
 function NotFoundComponent() {
   return (
@@ -170,6 +171,8 @@ function RootComponent() {
       <SiteFooter />
       {/* Always-on mobile bottom nav — picks tabs based on current route. */}
       <GlobalMobileNav />
+      {/* Global "Live now" pill — WC 2026 live match one-tap access. */}
+      <FootballLiveBadge />
       <CookieConsent />
       <Toaster position="bottom-right" theme="dark" richColors />
     </QueryClientProvider>
