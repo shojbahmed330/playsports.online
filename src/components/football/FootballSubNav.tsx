@@ -42,7 +42,20 @@ export function FootballSubNav({
                   role="tab"
                   aria-selected={isActive}
                   aria-current={isActive ? "page" : undefined}
-                  onClick={() => onChange(t.id)}
+                  onClick={() => {
+                    onChange(t.id);
+                    if (typeof window !== "undefined" && window.innerWidth < 640) {
+                      const targetId = t.id === "scorers" ? "scorers" : "fixtures";
+                      requestAnimationFrame(() => {
+                        setTimeout(() => {
+                          const el = document.getElementById(targetId);
+                          if (!el) return;
+                          const y = el.getBoundingClientRect().top + window.scrollY - 120;
+                          window.scrollTo({ top: y, behavior: "smooth" });
+                        }, 80);
+                      });
+                    }
+                  }}
                   className={`tap-target relative shrink-0 inline-flex items-center justify-center gap-1.5 rounded-xl px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-semibold transition-all snap-start ${
                     isActive
                       ? "text-black"
