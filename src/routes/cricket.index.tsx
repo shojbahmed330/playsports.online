@@ -13,7 +13,7 @@ import { AffiliateStrip } from "@/components/affiliates/AffiliateStrip";
 import { CricketMatchCard } from "@/components/cricket/CricketMatchCard";
 import { getMultiCricketToday, type CricketMatch } from "@/lib/cricket.functions";
 import { CRICKET_LEAGUES, CRICKET_LEAGUE_BY_ID, type CricketLeague } from "@/lib/cricket-leagues";
-import { breadcrumbList, collectionPage, ldScript } from "@/lib/seo/jsonld";
+import { breadcrumbList, collectionPage, sportsOrganization, faqPage, ldScript } from "@/lib/seo/jsonld";
 
 
 export const Route = createFileRoute("/cricket/")({
