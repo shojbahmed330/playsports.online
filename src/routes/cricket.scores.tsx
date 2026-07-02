@@ -147,7 +147,7 @@ function CricketScoresPage() {
           <div className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-3">
             <div className="min-w-0">
               <div className="text-[10px] uppercase tracking-[0.2em] font-bold text-emerald-300/80 mb-1">Cricket scores</div>
-              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight truncate">Live, today, upcoming & results</h1>
+              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight truncate">Cricket — Live, today, upcoming & results</h1>
             </div>
             {q.isFetching && !q.isLoading && (
               <span className="shrink-0 text-[10px] text-emerald-200/70 inline-flex items-center gap-1.5">
