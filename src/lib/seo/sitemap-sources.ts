@@ -72,60 +72,57 @@ async function safeCall<T>(fn: () => Promise<T>, fallback: T, label: string): Pr
   }
 }
 
+function pluckIds(list: readonly { id?: string | number | null }[]): string[] {
+  const out: string[] = [];
+  for (const item of list) {
+    if (item?.id != null && item.id !== "") out.push(String(item.id));
+  }
+  return out;
+}
+
 export async function mlbTeamUrls(): Promise<DynamicUrl[]> {
-  const res = await safeCall(() => getMlbTeams(), { teams: [] as Array<{ id: string }> }, "getMlbTeams");
-  return res.teams
-    .filter((t) => t.id)
-    .map((t) => ({ path: `/mlb/team/${t.id}`, changefreq: "weekly" as const, priority: "0.7" }));
+  const res = await safeCall(() => getMlbTeams(), { teams: [] }, "getMlbTeams");
+  return pluckIds(res.teams).map((id) => ({ path: `/mlb/team/${id}`, changefreq: "weekly" as const, priority: "0.7" }));
 }
 
 export async function nbaTeamUrls(): Promise<DynamicUrl[]> {
-  const res = await safeCall(() => getNbaTeams(), { teams: [] as Array<{ id: string }> }, "getNbaTeams");
-  return res.teams
-    .filter((t) => t.id)
-    .map((t) => ({ path: `/nba/team/${t.id}`, changefreq: "weekly" as const, priority: "0.7" }));
+  const res = await safeCall(() => getNbaTeams(), { teams: [] }, "getNbaTeams");
+  return pluckIds(res.teams).map((id) => ({ path: `/nba/team/${id}`, changefreq: "weekly" as const, priority: "0.7" }));
 }
 
 export async function nhlTeamUrls(): Promise<DynamicUrl[]> {
-  const res = await safeCall(() => getNhlTeams(), { teams: [] as Array<{ id: string }> }, "getNhlTeams");
-  return res.teams
-    .filter((t) => t.id)
-    .map((t) => ({ path: `/nhl/team/${t.id}`, changefreq: "weekly" as const, priority: "0.7" }));
+  const res = await safeCall(() => getNhlTeams(), { teams: [] }, "getNhlTeams");
+  return pluckIds(res.teams).map((id) => ({ path: `/nhl/team/${id}`, changefreq: "weekly" as const, priority: "0.7" }));
 }
 
 export async function mlsTeamUrls(): Promise<DynamicUrl[]> {
-  const res = await safeCall(() => getMlsTeams(), { teams: [] as Array<{ id: string }> }, "getMlsTeams");
-  return res.teams
-    .filter((t) => t.id)
-    .map((t) => ({ path: `/mls/team/${t.id}`, changefreq: "weekly" as const, priority: "0.7" }));
+  const res = await safeCall(() => getMlsTeams(), { teams: [] }, "getMlsTeams");
+  return pluckIds(res.teams).map((id) => ({ path: `/mls/team/${id}`, changefreq: "weekly" as const, priority: "0.7" }));
 }
 
 export async function iplTeamUrls(): Promise<DynamicUrl[]> {
-  const res = await safeCall(
-    () => getIplTeams(),
-    { teams: [] as Array<{ id: string | number }> },
-    "getIplTeams",
-  );
-  return res.teams
-    .filter((t) => t.id)
-    .map((t) => ({ path: `/cricket/ipl/teams/${t.id}`, changefreq: "weekly" as const, priority: "0.7" }));
+  const res = await safeCall(() => getIplTeams(), { teams: [] }, "getIplTeams");
+  return pluckIds(res.teams).map((id) => ({
+    path: `/cricket/ipl/teams/${id}`,
+    changefreq: "weekly" as const,
+    priority: "0.7",
+  }));
 }
 
 export async function cricketSeriesUrls(): Promise<DynamicUrl[]> {
   const bilateral = await safeCall(
     () => getBilateralSeriesList(),
-    { series: [] as Array<{ id: string | number }> },
+    { tours: [], error: null as string | null },
     "getBilateralSeriesList",
   );
   const generic = await safeCall(
     () => getCricketSeriesList(),
-    { series: [] as Array<{ id: string | number }> },
+    { series: [] },
     "getCricketSeriesList",
   );
   const ids = new Set<string>();
-  for (const s of [...bilateral.series, ...generic.series]) {
-    if (s.id != null) ids.add(String(s.id));
-  }
+  for (const t of bilateral.tours) if (t?.id) ids.add(String(t.id));
+  for (const s of generic.series) if (s?.id != null) ids.add(String(s.id));
   return Array.from(ids).map((id) => ({
     path: `/cricket/series/${id}`,
     changefreq: "daily" as const,
