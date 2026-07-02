@@ -396,7 +396,7 @@ CREATE UNIQUE INDEX newsletter_subscribers_unsub_token_idx ON public.newsletter_
 -- Name: memberships memberships_touch; Type: TRIGGER; Schema: public; Owner: -
 --
 
-DROP TRIGGER IF EXISTS memberships_touch ON public.touch_updated_at;
+DROP TRIGGER IF EXISTS memberships_touch ON public.memberships;
 CREATE TRIGGER memberships_touch BEFORE UPDATE ON public.memberships FOR EACH ROW EXECUTE FUNCTION public.touch_updated_at();
 
 
@@ -404,7 +404,7 @@ CREATE TRIGGER memberships_touch BEFORE UPDATE ON public.memberships FOR EACH RO
 -- Name: affiliate_links trg_affiliate_links_updated; Type: TRIGGER; Schema: public; Owner: -
 --
 
-DROP TRIGGER IF EXISTS trg_affiliate_links_updated ON public.touch_updated_at;
+DROP TRIGGER IF EXISTS trg_affiliate_links_updated ON public.affiliate_links;
 CREATE TRIGGER trg_affiliate_links_updated BEFORE UPDATE ON public.affiliate_links FOR EACH ROW EXECUTE FUNCTION public.touch_updated_at();
 
 
@@ -412,7 +412,7 @@ CREATE TRIGGER trg_affiliate_links_updated BEFORE UPDATE ON public.affiliate_lin
 -- Name: sponsored_slots trg_sponsored_slots_updated; Type: TRIGGER; Schema: public; Owner: -
 --
 
-DROP TRIGGER IF EXISTS trg_sponsored_slots_updated ON public.touch_updated_at;
+DROP TRIGGER IF EXISTS trg_sponsored_slots_updated ON public.sponsored_slots;
 CREATE TRIGGER trg_sponsored_slots_updated BEFORE UPDATE ON public.sponsored_slots FOR EACH ROW EXECUTE FUNCTION public.touch_updated_at();
 
 
