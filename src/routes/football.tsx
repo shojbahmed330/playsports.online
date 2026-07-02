@@ -9,7 +9,9 @@ import { TournamentInfoCard } from "@/components/wc/TournamentInfoCard";
 import { GroupStage } from "@/components/wc/GroupStage";
 import { MatchCard, type RoundKey } from "@/components/wc/MatchCard";
 import { MatchModal } from "@/components/wc/MatchModal";
-import { YearStrip } from "@/components/wc/YearStrip";
+import { YearDropdown } from "@/components/wc/YearDropdown";
+import { FavoriteTeamPicker } from "@/components/common/FavoriteTeamPicker";
+import { Star } from "lucide-react";
 import { MobileBracket } from "@/components/wc/MobileBracket";
 
 import groupMatchesData from "@/data/wc_group_matches.json";
@@ -135,6 +137,7 @@ function Index() {
   const [userPickedTab, setUserPickedTab] = useState<boolean>(!!search.tab);
   const [hintSeen, setHintSeen] = useState(true);
   const [replayTour, setReplayTour] = useState(0);
+  const [pickerOpen, setPickerOpen] = useState(false);
 
   const filter: FootballFilter = search.filter ?? "all";
   const teamFilter = search.team;
@@ -355,9 +358,9 @@ function Index() {
         <>
           <FootballHero />
           <section className="relative overflow-hidden border-b border-border">
-            <div className="relative max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8 text-center">
-              <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-3">Browse tournaments</div>
-              <YearStrip year={year} onChange={(y: number) => { setYear(y); toast(`Viewing ${y} World Cup`, { duration: 1800 }); }} />
+            <div className="relative max-w-5xl mx-auto px-4 sm:px-6 py-5 sm:py-6 flex flex-wrap items-center justify-center gap-3">
+              <YearDropdown year={year} onChange={(y: number) => { setYear(y); toast(`Viewing ${y} World Cup`, { duration: 1800 }); }} />
+              <FavoritesChip onOpen={() => setPickerOpen(true)} />
             </div>
           </section>
         </>
@@ -383,9 +386,9 @@ function Index() {
             <p className="mt-3 sm:mt-4 text-sm sm:text-lg text-muted-foreground max-w-xl mx-auto px-2">
               Complete tournament history from <span className="text-foreground font-semibold">1930</span> to <span className="text-foreground font-semibold">{LIVE_YEAR}</span>. Every match, every champion.
             </p>
-            <div className="mt-8 sm:mt-10">
-              <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-3">Select Tournament</div>
-              <YearStrip year={year} onChange={(y: number) => { setYear(y); toast(`Viewing ${y} World Cup`, { duration: 1800 }); }} />
+            <div className="mt-8 sm:mt-10 flex flex-wrap items-center justify-center gap-3">
+              <YearDropdown year={year} onChange={(y: number) => { setYear(y); toast(`Viewing ${y} World Cup`, { duration: 1800 }); }} />
+              <FavoritesChip onOpen={() => setPickerOpen(true)} />
             </div>
           </div>
         </section>
@@ -525,7 +528,21 @@ function Index() {
 
       <FootballCoachmark key={replayTour > 0 ? `replay-${replayTour}` : "init"} force={replayTour > 0} />
       <BackToTopFab />
+      <FavoriteTeamPicker open={pickerOpen} onOpenChange={setPickerOpen} initialSport="football" />
     </div>
+  );
+}
+
+function FavoritesChip({ onOpen }: { onOpen: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onOpen}
+      className="inline-flex items-center gap-1.5 rounded-xl border border-amber-500/40 bg-amber-500/10 hover:bg-amber-500/20 px-3 py-2 text-sm font-bold text-amber-200 transition"
+    >
+      <Star className="size-4 fill-amber-300 text-amber-300" />
+      <span className="hidden sm:inline">Favorites</span>
+    </button>
   );
 }
 
