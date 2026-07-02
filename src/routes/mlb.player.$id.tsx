@@ -7,20 +7,40 @@ import { athlete, breadcrumbList, ldScript } from "@/lib/seo/jsonld";
 import { AffiliateStrip } from "@/components/affiliates/AffiliateStrip";
 
 export const Route = createFileRoute("/mlb/player/$id")({
-  head: ({ params }) => {
+  loader: async ({ context, params }) => {
+    return await context.queryClient
+      .ensureQueryData({
+        queryKey: ["mlb", "athlete", params.id],
+        queryFn: () => getMlbAthlete({ data: { id: params.id } }),
+        staleTime: 60 * 60_000,
+      })
+      .catch(() => null);
+  },
+  head: ({ params, loaderData }) => {
     const url = `https://www.playsports.online/mlb/player/${params.id}`;
+    const a = (loaderData as { athlete?: { name?: string; headshot?: string | null; team?: { name?: string } | null; position?: string | null } } | null)?.athlete ?? null;
+    const name = a?.name ?? `MLB Player ${params.id}`;
+    const teamPart = a?.team?.name ? ` — ${a.team.name}` : "";
+    const title = a ? `${name}${teamPart} — MLB Career Stats & Game Logs` : "MLB Player Profile — Career Stats & Game Logs";
+    const desc = a
+      ? `${name}${a.position ? ` (${a.position})` : ""}${teamPart} — career batting/pitching stats, season splits and recent game logs on PlaySports.`
+      : "MLB player profile with career batting and pitching stats, season splits, and recent game logs.";
     return {
       meta: [
-        { title: "MLB Player Profile — Career Stats & Game Logs" },
-        { name: "description", content: "MLB player profile with career batting and pitching stats, season splits, and recent game logs." },
-        { property: "og:title", content: "MLB Player Profile" },
-        { property: "og:description", content: "Career stats, season splits and recent game logs." },
+        { title },
+        { name: "description", content: desc },
+        { property: "og:title", content: title },
+        { property: "og:description", content: desc },
         { property: "og:url", content: url },
+        ...(a?.headshot ? [{ property: "og:image", content: a.headshot }] : []),
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: desc },
       ],
       links: [{ rel: "canonical", href: url }],
       scripts: [
-        ldScript(athlete({ name: `MLB Player ${params.id}`, path: `/mlb/player/${params.id}`, sport: "Baseball" })),
-        ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "MLB", path: "/mlb" }, { name: "Players", path: "/mlb/players" }, { name: "Player", path: `/mlb/player/${params.id}` }])),
+        ldScript(athlete({ name, path: `/mlb/player/${params.id}`, sport: "Baseball", image: a?.headshot ?? undefined, team: a?.team?.name ?? undefined })),
+        ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "MLB", path: "/mlb" }, { name: "Players", path: "/mlb/players" }, { name, path: `/mlb/player/${params.id}` }])),
       ],
     };
   },
