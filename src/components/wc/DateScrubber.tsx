@@ -188,7 +188,7 @@ export function DateScrubber({ matches, value, onChange, className = "" }: DateS
       </div>
 
       {/* ─────────────── DESKTOP: stylish dropdown ─────────────── */}
-      <div className="hidden sm:flex items-center gap-2">
+      <div className="hidden sm:flex items-center justify-center gap-2">
         <button
           type="button"
           disabled={!prevDate}
