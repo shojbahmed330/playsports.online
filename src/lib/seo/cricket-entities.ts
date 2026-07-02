@@ -7,6 +7,7 @@ import historyData from "@/data/cricket/history.json";
 import iplFranchisesData from "@/data/cricket/ipl/franchises.json";
 import iplHistoryData from "@/data/cricket/ipl/history.json";
 import iplRecordsData from "@/data/cricket/ipl/records.json";
+import highlightsData from "@/data/cricket/highlights.json";
 import { CRICKET_LEAGUES, type CricketLeague } from "@/lib/cricket-leagues";
 import { slugify } from "@/lib/seo/programmatic";
 
@@ -368,3 +369,29 @@ export function getCricketRecordCategory(id: string): CricketRecordCategory | nu
 export function getIplEditions() {
   return IPL_HISTORY;
 }
+
+// =============== HIGHLIGHTS ===============
+export type CricketHighlightEntity = {
+  slug: string;
+  teamA: string;
+  teamB: string;
+  tournament: string;
+  stage: string;
+  venue: string;
+  date: string;
+  format: "test" | "odi" | "t20i" | "t20";
+  result: string;
+  youtubeId: string | null;
+  videoUrl: string;
+};
+
+const HIGHLIGHTS = highlightsData as CricketHighlightEntity[];
+
+export function listCricketHighlights(): CricketHighlightEntity[] {
+  return HIGHLIGHTS;
+}
+
+export function getCricketHighlightBySlug(slug: string): CricketHighlightEntity | null {
+  return HIGHLIGHTS.find((h) => h.slug === slug) ?? null;
+}
+
