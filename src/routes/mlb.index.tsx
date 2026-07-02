@@ -9,7 +9,7 @@ import { GameCard } from "@/components/sports/GameCard";
 import { LeaderBoard } from "@/components/mlb/LeaderBoard";
 import { AdSlot } from "@/components/ads/AdSlot";
 import { todayYmd } from "@/components/sports/DateScrubber";
-import { breadcrumbList, collectionPage, ldScript } from "@/lib/seo/jsonld";
+import { breadcrumbList, collectionPage, sportsOrganization, faqPage, ldScript } from "@/lib/seo/jsonld";
 
 export const Route = createFileRoute("/mlb/")({
   head: () => ({
