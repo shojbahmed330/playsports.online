@@ -318,20 +318,31 @@ export function LiveMatchCenter({ fixture }: { fixture: Wc2026Fixture }) {
   return (
     <div className="space-y-4">
       <MatchHeader fixture={fixture} live={live} />
-      <Tabs defaultValue="timeline">
-        <TabsList className="grid grid-cols-3 w-full">
-          <TabsTrigger value="timeline" className="text-xs gap-1.5">
-            <Activity className="size-3.5" /> Timeline
+      <Tabs defaultValue={live ? "commentary" : "timeline"}>
+        <TabsList className="grid grid-cols-4 w-full">
+          <TabsTrigger value="timeline" className="text-[11px] sm:text-xs gap-1 sm:gap-1.5">
+            <Activity className="size-3.5" /> <span className="hidden xs:inline">Timeline</span>
           </TabsTrigger>
-          <TabsTrigger value="lineups" className="text-xs gap-1.5">
-            <Users className="size-3.5" /> Lineups
+          <TabsTrigger value="commentary" className="text-[11px] sm:text-xs gap-1 sm:gap-1.5">
+            <MessageSquare className="size-3.5" /> <span className="hidden xs:inline">Live</span>
           </TabsTrigger>
-          <TabsTrigger value="stats" className="text-xs gap-1.5">
-            <BarChart3 className="size-3.5" /> Stats
+          <TabsTrigger value="lineups" className="text-[11px] sm:text-xs gap-1 sm:gap-1.5">
+            <Users className="size-3.5" /> <span className="hidden xs:inline">Lineups</span>
+          </TabsTrigger>
+          <TabsTrigger value="stats" className="text-[11px] sm:text-xs gap-1 sm:gap-1.5">
+            <BarChart3 className="size-3.5" /> <span className="hidden xs:inline">Stats</span>
           </TabsTrigger>
         </TabsList>
         <TabsContent value="timeline" className="mt-3">
           <TimelineTab matchId={fixture.id} live={live} />
+        </TabsContent>
+        <TabsContent value="commentary" className="mt-3">
+          <CommentaryFeed
+            matchId={fixture.id}
+            live={live}
+            homeCode={fixture.home.code || fixture.home.name}
+            awayCode={fixture.away.code || fixture.away.name}
+          />
         </TabsContent>
         <TabsContent value="lineups" className="mt-3">
           <LineupsTab matchId={fixture.id} homeTeam={fixture.home.name || fixture.home.code} awayTeam={fixture.away.name || fixture.away.code} />
