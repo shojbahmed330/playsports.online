@@ -52,7 +52,7 @@ export const Route = createFileRoute("/vs/$sport/$matchup")({
         ldScript(faqPage([
           { q: `How many times have ${h2h.teamA} and ${h2h.teamB} met at the World Cup?`, a: `${h2h.teamA} and ${h2h.teamB} have met ${matches.length} time${matches.length === 1 ? "" : "s"} at the FIFA World Cup finals.` },
           { q: `What is the ${h2h.teamA} vs ${h2h.teamB} World Cup head-to-head record?`, a: `${h2h.teamA} ${aW} wins, ${h2h.teamB} ${bW} wins, ${dr} draw${dr === 1 ? "" : "s"} across ${matches.length} World Cup meeting${matches.length === 1 ? "" : "s"}.` },
-          { q: `When did ${h2h.teamA} last play ${h2h.teamB} at the World Cup?`, a: last ? `Their most recent World Cup meeting was at the ${last.year} tournament: ${last.home} ${last.hs}–${last.as} ${last.away}.` : "No previous World Cup meeting on record." },
+          { q: `When did ${h2h.teamA} last play ${h2h.teamB} at the World Cup?`, a: lastStr },
         ])),
       ],
     };
