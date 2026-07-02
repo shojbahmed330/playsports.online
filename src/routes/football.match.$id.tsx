@@ -23,6 +23,7 @@ import { MatchPrediction } from "@/components/football/MatchPrediction";
 import { MatchComments } from "@/components/football/MatchComments";
 import { HandleSetup } from "@/components/football/HandleSetup";
 import { useGoalAlerts } from "@/hooks/use-goal-alerts";
+import { MatchHighlightCard } from "@/components/wc/MatchHighlightCard";
 
 export const Route = createFileRoute("/football/match/$id")({
   head: ({ params }) => {
