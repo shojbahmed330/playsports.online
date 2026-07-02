@@ -33,7 +33,7 @@ export const Route = createFileRoute("/cricket/match/$id")({
     try {
       return await context.queryClient.ensureQueryData(detailOpts(deps.leagueId, params.id));
     } catch {
-      return { match: null, innings: [], commentary: [] } as Awaited<ReturnType<typeof getCricketMatchDetail>>;
+      return { match: null, innings: [], commentary: [], error: null } as unknown as Awaited<ReturnType<typeof getCricketMatchDetail>>;
     }
   },
   head: ({ params, loaderData }) => {
