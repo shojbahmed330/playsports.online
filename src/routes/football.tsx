@@ -528,7 +528,21 @@ function Index() {
 
       <FootballCoachmark key={replayTour > 0 ? `replay-${replayTour}` : "init"} force={replayTour > 0} />
       <BackToTopFab />
+      <FavoriteTeamPicker open={pickerOpen} onOpenChange={setPickerOpen} initialSport="football" />
     </div>
+  );
+}
+
+function FavoritesChip({ onOpen }: { onOpen: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onOpen}
+      className="inline-flex items-center gap-1.5 rounded-xl border border-amber-500/40 bg-amber-500/10 hover:bg-amber-500/20 px-3 py-2 text-sm font-bold text-amber-200 transition"
+    >
+      <Star className="size-4 fill-amber-300 text-amber-300" />
+      <span className="hidden sm:inline">Favorites</span>
+    </button>
   );
 }
 
