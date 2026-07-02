@@ -686,6 +686,9 @@ GRANT SELECT ON public.wc_groups TO anon, authenticated;
 GRANT INSERT, UPDATE, DELETE ON public.wc_groups TO authenticated;
 GRANT ALL ON public.wc_groups TO service_role;
 
+GRANT USAGE, SELECT ON SEQUENCE public.wc_matches_id_seq TO authenticated, service_role;
+GRANT USAGE, SELECT ON SEQUENCE public.wc_groups_id_seq TO authenticated, service_role;
+
 
 --
 -- Backfill admin role if the owner already exists.
@@ -825,6 +828,54 @@ CREATE POLICY "Users read their own roles" ON public.user_roles FOR SELECT TO au
 
 
 --
+-- Name: wc_tournaments wc_tournaments public read; Type: POLICY; Schema: public; Owner: -
+--
+
+DROP POLICY IF EXISTS "wc_tournaments public read" ON public.wc_tournaments;
+CREATE POLICY "wc_tournaments public read" ON public.wc_tournaments FOR SELECT TO authenticated, anon USING (true);
+
+
+--
+-- Name: wc_tournaments wc_tournaments admin write; Type: POLICY; Schema: public; Owner: -
+--
+
+DROP POLICY IF EXISTS "wc_tournaments admin write" ON public.wc_tournaments;
+CREATE POLICY "wc_tournaments admin write" ON public.wc_tournaments TO authenticated USING (public.has_role(auth.uid(), 'admin'::public.app_role)) WITH CHECK (public.has_role(auth.uid(), 'admin'::public.app_role));
+
+
+--
+-- Name: wc_matches wc_matches public read; Type: POLICY; Schema: public; Owner: -
+--
+
+DROP POLICY IF EXISTS "wc_matches public read" ON public.wc_matches;
+CREATE POLICY "wc_matches public read" ON public.wc_matches FOR SELECT TO authenticated, anon USING (true);
+
+
+--
+-- Name: wc_matches wc_matches admin write; Type: POLICY; Schema: public; Owner: -
+--
+
+DROP POLICY IF EXISTS "wc_matches admin write" ON public.wc_matches;
+CREATE POLICY "wc_matches admin write" ON public.wc_matches TO authenticated USING (public.has_role(auth.uid(), 'admin'::public.app_role)) WITH CHECK (public.has_role(auth.uid(), 'admin'::public.app_role));
+
+
+--
+-- Name: wc_groups wc_groups public read; Type: POLICY; Schema: public; Owner: -
+--
+
+DROP POLICY IF EXISTS "wc_groups public read" ON public.wc_groups;
+CREATE POLICY "wc_groups public read" ON public.wc_groups FOR SELECT TO authenticated, anon USING (true);
+
+
+--
+-- Name: wc_groups wc_groups admin write; Type: POLICY; Schema: public; Owner: -
+--
+
+DROP POLICY IF EXISTS "wc_groups admin write" ON public.wc_groups;
+CREATE POLICY "wc_groups admin write" ON public.wc_groups TO authenticated USING (public.has_role(auth.uid(), 'admin'::public.app_role)) WITH CHECK (public.has_role(auth.uid(), 'admin'::public.app_role));
+
+
+--
 -- Name: affiliate_links; Type: ROW SECURITY; Schema: public; Owner: -
 --
 
@@ -871,6 +922,24 @@ ALTER TABLE public.sponsored_slots ENABLE ROW LEVEL SECURITY;
 --
 
 ALTER TABLE public.user_roles ENABLE ROW LEVEL SECURITY;
+
+--
+-- Name: wc_tournaments; Type: ROW SECURITY; Schema: public; Owner: -
+--
+
+ALTER TABLE public.wc_tournaments ENABLE ROW LEVEL SECURITY;
+
+--
+-- Name: wc_matches; Type: ROW SECURITY; Schema: public; Owner: -
+--
+
+ALTER TABLE public.wc_matches ENABLE ROW LEVEL SECURITY;
+
+--
+-- Name: wc_groups; Type: ROW SECURITY; Schema: public; Owner: -
+--
+
+ALTER TABLE public.wc_groups ENABLE ROW LEVEL SECURITY;
 
 --
 -- PostgreSQL database dump complete
