@@ -17,6 +17,8 @@ import { HeadToHeadStrip } from "@/components/football/HeadToHeadStrip";
 import { FormGuide } from "@/components/football/FormGuide";
 import { VenueCard } from "@/components/football/VenueCard";
 import { MomentumChart } from "@/components/football/MomentumChart";
+import { WinProbabilityChart } from "@/components/football/WinProbabilityChart";
+import { OfficialsCard } from "@/components/football/OfficialsCard";
 import { useGoalAlerts } from "@/hooks/use-goal-alerts";
 
 export const Route = createFileRoute("/football/match/$id")({
