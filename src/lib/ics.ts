@@ -33,7 +33,7 @@ export function buildMatchIcs(opts: {
   const dtEnd = toIcsDate(opts.startMs + dur);
   const dtStamp = toIcsDate(Date.now());
   const loc = [opts.venue, opts.city].filter(Boolean).join(", ");
-  const uid = `wc2026-${opts.id}@allsportslive`;
+  const uid = `wc2026-${opts.id}@playsports.online`;
   const lines = [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",

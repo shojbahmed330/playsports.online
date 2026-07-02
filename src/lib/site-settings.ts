@@ -74,7 +74,7 @@ export const DEFAULT_IDENTITY: IdentitySettings = {
 // ============= Contact =============
 export type ContactSettings = { email: string; response_time: string };
 export const DEFAULT_CONTACT: ContactSettings = {
-  email: "hello@allsportslive.app",
+  email: "hello@playsports.online",
   response_time: "We reply within 2 business days.",
 };
 
