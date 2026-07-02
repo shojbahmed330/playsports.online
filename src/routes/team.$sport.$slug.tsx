@@ -1,4 +1,4 @@
-import { createFileRoute, notFound, Link } from "@tanstack/react-router";
+import { createFileRoute, notFound, redirect, Link } from "@tanstack/react-router";
 import { findTeam, teamStats, listTeams } from "@/lib/seo/programmatic";
 import { canonical } from "@/lib/seo/canonical";
 import { breadcrumbList, sportsTeam, faqPage, itemList, ldScript } from "@/lib/seo/jsonld";
@@ -8,6 +8,9 @@ import { AdSlot } from "@/components/ads/AdSlot";
 
 export const Route = createFileRoute("/team/$sport/$slug")({
   loader: ({ params }) => {
+    if (params.sport === "football_wc") {
+      throw redirect({ to: "/football/teams/$slug", params: { slug: params.slug } });
+    }
     const team = findTeam(params.sport, params.slug);
     if (!team) throw notFound();
     return { team, stats: teamStats(team.name) };
