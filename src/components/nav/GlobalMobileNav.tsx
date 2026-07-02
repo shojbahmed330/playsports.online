@@ -28,8 +28,9 @@ const HUB_TABS: MobileTab[] = [
   { to: "/cricket",  label: "Cricket",  Icon: Activity,match: (p) => p.startsWith("/cricket") },
   {
     to: "/mlb", label: "More", Icon: Flame,
-    match: (p) => p.startsWith("/mlb") || p.startsWith("/nba") || p.startsWith("/nhl") || p.startsWith("/mls"),
+    match: (p) => p.startsWith("/mlb") || p.startsWith("/nba") || p.startsWith("/nhl") || p.startsWith("/mls") || p === "/mine",
     items: [
+      { to: "/mine", label: "My Feed", emoji: "⭐" },
       { to: "/mlb", label: "MLB", emoji: "⚾" },
       { to: "/nba", label: "NBA", emoji: "🏀" },
       { to: "/nhl", label: "NHL", emoji: "🏒" },
@@ -121,6 +122,8 @@ const MLS_TABS: MobileTab[] = [
 function pickTabs(pathname: string): Picked {
   // hidden on auth-style chrome
   if (pathname.startsWith("/admin") || pathname.startsWith("/auth")) return null;
+
+  if (pathname === "/mine")                return { tabs: HUB_TABS, accent: "amber" };
 
   if (pathname.startsWith("/cricket/ipl")) return { tabs: IPL_TABS, accent: "amber" };
   if (pathname.startsWith("/cricket"))     return { tabs: CRICKET_TABS, accent: "emerald" };

@@ -19,6 +19,7 @@ import { Route as NhlRouteImport } from './routes/nhl'
 import { Route as NbaRouteImport } from './routes/nba'
 import { Route as MlsRouteImport } from './routes/mls'
 import { Route as MlbRouteImport } from './routes/mlb'
+import { Route as MineRouteImport } from './routes/mine'
 import { Route as FootballRouteImport } from './routes/football'
 import { Route as FeedDotxmlRouteImport } from './routes/feed[.]xml'
 import { Route as DisclaimerRouteImport } from './routes/disclaimer'
@@ -146,6 +147,11 @@ const MlsRoute = MlsRouteImport.update({
 const MlbRoute = MlbRouteImport.update({
   id: '/mlb',
   path: '/mlb',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MineRoute = MineRouteImport.update({
+  id: '/mine',
+  path: '/mine',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FootballRoute = FootballRouteImport.update({
@@ -551,6 +557,7 @@ export interface FileRoutesByFullPath {
   '/disclaimer': typeof DisclaimerRoute
   '/feed.xml': typeof FeedDotxmlRoute
   '/football': typeof FootballRouteWithChildren
+  '/mine': typeof MineRoute
   '/mlb': typeof MlbRouteWithChildren
   '/mls': typeof MlsRouteWithChildren
   '/nba': typeof NbaRouteWithChildren
@@ -640,6 +647,7 @@ export interface FileRoutesByTo {
   '/disclaimer': typeof DisclaimerRoute
   '/feed.xml': typeof FeedDotxmlRoute
   '/football': typeof FootballRouteWithChildren
+  '/mine': typeof MineRoute
   '/players': typeof PlayersRoute
   '/premium': typeof PremiumRoute
   '/privacy': typeof PrivacyRoute
@@ -727,6 +735,7 @@ export interface FileRoutesById {
   '/disclaimer': typeof DisclaimerRoute
   '/feed.xml': typeof FeedDotxmlRoute
   '/football': typeof FootballRouteWithChildren
+  '/mine': typeof MineRoute
   '/mlb': typeof MlbRouteWithChildren
   '/mls': typeof MlsRouteWithChildren
   '/nba': typeof NbaRouteWithChildren
@@ -819,6 +828,7 @@ export interface FileRouteTypes {
     | '/disclaimer'
     | '/feed.xml'
     | '/football'
+    | '/mine'
     | '/mlb'
     | '/mls'
     | '/nba'
@@ -908,6 +918,7 @@ export interface FileRouteTypes {
     | '/disclaimer'
     | '/feed.xml'
     | '/football'
+    | '/mine'
     | '/players'
     | '/premium'
     | '/privacy'
@@ -994,6 +1005,7 @@ export interface FileRouteTypes {
     | '/disclaimer'
     | '/feed.xml'
     | '/football'
+    | '/mine'
     | '/mlb'
     | '/mls'
     | '/nba'
@@ -1085,6 +1097,7 @@ export interface RootRouteChildren {
   DisclaimerRoute: typeof DisclaimerRoute
   FeedDotxmlRoute: typeof FeedDotxmlRoute
   FootballRoute: typeof FootballRouteWithChildren
+  MineRoute: typeof MineRoute
   MlbRoute: typeof MlbRouteWithChildren
   MlsRoute: typeof MlsRouteWithChildren
   NbaRoute: typeof NbaRouteWithChildren
@@ -1174,6 +1187,13 @@ declare module '@tanstack/react-router' {
       path: '/mlb'
       fullPath: '/mlb'
       preLoaderRoute: typeof MlbRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mine': {
+      id: '/mine'
+      path: '/mine'
+      fullPath: '/mine'
+      preLoaderRoute: typeof MineRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/football': {
@@ -1909,6 +1929,7 @@ const rootRouteChildren: RootRouteChildren = {
   DisclaimerRoute: DisclaimerRoute,
   FeedDotxmlRoute: FeedDotxmlRoute,
   FootballRoute: FootballRouteWithChildren,
+  MineRoute: MineRoute,
   MlbRoute: MlbRouteWithChildren,
   MlsRoute: MlsRouteWithChildren,
   NbaRoute: NbaRouteWithChildren,

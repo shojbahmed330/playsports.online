@@ -23,7 +23,7 @@ async function fetchComments(matchId: number): Promise<CommentWithHandle[]> {
     .eq("hidden", false)
     .order("created_at", { ascending: false })
     .limit(100);
-  const rows = (data ?? []) as CommentRow[];
+  const rows = (data ?? []) as unknown as CommentRow[];
   if (rows.length === 0) return [];
   const ids = Array.from(new Set(rows.map((r) => r.user_id)));
   const { data: profiles } = await supabase
@@ -31,7 +31,7 @@ async function fetchComments(matchId: number): Promise<CommentWithHandle[]> {
     .select("user_id,handle")
     .in("user_id", ids);
   const map = new Map<string, string>();
-  for (const p of (profiles ?? []) as { user_id: string; handle: string }[]) {
+  for (const p of (profiles ?? []) as unknown as { user_id: string; handle: string }[]) {
     map.set(p.user_id, p.handle);
   }
   return rows.map((r) => ({ ...r, handle: map.get(r.user_id) ?? null }));
