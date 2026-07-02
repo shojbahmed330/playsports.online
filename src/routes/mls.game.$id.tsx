@@ -7,26 +7,54 @@ import { getMlsGame } from "@/lib/mls.functions";
 import { MlsLinescore } from "@/components/mls/MlsLinescore";
 import { MlsBoxScore } from "@/components/mls/MlsBoxScore";
 import { MlsPlayByPlay } from "@/components/mls/MlsPlayByPlay";
-import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
+import { breadcrumbList, ldScript, sportsEvent } from "@/lib/seo/jsonld";
 
 export const Route = createFileRoute("/mls/game/$id")({
-  head: ({ params }) => ({
-    meta: [
-      { title: `MLS Game ${params.id} — Box Score & Play-by-Play` },
-      { name: "description", content: "Live box score, scoring plays, and full play-by-play for this MLS game." },
-    ],
-    links: [{ rel: "canonical", href: `https://www.playsports.online/mls/game/${params.id}` }],
-    scripts: [ldScript(breadcrumbList([
-      { name: "Home", path: "/" }, { name: "MLS", path: "/mls" }, { name: "Scores", path: "/mls/scores" }, { name: params.id, path: `/mls/game/${params.id}` },
-    ]))],
-  }),
   loader: async ({ context, params }) => {
-    await context.queryClient.prefetchQuery({
+    const data = await context.queryClient.ensureQueryData({
       queryKey: ["mls", "game", params.id],
       queryFn: () => getMlsGame({ data: { id: params.id } }),
       staleTime: 15_000,
     }).catch(() => null);
-    return null;
+    return { summary: data?.summary ?? null };
+  },
+  head: ({ params, loaderData }) => {
+    const s = loaderData?.summary;
+    const away = s?.away?.shortName || s?.away?.name || s?.away?.abbr;
+    const home = s?.home?.shortName || s?.home?.name || s?.home?.abbr;
+    const matchup = away && home ? `${away} vs ${home}` : `MLS Game ${params.id}`;
+    const title = `${matchup} — MLS Box Score, Live Score & Stats`;
+    const desc = away && home
+      ? `Live MLS match: ${away} vs ${home}. Box score, scoring plays, lineups, venue and match stats on PlaySports.`
+      : "Live box score, scoring plays, and full play-by-play for this MLS match.";
+    const url = `https://www.playsports.online/mls/game/${params.id}`;
+    return {
+      meta: [
+        { title },
+        { name: "description", content: desc },
+        { property: "og:title", content: matchup },
+        { property: "og:description", content: desc },
+        { property: "og:url", content: url },
+        { property: "og:type", content: "article" },
+        { name: "twitter:card", content: "summary_large_image" },
+      ],
+      links: [{ rel: "canonical", href: url }],
+      scripts: [
+        ldScript(breadcrumbList([
+          { name: "Home", path: "/" }, { name: "MLS", path: "/mls" }, { name: "Scores", path: "/mls/scores" }, { name: matchup, path: `/mls/game/${params.id}` },
+        ])),
+        ldScript(sportsEvent({
+          name: matchup,
+          path: `/mls/game/${params.id}`,
+          sport: "Soccer",
+          startDate: s?.startTs ? new Date(s.startTs).toISOString() : undefined,
+          homeTeam: home ?? undefined,
+          awayTeam: away ?? undefined,
+          location: s?.venue?.name ?? undefined,
+          status: s?.status === "in" ? "live" : s?.status === "post" ? "ended" : "scheduled",
+        })),
+      ],
+    };
   },
   component: MlsGame,
 });

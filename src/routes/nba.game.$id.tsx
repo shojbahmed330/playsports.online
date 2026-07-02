@@ -7,26 +7,54 @@ import { getNbaGame } from "@/lib/nba.functions";
 import { NbaLinescore } from "@/components/nba/NbaLinescore";
 import { NbaBoxScore } from "@/components/nba/NbaBoxScore";
 import { NbaPlayByPlay } from "@/components/nba/NbaPlayByPlay";
-import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
+import { breadcrumbList, ldScript, sportsEvent } from "@/lib/seo/jsonld";
 
 export const Route = createFileRoute("/nba/game/$id")({
-  head: ({ params }) => ({
-    meta: [
-      { title: `NBA Game ${params.id} — Box Score & Play-by-Play` },
-      { name: "description", content: "Live box score, scoring plays, and full play-by-play for this NBA game." },
-    ],
-    links: [{ rel: "canonical", href: `https://www.playsports.online/nba/game/${params.id}` }],
-    scripts: [ldScript(breadcrumbList([
-      { name: "Home", path: "/" }, { name: "NBA", path: "/nba" }, { name: "Scores", path: "/nba/scores" }, { name: params.id, path: `/nba/game/${params.id}` },
-    ]))],
-  }),
   loader: async ({ context, params }) => {
-    await context.queryClient.prefetchQuery({
+    const data = await context.queryClient.ensureQueryData({
       queryKey: ["nba", "game", params.id],
       queryFn: () => getNbaGame({ data: { id: params.id } }),
       staleTime: 15_000,
     }).catch(() => null);
-    return null;
+    return { summary: data?.summary ?? null };
+  },
+  head: ({ params, loaderData }) => {
+    const s = loaderData?.summary;
+    const away = s?.away?.shortName || s?.away?.name || s?.away?.abbr;
+    const home = s?.home?.shortName || s?.home?.name || s?.home?.abbr;
+    const matchup = away && home ? `${away} vs ${home}` : `NBA Game ${params.id}`;
+    const title = `${matchup} — NBA Box Score, Play-by-Play & Live Updates`;
+    const desc = away && home
+      ? `Live box score, scoring plays and full play-by-play for ${away} vs ${home}. Stats, leaders, venue and more on PlaySports.`
+      : "Live box score, scoring plays, and full play-by-play for this NBA game.";
+    const url = `https://www.playsports.online/nba/game/${params.id}`;
+    return {
+      meta: [
+        { title },
+        { name: "description", content: desc },
+        { property: "og:title", content: matchup },
+        { property: "og:description", content: desc },
+        { property: "og:url", content: url },
+        { property: "og:type", content: "article" },
+        { name: "twitter:card", content: "summary_large_image" },
+      ],
+      links: [{ rel: "canonical", href: url }],
+      scripts: [
+        ldScript(breadcrumbList([
+          { name: "Home", path: "/" }, { name: "NBA", path: "/nba" }, { name: "Scores", path: "/nba/scores" }, { name: matchup, path: `/nba/game/${params.id}` },
+        ])),
+        ldScript(sportsEvent({
+          name: matchup,
+          path: `/nba/game/${params.id}`,
+          sport: "Basketball",
+          startDate: s?.startTs ? new Date(s.startTs).toISOString() : undefined,
+          homeTeam: home ?? undefined,
+          awayTeam: away ?? undefined,
+          location: s?.venue?.name ?? undefined,
+          status: s?.status === "in" ? "live" : s?.status === "post" ? "ended" : "scheduled",
+        })),
+      ],
+    };
   },
   component: NbaGame,
 });
