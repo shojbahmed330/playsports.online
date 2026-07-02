@@ -47,6 +47,9 @@ function WcHero({ f, live }: { f: Wc2026Fixture; live: boolean }) {
         background: "radial-gradient(60% 60% at 50% 0%, oklch(0.78 0.16 75 / 0.5), transparent 65%)",
       }} />
       <div className="relative max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+        <h1 className="sr-only">
+          {live ? "Live" : "Up next"}: {f.home.name} vs {f.away.name} — FIFA World Cup 2026 {f.group ?? ""}
+        </h1>
         <div className="flex items-center justify-between mb-4">
           <span className="inline-flex items-center gap-1.5 text-[10px] sm:text-xs uppercase tracking-[0.2em] font-bold text-amber-300">
             {live ? (
