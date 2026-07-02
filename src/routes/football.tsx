@@ -16,6 +16,7 @@ import groupMatchesData from "@/data/wc_group_matches.json";
 import { toast } from "sonner";
 import { AdSlot } from "@/components/ads/AdSlot";
 import { Wc2026GroupsView, Wc2026KnockoutView } from "@/components/wc/Wc2026View";
+import { Wc2026TodayView } from "@/components/wc/Wc2026TodayView";
 import { FootballHero } from "@/components/football/FootballHero";
 import { FootballSubNav, type SubNavTab, type SubNavBadges } from "@/components/football/FootballSubNav";
 import { Wc2026ScorersPanel } from "@/components/football/Wc2026ScorersPanel";
@@ -34,7 +35,7 @@ import { getWc2026Fixtures, getWc2026Standings } from "@/lib/wc2026.functions";
 const GROUP_MATCHES_BY_YEAR = groupMatchesData as Record<string, WCMatch[]>;
 
 const FILTER_VALUES: FootballFilter[] = ["all", "live", "today", "my"];
-const TAB_VALUES: SubNavTab[] = ["groups", "knockout", "scorers"];
+const TAB_VALUES: SubNavTab[] = ["today", "groups", "knockout", "scorers"];
 
 type FootballSearch = { year?: number; filter?: FootballFilter; team?: string; tab?: SubNavTab; date?: string };
 
@@ -122,7 +123,7 @@ function Index() {
   const initialYear = search.year ?? LIVE_YEAR;
   const [year, setYear] = useState<number>(initialYear);
   const [activeMatch, setActiveMatch] = useState<WCMatch | null>(null);
-  const initialTab: SubNavTab = search.tab ?? "knockout";
+  const initialTab: SubNavTab = search.tab ?? "today";
   const [tab, setTab] = useState<SubNavTab>(initialTab);
   const [userPickedTab, setUserPickedTab] = useState<boolean>(!!search.tab);
   const [hintSeen, setHintSeen] = useState(true);
@@ -145,7 +146,7 @@ function Index() {
   }, [year, navigate]);
   useEffect(() => {
     navigate({
-      search: (prev: FootballSearch) => ({ ...prev, tab: tab === "knockout" ? undefined : tab }),
+      search: (prev: FootballSearch) => ({ ...prev, tab: tab === "today" ? undefined : tab }),
       replace: true,
     });
   }, [tab, navigate]);
@@ -156,12 +157,15 @@ function Index() {
   }, [search.tab]);
 
   // Smart-stage auto-detect — only when the user hasn't picked a tab yet.
+  // "Today" is now the default landing when there's any live/today action;
+  // otherwise fall back to the most relevant stage tab.
   useEffect(() => {
     if (userPickedTab || pulse.loading || year !== LIVE_YEAR) return;
+    if (pulse.liveCount > 0 || pulse.todayCount > 0) { setTab("today"); return; }
     if (pulse.finalToday) { setTab("knockout"); return; }
-    if (pulse.knockoutTodayCount > 0) { setTab("knockout"); return; }
-    if (pulse.groupTodayCount > 0) { setTab("groups"); return; }
     if (pulse.groupStageOver && pulse.hasKnockout) { setTab("knockout"); return; }
+    // No live action → keep Today as the default so users see "next match".
+    setTab("today");
   }, [pulse, userPickedTab, year, LIVE_YEAR]);
 
   const setTabUser = (t: SubNavTab) => { setUserPickedTab(true); setTab(t); };
@@ -173,9 +177,9 @@ function Index() {
     navigate({ search: (prev: FootballSearch) => ({ ...prev, team: t }), replace: true });
   };
 
-  // Reset to knockout when leaving the live year — scorers tab is live-year only.
+  // Reset to knockout when leaving the live year — scorers/today tabs are live-year only.
   useEffect(() => {
-    if (year !== LIVE_YEAR && tab === "scorers") setTab("knockout");
+    if (year !== LIVE_YEAR && (tab === "scorers" || tab === "today")) setTab("knockout");
   }, [year, tab, LIVE_YEAR]);
 
   useEffect(() => {
@@ -388,6 +392,9 @@ function Index() {
               active={tab}
               onChange={setTabUser}
               badges={{
+                today: (pulse.liveCount + pulse.todayCount) > 0
+                  ? { count: pulse.liveCount > 0 ? pulse.liveCount : pulse.todayCount, live: pulse.liveCount > 0, label: pulse.liveCount > 0 ? `${pulse.liveCount} live now` : `${pulse.todayCount} today` }
+                  : undefined,
                 groups: pulse.groupTodayCount > 0
                   ? { count: pulse.groupTodayCount, live: pulse.liveCount > 0, label: `${pulse.groupTodayCount} group game${pulse.groupTodayCount === 1 ? "" : "s"} today` }
                   : undefined,
@@ -397,7 +404,7 @@ function Index() {
               }}
             />
 
-            {tab !== "scorers" && (
+            {tab !== "scorers" && tab !== "today" && (
               <div className="sticky top-[7.5rem] z-10 -mx-4 sm:mx-0 px-4 sm:px-0 py-2 backdrop-blur bg-background/85 sm:bg-transparent sm:backdrop-blur-0 sm:py-0 sm:static">
                 <FootballFilterBar
                   filter={filter}
@@ -411,7 +418,11 @@ function Index() {
 
             <AdSlot slot="in_content" layout="in-article" />
 
-            {tab === "groups" ? (
+            {tab === "today" ? (
+              <section key="today-2026" className="wc-tab-content animate-fade-in" id="fixtures">
+                <Wc2026TodayView />
+              </section>
+            ) : tab === "groups" ? (
               <section key="groups-2026" className="wc-tab-content" id="fixtures">
                 <Wc2026GroupsView filter={filter} team={teamFilter} date={dateFilter} onDateChange={setDateFilter} />
               </section>

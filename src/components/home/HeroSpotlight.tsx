@@ -225,12 +225,9 @@ function SpotlightCard({ slide }: { slide: SpotlightSlide }) {
     const live = f.status === "inprogress";
     const finished = f.status === "finished";
     const startMs = f.startTs * 1000;
-    return (
-      <Link
-        to="/football"
-        search={{ year: 2026 }}
-        className="group block h-full rounded-2xl overflow-hidden bg-gradient-to-br from-amber-900/50 via-gray-900 to-red-900/30 ring-1 ring-amber-500/30 hover:ring-amber-400/60 transition-all p-5 sm:p-6"
-      >
+    const deepLink = f.id > 0;
+    const commonBody = (
+      <>
         <div className="flex items-center justify-between mb-4">
           <span className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.18em] font-bold text-amber-300">
             <Trophy className="size-3" /> FIFA WC 2026 · {f.group}
@@ -249,6 +246,16 @@ function SpotlightCard({ slide }: { slide: SpotlightSlide }) {
           <span className="truncate">{f.venue ?? "TBD"}</span>
           {!live && !finished && <Countdown ts={startMs} compact />}
         </div>
+      </>
+    );
+    const cls = "group block h-full rounded-2xl overflow-hidden bg-gradient-to-br from-amber-900/50 via-gray-900 to-red-900/30 ring-1 ring-amber-500/30 hover:ring-amber-400/60 transition-all p-5 sm:p-6";
+    return deepLink ? (
+      <Link to="/football/match/$id" params={{ id: String(f.id) }} className={cls}>
+        {commonBody}
+      </Link>
+    ) : (
+      <Link to="/football" search={{ year: 2026 }} className={cls}>
+        {commonBody}
       </Link>
     );
   }

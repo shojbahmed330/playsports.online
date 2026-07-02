@@ -1,15 +1,17 @@
-import { Users, Swords, Trophy } from "lucide-react";
+import { Zap, Users, Swords, Trophy } from "lucide-react";
 import { ChipScroller } from "@/components/ui/ChipScroller";
 
-export type SubNavTab = "groups" | "knockout" | "scorers";
+export type SubNavTab = "today" | "groups" | "knockout" | "scorers";
 
 const TABS: { id: SubNavTab; label: string; icon: React.ReactNode; accent: string }[] = [
-  { id: "groups",   label: "Groups",   icon: <Users className="size-4" />,  accent: "from-blue-500 to-cyan-400" },
-  { id: "knockout", label: "Knockout", icon: <Swords className="size-4" />, accent: "from-rose-500 to-amber-400" },
-  { id: "scorers",  label: "Scorers",  icon: <Trophy className="size-4" />, accent: "from-amber-400 to-yellow-300" },
+  { id: "today",    label: "Today",    icon: <Zap className="size-4" />,     accent: "from-red-500 to-orange-400" },
+  { id: "groups",   label: "Groups",   icon: <Users className="size-4" />,   accent: "from-blue-500 to-cyan-400" },
+  { id: "knockout", label: "Knockout", icon: <Swords className="size-4" />,  accent: "from-rose-500 to-amber-400" },
+  { id: "scorers",  label: "Scorers",  icon: <Trophy className="size-4" />,  accent: "from-amber-400 to-yellow-300" },
 ];
 
 export interface SubNavBadges {
+  today?: { count: number; live?: boolean; label?: string };
   groups?: { count: number; live?: boolean; label?: string };
   knockout?: { count: number; live?: boolean; label?: string };
   scorers?: { count: number; label?: string };

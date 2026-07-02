@@ -112,12 +112,9 @@ function Slot({
 
   if (item.kind === "wc") {
     const f = item.f;
-    return (
-      <Link
-        to="/football"
-        search={{ year: 2026 }}
-        className={`group relative rounded-xl border bg-gradient-to-br to-gray-950 p-3 sm:p-4 min-h-[120px] flex flex-col hover:-translate-y-0.5 transition-transform ${accent}`}
-      >
+    const deepLink = f.id > 0;
+    const body = (
+      <>
         <div className={`inline-flex items-center gap-1.5 text-[10px] uppercase tracking-wider font-bold ${tone === "red" ? "text-red-300" : tone === "amber" ? "text-amber-300" : "text-gray-400"}`}>
           {icon} {label}
         </div>
@@ -142,7 +139,13 @@ function Slot({
             <ArrowRight className="inline ml-1 size-3 group-hover:translate-x-0.5 transition-transform" />
           </span>
         </div>
-      </Link>
+      </>
+    );
+    const cls = `group relative rounded-xl border bg-gradient-to-br to-gray-950 p-3 sm:p-4 min-h-[120px] flex flex-col hover:-translate-y-0.5 transition-transform ${accent}`;
+    return deepLink ? (
+      <Link to="/football/match/$id" params={{ id: String(f.id) }} className={cls}>{body}</Link>
+    ) : (
+      <Link to="/football" search={{ year: 2026 }} className={cls}>{body}</Link>
     );
   }
 

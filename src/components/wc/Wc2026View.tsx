@@ -1,6 +1,7 @@
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
+import { useNavigate } from "@tanstack/react-router";
 import { Loader2, Trophy } from "lucide-react";
 import {
   getWc2026Fixtures,
@@ -28,6 +29,21 @@ import { FootballPitchSkeleton, FootballEmptyBall } from "@/components/football/
 
 const HOUR = 60 * 60 * 1000;
 const LIVE_MS = 20 * 1000;
+
+// Shared click handler: real ESPN fixtures (id > 0) navigate to the dedicated
+// match centre; synthesized/predicted rows (negative ids) fall back to the
+// legacy modal so users still see the pairing context.
+function useWcPick(setModal: (m: WCMatch | null) => void) {
+  const navigate = useNavigate();
+  return useCallback((m: WCMatch) => {
+    if (m.id > 0 && !m.predicted) {
+      navigate({ to: "/football/match/$id", params: { id: String(m.id) } });
+      return;
+    }
+    setModal(m);
+  }, [navigate, setModal]);
+}
+
 
 // ──────────────────────────────────────────────────────────────
 // Adapters: SofaScore shape → app's WCGroup / WCMatch shapes so
@@ -293,6 +309,7 @@ export function Wc2026GroupsView({ filter = "all", team, date, onDateChange }: {
 
 
   const [activeMatch, setActiveMatch] = useState<WCMatch | null>(null);
+  const handlePick = useWcPick(setActiveMatch);
 
   if (sQ.isLoading) return <FootballPitchSkeleton rows={6} />;
   const apiErr = sQ.data?.error || fQ.data?.error;
@@ -332,7 +349,7 @@ export function Wc2026GroupsView({ filter = "all", team, date, onDateChange }: {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {wcMatchesForDate.map((m, i) => (
-              <MatchCard key={`d-${m.id}`} match={m} round="round_of_16" index={i} onClick={() => setActiveMatch(m)} />
+              <MatchCard key={`d-${m.id}`} match={m} round="round_of_16" index={i} onClick={() => handlePick(m)} />
             ))}
           </div>
         </section>
@@ -340,7 +357,7 @@ export function Wc2026GroupsView({ filter = "all", team, date, onDateChange }: {
 
       {/* Mobile-only swipeable group deck */}
       <div className="md:hidden">
-        <MobileGroupDeck groups={wcGroups} matches={wcMatches} onPick={setActiveMatch} />
+        <MobileGroupDeck groups={wcGroups} matches={wcMatches} onPick={handlePick} />
       </div>
 
 
@@ -351,7 +368,7 @@ export function Wc2026GroupsView({ filter = "all", team, date, onDateChange }: {
           groups={wcGroups}
           matches={wcMatches}
           year={2026}
-          onPick={setActiveMatch}
+          onPick={handlePick}
         />
       </div>
 
@@ -499,6 +516,7 @@ export function Wc2026KnockoutView({ filter = "all", team, date, onDateChange }:
 
 
   const [activeMatch, setActiveMatch] = useState<WCMatch | null>(null);
+  const handlePick = useWcPick(setActiveMatch);
 
   if (fQ.isLoading) return <FootballPitchSkeleton rows={6} />;
   if (fQ.data?.error && wcMatches.length === 0) return <ErrBox msg={fQ.data.error} />;
@@ -523,7 +541,7 @@ export function Wc2026KnockoutView({ filter = "all", team, date, onDateChange }:
           {/* Mobile vertical bracket with stage chips */}
           <MobileBracket
             rounds={groupedKnockout.map(([round, matches]) => ({ round, matches }))}
-            onPick={setActiveMatch}
+            onPick={handlePick}
           />
 
           {/* Desktop grid */}
@@ -545,7 +563,7 @@ export function Wc2026KnockoutView({ filter = "all", team, date, onDateChange }:
                       round={round}
                       index={i}
                       isFinal={round === "final"}
-                      onClick={() => setActiveMatch(m)}
+                      onClick={() => handlePick(m)}
                     />
                   ))}
                 </div>
