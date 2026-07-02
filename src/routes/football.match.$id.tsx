@@ -12,6 +12,12 @@ import { AdSlot } from "@/components/ads/AdSlot";
 import { flagOf } from "@/lib/flags";
 import { formatLocalTime } from "@/lib/time";
 import { AddToCalendarButton } from "@/components/football/AddToCalendarButton";
+import { MatchReminderBell } from "@/components/football/MatchReminderBell";
+import { HeadToHeadStrip } from "@/components/football/HeadToHeadStrip";
+import { FormGuide } from "@/components/football/FormGuide";
+import { VenueCard } from "@/components/football/VenueCard";
+import { MomentumChart } from "@/components/football/MomentumChart";
+import { useGoalAlerts } from "@/hooks/use-goal-alerts";
 
 export const Route = createFileRoute("/football/match/$id")({
   head: ({ params }) => {
