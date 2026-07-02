@@ -104,6 +104,13 @@ function MatchPage() {
           <>
             <LiveMatchCenter fixture={fx} />
 
+            <MomentumChart fx={fx} />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <VenueCard fx={fx} />
+              <FormGuide fx={fx} />
+            </div>
+            <HeadToHeadStrip fx={fx} />
+
             {/* Watch live — collapsible disclosure, not a second stacked card */}
             <section className="rounded-xl border border-amber-500/20 bg-amber-500/[0.03]">
               <button
