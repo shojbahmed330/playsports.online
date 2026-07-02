@@ -39,6 +39,7 @@ function toWcGroups(groups: Wc2026Group[]): WCGroup[] {
   for (const g of groups) {
     for (const r of g.rows) {
       out.push({
+        id: 0, // synthetic — 2026 rows aren't persisted; UI-only.
         tournament_year: 2026,
         group_name: g.group, // e.g. "Group A"
         team: r.team.name,
