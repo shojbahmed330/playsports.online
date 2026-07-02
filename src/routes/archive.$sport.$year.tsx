@@ -40,7 +40,21 @@ export const Route = createFileRoute("/archive/$sport/$year")({
           { name: "Football", path: "/football" },
           { name: `World Cup ${year}`, path },
         ])),
+        ldScript(itemList({
+          name: `${year} World Cup top scorers`,
+          path,
+          items: stats.topScorers.slice(0, 10).map((p: { name: string; team: string; goals: number }) => ({
+            name: `${p.name} (${p.team}, ${p.goals} goals)`,
+            path: `/player/football_wc/${p.name.toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")}`,
+          })),
+        })),
+        ldScript(faqPage([
+          { q: `Who won the ${year} FIFA World Cup?`, a: stats.champion ? `${stats.champion.champion} won the ${year} FIFA World Cup${stats.champion.runnerUp ? `, beating ${stats.champion.runnerUp} in the final` : ""}.` : `The ${year} FIFA World Cup champion is not yet on record.` },
+          { q: `Who was the top scorer at the ${year} World Cup?`, a: stats.topScorers[0] ? `${stats.topScorers[0].name} of ${stats.topScorers[0].team} was the leading scorer of the ${year} World Cup with ${stats.topScorers[0].goals} goals.` : `Top scorer for ${year} is not on record.` },
+          { q: `How many matches were played at the ${year} World Cup?`, a: `${stats.matches.length} matches and ${stats.goals.length} goals were recorded at the ${year} FIFA World Cup finals.` },
+        ])),
       ],
+
     };
   },
   component: ArchivePage,
