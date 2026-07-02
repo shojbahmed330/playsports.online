@@ -68,6 +68,7 @@ import { Route as FootballMineRouteImport } from './routes/football.mine'
 import { Route as CricketScoresRouteImport } from './routes/cricket.scores'
 import { Route as CricketRankingsRouteImport } from './routes/cricket.rankings'
 import { Route as CricketHistoryRouteImport } from './routes/cricket.history'
+import { Route as CricketTournamentsIndexRouteImport } from './routes/cricket.tournaments.index'
 import { Route as CricketTeamsIndexRouteImport } from './routes/cricket.teams.index'
 import { Route as CricketSeriesIndexRouteImport } from './routes/cricket.series.index'
 import { Route as CricketRecordsIndexRouteImport } from './routes/cricket.records.index'
@@ -408,6 +409,11 @@ const CricketHistoryRoute = CricketHistoryRouteImport.update({
   path: '/history',
   getParentRoute: () => CricketRoute,
 } as any)
+const CricketTournamentsIndexRoute = CricketTournamentsIndexRouteImport.update({
+  id: '/tournaments/',
+  path: '/tournaments/',
+  getParentRoute: () => CricketRoute,
+} as any)
 const CricketTeamsIndexRoute = CricketTeamsIndexRouteImport.update({
   id: '/teams/',
   path: '/teams/',
@@ -732,6 +738,7 @@ export interface FileRoutesByFullPath {
   '/cricket/records/': typeof CricketRecordsIndexRoute
   '/cricket/series/': typeof CricketSeriesIndexRoute
   '/cricket/teams/': typeof CricketTeamsIndexRoute
+  '/cricket/tournaments/': typeof CricketTournamentsIndexRoute
   '/api/public/hooks/weekly-digest': typeof ApiPublicHooksWeeklyDigestRoute
   '/cricket/ipl/teams/$teamId': typeof CricketIplTeamsTeamIdRoute
   '/football/players/$slug/$stat': typeof FootballPlayersSlugStatRoute
@@ -832,6 +839,7 @@ export interface FileRoutesByTo {
   '/cricket/records': typeof CricketRecordsIndexRoute
   '/cricket/series': typeof CricketSeriesIndexRoute
   '/cricket/teams': typeof CricketTeamsIndexRoute
+  '/cricket/tournaments': typeof CricketTournamentsIndexRoute
   '/api/public/hooks/weekly-digest': typeof ApiPublicHooksWeeklyDigestRoute
   '/cricket/ipl/teams/$teamId': typeof CricketIplTeamsTeamIdRoute
   '/football/players/$slug/$stat': typeof FootballPlayersSlugStatRoute
@@ -938,6 +946,7 @@ export interface FileRoutesById {
   '/cricket/records/': typeof CricketRecordsIndexRoute
   '/cricket/series/': typeof CricketSeriesIndexRoute
   '/cricket/teams/': typeof CricketTeamsIndexRoute
+  '/cricket/tournaments/': typeof CricketTournamentsIndexRoute
   '/api/public/hooks/weekly-digest': typeof ApiPublicHooksWeeklyDigestRoute
   '/cricket/ipl/teams/$teamId': typeof CricketIplTeamsTeamIdRoute
   '/football/players/$slug/$stat': typeof FootballPlayersSlugStatRoute
@@ -1045,6 +1054,7 @@ export interface FileRouteTypes {
     | '/cricket/records/'
     | '/cricket/series/'
     | '/cricket/teams/'
+    | '/cricket/tournaments/'
     | '/api/public/hooks/weekly-digest'
     | '/cricket/ipl/teams/$teamId'
     | '/football/players/$slug/$stat'
@@ -1145,6 +1155,7 @@ export interface FileRouteTypes {
     | '/cricket/records'
     | '/cricket/series'
     | '/cricket/teams'
+    | '/cricket/tournaments'
     | '/api/public/hooks/weekly-digest'
     | '/cricket/ipl/teams/$teamId'
     | '/football/players/$slug/$stat'
@@ -1250,6 +1261,7 @@ export interface FileRouteTypes {
     | '/cricket/records/'
     | '/cricket/series/'
     | '/cricket/teams/'
+    | '/cricket/tournaments/'
     | '/api/public/hooks/weekly-digest'
     | '/cricket/ipl/teams/$teamId'
     | '/football/players/$slug/$stat'
@@ -1708,6 +1720,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CricketHistoryRouteImport
       parentRoute: typeof CricketRoute
     }
+    '/cricket/tournaments/': {
+      id: '/cricket/tournaments/'
+      path: '/tournaments'
+      fullPath: '/cricket/tournaments/'
+      preLoaderRoute: typeof CricketTournamentsIndexRouteImport
+      parentRoute: typeof CricketRoute
+    }
     '/cricket/teams/': {
       id: '/cricket/teams/'
       path: '/teams'
@@ -2040,6 +2059,7 @@ interface CricketRouteChildren {
   CricketRecordsIndexRoute: typeof CricketRecordsIndexRoute
   CricketSeriesIndexRoute: typeof CricketSeriesIndexRoute
   CricketTeamsIndexRoute: typeof CricketTeamsIndexRoute
+  CricketTournamentsIndexRoute: typeof CricketTournamentsIndexRoute
   CricketIplTeamsTeamIdRoute: typeof CricketIplTeamsTeamIdRoute
   CricketIplTeamsIndexRoute: typeof CricketIplTeamsIndexRoute
 }
@@ -2065,6 +2085,7 @@ const CricketRouteChildren: CricketRouteChildren = {
   CricketRecordsIndexRoute: CricketRecordsIndexRoute,
   CricketSeriesIndexRoute: CricketSeriesIndexRoute,
   CricketTeamsIndexRoute: CricketTeamsIndexRoute,
+  CricketTournamentsIndexRoute: CricketTournamentsIndexRoute,
   CricketIplTeamsTeamIdRoute: CricketIplTeamsTeamIdRoute,
   CricketIplTeamsIndexRoute: CricketIplTeamsIndexRoute,
 }
