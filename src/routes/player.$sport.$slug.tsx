@@ -1,7 +1,7 @@
 import { createFileRoute, notFound, Link } from "@tanstack/react-router";
 import { findPlayer, playerStats } from "@/lib/seo/programmatic";
 import { canonical } from "@/lib/seo/canonical";
-import { breadcrumbList, athlete, ldScript } from "@/lib/seo/jsonld";
+import { breadcrumbList, athlete, faqPage, ldScript } from "@/lib/seo/jsonld";
 import { AffiliateStrip } from "@/components/affiliates/AffiliateStrip";
 import { AdSlot } from "@/components/ads/AdSlot";
 
