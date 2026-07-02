@@ -29,6 +29,7 @@ import { HeroSpotlight } from "@/components/home/HeroSpotlight";
 import { PulseStrip } from "@/components/home/PulseStrip";
 import { SportCard, FifaCard, CricketCard } from "@/components/home/SportCard";
 import { SiteFooter } from "@/components/home/SiteFooter";
+import { PopularSearches } from "@/components/seo/PopularSearches";
 import { WatchLivePanel } from "@/components/wc/WatchLivePanel";
 import { TodayInZoneStrip } from "@/components/home/TodayInZoneStrip";
 import { HallOfChampionsStrip } from "@/components/home/HallOfChampionsStrip";
@@ -326,6 +327,9 @@ function HubPage() {
         {filter === "all" && <HallOfChampionsStrip />}
 
         <AffiliateStrip placement="homepage" heading="Fan shop & partners" />
+
+        {/* Phase 2.2 — long-tail SEO discovery */}
+        <PopularSearches className="mt-8" />
 
         {/* NEWSLETTER */}
         <NewsletterCard source="homepage" />
