@@ -25,9 +25,16 @@ export const Route = createFileRoute("/mls/")({
     ],
     links: [{ rel: "canonical", href: "https://www.playsports.online/mls" }],
     scripts: [
-      ldScript(collectionPage({ name: "MLS — Live Scores, Standings & Leaders", description: "MLS hub: scores, standings, leaders and news.", path: "/mls" })),
+      ldScript(collectionPage({ name: "MLS — Live Scores, Standings & Leaders", description: "Major League Soccer hub: scores, standings, leaders and news.", path: "/mls" })),
+      ldScript(sportsOrganization({ name: "Major League Soccer", path: "/mls", sport: "Soccer" })),
       ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "MLS", path: "/mls" }])),
+      ldScript(faqPage([
+        { q: "How can I follow live MLS scores?", a: "PlaySports shows every MLS match with live minute-by-minute updates, goals, cards and lineups." },
+        { q: "How do MLS playoffs work?", a: "The top nine teams from each conference qualify for the Audi MLS Cup Playoffs, a bracket that culminates in the MLS Cup final." },
+        { q: "Does PlaySports cover MLS Cup?", a: "Yes — the full MLS Cup Playoffs bracket, Golden Boot race and league history are covered on PlaySports." },
+      ])),
     ],
+
   }),
   loader: async ({ context }) => {
     const day = todayYmd();
