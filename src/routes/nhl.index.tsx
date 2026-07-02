@@ -26,8 +26,15 @@ export const Route = createFileRoute("/nhl/")({
     links: [{ rel: "canonical", href: "https://www.playsports.online/nhl" }],
     scripts: [
       ldScript(collectionPage({ name: "NHL — Live Scores, Standings & Leaders", description: "NHL hub: scores, standings, leaders and news.", path: "/nhl" })),
+      ldScript(sportsOrganization({ name: "National Hockey League", path: "/nhl", sport: "IceHockey" })),
       ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "NHL", path: "/nhl" }])),
+      ldScript(faqPage([
+        { q: "How can I follow live NHL scores?", a: "PlaySports shows every NHL game with live period-by-period scoring, shots on goal and power-play tracking, refreshed in real time." },
+        { q: "How do NHL playoffs work?", a: "16 teams — the top three from each division plus two wild cards per conference — enter the Stanley Cup Playoffs, a best-of-seven bracket across four rounds." },
+        { q: "Does PlaySports cover Stanley Cup Playoffs?", a: "Yes — the full Stanley Cup bracket, series scores, scoring leaders and championship history are all on PlaySports." },
+      ])),
     ],
+
   }),
   loader: async ({ context }) => {
     const day = todayYmd();
