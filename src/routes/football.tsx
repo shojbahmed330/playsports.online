@@ -9,7 +9,9 @@ import { TournamentInfoCard } from "@/components/wc/TournamentInfoCard";
 import { GroupStage } from "@/components/wc/GroupStage";
 import { MatchCard, type RoundKey } from "@/components/wc/MatchCard";
 import { MatchModal } from "@/components/wc/MatchModal";
-import { YearStrip } from "@/components/wc/YearStrip";
+import { YearDropdown } from "@/components/wc/YearDropdown";
+import { FavoriteTeamPicker } from "@/components/common/FavoriteTeamPicker";
+import { Star } from "lucide-react";
 import { MobileBracket } from "@/components/wc/MobileBracket";
 
 import groupMatchesData from "@/data/wc_group_matches.json";
