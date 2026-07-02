@@ -148,6 +148,7 @@ function LineupsTab({
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 min-w-0">
         <LineupColumn
           title={homeTeam}
+          side="home"
           formation={l.formationHome}
           starters={starters(l.home)}
           subs={subs(l.home)}
@@ -155,6 +156,7 @@ function LineupsTab({
         />
         <LineupColumn
           title={awayTeam}
+          side="away"
           formation={l.formationAway}
           starters={starters(l.away)}
           subs={subs(l.away)}
@@ -167,13 +169,14 @@ function LineupsTab({
 }
 
 type LineupPlayer = {
-  id: number; name: string; shirt: number | null; position: string | null; captain: boolean;
+  id: number; name: string; shirt: number | null; position: string | null; captain: boolean; substitute?: boolean;
 };
 
 function LineupColumn({
-  title, formation, starters, subs, onPick,
+  title, side, formation, starters, subs, onPick,
 }: {
   title: string;
+  side: "home" | "away";
   formation: string | null;
   starters: LineupPlayer[];
   subs: LineupPlayer[];
@@ -188,6 +191,15 @@ function LineupColumn({
             {formation}
           </span>
         )}
+      </div>
+
+      <div className="mb-3">
+        <FormationPitch
+          formation={formation}
+          side={side}
+          starters={starters.map((p) => ({ ...p, substitute: false })) as never}
+          onPick={(p) => onPick(p as PlayerSheetTarget)}
+        />
       </div>
       <div className="space-y-1">
         {starters.map((p) => (
