@@ -77,8 +77,15 @@ export const Route = createFileRoute("/football")({
       links: [{ rel: "canonical", href: "https://www.playsports.online/football" }],
       scripts: [
         ldScript(collectionPage({ name: `FIFA World Cup ${cur} — Live & Archive`, description: `FIFA World Cup ${cur} live scores, bracket and historical archive 1930–${cur}.`, path: "/football" })),
+        ldScript(sportsOrganization({ name: "FIFA World Cup", path: "/football", sport: "Football" })),
         ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "Football", path: "/football" }])),
+        ldScript(faqPage([
+          { q: `When is the ${cur} FIFA World Cup?`, a: `The ${cur} FIFA World Cup fixtures, kickoff times and knockout bracket are live on PlaySports with real-time score updates.` },
+          { q: "Where can I watch live World Cup scores?", a: "PlaySports shows live FIFA World Cup scores, group standings, the full knockout bracket and top scorers, refreshed in real time." },
+          { q: "Does PlaySports cover previous World Cups?", a: "Yes — every FIFA World Cup from 1930 onward has a full archive of results, top scorers and champions on PlaySports." },
+        ])),
       ],
+
     };
   },
   loader: async ({ context }) => {
