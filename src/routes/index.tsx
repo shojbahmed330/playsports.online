@@ -39,14 +39,14 @@ const HOME_OG_IMAGE = "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/110e4
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "PlaySports — Live Scores Across MLB, NBA, NHL, MLS, Cricket & FIFA" },
+      { title: "PlaySports — Live Scores & FIFA World Cup Archive" },
       {
         name: "description",
         content:
-          "Your home for live MLB, NBA, NHL, MLS, Cricket & IPL scores plus the complete FIFA World Cup archive 1930–2026.",
+          "Live MLB, NBA, NHL, MLS, Cricket & IPL scores, standings and stats — plus the complete FIFA World Cup archive 1930–2026.",
       },
-      { property: "og:title", content: "PlaySports — Live Scores Across MLB, NBA, NHL, MLS, Cricket & FIFA" },
-      { property: "og:description", content: "Live scoreboards, standings, news and the full FIFA World Cup archive 1930–2026." },
+      { property: "og:title", content: "PlaySports — Live Scores & FIFA World Cup Archive" },
+      { property: "og:description", content: "Live scores across MLB, NBA, NHL, MLS, Cricket, IPL + FIFA World Cup 1930–2026." },
       { property: "og:url", content: "https://www.playsports.online/" },
       { property: "og:image", content: HOME_OG_IMAGE },
       { name: "twitter:image", content: HOME_OG_IMAGE },
