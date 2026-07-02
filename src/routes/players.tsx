@@ -254,11 +254,28 @@ function PlayersPage() {
               <div className="text-[10px] uppercase tracking-[0.18em] text-gold">Archive</div>
             </div>
           </Link>
-          <nav className="flex items-center gap-1 sm:gap-2 text-sm">
-            <Link to="/" className="px-3 py-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition-colors">Home</Link>
-            <Link to="/players" className="px-3 py-1.5 rounded-md text-gold bg-gold/10">Players</Link>
+          <nav className="flex items-center gap-1.5 sm:gap-2 text-sm">
+            <Link
+              to="/"
+              className="group relative inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs sm:text-sm font-semibold text-muted-foreground ring-1 ring-white/10 bg-white/5 hover:text-foreground hover:bg-white/10 hover:ring-white/20 transition-all"
+            >
+              <span aria-hidden>🏠</span>
+              <span>Home</span>
+            </Link>
+            <Link
+              to="/players"
+              className="relative inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs sm:text-sm font-extrabold text-black shadow-md shadow-amber-500/20 bg-gradient-to-r from-amber-300 via-yellow-300 to-amber-400 ring-1 ring-amber-200/60"
+            >
+              <span aria-hidden className="absolute -inset-px rounded-xl bg-gradient-to-r from-amber-300/40 to-yellow-200/40 blur-sm -z-10" />
+              <Trophy className="size-3.5" />
+              <span>Players</span>
+              <span className="ml-0.5 inline-flex size-1.5 rounded-full bg-black/70 animate-pulse" />
+            </Link>
             {isAdmin && (
-              <Link to="/admin" className="ml-1 px-3 py-1.5 rounded-md text-emerald-300 hover:text-emerald-200 hover:bg-emerald-500/10 inline-flex items-center gap-1.5">
+              <Link
+                to="/admin"
+                className="inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs sm:text-sm font-semibold text-emerald-300 ring-1 ring-emerald-400/30 bg-emerald-500/10 hover:bg-emerald-500/15 transition-all"
+              >
                 <ShieldCheck className="size-3.5" /> Admin
               </Link>
             )}
