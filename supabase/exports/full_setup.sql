@@ -389,7 +389,7 @@ CREATE INDEX IF NOT EXISTS newsletter_subscribers_created_at_idx ON public.newsl
 -- Name: newsletter_subscribers_unsub_token_idx; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX newsletter_subscribers_unsub_token_idx ON public.newsletter_subscribers USING btree (unsubscribe_token);
+CREATE UNIQUE INDEX IF NOT EXISTS newsletter_subscribers_unsub_token_idx ON public.newsletter_subscribers USING btree (unsubscribe_token);
 
 
 --
