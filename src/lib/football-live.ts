@@ -13,11 +13,11 @@ export type FootballPulse = {
 
 const isLive = (f: Wc2026Fixture) => {
   const s = (f.status || "").toLowerCase();
-  return s === "in" || s === "live" || s === "halftime" || s === "ht";
+  return s === "in" || s === "live" || s === "inprogress" || s === "halftime" || s === "ht";
 };
 const isFinal = (f: Wc2026Fixture) => {
   const s = (f.status || "").toLowerCase();
-  return s === "post" || s === "ft" || s === "final" || s === "aet" || s === "pen";
+  return s === "post" || s === "ft" || s === "final" || s === "finished" || s === "aet" || s === "pen";
 };
 const isToday = (ts: number) => {
   const d = new Date(ts);
