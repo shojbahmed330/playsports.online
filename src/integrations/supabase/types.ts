@@ -308,6 +308,166 @@ export type Database = {
         }
         Relationships: []
       }
+      wc_groups: {
+        Row: {
+          created_at: string
+          drawn: number | null
+          goals_against: number | null
+          goals_for: number | null
+          group_name: string
+          id: number
+          lost: number | null
+          played: number | null
+          points: number | null
+          position: number | null
+          qualified: boolean | null
+          team: string
+          tournament_year: number
+          updated_at: string
+          won: number | null
+        }
+        Insert: {
+          created_at?: string
+          drawn?: number | null
+          goals_against?: number | null
+          goals_for?: number | null
+          group_name: string
+          id?: number
+          lost?: number | null
+          played?: number | null
+          points?: number | null
+          position?: number | null
+          qualified?: boolean | null
+          team: string
+          tournament_year: number
+          updated_at?: string
+          won?: number | null
+        }
+        Update: {
+          created_at?: string
+          drawn?: number | null
+          goals_against?: number | null
+          goals_for?: number | null
+          group_name?: string
+          id?: number
+          lost?: number | null
+          played?: number | null
+          points?: number | null
+          position?: number | null
+          qualified?: boolean | null
+          team?: string
+          tournament_year?: number
+          updated_at?: string
+          won?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wc_groups_tournament_year_fkey"
+            columns: ["tournament_year"]
+            isOneToOne: false
+            referencedRelation: "wc_tournaments"
+            referencedColumns: ["year"]
+          },
+        ]
+      }
+      wc_matches: {
+        Row: {
+          away_score: number | null
+          away_score_pen: number | null
+          away_team: string
+          city: string | null
+          created_at: string
+          home_score: number | null
+          home_score_pen: number | null
+          home_team: string
+          id: number
+          match_date: string | null
+          match_number: number | null
+          round: string
+          stadium: string | null
+          tournament_year: number
+          updated_at: string
+          video_url: string | null
+        }
+        Insert: {
+          away_score?: number | null
+          away_score_pen?: number | null
+          away_team: string
+          city?: string | null
+          created_at?: string
+          home_score?: number | null
+          home_score_pen?: number | null
+          home_team: string
+          id?: number
+          match_date?: string | null
+          match_number?: number | null
+          round: string
+          stadium?: string | null
+          tournament_year: number
+          updated_at?: string
+          video_url?: string | null
+        }
+        Update: {
+          away_score?: number | null
+          away_score_pen?: number | null
+          away_team?: string
+          city?: string | null
+          created_at?: string
+          home_score?: number | null
+          home_score_pen?: number | null
+          home_team?: string
+          id?: number
+          match_date?: string | null
+          match_number?: number | null
+          round?: string
+          stadium?: string | null
+          tournament_year?: number
+          updated_at?: string
+          video_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wc_matches_tournament_year_fkey"
+            columns: ["tournament_year"]
+            isOneToOne: false
+            referencedRelation: "wc_tournaments"
+            referencedColumns: ["year"]
+          },
+        ]
+      }
+      wc_tournaments: {
+        Row: {
+          champion: string | null
+          created_at: string
+          fourth_place: string | null
+          host_country: string | null
+          runner_up: string | null
+          third_place: string | null
+          updated_at: string
+          year: number
+        }
+        Insert: {
+          champion?: string | null
+          created_at?: string
+          fourth_place?: string | null
+          host_country?: string | null
+          runner_up?: string | null
+          third_place?: string | null
+          updated_at?: string
+          year: number
+        }
+        Update: {
+          champion?: string | null
+          created_at?: string
+          fourth_place?: string | null
+          host_country?: string | null
+          runner_up?: string | null
+          third_place?: string | null
+          updated_at?: string
+          year?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
