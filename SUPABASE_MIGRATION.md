@@ -1,21 +1,18 @@
 # Migrating to Your Own Supabase (`vagqeperdsumxwukwbes`)
 
-The project now reads Supabase URL/key from `VITE_SUPABASE_*` env vars — no
-hardcoded Lovable Cloud references remain in application code. Follow these
-steps once to have your own Supabase serve everything.
+The project is configured for your own Supabase project (`vagqeperdsumxwukwbes`)
+when deployed outside Lovable. Follow these steps once so Vercel and local
+development use the same database.
 
 ## 1. Install the schema in your Supabase
 
 Open **Supabase Dashboard → SQL Editor → New query**, paste the contents of
 `supabase/exports/full_setup.sql`, and click **Run**.
 
-This creates: `affiliate_links`, `contact_messages`, `digest_runs`,
-`memberships`, `newsletter_subscribers`, `site_settings`, `sponsored_slots`,
-`user_roles`, the `app_role` enum, helper functions (`has_role`,
-`handle_new_user_role`, `touch_updated_at`), RLS, policies, and GRANTs.
-
-Your existing `wc_*` tables (World Cup archive) already live in this project
-and stay untouched.
+This creates all app tables, including `wc_tournaments`, `wc_matches`, and
+`wc_groups`, plus the `app_role` enum, helper functions (`has_role`,
+`handle_new_user_role`, `touch_updated_at`), auth trigger, RLS, policies,
+indexes, foreign keys, and GRANTs.
 
 ## 2. Grant yourself admin
 
@@ -30,9 +27,7 @@ ON CONFLICT DO NOTHING;
 
 ## 3. Regenerate TypeScript types from YOUR project
 
-The auto-generated `src/integrations/supabase/types.ts` currently reflects
-the old Lovable Cloud schema. Regenerate from your Supabase so `wc_*` tables
-become natively typed and you can delete `src/lib/supabase.ts`'s bridging:
+Regenerate from your own Supabase whenever schema changes:
 
 ```bash
 npx supabase login
@@ -43,8 +38,9 @@ npx supabase gen types typescript --project-id vagqeperdsumxwukwbes \
 ## 4. Set env vars
 
 ### Local (`.env`)
-Already updated to point to `vagqeperdsumxwukwbes`. Fill in
-`SUPABASE_SERVICE_ROLE_KEY` from Supabase Dashboard → Project Settings → API.
+Lovable may overwrite its preview `.env`, so do not treat that file as the
+source of truth. For local/Vercel development, copy `.env.example` into your
+own environment and fill `SUPABASE_SERVICE_ROLE_KEY` manually.
 
 ### Vercel
 Paste every variable from `.env.example` into **Vercel → Project → Settings →

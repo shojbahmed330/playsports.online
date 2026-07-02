@@ -1,7 +1,7 @@
 # Deploying to Vercel
 
-This project is built with **TanStack Start** and can deploy to either Lovable
-(Cloudflare Workers, the default) or **Vercel** (serverless functions).
+This project is built with **TanStack Start** and is configured for **Vercel**
+with your own Supabase project.
 
 The switch is controlled by the `DEPLOY_TARGET=vercel` env var, which
 `vercel.json` sets automatically for you.
@@ -43,7 +43,6 @@ Development** for each one.
 ### Optional — third-party integrations
 | Name | Used by | Where to get it |
 |---|---|---|
-| `LOVABLE_API_KEY` | Lovable AI Gateway calls | Lovable dashboard |
 | `RAPIDAPI_KEY` | Sports data fetchers (`src/lib/*.functions.ts`) | rapidapi.com dashboard |
 | `WEBHOOK_SECRET` | If you secure `/api/public/hooks/*` | any random 32+ char string |
 
@@ -85,16 +84,11 @@ fine, TanStack Start's dev runtime is the same on both targets.
 
 ## Known limitations
 
-- **Lovable-managed OAuth broker** (`lovable.auth.signInWithOAuth`) only works
-  on Lovable-hosted deploys. On Vercel, sign-in falls back to plain
-  `supabase.auth.signInWithOAuth`, which requires that you enable each
-  provider (Google, etc.) directly in the Supabase dashboard → Authentication
-  → Providers, and add `https://your-project.vercel.app/auth/callback` to the
-  allowed redirect URLs.
-- **Auto-generated Lovable files** (`src/integrations/supabase/*.ts`) are
-  fine to keep — they read env vars, so they work on Vercel as long as the
-  vars above are set.
-- **Cron / scheduled jobs**: Lovable Cloud triggers `weekly-digest` via
-  pg_cron. On Vercel, use **Vercel Cron** (add a `crons` block in
+- **OAuth providers** must be enabled in your Supabase dashboard, and
+  `https://your-project.vercel.app/auth/callback` must be in the allowed
+  redirect URLs.
+- **Auto-generated Supabase integration files** read env vars, so they work on
+  Vercel as long as the vars above are set.
+- **Cron / scheduled jobs**: use **Vercel Cron** (add a `crons` block in
   `vercel.json`) or an external scheduler that POSTs to
   `https://your-project.vercel.app/api/public/hooks/weekly-digest`.

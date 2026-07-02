@@ -123,7 +123,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preconnect", href: "https://a.espncdn.com", crossOrigin: "anonymous" },
       { rel: "dns-prefetch", href: "https://sports.core.api.espn.com" },
       { rel: "dns-prefetch", href: "https://pagead2.googlesyndication.com" },
-      { rel: "dns-prefetch", href: "https://qooamytkkxeyfmmqirsy.supabase.co" },
+      { rel: "dns-prefetch", href: "https://vagqeperdsumxwukwbes.supabase.co" },
     ],
   }),
   shellComponent: RootShell,
