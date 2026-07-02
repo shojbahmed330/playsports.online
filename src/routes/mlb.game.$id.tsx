@@ -13,20 +13,49 @@ import { formatLocalTime, relativeDay } from "@/lib/time";
 import { breadcrumbList, ldScript, sportsEvent } from "@/lib/seo/jsonld";
 
 export const Route = createFileRoute("/mlb/game/$id")({
-  head: ({ params }) => {
+  loader: async ({ context, params }) => {
+    const data = await context.queryClient.ensureQueryData({
+      queryKey: ["mlb", "game", params.id],
+      queryFn: () => getMlbGame({ data: { id: params.id } }),
+      staleTime: 10_000,
+    }).catch(() => null);
+    return { summary: data?.summary ?? null };
+  },
+  head: ({ params, loaderData }) => {
+    const s = loaderData?.summary;
+    const away = s?.away?.shortName || s?.away?.name || s?.away?.abbr;
+    const home = s?.home?.shortName || s?.home?.name || s?.home?.abbr;
+    const matchup = away && home ? `${away} vs ${home}` : `MLB Game ${params.id}`;
+    const title = `${matchup} — MLB Box Score, Linescore & Live Updates`;
+    const desc = away && home
+      ? `Live MLB game: ${away} vs ${home}. Inning-by-inning linescore, batting & pitching stats, scoring plays, probables and win probability on PlaySports.`
+      : "Live MLB boxscore: inning-by-inning linescore, batting and pitching stats, scoring plays, probables, venue, weather, odds.";
     const url = `https://www.playsports.online/mlb/game/${params.id}`;
     return {
       meta: [
-        { title: `MLB Game · Boxscore & Live Updates` },
-        { name: "description", content: "Live MLB boxscore: inning-by-inning linescore, batting and pitching stats, scoring plays, probables, venue, weather, odds." },
-        { property: "og:title", content: "MLB Game · Live Boxscore" },
-        { property: "og:description", content: "Inning-by-inning linescore, batting & pitching stats, scoring plays." },
+        { title },
+        { name: "description", content: desc },
+        { property: "og:title", content: matchup },
+        { property: "og:description", content: desc },
         { property: "og:url", content: url },
+        { property: "og:type", content: "article" },
+        { name: "twitter:card", content: "summary_large_image" },
       ],
       links: [{ rel: "canonical", href: url }],
       scripts: [
-        ldScript(sportsEvent({ name: `MLB Game ${params.id}`, path: `/mlb/game/${params.id}`, sport: "Baseball" })),
-        ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "MLB", path: "/mlb" }, { name: "Game", path: `/mlb/game/${params.id}` }])),
+        ldScript(sportsEvent({
+          name: matchup,
+          path: `/mlb/game/${params.id}`,
+          sport: "Baseball",
+          startDate: s?.startTs ? new Date(s.startTs).toISOString() : undefined,
+          homeTeam: home ?? undefined,
+          awayTeam: away ?? undefined,
+          location: s?.venue?.name ?? undefined,
+          status: s?.status === "in" ? "live" : s?.status === "post" ? "ended" : "scheduled",
+        })),
+        ldScript(breadcrumbList([
+          { name: "Home", path: "/" }, { name: "MLB", path: "/mlb" }, { name: "Scores", path: "/mlb/scores" }, { name: matchup, path: `/mlb/game/${params.id}` },
+        ])),
       ],
     };
   },
