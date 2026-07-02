@@ -61,7 +61,7 @@ export function MatchHighlightCard({
   videoUrl?: string | null;
 }) {
   const mapQ = useQuery({
-    queryKey: ["wc2026", "video-map"],
+    queryKey: ["wc2026", "video_map"],
     queryFn: () => fetch2026VideoMap(),
     staleTime: 5 * 60_000,
   });

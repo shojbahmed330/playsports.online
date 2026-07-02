@@ -442,7 +442,11 @@ export function Wc2026KnockoutView({ filter = "all", team, date, onDateChange }:
     // matrix. If ESPN still says "Group H 2nd Place", the UI shows the current
     // standings projection from the correct group (never a team from another
     // group), while keeping ESPN's event id/date/venue for auto-replacement.
-    const predictedR32 = computeR32(groups);
+    const attachVideo = (m: WCMatch): WCMatch => ({
+      ...m,
+      video_url: m.video_url ?? vQ.data?.get(videoKey(m.home_team, m.away_team)) ?? null,
+    });
+    const predictedR32 = computeR32(groups).map(attachVideo);
     const predictedR32ByNo = new Map(predictedR32.map((m) => [m.match_number ?? 0, m]));
     const rawMerged = wcMatchesRaw.flatMap((m) => {
       const k = classifyKnockout(m.round);
@@ -453,6 +457,7 @@ export function Wc2026KnockoutView({ filter = "all", team, date, onDateChange }:
             ...m,
             home_team: projected.home_team,
             away_team: projected.away_team,
+            video_url: projected.video_url ?? vQ.data?.get(videoKey(projected.home_team, projected.away_team)) ?? m.video_url,
             predicted: true,
             home_seed_label: projected.home_seed_label,
             away_seed_label: projected.away_seed_label,
@@ -482,8 +487,8 @@ export function Wc2026KnockoutView({ filter = "all", team, date, onDateChange }:
       return k ? !espnHasRound(k) : true;
     });
 
-    return [...rawMerged, ...synthR32, ...synthLater];
-  }, [wcMatchesRaw, sQ.data]);
+    return [...rawMerged.map(attachVideo), ...synthR32.map(attachVideo), ...synthLater];
+  }, [wcMatchesRaw, sQ.data, vQ.data]);
 
   const { teams: myTeams } = useMyTeams();
   // Knockout bracket is structural — never filter it by date. Date filter only

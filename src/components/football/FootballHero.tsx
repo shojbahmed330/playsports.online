@@ -53,18 +53,13 @@ export function FootballHero() {
       />
       <div aria-hidden className="absolute inset-0 bg-[linear-gradient(transparent_95%,rgba(255,255,255,0.04)_100%),linear-gradient(90deg,transparent_95%,rgba(255,255,255,0.04)_100%)] bg-[size:32px_32px] opacity-40" />
 
-      <div className="relative max-w-6xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
+      <div className="relative max-w-6xl mx-auto px-4 sm:px-6 py-7 sm:py-10">
         <div className="flex flex-col items-center text-center">
-          <div className="relative mb-5">
-            <div className="size-16 sm:size-20 rounded-full bg-gradient-to-br from-amber-400/40 via-rose-500/30 to-blue-500/30 grid place-items-center ring-1 ring-amber-300/30 backdrop-blur-sm animate-[spin_18s_linear_infinite]">
-              <Trophy className="size-8 sm:size-9 text-amber-300" />
-            </div>
-            {pulse.phase === "live" && (
-              <span className="absolute -top-1 -right-1 inline-flex items-center gap-1 rounded-full bg-red-600 px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-widest text-white shadow-lg shadow-red-500/40">
-                <span className="size-1.5 rounded-full bg-white animate-pulse" /> Live
-              </span>
-            )}
-          </div>
+          {pulse.phase === "live" && (
+            <span className="mb-3 inline-flex items-center gap-1 rounded-full bg-red-600 px-3 py-1 text-[10px] font-extrabold uppercase tracking-widest text-white shadow-lg shadow-red-500/40">
+              <span className="size-1.5 rounded-full bg-white animate-pulse" /> Live now
+            </span>
+          )}
 
           <h1 className="text-3xl sm:text-6xl font-extrabold tracking-tight">
             FIFA World Cup{" "}
@@ -77,7 +72,7 @@ export function FootballHero() {
           </p>
 
           {/* STAT PILLS */}
-          <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
+          <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
             <StatPill
               icon={<Radio className="size-3.5" />}
               label="Live"
@@ -97,7 +92,7 @@ export function FootballHero() {
           </div>
 
           {/* CTAs */}
-          <div className="mt-6 grid w-full grid-cols-1 sm:grid-cols-[auto_auto] gap-3 sm:justify-center max-w-md sm:max-w-none">
+          <div className="mt-5 grid w-full grid-cols-1 sm:grid-cols-[auto_auto] gap-3 sm:justify-center max-w-md sm:max-w-none">
             <div className="sm:w-72">
               <WatchLivePanel compact />
             </div>
