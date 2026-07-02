@@ -395,12 +395,6 @@ function Index() {
       <main id="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-14 space-y-8">
         {year === LIVE_YEAR ? (
           <>
-            <div className="flex justify-center">
-              <div className="bg-gray-800/50 rounded-full px-4 py-1 text-xs text-gray-400">
-                {LIVE_YEAR} World Cup • {FOOTBALL_WC.seasonWindows[LIVE_YEAR]?.teams ?? 48} teams • {FOOTBALL_WC.seasonWindows[LIVE_YEAR]?.host ?? ""} •{" "}
-                <span className="text-red-300 font-semibold">Live data</span>
-              </div>
-            </div>
 
             <FootballSubNav
               active={tab}
