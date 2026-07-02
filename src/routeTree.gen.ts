@@ -59,6 +59,7 @@ import { Route as MlbPostseasonRouteImport } from './routes/mlb.postseason'
 import { Route as MlbPlayersRouteImport } from './routes/mlb.players'
 import { Route as MlbNewsRouteImport } from './routes/mlb.news'
 import { Route as MlbHistoryRouteImport } from './routes/mlb.history'
+import { Route as FootballMineRouteImport } from './routes/football.mine'
 import { Route as CricketTeamsRouteImport } from './routes/cricket.teams'
 import { Route as CricketScoresRouteImport } from './routes/cricket.scores'
 import { Route as CricketRecordsRouteImport } from './routes/cricket.records'
@@ -347,6 +348,11 @@ const MlbHistoryRoute = MlbHistoryRouteImport.update({
   path: '/history',
   getParentRoute: () => MlbRoute,
 } as any)
+const FootballMineRoute = FootballMineRouteImport.update({
+  id: '/mine',
+  path: '/mine',
+  getParentRoute: () => FootballRoute,
+} as any)
 const CricketTeamsRoute = CricketTeamsRouteImport.update({
   id: '/teams',
   path: '/teams',
@@ -561,6 +567,7 @@ export interface FileRoutesByFullPath {
   '/cricket/records': typeof CricketRecordsRoute
   '/cricket/scores': typeof CricketScoresRoute
   '/cricket/teams': typeof CricketTeamsRoute
+  '/football/mine': typeof FootballMineRoute
   '/mlb/history': typeof MlbHistoryRoute
   '/mlb/news': typeof MlbNewsRoute
   '/mlb/players': typeof MlbPlayersRoute
@@ -645,6 +652,7 @@ export interface FileRoutesByTo {
   '/cricket/records': typeof CricketRecordsRoute
   '/cricket/scores': typeof CricketScoresRoute
   '/cricket/teams': typeof CricketTeamsRoute
+  '/football/mine': typeof FootballMineRoute
   '/mlb/history': typeof MlbHistoryRoute
   '/mlb/news': typeof MlbNewsRoute
   '/mlb/players': typeof MlbPlayersRoute
@@ -735,6 +743,7 @@ export interface FileRoutesById {
   '/cricket/records': typeof CricketRecordsRoute
   '/cricket/scores': typeof CricketScoresRoute
   '/cricket/teams': typeof CricketTeamsRoute
+  '/football/mine': typeof FootballMineRoute
   '/mlb/history': typeof MlbHistoryRoute
   '/mlb/news': typeof MlbNewsRoute
   '/mlb/players': typeof MlbPlayersRoute
@@ -826,6 +835,7 @@ export interface FileRouteTypes {
     | '/cricket/records'
     | '/cricket/scores'
     | '/cricket/teams'
+    | '/football/mine'
     | '/mlb/history'
     | '/mlb/news'
     | '/mlb/players'
@@ -910,6 +920,7 @@ export interface FileRouteTypes {
     | '/cricket/records'
     | '/cricket/scores'
     | '/cricket/teams'
+    | '/football/mine'
     | '/mlb/history'
     | '/mlb/news'
     | '/mlb/players'
@@ -999,6 +1010,7 @@ export interface FileRouteTypes {
     | '/cricket/records'
     | '/cricket/scores'
     | '/cricket/teams'
+    | '/football/mine'
     | '/mlb/history'
     | '/mlb/news'
     | '/mlb/players'
@@ -1444,6 +1456,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MlbHistoryRouteImport
       parentRoute: typeof MlbRoute
     }
+    '/football/mine': {
+      id: '/football/mine'
+      path: '/mine'
+      fullPath: '/football/mine'
+      preLoaderRoute: typeof FootballMineRouteImport
+      parentRoute: typeof FootballRoute
+    }
     '/cricket/teams': {
       id: '/cricket/teams'
       path: '/teams'
@@ -1752,10 +1771,12 @@ const CricketRouteWithChildren =
   CricketRoute._addFileChildren(CricketRouteChildren)
 
 interface FootballRouteChildren {
+  FootballMineRoute: typeof FootballMineRoute
   FootballMatchIdRoute: typeof FootballMatchIdRoute
 }
 
 const FootballRouteChildren: FootballRouteChildren = {
+  FootballMineRoute: FootballMineRoute,
   FootballMatchIdRoute: FootballMatchIdRoute,
 }
 
@@ -1909,13 +1930,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

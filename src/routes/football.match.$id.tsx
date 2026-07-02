@@ -12,6 +12,12 @@ import { AdSlot } from "@/components/ads/AdSlot";
 import { flagOf } from "@/lib/flags";
 import { formatLocalTime } from "@/lib/time";
 import { AddToCalendarButton } from "@/components/football/AddToCalendarButton";
+import { MatchReminderBell } from "@/components/football/MatchReminderBell";
+import { HeadToHeadStrip } from "@/components/football/HeadToHeadStrip";
+import { FormGuide } from "@/components/football/FormGuide";
+import { VenueCard } from "@/components/football/VenueCard";
+import { MomentumChart } from "@/components/football/MomentumChart";
+import { useGoalAlerts } from "@/hooks/use-goal-alerts";
 
 export const Route = createFileRoute("/football/match/$id")({
   head: ({ params }) => {
@@ -49,6 +55,7 @@ function MatchPage() {
   const fx = q.data?.fixture;
   const title = fx ? `${fx.home.name} v ${fx.away.name}` : "Match Centre";
   const isLive = fx?.status === "inprogress";
+  useGoalAlerts(fx);
 
   return (
     <div className="min-h-dvh bg-black text-foreground pb-16 sm:pb-0">
@@ -72,7 +79,10 @@ function MatchPage() {
               <span className="size-1.5 rounded-full bg-red-500 animate-pulse" /> Live
             </span>
           ) : fx?.status === "notstarted" ? (
-            <AddToCalendarButton fx={fx} compact />
+            <div className="flex items-center gap-1.5">
+              <MatchReminderBell fx={fx} />
+              <AddToCalendarButton fx={fx} compact />
+            </div>
           ) : (
             <span className="shrink-0 text-[10px] uppercase tracking-widest text-gray-600">2026</span>
           )}
@@ -93,6 +103,13 @@ function MatchPage() {
         {fx && (
           <>
             <LiveMatchCenter fixture={fx} />
+
+            <MomentumChart fx={fx} />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <VenueCard fx={fx} />
+              <FormGuide fx={fx} />
+            </div>
+            <HeadToHeadStrip fx={fx} />
 
             {/* Watch live — collapsible disclosure, not a second stacked card */}
             <section className="rounded-xl border border-amber-500/20 bg-amber-500/[0.03]">

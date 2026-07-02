@@ -1,4 +1,5 @@
-import { Zap, Users, Swords, Trophy } from "lucide-react";
+import { Zap, Users, Swords, Trophy, Star } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { ChipScroller } from "@/components/ui/ChipScroller";
 
 export type SubNavTab = "today" | "groups" | "knockout" | "scorers";
@@ -81,6 +82,13 @@ export function FootballSubNav({
                 </button>
               );
             })}
+            <Link
+              to="/football/mine"
+              className="tap-target shrink-0 inline-flex items-center gap-1.5 rounded-xl px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-semibold text-amber-300 hover:text-amber-200 hover:bg-white/5"
+              aria-label="My starred teams"
+            >
+              <Star className="size-4" /> Mine
+            </Link>
           </div>
         </ChipScroller>
       </div>
