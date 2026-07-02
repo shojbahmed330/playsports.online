@@ -309,6 +309,7 @@ export function Wc2026GroupsView({ filter = "all", team, date, onDateChange }: {
 
 
   const [activeMatch, setActiveMatch] = useState<WCMatch | null>(null);
+  const handlePick = useWcPick(setActiveMatch);
 
   if (sQ.isLoading) return <FootballPitchSkeleton rows={6} />;
   const apiErr = sQ.data?.error || fQ.data?.error;
@@ -348,7 +349,7 @@ export function Wc2026GroupsView({ filter = "all", team, date, onDateChange }: {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {wcMatchesForDate.map((m, i) => (
-              <MatchCard key={`d-${m.id}`} match={m} round="round_of_16" index={i} onClick={() => setActiveMatch(m)} />
+              <MatchCard key={`d-${m.id}`} match={m} round="round_of_16" index={i} onClick={() => handlePick(m)} />
             ))}
           </div>
         </section>
@@ -356,7 +357,7 @@ export function Wc2026GroupsView({ filter = "all", team, date, onDateChange }: {
 
       {/* Mobile-only swipeable group deck */}
       <div className="md:hidden">
-        <MobileGroupDeck groups={wcGroups} matches={wcMatches} onPick={setActiveMatch} />
+        <MobileGroupDeck groups={wcGroups} matches={wcMatches} onPick={handlePick} />
       </div>
 
 
@@ -367,7 +368,7 @@ export function Wc2026GroupsView({ filter = "all", team, date, onDateChange }: {
           groups={wcGroups}
           matches={wcMatches}
           year={2026}
-          onPick={setActiveMatch}
+          onPick={handlePick}
         />
       </div>
 
@@ -515,6 +516,7 @@ export function Wc2026KnockoutView({ filter = "all", team, date, onDateChange }:
 
 
   const [activeMatch, setActiveMatch] = useState<WCMatch | null>(null);
+  const handlePick = useWcPick(setActiveMatch);
 
   if (fQ.isLoading) return <FootballPitchSkeleton rows={6} />;
   if (fQ.data?.error && wcMatches.length === 0) return <ErrBox msg={fQ.data.error} />;
@@ -539,7 +541,7 @@ export function Wc2026KnockoutView({ filter = "all", team, date, onDateChange }:
           {/* Mobile vertical bracket with stage chips */}
           <MobileBracket
             rounds={groupedKnockout.map(([round, matches]) => ({ round, matches }))}
-            onPick={setActiveMatch}
+            onPick={handlePick}
           />
 
           {/* Desktop grid */}
@@ -561,7 +563,7 @@ export function Wc2026KnockoutView({ filter = "all", team, date, onDateChange }:
                       round={round}
                       index={i}
                       isFinal={round === "final"}
-                      onClick={() => setActiveMatch(m)}
+                      onClick={() => handlePick(m)}
                     />
                   ))}
                 </div>
