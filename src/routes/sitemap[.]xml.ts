@@ -182,6 +182,8 @@ export const Route = createFileRoute("/sitemap.xml")({
           ...cricketSeoPlayerUrls(),
           ...cricketSeoTournamentUrls(),
           ...cricketSeoRecordUrls(),
+          ...cricketSeoHighlightUrls(),
+          { path: "/cricket/highlights", changefreq: "weekly", priority: "0.75" },
           ...WC2026_STAGES.map((s) => ({
             path: `/tournaments/fifa-world-cup-2026/${s.slug}`,
             changefreq: "daily" as const,
