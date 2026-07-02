@@ -2,26 +2,47 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { getMlsAthlete } from "@/lib/mls.functions";
-import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
+import { athlete, breadcrumbList, ldScript } from "@/lib/seo/jsonld";
 
 export const Route = createFileRoute("/mls/player/$id")({
-  head: ({ params }) => ({
-    meta: [
-      { title: `MLS Player ${params.id} — Bio & Career Stats` },
-      { name: "description", content: "Player biography and full career averages." },
-    ],
-    links: [{ rel: "canonical", href: `https://www.playsports.online/mls/player/${params.id}` }],
-    scripts: [ldScript(breadcrumbList([
-      { name: "Home", path: "/" }, { name: "MLS", path: "/mls" }, { name: "Players", path: "/mls/leaders" }, { name: params.id, path: `/mls/player/${params.id}` },
-    ]))],
-  }),
   loader: async ({ context, params }) => {
-    await context.queryClient.prefetchQuery({
-      queryKey: ["mls", "athlete", params.id],
-      queryFn: () => getMlsAthlete({ data: { id: params.id } }),
-      staleTime: 60 * 60_000,
-    }).catch(() => null);
-    return null;
+    return await context.queryClient
+      .ensureQueryData({
+        queryKey: ["mls", "athlete", params.id],
+        queryFn: () => getMlsAthlete({ data: { id: params.id } }),
+        staleTime: 60 * 60_000,
+      })
+      .catch(() => null);
+  },
+  head: ({ params, loaderData }) => {
+    const url = `https://www.playsports.online/mls/player/${params.id}`;
+    const a = (loaderData as { athlete?: { name?: string; headshot?: string | null; team?: { name?: string } | null; position?: string | null } } | null)?.athlete ?? null;
+    const name = a?.name ?? `MLS Player ${params.id}`;
+    const teamPart = a?.team?.name ? ` — ${a.team.name}` : "";
+    const title = a ? `${name}${teamPart} — MLS Career Stats & Bio` : `MLS Player ${params.id} — Bio & Career Stats`;
+    const desc = a
+      ? `${name}${a.position ? ` (${a.position})` : ""}${teamPart} — biography and full career averages on PlaySports.`
+      : "Player biography and full career averages.";
+    return {
+      meta: [
+        { title },
+        { name: "description", content: desc },
+        { property: "og:title", content: title },
+        { property: "og:description", content: desc },
+        { property: "og:url", content: url },
+        ...(a?.headshot ? [{ property: "og:image", content: a.headshot }] : []),
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: desc },
+      ],
+      links: [{ rel: "canonical", href: url }],
+      scripts: [
+        ldScript(athlete({ name, path: `/mls/player/${params.id}`, sport: "Soccer", image: a?.headshot ?? undefined, team: a?.team?.name ?? undefined })),
+        ldScript(breadcrumbList([
+          { name: "Home", path: "/" }, { name: "MLS", path: "/mls" }, { name: "Players", path: "/mls/leaders" }, { name, path: `/mls/player/${params.id}` },
+        ])),
+      ],
+    };
   },
   component: MlsPlayer,
 });
