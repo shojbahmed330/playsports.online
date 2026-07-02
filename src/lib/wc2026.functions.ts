@@ -122,6 +122,20 @@ export type Wc2026MatchStats = {
   rows: { name: string; home: string; away: string }[];
 }[];
 
+export type Wc2026CommentaryItem = {
+  id: string;
+  sequence: number;
+  minute: number | null;
+  team: "home" | "away" | null;
+  text: string;
+  type: string;
+};
+
+export type Wc2026Official = {
+  name: string;
+  role: string;
+};
+
 // ===================== HELPERS =====================
 
 export function wc2026TeamLogo(id: number) {
