@@ -1,37 +1,36 @@
 // Filter helpers for /football 2026 view. URL-synced via TanStack search params.
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useCallback } from "react";
 import type { WCMatch } from "@/lib/supabase";
+import { useStarred } from "@/lib/starred";
 
 export type FootballFilter = "all" | "live" | "today" | "my";
 
-const STORAGE_KEY = "fb:my-teams";
+const LEGACY_KEY = "fb:my-teams";
 
-function readMy(): string[] {
-  if (typeof window === "undefined") return [];
+// Unified favorites: football starred list = cross-sport `starred:football` store.
+// One-time migration from the legacy `fb:my-teams` key so existing users don't lose picks.
+function migrateLegacy() {
+  if (typeof window === "undefined") return;
   try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    if (!raw) return [];
-    const arr = JSON.parse(raw);
-    return Array.isArray(arr) ? arr.filter((x) => typeof x === "string") : [];
-  } catch { return []; }
-}
-
-function writeMy(list: string[]) {
-  try { window.localStorage.setItem(STORAGE_KEY, JSON.stringify(list)); } catch { /* ignore */ }
+    const legacy = window.localStorage.getItem(LEGACY_KEY);
+    if (!legacy) return;
+    const arr = JSON.parse(legacy);
+    if (!Array.isArray(arr) || arr.length === 0) { window.localStorage.removeItem(LEGACY_KEY); return; }
+    const currentRaw = window.localStorage.getItem("starred:football");
+    const current: string[] = currentRaw ? JSON.parse(currentRaw) : [];
+    const merged = Array.from(new Set([...(Array.isArray(current) ? current : []), ...arr.filter((x) => typeof x === "string")]));
+    window.localStorage.setItem("starred:football", JSON.stringify(merged));
+    window.localStorage.removeItem(LEGACY_KEY);
+    window.dispatchEvent(new CustomEvent("starred:change", { detail: { sport: "football" } }));
+  } catch { /* ignore */ }
 }
 
 export function useMyTeams() {
-  const [teams, setTeams] = useState<string[]>([]);
-  useEffect(() => { setTeams(readMy()); }, []);
-  const toggle = useCallback((team: string) => {
-    setTeams((prev) => {
-      const next = prev.includes(team) ? prev.filter((t) => t !== team) : [...prev, team];
-      writeMy(next);
-      return next;
-    });
-  }, []);
-  const has = useCallback((team: string) => teams.includes(team), [teams]);
-  return { teams, toggle, has };
+  useEffect(() => { migrateLegacy(); }, []);
+  const { items, toggle, has } = useStarred("football");
+  const stableToggle = useCallback((team: string) => toggle(team), [toggle]);
+  const stableHas = useCallback((team: string) => has(team), [has]);
+  return { teams: items, toggle: stableToggle, has: stableHas };
 }
 
 function isLive(m: WCMatch): boolean {
