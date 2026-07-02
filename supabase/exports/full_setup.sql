@@ -39,25 +39,25 @@ SET row_security = off;
 -- Name: public; Type: SCHEMA; Schema: -; Owner: -
 --
 
-CREATE SCHEMA public;
-
-
+-- CREATE SCHEMA public; (skipped: already exists)
 --
 -- Name: app_role; Type: TYPE; Schema: public; Owner: -
 --
 
-CREATE TYPE public.app_role AS ENUM (
-    'admin',
+DO $mig$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'app_role') THEN
+    CREATE TYPE public.app_role AS ENUM ('admin',
     'moderator',
-    'user'
-);
+    'user');
+  END IF;
+END $mig$;
 
 
 --
 -- Name: handle_new_user_role(); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE FUNCTION public.handle_new_user_role() RETURNS trigger
+CREATE OR REPLACE FUNCTION public.handle_new_user_role() RETURNS trigger
     LANGUAGE plpgsql SECURITY DEFINER
     SET search_path TO 'public'
     AS $$
@@ -76,7 +76,7 @@ $$;
 -- Name: has_role(uuid, public.app_role); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE FUNCTION public.has_role(_user_id uuid, _role public.app_role) RETURNS boolean
+CREATE OR REPLACE FUNCTION public.has_role(_user_id uuid, _role public.app_role) RETURNS boolean
     LANGUAGE sql STABLE SECURITY DEFINER
     SET search_path TO 'public'
     AS $$
@@ -91,7 +91,7 @@ $$;
 -- Name: touch_updated_at(); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE FUNCTION public.touch_updated_at() RETURNS trigger
+CREATE OR REPLACE FUNCTION public.touch_updated_at() RETURNS trigger
     LANGUAGE plpgsql
     SET search_path TO 'public'
     AS $$
@@ -107,7 +107,7 @@ SET default_table_access_method = heap;
 -- Name: affiliate_links; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.affiliate_links (
+CREATE TABLE IF NOT EXISTS public.affiliate_links (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     network text NOT NULL,
     title text NOT NULL,
@@ -134,7 +134,7 @@ CREATE TABLE public.affiliate_links (
 -- Name: contact_messages; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.contact_messages (
+CREATE TABLE IF NOT EXISTS public.contact_messages (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     name text NOT NULL,
     email text NOT NULL,
@@ -149,7 +149,7 @@ CREATE TABLE public.contact_messages (
 -- Name: digest_runs; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.digest_runs (
+CREATE TABLE IF NOT EXISTS public.digest_runs (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     subject text NOT NULL,
     html text NOT NULL,
@@ -167,7 +167,7 @@ CREATE TABLE public.digest_runs (
 -- Name: memberships; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.memberships (
+CREATE TABLE IF NOT EXISTS public.memberships (
     user_id uuid NOT NULL,
     tier text DEFAULT 'free'::text NOT NULL,
     premium_until timestamp with time zone,
@@ -182,7 +182,7 @@ CREATE TABLE public.memberships (
 -- Name: newsletter_subscribers; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.newsletter_subscribers (
+CREATE TABLE IF NOT EXISTS public.newsletter_subscribers (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     email text NOT NULL,
     source text DEFAULT 'homepage'::text,
@@ -198,7 +198,7 @@ CREATE TABLE public.newsletter_subscribers (
 -- Name: site_settings; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.site_settings (
+CREATE TABLE IF NOT EXISTS public.site_settings (
     key text NOT NULL,
     value jsonb DEFAULT '{}'::jsonb NOT NULL,
     updated_at timestamp with time zone DEFAULT now() NOT NULL
@@ -209,7 +209,7 @@ CREATE TABLE public.site_settings (
 -- Name: sponsored_slots; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.sponsored_slots (
+CREATE TABLE IF NOT EXISTS public.sponsored_slots (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     slot_type text NOT NULL,
     title text NOT NULL,
@@ -236,7 +236,7 @@ CREATE TABLE public.sponsored_slots (
 -- Name: user_roles; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.user_roles (
+CREATE TABLE IF NOT EXISTS public.user_roles (
     id uuid DEFAULT gen_random_uuid() NOT NULL,
     user_id uuid NOT NULL,
     role public.app_role NOT NULL,
@@ -248,101 +248,141 @@ CREATE TABLE public.user_roles (
 -- Name: affiliate_links affiliate_links_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.affiliate_links
+DO $mig$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'affiliate_links_pkey') THEN
+    ALTER TABLE ONLY public.affiliate_links
     ADD CONSTRAINT affiliate_links_pkey PRIMARY KEY (id);
+  END IF;
+END $mig$;
 
 
 --
 -- Name: contact_messages contact_messages_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.contact_messages
+DO $mig$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'contact_messages_pkey') THEN
+    ALTER TABLE ONLY public.contact_messages
     ADD CONSTRAINT contact_messages_pkey PRIMARY KEY (id);
+  END IF;
+END $mig$;
 
 
 --
 -- Name: digest_runs digest_runs_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.digest_runs
+DO $mig$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'digest_runs_pkey') THEN
+    ALTER TABLE ONLY public.digest_runs
     ADD CONSTRAINT digest_runs_pkey PRIMARY KEY (id);
+  END IF;
+END $mig$;
 
 
 --
 -- Name: memberships memberships_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.memberships
+DO $mig$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'memberships_pkey') THEN
+    ALTER TABLE ONLY public.memberships
     ADD CONSTRAINT memberships_pkey PRIMARY KEY (user_id);
+  END IF;
+END $mig$;
 
 
 --
 -- Name: newsletter_subscribers newsletter_subscribers_email_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.newsletter_subscribers
+DO $mig$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'newsletter_subscribers_email_key') THEN
+    ALTER TABLE ONLY public.newsletter_subscribers
     ADD CONSTRAINT newsletter_subscribers_email_key UNIQUE (email);
+  END IF;
+END $mig$;
 
 
 --
 -- Name: newsletter_subscribers newsletter_subscribers_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.newsletter_subscribers
+DO $mig$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'newsletter_subscribers_pkey') THEN
+    ALTER TABLE ONLY public.newsletter_subscribers
     ADD CONSTRAINT newsletter_subscribers_pkey PRIMARY KEY (id);
+  END IF;
+END $mig$;
 
 
 --
 -- Name: site_settings site_settings_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.site_settings
+DO $mig$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'site_settings_pkey') THEN
+    ALTER TABLE ONLY public.site_settings
     ADD CONSTRAINT site_settings_pkey PRIMARY KEY (key);
+  END IF;
+END $mig$;
 
 
 --
 -- Name: sponsored_slots sponsored_slots_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.sponsored_slots
+DO $mig$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'sponsored_slots_pkey') THEN
+    ALTER TABLE ONLY public.sponsored_slots
     ADD CONSTRAINT sponsored_slots_pkey PRIMARY KEY (id);
+  END IF;
+END $mig$;
 
 
 --
 -- Name: user_roles user_roles_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.user_roles
+DO $mig$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'user_roles_pkey') THEN
+    ALTER TABLE ONLY public.user_roles
     ADD CONSTRAINT user_roles_pkey PRIMARY KEY (id);
+  END IF;
+END $mig$;
 
 
 --
 -- Name: user_roles user_roles_user_id_role_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.user_roles
+DO $mig$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'user_roles_user_id_role_key') THEN
+    ALTER TABLE ONLY public.user_roles
     ADD CONSTRAINT user_roles_user_id_role_key UNIQUE (user_id, role);
+  END IF;
+END $mig$;
 
 
 --
 -- Name: contact_messages_created_at_idx; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX contact_messages_created_at_idx ON public.contact_messages USING btree (created_at DESC);
+CREATE INDEX IF NOT EXISTS contact_messages_created_at_idx ON public.contact_messages USING btree (created_at DESC);
 
 
 --
 -- Name: digest_runs_created_at_idx; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX digest_runs_created_at_idx ON public.digest_runs USING btree (created_at DESC);
+CREATE INDEX IF NOT EXISTS digest_runs_created_at_idx ON public.digest_runs USING btree (created_at DESC);
 
 
 --
 -- Name: newsletter_subscribers_created_at_idx; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX newsletter_subscribers_created_at_idx ON public.newsletter_subscribers USING btree (created_at DESC);
+CREATE INDEX IF NOT EXISTS newsletter_subscribers_created_at_idx ON public.newsletter_subscribers USING btree (created_at DESC);
 
 
 --
@@ -356,6 +396,7 @@ CREATE UNIQUE INDEX newsletter_subscribers_unsub_token_idx ON public.newsletter_
 -- Name: memberships memberships_touch; Type: TRIGGER; Schema: public; Owner: -
 --
 
+DROP TRIGGER IF EXISTS memberships_touch ON public.touch_updated_at;
 CREATE TRIGGER memberships_touch BEFORE UPDATE ON public.memberships FOR EACH ROW EXECUTE FUNCTION public.touch_updated_at();
 
 
@@ -363,6 +404,7 @@ CREATE TRIGGER memberships_touch BEFORE UPDATE ON public.memberships FOR EACH RO
 -- Name: affiliate_links trg_affiliate_links_updated; Type: TRIGGER; Schema: public; Owner: -
 --
 
+DROP TRIGGER IF EXISTS trg_affiliate_links_updated ON public.touch_updated_at;
 CREATE TRIGGER trg_affiliate_links_updated BEFORE UPDATE ON public.affiliate_links FOR EACH ROW EXECUTE FUNCTION public.touch_updated_at();
 
 
@@ -370,6 +412,7 @@ CREATE TRIGGER trg_affiliate_links_updated BEFORE UPDATE ON public.affiliate_lin
 -- Name: sponsored_slots trg_sponsored_slots_updated; Type: TRIGGER; Schema: public; Owner: -
 --
 
+DROP TRIGGER IF EXISTS trg_sponsored_slots_updated ON public.touch_updated_at;
 CREATE TRIGGER trg_sponsored_slots_updated BEFORE UPDATE ON public.sponsored_slots FOR EACH ROW EXECUTE FUNCTION public.touch_updated_at();
 
 
@@ -377,30 +420,43 @@ CREATE TRIGGER trg_sponsored_slots_updated BEFORE UPDATE ON public.sponsored_slo
 -- Name: memberships memberships_granted_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.memberships
+DO $mig$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'memberships_granted_by_fkey') THEN
+    ALTER TABLE ONLY public.memberships
     ADD CONSTRAINT memberships_granted_by_fkey FOREIGN KEY (granted_by) REFERENCES auth.users(id);
+  END IF;
+END $mig$;
 
 
 --
 -- Name: memberships memberships_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.memberships
+DO $mig$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'memberships_user_id_fkey') THEN
+    ALTER TABLE ONLY public.memberships
     ADD CONSTRAINT memberships_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE;
+  END IF;
+END $mig$;
 
 
 --
 -- Name: user_roles user_roles_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.user_roles
+DO $mig$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'user_roles_user_id_fkey') THEN
+    ALTER TABLE ONLY public.user_roles
     ADD CONSTRAINT user_roles_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE;
+  END IF;
+END $mig$;
 
 
 --
 -- Name: contact_messages Admins delete contact; Type: POLICY; Schema: public; Owner: -
 --
 
+DROP POLICY IF EXISTS "Admins delete contact" ON public.contact_messages;
 CREATE POLICY "Admins delete contact" ON public.contact_messages FOR DELETE TO authenticated USING (public.has_role(auth.uid(), 'admin'::public.app_role));
 
 
@@ -408,6 +464,7 @@ CREATE POLICY "Admins delete contact" ON public.contact_messages FOR DELETE TO a
 -- Name: newsletter_subscribers Admins delete subscribers; Type: POLICY; Schema: public; Owner: -
 --
 
+DROP POLICY IF EXISTS "Admins delete subscribers" ON public.newsletter_subscribers;
 CREATE POLICY "Admins delete subscribers" ON public.newsletter_subscribers FOR DELETE TO authenticated USING (public.has_role(auth.uid(), 'admin'::public.app_role));
 
 
@@ -415,6 +472,7 @@ CREATE POLICY "Admins delete subscribers" ON public.newsletter_subscribers FOR D
 -- Name: affiliate_links Admins manage affiliate links; Type: POLICY; Schema: public; Owner: -
 --
 
+DROP POLICY IF EXISTS "Admins manage affiliate links" ON public.affiliate_links;
 CREATE POLICY "Admins manage affiliate links" ON public.affiliate_links TO authenticated USING (public.has_role(auth.uid(), 'admin'::public.app_role)) WITH CHECK (public.has_role(auth.uid(), 'admin'::public.app_role));
 
 
@@ -422,6 +480,7 @@ CREATE POLICY "Admins manage affiliate links" ON public.affiliate_links TO authe
 -- Name: memberships Admins manage memberships; Type: POLICY; Schema: public; Owner: -
 --
 
+DROP POLICY IF EXISTS "Admins manage memberships" ON public.memberships;
 CREATE POLICY "Admins manage memberships" ON public.memberships TO authenticated USING (public.has_role(auth.uid(), 'admin'::public.app_role)) WITH CHECK (public.has_role(auth.uid(), 'admin'::public.app_role));
 
 
@@ -429,6 +488,7 @@ CREATE POLICY "Admins manage memberships" ON public.memberships TO authenticated
 -- Name: sponsored_slots Admins manage sponsored slots; Type: POLICY; Schema: public; Owner: -
 --
 
+DROP POLICY IF EXISTS "Admins manage sponsored slots" ON public.sponsored_slots;
 CREATE POLICY "Admins manage sponsored slots" ON public.sponsored_slots TO authenticated USING (public.has_role(auth.uid(), 'admin'::public.app_role)) WITH CHECK (public.has_role(auth.uid(), 'admin'::public.app_role));
 
 
@@ -436,6 +496,7 @@ CREATE POLICY "Admins manage sponsored slots" ON public.sponsored_slots TO authe
 -- Name: contact_messages Admins read contact; Type: POLICY; Schema: public; Owner: -
 --
 
+DROP POLICY IF EXISTS "Admins read contact" ON public.contact_messages;
 CREATE POLICY "Admins read contact" ON public.contact_messages FOR SELECT TO authenticated USING (public.has_role(auth.uid(), 'admin'::public.app_role));
 
 
@@ -443,6 +504,7 @@ CREATE POLICY "Admins read contact" ON public.contact_messages FOR SELECT TO aut
 -- Name: newsletter_subscribers Admins read subscribers; Type: POLICY; Schema: public; Owner: -
 --
 
+DROP POLICY IF EXISTS "Admins read subscribers" ON public.newsletter_subscribers;
 CREATE POLICY "Admins read subscribers" ON public.newsletter_subscribers FOR SELECT TO authenticated USING (public.has_role(auth.uid(), 'admin'::public.app_role));
 
 
@@ -450,6 +512,7 @@ CREATE POLICY "Admins read subscribers" ON public.newsletter_subscribers FOR SEL
 -- Name: digest_runs Admins view digest runs; Type: POLICY; Schema: public; Owner: -
 --
 
+DROP POLICY IF EXISTS "Admins view digest runs" ON public.digest_runs;
 CREATE POLICY "Admins view digest runs" ON public.digest_runs FOR SELECT TO authenticated USING (public.has_role(auth.uid(), 'admin'::public.app_role));
 
 
@@ -457,6 +520,7 @@ CREATE POLICY "Admins view digest runs" ON public.digest_runs FOR SELECT TO auth
 -- Name: site_settings Admins write site settings; Type: POLICY; Schema: public; Owner: -
 --
 
+DROP POLICY IF EXISTS "Admins write site settings" ON public.site_settings;
 CREATE POLICY "Admins write site settings" ON public.site_settings TO authenticated USING (public.has_role(auth.uid(), 'admin'::public.app_role)) WITH CHECK (public.has_role(auth.uid(), 'admin'::public.app_role));
 
 
@@ -464,6 +528,7 @@ CREATE POLICY "Admins write site settings" ON public.site_settings TO authentica
 -- Name: contact_messages Anyone can submit contact; Type: POLICY; Schema: public; Owner: -
 --
 
+DROP POLICY IF EXISTS "Anyone can submit contact" ON public.contact_messages;
 CREATE POLICY "Anyone can submit contact" ON public.contact_messages FOR INSERT TO authenticated, anon WITH CHECK ((((char_length(name) >= 1) AND (char_length(name) <= 100)) AND ((char_length(email) >= 3) AND (char_length(email) <= 255)) AND ((char_length(body) >= 1) AND (char_length(body) <= 4000))));
 
 
@@ -471,6 +536,7 @@ CREATE POLICY "Anyone can submit contact" ON public.contact_messages FOR INSERT 
 -- Name: newsletter_subscribers Anyone can subscribe; Type: POLICY; Schema: public; Owner: -
 --
 
+DROP POLICY IF EXISTS "Anyone can subscribe" ON public.newsletter_subscribers;
 CREATE POLICY "Anyone can subscribe" ON public.newsletter_subscribers FOR INSERT TO authenticated, anon WITH CHECK (((char_length(email) >= 3) AND (char_length(email) <= 255)));
 
 
@@ -478,6 +544,7 @@ CREATE POLICY "Anyone can subscribe" ON public.newsletter_subscribers FOR INSERT
 -- Name: site_settings Public read site settings; Type: POLICY; Schema: public; Owner: -
 --
 
+DROP POLICY IF EXISTS "Public read site settings" ON public.site_settings;
 CREATE POLICY "Public read site settings" ON public.site_settings FOR SELECT TO authenticated, anon USING (true);
 
 
@@ -485,6 +552,7 @@ CREATE POLICY "Public read site settings" ON public.site_settings FOR SELECT TO 
 -- Name: affiliate_links Public reads active affiliate links; Type: POLICY; Schema: public; Owner: -
 --
 
+DROP POLICY IF EXISTS "Public reads active affiliate links" ON public.affiliate_links;
 CREATE POLICY "Public reads active affiliate links" ON public.affiliate_links FOR SELECT TO authenticated, anon USING ((active = true));
 
 
@@ -492,6 +560,7 @@ CREATE POLICY "Public reads active affiliate links" ON public.affiliate_links FO
 -- Name: sponsored_slots Public reads active sponsored slots; Type: POLICY; Schema: public; Owner: -
 --
 
+DROP POLICY IF EXISTS "Public reads active sponsored slots" ON public.sponsored_slots;
 CREATE POLICY "Public reads active sponsored slots" ON public.sponsored_slots FOR SELECT TO authenticated, anon USING (((active = true) AND ((ends_at IS NULL) OR (ends_at > now()))));
 
 
@@ -499,6 +568,7 @@ CREATE POLICY "Public reads active sponsored slots" ON public.sponsored_slots FO
 -- Name: memberships Users read own membership; Type: POLICY; Schema: public; Owner: -
 --
 
+DROP POLICY IF EXISTS "Users read own membership" ON public.memberships;
 CREATE POLICY "Users read own membership" ON public.memberships FOR SELECT TO authenticated USING (((auth.uid() = user_id) OR public.has_role(auth.uid(), 'admin'::public.app_role)));
 
 
@@ -506,6 +576,7 @@ CREATE POLICY "Users read own membership" ON public.memberships FOR SELECT TO au
 -- Name: user_roles Users read their own roles; Type: POLICY; Schema: public; Owner: -
 --
 
+DROP POLICY IF EXISTS "Users read their own roles" ON public.user_roles;
 CREATE POLICY "Users read their own roles" ON public.user_roles FOR SELECT TO authenticated USING ((user_id = auth.uid()));
 
 
@@ -559,30 +630,3 @@ ALTER TABLE public.user_roles ENABLE ROW LEVEL SECURITY;
 
 --
 -- PostgreSQL database dump complete
---
-
-
-ALTER TABLE public.site_settings ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.contact_messages ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.digest_runs ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.newsletter_subscribers ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.memberships ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.user_roles ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.affiliate_links ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.sponsored_slots ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Admins write site settings" ON public.site_settings FOR ALL TO authenticated USING (has_role(auth.uid(), 'admin'::app_role)) WITH CHECK (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Public read site settings" ON public.site_settings FOR SELECT TO anon,authenticated USING (true);
-CREATE POLICY "Admins delete contact" ON public.contact_messages FOR DELETE TO authenticated USING (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Admins read contact" ON public.contact_messages FOR SELECT TO authenticated USING (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Anyone can submit contact" ON public.contact_messages FOR INSERT TO anon,authenticated WITH CHECK ((((char_length(name) >= 1) AND (char_length(name) <= 100)) AND ((char_length(email) >= 3) AND (char_length(email) <= 255)) AND ((char_length(body) >= 1) AND (char_length(body) <= 4000))));
-CREATE POLICY "Admins view digest runs" ON public.digest_runs FOR SELECT TO authenticated USING (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Admins delete subscribers" ON public.newsletter_subscribers FOR DELETE TO authenticated USING (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Admins read subscribers" ON public.newsletter_subscribers FOR SELECT TO authenticated USING (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Anyone can subscribe" ON public.newsletter_subscribers FOR INSERT TO anon,authenticated WITH CHECK (((char_length(email) >= 3) AND (char_length(email) <= 255)));
-CREATE POLICY "Admins manage memberships" ON public.memberships FOR ALL TO authenticated USING (has_role(auth.uid(), 'admin'::app_role)) WITH CHECK (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Users read own membership" ON public.memberships FOR SELECT TO authenticated USING (((auth.uid() = user_id) OR has_role(auth.uid(), 'admin'::app_role)));
-CREATE POLICY "Users read their own roles" ON public.user_roles FOR SELECT TO authenticated USING ((user_id = auth.uid()));
-CREATE POLICY "Admins manage affiliate links" ON public.affiliate_links FOR ALL TO authenticated USING (has_role(auth.uid(), 'admin'::app_role)) WITH CHECK (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Public reads active affiliate links" ON public.affiliate_links FOR SELECT TO anon,authenticated USING ((active = true));
-CREATE POLICY "Admins manage sponsored slots" ON public.sponsored_slots FOR ALL TO authenticated USING (has_role(auth.uid(), 'admin'::app_role)) WITH CHECK (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Public reads active sponsored slots" ON public.sponsored_slots FOR SELECT TO anon,authenticated USING (((active = true) AND ((ends_at IS NULL) OR (ends_at > now()))));
