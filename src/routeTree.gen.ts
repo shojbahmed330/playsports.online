@@ -63,6 +63,7 @@ import { Route as MlbHistoryRouteImport } from './routes/mlb.history'
 import { Route as LiveTodayRouteImport } from './routes/live.today'
 import { Route as LiveSportRouteImport } from './routes/live.$sport'
 import { Route as HighlightsSlugRouteImport } from './routes/highlights.$slug'
+import { Route as GuidesSlugRouteImport } from './routes/guides.$slug'
 import { Route as FootballMineRouteImport } from './routes/football.mine'
 import { Route as CricketTeamsRouteImport } from './routes/cricket.teams'
 import { Route as CricketScoresRouteImport } from './routes/cricket.scores'
@@ -378,6 +379,11 @@ const HighlightsSlugRoute = HighlightsSlugRouteImport.update({
   path: '/highlights/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const GuidesSlugRoute = GuidesSlugRouteImport.update({
+  id: '/guides/$slug',
+  path: '/guides/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const FootballMineRoute = FootballMineRouteImport.update({
   id: '/mine',
   path: '/mine',
@@ -631,6 +637,7 @@ export interface FileRoutesByFullPath {
   '/cricket/scores': typeof CricketScoresRoute
   '/cricket/teams': typeof CricketTeamsRoute
   '/football/mine': typeof FootballMineRoute
+  '/guides/$slug': typeof GuidesSlugRoute
   '/highlights/$slug': typeof HighlightsSlugRoute
   '/live/$sport': typeof LiveSportRoute
   '/live/today': typeof LiveTodayRoute
@@ -726,6 +733,7 @@ export interface FileRoutesByTo {
   '/cricket/scores': typeof CricketScoresRoute
   '/cricket/teams': typeof CricketTeamsRoute
   '/football/mine': typeof FootballMineRoute
+  '/guides/$slug': typeof GuidesSlugRoute
   '/highlights/$slug': typeof HighlightsSlugRoute
   '/live/$sport': typeof LiveSportRoute
   '/live/today': typeof LiveTodayRoute
@@ -827,6 +835,7 @@ export interface FileRoutesById {
   '/cricket/scores': typeof CricketScoresRoute
   '/cricket/teams': typeof CricketTeamsRoute
   '/football/mine': typeof FootballMineRoute
+  '/guides/$slug': typeof GuidesSlugRoute
   '/highlights/$slug': typeof HighlightsSlugRoute
   '/live/$sport': typeof LiveSportRoute
   '/live/today': typeof LiveTodayRoute
@@ -929,6 +938,7 @@ export interface FileRouteTypes {
     | '/cricket/scores'
     | '/cricket/teams'
     | '/football/mine'
+    | '/guides/$slug'
     | '/highlights/$slug'
     | '/live/$sport'
     | '/live/today'
@@ -1024,6 +1034,7 @@ export interface FileRouteTypes {
     | '/cricket/scores'
     | '/cricket/teams'
     | '/football/mine'
+    | '/guides/$slug'
     | '/highlights/$slug'
     | '/live/$sport'
     | '/live/today'
@@ -1124,6 +1135,7 @@ export interface FileRouteTypes {
     | '/cricket/scores'
     | '/cricket/teams'
     | '/football/mine'
+    | '/guides/$slug'
     | '/highlights/$slug'
     | '/live/$sport'
     | '/live/today'
@@ -1218,6 +1230,7 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TermsRoute: typeof TermsRoute
   UnsubscribeRoute: typeof UnsubscribeRoute
+  GuidesSlugRoute: typeof GuidesSlugRoute
   HighlightsSlugRoute: typeof HighlightsSlugRoute
   LiveSportRoute: typeof LiveSportRoute
   LiveTodayRoute: typeof LiveTodayRoute
@@ -1610,6 +1623,13 @@ declare module '@tanstack/react-router' {
       path: '/highlights/$slug'
       fullPath: '/highlights/$slug'
       preLoaderRoute: typeof HighlightsSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/guides/$slug': {
+      id: '/guides/$slug'
+      path: '/guides/$slug'
+      fullPath: '/guides/$slug'
+      preLoaderRoute: typeof GuidesSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/football/mine': {
@@ -2135,6 +2155,7 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TermsRoute: TermsRoute,
   UnsubscribeRoute: UnsubscribeRoute,
+  GuidesSlugRoute: GuidesSlugRoute,
   HighlightsSlugRoute: HighlightsSlugRoute,
   LiveSportRoute: LiveSportRoute,
   LiveTodayRoute: LiveTodayRoute,

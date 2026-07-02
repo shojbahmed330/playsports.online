@@ -73,7 +73,7 @@ function GuidePage() {
 
         <h2>FAQ</h2>
         <dl>
-          {guide.faqs.map((f) => (
+          {guide.faqs.map((f: { q: string; a: string }) => (
             <div key={f.q} className="mb-4">
               <dt className="font-semibold">{f.q}</dt>
               <dd className="mt-1 text-muted-foreground">{f.a}</dd>
