@@ -13,9 +13,11 @@ import {
 } from "@/components/ui/tabs";
 import {
   Goal, Square, AlertTriangle, RefreshCw, Users, BarChart3,
-  Activity, Loader2, Circle, ChevronRight,
+  Activity, Loader2, Circle, ChevronRight, MessageSquare,
 } from "lucide-react";
 import { PlayerProfileSheet, type PlayerSheetTarget } from "./PlayerProfileSheet";
+import { FormationPitch } from "@/components/football/FormationPitch";
+import { CommentaryFeed } from "@/components/football/CommentaryFeed";
 
 function isLive(status: string) {
   return status === "inprogress";
@@ -146,6 +148,7 @@ function LineupsTab({
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 min-w-0">
         <LineupColumn
           title={homeTeam}
+          side="home"
           formation={l.formationHome}
           starters={starters(l.home)}
           subs={subs(l.home)}
@@ -153,6 +156,7 @@ function LineupsTab({
         />
         <LineupColumn
           title={awayTeam}
+          side="away"
           formation={l.formationAway}
           starters={starters(l.away)}
           subs={subs(l.away)}
@@ -165,13 +169,14 @@ function LineupsTab({
 }
 
 type LineupPlayer = {
-  id: number; name: string; shirt: number | null; position: string | null; captain: boolean;
+  id: number; name: string; shirt: number | null; position: string | null; captain: boolean; substitute?: boolean;
 };
 
 function LineupColumn({
-  title, formation, starters, subs, onPick,
+  title, side, formation, starters, subs, onPick,
 }: {
   title: string;
+  side: "home" | "away";
   formation: string | null;
   starters: LineupPlayer[];
   subs: LineupPlayer[];
@@ -186,6 +191,15 @@ function LineupColumn({
             {formation}
           </span>
         )}
+      </div>
+
+      <div className="mb-3">
+        <FormationPitch
+          formation={formation}
+          side={side}
+          starters={starters.map((p) => ({ ...p, substitute: false })) as never}
+          onPick={(p) => onPick(p as PlayerSheetTarget)}
+        />
       </div>
       <div className="space-y-1">
         {starters.map((p) => (
@@ -304,20 +318,31 @@ export function LiveMatchCenter({ fixture }: { fixture: Wc2026Fixture }) {
   return (
     <div className="space-y-4">
       <MatchHeader fixture={fixture} live={live} />
-      <Tabs defaultValue="timeline">
-        <TabsList className="grid grid-cols-3 w-full">
-          <TabsTrigger value="timeline" className="text-xs gap-1.5">
-            <Activity className="size-3.5" /> Timeline
+      <Tabs defaultValue={live ? "commentary" : "timeline"}>
+        <TabsList className="grid grid-cols-4 w-full">
+          <TabsTrigger value="timeline" className="text-[11px] sm:text-xs gap-1 sm:gap-1.5">
+            <Activity className="size-3.5" /> <span className="hidden xs:inline">Timeline</span>
           </TabsTrigger>
-          <TabsTrigger value="lineups" className="text-xs gap-1.5">
-            <Users className="size-3.5" /> Lineups
+          <TabsTrigger value="commentary" className="text-[11px] sm:text-xs gap-1 sm:gap-1.5">
+            <MessageSquare className="size-3.5" /> <span className="hidden xs:inline">Live</span>
           </TabsTrigger>
-          <TabsTrigger value="stats" className="text-xs gap-1.5">
-            <BarChart3 className="size-3.5" /> Stats
+          <TabsTrigger value="lineups" className="text-[11px] sm:text-xs gap-1 sm:gap-1.5">
+            <Users className="size-3.5" /> <span className="hidden xs:inline">Lineups</span>
+          </TabsTrigger>
+          <TabsTrigger value="stats" className="text-[11px] sm:text-xs gap-1 sm:gap-1.5">
+            <BarChart3 className="size-3.5" /> <span className="hidden xs:inline">Stats</span>
           </TabsTrigger>
         </TabsList>
         <TabsContent value="timeline" className="mt-3">
           <TimelineTab matchId={fixture.id} live={live} />
+        </TabsContent>
+        <TabsContent value="commentary" className="mt-3">
+          <CommentaryFeed
+            matchId={fixture.id}
+            live={live}
+            homeCode={fixture.home.code || fixture.home.name}
+            awayCode={fixture.away.code || fixture.away.name}
+          />
         </TabsContent>
         <TabsContent value="lineups" className="mt-3">
           <LineupsTab matchId={fixture.id} homeTeam={fixture.home.name || fixture.home.code} awayTeam={fixture.away.name || fixture.away.code} />

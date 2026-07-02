@@ -122,6 +122,20 @@ export type Wc2026MatchStats = {
   rows: { name: string; home: string; away: string }[];
 }[];
 
+export type Wc2026CommentaryItem = {
+  id: string;
+  sequence: number;
+  minute: number | null;
+  team: "home" | "away" | null;
+  text: string;
+  type: string;
+};
+
+export type Wc2026Official = {
+  name: string;
+  role: string;
+};
+
 // ===================== HELPERS =====================
 
 export function wc2026TeamLogo(id: number) {
@@ -693,6 +707,67 @@ export const getWc2026PlayerProfile = createServerFn({ method: "GET" })
     } catch {}
 
     return { profile, error: null as string | null };
+  });
+
+export const getWc2026MatchCommentary = createServerFn({ method: "GET" })
+  .inputValidator((d: unknown) => {
+    const id = Number((d as any)?.matchId);
+    if (!Number.isFinite(id)) throw new Error("matchId required");
+    return { matchId: id };
+  })
+  .handler(async ({ data }) => {
+    try {
+      const raw = (await fetchSummary(data.matchId)) as any;
+      const homeId = raw?.header?.competitions?.[0]?.competitors?.find((c: any) => c.homeAway === "home")?.team?.id;
+      const list: any[] = raw?.commentary ?? [];
+      const items: Wc2026CommentaryItem[] = list.map((c: any, i: number) => {
+        const teamId = c?.team?.id ?? c?.play?.team?.id;
+        const side: "home" | "away" | null =
+          teamId == null ? null : String(teamId) === String(homeId) ? "home" : "away";
+        const minRaw = c?.time?.value ?? (c?.play?.clock?.value != null ? Math.floor(Number(c.play.clock.value) / 60) : null);
+        return {
+          id: String(c?.id ?? `${data.matchId}-c-${i}`),
+          sequence: Number(c?.sequence ?? i),
+          minute: minRaw != null ? Number(minRaw) : null,
+          team: side,
+          text: c?.text ?? c?.play?.text ?? "",
+          type: mapIncidentType(c?.play?.type?.text ?? c?.play?.type?.id ?? ""),
+        };
+      }).filter((i: Wc2026CommentaryItem) => i.text);
+      items.sort((a, b) => b.sequence - a.sequence);
+      return { items, error: null as string | null };
+    } catch (e) {
+      return { items: [] as Wc2026CommentaryItem[], error: e instanceof Error ? e.message : "Unknown error" };
+    }
+  });
+
+export const getWc2026MatchOfficials = createServerFn({ method: "GET" })
+  .inputValidator((d: unknown) => {
+    const id = Number((d as any)?.matchId);
+    if (!Number.isFinite(id)) throw new Error("matchId required");
+    return { matchId: id };
+  })
+  .handler(async ({ data }) => {
+    try {
+      const raw = (await fetchSummary(data.matchId)) as any;
+      const officials: any[] = raw?.gameInfo?.officials ?? raw?.header?.competitions?.[0]?.officials ?? [];
+      const items: Wc2026Official[] = officials.map((o: any) => ({
+        name: o?.displayName ?? o?.fullName ?? "",
+        role: o?.position?.displayName ?? o?.position?.name ?? o?.type?.text ?? "Official",
+      })).filter((o: Wc2026Official) => o.name);
+      const attendance = raw?.gameInfo?.attendance ?? null;
+      return {
+        officials: items,
+        attendance: attendance != null ? Number(attendance) : null,
+        error: null as string | null,
+      };
+    } catch (e) {
+      return {
+        officials: [] as Wc2026Official[],
+        attendance: null as number | null,
+        error: e instanceof Error ? e.message : "Unknown error",
+      };
+    }
   });
 
 // ===================== ADMIN: clear cache =====================
