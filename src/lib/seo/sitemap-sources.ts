@@ -81,22 +81,22 @@ function pluckIds(list: readonly { id?: string | number | null }[]): string[] {
 }
 
 export async function mlbTeamUrls(): Promise<DynamicUrl[]> {
-  const res = await safeCall(() => getMlbTeams(), { teams: [] }, "getMlbTeams");
+  const res = await safeCall(() => getMlbTeams(), { teams: [], error: null }, "getMlbTeams");
   return pluckIds(res.teams).map((id) => ({ path: `/mlb/team/${id}`, changefreq: "weekly" as const, priority: "0.7" }));
 }
 
 export async function nbaTeamUrls(): Promise<DynamicUrl[]> {
-  const res = await safeCall(() => getNbaTeams(), { teams: [] }, "getNbaTeams");
+  const res = await safeCall(() => getNbaTeams(), { teams: [], error: null }, "getNbaTeams");
   return pluckIds(res.teams).map((id) => ({ path: `/nba/team/${id}`, changefreq: "weekly" as const, priority: "0.7" }));
 }
 
 export async function nhlTeamUrls(): Promise<DynamicUrl[]> {
-  const res = await safeCall(() => getNhlTeams(), { teams: [] }, "getNhlTeams");
+  const res = await safeCall(() => getNhlTeams(), { teams: [], error: null }, "getNhlTeams");
   return pluckIds(res.teams).map((id) => ({ path: `/nhl/team/${id}`, changefreq: "weekly" as const, priority: "0.7" }));
 }
 
 export async function mlsTeamUrls(): Promise<DynamicUrl[]> {
-  const res = await safeCall(() => getMlsTeams(), { teams: [] }, "getMlsTeams");
+  const res = await safeCall(() => getMlsTeams(), { teams: [], error: null }, "getMlsTeams");
   return pluckIds(res.teams).map((id) => ({ path: `/mls/team/${id}`, changefreq: "weekly" as const, priority: "0.7" }));
 }
 
@@ -117,7 +117,7 @@ export async function cricketSeriesUrls(): Promise<DynamicUrl[]> {
   );
   const generic = await safeCall(
     () => getCricketSeriesList(),
-    { series: [] },
+    { series: [] as Array<{ id: string | number }> },
     "getCricketSeriesList",
   );
   const ids = new Set<string>();
