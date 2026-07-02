@@ -96,9 +96,26 @@ function PlayerPage() {
           {stats.pen > 0 ? ` ${stats.pen} came from the penalty spot.` : ""}
         </p>
       </section>
+
+      <section className="mt-8">
+        <h2 className="text-xl font-semibold mb-3">Frequently asked about {player.name}</h2>
+        <div className="space-y-3">
+          {[
+            { q: `How many World Cup goals has ${player.name} scored?`, a: `${player.name} has scored ${stats.goalsTotal} goal${stats.goalsTotal === 1 ? "" : "s"} at the FIFA World Cup${stats.pen > 0 ? `, including ${stats.pen} from the penalty spot` : ""}.` },
+            { q: `Which country does ${player.name} play for?`, a: `${player.name} represents ${player.team} at the FIFA World Cup.` },
+            { q: `In which World Cups has ${player.name} played?`, a: stats.years.length ? `${player.name} appeared at the FIFA World Cup in ${stats.years.join(", ")}.` : `${player.name}'s World Cup appearances are not on record.` },
+          ].map((f) => (
+            <details key={f.q} className="rounded-lg border px-4 py-3">
+              <summary className="font-medium cursor-pointer">{f.q}</summary>
+              <p className="mt-2 text-sm text-muted-foreground">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }
+
 
 function Stat({ label, value }: { label: string; value: number | string }) {
   return (
