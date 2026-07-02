@@ -1,9 +1,10 @@
 import { createFileRoute, notFound, Link } from "@tanstack/react-router";
-import { findTeam, teamStats } from "@/lib/seo/programmatic";
+import { findTeam, teamStats, listTeams } from "@/lib/seo/programmatic";
 import { canonical } from "@/lib/seo/canonical";
-import { breadcrumbList, sportsTeam, ldScript } from "@/lib/seo/jsonld";
+import { breadcrumbList, sportsTeam, faqPage, itemList, ldScript } from "@/lib/seo/jsonld";
 import { AffiliateStrip } from "@/components/affiliates/AffiliateStrip";
 import { AdSlot } from "@/components/ads/AdSlot";
+
 
 export const Route = createFileRoute("/team/$sport/$slug")({
   loader: ({ params }) => {
