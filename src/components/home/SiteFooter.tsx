@@ -20,11 +20,11 @@ export function SiteFooter() {
           </p>
         </div>
 
-        {/* 3 columns side-by-side on every breakpoint */}
-        <div className="grid grid-cols-3 gap-3 sm:gap-6">
+        {/* 2 columns — clean & professional */}
+        <div className="grid grid-cols-2 gap-3 sm:gap-6">
           <FooterCol title="Sports" accent="from-amber-500/20 to-transparent">
-            <li><Link to="/football" search={{ year: 2026 }} className="hover:text-amber-400 transition-colors">FIFA World Cup</Link></li>
-            <li><Link to="/cricket" className="hover:text-emerald-400 transition-colors">Cricket</Link></li>
+            <li><Link to="/football" search={{ year: 2026 }} className="hover:text-amber-400 transition-colors">⚽ FIFA World Cup</Link></li>
+            <li><Link to="/cricket" className="hover:text-emerald-400 transition-colors">🏏 Cricket</Link></li>
             {SPORT_LIST.map((s) => (
               <li key={s.slug}>
                 <Link to={`/${s.slug}` as "/mlb" | "/nba" | "/nhl" | "/mls"} className="hover:text-foreground transition-colors">
@@ -37,17 +37,10 @@ export function SiteFooter() {
           </FooterCol>
 
           <FooterCol title="Explore" accent="from-indigo-500/20 to-transparent">
-            <li><Link to="/players" className="hover:text-amber-400 transition-colors">Player Stats</Link></li>
-            <li><Link to="/cricket/history" className="hover:text-emerald-400 transition-colors">Cricket History</Link></li>
-            <li><Link to="/mlb/history" className="hover:text-sky-400 transition-colors">MLB History</Link></li>
-            <li><Link to="/auth" className="hover:text-foreground transition-colors">Sign in</Link></li>
-          </FooterCol>
-
-          <FooterCol title="Data" accent="from-emerald-500/20 to-transparent" muted>
-            <li>ESPN API</li>
-            <li>FIFA · Sofascore</li>
-            <li>jfjelstul/worldcup</li>
-            <li>ESPNCricinfo</li>
+            <li><Link to="/players" className="hover:text-amber-400 transition-colors">🥇 Player Stats</Link></li>
+            <li><Link to="/mine" className="hover:text-amber-400 transition-colors">⭐ My Feed</Link></li>
+            <li><Link to="/cricket/history" className="hover:text-emerald-400 transition-colors">📜 Cricket History</Link></li>
+            <li><Link to="/mlb/history" className="hover:text-sky-400 transition-colors">📜 MLB History</Link></li>
           </FooterCol>
         </div>
       </div>
