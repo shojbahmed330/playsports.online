@@ -60,6 +60,8 @@ import { Route as MlbPostseasonRouteImport } from './routes/mlb.postseason'
 import { Route as MlbPlayersRouteImport } from './routes/mlb.players'
 import { Route as MlbNewsRouteImport } from './routes/mlb.news'
 import { Route as MlbHistoryRouteImport } from './routes/mlb.history'
+import { Route as LiveTodayRouteImport } from './routes/live.today'
+import { Route as LiveSportRouteImport } from './routes/live.$sport'
 import { Route as HighlightsSlugRouteImport } from './routes/highlights.$slug'
 import { Route as FootballMineRouteImport } from './routes/football.mine'
 import { Route as CricketTeamsRouteImport } from './routes/cricket.teams'
@@ -72,6 +74,7 @@ import { Route as CricketSeriesIndexRouteImport } from './routes/cricket.series.
 import { Route as CricketIplIndexRouteImport } from './routes/cricket.ipl.index'
 import { Route as VsSportMatchupRouteImport } from './routes/vs.$sport.$matchup'
 import { Route as TournamentsFifaWorldCup2026StageRouteImport } from './routes/tournaments.fifa-world-cup-2026.$stage'
+import { Route as TournamentsTournamentLeaderboardRouteImport } from './routes/tournaments.$tournament.$leaderboard'
 import { Route as TeamSportSlugRouteImport } from './routes/team.$sport.$slug'
 import { Route as PlayerSportSlugRouteImport } from './routes/player.$sport.$slug'
 import { Route as OgTypeSlugDotsvgRouteImport } from './routes/og.$type.$slug[.]svg'
@@ -101,6 +104,7 @@ import { Route as CricketIplHistoryRouteImport } from './routes/cricket.ipl.hist
 import { Route as ArchiveSportYearRouteImport } from './routes/archive.$sport.$year'
 import { Route as ApiPublicTrackClickRouteImport } from './routes/api/public/track-click'
 import { Route as CricketIplTeamsIndexRouteImport } from './routes/cricket.ipl.teams.index'
+import { Route as FootballPlayersSlugStatRouteImport } from './routes/football.players.$slug.$stat'
 import { Route as CricketIplTeamsTeamIdRouteImport } from './routes/cricket.ipl.teams.$teamId'
 import { Route as ApiPublicHooksWeeklyDigestRouteImport } from './routes/api/public/hooks/weekly-digest'
 
@@ -359,6 +363,16 @@ const MlbHistoryRoute = MlbHistoryRouteImport.update({
   path: '/history',
   getParentRoute: () => MlbRoute,
 } as any)
+const LiveTodayRoute = LiveTodayRouteImport.update({
+  id: '/live/today',
+  path: '/live/today',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LiveSportRoute = LiveSportRouteImport.update({
+  id: '/live/$sport',
+  path: '/live/$sport',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const HighlightsSlugRoute = HighlightsSlugRouteImport.update({
   id: '/highlights/$slug',
   path: '/highlights/$slug',
@@ -418,6 +432,12 @@ const TournamentsFifaWorldCup2026StageRoute =
   TournamentsFifaWorldCup2026StageRouteImport.update({
     id: '/tournaments/fifa-world-cup-2026/$stage',
     path: '/tournaments/fifa-world-cup-2026/$stage',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const TournamentsTournamentLeaderboardRoute =
+  TournamentsTournamentLeaderboardRouteImport.update({
+    id: '/tournaments/$tournament/$leaderboard',
+    path: '/tournaments/$tournament/$leaderboard',
     getParentRoute: () => rootRouteImport,
   } as any)
 const TeamSportSlugRoute = TeamSportSlugRouteImport.update({
@@ -565,6 +585,11 @@ const CricketIplTeamsIndexRoute = CricketIplTeamsIndexRouteImport.update({
   path: '/ipl/teams/',
   getParentRoute: () => CricketRoute,
 } as any)
+const FootballPlayersSlugStatRoute = FootballPlayersSlugStatRouteImport.update({
+  id: '/$stat',
+  path: '/$stat',
+  getParentRoute: () => FootballPlayersSlugRoute,
+} as any)
 const CricketIplTeamsTeamIdRoute = CricketIplTeamsTeamIdRouteImport.update({
   id: '/ipl/teams/$teamId',
   path: '/ipl/teams/$teamId',
@@ -607,6 +632,8 @@ export interface FileRoutesByFullPath {
   '/cricket/teams': typeof CricketTeamsRoute
   '/football/mine': typeof FootballMineRoute
   '/highlights/$slug': typeof HighlightsSlugRoute
+  '/live/$sport': typeof LiveSportRoute
+  '/live/today': typeof LiveTodayRoute
   '/mlb/history': typeof MlbHistoryRoute
   '/mlb/news': typeof MlbNewsRoute
   '/mlb/players': typeof MlbPlayersRoute
@@ -648,7 +675,7 @@ export interface FileRoutesByFullPath {
   '/cricket/series/$id': typeof CricketSeriesIdRoute
   '/football/match/$id': typeof FootballMatchIdRoute
   '/football/matches/$slug': typeof FootballMatchesSlugRoute
-  '/football/players/$slug': typeof FootballPlayersSlugRoute
+  '/football/players/$slug': typeof FootballPlayersSlugRouteWithChildren
   '/football/teams/$slug': typeof FootballTeamsSlugRoute
   '/mlb/game/$id': typeof MlbGameIdRoute
   '/mlb/player/$id': typeof MlbPlayerIdRoute
@@ -665,12 +692,14 @@ export interface FileRoutesByFullPath {
   '/og/$type/$slug.svg': typeof OgTypeSlugDotsvgRoute
   '/player/$sport/$slug': typeof PlayerSportSlugRoute
   '/team/$sport/$slug': typeof TeamSportSlugRoute
+  '/tournaments/$tournament/$leaderboard': typeof TournamentsTournamentLeaderboardRoute
   '/tournaments/fifa-world-cup-2026/$stage': typeof TournamentsFifaWorldCup2026StageRoute
   '/vs/$sport/$matchup': typeof VsSportMatchupRoute
   '/cricket/ipl/': typeof CricketIplIndexRoute
   '/cricket/series/': typeof CricketSeriesIndexRoute
   '/api/public/hooks/weekly-digest': typeof ApiPublicHooksWeeklyDigestRoute
   '/cricket/ipl/teams/$teamId': typeof CricketIplTeamsTeamIdRoute
+  '/football/players/$slug/$stat': typeof FootballPlayersSlugStatRoute
   '/cricket/ipl/teams/': typeof CricketIplTeamsIndexRoute
 }
 export interface FileRoutesByTo {
@@ -698,6 +727,8 @@ export interface FileRoutesByTo {
   '/cricket/teams': typeof CricketTeamsRoute
   '/football/mine': typeof FootballMineRoute
   '/highlights/$slug': typeof HighlightsSlugRoute
+  '/live/$sport': typeof LiveSportRoute
+  '/live/today': typeof LiveTodayRoute
   '/mlb/history': typeof MlbHistoryRoute
   '/mlb/news': typeof MlbNewsRoute
   '/mlb/players': typeof MlbPlayersRoute
@@ -739,7 +770,7 @@ export interface FileRoutesByTo {
   '/cricket/series/$id': typeof CricketSeriesIdRoute
   '/football/match/$id': typeof FootballMatchIdRoute
   '/football/matches/$slug': typeof FootballMatchesSlugRoute
-  '/football/players/$slug': typeof FootballPlayersSlugRoute
+  '/football/players/$slug': typeof FootballPlayersSlugRouteWithChildren
   '/football/teams/$slug': typeof FootballTeamsSlugRoute
   '/mlb/game/$id': typeof MlbGameIdRoute
   '/mlb/player/$id': typeof MlbPlayerIdRoute
@@ -756,12 +787,14 @@ export interface FileRoutesByTo {
   '/og/$type/$slug.svg': typeof OgTypeSlugDotsvgRoute
   '/player/$sport/$slug': typeof PlayerSportSlugRoute
   '/team/$sport/$slug': typeof TeamSportSlugRoute
+  '/tournaments/$tournament/$leaderboard': typeof TournamentsTournamentLeaderboardRoute
   '/tournaments/fifa-world-cup-2026/$stage': typeof TournamentsFifaWorldCup2026StageRoute
   '/vs/$sport/$matchup': typeof VsSportMatchupRoute
   '/cricket/ipl': typeof CricketIplIndexRoute
   '/cricket/series': typeof CricketSeriesIndexRoute
   '/api/public/hooks/weekly-digest': typeof ApiPublicHooksWeeklyDigestRoute
   '/cricket/ipl/teams/$teamId': typeof CricketIplTeamsTeamIdRoute
+  '/football/players/$slug/$stat': typeof FootballPlayersSlugStatRoute
   '/cricket/ipl/teams': typeof CricketIplTeamsIndexRoute
 }
 export interface FileRoutesById {
@@ -795,6 +828,8 @@ export interface FileRoutesById {
   '/cricket/teams': typeof CricketTeamsRoute
   '/football/mine': typeof FootballMineRoute
   '/highlights/$slug': typeof HighlightsSlugRoute
+  '/live/$sport': typeof LiveSportRoute
+  '/live/today': typeof LiveTodayRoute
   '/mlb/history': typeof MlbHistoryRoute
   '/mlb/news': typeof MlbNewsRoute
   '/mlb/players': typeof MlbPlayersRoute
@@ -836,7 +871,7 @@ export interface FileRoutesById {
   '/cricket/series/$id': typeof CricketSeriesIdRoute
   '/football/match/$id': typeof FootballMatchIdRoute
   '/football/matches/$slug': typeof FootballMatchesSlugRoute
-  '/football/players/$slug': typeof FootballPlayersSlugRoute
+  '/football/players/$slug': typeof FootballPlayersSlugRouteWithChildren
   '/football/teams/$slug': typeof FootballTeamsSlugRoute
   '/mlb/game/$id': typeof MlbGameIdRoute
   '/mlb/player/$id': typeof MlbPlayerIdRoute
@@ -853,12 +888,14 @@ export interface FileRoutesById {
   '/og/$type/$slug.svg': typeof OgTypeSlugDotsvgRoute
   '/player/$sport/$slug': typeof PlayerSportSlugRoute
   '/team/$sport/$slug': typeof TeamSportSlugRoute
+  '/tournaments/$tournament/$leaderboard': typeof TournamentsTournamentLeaderboardRoute
   '/tournaments/fifa-world-cup-2026/$stage': typeof TournamentsFifaWorldCup2026StageRoute
   '/vs/$sport/$matchup': typeof VsSportMatchupRoute
   '/cricket/ipl/': typeof CricketIplIndexRoute
   '/cricket/series/': typeof CricketSeriesIndexRoute
   '/api/public/hooks/weekly-digest': typeof ApiPublicHooksWeeklyDigestRoute
   '/cricket/ipl/teams/$teamId': typeof CricketIplTeamsTeamIdRoute
+  '/football/players/$slug/$stat': typeof FootballPlayersSlugStatRoute
   '/cricket/ipl/teams/': typeof CricketIplTeamsIndexRoute
 }
 export interface FileRouteTypes {
@@ -893,6 +930,8 @@ export interface FileRouteTypes {
     | '/cricket/teams'
     | '/football/mine'
     | '/highlights/$slug'
+    | '/live/$sport'
+    | '/live/today'
     | '/mlb/history'
     | '/mlb/news'
     | '/mlb/players'
@@ -951,12 +990,14 @@ export interface FileRouteTypes {
     | '/og/$type/$slug.svg'
     | '/player/$sport/$slug'
     | '/team/$sport/$slug'
+    | '/tournaments/$tournament/$leaderboard'
     | '/tournaments/fifa-world-cup-2026/$stage'
     | '/vs/$sport/$matchup'
     | '/cricket/ipl/'
     | '/cricket/series/'
     | '/api/public/hooks/weekly-digest'
     | '/cricket/ipl/teams/$teamId'
+    | '/football/players/$slug/$stat'
     | '/cricket/ipl/teams/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -984,6 +1025,8 @@ export interface FileRouteTypes {
     | '/cricket/teams'
     | '/football/mine'
     | '/highlights/$slug'
+    | '/live/$sport'
+    | '/live/today'
     | '/mlb/history'
     | '/mlb/news'
     | '/mlb/players'
@@ -1042,12 +1085,14 @@ export interface FileRouteTypes {
     | '/og/$type/$slug.svg'
     | '/player/$sport/$slug'
     | '/team/$sport/$slug'
+    | '/tournaments/$tournament/$leaderboard'
     | '/tournaments/fifa-world-cup-2026/$stage'
     | '/vs/$sport/$matchup'
     | '/cricket/ipl'
     | '/cricket/series'
     | '/api/public/hooks/weekly-digest'
     | '/cricket/ipl/teams/$teamId'
+    | '/football/players/$slug/$stat'
     | '/cricket/ipl/teams'
   id:
     | '__root__'
@@ -1080,6 +1125,8 @@ export interface FileRouteTypes {
     | '/cricket/teams'
     | '/football/mine'
     | '/highlights/$slug'
+    | '/live/$sport'
+    | '/live/today'
     | '/mlb/history'
     | '/mlb/news'
     | '/mlb/players'
@@ -1138,12 +1185,14 @@ export interface FileRouteTypes {
     | '/og/$type/$slug.svg'
     | '/player/$sport/$slug'
     | '/team/$sport/$slug'
+    | '/tournaments/$tournament/$leaderboard'
     | '/tournaments/fifa-world-cup-2026/$stage'
     | '/vs/$sport/$matchup'
     | '/cricket/ipl/'
     | '/cricket/series/'
     | '/api/public/hooks/weekly-digest'
     | '/cricket/ipl/teams/$teamId'
+    | '/football/players/$slug/$stat'
     | '/cricket/ipl/teams/'
   fileRoutesById: FileRoutesById
 }
@@ -1170,11 +1219,14 @@ export interface RootRouteChildren {
   TermsRoute: typeof TermsRoute
   UnsubscribeRoute: typeof UnsubscribeRoute
   HighlightsSlugRoute: typeof HighlightsSlugRoute
+  LiveSportRoute: typeof LiveSportRoute
+  LiveTodayRoute: typeof LiveTodayRoute
   ApiPublicTrackClickRoute: typeof ApiPublicTrackClickRoute
   ArchiveSportYearRoute: typeof ArchiveSportYearRoute
   OgTypeSlugDotsvgRoute: typeof OgTypeSlugDotsvgRoute
   PlayerSportSlugRoute: typeof PlayerSportSlugRoute
   TeamSportSlugRoute: typeof TeamSportSlugRoute
+  TournamentsTournamentLeaderboardRoute: typeof TournamentsTournamentLeaderboardRoute
   TournamentsFifaWorldCup2026StageRoute: typeof TournamentsFifaWorldCup2026StageRoute
   VsSportMatchupRoute: typeof VsSportMatchupRoute
   ApiPublicHooksWeeklyDigestRoute: typeof ApiPublicHooksWeeklyDigestRoute
@@ -1539,6 +1591,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MlbHistoryRouteImport
       parentRoute: typeof MlbRoute
     }
+    '/live/today': {
+      id: '/live/today'
+      path: '/live/today'
+      fullPath: '/live/today'
+      preLoaderRoute: typeof LiveTodayRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/live/$sport': {
+      id: '/live/$sport'
+      path: '/live/$sport'
+      fullPath: '/live/$sport'
+      preLoaderRoute: typeof LiveSportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/highlights/$slug': {
       id: '/highlights/$slug'
       path: '/highlights/$slug'
@@ -1621,6 +1687,13 @@ declare module '@tanstack/react-router' {
       path: '/tournaments/fifa-world-cup-2026/$stage'
       fullPath: '/tournaments/fifa-world-cup-2026/$stage'
       preLoaderRoute: typeof TournamentsFifaWorldCup2026StageRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tournaments/$tournament/$leaderboard': {
+      id: '/tournaments/$tournament/$leaderboard'
+      path: '/tournaments/$tournament/$leaderboard'
+      fullPath: '/tournaments/$tournament/$leaderboard'
+      preLoaderRoute: typeof TournamentsTournamentLeaderboardRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/team/$sport/$slug': {
@@ -1826,6 +1899,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CricketIplTeamsIndexRouteImport
       parentRoute: typeof CricketRoute
     }
+    '/football/players/$slug/$stat': {
+      id: '/football/players/$slug/$stat'
+      path: '/$stat'
+      fullPath: '/football/players/$slug/$stat'
+      preLoaderRoute: typeof FootballPlayersSlugStatRouteImport
+      parentRoute: typeof FootballPlayersSlugRoute
+    }
     '/cricket/ipl/teams/$teamId': {
       id: '/cricket/ipl/teams/$teamId'
       path: '/ipl/teams/$teamId'
@@ -1888,11 +1968,22 @@ const CricketRouteChildren: CricketRouteChildren = {
 const CricketRouteWithChildren =
   CricketRoute._addFileChildren(CricketRouteChildren)
 
+interface FootballPlayersSlugRouteChildren {
+  FootballPlayersSlugStatRoute: typeof FootballPlayersSlugStatRoute
+}
+
+const FootballPlayersSlugRouteChildren: FootballPlayersSlugRouteChildren = {
+  FootballPlayersSlugStatRoute: FootballPlayersSlugStatRoute,
+}
+
+const FootballPlayersSlugRouteWithChildren =
+  FootballPlayersSlugRoute._addFileChildren(FootballPlayersSlugRouteChildren)
+
 interface FootballRouteChildren {
   FootballMineRoute: typeof FootballMineRoute
   FootballMatchIdRoute: typeof FootballMatchIdRoute
   FootballMatchesSlugRoute: typeof FootballMatchesSlugRoute
-  FootballPlayersSlugRoute: typeof FootballPlayersSlugRoute
+  FootballPlayersSlugRoute: typeof FootballPlayersSlugRouteWithChildren
   FootballTeamsSlugRoute: typeof FootballTeamsSlugRoute
 }
 
@@ -1900,7 +1991,7 @@ const FootballRouteChildren: FootballRouteChildren = {
   FootballMineRoute: FootballMineRoute,
   FootballMatchIdRoute: FootballMatchIdRoute,
   FootballMatchesSlugRoute: FootballMatchesSlugRoute,
-  FootballPlayersSlugRoute: FootballPlayersSlugRoute,
+  FootballPlayersSlugRoute: FootballPlayersSlugRouteWithChildren,
   FootballTeamsSlugRoute: FootballTeamsSlugRoute,
 }
 
@@ -2045,11 +2136,14 @@ const rootRouteChildren: RootRouteChildren = {
   TermsRoute: TermsRoute,
   UnsubscribeRoute: UnsubscribeRoute,
   HighlightsSlugRoute: HighlightsSlugRoute,
+  LiveSportRoute: LiveSportRoute,
+  LiveTodayRoute: LiveTodayRoute,
   ApiPublicTrackClickRoute: ApiPublicTrackClickRoute,
   ArchiveSportYearRoute: ArchiveSportYearRoute,
   OgTypeSlugDotsvgRoute: OgTypeSlugDotsvgRoute,
   PlayerSportSlugRoute: PlayerSportSlugRoute,
   TeamSportSlugRoute: TeamSportSlugRoute,
+  TournamentsTournamentLeaderboardRoute: TournamentsTournamentLeaderboardRoute,
   TournamentsFifaWorldCup2026StageRoute: TournamentsFifaWorldCup2026StageRoute,
   VsSportMatchupRoute: VsSportMatchupRoute,
   ApiPublicHooksWeeklyDigestRoute: ApiPublicHooksWeeklyDigestRoute,

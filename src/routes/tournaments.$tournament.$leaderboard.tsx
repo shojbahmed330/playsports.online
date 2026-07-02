@@ -108,7 +108,7 @@ function LeaderboardPage() {
         {board.metric.toLowerCase()}. {rows.length} players ranked.
       </p>
 
-      <div className="my-6"><AdSlot slot="in-content" /></div>
+      <div className="my-6"><AdSlot slot="in_content" /></div>
 
       <div className="overflow-x-auto rounded-lg border border-border">
         <table className="w-full text-sm">
@@ -121,7 +121,7 @@ function LeaderboardPage() {
             </tr>
           </thead>
           <tbody>
-            {rows.map((r) => (
+            {rows.map((r: typeof rows[number]) => (
               <tr key={r.pid} className="border-t border-border hover:bg-muted/30">
                 <td className="px-3 py-2 tabular-nums">{r.rank}</td>
                 <td className="px-3 py-2">

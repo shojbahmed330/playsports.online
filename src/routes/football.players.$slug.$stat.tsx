@@ -138,7 +138,7 @@ function PlayerStatPage() {
             </tr>
           </thead>
           <tbody>
-            {hist.rows.map((r) => (
+            {hist.rows.map((r: typeof hist.rows[number]) => (
               <tr key={r.year} className="border-t border-border">
                 <td className="px-3 py-2 font-medium">{r.year}</td>
                 <td className="px-3 py-2">{r.team}</td>
