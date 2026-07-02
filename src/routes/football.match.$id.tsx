@@ -11,6 +11,7 @@ import { AffiliateStrip } from "@/components/affiliates/AffiliateStrip";
 import { AdSlot } from "@/components/ads/AdSlot";
 import { flagOf } from "@/lib/flags";
 import { formatLocalTime } from "@/lib/time";
+import { AddToCalendarButton } from "@/components/football/AddToCalendarButton";
 
 export const Route = createFileRoute("/football/match/$id")({
   head: ({ params }) => {
@@ -70,6 +71,8 @@ function MatchPage() {
             <span className="shrink-0 inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-red-300">
               <span className="size-1.5 rounded-full bg-red-500 animate-pulse" /> Live
             </span>
+          ) : fx?.status === "notstarted" ? (
+            <AddToCalendarButton fx={fx} compact />
           ) : (
             <span className="shrink-0 text-[10px] uppercase tracking-widest text-gray-600">2026</span>
           )}
