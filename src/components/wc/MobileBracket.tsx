@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import type { WCMatch } from "@/lib/supabase";
 import type { RoundKey } from "./MatchCard";
 import { MobileMatchCard } from "./MobileMatchCard";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const ROUND_LABEL: Record<RoundKey, string> = {
   round_of_32:   "R32",

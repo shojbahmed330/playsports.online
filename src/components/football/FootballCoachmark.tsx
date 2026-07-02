@@ -1,23 +1,33 @@
 import { useEffect, useState } from "react";
-import { Sparkles, MousePointerClick, Star, Globe2, X, ChevronRight } from "lucide-react";
+import { Sparkles, MousePointerClick, Star, Globe2, X, ChevronRight, Radio, CalendarPlus } from "lucide-react";
 
-const STORAGE_KEY = "wc_onboarded_v1";
+const STORAGE_KEY = "wc_onboarded_v2";
 
 const STEPS = [
   {
+    icon: Radio,
+    title: "Today tab jumps to live action",
+    body: "Today surfaces Live now, kicking off later and just-finished — all in one glance.",
+  },
+  {
     icon: MousePointerClick,
-    title: "Tap any match",
-    body: "Open lineups, highlights and live events for that fixture.",
+    title: "Tap any match card",
+    body: "Opens the full match centre — lineups, live events, stats and where to watch.",
   },
   {
     icon: Star,
     title: "Star ⭐ your teams",
-    body: "Tap the star next to a flag, then use the My Teams filter to focus.",
+    body: "Tap the star next to a flag, then toggle My Teams to focus your fixture list.",
+  },
+  {
+    icon: CalendarPlus,
+    title: "Add fixtures to your calendar",
+    body: "On any upcoming match, tap Add to calendar to save it as an .ics event.",
   },
   {
     icon: Globe2,
-    title: "Switch timezone",
-    body: "Kickoff times re-render across the whole site in your zone.",
+    title: "Live badge follows you",
+    body: "When a match is live, a red pill appears bottom-right — one tap to jump in.",
   },
 ];
 
