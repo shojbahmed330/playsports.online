@@ -331,8 +331,8 @@ function HubPage() {
         <NewsletterCard source="homepage" />
       </main>
 
-      {/* Floating Watch Live */}
-      <div className="fixed bottom-4 right-4 z-40">
+      {/* Floating Watch Live — lifted above the mobile tab bar */}
+      <div className="fixed bottom-[calc(env(safe-area-inset-bottom,0px)+5rem)] sm:bottom-4 right-3 sm:right-4 z-40 max-w-[15rem]">
         <WatchLivePanel compact />
       </div>
 
