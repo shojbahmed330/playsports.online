@@ -47,7 +47,7 @@ export const Route = createFileRoute("/nba/game/$id")({
           name: matchup,
           path: `/nba/game/${params.id}`,
           sport: "Basketball",
-          startDate: s?.startTs ?? undefined,
+          startDate: s?.startTs ? new Date(s.startTs).toISOString() : undefined,
           homeTeam: home ?? undefined,
           awayTeam: away ?? undefined,
           location: s?.venue?.name ?? undefined,
