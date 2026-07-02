@@ -1,20 +1,23 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Trophy, BarChart3 } from "lucide-react";
+import { Trophy, BarChart3, ChevronDown, Check } from "lucide-react";
 import { SPORT_LIST } from "@/lib/sports-config";
-
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
 
 type Tab = {
   to: string;
   emoji: string;
   label: string;
-  /** gradient when active */
   grad: string;
-  /** ring/text accent color */
   accent: string;
 };
 
-// Players is intentionally NOT in the sport tabs — it's a cross-sport stats
-// surface, rendered as a separate chip on the right next to Admin.
 const BASE_TABS: Tab[] = [
   { to: "/",         emoji: "🏆", label: "Hub",      grad: "from-amber-500 to-orange-500",   accent: "text-amber-300" },
   { to: "/football", emoji: "⚽", label: "Football", grad: "from-emerald-500 to-teal-500",   accent: "text-emerald-300" },
@@ -31,7 +34,6 @@ const SPORT_GRADS: Record<string, { grad: string; accent: string }> = {
 export function SportNav({ liveCount = 0 }: { liveCount?: number }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
-
   const sportTabs: Tab[] = SPORT_LIST.map((s) => ({
     to: `/${s.slug}`,
     emoji: s.emoji,
@@ -41,97 +43,126 @@ export function SportNav({ liveCount = 0 }: { liveCount?: number }) {
   }));
   const allTabs: Tab[] = [...BASE_TABS, ...sportTabs];
 
-  // Determine current sport context. On a specific sport page, hide other
-  // sport tabs so the bar shows just Hub + current sport (+ Player Stats chip).
-  const currentSportTab = allTabs.find(
-    (t) => t.to !== "/" && (pathname === t.to || pathname.startsWith(t.to + "/")),
-  );
-  const onHub = pathname === "/";
-  const tabs: Tab[] = currentSportTab
-    ? [allTabs[0], currentSportTab]
-    : allTabs;
+  const current =
+    allTabs.find((t) => t.to !== "/" && (pathname === t.to || pathname.startsWith(t.to + "/"))) ??
+    allTabs[0];
 
-  // Player Stats chip is sport-scoped — only on a specific sport page.
-  const showStatsChip = !!currentSportTab;
+  const showStatsChip = current.to !== "/";
 
   return (
     <header className="sticky top-0 z-30 border-b border-border bg-background/85 backdrop-blur-md">
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 py-2.5 sm:h-16 sm:py-0 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
-        {/* Brand row */}
-        <div className="flex items-center justify-between gap-3">
-          <Link to="/" className="flex items-center gap-2.5 shrink-0">
-            <div className="size-9 rounded-lg bg-gradient-to-br from-amber-500 to-amber-700 grid place-items-center ring-1 ring-amber-500/40">
-              <Trophy className="size-5 text-black" />
-            </div>
-            <div className="leading-tight">
-              <div className="text-sm font-bold tracking-wide">PlaySports</div>
-              <div className="text-[10px] uppercase tracking-[0.18em] text-amber-400">
-                Live · Stats · Archive
-              </div>
-            </div>
-          </Link>
-
-          {/* live + players + admin chips, right-aligned on mobile brand row */}
-          <div className="flex items-center gap-2 sm:hidden">
-            {liveCount > 0 && <LiveChip count={liveCount} />}
-            {showStatsChip && <StatsChip pathname={pathname} />}
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 h-14 sm:h-16 flex items-center gap-3">
+        {/* Brand */}
+        <Link to="/" className="flex items-center gap-2.5 shrink-0">
+          <div className="size-9 rounded-lg bg-gradient-to-br from-amber-500 to-amber-700 grid place-items-center ring-1 ring-amber-500/40">
+            <Trophy className="size-5 text-black" />
           </div>
+          <div className="leading-tight hidden xs:block sm:block">
+            <div className="text-sm font-bold tracking-wide flex items-center gap-1.5">
+              PlaySports
+              <span className="inline-flex items-center gap-1 rounded-full bg-red-500/15 ring-1 ring-red-500/40 px-1.5 py-[1px] text-[9px] font-extrabold tracking-widest text-red-300 uppercase">
+                <span className="size-1 rounded-full bg-red-500 animate-pulse" /> Live
+              </span>
+            </div>
+            <div className="text-[10px] uppercase tracking-[0.18em] text-amber-400">
+              Live · Stats · Archive
+            </div>
+          </div>
+        </Link>
 
+        {/* Sport dropdown — replaces the tab row */}
+        <div className="ml-auto flex items-center gap-2">
+          <SportDropdown current={current} tabs={allTabs} pathname={pathname} />
+          {liveCount > 0 && <LiveChip count={liveCount} />}
+          {showStatsChip && <StatsChip pathname={pathname} />}
         </div>
+      </div>
+    </header>
+  );
+}
 
-        {/* Tabs — single-row horizontal scroll on mobile, inline on desktop */}
-        <nav className="-mx-3 sm:mx-0 px-3 sm:px-0 flex sm:flex-nowrap items-center gap-1.5 sm:gap-1 sm:ml-auto overflow-x-auto no-scrollbar [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden snap-x snap-mandatory">
+function SportDropdown({
+  current,
+  tabs,
+  pathname,
+}: {
+  current: Tab;
+  tabs: Tab[];
+  pathname: string;
+}) {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button
+          className={[
+            "group inline-flex items-center gap-2 rounded-full pl-1 pr-3 py-1 text-xs font-bold transition-all",
+            "bg-gradient-to-r", current.grad,
+            "text-white ring-1 ring-white/20 shadow-[0_8px_24px_-8px_rgba(0,0,0,0.7)] hover:brightness-110 hover:-translate-y-0.5",
+          ].join(" ")}
+          aria-label="Switch sport"
+        >
+          <span className="size-7 rounded-full grid place-items-center bg-black/25 backdrop-blur-sm ring-1 ring-white/25 text-base leading-none">
+            {current.emoji}
+          </span>
+          <span className="tracking-wide max-w-[100px] truncate">{current.label}</span>
+          <ChevronDown className="size-3.5 opacity-90 transition-transform group-data-[state=open]:rotate-180" />
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent
+        align="end"
+        sideOffset={10}
+        className="w-64 rounded-2xl border-white/10 bg-background/95 backdrop-blur-xl shadow-2xl shadow-black/50 p-2"
+      >
+        <DropdownMenuLabel className="px-2 pt-1 pb-2 text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+          Switch sport
+        </DropdownMenuLabel>
+        <DropdownMenuSeparator className="bg-white/5" />
+        <div className="pt-1 space-y-0.5">
           {tabs.map((t) => {
             const active =
               t.to === "/"
                 ? pathname === "/"
                 : pathname === t.to || pathname.startsWith(t.to + "/");
             return (
-              <div key={t.to} className="snap-start shrink-0">
-                <NavPill tab={t} active={active} />
-              </div>
+              <DropdownMenuItem
+                key={t.to}
+                asChild
+                className="p-0 focus:bg-transparent data-[highlighted]:bg-transparent"
+              >
+                <Link
+                  to={t.to}
+                  className={[
+                    "flex items-center gap-3 rounded-xl px-2.5 py-2 text-sm font-semibold transition-all cursor-pointer w-full",
+                    active
+                      ? `bg-gradient-to-r ${t.grad} text-white ring-1 ring-white/15 shadow-[0_6px_18px_-6px_rgba(0,0,0,0.6)]`
+                      : "text-foreground hover:bg-white/[0.06] ring-1 ring-transparent hover:ring-white/10",
+                  ].join(" ")}
+                >
+                  <span className={[
+                    "size-8 rounded-lg grid place-items-center text-base leading-none ring-1",
+                    active ? "bg-black/25 ring-white/25" : `bg-gradient-to-br ${t.grad} ring-white/10 shadow-inner`,
+                  ].join(" ")}>
+                    {t.emoji}
+                  </span>
+                  <span className="flex-1 tracking-wide">{t.label}</span>
+                  {active && <Check className="size-4 opacity-90" />}
+                </Link>
+              </DropdownMenuItem>
             );
           })}
-        </nav>
-
-        {/* desktop-only chips */}
-        <div className="hidden sm:flex items-center gap-2">
-          {liveCount > 0 && <LiveChip count={liveCount} />}
-          {showStatsChip && <StatsChip pathname={pathname} />}
         </div>
-
-      </div>
-    </header>
-  );
-}
-
-function NavPill({ tab, active }: { tab: Tab; active: boolean }) {
-  return (
-    <Link
-      to={tab.to}
-      aria-current={active ? "page" : undefined}
-      className={[
-        "tap-target group relative inline-flex items-center justify-center gap-1.5 rounded-full text-xs font-bold transition-all duration-200",
-        "px-3 py-1.5 sm:px-3.5 sm:py-1.5",
-        active
-          ? `bg-gradient-to-r ${tab.grad} text-white shadow-[0_4px_18px_-4px_rgba(0,0,0,0.55)] ring-1 ring-white/15 scale-[1.02]`
-          : `bg-white/[0.04] hover:bg-white/[0.08] ${tab.accent} ring-1 ring-white/10 hover:ring-white/20 hover:-translate-y-0.5`,
-      ].join(" ")}
-    >
-      <span aria-hidden className="text-sm leading-none">{tab.emoji}</span>
-      <span className="tracking-wide">{tab.label}</span>
-    </Link>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
 
 function LiveChip({ count }: { count: number }) {
   return (
-    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-red-500/15 ring-1 ring-red-500/40 text-[10px] font-bold text-red-300">
+    <span className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-red-500/15 ring-1 ring-red-500/40 text-[10px] font-bold text-red-300">
       <span className="size-1.5 rounded-full bg-red-500 animate-pulse" /> {count} live
     </span>
   );
 }
-
 
 type StatsTarget = {
   to: string;
@@ -145,47 +176,15 @@ type StatsTarget = {
 
 function resolveStatsTarget(pathname: string): StatsTarget {
   if (pathname === "/football" || pathname.startsWith("/football/")) {
-    return {
-      to: "/players",
-      title: "Player Stats",
-      subtitle: "Scorers · Records",
-      grad: "from-emerald-500 to-teal-500",
-      ring: "ring-emerald-400/40",
-      text: "text-emerald-200",
-      shadow: "shadow-emerald-500/30",
-    };
+    return { to: "/players", title: "Player Stats", subtitle: "Scorers · Records", grad: "from-emerald-500 to-teal-500", ring: "ring-emerald-400/40", text: "text-emerald-200", shadow: "shadow-emerald-500/30" };
   }
   if (pathname === "/mlb" || pathname.startsWith("/mlb/")) {
-    return {
-      to: "/mlb/players",
-      title: "Player Stats",
-      subtitle: "Leaders · Rosters",
-      grad: "from-sky-500 to-blue-600",
-      ring: "ring-sky-400/40",
-      text: "text-sky-200",
-      shadow: "shadow-sky-500/30",
-    };
+    return { to: "/mlb/players", title: "Player Stats", subtitle: "Leaders · Rosters", grad: "from-sky-500 to-blue-600", ring: "ring-sky-400/40", text: "text-sky-200", shadow: "shadow-sky-500/30" };
   }
   if (pathname === "/cricket" || pathname.startsWith("/cricket/")) {
-    return {
-      to: "/players",
-      title: "Player Stats",
-      subtitle: "Batting · Bowling",
-      grad: "from-amber-500 to-emerald-500",
-      ring: "ring-amber-400/40",
-      text: "text-amber-200",
-      shadow: "shadow-amber-500/30",
-    };
+    return { to: "/players", title: "Player Stats", subtitle: "Batting · Bowling", grad: "from-amber-500 to-emerald-500", ring: "ring-amber-400/40", text: "text-amber-200", shadow: "shadow-amber-500/30" };
   }
-  return {
-    to: "/players",
-    title: "Player Stats",
-    subtitle: "All sports",
-    grad: "from-fuchsia-500 to-purple-500",
-    ring: "ring-fuchsia-400/40",
-    text: "text-fuchsia-200",
-    shadow: "shadow-fuchsia-500/30",
-  };
+  return { to: "/players", title: "Player Stats", subtitle: "All sports", grad: "from-fuchsia-500 to-purple-500", ring: "ring-fuchsia-400/40", text: "text-fuchsia-200", shadow: "shadow-fuchsia-500/30" };
 }
 
 function StatsChip({ pathname }: { pathname: string }) {
@@ -195,19 +194,13 @@ function StatsChip({ pathname }: { pathname: string }) {
     <Link
       to={t.to}
       className={[
-        "group relative inline-flex items-center gap-2 rounded-full pl-1.5 pr-3 py-1 transition-all ring-1",
+        "hidden md:inline-flex group relative items-center gap-2 rounded-full pl-1.5 pr-3 py-1 transition-all ring-1",
         active
           ? `bg-gradient-to-r ${t.grad} text-white ring-white/20 shadow-[0_6px_18px_-6px_rgba(0,0,0,0.6)] ${t.shadow}`
           : `bg-white/[0.04] hover:bg-white/[0.08] ${t.ring} hover:-translate-y-0.5`,
       ].join(" ")}
     >
-      <span
-        className={[
-          "size-6 rounded-full grid place-items-center bg-gradient-to-br",
-          t.grad,
-          "ring-1 ring-white/20 shadow-inner",
-        ].join(" ")}
-      >
+      <span className={["size-6 rounded-full grid place-items-center bg-gradient-to-br", t.grad, "ring-1 ring-white/20 shadow-inner"].join(" ")}>
         <BarChart3 className="size-3.5 text-white" />
       </span>
       <span className="leading-tight text-left">
