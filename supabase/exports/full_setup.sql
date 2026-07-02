@@ -550,6 +550,38 @@ CREATE TRIGGER trg_sponsored_slots_updated BEFORE UPDATE ON public.sponsored_slo
 
 
 --
+-- Name: auth.users on_auth_user_created_role; Type: TRIGGER; Schema: auth; Owner: -
+--
+
+DROP TRIGGER IF EXISTS on_auth_user_created_role ON auth.users;
+CREATE TRIGGER on_auth_user_created_role AFTER INSERT ON auth.users FOR EACH ROW EXECUTE FUNCTION public.handle_new_user_role();
+
+
+--
+-- Name: wc_tournaments wc_tournaments_touch; Type: TRIGGER; Schema: public; Owner: -
+--
+
+DROP TRIGGER IF EXISTS wc_tournaments_touch ON public.wc_tournaments;
+CREATE TRIGGER wc_tournaments_touch BEFORE UPDATE ON public.wc_tournaments FOR EACH ROW EXECUTE FUNCTION public.touch_updated_at();
+
+
+--
+-- Name: wc_matches wc_matches_touch; Type: TRIGGER; Schema: public; Owner: -
+--
+
+DROP TRIGGER IF EXISTS wc_matches_touch ON public.wc_matches;
+CREATE TRIGGER wc_matches_touch BEFORE UPDATE ON public.wc_matches FOR EACH ROW EXECUTE FUNCTION public.touch_updated_at();
+
+
+--
+-- Name: wc_groups wc_groups_touch; Type: TRIGGER; Schema: public; Owner: -
+--
+
+DROP TRIGGER IF EXISTS wc_groups_touch ON public.wc_groups;
+CREATE TRIGGER wc_groups_touch BEFORE UPDATE ON public.wc_groups FOR EACH ROW EXECUTE FUNCTION public.touch_updated_at();
+
+
+--
 -- Name: memberships memberships_granted_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -583,6 +615,85 @@ DO $mig$ BEGIN
     ADD CONSTRAINT user_roles_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE;
   END IF;
 END $mig$;
+
+
+--
+-- Name: wc_matches wc_matches_tournament_year_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+DO $mig$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'wc_matches_tournament_year_fkey') THEN
+    ALTER TABLE ONLY public.wc_matches
+    ADD CONSTRAINT wc_matches_tournament_year_fkey FOREIGN KEY (tournament_year) REFERENCES public.wc_tournaments(year) ON DELETE CASCADE;
+  END IF;
+END $mig$;
+
+
+--
+-- Name: wc_groups wc_groups_tournament_year_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+DO $mig$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'wc_groups_tournament_year_fkey') THEN
+    ALTER TABLE ONLY public.wc_groups
+    ADD CONSTRAINT wc_groups_tournament_year_fkey FOREIGN KEY (tournament_year) REFERENCES public.wc_tournaments(year) ON DELETE CASCADE;
+  END IF;
+END $mig$;
+
+
+--
+-- Data API grants for your own Supabase project.
+--
+
+GRANT SELECT ON public.affiliate_links TO anon;
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.affiliate_links TO authenticated;
+GRANT ALL ON public.affiliate_links TO service_role;
+
+GRANT INSERT ON public.contact_messages TO anon, authenticated;
+GRANT SELECT, DELETE ON public.contact_messages TO authenticated;
+GRANT ALL ON public.contact_messages TO service_role;
+
+GRANT SELECT ON public.digest_runs TO authenticated;
+GRANT ALL ON public.digest_runs TO service_role;
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.memberships TO authenticated;
+GRANT ALL ON public.memberships TO service_role;
+
+GRANT INSERT ON public.newsletter_subscribers TO anon, authenticated;
+GRANT SELECT, DELETE ON public.newsletter_subscribers TO authenticated;
+GRANT ALL ON public.newsletter_subscribers TO service_role;
+
+GRANT SELECT ON public.site_settings TO anon, authenticated;
+GRANT INSERT, UPDATE, DELETE ON public.site_settings TO authenticated;
+GRANT ALL ON public.site_settings TO service_role;
+
+GRANT SELECT ON public.sponsored_slots TO anon;
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.sponsored_slots TO authenticated;
+GRANT ALL ON public.sponsored_slots TO service_role;
+
+GRANT SELECT ON public.user_roles TO authenticated;
+GRANT ALL ON public.user_roles TO service_role;
+
+GRANT SELECT ON public.wc_tournaments TO anon, authenticated;
+GRANT INSERT, UPDATE, DELETE ON public.wc_tournaments TO authenticated;
+GRANT ALL ON public.wc_tournaments TO service_role;
+
+GRANT SELECT ON public.wc_matches TO anon, authenticated;
+GRANT INSERT, UPDATE, DELETE ON public.wc_matches TO authenticated;
+GRANT ALL ON public.wc_matches TO service_role;
+
+GRANT SELECT ON public.wc_groups TO anon, authenticated;
+GRANT INSERT, UPDATE, DELETE ON public.wc_groups TO authenticated;
+GRANT ALL ON public.wc_groups TO service_role;
+
+
+--
+-- Backfill admin role if the owner already exists.
+--
+
+INSERT INTO public.user_roles (user_id, role)
+SELECT id, 'admin'::public.app_role FROM auth.users WHERE email = 'rajshahi.jibon@gmail.com'
+ON CONFLICT DO NOTHING;
 
 
 --
