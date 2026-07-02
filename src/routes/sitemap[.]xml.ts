@@ -1,9 +1,18 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 import { listTeams, listPlayers, listH2H, listArchives } from "@/lib/seo/programmatic";
+import {
+  wc2026MatchUrls,
+  mlbTeamUrls,
+  nbaTeamUrls,
+  nhlTeamUrls,
+  mlsTeamUrls,
+  iplTeamUrls,
+  cricketSeriesUrls,
+  type DynamicUrl,
+} from "@/lib/seo/sitemap-sources";
 
 const BASE_URL = "https://www.playsports.online";
-
 
 interface SitemapEntry {
   path: string;
@@ -12,10 +21,9 @@ interface SitemapEntry {
   priority?: string;
 }
 
-// Static, indexable routes. Excludes /admin and /auth (disallowed via robots.txt)
-// and dynamic-only layout shells. Dynamic IDs (matches/games/teams/series) are
-// fetched at runtime from ESPN and not enumerable here — search engines discover
-// them via internal links from the hub pages below.
+// Static, indexable routes. Excludes /admin, /auth, /mine, /premium and other
+// user-scoped pages. Dynamic $id / $slug routes are enumerated below from
+// their real data sources.
 const STATIC_ROUTES: SitemapEntry[] = [
   { path: "/", changefreq: "hourly", priority: "1.0" },
   { path: "/players", changefreq: "daily", priority: "0.8" },
@@ -60,28 +68,118 @@ const STATIC_ROUTES: SitemapEntry[] = [
   { path: "/mlb/postseason", changefreq: "daily", priority: "0.7" },
   { path: "/mlb/history", changefreq: "monthly", priority: "0.5" },
 
-  // Other sports
-  { path: "/nba", changefreq: "hourly", priority: "0.8" },
-  { path: "/nhl", changefreq: "hourly", priority: "0.8" },
-  { path: "/mls", changefreq: "hourly", priority: "0.8" },
+  // NBA
+  { path: "/nba", changefreq: "hourly", priority: "0.9" },
+  { path: "/nba/scores", changefreq: "hourly", priority: "0.8" },
+  { path: "/nba/standings", changefreq: "daily", priority: "0.8" },
+  { path: "/nba/teams", changefreq: "weekly", priority: "0.7" },
+  { path: "/nba/leaders", changefreq: "daily", priority: "0.8" },
+  { path: "/nba/news", changefreq: "hourly", priority: "0.7" },
+  { path: "/nba/history", changefreq: "monthly", priority: "0.5" },
+
+  // NHL
+  { path: "/nhl", changefreq: "hourly", priority: "0.9" },
+  { path: "/nhl/scores", changefreq: "hourly", priority: "0.8" },
+  { path: "/nhl/standings", changefreq: "daily", priority: "0.8" },
+  { path: "/nhl/teams", changefreq: "weekly", priority: "0.7" },
+  { path: "/nhl/leaders", changefreq: "daily", priority: "0.8" },
+  { path: "/nhl/news", changefreq: "hourly", priority: "0.7" },
+  { path: "/nhl/history", changefreq: "monthly", priority: "0.5" },
+
+  // MLS / Soccer
+  { path: "/mls", changefreq: "hourly", priority: "0.9" },
+  { path: "/mls/scores", changefreq: "hourly", priority: "0.8" },
+  { path: "/mls/standings", changefreq: "daily", priority: "0.8" },
+  { path: "/mls/teams", changefreq: "weekly", priority: "0.7" },
+  { path: "/mls/leaders", changefreq: "daily", priority: "0.8" },
+  { path: "/mls/news", changefreq: "hourly", priority: "0.7" },
+  { path: "/mls/history", changefreq: "monthly", priority: "0.5" },
 ];
+
+/** XML-escape a value going inside an element body (loc, lastmod, etc). */
+function xmlEscape(s: string): string {
+  return s
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&apos;");
+}
+
+/**
+ * Build a canonical absolute URL for a sitemap entry. Path segments are
+ * URL-encoded to keep unusual slugs valid, then XML-escaped for the body.
+ */
+function absoluteLoc(path: string): string {
+  const encoded = path
+    .split("/")
+    .map((seg) => (seg ? encodeURIComponent(seg) : seg))
+    .join("/");
+  return xmlEscape(`${BASE_URL}${encoded}`);
+}
+
+function dedupe(entries: SitemapEntry[]): SitemapEntry[] {
+  const seen = new Map<string, SitemapEntry>();
+  for (const e of entries) {
+    // First writer wins so hand-curated STATIC_ROUTES keep their priority.
+    if (!seen.has(e.path)) seen.set(e.path, e);
+  }
+  return Array.from(seen.values());
+}
 
 export const Route = createFileRoute("/sitemap.xml")({
   server: {
     handlers: {
       GET: async () => {
         const today = new Date().toISOString().slice(0, 10);
-        const programmatic: SitemapEntry[] = [
-          ...listTeams().map((t) => ({ path: `/team/${t.sport}/${t.slug}`, changefreq: "weekly" as const, priority: "0.6" })),
-          ...listPlayers().map((p) => ({ path: `/player/${p.sport}/${p.slug}`, changefreq: "monthly" as const, priority: "0.5" })),
-          ...listH2H().map((h) => ({ path: `/vs/${h.sport}/${h.slug}`, changefreq: "monthly" as const, priority: "0.5" })),
-          ...listArchives().map((a) => ({ path: `/archive/${a.sport}/${a.year}`, changefreq: "yearly" as const, priority: "0.6" })),
+
+        // Fetch every enumerable source in parallel. Each helper is safe:
+        // a failing upstream yields an empty array, never a rejected promise.
+        const [mlbTeams, nbaTeams, nhlTeams, mlsTeams, iplTeams, cricketSeries] = await Promise.all([
+          mlbTeamUrls(),
+          nbaTeamUrls(),
+          nhlTeamUrls(),
+          mlsTeamUrls(),
+          iplTeamUrls(),
+          cricketSeriesUrls(),
+        ]);
+
+        const programmatic: DynamicUrl[] = [
+          ...wc2026MatchUrls(),
+          ...listTeams().map((t) => ({
+            path: `/team/${t.sport}/${t.slug}`,
+            changefreq: "weekly" as const,
+            priority: "0.6",
+          })),
+          ...listPlayers().map((p) => ({
+            path: `/player/${p.sport}/${p.slug}`,
+            changefreq: "monthly" as const,
+            priority: "0.5",
+          })),
+          ...listH2H().map((h) => ({
+            path: `/vs/${h.sport}/${h.slug}`,
+            changefreq: "monthly" as const,
+            priority: "0.5",
+          })),
+          ...listArchives().map((a) => ({
+            path: `/archive/${a.sport}/${a.year}`,
+            changefreq: "yearly" as const,
+            priority: "0.6",
+          })),
+          ...mlbTeams,
+          ...nbaTeams,
+          ...nhlTeams,
+          ...mlsTeams,
+          ...iplTeams,
+          ...cricketSeries,
         ];
-        const all = [...STATIC_ROUTES, ...programmatic];
+
+        const all = dedupe([...STATIC_ROUTES, ...programmatic]);
+
         const urls = all.map((e) =>
           [
             `  <url>`,
-            `    <loc>${BASE_URL}${e.path}</loc>`,
+            `    <loc>${absoluteLoc(e.path)}</loc>`,
             `    <lastmod>${e.lastmod ?? today}</lastmod>`,
             e.changefreq ? `    <changefreq>${e.changefreq}</changefreq>` : null,
             e.priority ? `    <priority>${e.priority}</priority>` : null,
@@ -90,7 +188,6 @@ export const Route = createFileRoute("/sitemap.xml")({
             .filter(Boolean)
             .join("\n"),
         );
-
 
         const xml = [
           `<?xml version="1.0" encoding="UTF-8"?>`,
@@ -101,8 +198,11 @@ export const Route = createFileRoute("/sitemap.xml")({
 
         return new Response(xml, {
           headers: {
-            "Content-Type": "application/xml",
-            "Cache-Control": "public, max-age=3600",
+            "Content-Type": "application/xml; charset=utf-8",
+            // Fresh for 1h at the edge, stale-while-revalidate for 6h.
+            "Cache-Control": "public, max-age=3600, s-maxage=3600, stale-while-revalidate=21600",
+            "X-Robots-Tag": "noindex",
+            "X-Sitemap-Url-Count": String(all.length),
           },
         });
       },
