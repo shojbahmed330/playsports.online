@@ -8,7 +8,7 @@ import records from "@/data/cricket/records.json";
 import { breadcrumbList, collectionPage, ldScript } from "@/lib/seo/jsonld";
 
 
-export const Route = createFileRoute("/cricket/records")({
+export const Route = createFileRoute("/cricket/records/")({
   head: () => ({
     meta: [
       { title: "All-time Cricket Records — Runs, Wickets & Centuries" },
