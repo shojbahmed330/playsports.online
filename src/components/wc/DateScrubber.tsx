@@ -53,21 +53,8 @@ export function DateScrubber({ matches, value, onChange, className = "" }: DateS
   }, [matches, tz]);
 
   const today = todayKey();
-  const scrollerRef = useRef<HTMLDivElement | null>(null);
   const [pickerOpen, setPickerOpen] = useState(false);
 
-  // Auto-centre today (or first upcoming) on mount / when dates change — desktop scroller only
-  useEffect(() => {
-    const el = scrollerRef.current;
-    if (!el) return;
-    const target = value ?? (dates.includes(today) ? today : dates.find((d) => d >= today) ?? dates[0]);
-    if (!target) return;
-    const chip = el.querySelector<HTMLElement>(`[data-date="${target}"]`);
-    if (chip) {
-      const left = chip.offsetLeft - el.clientWidth / 2 + chip.clientWidth / 2;
-      el.scrollTo({ left: Math.max(0, left), behavior: "smooth" });
-    }
-  }, [dates, value, today]);
 
   if (dates.length === 0) return null;
 
