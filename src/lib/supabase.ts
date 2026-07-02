@@ -1,10 +1,13 @@
-// Local type augmentation for tables that exist in your Supabase project
-// (vagqeperdsumxwukwbes) but are not yet reflected in the auto-generated
-// `types.ts`. Regenerate types from your own project to remove this file:
+// Bridge until you regenerate types.ts from your own Supabase project:
 //   npx supabase gen types typescript --project-id vagqeperdsumxwukwbes \
 //     > src/integrations/supabase/types.ts
-import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+//
+// Until then, we merge WC table types into the auto-generated Database
+// and re-cast the shared client so `wc_matches`, `wc_tournaments`, and
+// `wc_groups` are queryable without breaking the existing typed tables.
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { supabase as typedSupabase } from "@/integrations/supabase/client";
+import type { Database as BaseDatabase } from "@/integrations/supabase/types";
 
 type WcMatchesRow = {
   id: number;
@@ -47,25 +50,35 @@ type WcGroupsRow = {
   qualified: boolean | null;
 };
 
-export type WcExtendedDatabase = {
-  public: {
-    Tables: {
-      wc_matches: { Row: WcMatchesRow; Insert: Partial<WcMatchesRow> & { id?: number }; Update: Partial<WcMatchesRow> };
-      wc_tournaments: { Row: WcTournamentsRow; Insert: WcTournamentsRow; Update: Partial<WcTournamentsRow> };
-      wc_groups: { Row: WcGroupsRow; Insert: WcGroupsRow; Update: Partial<WcGroupsRow> };
-    };
-    Views: Record<string, never>;
-    Functions: Record<string, never>;
-    Enums: Record<string, never>;
-    CompositeTypes: Record<string, never>;
+type WcTables = {
+  wc_matches: {
+    Row: WcMatchesRow;
+    Insert: Partial<WcMatchesRow> & { id?: number };
+    Update: Partial<WcMatchesRow>;
+    Relationships: [];
+  };
+  wc_tournaments: {
+    Row: WcTournamentsRow;
+    Insert: WcTournamentsRow;
+    Update: Partial<WcTournamentsRow>;
+    Relationships: [];
+  };
+  wc_groups: {
+    Row: WcGroupsRow;
+    Insert: WcGroupsRow;
+    Update: Partial<WcGroupsRow>;
+    Relationships: [];
   };
 };
 
-// Reuse the same underlying connection; cast to expose wc_* tables.
-export const supabase = typedSupabase as unknown as SupabaseClient<WcExtendedDatabase> &
-  typeof typedSupabase;
+export type ExtendedDatabase = BaseDatabase & {
+  public: BaseDatabase["public"] & {
+    Tables: BaseDatabase["public"]["Tables"] & WcTables;
+  };
+};
 
-// Re-exported types used across the WC UI.
+export const supabase = typedSupabase as unknown as SupabaseClient<ExtendedDatabase>;
+
 export type WCTournament = WcTournamentsRow;
 export type WCMatch = WcMatchesRow & {
   predicted?: boolean;
@@ -76,6 +89,3 @@ export type WCGroup = WcGroupsRow;
 
 import { FOOTBALL_WC } from "./tournament-config";
 export const WC_YEARS: number[] = [...FOOTBALL_WC.years];
-
-// Silence unused-import warning for createClient (kept for future direct use).
-export { createClient };
