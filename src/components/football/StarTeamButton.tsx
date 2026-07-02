@@ -9,12 +9,13 @@ export function StarTeamButton({ team, size = 14 }: { team: string; size?: numbe
       type="button"
       onClick={(e) => { e.stopPropagation(); toggle(team); }}
       aria-pressed={active}
+      aria-label={active ? `Remove ${team} from My Teams` : `Add ${team} to My Teams`}
       title={active ? `Remove ${team} from My Teams` : `Add ${team} to My Teams`}
       className={`inline-flex shrink-0 items-center justify-center rounded-full p-1 transition-all ${
         active ? "text-amber-300 bg-amber-500/15" : "text-muted-foreground/60 hover:text-amber-300 hover:bg-white/5"
       }`}
     >
-      <Star className={active ? "fill-amber-300" : ""} style={{ width: size, height: size }} />
+      <Star aria-hidden className={active ? "fill-amber-300" : ""} style={{ width: size, height: size }} />
     </button>
   );
 }
