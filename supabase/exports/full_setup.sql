@@ -686,8 +686,17 @@ GRANT SELECT ON public.wc_groups TO anon, authenticated;
 GRANT INSERT, UPDATE, DELETE ON public.wc_groups TO authenticated;
 GRANT ALL ON public.wc_groups TO service_role;
 
-GRANT USAGE, SELECT ON SEQUENCE public.wc_matches_id_seq TO authenticated, service_role;
-GRANT USAGE, SELECT ON SEQUENCE public.wc_groups_id_seq TO authenticated, service_role;
+DO $mig$ BEGIN
+  IF to_regclass('public.wc_matches_id_seq') IS NOT NULL THEN
+    GRANT USAGE, SELECT ON SEQUENCE public.wc_matches_id_seq TO authenticated, service_role;
+  END IF;
+END $mig$;
+
+DO $mig$ BEGIN
+  IF to_regclass('public.wc_groups_id_seq') IS NOT NULL THEN
+    GRANT USAGE, SELECT ON SEQUENCE public.wc_groups_id_seq TO authenticated, service_role;
+  END IF;
+END $mig$;
 
 
 --
