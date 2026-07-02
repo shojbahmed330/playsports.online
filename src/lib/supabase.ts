@@ -1,38 +1,15 @@
-import { createClient } from "@supabase/supabase-js";
-
-// ⚠️ LEGACY WORLD CUP ARCHIVE BACKEND ⚠️
-// This is a SEPARATE, read-only Supabase project that hosts the historical
-// FIFA World Cup dataset (wc_matches, wc_tournaments, wc_groups, wc2026_*).
-// It is NOT the project's main Lovable Cloud backend — for auth, memberships,
-// admin, newsletter, affiliates, digest, etc. use:
-//   import { supabase } from "@/integrations/supabase/client";
+// Bridge until you regenerate types.ts from your own Supabase project:
+//   npx supabase gen types typescript --project-id vagqeperdsumxwukwbes \
+//     > src/integrations/supabase/types.ts
 //
-// If you want to fully own this data, migrate these tables into Lovable Cloud
-// and swap this import out — until then this client stays hardcoded because
-// the anon key belongs to a different Supabase org.
-const SUPABASE_URL = "https://vagqeperdsumxwukwbes.supabase.co";
-const SUPABASE_ANON_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZhZ3FlcGVyZHN1bXh3dWt3YmVzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE5NzM1NjcsImV4cCI6MjA5NzU0OTU2N30.NGV1fXknh7dqhjld8lr65tZGgEWhZ7BktzEfRshCSs4";
+// Until then, we merge WC table types into the auto-generated Database
+// and re-cast the shared client so `wc_matches`, `wc_tournaments`, and
+// `wc_groups` are queryable without breaking the existing typed tables.
+import type { SupabaseClient } from "@supabase/supabase-js";
+import { supabase as typedSupabase } from "@/integrations/supabase/client";
+import type { Database as BaseDatabase } from "@/integrations/supabase/types";
 
-export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-  auth: {
-    persistSession: typeof window !== "undefined",
-    autoRefreshToken: typeof window !== "undefined",
-    storage: typeof window !== "undefined" ? window.localStorage : undefined,
-    detectSessionInUrl: typeof window !== "undefined",
-  },
-});
-
-export type WCTournament = {
-  year: number;
-  host_country: string | null;
-  champion: string | null;
-  runner_up: string | null;
-  third_place: string | null;
-  fourth_place: string | null;
-};
-
-export type WCMatch = {
+type WcMatchesRow = {
   id: number;
   tournament_year: number;
   round: string;
@@ -47,12 +24,18 @@ export type WCMatch = {
   stadium: string | null;
   city: string | null;
   video_url: string | null;
-  predicted?: boolean;
-  home_seed_label?: string | null;
-  away_seed_label?: string | null;
 };
 
-export type WCGroup = {
+type WcTournamentsRow = {
+  year: number;
+  host_country: string | null;
+  champion: string | null;
+  runner_up: string | null;
+  third_place: string | null;
+  fourth_place: string | null;
+};
+
+type WcGroupsRow = {
   tournament_year: number;
   group_name: string;
   team: string;
@@ -67,7 +50,50 @@ export type WCGroup = {
   qualified: boolean | null;
 };
 
-import { FOOTBALL_WC } from "./tournament-config";
+type WcTables = {
+  wc_matches: {
+    Row: WcMatchesRow;
+    // Allow UI-only fields (predicted, seed labels) on Insert — they're
+    // stripped before hitting the DB by callers.
+    Insert: Partial<WcMatchesRow> & {
+      id?: number;
+      predicted?: boolean;
+      home_seed_label?: string | null;
+      away_seed_label?: string | null;
+      [key: string]: unknown;
+    };
+    Update: Partial<WcMatchesRow>;
+    Relationships: [];
+  };
+  wc_tournaments: {
+    Row: WcTournamentsRow;
+    Insert: WcTournamentsRow;
+    Update: Partial<WcTournamentsRow>;
+    Relationships: [];
+  };
+  wc_groups: {
+    Row: WcGroupsRow;
+    Insert: WcGroupsRow;
+    Update: Partial<WcGroupsRow>;
+    Relationships: [];
+  };
+};
 
-/** Single source of truth — see src/lib/tournament-config.ts. */
+export type ExtendedDatabase = BaseDatabase & {
+  public: BaseDatabase["public"] & {
+    Tables: BaseDatabase["public"]["Tables"] & WcTables;
+  };
+};
+
+export const supabase = typedSupabase as unknown as SupabaseClient<ExtendedDatabase>;
+
+export type WCTournament = WcTournamentsRow;
+export type WCMatch = WcMatchesRow & {
+  predicted?: boolean;
+  home_seed_label?: string | null;
+  away_seed_label?: string | null;
+};
+export type WCGroup = WcGroupsRow;
+
+import { FOOTBALL_WC } from "./tournament-config";
 export const WC_YEARS: number[] = [...FOOTBALL_WC.years];

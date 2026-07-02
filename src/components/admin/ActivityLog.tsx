@@ -70,7 +70,7 @@ export function ActivityLog({ onJump }: { onJump: (s: AdminSection) => void }) {
           .then((r) => r.data ?? []),
         supabase
           .from("digest_runs")
-          .select("id, title, status, created_at")
+          .select("id, subject, status, created_at")
           .order("created_at", { ascending: false })
           .limit(5)
           .then((r) => r.data ?? []),
@@ -103,7 +103,7 @@ export function ActivityLog({ onJump }: { onJump: (s: AdminSection) => void }) {
         ...digest.map((d): Event => ({
           id: `dg-${d.id}`, kind: "digest",
           title: `Digest · ${d.status ?? "draft"}`,
-          detail: d.title ?? "",
+          detail: d.subject ?? "",
           at: d.created_at, section: "audience",
         })),
         ...spons.map((s): Event => ({
