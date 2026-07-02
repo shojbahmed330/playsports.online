@@ -17,6 +17,7 @@ import {
   cricketSeoPlayerUrls,
   cricketSeoTournamentUrls,
   cricketSeoRecordUrls,
+  cricketSeoHighlightUrls,
   type DynamicUrl,
 } from "@/lib/seo/sitemap-sources";
 
