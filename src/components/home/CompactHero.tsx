@@ -138,6 +138,9 @@ function EspnHero({ t, live }: { t: Tagged; live: boolean }) {
   return (
     <section className={`relative overflow-hidden border-b border-white/10 bg-gradient-to-br ${sport.bgGrad}`}>
       <div className="relative max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+        <h1 className="sr-only">
+          {live ? "Live" : "Up next"}: {game.home.name} vs {game.away.name} — {sport.longName}
+        </h1>
         <div className="flex items-center justify-between mb-4">
           <span className={`inline-flex items-center gap-1.5 text-[10px] sm:text-xs uppercase tracking-[0.2em] font-bold ${sport.accent}`}>
             {live ? (
