@@ -1,4 +1,4 @@
-import { Play } from "lucide-react";
+import { ExternalLink, Play } from "lucide-react";
 
 export type VideoType = "youtube" | "vimeo" | "direct" | null;
 
@@ -29,6 +29,15 @@ function vimeoId(url: string): string | null {
     const m = u.pathname.match(/\/(\d+)/);
     return m ? m[1] : null;
   } catch { return null; }
+}
+
+function isDirectMedia(url: string): boolean {
+  try {
+    const u = new URL(url);
+    return /\.(mp4|webm|ogg|m3u8)$/i.test(u.pathname);
+  } catch {
+    return /\.(mp4|webm|ogg|m3u8)(\?.*)?$/i.test(url);
+  }
 }
 
 export function VideoPlayer({
@@ -76,7 +85,24 @@ export function VideoPlayer({
       />
     );
   }
+  if (isDirectMedia(videoUrl)) {
+    return (
+      <video src={videoUrl} controls className="w-full rounded-xl border border-gray-800" />
+    );
+  }
+
   return (
-    <video src={videoUrl} controls className="w-full rounded-xl border border-gray-800" />
+    <a
+      href={videoUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="group flex min-h-[180px] flex-col items-center justify-center rounded-xl border border-amber-500/30 bg-amber-500/[0.06] p-6 text-center transition-colors hover:bg-amber-500/[0.10]"
+    >
+      <Play className="size-12 text-amber-300 transition-transform group-hover:scale-110" />
+      <div className="mt-3 text-sm font-bold text-amber-200">Open official highlights</div>
+      <div className="mt-1 inline-flex items-center gap-1 text-xs text-amber-300/70">
+        Watch on the broadcaster site <ExternalLink className="size-3" />
+      </div>
+    </a>
   );
 }

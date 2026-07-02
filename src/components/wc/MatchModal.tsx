@@ -196,8 +196,8 @@ export function MatchModal({ match, onClose }: { match: WCMatch | null; onClose:
             </div>
           )}
 
-          {/* Video / highlights (skip for predicted) */}
-          {!isPredicted && (
+          {/* Video / highlights */}
+          {(!isPredicted || match.video_url) && (
             <div className="px-5 sm:px-6 pt-4">
               <MatchHighlightCard
                 home={match.home_team}

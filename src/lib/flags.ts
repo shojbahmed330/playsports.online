@@ -4,7 +4,7 @@
 const MAP: Record<string, string> = {
   // 2026 expanded field + historical WC teams
   Argentina: "🇦🇷", Australia: "🇦🇺", Austria: "🇦🇹", Belgium: "🇧🇪",
-  Bolivia: "🇧🇴", "Bosnia and Herzegovina": "🇧🇦", "Bosnia & Herzegovina": "🇧🇦",
+  Bolivia: "🇧🇴", "Bosnia and Herzegovina": "🇧🇦", "Bosnia & Herzegovina": "🇧🇦", "Bosnia-Herzegovina": "🇧🇦", "Bosnia Herzegovina": "🇧🇦",
   Brazil: "🇧🇷", Bulgaria: "🇧🇬", Cameroon: "🇨🇲", Canada: "🇨🇦",
   "Cape Verde": "🇨🇻", "Cabo Verde": "🇨🇻", Chile: "🇨🇱",
   China: "🇨🇳", "China PR": "🇨🇳", Colombia: "🇨🇴", "Costa Rica": "🇨🇷",
@@ -85,6 +85,8 @@ const ALIAS: Record<string, string> = {
   "usmnt": "United States",
   "korea republic": "South Korea",
   "korea": "South Korea",
+  "bosnia herzegovina": "Bosnia and Herzegovina",
+  "bosnia and herzegovina": "Bosnia and Herzegovina",
   "ir iran": "Iran",
   "cote d ivoire": "Ivory Coast",
   "cote divoire": "Ivory Coast",
