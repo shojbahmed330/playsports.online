@@ -117,9 +117,35 @@ function TeamPage() {
           ))}
         </div>
       </section>
+
+      <section className="mt-8">
+        <h2 className="text-xl font-semibold mb-3">Frequently asked about {team.name} at the World Cup</h2>
+        <div className="space-y-3">
+          {[
+            { q: `How many World Cup matches has ${team.name} played?`, a: `${team.name} has played ${stats.matchesPlayed} FIFA World Cup matches across ${stats.years.length} tournament appearances, with a record of ${stats.w} wins, ${stats.d} draws and ${stats.l} losses.` },
+            { q: `Who is ${team.name}'s all-time top World Cup scorer?`, a: stats.topScorers[0] ? `${stats.topScorers[0].name} leads ${team.name} with ${stats.topScorers[0].goals} World Cup goals.` : `${team.name} does not yet have a leading World Cup scorer on record.` },
+            { q: `How many World Cup goals has ${team.name} scored?`, a: `${team.name} has scored ${stats.gf} goals and conceded ${stats.ga} at the FIFA World Cup finals.` },
+          ].map((f) => (
+            <details key={f.q} className="rounded-lg border px-4 py-3">
+              <summary className="font-medium cursor-pointer">{f.q}</summary>
+              <p className="mt-2 text-sm text-muted-foreground">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </section>
+
+      <section className="mt-8">
+        <h2 className="text-xl font-semibold mb-3">Explore more World Cup teams</h2>
+        <div className="flex flex-wrap gap-2">
+          {listTeams().filter((t) => t.slug !== Route.useParams().slug).slice(0, 20).map((t) => (
+            <Link key={t.slug} to="/team/$sport/$slug" params={{ sport: "football_wc", slug: t.slug }} className="px-3 py-1 rounded-full bg-muted text-xs hover:bg-accent">{t.name}</Link>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }
+
 
 function Stat({ label, value }: { label: string; value: number | string }) {
   return (
