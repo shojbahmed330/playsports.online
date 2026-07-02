@@ -105,9 +105,25 @@ function ArchivePage() {
           ))}
         </ul>
       </section>
+      <section className="mt-8">
+        <h2 className="text-xl font-semibold mb-3">Frequently asked about the {year} World Cup</h2>
+        <div className="space-y-3">
+          {[
+            { q: `Who won the ${year} FIFA World Cup?`, a: stats.champion ? `${stats.champion.champion} won the ${year} FIFA World Cup${stats.champion.runnerUp ? `, beating ${stats.champion.runnerUp} in the final` : ""}.` : `The ${year} FIFA World Cup champion is not yet on record.` },
+            { q: `Who was the top scorer at the ${year} World Cup?`, a: stats.topScorers[0] ? `${stats.topScorers[0].name} of ${stats.topScorers[0].team} was the leading scorer of the ${year} World Cup with ${stats.topScorers[0].goals} goals.` : `Top scorer for ${year} is not on record.` },
+            { q: `How many matches were played at the ${year} World Cup?`, a: `${stats.matches.length} matches and ${stats.goals.length} goals were recorded at the ${year} FIFA World Cup finals.` },
+          ].map((f) => (
+            <details key={f.q} className="rounded-lg border px-4 py-3">
+              <summary className="font-medium cursor-pointer">{f.q}</summary>
+              <p className="mt-2 text-sm text-muted-foreground">{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }
+
 
 function slug(s: string) {
   return s.toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
