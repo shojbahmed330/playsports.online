@@ -26,16 +26,36 @@ import { useGoalAlerts } from "@/hooks/use-goal-alerts";
 import { MatchHighlightCard } from "@/components/wc/MatchHighlightCard";
 
 export const Route = createFileRoute("/football/match/$id")({
-  head: ({ params }) => {
+  loader: async ({ context, params }) => {
+    const matchId = Number(params.id);
+    if (!Number.isFinite(matchId)) return { fixture: null };
+    const data = await context.queryClient.ensureQueryData({
+      queryKey: ["wc2026", "match", matchId],
+      queryFn: () => getWc2026Match({ data: { matchId } }),
+      staleTime: 30_000,
+    }).catch(() => null);
+    return { fixture: data?.fixture ?? null };
+  },
+  head: ({ params, loaderData }) => {
+    const fx = loaderData?.fixture;
     const url = `https://www.playsports.online/football/match/${params.id}`;
+    const matchup = fx ? `${fx.home.name} vs ${fx.away.name}` : "FIFA World Cup 2026 Match";
+    const title = fx
+      ? `${matchup} — FIFA World Cup 2026 Live Score & Lineups`
+      : "FIFA World Cup 2026 Match — Live Score & Lineups";
+    const desc = fx
+      ? `${matchup}${fx.venue ? ` at ${fx.venue}` : ""} — live World Cup 2026 score, lineups, key events and where to watch on PlaySports.`
+      : "Live FIFA World Cup 2026 match: score, lineups, key events, broadcast info and where to watch.";
     const ogImage = `https://www.playsports.online/og/match/match-${params.id}--FIFA%20World%20Cup%202026%20%C2%B7%20Live%20score%20%26%20lineups.svg`;
+    const status = fx?.status === "inprogress" ? "live" : fx?.status === "finished" ? "ended" : "scheduled";
     return {
       meta: [
-        { title: "FIFA World Cup 2026 Match — Live Score & Lineups" },
-        { name: "description", content: "Live FIFA World Cup 2026 match: score, lineups, key events, broadcast info and where to watch." },
-        { property: "og:title", content: "FIFA World Cup 2026 — Live Match" },
-        { property: "og:description", content: "Live score, lineups and broadcast info." },
+        { title },
+        { name: "description", content: desc },
+        { property: "og:title", content: matchup },
+        { property: "og:description", content: desc },
         { property: "og:url", content: url },
+        { property: "og:type", content: "article" },
         { property: "og:image", content: ogImage },
         { property: "og:image:width", content: "1200" },
         { property: "og:image:height", content: "630" },
@@ -44,8 +64,17 @@ export const Route = createFileRoute("/football/match/$id")({
       ],
       links: [{ rel: "canonical", href: url }],
       scripts: [
-        ldScript(sportsEvent({ name: `FIFA World Cup 2026 — Match ${params.id}`, path: `/football/match/${params.id}`, sport: "Soccer" })),
-        ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "Football", path: "/football" }, { name: "Match", path: `/football/match/${params.id}` }])),
+        ldScript(sportsEvent({
+          name: matchup,
+          path: `/football/match/${params.id}`,
+          sport: "Soccer",
+          startDate: fx?.startTs ? new Date(fx.startTs).toISOString() : undefined,
+          homeTeam: fx?.home.name,
+          awayTeam: fx?.away.name,
+          location: fx?.venue ?? undefined,
+          status,
+        })),
+        ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "Football", path: "/football" }, { name: matchup, path: `/football/match/${params.id}` }])),
       ],
     };
   },
