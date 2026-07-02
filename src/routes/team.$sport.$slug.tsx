@@ -40,7 +40,22 @@ export const Route = createFileRoute("/team/$sport/$slug")({
           { name: "Football", path: "/football" },
           { name: team.name, path },
         ])),
+        ldScript(itemList({
+          name: `${team.name} top World Cup scorers`,
+          path,
+          items: stats.topScorers.slice(0, 10).map((p: { name: string; goals: number }) => ({
+            name: `${p.name} (${p.goals} goals)`,
+            path: `/player/football_wc/${p.name.toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")}`,
+          })),
+        })),
+        ldScript(faqPage([
+          { q: `How many World Cup matches has ${team.name} played?`, a: `${team.name} has played ${stats.matchesPlayed} FIFA World Cup matches across ${stats.years.length} tournament appearances, with a record of ${stats.w} wins, ${stats.d} draws and ${stats.l} losses.` },
+          { q: `Who is ${team.name}'s all-time top World Cup scorer?`, a: stats.topScorers[0] ? `${stats.topScorers[0].name} leads ${team.name} with ${stats.topScorers[0].goals} World Cup goals.` : `${team.name} does not yet have a leading World Cup scorer on record.` },
+          { q: `How many World Cup goals has ${team.name} scored?`, a: `${team.name} has scored ${stats.gf} goals and conceded ${stats.ga} at the FIFA World Cup finals.` },
+          { q: `When did ${team.name} appear at the World Cup?`, a: stats.years.length ? `${team.name} appeared at the FIFA World Cup in ${stats.years.join(", ")}.` : `${team.name} has no recorded World Cup appearances yet.` },
+        ])),
       ],
+
     };
   },
   component: TeamPage,
