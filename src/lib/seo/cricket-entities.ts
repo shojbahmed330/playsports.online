@@ -102,9 +102,9 @@ const IPL_HISTORY = iplHistoryData as Array<{
   purpleCap: { player: string; team: string; wickets: number };
 }>;
 
-const IPL_RECORDS = iplRecordsData as Record<
+const IPL_RECORDS = iplRecordsData as unknown as Record<
   string,
-  Array<{ label: string; player: string; team: string; value: string; context?: string }>
+  Array<{ label: string; player?: string; team?: string; value: string; context?: string }>
 >;
 
 // =============== TEAMS ===============
