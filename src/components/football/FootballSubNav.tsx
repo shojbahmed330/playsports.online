@@ -1,4 +1,5 @@
-import { Zap, Users, Swords, Trophy } from "lucide-react";
+import { Zap, Users, Swords, Trophy, Star } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { ChipScroller } from "@/components/ui/ChipScroller";
 
 export type SubNavTab = "today" | "groups" | "knockout" | "scorers";
