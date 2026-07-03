@@ -72,7 +72,7 @@ export const Route = createFileRoute("/football/teams/$slug")({
 });
 
 function FootballTeamPage() {
-  const { team, stats } = Route.useLoaderData();
+  const { team, stats, aiFaqs } = Route.useLoaderData();
   return (
     <div className="container mx-auto px-4 py-6 pb-20 max-w-5xl">
       <nav className="text-xs text-muted-foreground mb-3">
