@@ -256,6 +256,7 @@ function AdminShell() {
             <SectionShell section="seo" title="SEO Analytics" hint="Google Search Console — clicks, impressions, top queries & pages">
               <SeoAnalyticsPanel />
               <AiFaqsCard />
+              <MatchRecapsCard />
             </SectionShell>
           )}
 
