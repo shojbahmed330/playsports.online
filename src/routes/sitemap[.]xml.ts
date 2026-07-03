@@ -25,6 +25,9 @@ import {
   nhlSeoTeamUrls,
   nhlSeoPlayerUrls,
   nhlSeoStanleyCupUrls,
+  mlsSeoTeamUrls,
+  mlsSeoPlayerUrls,
+  mlsSeoCupUrls,
   type DynamicUrl,
 } from "@/lib/seo/sitemap-sources";
 

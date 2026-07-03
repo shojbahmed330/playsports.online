@@ -255,5 +255,38 @@ export function nhlSeoStanleyCupUrls(): DynamicUrl[] {
   }));
 }
 
+// Phase 2.1 (mls) — SSR SEO landing pages.
+export function mlsSeoTeamUrls(): DynamicUrl[] {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { listMlsTeams } = require("@/lib/seo/mls-entities") as typeof import("@/lib/seo/mls-entities");
+  return listMlsTeams().map((t) => ({
+    path: `/mls/teams/${t.slug}`,
+    changefreq: "weekly" as const,
+    priority: "0.8",
+  }));
+}
+
+export function mlsSeoPlayerUrls(): DynamicUrl[] {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { listMlsPlayers } = require("@/lib/seo/mls-entities") as typeof import("@/lib/seo/mls-entities");
+  return listMlsPlayers().map((p) => ({
+    path: `/mls/players/${p.slug}`,
+    changefreq: "monthly" as const,
+    priority: "0.65",
+  }));
+}
+
+export function mlsSeoCupUrls(): DynamicUrl[] {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { listMlsCupYears } = require("@/lib/seo/mls-entities") as typeof import("@/lib/seo/mls-entities");
+  return listMlsCupYears().map((year) => ({
+    path: `/mls/cup/${year}`,
+    changefreq: "yearly" as const,
+    priority: "0.75",
+  }));
+}
+
+
+
 
 
