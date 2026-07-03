@@ -61,7 +61,7 @@ export const Route = createFileRoute("/football/players/$slug")({
 });
 
 function FootballPlayerPage() {
-  const { player, stats } = Route.useLoaderData();
+  const { player, stats, aiFaqs } = Route.useLoaderData();
   const related = listPlayers()
     .filter((p) => p.team === player.team && p.slug !== player.slug)
     .slice(0, 12);
