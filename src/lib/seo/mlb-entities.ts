@@ -161,13 +161,16 @@ export function getMlbPlayerBySlug(slug: string): MlbPlayerEntity | null {
 }
 
 // ─────────────────────────── RECORD CATEGORIES ───────────────────────────
-export const MLB_RECORD_CATEGORIES: Array<{
+export type MlbRecordCategoryDef = {
   slug: string;
   title: string;
   metric: string;
   group: "batting" | "pitching";
-  key: keyof typeof H.allTimeLeaders;
-}> = [
+  key: string;
+};
+export type MlbRecordCategory = MlbRecordCategoryDef & { rows: LeaderRow[] };
+
+export const MLB_RECORD_CATEGORIES: MlbRecordCategoryDef[] = [
   { slug: "career-home-runs", title: "Career Home Runs Leaders", metric: "HR", group: "batting", key: "homeRuns" },
   { slug: "career-hits", title: "Career Hits Leaders", metric: "H", group: "batting", key: "hits" },
   { slug: "career-batting-average", title: "Career Batting Average Leaders", metric: "AVG", group: "batting", key: "battingAverage" },
@@ -177,11 +180,12 @@ export const MLB_RECORD_CATEGORIES: Array<{
   { slug: "career-era", title: "Career ERA Leaders", metric: "ERA", group: "pitching", key: "era" },
 ];
 
-export function listMlbRecordCategories() {
+export function listMlbRecordCategories(): MlbRecordCategoryDef[] {
   return MLB_RECORD_CATEGORIES;
 }
-export function getMlbRecordCategory(slug: string) {
+export function getMlbRecordCategory(slug: string): MlbRecordCategory | null {
   const cat = MLB_RECORD_CATEGORIES.find((c) => c.slug === slug);
   if (!cat) return null;
-  return { ...cat, rows: H.allTimeLeaders[cat.key] ?? [] };
+  const rows: LeaderRow[] = H.allTimeLeaders[cat.key] ?? [];
+  return { ...cat, rows };
 }
