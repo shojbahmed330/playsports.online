@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 import { listTeams, listPlayers, listH2H, listArchives } from "@/lib/seo/programmatic";
+import { programmaticCampaignUrls, programmaticTopScorerUrls } from "@/lib/seo/programmatic-pages";
 import { listMatchSlugs, listHighlights, WC2026_STAGES } from "@/lib/seo/entities";
 import { listLeaderboardUrls } from "@/lib/seo/leaderboards";
 import { listGuides } from "@/content/guides";
@@ -228,6 +229,9 @@ export const Route = createFileRoute("/sitemap.xml")({
             changefreq: "daily" as const,
             priority: "0.8",
           })),
+          // Phase 3 — Programmatic long-tail landing pages
+          ...programmaticTopScorerUrls(),
+          ...programmaticCampaignUrls(),
           // Phase 2.2 — Tournament leaderboards (top-scorers / yellow-cards / red-cards)
           ...listLeaderboardUrls().map((u) => ({
             path: `/tournaments/${u.tournament}/${u.leaderboard}`,
