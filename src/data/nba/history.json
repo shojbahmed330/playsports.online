@@ -1,5 +1,6 @@
 {
   "champions": [
+    { "season": "2024-25", "champion": "Oklahoma City Thunder", "runnerUp": "Indiana Pacers",      "fmvp": "Shai Gilgeous-Alexander", "result": "4–3" },
     { "season": "2023-24", "champion": "Boston Celtics",     "runnerUp": "Dallas Mavericks",      "fmvp": "Jaylen Brown",       "result": "4–1" },
     { "season": "2022-23", "champion": "Denver Nuggets",     "runnerUp": "Miami Heat",            "fmvp": "Nikola Jokić",        "result": "4–1" },
     { "season": "2021-22", "champion": "Golden State Warriors", "runnerUp": "Boston Celtics",     "fmvp": "Stephen Curry",      "result": "4–2" },
