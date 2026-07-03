@@ -74,7 +74,7 @@ export const Route = createFileRoute("/football/matches/$slug")({
                   headline: recap.headline ?? `${m.home_team} ${m.home_score}–${m.away_score} ${m.away_team} — Match Report`,
                   description: recap.meta_description ?? desc,
                   path,
-                  datePublished: recap.created_at ?? undefined,
+                  datePublished: recap.updated_at ?? undefined,
                   dateModified: recap.updated_at ?? undefined,
                   articleSection: `FIFA World Cup ${m.tournament_year}`,
                   keywords: [m.home_team, m.away_team, `World Cup ${m.tournament_year}`, "Match Report", "Football"],
