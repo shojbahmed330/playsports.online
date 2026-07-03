@@ -158,17 +158,10 @@ function CricketTeamProfile() {
           </section>
         ) : null}
 
-        <section className="mb-10">
-          <h2 className="text-lg font-semibold mb-3">Frequently asked</h2>
-          <div className="space-y-3">
-            {team.faqs.map((f) => (
-              <div key={f.q} className="rounded-lg border border-border bg-card/50 p-4">
-                <p className="font-medium">{f.q}</p>
-                <p className="text-sm text-muted-foreground mt-1">{f.a}</p>
-              </div>
-            ))}
-          </div>
-        </section>
+        <FaqSection
+          title="Frequently asked"
+          items={aiFaqs && aiFaqs.length ? aiFaqs : team.faqs}
+        />
 
         {related.length > 0 && (
           <section className="mb-10">
