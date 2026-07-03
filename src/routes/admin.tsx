@@ -256,6 +256,7 @@ function AdminShell() {
           {section === "seo" && (
             <SectionShell section="seo" title="SEO Analytics" hint="Google Search Console — clicks, impressions, top queries & pages">
               <SeoAnalyticsPanel />
+              <SeoHealthCard />
               <AiFaqsCard />
               <MatchRecapsCard />
             </SectionShell>
