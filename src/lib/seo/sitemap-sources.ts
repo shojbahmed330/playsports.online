@@ -9,6 +9,17 @@ import { getNhlTeams } from "@/lib/nhl.functions";
 import { getMlsTeams } from "@/lib/mls.functions";
 import { getBilateralSeriesList, getCricketSeriesList } from "@/lib/cricket.functions";
 import { getIplTeams } from "@/lib/ipl.functions";
+import {
+  listCricketHighlights,
+  listCricketPlayers,
+  listCricketRecordCategories,
+  listCricketTeams,
+  listCricketTournaments,
+} from "@/lib/seo/cricket-entities";
+import { listMlbPlayers, listMlbRecordCategories, listMlbTeams, listWorldSeriesYears } from "@/lib/seo/mlb-entities";
+import { listMlsCupYears, listMlsPlayers, listMlsTeams } from "@/lib/seo/mls-entities";
+import { listNbaFinalsYears, listNbaPlayers, listNbaTeams } from "@/lib/seo/nba-entities";
+import { listNhlPlayers, listNhlTeams, listStanleyCupYears } from "@/lib/seo/nhl-entities";
 
 export interface DynamicUrl {
   path: string;
@@ -132,9 +143,6 @@ export async function cricketSeriesUrls(): Promise<DynamicUrl[]> {
 
 // Phase 2.1 (cricket) — SSR SEO landing pages.
 export function cricketSeoTeamUrls(): DynamicUrl[] {
-  // Lazy require to keep this module tree-shakable at build.
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const { listCricketTeams } = require("@/lib/seo/cricket-entities") as typeof import("@/lib/seo/cricket-entities");
   return listCricketTeams().map((t) => ({
     path: `/cricket/teams/${t.slug}`,
     changefreq: "weekly" as const,
@@ -143,8 +151,6 @@ export function cricketSeoTeamUrls(): DynamicUrl[] {
 }
 
 export function cricketSeoPlayerUrls(): DynamicUrl[] {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const { listCricketPlayers } = require("@/lib/seo/cricket-entities") as typeof import("@/lib/seo/cricket-entities");
   return listCricketPlayers().map((p) => ({
     path: `/cricket/players/${p.slug}`,
     changefreq: "weekly" as const,
@@ -153,8 +159,6 @@ export function cricketSeoPlayerUrls(): DynamicUrl[] {
 }
 
 export function cricketSeoTournamentUrls(): DynamicUrl[] {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const { listCricketTournaments } = require("@/lib/seo/cricket-entities") as typeof import("@/lib/seo/cricket-entities");
   return listCricketTournaments().map((t) => ({
     path: `/cricket/tournaments/${t.slug}`,
     changefreq: "daily" as const,
@@ -163,8 +167,6 @@ export function cricketSeoTournamentUrls(): DynamicUrl[] {
 }
 
 export function cricketSeoRecordUrls(): DynamicUrl[] {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const { listCricketRecordCategories } = require("@/lib/seo/cricket-entities") as typeof import("@/lib/seo/cricket-entities");
   return listCricketRecordCategories().map((c) => ({
     path: `/cricket/records/${c.id}`,
     changefreq: "weekly" as const,
@@ -173,8 +175,6 @@ export function cricketSeoRecordUrls(): DynamicUrl[] {
 }
 
 export function cricketSeoHighlightUrls(): DynamicUrl[] {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const { listCricketHighlights } = require("@/lib/seo/cricket-entities") as typeof import("@/lib/seo/cricket-entities");
   return listCricketHighlights().map((h) => ({
     path: `/cricket/highlights/${h.slug}`,
     lastmod: h.date,
@@ -185,8 +185,6 @@ export function cricketSeoHighlightUrls(): DynamicUrl[] {
 
 // Phase 2.1 (mlb) — SSR SEO landing pages.
 export function mlbSeoTeamUrls(): DynamicUrl[] {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const { listMlbTeams } = require("@/lib/seo/mlb-entities") as typeof import("@/lib/seo/mlb-entities");
   return listMlbTeams().map((t) => ({
     path: `/mlb/teams/${t.slug}`,
     changefreq: "weekly" as const,
@@ -195,8 +193,6 @@ export function mlbSeoTeamUrls(): DynamicUrl[] {
 }
 
 export function mlbSeoPlayerUrls(): DynamicUrl[] {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const { listMlbPlayers } = require("@/lib/seo/mlb-entities") as typeof import("@/lib/seo/mlb-entities");
   return listMlbPlayers().map((p) => ({
     path: `/mlb/players/${p.slug}`,
     changefreq: "monthly" as const,
@@ -205,8 +201,6 @@ export function mlbSeoPlayerUrls(): DynamicUrl[] {
 }
 
 export function mlbSeoWorldSeriesUrls(): DynamicUrl[] {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const { listWorldSeriesYears } = require("@/lib/seo/mlb-entities") as typeof import("@/lib/seo/mlb-entities");
   return listWorldSeriesYears().map((year) => ({
     path: `/mlb/world-series/${year}`,
     changefreq: "yearly" as const,
@@ -215,8 +209,6 @@ export function mlbSeoWorldSeriesUrls(): DynamicUrl[] {
 }
 
 export function mlbSeoRecordUrls(): DynamicUrl[] {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const { listMlbRecordCategories } = require("@/lib/seo/mlb-entities") as typeof import("@/lib/seo/mlb-entities");
   return listMlbRecordCategories().map((c) => ({
     path: `/mlb/records/${c.slug}`,
     changefreq: "monthly" as const,
@@ -226,8 +218,6 @@ export function mlbSeoRecordUrls(): DynamicUrl[] {
 
 // Phase 2.1 (nhl) — SSR SEO landing pages.
 export function nhlSeoTeamUrls(): DynamicUrl[] {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const { listNhlTeams } = require("@/lib/seo/nhl-entities") as typeof import("@/lib/seo/nhl-entities");
   return listNhlTeams().map((t) => ({
     path: `/nhl/teams/${t.slug}`,
     changefreq: "weekly" as const,
@@ -236,8 +226,6 @@ export function nhlSeoTeamUrls(): DynamicUrl[] {
 }
 
 export function nhlSeoPlayerUrls(): DynamicUrl[] {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const { listNhlPlayers } = require("@/lib/seo/nhl-entities") as typeof import("@/lib/seo/nhl-entities");
   return listNhlPlayers().map((p) => ({
     path: `/nhl/players/${p.slug}`,
     changefreq: "monthly" as const,
@@ -246,8 +234,6 @@ export function nhlSeoPlayerUrls(): DynamicUrl[] {
 }
 
 export function nhlSeoStanleyCupUrls(): DynamicUrl[] {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const { listStanleyCupYears } = require("@/lib/seo/nhl-entities") as typeof import("@/lib/seo/nhl-entities");
   return listStanleyCupYears().map((year) => ({
     path: `/nhl/stanley-cup/${year}`,
     changefreq: "yearly" as const,
@@ -257,8 +243,6 @@ export function nhlSeoStanleyCupUrls(): DynamicUrl[] {
 
 // Phase 2.1 (mls) — SSR SEO landing pages.
 export function mlsSeoTeamUrls(): DynamicUrl[] {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const { listMlsTeams } = require("@/lib/seo/mls-entities") as typeof import("@/lib/seo/mls-entities");
   return listMlsTeams().map((t) => ({
     path: `/mls/teams/${t.slug}`,
     changefreq: "weekly" as const,
@@ -267,8 +251,6 @@ export function mlsSeoTeamUrls(): DynamicUrl[] {
 }
 
 export function mlsSeoPlayerUrls(): DynamicUrl[] {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const { listMlsPlayers } = require("@/lib/seo/mls-entities") as typeof import("@/lib/seo/mls-entities");
   return listMlsPlayers().map((p) => ({
     path: `/mls/players/${p.slug}`,
     changefreq: "monthly" as const,
@@ -277,8 +259,6 @@ export function mlsSeoPlayerUrls(): DynamicUrl[] {
 }
 
 export function mlsSeoCupUrls(): DynamicUrl[] {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const { listMlsCupYears } = require("@/lib/seo/mls-entities") as typeof import("@/lib/seo/mls-entities");
   return listMlsCupYears().map((year) => ({
     path: `/mls/cup/${year}`,
     changefreq: "yearly" as const,
@@ -288,8 +268,6 @@ export function mlsSeoCupUrls(): DynamicUrl[] {
 
 // Phase 2.1 (nba) — SSR SEO landing pages.
 export function nbaSeoTeamUrls(): DynamicUrl[] {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const { listNbaTeams } = require("@/lib/seo/nba-entities") as typeof import("@/lib/seo/nba-entities");
   return listNbaTeams().map((t) => ({
     path: `/nba/teams/${t.slug}`,
     changefreq: "weekly" as const,
@@ -298,8 +276,6 @@ export function nbaSeoTeamUrls(): DynamicUrl[] {
 }
 
 export function nbaSeoPlayerUrls(): DynamicUrl[] {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const { listNbaPlayers } = require("@/lib/seo/nba-entities") as typeof import("@/lib/seo/nba-entities");
   return listNbaPlayers().map((p) => ({
     path: `/nba/players/${p.slug}`,
     changefreq: "monthly" as const,
@@ -308,8 +284,6 @@ export function nbaSeoPlayerUrls(): DynamicUrl[] {
 }
 
 export function nbaSeoFinalsUrls(): DynamicUrl[] {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const { listNbaFinalsYears } = require("@/lib/seo/nba-entities") as typeof import("@/lib/seo/nba-entities");
   return listNbaFinalsYears().map((year) => ({
     path: `/nba/finals/${year}`,
     changefreq: "yearly" as const,
