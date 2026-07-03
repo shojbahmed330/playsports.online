@@ -32,7 +32,9 @@ export function SiteFooter() {
 
   return (
     <footer className="mt-16 px-4 pb-20 sm:pb-8">
+      <FooterInternalLinks />
       <div className="mx-auto w-full max-w-7xl bg-card/40 text-muted-foreground rounded-2xl overflow-hidden border border-border shadow-2xl">
+
         {/* Affiliate strip */}
         <div className="bg-background/40 border-b border-border px-6 py-3">
           <p className="text-xs text-center lg:text-left leading-relaxed">
