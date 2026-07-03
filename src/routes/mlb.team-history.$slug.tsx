@@ -80,7 +80,7 @@ function MlbTeamHistoryPage() {
         <section className="rounded-2xl bg-card ring-1 ring-border p-4">
           <h2 className="text-xs uppercase tracking-wider font-bold text-[#f7e6c4] mb-3">Championships ({h.championships.length})</h2>
           <ul className="divide-y divide-border">
-            {h.championships.map((c) => (
+            {h.championships.map((c: import("@/lib/seo/multisport-programmatic").ChampionRow) => (
               <li key={c.year} className="py-2 flex items-baseline gap-3 text-sm">
                 <Link to="/mlb/world-series/$year" params={{ year: String(c.year) }} className="tabular-nums font-black text-[#f7e6c4] w-14">
                   {c.year}
@@ -97,7 +97,7 @@ function MlbTeamHistoryPage() {
         <section className="rounded-2xl bg-card ring-1 ring-border p-4">
           <h2 className="text-xs uppercase tracking-wider font-bold text-white/70 mb-3">Runner-up finishes ({h.runnerUps.length})</h2>
           <ul className="divide-y divide-border">
-            {h.runnerUps.map((c) => (
+            {h.runnerUps.map((c: import("@/lib/seo/multisport-programmatic").ChampionRow) => (
               <li key={c.year} className="py-2 flex items-baseline gap-3 text-sm">
                 <Link to="/mlb/world-series/$year" params={{ year: String(c.year) }} className="tabular-nums font-black text-white/70 w-14">
                   {c.year}
