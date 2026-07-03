@@ -251,6 +251,72 @@ export type Database = {
         }
         Relationships: []
       }
+      match_recaps: {
+        Row: {
+          away_score: number | null
+          away_team: string
+          created_at: string
+          full_article: string
+          headline: string
+          hero_image_url: string | null
+          home_score: number | null
+          home_team: string
+          id: string
+          key_moments: Json
+          match_date: string | null
+          match_key: string
+          meta_description: string | null
+          model: string | null
+          slug: string
+          sport: string
+          summary: string
+          tournament: string | null
+          updated_at: string
+        }
+        Insert: {
+          away_score?: number | null
+          away_team: string
+          created_at?: string
+          full_article: string
+          headline: string
+          hero_image_url?: string | null
+          home_score?: number | null
+          home_team: string
+          id?: string
+          key_moments?: Json
+          match_date?: string | null
+          match_key: string
+          meta_description?: string | null
+          model?: string | null
+          slug: string
+          sport: string
+          summary: string
+          tournament?: string | null
+          updated_at?: string
+        }
+        Update: {
+          away_score?: number | null
+          away_team?: string
+          created_at?: string
+          full_article?: string
+          headline?: string
+          hero_image_url?: string | null
+          home_score?: number | null
+          home_team?: string
+          id?: string
+          key_moments?: Json
+          match_date?: string | null
+          match_key?: string
+          meta_description?: string | null
+          model?: string | null
+          slug?: string
+          sport?: string
+          summary?: string
+          tournament?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       memberships: {
         Row: {
           created_at: string
