@@ -320,7 +320,7 @@ export function relatedForCricketTournament(tournamentSlug: string, cap = DEFAUL
     { label: "Cricket history", href: "/cricket/history" },
   ];
   for (const t of take(all, cap)) {
-    links.push({ label: t.name, href: `/cricket/tournaments/${t.slug}` });
+    links.push({ label: t.longName ?? t.label, href: `/cricket/tournaments/${t.slug}` });
   }
   return dedupeByHref(links).slice(0, cap);
 }
