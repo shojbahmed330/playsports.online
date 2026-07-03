@@ -4,6 +4,8 @@ import { canonical } from "@/lib/seo/canonical";
 import { breadcrumbList, faqPage, ldScript } from "@/lib/seo/jsonld";
 import { getMlbTeamHistory, mlbTeamHistorySlugs, type ChampionRow } from "@/lib/seo/multisport-programmatic";
 import { getMlbTeamBySlug } from "@/lib/seo/mlb-entities";
+import { RelatedLinks } from "@/components/seo/RelatedLinks";
+import { relatedForLeagueTeam } from "@/lib/seo/related";
 
 export const Route = createFileRoute("/mlb/team-history/$slug")({
   loader: ({ params }) => {
@@ -112,6 +114,8 @@ function MlbTeamHistoryPage() {
       <div className="text-sm">
         <Link to="/mlb/champions" className="text-[#f7e6c4] font-semibold hover:underline">← All MLB champions</Link>
       </div>
+
+      <RelatedLinks title="Explore more MLB history" links={relatedForLeagueTeam("mlb", h.team.slug)} />
     </div>
   );
 }
