@@ -3,12 +3,15 @@ import { findPlayer, playerStats, listPlayers, slugify } from "@/lib/seo/program
 import { canonical } from "@/lib/seo/canonical";
 import { breadcrumbList, athlete, faqPage, ldScript } from "@/lib/seo/jsonld";
 import { AdSlot } from "@/components/ads/AdSlot";
+import { readCachedFaqs } from "@/lib/ai-faqs.server";
+import { FaqSection } from "@/components/seo/FaqSection";
 
 export const Route = createFileRoute("/football/players/$slug")({
-  loader: ({ params }) => {
+  loader: async ({ params }) => {
     const p = findPlayer("football_wc", params.slug);
     if (!p) throw notFound();
-    return { player: p, stats: playerStats(p.name) };
+    const aiFaqs = await readCachedFaqs("football_player", params.slug);
+    return { player: p, stats: playerStats(p.name), aiFaqs };
   },
   head: ({ params, loaderData }) => {
     if (!loaderData) {
