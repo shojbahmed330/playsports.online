@@ -101,6 +101,7 @@ function CricketTeamHistoryPage() {
         </section>
       )}
       <div className="text-sm"><Link to="/cricket/history" className="text-primary font-semibold hover:underline">← Cricket history</Link></div>
+      <RelatedLinks title="Explore more cricket teams" links={relatedForCricketTeam(h.slug)} />
     </div>
   );
 }

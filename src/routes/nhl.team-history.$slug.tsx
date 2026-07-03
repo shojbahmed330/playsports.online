@@ -104,6 +104,7 @@ function NhlTeamHistoryPage() {
         </section>
       )}
       <div className="text-sm"><Link to="/nhl/champions" className="text-primary font-semibold hover:underline">← All NHL champions</Link></div>
+      <RelatedLinks title="Explore more NHL history" links={relatedForLeagueTeam("nhl", h.slug)} />
     </div>
   );
 }
