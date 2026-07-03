@@ -2,8 +2,10 @@ import { createFileRoute, notFound, Link } from "@tanstack/react-router";
 import { getCampaignSummary, listCampaignSlugs, type CampaignSummary } from "@/lib/seo/programmatic-pages";
 import { slugify } from "@/lib/seo/programmatic";
 import { canonical } from "@/lib/seo/canonical";
-import { breadcrumbList, faqPage, ldScript } from "@/lib/seo/jsonld";
+import { breadcrumbList, faqPage, articlePage, ldScript } from "@/lib/seo/jsonld";
 import { AdSlot } from "@/components/ads/AdSlot";
+import { RelatedLinks } from "@/components/seo/RelatedLinks";
+
 
 export const Route = createFileRoute("/football/campaigns/$slug")({
   loader: ({ params }) => {
@@ -59,7 +61,18 @@ export const Route = createFileRoute("/football/campaigns/$slug")({
             },
           ]),
         ),
+        ldScript(
+          articlePage({
+            headline: `${c.team} at the ${c.year} FIFA World Cup`,
+            description: desc,
+            path,
+            articleSection: "World Cup Campaigns",
+            keywords: [c.team, `World Cup ${c.year}`, "campaign", "results", "top scorers"],
+            speakableSelectors: ["h1", "[data-speakable]"],
+          }),
+        ),
       ],
+
     };
   },
   component: CampaignPage,
@@ -83,9 +96,10 @@ function CampaignPage() {
       <h1 className="mb-2 text-2xl font-bold md:text-3xl">
         {c.team} at the {c.year} FIFA World Cup
       </h1>
-      <p className="mb-6 text-muted-foreground">
+      <p className="mb-6 text-muted-foreground" data-speakable>
         {c.finalPosition ? `Finished as ${c.finalPosition}. ` : ""}Record {c.wins}W–{c.draws}D–{c.losses}L across {c.matches.length} matches ({c.goalsFor} for, {c.goalsAgainst} against).
       </p>
+
 
       <div className="mb-6 grid grid-cols-3 gap-3">
         <StatCard label="Wins" value={c.wins} />
@@ -188,9 +202,27 @@ function CampaignPage() {
           → See the full {c.year} World Cup top scorers →
         </Link>
       </section>
+
+      <RelatedLinks
+        title={`Explore more about ${c.team} and the ${c.year} World Cup`}
+        links={[
+          { label: `${c.team} — team profile`, href: `/football/teams/${slugify(c.team)}`, hint: "history, squads, records" },
+          { label: `${c.year} FIFA World Cup top scorers`, href: `/football/top-scorers/${c.year}`, hint: "Golden Boot race" },
+          { label: `${c.year} FIFA World Cup match results`, href: `/archive/football_wc/${c.year}`, hint: "every fixture" },
+          { label: "All World Cup campaigns", href: "/football/campaigns", hint: "browse by team & year" },
+          ...(c.topScorers[0]
+            ? [{
+                label: `${c.topScorers[0].name} — player profile`,
+                href: `/football/players/${slugify(c.topScorers[0].name)}`,
+                hint: `top scorer for ${c.team} in ${c.year}`,
+              }]
+            : []),
+        ]}
+      />
     </div>
   );
 }
+
 
 function StatCard({ label, value }: { label: string; value: number }) {
   return (

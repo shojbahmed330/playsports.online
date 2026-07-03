@@ -2,7 +2,7 @@ import { createFileRoute, notFound, Link } from "@tanstack/react-router";
 import { getMatchBySlug, findHighlightUrl, listMatchSlugs } from "@/lib/seo/entities";
 import { slugify } from "@/lib/seo/programmatic";
 import { canonical } from "@/lib/seo/canonical";
-import { breadcrumbList, sportsEvent, faqPage, ldScript } from "@/lib/seo/jsonld";
+import { breadcrumbList, sportsEvent, faqPage, articlePage, ldScript } from "@/lib/seo/jsonld";
 import { AdSlot } from "@/components/ads/AdSlot";
 import { readMatchRecap } from "@/lib/match-recaps.server";
 import { MatchRecapArticle } from "@/components/seo/MatchRecapArticle";
@@ -67,7 +67,24 @@ export const Route = createFileRoute("/football/matches/$slug")({
             { q: `Where was ${m.home_team} vs ${m.away_team} played?`, a: m.stadium ? `The match was played at ${m.stadium}${m.city ? " in " + m.city : ""}.` : `Venue details for this match are not on record.` },
           ]),
         ),
+        ...(recap
+          ? [
+              ldScript(
+                articlePage({
+                  headline: recap.headline ?? `${m.home_team} ${m.home_score}–${m.away_score} ${m.away_team} — Match Report`,
+                  description: recap.meta_description ?? desc,
+                  path,
+                  datePublished: recap.updated_at ?? undefined,
+                  dateModified: recap.updated_at ?? undefined,
+                  articleSection: `FIFA World Cup ${m.tournament_year}`,
+                  keywords: [m.home_team, m.away_team, `World Cup ${m.tournament_year}`, "Match Report", "Football"],
+                  speakableSelectors: ["h1", "[data-speakable]"],
+                }),
+              ),
+            ]
+          : []),
       ],
+
     };
   },
   component: MatchSlugPage,
@@ -89,11 +106,12 @@ function MatchSlugPage() {
       <h1 className="text-2xl md:text-3xl font-bold mb-2">
         {m.home_team} {m.home_score}–{m.away_score} {m.away_team}
       </h1>
-      <p className="text-muted-foreground mb-6">
+      <p className="text-muted-foreground mb-6" data-speakable>
         FIFA World Cup {m.tournament_year}{m.round ? ` · ${m.round}` : ""}
         {m.match_date ? ` · ${m.match_date}` : ""}
         {m.stadium ? ` · ${m.stadium}${m.city ? ", " + m.city : ""}` : ""}
       </p>
+
 
       <div className="grid grid-cols-2 gap-3 mb-6">
         <TeamCard team={m.home_team} score={m.home_score} />
