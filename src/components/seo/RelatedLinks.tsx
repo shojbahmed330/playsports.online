@@ -1,5 +1,3 @@
-import { Link } from "@tanstack/react-router";
-
 export type RelatedLink = {
   label: string;
   href: string;
@@ -9,7 +7,8 @@ export type RelatedLink = {
 /**
  * Semantic internal-linking block. Rendered as a real <nav> with descriptive
  * anchor text so crawlers (and AI Overviews) treat it as an authoritative
- * "See also" section, not a footer widget.
+ * "See also" section, not a footer widget. Uses plain <a> because links are
+ * dynamic strings not known at build time to TanStack Router's typed API.
  */
 export function RelatedLinks({
   title = "Related on PlaySports",
@@ -25,18 +24,19 @@ export function RelatedLinks({
       <ul className="grid gap-2 sm:grid-cols-2">
         {links.map((l) => (
           <li key={l.href}>
-            <Link
-              to={l.href}
+            <a
+              href={l.href}
               className="group block rounded-lg border border-border/60 bg-background/40 px-3 py-2 text-sm transition hover:border-gold/60 hover:bg-accent"
             >
               <span className="font-medium group-hover:text-gold">{l.label}</span>
               {l.hint && (
                 <span className="ml-1 text-xs text-muted-foreground">— {l.hint}</span>
               )}
-            </Link>
+            </a>
           </li>
         ))}
       </ul>
     </nav>
   );
 }
+
