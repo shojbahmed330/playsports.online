@@ -18,6 +18,10 @@ import {
   cricketSeoTournamentUrls,
   cricketSeoRecordUrls,
   cricketSeoHighlightUrls,
+  mlbSeoTeamUrls,
+  mlbSeoPlayerUrls,
+  mlbSeoWorldSeriesUrls,
+  mlbSeoRecordUrls,
   type DynamicUrl,
 } from "@/lib/seo/sitemap-sources";
 
