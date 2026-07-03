@@ -13,12 +13,15 @@ import {
   getCricketPlayerBySlug,
   listCricketPlayers,
 } from "@/lib/seo/cricket-entities";
+import { readCachedFaqs } from "@/lib/ai-faqs.server";
+import { FaqSection } from "@/components/seo/FaqSection";
 
 export const Route = createFileRoute("/cricket/players/$slug")({
-  loader: ({ params }) => {
+  loader: async ({ params }) => {
     const player = getCricketPlayerBySlug(params.slug);
     if (!player) throw notFound();
-    return { player };
+    const aiFaqs = await readCachedFaqs("cricket_player", params.slug);
+    return { player, aiFaqs };
   },
   head: ({ params, loaderData }) => {
     if (!loaderData) {
