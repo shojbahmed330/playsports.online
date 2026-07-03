@@ -2,7 +2,7 @@ import { createFileRoute, notFound, Link } from "@tanstack/react-router";
 import { getMatchBySlug, findHighlightUrl, listMatchSlugs } from "@/lib/seo/entities";
 import { slugify } from "@/lib/seo/programmatic";
 import { canonical } from "@/lib/seo/canonical";
-import { breadcrumbList, sportsEvent, faqPage, ldScript } from "@/lib/seo/jsonld";
+import { breadcrumbList, sportsEvent, faqPage, articlePage, ldScript } from "@/lib/seo/jsonld";
 import { AdSlot } from "@/components/ads/AdSlot";
 import { readMatchRecap } from "@/lib/match-recaps.server";
 import { MatchRecapArticle } from "@/components/seo/MatchRecapArticle";
