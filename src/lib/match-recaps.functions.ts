@@ -176,7 +176,7 @@ export const generateMatchRecapsBatch = createServerFn({ method: "POST" })
         const recap = await callAi(item);
         await upsertRecap(item, recap);
         generated++;
-        await new Promise((r) => setTimeout(r, 700));
+        await new Promise((r) => setTimeout(r, 3500));
       } catch (e) {
         errors.push({ match_key: item.match_key, error: e instanceof Error ? e.message : String(e) });
       }

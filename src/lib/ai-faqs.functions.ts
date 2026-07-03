@@ -164,7 +164,7 @@ export const generateAiFaqsBatch = createServerFn({ method: "POST" })
         if (error) throw new Error(error.message);
         generated++;
         // gentle pacing
-        await new Promise((r) => setTimeout(r, 600));
+        await new Promise((r) => setTimeout(r, 3500));
       } catch (e) {
         errors.push({ slug: item.entity_slug, error: e instanceof Error ? e.message : String(e) });
       }
