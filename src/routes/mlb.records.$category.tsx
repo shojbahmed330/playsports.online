@@ -61,7 +61,7 @@ export const Route = createFileRoute("/mlb/records/$category")({
 });
 
 function RecordCategoryPage() {
-  const { cat } = Route.useLoaderData();
+  const { cat } = Route.useLoaderData() as { cat: NonNullable<ReturnType<typeof getMlbRecordCategory>> };
   const others = listMlbRecordCategories().filter((c) => c.slug !== cat.slug);
   return (
     <div className="space-y-6 pb-16">
