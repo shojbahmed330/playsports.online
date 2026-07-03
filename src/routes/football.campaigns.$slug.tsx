@@ -61,7 +61,18 @@ export const Route = createFileRoute("/football/campaigns/$slug")({
             },
           ]),
         ),
+        ldScript(
+          articlePage({
+            headline: `${c.team} at the ${c.year} FIFA World Cup`,
+            description: desc,
+            path,
+            articleSection: "World Cup Campaigns",
+            keywords: [c.team, `World Cup ${c.year}`, "campaign", "results", "top scorers"],
+            speakableSelectors: ["h1", "[data-speakable]"],
+          }),
+        ),
       ],
+
     };
   },
   component: CampaignPage,
