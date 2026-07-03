@@ -4,24 +4,31 @@ import { slugify } from "@/lib/seo/programmatic";
 import { canonical } from "@/lib/seo/canonical";
 import { breadcrumbList, sportsEvent, faqPage, ldScript } from "@/lib/seo/jsonld";
 import { AdSlot } from "@/components/ads/AdSlot";
+import { readMatchRecap } from "@/lib/match-recaps.server";
+import { MatchRecapArticle } from "@/components/seo/MatchRecapArticle";
 
 export const Route = createFileRoute("/football/matches/$slug")({
-  loader: ({ params }) => {
+  loader: async ({ params }) => {
     const m = getMatchBySlug(params.slug);
     if (!m) throw notFound();
     const highlight = findHighlightUrl(m.home_team, m.away_team);
-    return { match: m, highlight };
+    const recap = await readMatchRecap("football", params.slug);
+    return { match: m, highlight, recap };
   },
   head: ({ params, loaderData }) => {
     if (!loaderData) {
       return { meta: [{ title: "Match not found" }, { name: "robots", content: "noindex" }] };
     }
-    const { match: m } = loaderData;
+    const { match: m, recap } = loaderData;
     const path = `/football/matches/${params.slug}`;
     const winner =
       m.home_score > m.away_score ? m.home_team : m.away_score > m.home_score ? m.away_team : "Draw";
-    const title = `${m.home_team} ${m.home_score}–${m.away_score} ${m.away_team} — FIFA World Cup ${m.tournament_year} Match Result | PlaySports`;
-    const desc = `${m.home_team} vs ${m.away_team} at the ${m.tournament_year} FIFA World Cup${m.round ? ` (${m.round})` : ""}. Final score ${m.home_score}–${m.away_score}${m.stadium ? `, played at ${m.stadium}${m.city ? ", " + m.city : ""}` : ""}. ${winner === "Draw" ? "Match ended in a draw." : `${winner} won.`}`;
+    const title = recap?.headline
+      ? `${recap.headline} | PlaySports`
+      : `${m.home_team} ${m.home_score}–${m.away_score} ${m.away_team} — FIFA World Cup ${m.tournament_year} Match Result | PlaySports`;
+    const desc =
+      recap?.meta_description ??
+      `${m.home_team} vs ${m.away_team} at the ${m.tournament_year} FIFA World Cup${m.round ? ` (${m.round})` : ""}. Final score ${m.home_score}–${m.away_score}${m.stadium ? `, played at ${m.stadium}${m.city ? ", " + m.city : ""}` : ""}. ${winner === "Draw" ? "Match ended in a draw." : `${winner} won.`}`;
     return {
       meta: [
         { title },
@@ -69,7 +76,7 @@ export const Route = createFileRoute("/football/matches/$slug")({
 });
 
 function MatchSlugPage() {
-  const { match: m, highlight } = Route.useLoaderData();
+  const { match: m, highlight, recap } = Route.useLoaderData();
   const ytId = highlight?.match(/(?:v=|youtu\.be\/|embed\/)([A-Za-z0-9_-]{11})/)?.[1];
   return (
     <div className="container mx-auto px-4 py-6 pb-20 max-w-4xl">
@@ -108,6 +115,8 @@ function MatchSlugPage() {
           </div>
         </section>
       )}
+
+      {recap && <MatchRecapArticle recap={recap} />}
 
       <AdSlot slot="in_content" />
 
