@@ -150,8 +150,76 @@ export function videoObject(opts: {
   return node;
 }
 
+// Article + Speakable — optimized for Google AI Overviews / ChatGPT citations.
+// Speakable marks the passages voice assistants read aloud; Article carries the
+// citation-friendly metadata (author, dates, publisher).
+export function articlePage(opts: {
+  headline: string;
+  description: string;
+  path: string;
+  datePublished?: string;
+  dateModified?: string;
+  image?: string;
+  author?: string;
+  wordCount?: number;
+  articleSection?: string;
+  keywords?: string[];
+  speakableSelectors?: string[];
+}) {
+  const node: Record<string, unknown> = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: opts.headline.slice(0, 110),
+    description: opts.description,
+    mainEntityOfPage: { "@type": "WebPage", "@id": canonical(opts.path) },
+    url: canonical(opts.path),
+    inLanguage: "en",
+    author: { "@type": "Organization", name: opts.author ?? "PlaySports Editorial" },
+    publisher: {
+      "@type": "Organization",
+      name: "PlaySports",
+      url: SITE_URL,
+      logo: { "@type": "ImageObject", url: `${SITE_URL}/favicon.ico` },
+    },
+  };
+  if (opts.datePublished) node.datePublished = opts.datePublished;
+  if (opts.dateModified) node.dateModified = opts.dateModified;
+  if (opts.image) node.image = opts.image;
+  if (opts.wordCount) node.wordCount = opts.wordCount;
+  if (opts.articleSection) node.articleSection = opts.articleSection;
+  if (opts.keywords?.length) node.keywords = opts.keywords.join(", ");
+  const selectors = opts.speakableSelectors ?? ["h1", "[data-speakable]"];
+  node.speakable = {
+    "@type": "SpeakableSpecification",
+    cssSelector: selectors,
+  };
+  return node;
+}
+
+export function howTo(opts: {
+  name: string;
+  description: string;
+  path: string;
+  steps: Array<{ name: string; text: string }>;
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    name: opts.name,
+    description: opts.description,
+    url: canonical(opts.path),
+    step: opts.steps.map((s, i) => ({
+      "@type": "HowToStep",
+      position: i + 1,
+      name: s.name,
+      text: s.text,
+    })),
+  };
+}
+
 export function ldScript(data: unknown) {
   return { type: "application/ld+json" as const, children: JSON.stringify(data) };
 }
+
 
 
