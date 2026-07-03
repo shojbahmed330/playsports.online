@@ -144,21 +144,18 @@ function FootballTeamPage() {
         </div>
       </section>
 
-      <section className="mt-8">
-        <h2 className="text-xl font-semibold mb-3">Frequently asked about {team.name}</h2>
-        <div className="space-y-3">
-          {[
-            { q: `How many World Cup matches has ${team.name} played?`, a: `${team.name} has played ${stats.matchesPlayed} FIFA World Cup matches across ${stats.years.length} tournaments (${stats.w}W-${stats.d}D-${stats.l}L).` },
-            { q: `Who is ${team.name}'s all-time top World Cup scorer?`, a: stats.topScorers[0] ? `${stats.topScorers[0].name} leads with ${stats.topScorers[0].goals} goals.` : `Not on record.` },
-            { q: `How many World Cup goals has ${team.name} scored?`, a: `${stats.gf} goals scored, ${stats.ga} conceded.` },
-          ].map((f) => (
-            <details key={f.q} className="rounded-lg border px-4 py-3">
-              <summary className="font-medium cursor-pointer">{f.q}</summary>
-              <p className="mt-2 text-sm text-muted-foreground">{f.a}</p>
-            </details>
-          ))}
-        </div>
-      </section>
+      <FaqSection
+        title={`Frequently asked about ${team.name}`}
+        items={
+          aiFaqs && aiFaqs.length
+            ? aiFaqs
+            : [
+                { q: `How many World Cup matches has ${team.name} played?`, a: `${team.name} has played ${stats.matchesPlayed} FIFA World Cup matches across ${stats.years.length} tournaments (${stats.w}W-${stats.d}D-${stats.l}L).` },
+                { q: `Who is ${team.name}'s all-time top World Cup scorer?`, a: stats.topScorers[0] ? `${stats.topScorers[0].name} leads with ${stats.topScorers[0].goals} goals.` : `Not on record.` },
+                { q: `How many World Cup goals has ${team.name} scored?`, a: `${stats.gf} goals scored, ${stats.ga} conceded.` },
+              ]
+        }
+      />
 
       <section className="mt-8">
         <h2 className="text-xl font-semibold mb-3">Explore more teams</h2>
