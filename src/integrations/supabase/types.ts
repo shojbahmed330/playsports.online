@@ -299,6 +299,75 @@ export type Database = {
         }
         Relationships: []
       }
+      seo_gsc_daily: {
+        Row: {
+          clicks: number
+          created_at: string
+          ctr: number
+          date: string
+          id: number
+          impressions: number
+          page: string
+          position: number
+          query: string
+        }
+        Insert: {
+          clicks?: number
+          created_at?: string
+          ctr?: number
+          date: string
+          id?: number
+          impressions?: number
+          page: string
+          position?: number
+          query?: string
+        }
+        Update: {
+          clicks?: number
+          created_at?: string
+          ctr?: number
+          date?: string
+          id?: number
+          impressions?: number
+          page?: string
+          position?: number
+          query?: string
+        }
+        Relationships: []
+      }
+      seo_sync_runs: {
+        Row: {
+          date_range_end: string | null
+          date_range_start: string | null
+          error: string | null
+          finished_at: string | null
+          id: number
+          rows_written: number
+          started_at: string
+          status: string
+        }
+        Insert: {
+          date_range_end?: string | null
+          date_range_start?: string | null
+          error?: string | null
+          finished_at?: string | null
+          id?: number
+          rows_written?: number
+          started_at?: string
+          status?: string
+        }
+        Update: {
+          date_range_end?: string | null
+          date_range_start?: string | null
+          error?: string | null
+          finished_at?: string | null
+          id?: number
+          rows_written?: number
+          started_at?: string
+          status?: string
+        }
+        Relationships: []
+      }
       site_settings: {
         Row: {
           key: string
