@@ -127,17 +127,18 @@ function FootballPlayerPage() {
         <h2 className="text-xl font-semibold mb-3">Frequently asked about {player.name}</h2>
         <div className="space-y-3">
           {[
-            { q: `How many World Cup goals has ${player.name} scored?`, a: `${stats.goalsTotal} goal${stats.goalsTotal === 1 ? "" : "s"}${stats.pen > 0 ? `, including ${stats.pen} penalties` : ""}.` },
-            { q: `Which country does ${player.name} play for?`, a: `${player.team}.` },
-            { q: `In which World Cups has ${player.name} played?`, a: stats.years.length ? stats.years.join(", ") : `Not on record.` },
-          ].map((f) => (
-            <details key={f.q} className="rounded-lg border px-4 py-3">
-              <summary className="font-medium cursor-pointer">{f.q}</summary>
-              <p className="mt-2 text-sm text-muted-foreground">{f.a}</p>
-            </details>
-          ))}
-        </div>
-      </section>
+      <FaqSection
+        title={`Frequently asked about ${player.name}`}
+        items={
+          aiFaqs && aiFaqs.length
+            ? aiFaqs
+            : [
+                { q: `How many World Cup goals has ${player.name} scored?`, a: `${stats.goalsTotal} goal${stats.goalsTotal === 1 ? "" : "s"}${stats.pen > 0 ? `, including ${stats.pen} penalties` : ""}.` },
+                { q: `Which country does ${player.name} play for?`, a: `${player.team}.` },
+                { q: `In which World Cups has ${player.name} played?`, a: stats.years.length ? stats.years.join(", ") : `Not on record.` },
+              ]
+        }
+      />
 
       {related.length > 0 && (
         <section className="mt-8">
