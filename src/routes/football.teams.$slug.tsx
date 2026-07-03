@@ -52,12 +52,16 @@ export const Route = createFileRoute("/football/teams/$slug")({
           }),
         ),
         ldScript(
-          faqPage([
-            { q: `How many World Cup matches has ${team.name} played?`, a: `${team.name} has played ${stats.matchesPlayed} FIFA World Cup matches across ${stats.years.length} tournament appearances (${stats.w}W-${stats.d}D-${stats.l}L).` },
-            { q: `Who is ${team.name}'s all-time top World Cup scorer?`, a: stats.topScorers[0] ? `${stats.topScorers[0].name} leads with ${stats.topScorers[0].goals} World Cup goals for ${team.name}.` : `${team.name} does not have a recorded leading World Cup scorer yet.` },
-            { q: `How many World Cup goals has ${team.name} scored?`, a: `${team.name} has scored ${stats.gf} goals and conceded ${stats.ga}.` },
-            { q: `When did ${team.name} appear at the World Cup?`, a: stats.years.length ? `${team.name} appeared in ${stats.years.join(", ")}.` : `No World Cup appearances on record.` },
-          ]),
+          faqPage(
+            aiFaqs && aiFaqs.length
+              ? aiFaqs
+              : [
+                  { q: `How many World Cup matches has ${team.name} played?`, a: `${team.name} has played ${stats.matchesPlayed} FIFA World Cup matches across ${stats.years.length} tournament appearances (${stats.w}W-${stats.d}D-${stats.l}L).` },
+                  { q: `Who is ${team.name}'s all-time top World Cup scorer?`, a: stats.topScorers[0] ? `${stats.topScorers[0].name} leads with ${stats.topScorers[0].goals} World Cup goals for ${team.name}.` : `${team.name} does not have a recorded leading World Cup scorer yet.` },
+                  { q: `How many World Cup goals has ${team.name} scored?`, a: `${team.name} has scored ${stats.gf} goals and conceded ${stats.ga}.` },
+                  { q: `When did ${team.name} appear at the World Cup?`, a: stats.years.length ? `${team.name} appeared in ${stats.years.join(", ")}.` : `No World Cup appearances on record.` },
+                ],
+          ),
         ),
       ],
     };
