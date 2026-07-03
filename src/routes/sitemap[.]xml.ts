@@ -158,7 +158,6 @@ export const Route = createFileRoute("/sitemap.xml")({
           headers: {
             "Content-Type": "application/xml; charset=utf-8",
             "Cache-Control": "public, max-age=3600, s-maxage=3600, stale-while-revalidate=21600",
-            "X-Robots-Tag": "noindex",
           },
         });
       },
@@ -311,7 +310,6 @@ export const Route = createFileRoute("/sitemap.xml")({
             "Content-Type": "application/xml; charset=utf-8",
             // Fresh for 1h at the edge, stale-while-revalidate for 6h.
             "Cache-Control": "public, max-age=3600, s-maxage=3600, stale-while-revalidate=21600",
-            "X-Robots-Tag": "noindex",
             "X-Sitemap-Url-Count": String(all.length),
           },
         });
