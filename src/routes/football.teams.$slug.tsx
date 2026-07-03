@@ -17,7 +17,7 @@ export const Route = createFileRoute("/football/teams/$slug")({
     if (!loaderData) {
       return { meta: [{ title: "Team not found" }, { name: "robots", content: "noindex" }] };
     }
-    const { team, stats } = loaderData;
+    const { team, stats, aiFaqs } = loaderData;
     const path = `/football/teams/${params.slug}`;
     const title = `${team.name} — FIFA World Cup History, Stats & Top Scorers | PlaySports`;
     const desc = `${team.name} at the FIFA World Cup: ${stats.matchesPlayed} matches, ${stats.w}W-${stats.d}D-${stats.l}L, ${stats.goalsTotal} goals. Appearances, top scorers, recent results.`;
