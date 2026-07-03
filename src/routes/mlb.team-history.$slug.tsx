@@ -2,7 +2,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { canonical } from "@/lib/seo/canonical";
 import { breadcrumbList, faqPage, ldScript } from "@/lib/seo/jsonld";
-import { getMlbTeamHistory, mlbTeamHistorySlugs } from "@/lib/seo/multisport-programmatic";
+import { getMlbTeamHistory, mlbTeamHistorySlugs, type ChampionRow } from "@/lib/seo/multisport-programmatic";
 import { getMlbTeamBySlug } from "@/lib/seo/mlb-entities";
 
 export const Route = createFileRoute("/mlb/team-history/$slug")({
