@@ -123,10 +123,6 @@ function FootballPlayerPage() {
         </p>
       </section>
 
-      <section className="mt-8">
-        <h2 className="text-xl font-semibold mb-3">Frequently asked about {player.name}</h2>
-        <div className="space-y-3">
-          {[
       <FaqSection
         title={`Frequently asked about ${player.name}`}
         items={
