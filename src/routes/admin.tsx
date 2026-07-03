@@ -26,6 +26,7 @@ import { MembershipsCard } from "@/components/admin/MembershipsCard";
 import { AdminSidebar, type AdminSection } from "@/components/admin/AdminSidebar";
 import { OverviewPanel } from "@/components/admin/OverviewPanel";
 import { SeoAnalyticsPanel } from "@/components/admin/SeoAnalyticsPanel";
+import { AiFaqsCard } from "@/components/admin/AiFaqsCard";
 import { SectionStatusStrip } from "@/components/admin/SectionStatusStrip";
 
 
