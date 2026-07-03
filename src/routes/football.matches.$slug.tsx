@@ -106,11 +106,12 @@ function MatchSlugPage() {
       <h1 className="text-2xl md:text-3xl font-bold mb-2">
         {m.home_team} {m.home_score}–{m.away_score} {m.away_team}
       </h1>
-      <p className="text-muted-foreground mb-6">
+      <p className="text-muted-foreground mb-6" data-speakable>
         FIFA World Cup {m.tournament_year}{m.round ? ` · ${m.round}` : ""}
         {m.match_date ? ` · ${m.match_date}` : ""}
         {m.stadium ? ` · ${m.stadium}${m.city ? ", " + m.city : ""}` : ""}
       </p>
+
 
       <div className="grid grid-cols-2 gap-3 mb-6">
         <TeamCard team={m.home_team} score={m.home_score} />
