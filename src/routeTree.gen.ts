@@ -90,9 +90,12 @@ import { Route as NhlGameIdRouteImport } from './routes/nhl.game.$id'
 import { Route as NbaTeamIdRouteImport } from './routes/nba.team.$id'
 import { Route as NbaPlayerIdRouteImport } from './routes/nba.player.$id'
 import { Route as NbaGameIdRouteImport } from './routes/nba.game.$id'
+import { Route as MlsTeamsSlugRouteImport } from './routes/mls.teams.$slug'
 import { Route as MlsTeamIdRouteImport } from './routes/mls.team.$id'
+import { Route as MlsPlayersSlugRouteImport } from './routes/mls.players.$slug'
 import { Route as MlsPlayerIdRouteImport } from './routes/mls.player.$id'
 import { Route as MlsGameIdRouteImport } from './routes/mls.game.$id'
+import { Route as MlsCupYearRouteImport } from './routes/mls.cup.$year'
 import { Route as MlbWorldSeriesYearRouteImport } from './routes/mlb.world-series.$year'
 import { Route as MlbTeamsSlugRouteImport } from './routes/mlb.teams.$slug'
 import { Route as MlbTeamIdRouteImport } from './routes/mlb.team.$id'
@@ -530,9 +533,19 @@ const NbaGameIdRoute = NbaGameIdRouteImport.update({
   path: '/game/$id',
   getParentRoute: () => NbaRoute,
 } as any)
+const MlsTeamsSlugRoute = MlsTeamsSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => MlsTeamsRoute,
+} as any)
 const MlsTeamIdRoute = MlsTeamIdRouteImport.update({
   id: '/team/$id',
   path: '/team/$id',
+  getParentRoute: () => MlsRoute,
+} as any)
+const MlsPlayersSlugRoute = MlsPlayersSlugRouteImport.update({
+  id: '/players/$slug',
+  path: '/players/$slug',
   getParentRoute: () => MlsRoute,
 } as any)
 const MlsPlayerIdRoute = MlsPlayerIdRouteImport.update({
@@ -543,6 +556,11 @@ const MlsPlayerIdRoute = MlsPlayerIdRouteImport.update({
 const MlsGameIdRoute = MlsGameIdRouteImport.update({
   id: '/game/$id',
   path: '/game/$id',
+  getParentRoute: () => MlsRoute,
+} as any)
+const MlsCupYearRoute = MlsCupYearRouteImport.update({
+  id: '/cup/$year',
+  path: '/cup/$year',
   getParentRoute: () => MlsRoute,
 } as any)
 const MlbWorldSeriesYearRoute = MlbWorldSeriesYearRouteImport.update({
@@ -734,7 +752,7 @@ export interface FileRoutesByFullPath {
   '/mls/news': typeof MlsNewsRoute
   '/mls/scores': typeof MlsScoresRoute
   '/mls/standings': typeof MlsStandingsRoute
-  '/mls/teams': typeof MlsTeamsRoute
+  '/mls/teams': typeof MlsTeamsRouteWithChildren
   '/nba/history': typeof NbaHistoryRoute
   '/nba/leaders': typeof NbaLeadersRoute
   '/nba/news': typeof NbaNewsRoute
@@ -777,9 +795,12 @@ export interface FileRoutesByFullPath {
   '/mlb/team/$id': typeof MlbTeamIdRoute
   '/mlb/teams/$slug': typeof MlbTeamsSlugRoute
   '/mlb/world-series/$year': typeof MlbWorldSeriesYearRoute
+  '/mls/cup/$year': typeof MlsCupYearRoute
   '/mls/game/$id': typeof MlsGameIdRoute
   '/mls/player/$id': typeof MlsPlayerIdRoute
+  '/mls/players/$slug': typeof MlsPlayersSlugRoute
   '/mls/team/$id': typeof MlsTeamIdRoute
+  '/mls/teams/$slug': typeof MlsTeamsSlugRoute
   '/nba/game/$id': typeof NbaGameIdRoute
   '/nba/player/$id': typeof NbaPlayerIdRoute
   '/nba/team/$id': typeof NbaTeamIdRoute
@@ -844,7 +865,7 @@ export interface FileRoutesByTo {
   '/mls/news': typeof MlsNewsRoute
   '/mls/scores': typeof MlsScoresRoute
   '/mls/standings': typeof MlsStandingsRoute
-  '/mls/teams': typeof MlsTeamsRoute
+  '/mls/teams': typeof MlsTeamsRouteWithChildren
   '/nba/history': typeof NbaHistoryRoute
   '/nba/leaders': typeof NbaLeadersRoute
   '/nba/news': typeof NbaNewsRoute
@@ -887,9 +908,12 @@ export interface FileRoutesByTo {
   '/mlb/team/$id': typeof MlbTeamIdRoute
   '/mlb/teams/$slug': typeof MlbTeamsSlugRoute
   '/mlb/world-series/$year': typeof MlbWorldSeriesYearRoute
+  '/mls/cup/$year': typeof MlsCupYearRoute
   '/mls/game/$id': typeof MlsGameIdRoute
   '/mls/player/$id': typeof MlsPlayerIdRoute
+  '/mls/players/$slug': typeof MlsPlayersSlugRoute
   '/mls/team/$id': typeof MlsTeamIdRoute
+  '/mls/teams/$slug': typeof MlsTeamsSlugRoute
   '/nba/game/$id': typeof NbaGameIdRoute
   '/nba/player/$id': typeof NbaPlayerIdRoute
   '/nba/team/$id': typeof NbaTeamIdRoute
@@ -960,7 +984,7 @@ export interface FileRoutesById {
   '/mls/news': typeof MlsNewsRoute
   '/mls/scores': typeof MlsScoresRoute
   '/mls/standings': typeof MlsStandingsRoute
-  '/mls/teams': typeof MlsTeamsRoute
+  '/mls/teams': typeof MlsTeamsRouteWithChildren
   '/nba/history': typeof NbaHistoryRoute
   '/nba/leaders': typeof NbaLeadersRoute
   '/nba/news': typeof NbaNewsRoute
@@ -1003,9 +1027,12 @@ export interface FileRoutesById {
   '/mlb/team/$id': typeof MlbTeamIdRoute
   '/mlb/teams/$slug': typeof MlbTeamsSlugRoute
   '/mlb/world-series/$year': typeof MlbWorldSeriesYearRoute
+  '/mls/cup/$year': typeof MlsCupYearRoute
   '/mls/game/$id': typeof MlsGameIdRoute
   '/mls/player/$id': typeof MlsPlayerIdRoute
+  '/mls/players/$slug': typeof MlsPlayersSlugRoute
   '/mls/team/$id': typeof MlsTeamIdRoute
+  '/mls/teams/$slug': typeof MlsTeamsSlugRoute
   '/nba/game/$id': typeof NbaGameIdRoute
   '/nba/player/$id': typeof NbaPlayerIdRoute
   '/nba/team/$id': typeof NbaTeamIdRoute
@@ -1120,9 +1147,12 @@ export interface FileRouteTypes {
     | '/mlb/team/$id'
     | '/mlb/teams/$slug'
     | '/mlb/world-series/$year'
+    | '/mls/cup/$year'
     | '/mls/game/$id'
     | '/mls/player/$id'
+    | '/mls/players/$slug'
     | '/mls/team/$id'
+    | '/mls/teams/$slug'
     | '/nba/game/$id'
     | '/nba/player/$id'
     | '/nba/team/$id'
@@ -1230,9 +1260,12 @@ export interface FileRouteTypes {
     | '/mlb/team/$id'
     | '/mlb/teams/$slug'
     | '/mlb/world-series/$year'
+    | '/mls/cup/$year'
     | '/mls/game/$id'
     | '/mls/player/$id'
+    | '/mls/players/$slug'
     | '/mls/team/$id'
+    | '/mls/teams/$slug'
     | '/nba/game/$id'
     | '/nba/player/$id'
     | '/nba/team/$id'
@@ -1345,9 +1378,12 @@ export interface FileRouteTypes {
     | '/mlb/team/$id'
     | '/mlb/teams/$slug'
     | '/mlb/world-series/$year'
+    | '/mls/cup/$year'
     | '/mls/game/$id'
     | '/mls/player/$id'
+    | '/mls/players/$slug'
     | '/mls/team/$id'
+    | '/mls/teams/$slug'
     | '/nba/game/$id'
     | '/nba/player/$id'
     | '/nba/team/$id'
@@ -1982,11 +2018,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NbaGameIdRouteImport
       parentRoute: typeof NbaRoute
     }
+    '/mls/teams/$slug': {
+      id: '/mls/teams/$slug'
+      path: '/$slug'
+      fullPath: '/mls/teams/$slug'
+      preLoaderRoute: typeof MlsTeamsSlugRouteImport
+      parentRoute: typeof MlsTeamsRoute
+    }
     '/mls/team/$id': {
       id: '/mls/team/$id'
       path: '/team/$id'
       fullPath: '/mls/team/$id'
       preLoaderRoute: typeof MlsTeamIdRouteImport
+      parentRoute: typeof MlsRoute
+    }
+    '/mls/players/$slug': {
+      id: '/mls/players/$slug'
+      path: '/players/$slug'
+      fullPath: '/mls/players/$slug'
+      preLoaderRoute: typeof MlsPlayersSlugRouteImport
       parentRoute: typeof MlsRoute
     }
     '/mls/player/$id': {
@@ -2001,6 +2051,13 @@ declare module '@tanstack/react-router' {
       path: '/game/$id'
       fullPath: '/mls/game/$id'
       preLoaderRoute: typeof MlsGameIdRouteImport
+      parentRoute: typeof MlsRoute
+    }
+    '/mls/cup/$year': {
+      id: '/mls/cup/$year'
+      path: '/cup/$year'
+      fullPath: '/mls/cup/$year'
+      preLoaderRoute: typeof MlsCupYearRouteImport
       parentRoute: typeof MlsRoute
     }
     '/mlb/world-series/$year': {
@@ -2357,16 +2414,30 @@ const MlbRouteChildren: MlbRouteChildren = {
 
 const MlbRouteWithChildren = MlbRoute._addFileChildren(MlbRouteChildren)
 
+interface MlsTeamsRouteChildren {
+  MlsTeamsSlugRoute: typeof MlsTeamsSlugRoute
+}
+
+const MlsTeamsRouteChildren: MlsTeamsRouteChildren = {
+  MlsTeamsSlugRoute: MlsTeamsSlugRoute,
+}
+
+const MlsTeamsRouteWithChildren = MlsTeamsRoute._addFileChildren(
+  MlsTeamsRouteChildren,
+)
+
 interface MlsRouteChildren {
   MlsHistoryRoute: typeof MlsHistoryRoute
   MlsLeadersRoute: typeof MlsLeadersRoute
   MlsNewsRoute: typeof MlsNewsRoute
   MlsScoresRoute: typeof MlsScoresRoute
   MlsStandingsRoute: typeof MlsStandingsRoute
-  MlsTeamsRoute: typeof MlsTeamsRoute
+  MlsTeamsRoute: typeof MlsTeamsRouteWithChildren
   MlsIndexRoute: typeof MlsIndexRoute
+  MlsCupYearRoute: typeof MlsCupYearRoute
   MlsGameIdRoute: typeof MlsGameIdRoute
   MlsPlayerIdRoute: typeof MlsPlayerIdRoute
+  MlsPlayersSlugRoute: typeof MlsPlayersSlugRoute
   MlsTeamIdRoute: typeof MlsTeamIdRoute
 }
 
@@ -2376,10 +2447,12 @@ const MlsRouteChildren: MlsRouteChildren = {
   MlsNewsRoute: MlsNewsRoute,
   MlsScoresRoute: MlsScoresRoute,
   MlsStandingsRoute: MlsStandingsRoute,
-  MlsTeamsRoute: MlsTeamsRoute,
+  MlsTeamsRoute: MlsTeamsRouteWithChildren,
   MlsIndexRoute: MlsIndexRoute,
+  MlsCupYearRoute: MlsCupYearRoute,
   MlsGameIdRoute: MlsGameIdRoute,
   MlsPlayerIdRoute: MlsPlayerIdRoute,
+  MlsPlayersSlugRoute: MlsPlayersSlugRoute,
   MlsTeamIdRoute: MlsTeamIdRoute,
 }
 
