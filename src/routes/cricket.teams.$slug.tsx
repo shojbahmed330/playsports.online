@@ -13,12 +13,15 @@ import {
   getCricketTeamBySlug,
   listCricketTeams,
 } from "@/lib/seo/cricket-entities";
+import { readCachedFaqs } from "@/lib/ai-faqs.server";
+import { FaqSection } from "@/components/seo/FaqSection";
 
 export const Route = createFileRoute("/cricket/teams/$slug")({
-  loader: ({ params }) => {
+  loader: async ({ params }) => {
     const team = getCricketTeamBySlug(params.slug);
     if (!team) throw notFound();
-    return { team };
+    const aiFaqs = await readCachedFaqs("cricket_team", params.slug);
+    return { team, aiFaqs };
   },
   head: ({ params, loaderData }) => {
     if (!loaderData) {
@@ -65,7 +68,7 @@ export const Route = createFileRoute("/cricket/teams/$slug")({
             { name: team.name, path: `/cricket/teams/${params.slug}` },
           ]),
         ),
-        ldScript(faqPage(loaderData.team.faqs)),
+        ldScript(faqPage(loaderData.aiFaqs && loaderData.aiFaqs.length ? loaderData.aiFaqs : loaderData.team.faqs)),
       ],
     };
   },
@@ -89,7 +92,7 @@ export const Route = createFileRoute("/cricket/teams/$slug")({
 });
 
 function CricketTeamProfile() {
-  const { team } = Route.useLoaderData() as { team: import("@/lib/seo/cricket-entities").CricketTeamEntity };
+  const { team, aiFaqs } = Route.useLoaderData() as { team: import("@/lib/seo/cricket-entities").CricketTeamEntity; aiFaqs: Array<{ q: string; a: string }> | null };
   const related = listCricketTeams()
     .filter((t) => t.slug !== team.slug && t.isFranchise === team.isFranchise)
     .slice(0, 8);
@@ -155,17 +158,10 @@ function CricketTeamProfile() {
           </section>
         ) : null}
 
-        <section className="mb-10">
-          <h2 className="text-lg font-semibold mb-3">Frequently asked</h2>
-          <div className="space-y-3">
-            {team.faqs.map((f) => (
-              <div key={f.q} className="rounded-lg border border-border bg-card/50 p-4">
-                <p className="font-medium">{f.q}</p>
-                <p className="text-sm text-muted-foreground mt-1">{f.a}</p>
-              </div>
-            ))}
-          </div>
-        </section>
+        <FaqSection
+          title="Frequently asked"
+          items={aiFaqs && aiFaqs.length ? aiFaqs : team.faqs}
+        />
 
         {related.length > 0 && (
           <section className="mb-10">

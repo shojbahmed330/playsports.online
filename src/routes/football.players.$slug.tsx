@@ -3,18 +3,21 @@ import { findPlayer, playerStats, listPlayers, slugify } from "@/lib/seo/program
 import { canonical } from "@/lib/seo/canonical";
 import { breadcrumbList, athlete, faqPage, ldScript } from "@/lib/seo/jsonld";
 import { AdSlot } from "@/components/ads/AdSlot";
+import { readCachedFaqs } from "@/lib/ai-faqs.server";
+import { FaqSection } from "@/components/seo/FaqSection";
 
 export const Route = createFileRoute("/football/players/$slug")({
-  loader: ({ params }) => {
+  loader: async ({ params }) => {
     const p = findPlayer("football_wc", params.slug);
     if (!p) throw notFound();
-    return { player: p, stats: playerStats(p.name) };
+    const aiFaqs = await readCachedFaqs("football_player", params.slug);
+    return { player: p, stats: playerStats(p.name), aiFaqs };
   },
   head: ({ params, loaderData }) => {
     if (!loaderData) {
       return { meta: [{ title: "Player not found" }, { name: "robots", content: "noindex" }] };
     }
-    const { player, stats } = loaderData;
+    const { player, stats, aiFaqs } = loaderData;
     const path = `/football/players/${params.slug}`;
     const title = `${player.name} (${player.team}) — World Cup Goals & Career Stats | PlaySports`;
     const desc = `${player.name} World Cup record: ${stats.goalsTotal} goals over ${stats.years.length} tournaments for ${player.team}. Goal-by-goal breakdown, penalty record, career timeline.`;
@@ -39,11 +42,15 @@ export const Route = createFileRoute("/football/players/$slug")({
           ]),
         ),
         ldScript(
-          faqPage([
-            { q: `How many World Cup goals has ${player.name} scored?`, a: `${player.name} has scored ${stats.goalsTotal} World Cup goal${stats.goalsTotal === 1 ? "" : "s"}${stats.pen > 0 ? `, including ${stats.pen} from the penalty spot` : ""}.` },
-            { q: `Which country does ${player.name} play for?`, a: `${player.name} represents ${player.team}.` },
-            { q: `In which World Cups has ${player.name} played?`, a: stats.years.length ? `${player.name} appeared in ${stats.years.join(", ")}.` : `Not on record.` },
-          ]),
+          faqPage(
+            aiFaqs && aiFaqs.length
+              ? aiFaqs
+              : [
+                  { q: `How many World Cup goals has ${player.name} scored?`, a: `${player.name} has scored ${stats.goalsTotal} World Cup goal${stats.goalsTotal === 1 ? "" : "s"}${stats.pen > 0 ? `, including ${stats.pen} from the penalty spot` : ""}.` },
+                  { q: `Which country does ${player.name} play for?`, a: `${player.name} represents ${player.team}.` },
+                  { q: `In which World Cups has ${player.name} played?`, a: stats.years.length ? `${player.name} appeared in ${stats.years.join(", ")}.` : `Not on record.` },
+                ],
+          ),
         ),
       ],
     };
@@ -54,7 +61,7 @@ export const Route = createFileRoute("/football/players/$slug")({
 });
 
 function FootballPlayerPage() {
-  const { player, stats } = Route.useLoaderData();
+  const { player, stats, aiFaqs } = Route.useLoaderData();
   const related = listPlayers()
     .filter((p) => p.team === player.team && p.slug !== player.slug)
     .slice(0, 12);
@@ -116,21 +123,18 @@ function FootballPlayerPage() {
         </p>
       </section>
 
-      <section className="mt-8">
-        <h2 className="text-xl font-semibold mb-3">Frequently asked about {player.name}</h2>
-        <div className="space-y-3">
-          {[
-            { q: `How many World Cup goals has ${player.name} scored?`, a: `${stats.goalsTotal} goal${stats.goalsTotal === 1 ? "" : "s"}${stats.pen > 0 ? `, including ${stats.pen} penalties` : ""}.` },
-            { q: `Which country does ${player.name} play for?`, a: `${player.team}.` },
-            { q: `In which World Cups has ${player.name} played?`, a: stats.years.length ? stats.years.join(", ") : `Not on record.` },
-          ].map((f) => (
-            <details key={f.q} className="rounded-lg border px-4 py-3">
-              <summary className="font-medium cursor-pointer">{f.q}</summary>
-              <p className="mt-2 text-sm text-muted-foreground">{f.a}</p>
-            </details>
-          ))}
-        </div>
-      </section>
+      <FaqSection
+        title={`Frequently asked about ${player.name}`}
+        items={
+          aiFaqs && aiFaqs.length
+            ? aiFaqs
+            : [
+                { q: `How many World Cup goals has ${player.name} scored?`, a: `${stats.goalsTotal} goal${stats.goalsTotal === 1 ? "" : "s"}${stats.pen > 0 ? `, including ${stats.pen} penalties` : ""}.` },
+                { q: `Which country does ${player.name} play for?`, a: `${player.team}.` },
+                { q: `In which World Cups has ${player.name} played?`, a: stats.years.length ? stats.years.join(", ") : `Not on record.` },
+              ]
+        }
+      />
 
       {related.length > 0 && (
         <section className="mt-8">

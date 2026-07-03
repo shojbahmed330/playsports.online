@@ -3,18 +3,21 @@ import { findTeam, teamStats, listTeams, slugify } from "@/lib/seo/programmatic"
 import { canonical } from "@/lib/seo/canonical";
 import { breadcrumbList, sportsTeam, faqPage, itemList, ldScript } from "@/lib/seo/jsonld";
 import { AdSlot } from "@/components/ads/AdSlot";
+import { readCachedFaqs } from "@/lib/ai-faqs.server";
+import { FaqSection } from "@/components/seo/FaqSection";
 
 export const Route = createFileRoute("/football/teams/$slug")({
-  loader: ({ params }) => {
+  loader: async ({ params }) => {
     const team = findTeam("football_wc", params.slug);
     if (!team) throw notFound();
-    return { team, stats: teamStats(team.name) };
+    const aiFaqs = await readCachedFaqs("football_team", params.slug);
+    return { team, stats: teamStats(team.name), aiFaqs };
   },
   head: ({ params, loaderData }) => {
     if (!loaderData) {
       return { meta: [{ title: "Team not found" }, { name: "robots", content: "noindex" }] };
     }
-    const { team, stats } = loaderData;
+    const { team, stats, aiFaqs } = loaderData;
     const path = `/football/teams/${params.slug}`;
     const title = `${team.name} — FIFA World Cup History, Stats & Top Scorers | PlaySports`;
     const desc = `${team.name} at the FIFA World Cup: ${stats.matchesPlayed} matches, ${stats.w}W-${stats.d}D-${stats.l}L, ${stats.goalsTotal} goals. Appearances, top scorers, recent results.`;
@@ -49,12 +52,16 @@ export const Route = createFileRoute("/football/teams/$slug")({
           }),
         ),
         ldScript(
-          faqPage([
-            { q: `How many World Cup matches has ${team.name} played?`, a: `${team.name} has played ${stats.matchesPlayed} FIFA World Cup matches across ${stats.years.length} tournament appearances (${stats.w}W-${stats.d}D-${stats.l}L).` },
-            { q: `Who is ${team.name}'s all-time top World Cup scorer?`, a: stats.topScorers[0] ? `${stats.topScorers[0].name} leads with ${stats.topScorers[0].goals} World Cup goals for ${team.name}.` : `${team.name} does not have a recorded leading World Cup scorer yet.` },
-            { q: `How many World Cup goals has ${team.name} scored?`, a: `${team.name} has scored ${stats.gf} goals and conceded ${stats.ga}.` },
-            { q: `When did ${team.name} appear at the World Cup?`, a: stats.years.length ? `${team.name} appeared in ${stats.years.join(", ")}.` : `No World Cup appearances on record.` },
-          ]),
+          faqPage(
+            aiFaqs && aiFaqs.length
+              ? aiFaqs
+              : [
+                  { q: `How many World Cup matches has ${team.name} played?`, a: `${team.name} has played ${stats.matchesPlayed} FIFA World Cup matches across ${stats.years.length} tournament appearances (${stats.w}W-${stats.d}D-${stats.l}L).` },
+                  { q: `Who is ${team.name}'s all-time top World Cup scorer?`, a: stats.topScorers[0] ? `${stats.topScorers[0].name} leads with ${stats.topScorers[0].goals} World Cup goals for ${team.name}.` : `${team.name} does not have a recorded leading World Cup scorer yet.` },
+                  { q: `How many World Cup goals has ${team.name} scored?`, a: `${team.name} has scored ${stats.gf} goals and conceded ${stats.ga}.` },
+                  { q: `When did ${team.name} appear at the World Cup?`, a: stats.years.length ? `${team.name} appeared in ${stats.years.join(", ")}.` : `No World Cup appearances on record.` },
+                ],
+          ),
         ),
       ],
     };
@@ -65,7 +72,7 @@ export const Route = createFileRoute("/football/teams/$slug")({
 });
 
 function FootballTeamPage() {
-  const { team, stats } = Route.useLoaderData();
+  const { team, stats, aiFaqs } = Route.useLoaderData();
   return (
     <div className="container mx-auto px-4 py-6 pb-20 max-w-5xl">
       <nav className="text-xs text-muted-foreground mb-3">
@@ -137,21 +144,18 @@ function FootballTeamPage() {
         </div>
       </section>
 
-      <section className="mt-8">
-        <h2 className="text-xl font-semibold mb-3">Frequently asked about {team.name}</h2>
-        <div className="space-y-3">
-          {[
-            { q: `How many World Cup matches has ${team.name} played?`, a: `${team.name} has played ${stats.matchesPlayed} FIFA World Cup matches across ${stats.years.length} tournaments (${stats.w}W-${stats.d}D-${stats.l}L).` },
-            { q: `Who is ${team.name}'s all-time top World Cup scorer?`, a: stats.topScorers[0] ? `${stats.topScorers[0].name} leads with ${stats.topScorers[0].goals} goals.` : `Not on record.` },
-            { q: `How many World Cup goals has ${team.name} scored?`, a: `${stats.gf} goals scored, ${stats.ga} conceded.` },
-          ].map((f) => (
-            <details key={f.q} className="rounded-lg border px-4 py-3">
-              <summary className="font-medium cursor-pointer">{f.q}</summary>
-              <p className="mt-2 text-sm text-muted-foreground">{f.a}</p>
-            </details>
-          ))}
-        </div>
-      </section>
+      <FaqSection
+        title={`Frequently asked about ${team.name}`}
+        items={
+          aiFaqs && aiFaqs.length
+            ? aiFaqs
+            : [
+                { q: `How many World Cup matches has ${team.name} played?`, a: `${team.name} has played ${stats.matchesPlayed} FIFA World Cup matches across ${stats.years.length} tournaments (${stats.w}W-${stats.d}D-${stats.l}L).` },
+                { q: `Who is ${team.name}'s all-time top World Cup scorer?`, a: stats.topScorers[0] ? `${stats.topScorers[0].name} leads with ${stats.topScorers[0].goals} goals.` : `Not on record.` },
+                { q: `How many World Cup goals has ${team.name} scored?`, a: `${stats.gf} goals scored, ${stats.ga} conceded.` },
+              ]
+        }
+      />
 
       <section className="mt-8">
         <h2 className="text-xl font-semibold mb-3">Explore more teams</h2>

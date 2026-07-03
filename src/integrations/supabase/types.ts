@@ -74,6 +74,42 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_faqs: {
+        Row: {
+          entity_name: string | null
+          entity_slug: string
+          entity_type: string
+          faqs: Json
+          generated_at: string
+          id: string
+          model: string | null
+          prompt_version: number
+          updated_at: string
+        }
+        Insert: {
+          entity_name?: string | null
+          entity_slug: string
+          entity_type: string
+          faqs: Json
+          generated_at?: string
+          id?: string
+          model?: string | null
+          prompt_version?: number
+          updated_at?: string
+        }
+        Update: {
+          entity_name?: string | null
+          entity_slug?: string
+          entity_type?: string
+          faqs?: Json
+          generated_at?: string
+          id?: string
+          model?: string | null
+          prompt_version?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       contact_messages: {
         Row: {
           body: string

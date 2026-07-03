@@ -13,12 +13,15 @@ import {
   getCricketPlayerBySlug,
   listCricketPlayers,
 } from "@/lib/seo/cricket-entities";
+import { readCachedFaqs } from "@/lib/ai-faqs.server";
+import { FaqSection } from "@/components/seo/FaqSection";
 
 export const Route = createFileRoute("/cricket/players/$slug")({
-  loader: ({ params }) => {
+  loader: async ({ params }) => {
     const player = getCricketPlayerBySlug(params.slug);
     if (!player) throw notFound();
-    return { player };
+    const aiFaqs = await readCachedFaqs("cricket_player", params.slug);
+    return { player, aiFaqs };
   },
   head: ({ params, loaderData }) => {
     if (!loaderData) {
@@ -61,7 +64,7 @@ export const Route = createFileRoute("/cricket/players/$slug")({
             { name: p.name, path: `/cricket/players/${params.slug}` },
           ]),
         ),
-        ldScript(faqPage(p.faqs)),
+        ldScript(faqPage(loaderData.aiFaqs && loaderData.aiFaqs.length ? loaderData.aiFaqs : p.faqs)),
       ],
     };
   },
@@ -85,7 +88,7 @@ export const Route = createFileRoute("/cricket/players/$slug")({
 });
 
 function CricketPlayerProfile() {
-  const { player } = Route.useLoaderData() as { player: import("@/lib/seo/cricket-entities").CricketPlayerEntity };
+  const { player, aiFaqs } = Route.useLoaderData() as { player: import("@/lib/seo/cricket-entities").CricketPlayerEntity; aiFaqs: Array<{ q: string; a: string }> | null };
   const related = listCricketPlayers()
     .filter((p) => p.slug !== player.slug && (!player.country || p.country === player.country))
     .slice(0, 8);
@@ -147,17 +150,10 @@ function CricketPlayerProfile() {
           </div>
         </section>
 
-        <section className="mb-10">
-          <h2 className="text-lg font-semibold mb-3">Frequently asked</h2>
-          <div className="space-y-3">
-            {player.faqs.map((f) => (
-              <div key={f.q} className="rounded-lg border border-border bg-card/50 p-4">
-                <p className="font-medium">{f.q}</p>
-                <p className="text-sm text-muted-foreground mt-1">{f.a}</p>
-              </div>
-            ))}
-          </div>
-        </section>
+        <FaqSection
+          title="Frequently asked"
+          items={aiFaqs && aiFaqs.length ? aiFaqs : player.faqs}
+        />
 
         {related.length > 0 && (
           <section className="mb-10">
