@@ -13,7 +13,7 @@ export type MatchRecap = {
   meta_description: string;
 };
 
-const MODEL = "google/gemini-3-flash-preview";
+const MODEL = "openai/gpt-oss-120b:free";
 
 const MatchInput = z.object({
   sport: z.string().min(1).max(32),
@@ -30,8 +30,7 @@ const MatchInput = z.object({
 type MatchInputT = z.infer<typeof MatchInput>;
 
 async function callAi(input: MatchInputT): Promise<MatchRecap> {
-  const key = process.env.LOVABLE_API_KEY;
-  if (!key) throw new Error("Missing LOVABLE_API_KEY");
+  const { callOpenRouter, extractJson } = await import("./openrouter.server");
 
   const scoreLine =
     input.home_score != null && input.away_score != null
@@ -61,36 +60,10 @@ Date: ${input.match_date ?? "unknown"}
 Tournament: ${input.tournament ?? "unknown"}
 ${input.context ? `Extra context (only use if factual):\n${input.context}` : ""}
 
-Write the recap now.`;
+Write the recap now. Return JSON only.`;
 
-  const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-    method: "POST",
-    headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
-    body: JSON.stringify({
-      model: MODEL,
-      messages: [
-        { role: "system", content: system },
-        { role: "user", content: user },
-      ],
-      response_format: { type: "json_object" },
-    }),
-  });
-
-  if (!res.ok) {
-    const body = await res.text();
-    if (res.status === 429) throw new Error("AI rate limit hit — try again in a minute.");
-    if (res.status === 402) throw new Error("AI credits exhausted. Add credits in workspace billing.");
-    throw new Error(`AI gateway error ${res.status}: ${body.slice(0, 300)}`);
-  }
-
-  const json = (await res.json()) as { choices?: Array<{ message?: { content?: string } }> };
-  const raw = json.choices?.[0]?.message?.content ?? "{}";
-  let parsed: Record<string, unknown>;
-  try {
-    parsed = JSON.parse(raw) as Record<string, unknown>;
-  } catch {
-    throw new Error("AI returned invalid JSON");
-  }
+  const raw = await callOpenRouter({ system, user, jsonMode: true, model: MODEL, temperature: 0.7, maxTokens: 3000 });
+  const parsed = extractJson(raw) as Record<string, unknown>;
 
   const headline = String(parsed.headline ?? "").trim();
   const summary = String(parsed.summary ?? "").trim();
