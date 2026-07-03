@@ -45,9 +45,25 @@ Development** for each one.
 |---|---|---|
 | `RAPIDAPI_KEY` | Sports data fetchers (`src/lib/*.functions.ts`) | rapidapi.com dashboard |
 | `WEBHOOK_SECRET` | If you secure `/api/public/hooks/*` | any random 32+ char string |
+| `GOOGLE_SERVICE_ACCOUNT_JSON` | Admin SEO → GSC Sync Now on Vercel | Google Cloud service-account JSON |
 
 > ⚠️ `SUPABASE_SERVICE_ROLE_KEY` is **server-only**. Never prefix it with
 > `VITE_` and never log it. It bypasses Row Level Security.
+
+### Google Search Console sync on Vercel
+
+Lovable's internal Search Console connector only works inside Lovable preview.
+For Vercel production, use your own Google service account:
+
+1. Enable **Google Search Console API** in Google Cloud.
+2. Create a **Service Account** and download the JSON key.
+3. Copy the JSON file's `client_email`.
+4. In Google Search Console → property `https://www.playsports.online/` →
+   Users and permissions, add that `client_email` with **Full** permission.
+5. In Vercel, add `GOOGLE_SERVICE_ACCOUNT_JSON` and paste the **entire JSON**
+   file content as the value.
+6. Redeploy Vercel. Admin → SEO → **Sync now** will then use the service
+   account directly, without `GOOGLE_SEARCH_CONSOLE_API_KEY`.
 
 ## 4) Deploy
 

@@ -3,6 +3,117 @@ import { createClient } from "@supabase/supabase-js";
 
 const SITE = "https://www.playsports.online/";
 const GATEWAY = "https://connector-gateway.lovable.dev/google_search_console";
+const GSC_SCOPE = "https://www.googleapis.com/auth/webmasters.readonly";
+
+type ServiceAccount = {
+  client_email?: string;
+  private_key?: string;
+};
+
+function base64Url(input: string | ArrayBuffer): string {
+  const bytes = typeof input === "string" ? new TextEncoder().encode(input) : new Uint8Array(input);
+  let binary = "";
+  bytes.forEach((byte) => { binary += String.fromCharCode(byte); });
+  return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
+}
+
+function parseServiceAccountJson(): ServiceAccount | null {
+  const raw = process.env.GOOGLE_SERVICE_ACCOUNT_JSON?.trim();
+  if (!raw) return null;
+
+  const candidates = [raw];
+  try {
+    candidates.push(Buffer.from(raw, "base64").toString("utf8"));
+  } catch {}
+
+  for (const value of candidates) {
+    try {
+      const parsed = JSON.parse(value) as ServiceAccount;
+      if (parsed.client_email && parsed.private_key) {
+        return { ...parsed, private_key: parsed.private_key.replace(/\\n/g, "\n") };
+      }
+    } catch {}
+  }
+
+  throw new Error("GOOGLE_SERVICE_ACCOUNT_JSON is not valid service account JSON");
+}
+
+function pemToArrayBuffer(pem: string): ArrayBuffer {
+  const base64 = pem
+    .replace("-----BEGIN PRIVATE KEY-----", "")
+    .replace("-----END PRIVATE KEY-----", "")
+    .replace(/\s/g, "");
+  const binary = atob(base64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return bytes.buffer;
+}
+
+async function getServiceAccountAccessToken(account: ServiceAccount): Promise<string> {
+  if (!account.client_email || !account.private_key) {
+    throw new Error("Service account JSON must include client_email and private_key");
+  }
+
+  const now = Math.floor(Date.now() / 1000);
+  const header = { alg: "RS256", typ: "JWT" };
+  const claim = {
+    iss: account.client_email,
+    scope: GSC_SCOPE,
+    aud: "https://oauth2.googleapis.com/token",
+    iat: now,
+    exp: now + 3600,
+  };
+
+  const signingInput = `${base64Url(JSON.stringify(header))}.${base64Url(JSON.stringify(claim))}`;
+  const key = await crypto.subtle.importKey(
+    "pkcs8",
+    pemToArrayBuffer(account.private_key),
+    { name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" },
+    false,
+    ["sign"],
+  );
+  const signature = await crypto.subtle.sign("RSASSA-PKCS1-v1_5", key, new TextEncoder().encode(signingInput));
+  const assertion = `${signingInput}.${base64Url(signature)}`;
+
+  const res = await fetch("https://oauth2.googleapis.com/token", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({
+      grant_type: "urn:ietf:params:oauth:grant-type:jwt-bearer",
+      assertion,
+    }),
+  });
+  const json: any = await res.json().catch(() => ({}));
+  if (!res.ok || !json.access_token) {
+    throw new Error(`Google OAuth ${res.status}: ${JSON.stringify(json).slice(0, 400)}`);
+  }
+  return json.access_token;
+}
+
+async function fetchDimDirect(dimensions: string[], startDate: string, endDate: string, accessToken: string) {
+  const url = `https://www.googleapis.com/webmasters/v3/sites/${encodeURIComponent(SITE)}/searchAnalytics/query`;
+  const rows: any[] = [];
+  let startRow = 0;
+  const rowLimit = 5000;
+  while (true) {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ startDate, endDate, dimensions, rowLimit, startRow, dataState: "final" }),
+    });
+    if (!res.ok) throw new Error(`GSC direct ${dimensions.join(",")} ${res.status}: ${await res.text()}`);
+    const j: any = await res.json();
+    const batch = j?.rows ?? [];
+    rows.push(...batch);
+    if (batch.length < rowLimit) break;
+    startRow += rowLimit;
+    if (startRow > 25000) break;
+  }
+  return rows;
+}
 
 async function fetchDim(dimensions: string[], startDate: string, endDate: string) {
   const url = `${GATEWAY}/webmasters/v3/sites/${encodeURIComponent(SITE)}/searchAnalytics/query`;
@@ -28,6 +139,19 @@ async function fetchDim(dimensions: string[], startDate: string, endDate: string
     if (startRow > 25000) break;
   }
   return rows;
+}
+
+async function createGscFetcher() {
+  const serviceAccount = parseServiceAccountJson();
+  if (serviceAccount) {
+    const accessToken = await getServiceAccountAccessToken(serviceAccount);
+    return (dimensions: string[], startDate: string, endDate: string) => fetchDimDirect(dimensions, startDate, endDate, accessToken);
+  }
+
+  if (!process.env.LOVABLE_API_KEY || !process.env.GOOGLE_SEARCH_CONSOLE_API_KEY) {
+    throw new Error("Missing Google credentials. Add GOOGLE_SERVICE_ACCOUNT_JSON in Vercel, or run sync from Lovable preview.");
+  }
+  return fetchDim;
 }
 
 export const Route = createFileRoute("/api/public/hooks/gsc-sync")({
@@ -57,9 +181,10 @@ export const Route = createFileRoute("/api/public/hooks/gsc-sync")({
         const runId = run?.id;
 
         try {
+          const fetchGscDim = await createGscFetcher();
           // Two pulls: (date,page) and (date,page,query) for query-level insight
-          const pageRows = await fetchDim(["date", "page"], startDate, endDate);
-          const queryRows = await fetchDim(["date", "page", "query"], startDate, endDate);
+          const pageRows = await fetchGscDim(["date", "page"], startDate, endDate);
+          const queryRows = await fetchGscDim(["date", "page", "query"], startDate, endDate);
 
           const upserts: any[] = [];
           for (const r of pageRows) {
