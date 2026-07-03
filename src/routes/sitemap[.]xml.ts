@@ -25,6 +25,9 @@ import {
   nhlSeoTeamUrls,
   nhlSeoPlayerUrls,
   nhlSeoStanleyCupUrls,
+  mlsSeoTeamUrls,
+  mlsSeoPlayerUrls,
+  mlsSeoCupUrls,
   type DynamicUrl,
 } from "@/lib/seo/sitemap-sources";
 
@@ -200,6 +203,10 @@ export const Route = createFileRoute("/sitemap.xml")({
           ...nhlSeoTeamUrls(),
           ...nhlSeoPlayerUrls(),
           ...nhlSeoStanleyCupUrls(),
+          // Phase 2.1 canonical MLS landing pages
+          ...mlsSeoTeamUrls(),
+          ...mlsSeoPlayerUrls(),
+          ...mlsSeoCupUrls(),
           ...WC2026_STAGES.map((s) => ({
             path: `/tournaments/fifa-world-cup-2026/${s.slug}`,
             changefreq: "daily" as const,
