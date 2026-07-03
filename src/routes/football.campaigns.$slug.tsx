@@ -202,9 +202,27 @@ function CampaignPage() {
           → See the full {c.year} World Cup top scorers →
         </Link>
       </section>
+
+      <RelatedLinks
+        title={`Explore more about ${c.team} and the ${c.year} World Cup`}
+        links={[
+          { label: `${c.team} — team profile`, href: `/football/teams/${slugify(c.team)}`, hint: "history, squads, records" },
+          { label: `${c.year} FIFA World Cup top scorers`, href: `/football/top-scorers/${c.year}`, hint: "Golden Boot race" },
+          { label: `${c.year} FIFA World Cup match results`, href: `/archive/football_wc/${c.year}`, hint: "every fixture" },
+          { label: "All World Cup campaigns", href: "/football/campaigns", hint: "browse by team & year" },
+          ...(c.topScorers[0]
+            ? [{
+                label: `${c.topScorers[0].name} — player profile`,
+                href: `/football/players/${slugify(c.topScorers[0].name)}`,
+                hint: `top scorer for ${c.team} in ${c.year}`,
+              }]
+            : []),
+        ]}
+      />
     </div>
   );
 }
+
 
 function StatCard({ label, value }: { label: string; value: number }) {
   return (
