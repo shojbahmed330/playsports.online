@@ -42,11 +42,15 @@ export const Route = createFileRoute("/football/players/$slug")({
           ]),
         ),
         ldScript(
-          faqPage([
-            { q: `How many World Cup goals has ${player.name} scored?`, a: `${player.name} has scored ${stats.goalsTotal} World Cup goal${stats.goalsTotal === 1 ? "" : "s"}${stats.pen > 0 ? `, including ${stats.pen} from the penalty spot` : ""}.` },
-            { q: `Which country does ${player.name} play for?`, a: `${player.name} represents ${player.team}.` },
-            { q: `In which World Cups has ${player.name} played?`, a: stats.years.length ? `${player.name} appeared in ${stats.years.join(", ")}.` : `Not on record.` },
-          ]),
+          faqPage(
+            aiFaqs && aiFaqs.length
+              ? aiFaqs
+              : [
+                  { q: `How many World Cup goals has ${player.name} scored?`, a: `${player.name} has scored ${stats.goalsTotal} World Cup goal${stats.goalsTotal === 1 ? "" : "s"}${stats.pen > 0 ? `, including ${stats.pen} from the penalty spot` : ""}.` },
+                  { q: `Which country does ${player.name} play for?`, a: `${player.name} represents ${player.team}.` },
+                  { q: `In which World Cups has ${player.name} played?`, a: stats.years.length ? `${player.name} appeared in ${stats.years.join(", ")}.` : `Not on record.` },
+                ],
+          ),
         ),
       ],
     };
