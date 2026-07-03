@@ -90,7 +90,11 @@ import { Route as NbaGameIdRouteImport } from './routes/nba.game.$id'
 import { Route as MlsTeamIdRouteImport } from './routes/mls.team.$id'
 import { Route as MlsPlayerIdRouteImport } from './routes/mls.player.$id'
 import { Route as MlsGameIdRouteImport } from './routes/mls.game.$id'
+import { Route as MlbWorldSeriesYearRouteImport } from './routes/mlb.world-series.$year'
+import { Route as MlbTeamsSlugRouteImport } from './routes/mlb.teams.$slug'
 import { Route as MlbTeamIdRouteImport } from './routes/mlb.team.$id'
+import { Route as MlbRecordsCategoryRouteImport } from './routes/mlb.records.$category'
+import { Route as MlbPlayersSlugRouteImport } from './routes/mlb.players.$slug'
 import { Route as MlbPlayerIdRouteImport } from './routes/mlb.player.$id'
 import { Route as MlbGameIdRouteImport } from './routes/mlb.game.$id'
 import { Route as FootballTeamsSlugRouteImport } from './routes/football.teams.$slug'
@@ -523,10 +527,30 @@ const MlsGameIdRoute = MlsGameIdRouteImport.update({
   path: '/game/$id',
   getParentRoute: () => MlsRoute,
 } as any)
+const MlbWorldSeriesYearRoute = MlbWorldSeriesYearRouteImport.update({
+  id: '/world-series/$year',
+  path: '/world-series/$year',
+  getParentRoute: () => MlbRoute,
+} as any)
+const MlbTeamsSlugRoute = MlbTeamsSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => MlbTeamsRoute,
+} as any)
 const MlbTeamIdRoute = MlbTeamIdRouteImport.update({
   id: '/team/$id',
   path: '/team/$id',
   getParentRoute: () => MlbRoute,
+} as any)
+const MlbRecordsCategoryRoute = MlbRecordsCategoryRouteImport.update({
+  id: '/records/$category',
+  path: '/records/$category',
+  getParentRoute: () => MlbRoute,
+} as any)
+const MlbPlayersSlugRoute = MlbPlayersSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => MlbPlayersRoute,
 } as any)
 const MlbPlayerIdRoute = MlbPlayerIdRouteImport.update({
   id: '/player/$id',
@@ -682,11 +706,11 @@ export interface FileRoutesByFullPath {
   '/live/today': typeof LiveTodayRoute
   '/mlb/history': typeof MlbHistoryRoute
   '/mlb/news': typeof MlbNewsRoute
-  '/mlb/players': typeof MlbPlayersRoute
+  '/mlb/players': typeof MlbPlayersRouteWithChildren
   '/mlb/postseason': typeof MlbPostseasonRoute
   '/mlb/scores': typeof MlbScoresRoute
   '/mlb/standings': typeof MlbStandingsRoute
-  '/mlb/teams': typeof MlbTeamsRoute
+  '/mlb/teams': typeof MlbTeamsRouteWithChildren
   '/mls/history': typeof MlsHistoryRoute
   '/mls/leaders': typeof MlsLeadersRoute
   '/mls/news': typeof MlsNewsRoute
@@ -730,7 +754,11 @@ export interface FileRoutesByFullPath {
   '/football/teams/$slug': typeof FootballTeamsSlugRoute
   '/mlb/game/$id': typeof MlbGameIdRoute
   '/mlb/player/$id': typeof MlbPlayerIdRoute
+  '/mlb/players/$slug': typeof MlbPlayersSlugRoute
+  '/mlb/records/$category': typeof MlbRecordsCategoryRoute
   '/mlb/team/$id': typeof MlbTeamIdRoute
+  '/mlb/teams/$slug': typeof MlbTeamsSlugRoute
+  '/mlb/world-series/$year': typeof MlbWorldSeriesYearRoute
   '/mls/game/$id': typeof MlsGameIdRoute
   '/mls/player/$id': typeof MlsPlayerIdRoute
   '/mls/team/$id': typeof MlsTeamIdRoute
@@ -785,11 +813,11 @@ export interface FileRoutesByTo {
   '/live/today': typeof LiveTodayRoute
   '/mlb/history': typeof MlbHistoryRoute
   '/mlb/news': typeof MlbNewsRoute
-  '/mlb/players': typeof MlbPlayersRoute
+  '/mlb/players': typeof MlbPlayersRouteWithChildren
   '/mlb/postseason': typeof MlbPostseasonRoute
   '/mlb/scores': typeof MlbScoresRoute
   '/mlb/standings': typeof MlbStandingsRoute
-  '/mlb/teams': typeof MlbTeamsRoute
+  '/mlb/teams': typeof MlbTeamsRouteWithChildren
   '/mls/history': typeof MlsHistoryRoute
   '/mls/leaders': typeof MlsLeadersRoute
   '/mls/news': typeof MlsNewsRoute
@@ -833,7 +861,11 @@ export interface FileRoutesByTo {
   '/football/teams/$slug': typeof FootballTeamsSlugRoute
   '/mlb/game/$id': typeof MlbGameIdRoute
   '/mlb/player/$id': typeof MlbPlayerIdRoute
+  '/mlb/players/$slug': typeof MlbPlayersSlugRoute
+  '/mlb/records/$category': typeof MlbRecordsCategoryRoute
   '/mlb/team/$id': typeof MlbTeamIdRoute
+  '/mlb/teams/$slug': typeof MlbTeamsSlugRoute
+  '/mlb/world-series/$year': typeof MlbWorldSeriesYearRoute
   '/mls/game/$id': typeof MlsGameIdRoute
   '/mls/player/$id': typeof MlsPlayerIdRoute
   '/mls/team/$id': typeof MlsTeamIdRoute
@@ -894,11 +926,11 @@ export interface FileRoutesById {
   '/live/today': typeof LiveTodayRoute
   '/mlb/history': typeof MlbHistoryRoute
   '/mlb/news': typeof MlbNewsRoute
-  '/mlb/players': typeof MlbPlayersRoute
+  '/mlb/players': typeof MlbPlayersRouteWithChildren
   '/mlb/postseason': typeof MlbPostseasonRoute
   '/mlb/scores': typeof MlbScoresRoute
   '/mlb/standings': typeof MlbStandingsRoute
-  '/mlb/teams': typeof MlbTeamsRoute
+  '/mlb/teams': typeof MlbTeamsRouteWithChildren
   '/mls/history': typeof MlsHistoryRoute
   '/mls/leaders': typeof MlsLeadersRoute
   '/mls/news': typeof MlsNewsRoute
@@ -942,7 +974,11 @@ export interface FileRoutesById {
   '/football/teams/$slug': typeof FootballTeamsSlugRoute
   '/mlb/game/$id': typeof MlbGameIdRoute
   '/mlb/player/$id': typeof MlbPlayerIdRoute
+  '/mlb/players/$slug': typeof MlbPlayersSlugRoute
+  '/mlb/records/$category': typeof MlbRecordsCategoryRoute
   '/mlb/team/$id': typeof MlbTeamIdRoute
+  '/mlb/teams/$slug': typeof MlbTeamsSlugRoute
+  '/mlb/world-series/$year': typeof MlbWorldSeriesYearRoute
   '/mls/game/$id': typeof MlsGameIdRoute
   '/mls/player/$id': typeof MlsPlayerIdRoute
   '/mls/team/$id': typeof MlsTeamIdRoute
@@ -1052,7 +1088,11 @@ export interface FileRouteTypes {
     | '/football/teams/$slug'
     | '/mlb/game/$id'
     | '/mlb/player/$id'
+    | '/mlb/players/$slug'
+    | '/mlb/records/$category'
     | '/mlb/team/$id'
+    | '/mlb/teams/$slug'
+    | '/mlb/world-series/$year'
     | '/mls/game/$id'
     | '/mls/player/$id'
     | '/mls/team/$id'
@@ -1155,7 +1195,11 @@ export interface FileRouteTypes {
     | '/football/teams/$slug'
     | '/mlb/game/$id'
     | '/mlb/player/$id'
+    | '/mlb/players/$slug'
+    | '/mlb/records/$category'
     | '/mlb/team/$id'
+    | '/mlb/teams/$slug'
+    | '/mlb/world-series/$year'
     | '/mls/game/$id'
     | '/mls/player/$id'
     | '/mls/team/$id'
@@ -1263,7 +1307,11 @@ export interface FileRouteTypes {
     | '/football/teams/$slug'
     | '/mlb/game/$id'
     | '/mlb/player/$id'
+    | '/mlb/players/$slug'
+    | '/mlb/records/$category'
     | '/mlb/team/$id'
+    | '/mlb/teams/$slug'
+    | '/mlb/world-series/$year'
     | '/mls/game/$id'
     | '/mls/player/$id'
     | '/mls/team/$id'
@@ -1898,12 +1946,40 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MlsGameIdRouteImport
       parentRoute: typeof MlsRoute
     }
+    '/mlb/world-series/$year': {
+      id: '/mlb/world-series/$year'
+      path: '/world-series/$year'
+      fullPath: '/mlb/world-series/$year'
+      preLoaderRoute: typeof MlbWorldSeriesYearRouteImport
+      parentRoute: typeof MlbRoute
+    }
+    '/mlb/teams/$slug': {
+      id: '/mlb/teams/$slug'
+      path: '/$slug'
+      fullPath: '/mlb/teams/$slug'
+      preLoaderRoute: typeof MlbTeamsSlugRouteImport
+      parentRoute: typeof MlbTeamsRoute
+    }
     '/mlb/team/$id': {
       id: '/mlb/team/$id'
       path: '/team/$id'
       fullPath: '/mlb/team/$id'
       preLoaderRoute: typeof MlbTeamIdRouteImport
       parentRoute: typeof MlbRoute
+    }
+    '/mlb/records/$category': {
+      id: '/mlb/records/$category'
+      path: '/records/$category'
+      fullPath: '/mlb/records/$category'
+      preLoaderRoute: typeof MlbRecordsCategoryRouteImport
+      parentRoute: typeof MlbRoute
+    }
+    '/mlb/players/$slug': {
+      id: '/mlb/players/$slug'
+      path: '/$slug'
+      fullPath: '/mlb/players/$slug'
+      preLoaderRoute: typeof MlbPlayersSlugRouteImport
+      parentRoute: typeof MlbPlayersRoute
     }
     '/mlb/player/$id': {
       id: '/mlb/player/$id'
@@ -2166,32 +2242,60 @@ const FootballRouteWithChildren = FootballRoute._addFileChildren(
   FootballRouteChildren,
 )
 
+interface MlbPlayersRouteChildren {
+  MlbPlayersSlugRoute: typeof MlbPlayersSlugRoute
+}
+
+const MlbPlayersRouteChildren: MlbPlayersRouteChildren = {
+  MlbPlayersSlugRoute: MlbPlayersSlugRoute,
+}
+
+const MlbPlayersRouteWithChildren = MlbPlayersRoute._addFileChildren(
+  MlbPlayersRouteChildren,
+)
+
+interface MlbTeamsRouteChildren {
+  MlbTeamsSlugRoute: typeof MlbTeamsSlugRoute
+}
+
+const MlbTeamsRouteChildren: MlbTeamsRouteChildren = {
+  MlbTeamsSlugRoute: MlbTeamsSlugRoute,
+}
+
+const MlbTeamsRouteWithChildren = MlbTeamsRoute._addFileChildren(
+  MlbTeamsRouteChildren,
+)
+
 interface MlbRouteChildren {
   MlbHistoryRoute: typeof MlbHistoryRoute
   MlbNewsRoute: typeof MlbNewsRoute
-  MlbPlayersRoute: typeof MlbPlayersRoute
+  MlbPlayersRoute: typeof MlbPlayersRouteWithChildren
   MlbPostseasonRoute: typeof MlbPostseasonRoute
   MlbScoresRoute: typeof MlbScoresRoute
   MlbStandingsRoute: typeof MlbStandingsRoute
-  MlbTeamsRoute: typeof MlbTeamsRoute
+  MlbTeamsRoute: typeof MlbTeamsRouteWithChildren
   MlbIndexRoute: typeof MlbIndexRoute
   MlbGameIdRoute: typeof MlbGameIdRoute
   MlbPlayerIdRoute: typeof MlbPlayerIdRoute
+  MlbRecordsCategoryRoute: typeof MlbRecordsCategoryRoute
   MlbTeamIdRoute: typeof MlbTeamIdRoute
+  MlbWorldSeriesYearRoute: typeof MlbWorldSeriesYearRoute
 }
 
 const MlbRouteChildren: MlbRouteChildren = {
   MlbHistoryRoute: MlbHistoryRoute,
   MlbNewsRoute: MlbNewsRoute,
-  MlbPlayersRoute: MlbPlayersRoute,
+  MlbPlayersRoute: MlbPlayersRouteWithChildren,
   MlbPostseasonRoute: MlbPostseasonRoute,
   MlbScoresRoute: MlbScoresRoute,
   MlbStandingsRoute: MlbStandingsRoute,
-  MlbTeamsRoute: MlbTeamsRoute,
+  MlbTeamsRoute: MlbTeamsRouteWithChildren,
   MlbIndexRoute: MlbIndexRoute,
   MlbGameIdRoute: MlbGameIdRoute,
   MlbPlayerIdRoute: MlbPlayerIdRoute,
+  MlbRecordsCategoryRoute: MlbRecordsCategoryRoute,
   MlbTeamIdRoute: MlbTeamIdRoute,
+  MlbWorldSeriesYearRoute: MlbWorldSeriesYearRoute,
 }
 
 const MlbRouteWithChildren = MlbRoute._addFileChildren(MlbRouteChildren)

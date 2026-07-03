@@ -18,6 +18,10 @@ import {
   cricketSeoTournamentUrls,
   cricketSeoRecordUrls,
   cricketSeoHighlightUrls,
+  mlbSeoTeamUrls,
+  mlbSeoPlayerUrls,
+  mlbSeoWorldSeriesUrls,
+  mlbSeoRecordUrls,
   type DynamicUrl,
 } from "@/lib/seo/sitemap-sources";
 
@@ -184,6 +188,11 @@ export const Route = createFileRoute("/sitemap.xml")({
           ...cricketSeoRecordUrls(),
           ...cricketSeoHighlightUrls(),
           { path: "/cricket/highlights", changefreq: "weekly", priority: "0.75" },
+          // Phase 2.1 canonical MLB landing pages
+          ...mlbSeoTeamUrls(),
+          ...mlbSeoPlayerUrls(),
+          ...mlbSeoWorldSeriesUrls(),
+          ...mlbSeoRecordUrls(),
           ...WC2026_STAGES.map((s) => ({
             path: `/tournaments/fifa-world-cup-2026/${s.slug}`,
             changefreq: "daily" as const,
