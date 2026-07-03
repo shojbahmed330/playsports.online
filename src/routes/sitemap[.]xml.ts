@@ -152,6 +152,16 @@ function dedupe(entries: SitemapEntry[]): SitemapEntry[] {
 export const Route = createFileRoute("/sitemap.xml")({
   server: {
     handlers: {
+      HEAD: async () => {
+        return new Response(null, {
+          status: 200,
+          headers: {
+            "Content-Type": "application/xml; charset=utf-8",
+            "Cache-Control": "public, max-age=3600, s-maxage=3600, stale-while-revalidate=21600",
+            "X-Robots-Tag": "noindex",
+          },
+        });
+      },
       GET: async () => {
         const today = new Date().toISOString().slice(0, 10);
 
