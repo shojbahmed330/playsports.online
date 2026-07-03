@@ -224,4 +224,36 @@ export function mlbSeoRecordUrls(): DynamicUrl[] {
   }));
 }
 
+// Phase 2.1 (nhl) — SSR SEO landing pages.
+export function nhlSeoTeamUrls(): DynamicUrl[] {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { listNhlTeams } = require("@/lib/seo/nhl-entities") as typeof import("@/lib/seo/nhl-entities");
+  return listNhlTeams().map((t) => ({
+    path: `/nhl/teams/${t.slug}`,
+    changefreq: "weekly" as const,
+    priority: "0.8",
+  }));
+}
+
+export function nhlSeoPlayerUrls(): DynamicUrl[] {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { listNhlPlayers } = require("@/lib/seo/nhl-entities") as typeof import("@/lib/seo/nhl-entities");
+  return listNhlPlayers().map((p) => ({
+    path: `/nhl/players/${p.slug}`,
+    changefreq: "monthly" as const,
+    priority: "0.65",
+  }));
+}
+
+export function nhlSeoStanleyCupUrls(): DynamicUrl[] {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { listStanleyCupYears } = require("@/lib/seo/nhl-entities") as typeof import("@/lib/seo/nhl-entities");
+  return listStanleyCupYears().map((year) => ({
+    path: `/nhl/stanley-cup/${year}`,
+    changefreq: "yearly" as const,
+    priority: "0.75",
+  }));
+}
+
+
 
