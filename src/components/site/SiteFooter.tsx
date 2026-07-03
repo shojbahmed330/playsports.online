@@ -5,6 +5,7 @@ import { Loader2, Check } from "lucide-react";
 import { toast } from "sonner";
 import { useIdentitySettings, useNewsletterSettings } from "@/lib/site-settings";
 import { subscribeNewsletter } from "@/lib/subscribe.functions";
+import { FooterInternalLinks } from "@/components/seo/FooterInternalLinks";
 
 const SPORTS = [
   { to: "/football", label: "Football", search: undefined as Record<string, unknown> | undefined },
