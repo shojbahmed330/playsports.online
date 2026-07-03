@@ -4,6 +4,8 @@ import { canonical } from "@/lib/seo/canonical";
 import { breadcrumbList, faqPage, ldScript } from "@/lib/seo/jsonld";
 import { getNbaTeamHistory, type ChampionRow } from "@/lib/seo/multisport-programmatic";
 import { getNbaTeamBySlug } from "@/lib/seo/nba-entities";
+import { RelatedLinks } from "@/components/seo/RelatedLinks";
+import { relatedForLeagueTeam } from "@/lib/seo/related";
 
 export const Route = createFileRoute("/nba/team-history/$slug")({
   loader: ({ params }) => {
@@ -102,6 +104,7 @@ function NbaTeamHistoryPage() {
         </section>
       )}
       <div className="text-sm"><Link to="/nba/champions" className="text-primary font-semibold hover:underline">← All NBA champions</Link></div>
+      <RelatedLinks title="Explore more NBA history" links={relatedForLeagueTeam("nba", h.slug)} />
     </div>
   );
 }

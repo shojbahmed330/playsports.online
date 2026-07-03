@@ -4,6 +4,8 @@ import { canonical } from "@/lib/seo/canonical";
 import { breadcrumbList, faqPage, ldScript } from "@/lib/seo/jsonld";
 import { getCricketTeamHistory, type ChampionRow } from "@/lib/seo/multisport-programmatic";
 import { getCricketTeamBySlug } from "@/lib/seo/cricket-entities";
+import { RelatedLinks } from "@/components/seo/RelatedLinks";
+import { relatedForCricketTeam } from "@/lib/seo/related";
 
 export const Route = createFileRoute("/cricket/team-history/$slug")({
   loader: ({ params }) => {
