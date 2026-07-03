@@ -89,6 +89,7 @@ import { Route as NhlPlayerIdRouteImport } from './routes/nhl.player.$id'
 import { Route as NhlGameIdRouteImport } from './routes/nhl.game.$id'
 import { Route as NbaTeamsSlugRouteImport } from './routes/nba.teams.$slug'
 import { Route as NbaTeamIdRouteImport } from './routes/nba.team.$id'
+import { Route as NbaPlayersSlugRouteImport } from './routes/nba.players.$slug'
 import { Route as NbaPlayerIdRouteImport } from './routes/nba.player.$id'
 import { Route as NbaGameIdRouteImport } from './routes/nba.game.$id'
 import { Route as MlsTeamsSlugRouteImport } from './routes/mls.teams.$slug'
@@ -529,6 +530,11 @@ const NbaTeamIdRoute = NbaTeamIdRouteImport.update({
   path: '/team/$id',
   getParentRoute: () => NbaRoute,
 } as any)
+const NbaPlayersSlugRoute = NbaPlayersSlugRouteImport.update({
+  id: '/players/$slug',
+  path: '/players/$slug',
+  getParentRoute: () => NbaRoute,
+} as any)
 const NbaPlayerIdRoute = NbaPlayerIdRouteImport.update({
   id: '/player/$id',
   path: '/player/$id',
@@ -809,6 +815,7 @@ export interface FileRoutesByFullPath {
   '/mls/teams/$slug': typeof MlsTeamsSlugRoute
   '/nba/game/$id': typeof NbaGameIdRoute
   '/nba/player/$id': typeof NbaPlayerIdRoute
+  '/nba/players/$slug': typeof NbaPlayersSlugRoute
   '/nba/team/$id': typeof NbaTeamIdRoute
   '/nba/teams/$slug': typeof NbaTeamsSlugRoute
   '/nhl/game/$id': typeof NhlGameIdRoute
@@ -923,6 +930,7 @@ export interface FileRoutesByTo {
   '/mls/teams/$slug': typeof MlsTeamsSlugRoute
   '/nba/game/$id': typeof NbaGameIdRoute
   '/nba/player/$id': typeof NbaPlayerIdRoute
+  '/nba/players/$slug': typeof NbaPlayersSlugRoute
   '/nba/team/$id': typeof NbaTeamIdRoute
   '/nba/teams/$slug': typeof NbaTeamsSlugRoute
   '/nhl/game/$id': typeof NhlGameIdRoute
@@ -1043,6 +1051,7 @@ export interface FileRoutesById {
   '/mls/teams/$slug': typeof MlsTeamsSlugRoute
   '/nba/game/$id': typeof NbaGameIdRoute
   '/nba/player/$id': typeof NbaPlayerIdRoute
+  '/nba/players/$slug': typeof NbaPlayersSlugRoute
   '/nba/team/$id': typeof NbaTeamIdRoute
   '/nba/teams/$slug': typeof NbaTeamsSlugRoute
   '/nhl/game/$id': typeof NhlGameIdRoute
@@ -1164,6 +1173,7 @@ export interface FileRouteTypes {
     | '/mls/teams/$slug'
     | '/nba/game/$id'
     | '/nba/player/$id'
+    | '/nba/players/$slug'
     | '/nba/team/$id'
     | '/nba/teams/$slug'
     | '/nhl/game/$id'
@@ -1278,6 +1288,7 @@ export interface FileRouteTypes {
     | '/mls/teams/$slug'
     | '/nba/game/$id'
     | '/nba/player/$id'
+    | '/nba/players/$slug'
     | '/nba/team/$id'
     | '/nba/teams/$slug'
     | '/nhl/game/$id'
@@ -1397,6 +1408,7 @@ export interface FileRouteTypes {
     | '/mls/teams/$slug'
     | '/nba/game/$id'
     | '/nba/player/$id'
+    | '/nba/players/$slug'
     | '/nba/team/$id'
     | '/nba/teams/$slug'
     | '/nhl/game/$id'
@@ -2023,6 +2035,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NbaTeamIdRouteImport
       parentRoute: typeof NbaRoute
     }
+    '/nba/players/$slug': {
+      id: '/nba/players/$slug'
+      path: '/players/$slug'
+      fullPath: '/nba/players/$slug'
+      preLoaderRoute: typeof NbaPlayersSlugRouteImport
+      parentRoute: typeof NbaRoute
+    }
     '/nba/player/$id': {
       id: '/nba/player/$id'
       path: '/player/$id'
@@ -2499,6 +2518,7 @@ interface NbaRouteChildren {
   NbaIndexRoute: typeof NbaIndexRoute
   NbaGameIdRoute: typeof NbaGameIdRoute
   NbaPlayerIdRoute: typeof NbaPlayerIdRoute
+  NbaPlayersSlugRoute: typeof NbaPlayersSlugRoute
   NbaTeamIdRoute: typeof NbaTeamIdRoute
 }
 
@@ -2512,6 +2532,7 @@ const NbaRouteChildren: NbaRouteChildren = {
   NbaIndexRoute: NbaIndexRoute,
   NbaGameIdRoute: NbaGameIdRoute,
   NbaPlayerIdRoute: NbaPlayerIdRoute,
+  NbaPlayersSlugRoute: NbaPlayersSlugRoute,
   NbaTeamIdRoute: NbaTeamIdRoute,
 }
 
