@@ -13,12 +13,11 @@ const EntityInput = z.object({
   force: z.boolean().optional(),
 });
 
-const PROMPT_VERSION = 1;
-const MODEL = "google/gemini-3-flash-preview";
+const PROMPT_VERSION = 2;
+const MODEL = "openai/gpt-oss-120b:free";
 
 async function callLovableAi(entityName: string, sport: string, context: string): Promise<FaqItem[]> {
-  const key = process.env.LOVABLE_API_KEY;
-  if (!key) throw new Error("Missing LOVABLE_API_KEY");
+  const { callOpenRouter, extractJson } = await import("./openrouter.server");
 
   const system = `You are an SEO expert writing FAQ sections for a sports website called PlaySports.
 Generate exactly 6 unique, natural-language, high-search-intent FAQ items about the given entity.
@@ -28,40 +27,17 @@ Rules:
 - Do NOT fabricate specific numeric records or years you are unsure of.
 - Focus on evergreen knowledge (history, achievements, style, notable facts).
 - Vary question types: history, records, "who is", "how many", comparison, cultural.
-- Return ONLY strict JSON: {"faqs":[{"q":"...","a":"..."}]}`;
+- Return ONLY strict JSON: {"faqs":[{"q":"...","a":"..."}]}
+- Do NOT wrap the JSON in Markdown code fences.`;
 
   const user = `Entity: ${entityName}
 Sport: ${sport}
 ${context ? `Known context (use only what's true):\n${context}` : ""}
 
-Generate 6 FAQ items now.`;
+Generate 6 FAQ items now. Return JSON only.`;
 
-  const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${key}`,
-    },
-    body: JSON.stringify({
-      model: MODEL,
-      messages: [
-        { role: "system", content: system },
-        { role: "user", content: user },
-      ],
-      response_format: { type: "json_object" },
-    }),
-  });
-
-  if (!res.ok) {
-    const body = await res.text();
-    if (res.status === 429) throw new Error("AI rate limit hit — try again in a minute.");
-    if (res.status === 402) throw new Error("AI credits exhausted. Add credits in workspace billing.");
-    throw new Error(`AI gateway error ${res.status}: ${body.slice(0, 300)}`);
-  }
-
-  const json = (await res.json()) as { choices?: Array<{ message?: { content?: string } }> };
-  const raw = json.choices?.[0]?.message?.content ?? "{}";
-  const parsed = JSON.parse(raw) as { faqs?: unknown };
+  const raw = await callOpenRouter({ system, user, jsonMode: true, model: MODEL, temperature: 0.6 });
+  const parsed = extractJson(raw) as { faqs?: unknown };
   if (!Array.isArray(parsed.faqs)) throw new Error("AI returned invalid FAQ shape");
 
   const faqs: FaqItem[] = [];
@@ -188,7 +164,7 @@ export const generateAiFaqsBatch = createServerFn({ method: "POST" })
         if (error) throw new Error(error.message);
         generated++;
         // gentle pacing
-        await new Promise((r) => setTimeout(r, 600));
+        await new Promise((r) => setTimeout(r, 3500));
       } catch (e) {
         errors.push({ slug: item.entity_slug, error: e instanceof Error ? e.message : String(e) });
       }
