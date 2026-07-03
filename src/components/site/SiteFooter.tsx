@@ -5,6 +5,7 @@ import { Loader2, Check } from "lucide-react";
 import { toast } from "sonner";
 import { useIdentitySettings, useNewsletterSettings } from "@/lib/site-settings";
 import { subscribeNewsletter } from "@/lib/subscribe.functions";
+import { FooterInternalLinks } from "@/components/seo/FooterInternalLinks";
 
 const SPORTS = [
   { to: "/football", label: "Football", search: undefined as Record<string, unknown> | undefined },
@@ -32,7 +33,9 @@ export function SiteFooter() {
 
   return (
     <footer className="mt-16 px-4 pb-20 sm:pb-8">
+      <FooterInternalLinks />
       <div className="mx-auto w-full max-w-7xl bg-card/40 text-muted-foreground rounded-2xl overflow-hidden border border-border shadow-2xl">
+
         {/* Affiliate strip */}
         <div className="bg-background/40 border-b border-border px-6 py-3">
           <p className="text-xs text-center lg:text-left leading-relaxed">

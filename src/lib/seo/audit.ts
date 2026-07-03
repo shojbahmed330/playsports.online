@@ -1,0 +1,208 @@
+/**
+ * Phase 2.3 — Internal-link audit primitives.
+ *
+ * Pure, dependency-free scanners that:
+ *   1) Walk every KEYWORD_TARGETS entry + entity registry across all
+ *      sports and build the expected route list.
+ *   2) Compare against a set of route patterns generated from
+ *      src/routes/. If a link points to a pattern that doesn't exist,
+ *      it's a broken internal link.
+ *   3) Count inbound links per entity page so we can flag orphans.
+ *
+ * Runtime-safe: reads only from the same JSON registries the SEO layer
+ * already uses; no filesystem calls. Callers (admin panel, CI script)
+ * pass in the list of route patterns they want to validate against.
+ */
+
+import { listMatchSlugs, listHighlights, WC2026_STAGES } from "./entities";
+import { listMlbTeams, listWorldSeries, listMlbPlayers } from "./mlb-entities";
+import { listNbaTeams, listNbaFinals, listNbaPlayers } from "./nba-entities";
+import { listNhlTeams, listStanleyCups, listNhlPlayers } from "./nhl-entities";
+import { listMlsTeams, listMlsCups, listMlsPlayers } from "./mls-entities";
+import {
+  listCricketTeams,
+  listCricketPlayers,
+  listCricketTournaments,
+} from "./cricket-entities";
+import { KEYWORD_TARGETS } from "./keyword-map";
+
+export type AuditLink = { from: string; to: string };
+export type BrokenLink = AuditLink & { reason: string };
+export type OrphanPage = { path: string; inbound: number };
+export type DepthWarning = { path: string; depth: number };
+
+/**
+ * Every canonical path we expect to exist on the site. Used both to
+ * validate outbound links and as the universe when counting inbound
+ * links per page.
+ */
+export function collectAllInternalPaths(): string[] {
+  const out = new Set<string>();
+
+  // Top-level hubs + static evergreen
+  const hubs = [
+    "/", "/football", "/cricket", "/mlb", "/nba", "/nhl", "/mls",
+    "/live/today", "/players", "/highlights",
+    "/football/top-scorers", "/football/top-scorers/all-time",
+    "/football/campaigns",
+    "/cricket/ipl", "/cricket/teams", "/cricket/players", "/cricket/tournaments",
+    "/cricket/records", "/cricket/rankings", "/cricket/history",
+    "/mlb/champions", "/mlb/standings", "/mlb/scores", "/mlb/players", "/mlb/teams",
+    "/nba/champions", "/nba/standings", "/nba/scores", "/nba/leaders", "/nba/teams",
+    "/nhl/champions", "/nhl/standings", "/nhl/scores", "/nhl/leaders", "/nhl/teams",
+    "/mls/champions", "/mls/standings", "/mls/scores", "/mls/leaders", "/mls/teams",
+  ];
+  for (const h of hubs) out.add(h);
+
+  // Keyword pages (Phase 2.2)
+  for (const k of KEYWORD_TARGETS ?? []) {
+    if (k && typeof k === "object" && "slug" in k && typeof k.slug === "string") {
+      out.add(`/guides/${k.slug}`);
+    }
+  }
+
+  // Football matches + highlights
+  for (const m of listMatchSlugs()) out.add(`/football/matches/${m.slug}`);
+  for (const h of listHighlights()) out.add(`/highlights/${h.slug}`);
+  for (const s of WC2026_STAGES) out.add(`/tournaments/fifa-world-cup-2026/${s.slug}`);
+
+  // League teams + championships + players
+  for (const t of listMlbTeams()) {
+    out.add(`/mlb/teams/${t.slug}`);
+    out.add(`/mlb/team-history/${t.slug}`);
+  }
+  for (const e of listWorldSeries()) out.add(`/mlb/world-series/${e.year}`);
+  for (const p of listMlbPlayers()) out.add(`/mlb/players/${p.slug}`);
+
+  for (const t of listNbaTeams()) {
+    out.add(`/nba/teams/${t.slug}`);
+    out.add(`/nba/team-history/${t.slug}`);
+  }
+  for (const e of listNbaFinals()) out.add(`/nba/finals/${e.year}`);
+  for (const p of listNbaPlayers()) out.add(`/nba/players/${p.slug}`);
+
+  for (const t of listNhlTeams()) {
+    out.add(`/nhl/teams/${t.slug}`);
+    out.add(`/nhl/team-history/${t.slug}`);
+  }
+  for (const e of listStanleyCups()) out.add(`/nhl/stanley-cup/${e.year}`);
+  for (const p of listNhlPlayers()) out.add(`/nhl/players/${p.slug}`);
+
+  for (const t of listMlsTeams()) {
+    out.add(`/mls/teams/${t.slug}`);
+    out.add(`/mls/team-history/${t.slug}`);
+  }
+  for (const e of listMlsCups()) out.add(`/mls/cup/${e.year}`);
+  for (const p of listMlsPlayers()) out.add(`/mls/players/${p.slug}`);
+
+  // Cricket
+  for (const t of listCricketTeams()) {
+    out.add(`/cricket/teams/${t.slug}`);
+    out.add(`/cricket/team-history/${t.slug}`);
+  }
+  for (const p of listCricketPlayers()) out.add(`/cricket/players/${p.slug}`);
+  for (const t of listCricketTournaments()) out.add(`/cricket/tournaments/${t.slug}`);
+
+  return [...out];
+}
+
+/**
+ * Validate `links` against the set of paths that actually exist.
+ * `existing` may be either the exact expected set from
+ * `collectAllInternalPaths()` or a broader superset from a route walker.
+ */
+export function findBrokenLinks(links: AuditLink[], existing: Iterable<string>): BrokenLink[] {
+  const set = new Set(existing);
+  const broken: BrokenLink[] = [];
+  for (const l of links) {
+    if (!l.to || l.to.startsWith("http") || l.to.startsWith("mailto:") || l.to.startsWith("#")) continue;
+    const normalized = l.to.split(/[?#]/)[0].replace(/\/$/, "") || "/";
+    if (!set.has(normalized)) {
+      broken.push({ ...l, reason: "target path not in registry" });
+    }
+  }
+  return broken;
+}
+
+/**
+ * Given a link graph, return every path with < `min` inbound links.
+ * The homepage and sitemap.xml are excluded because they always sit at
+ * the top of the crawl.
+ */
+export function findOrphanPages(
+  allPaths: string[],
+  links: AuditLink[],
+  min = 3,
+): OrphanPage[] {
+  const inbound = new Map<string, number>();
+  for (const p of allPaths) inbound.set(p, 0);
+  for (const l of links) {
+    const key = (l.to.split(/[?#]/)[0].replace(/\/$/, "") || "/");
+    if (inbound.has(key)) inbound.set(key, (inbound.get(key) ?? 0) + 1);
+  }
+  const out: OrphanPage[] = [];
+  for (const [path, count] of inbound) {
+    if (path === "/" || path === "/sitemap.xml") continue;
+    if (count < min) out.push({ path, inbound: count });
+  }
+  return out.sort((a, b) => a.inbound - b.inbound);
+}
+
+/**
+ * BFS from `roots` through the link graph. Any path with depth > `max`
+ * is flagged; unreachable pages are returned with depth = -1.
+ */
+export function findDeepPages(
+  allPaths: string[],
+  links: AuditLink[],
+  roots: string[] = ["/"],
+  max = 3,
+): DepthWarning[] {
+  const graph = new Map<string, Set<string>>();
+  for (const l of links) {
+    const from = l.from.replace(/\/$/, "") || "/";
+    const to = (l.to.split(/[?#]/)[0].replace(/\/$/, "") || "/");
+    if (!graph.has(from)) graph.set(from, new Set());
+    graph.get(from)!.add(to);
+  }
+  const depth = new Map<string, number>();
+  const queue: string[] = [];
+  for (const r of roots) {
+    depth.set(r, 0);
+    queue.push(r);
+  }
+  while (queue.length) {
+    const cur = queue.shift()!;
+    const d = depth.get(cur)!;
+    const outs = graph.get(cur);
+    if (!outs) continue;
+    for (const nxt of outs) {
+      if (!depth.has(nxt)) {
+        depth.set(nxt, d + 1);
+        queue.push(nxt);
+      }
+    }
+  }
+  const out: DepthWarning[] = [];
+  for (const p of allPaths) {
+    const d = depth.get(p);
+    if (d === undefined) out.push({ path: p, depth: -1 });
+    else if (d > max) out.push({ path: p, depth: d });
+  }
+  return out.sort((a, b) => (b.depth === -1 ? 1 : a.depth === -1 ? -1 : b.depth - a.depth));
+}
+
+/** Convenience summary the admin panel renders. */
+export function auditSummary(links: AuditLink[]) {
+  const all = collectAllInternalPaths();
+  const broken = findBrokenLinks(links, all);
+  const orphans = findOrphanPages(all, links, 3);
+  const deep = findDeepPages(all, links, ["/"], 3);
+  return {
+    totalPaths: all.length,
+    totalLinks: links.length,
+    broken,
+    orphans,
+    deep,
+  };
+}

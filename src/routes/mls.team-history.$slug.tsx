@@ -4,6 +4,8 @@ import { canonical } from "@/lib/seo/canonical";
 import { breadcrumbList, faqPage, ldScript } from "@/lib/seo/jsonld";
 import { getMlsTeamHistory, type ChampionRow } from "@/lib/seo/multisport-programmatic";
 import { getMlsTeamBySlug } from "@/lib/seo/mls-entities";
+import { RelatedLinks } from "@/components/seo/RelatedLinks";
+import { relatedForLeagueTeam } from "@/lib/seo/related";
 
 export const Route = createFileRoute("/mls/team-history/$slug")({
   loader: ({ params }) => {
@@ -102,6 +104,7 @@ function MlsTeamHistoryPage() {
         </section>
       )}
       <div className="text-sm"><Link to="/mls/champions" className="text-primary font-semibold hover:underline">← All MLS Cup champions</Link></div>
+      <RelatedLinks title="Explore more MLS history" links={relatedForLeagueTeam("mls", h.slug)} />
     </div>
   );
 }

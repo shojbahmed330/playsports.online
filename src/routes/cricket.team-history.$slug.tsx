@@ -4,6 +4,8 @@ import { canonical } from "@/lib/seo/canonical";
 import { breadcrumbList, faqPage, ldScript } from "@/lib/seo/jsonld";
 import { getCricketTeamHistory, type ChampionRow } from "@/lib/seo/multisport-programmatic";
 import { getCricketTeamBySlug } from "@/lib/seo/cricket-entities";
+import { RelatedLinks } from "@/components/seo/RelatedLinks";
+import { relatedForCricketTeam } from "@/lib/seo/related";
 
 export const Route = createFileRoute("/cricket/team-history/$slug")({
   loader: ({ params }) => {
@@ -99,6 +101,7 @@ function CricketTeamHistoryPage() {
         </section>
       )}
       <div className="text-sm"><Link to="/cricket/history" className="text-primary font-semibold hover:underline">← Cricket history</Link></div>
+      <RelatedLinks title="Explore more cricket teams" links={relatedForCricketTeam(h.slug)} />
     </div>
   );
 }
