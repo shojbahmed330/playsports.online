@@ -17,7 +17,7 @@ export const Route = createFileRoute("/football/players/$slug")({
     if (!loaderData) {
       return { meta: [{ title: "Player not found" }, { name: "robots", content: "noindex" }] };
     }
-    const { player, stats } = loaderData;
+    const { player, stats, aiFaqs } = loaderData;
     const path = `/football/players/${params.slug}`;
     const title = `${player.name} (${player.team}) — World Cup Goals & Career Stats | PlaySports`;
     const desc = `${player.name} World Cup record: ${stats.goalsTotal} goals over ${stats.years.length} tournaments for ${player.team}. Goal-by-goal breakdown, penalty record, career timeline.`;
