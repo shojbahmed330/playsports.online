@@ -99,7 +99,7 @@ function CampaignPage() {
       <section className="mb-8">
         <h2 className="mb-3 text-lg font-semibold">Match results</h2>
         <div className="divide-y divide-border rounded-2xl border border-border bg-card/40">
-          {c.matches.map((m, i) => {
+          {c.matches.map((m: CampaignSummary["matches"][number], i: number) => {
             const isHome = m.home_team === c.team;
             const my = isHome ? m.home_score : m.away_score;
             const op = isHome ? m.away_score : m.home_score;
@@ -143,7 +143,7 @@ function CampaignPage() {
         <section className="mb-8">
           <h2 className="mb-3 text-lg font-semibold">Top scorers for {c.team} in {c.year}</h2>
           <ul className="divide-y divide-border rounded-2xl border border-border bg-card/40">
-            {c.topScorers.map((s) => (
+            {c.topScorers.map((s: CampaignSummary["topScorers"][number]) => (
               <li key={s.name} className="flex items-center justify-between px-4 py-3 text-sm">
                 <Link
                   to="/football/players/$slug"
