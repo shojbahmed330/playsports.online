@@ -92,7 +92,7 @@ export const Route = createFileRoute("/cricket/teams/$slug")({
 });
 
 function CricketTeamProfile() {
-  const { team } = Route.useLoaderData() as { team: import("@/lib/seo/cricket-entities").CricketTeamEntity };
+  const { team, aiFaqs } = Route.useLoaderData() as { team: import("@/lib/seo/cricket-entities").CricketTeamEntity; aiFaqs: Array<{ q: string; a: string }> | null };
   const related = listCricketTeams()
     .filter((t) => t.slug !== team.slug && t.isFranchise === team.isFranchise)
     .slice(0, 8);
