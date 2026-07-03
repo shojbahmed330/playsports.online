@@ -2,6 +2,13 @@ import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 import { listTeams, listPlayers, listH2H, listArchives } from "@/lib/seo/programmatic";
 import { programmaticCampaignUrls, programmaticTopScorerUrls } from "@/lib/seo/programmatic-pages";
+import {
+  mlbProgrammaticUrls,
+  nbaProgrammaticUrls,
+  nhlProgrammaticUrls,
+  mlsProgrammaticUrls,
+  cricketProgrammaticUrls,
+} from "@/lib/seo/multisport-programmatic";
 import { listMatchSlugs, listHighlights, WC2026_STAGES } from "@/lib/seo/entities";
 import { listLeaderboardUrls } from "@/lib/seo/leaderboards";
 import { listGuides } from "@/content/guides";
