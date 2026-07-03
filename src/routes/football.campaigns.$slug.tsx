@@ -96,9 +96,10 @@ function CampaignPage() {
       <h1 className="mb-2 text-2xl font-bold md:text-3xl">
         {c.team} at the {c.year} FIFA World Cup
       </h1>
-      <p className="mb-6 text-muted-foreground">
+      <p className="mb-6 text-muted-foreground" data-speakable>
         {c.finalPosition ? `Finished as ${c.finalPosition}. ` : ""}Record {c.wins}W–{c.draws}D–{c.losses}L across {c.matches.length} matches ({c.goalsFor} for, {c.goalsAgainst} against).
       </p>
+
 
       <div className="mb-6 grid grid-cols-3 gap-3">
         <StatCard label="Wins" value={c.wins} />
