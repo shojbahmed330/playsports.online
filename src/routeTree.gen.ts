@@ -128,6 +128,7 @@ import { Route as CricketIplTeamsIndexRouteImport } from './routes/cricket.ipl.t
 import { Route as FootballPlayersSlugStatRouteImport } from './routes/football.players.$slug.$stat'
 import { Route as CricketIplTeamsTeamIdRouteImport } from './routes/cricket.ipl.teams.$teamId'
 import { Route as ApiPublicHooksWeeklyDigestRouteImport } from './routes/api/public/hooks/weekly-digest'
+import { Route as ApiPublicHooksGscSyncRouteImport } from './routes/api/public/hooks/gsc-sync'
 
 const UnsubscribeRoute = UnsubscribeRouteImport.update({
   id: '/unsubscribe',
@@ -727,6 +728,11 @@ const ApiPublicHooksWeeklyDigestRoute =
     path: '/api/public/hooks/weekly-digest',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicHooksGscSyncRoute = ApiPublicHooksGscSyncRouteImport.update({
+  id: '/api/public/hooks/gsc-sync',
+  path: '/api/public/hooks/gsc-sync',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -844,6 +850,7 @@ export interface FileRoutesByFullPath {
   '/cricket/series/': typeof CricketSeriesIndexRoute
   '/cricket/teams/': typeof CricketTeamsIndexRoute
   '/cricket/tournaments/': typeof CricketTournamentsIndexRoute
+  '/api/public/hooks/gsc-sync': typeof ApiPublicHooksGscSyncRoute
   '/api/public/hooks/weekly-digest': typeof ApiPublicHooksWeeklyDigestRoute
   '/cricket/ipl/teams/$teamId': typeof CricketIplTeamsTeamIdRoute
   '/football/players/$slug/$stat': typeof FootballPlayersSlugStatRoute
@@ -960,6 +967,7 @@ export interface FileRoutesByTo {
   '/cricket/series': typeof CricketSeriesIndexRoute
   '/cricket/teams': typeof CricketTeamsIndexRoute
   '/cricket/tournaments': typeof CricketTournamentsIndexRoute
+  '/api/public/hooks/gsc-sync': typeof ApiPublicHooksGscSyncRoute
   '/api/public/hooks/weekly-digest': typeof ApiPublicHooksWeeklyDigestRoute
   '/cricket/ipl/teams/$teamId': typeof CricketIplTeamsTeamIdRoute
   '/football/players/$slug/$stat': typeof FootballPlayersSlugStatRoute
@@ -1082,6 +1090,7 @@ export interface FileRoutesById {
   '/cricket/series/': typeof CricketSeriesIndexRoute
   '/cricket/teams/': typeof CricketTeamsIndexRoute
   '/cricket/tournaments/': typeof CricketTournamentsIndexRoute
+  '/api/public/hooks/gsc-sync': typeof ApiPublicHooksGscSyncRoute
   '/api/public/hooks/weekly-digest': typeof ApiPublicHooksWeeklyDigestRoute
   '/cricket/ipl/teams/$teamId': typeof CricketIplTeamsTeamIdRoute
   '/football/players/$slug/$stat': typeof FootballPlayersSlugStatRoute
@@ -1205,6 +1214,7 @@ export interface FileRouteTypes {
     | '/cricket/series/'
     | '/cricket/teams/'
     | '/cricket/tournaments/'
+    | '/api/public/hooks/gsc-sync'
     | '/api/public/hooks/weekly-digest'
     | '/cricket/ipl/teams/$teamId'
     | '/football/players/$slug/$stat'
@@ -1321,6 +1331,7 @@ export interface FileRouteTypes {
     | '/cricket/series'
     | '/cricket/teams'
     | '/cricket/tournaments'
+    | '/api/public/hooks/gsc-sync'
     | '/api/public/hooks/weekly-digest'
     | '/cricket/ipl/teams/$teamId'
     | '/football/players/$slug/$stat'
@@ -1442,6 +1453,7 @@ export interface FileRouteTypes {
     | '/cricket/series/'
     | '/cricket/teams/'
     | '/cricket/tournaments/'
+    | '/api/public/hooks/gsc-sync'
     | '/api/public/hooks/weekly-digest'
     | '/cricket/ipl/teams/$teamId'
     | '/football/players/$slug/$stat'
@@ -1482,6 +1494,7 @@ export interface RootRouteChildren {
   TournamentsTournamentLeaderboardRoute: typeof TournamentsTournamentLeaderboardRoute
   TournamentsFifaWorldCup2026StageRoute: typeof TournamentsFifaWorldCup2026StageRoute
   VsSportMatchupRoute: typeof VsSportMatchupRoute
+  ApiPublicHooksGscSyncRoute: typeof ApiPublicHooksGscSyncRoute
   ApiPublicHooksWeeklyDigestRoute: typeof ApiPublicHooksWeeklyDigestRoute
 }
 
@@ -2320,6 +2333,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHooksWeeklyDigestRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/hooks/gsc-sync': {
+      id: '/api/public/hooks/gsc-sync'
+      path: '/api/public/hooks/gsc-sync'
+      fullPath: '/api/public/hooks/gsc-sync'
+      preLoaderRoute: typeof ApiPublicHooksGscSyncRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -2637,6 +2657,7 @@ const rootRouteChildren: RootRouteChildren = {
   TournamentsTournamentLeaderboardRoute: TournamentsTournamentLeaderboardRoute,
   TournamentsFifaWorldCup2026StageRoute: TournamentsFifaWorldCup2026StageRoute,
   VsSportMatchupRoute: VsSportMatchupRoute,
+  ApiPublicHooksGscSyncRoute: ApiPublicHooksGscSyncRoute,
   ApiPublicHooksWeeklyDigestRoute: ApiPublicHooksWeeklyDigestRoute,
 }
 export const routeTree = rootRouteImport

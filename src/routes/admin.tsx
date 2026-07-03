@@ -25,6 +25,7 @@ import { NewsletterDigestCard } from "@/components/admin/NewsletterDigestCard";
 import { MembershipsCard } from "@/components/admin/MembershipsCard";
 import { AdminSidebar, type AdminSection } from "@/components/admin/AdminSidebar";
 import { OverviewPanel } from "@/components/admin/OverviewPanel";
+import { SeoAnalyticsPanel } from "@/components/admin/SeoAnalyticsPanel";
 import { SectionStatusStrip } from "@/components/admin/SectionStatusStrip";
 
 
@@ -247,6 +248,12 @@ function AdminShell() {
         <main id="main-content" className="flex-1 min-w-0 space-y-6 mt-4 lg:mt-0">
           {section === "overview" && (
             <OverviewPanel matchStats={stats} onJump={setSection} />
+          )}
+
+          {section === "seo" && (
+            <SectionShell section="seo" title="SEO Analytics" hint="Google Search Console — clicks, impressions, top queries & pages">
+              <SeoAnalyticsPanel />
+            </SectionShell>
           )}
 
           {section === "monetize" && (
