@@ -7,10 +7,11 @@ import { readCachedFaqs } from "@/lib/ai-faqs.server";
 import { FaqSection } from "@/components/seo/FaqSection";
 
 export const Route = createFileRoute("/football/teams/$slug")({
-  loader: ({ params }) => {
+  loader: async ({ params }) => {
     const team = findTeam("football_wc", params.slug);
     if (!team) throw notFound();
-    return { team, stats: teamStats(team.name) };
+    const aiFaqs = await readCachedFaqs("football_team", params.slug);
+    return { team, stats: teamStats(team.name), aiFaqs };
   },
   head: ({ params, loaderData }) => {
     if (!loaderData) {
