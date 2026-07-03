@@ -64,7 +64,7 @@ export const Route = createFileRoute("/cricket/players/$slug")({
             { name: p.name, path: `/cricket/players/${params.slug}` },
           ]),
         ),
-        ldScript(faqPage(p.faqs)),
+        ldScript(faqPage(loaderData.aiFaqs && loaderData.aiFaqs.length ? loaderData.aiFaqs : p.faqs)),
       ],
     };
   },
