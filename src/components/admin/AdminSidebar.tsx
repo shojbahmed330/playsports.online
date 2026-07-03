@@ -1,16 +1,17 @@
-import { LayoutDashboard, DollarSign, Mail, Video, Trophy, Settings2, type LucideIcon } from "lucide-react";
+import { LayoutDashboard, DollarSign, Mail, Video, Trophy, Settings2, TrendingUp, type LucideIcon } from "lucide-react";
 
-export type AdminSection = "overview" | "monetize" | "audience" | "content" | "matches" | "settings";
+export type AdminSection = "overview" | "seo" | "monetize" | "audience" | "content" | "matches" | "settings";
 
 type Item = { key: AdminSection; label: string; Icon: LucideIcon; hint: string };
 
 const ITEMS: Item[] = [
   { key: "overview", label: "Overview", Icon: LayoutDashboard, hint: "At-a-glance health" },
-  { key: "monetize", label: "Monetize", Icon: DollarSign,     hint: "Ads · affiliates · memberships" },
-  { key: "audience", label: "Audience", Icon: Mail,           hint: "Newsletter & digest" },
-  { key: "content",  label: "Content",  Icon: Video,          hint: "Videos & highlights" },
-  { key: "matches",  label: "Matches",  Icon: Trophy,         hint: "World Cup video table" },
-  { key: "settings", label: "Settings", Icon: Settings2,      hint: "Identity & legal" },
+  { key: "seo",      label: "SEO",      Icon: TrendingUp,      hint: "Search Console analytics" },
+  { key: "monetize", label: "Monetize", Icon: DollarSign,      hint: "Ads · affiliates · memberships" },
+  { key: "audience", label: "Audience", Icon: Mail,            hint: "Newsletter & digest" },
+  { key: "content",  label: "Content",  Icon: Video,           hint: "Videos & highlights" },
+  { key: "matches",  label: "Matches",  Icon: Trophy,          hint: "World Cup video table" },
+  { key: "settings", label: "Settings", Icon: Settings2,       hint: "Identity & legal" },
 ];
 
 export function AdminSidebar({
