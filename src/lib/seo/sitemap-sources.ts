@@ -183,3 +183,45 @@ export function cricketSeoHighlightUrls(): DynamicUrl[] {
   }));
 }
 
+// Phase 2.1 (mlb) — SSR SEO landing pages.
+export function mlbSeoTeamUrls(): DynamicUrl[] {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { listMlbTeams } = require("@/lib/seo/mlb-entities") as typeof import("@/lib/seo/mlb-entities");
+  return listMlbTeams().map((t) => ({
+    path: `/mlb/teams/${t.slug}`,
+    changefreq: "weekly" as const,
+    priority: "0.8",
+  }));
+}
+
+export function mlbSeoPlayerUrls(): DynamicUrl[] {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { listMlbPlayers } = require("@/lib/seo/mlb-entities") as typeof import("@/lib/seo/mlb-entities");
+  return listMlbPlayers().map((p) => ({
+    path: `/mlb/players/${p.slug}`,
+    changefreq: "monthly" as const,
+    priority: "0.65",
+  }));
+}
+
+export function mlbSeoWorldSeriesUrls(): DynamicUrl[] {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { listWorldSeriesYears } = require("@/lib/seo/mlb-entities") as typeof import("@/lib/seo/mlb-entities");
+  return listWorldSeriesYears().map((year) => ({
+    path: `/mlb/world-series/${year}`,
+    changefreq: "yearly" as const,
+    priority: "0.75",
+  }));
+}
+
+export function mlbSeoRecordUrls(): DynamicUrl[] {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { listMlbRecordCategories } = require("@/lib/seo/mlb-entities") as typeof import("@/lib/seo/mlb-entities");
+  return listMlbRecordCategories().map((c) => ({
+    path: `/mlb/records/${c.slug}`,
+    changefreq: "monthly" as const,
+    priority: "0.7",
+  }));
+}
+
+
