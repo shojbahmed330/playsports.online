@@ -1,5 +1,5 @@
 import { createFileRoute, notFound, Link } from "@tanstack/react-router";
-import { getCampaignSummary, listCampaignSlugs } from "@/lib/seo/programmatic-pages";
+import { getCampaignSummary, listCampaignSlugs, type CampaignSummary } from "@/lib/seo/programmatic-pages";
 import { slugify } from "@/lib/seo/programmatic";
 import { canonical } from "@/lib/seo/canonical";
 import { breadcrumbList, faqPage, ldScript } from "@/lib/seo/jsonld";
