@@ -286,6 +286,38 @@ export function mlsSeoCupUrls(): DynamicUrl[] {
   }));
 }
 
+// Phase 2.1 (nba) — SSR SEO landing pages.
+export function nbaSeoTeamUrls(): DynamicUrl[] {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { listNbaTeams } = require("@/lib/seo/nba-entities") as typeof import("@/lib/seo/nba-entities");
+  return listNbaTeams().map((t) => ({
+    path: `/nba/teams/${t.slug}`,
+    changefreq: "weekly" as const,
+    priority: "0.8",
+  }));
+}
+
+export function nbaSeoPlayerUrls(): DynamicUrl[] {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { listNbaPlayers } = require("@/lib/seo/nba-entities") as typeof import("@/lib/seo/nba-entities");
+  return listNbaPlayers().map((p) => ({
+    path: `/nba/players/${p.slug}`,
+    changefreq: "monthly" as const,
+    priority: "0.65",
+  }));
+}
+
+export function nbaSeoFinalsUrls(): DynamicUrl[] {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { listNbaFinalsYears } = require("@/lib/seo/nba-entities") as typeof import("@/lib/seo/nba-entities");
+  return listNbaFinalsYears().map((year) => ({
+    path: `/nba/finals/${year}`,
+    changefreq: "yearly" as const,
+    priority: "0.75",
+  }));
+}
+
+
 
 
 
