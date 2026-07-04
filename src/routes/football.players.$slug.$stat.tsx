@@ -2,6 +2,8 @@ import { createFileRoute, notFound, Link } from "@tanstack/react-router";
 import { getPlayerStatHistory } from "@/lib/seo/leaderboards";
 import { canonical } from "@/lib/seo/canonical";
 import { breadcrumbList, faqPage, athlete, ldScript } from "@/lib/seo/jsonld";
+import { RelatedLinks } from "@/components/seo/RelatedLinks";
+import { relatedForFootballPlayer } from "@/lib/seo/related";
 
 const STATS = {
   "world-cup-goals": { name: "World Cup Goals", metric: "goals" as const },
@@ -91,6 +93,7 @@ function buildFaq(hist: NonNullable<ReturnType<typeof getPlayerStatHistory>>, me
 
 function PlayerStatPage() {
   const { hist, meta, statSlug } = Route.useLoaderData();
+  const { slug } = Route.useParams();
   const isGoals = meta.metric === "goals";
   const total = isGoals ? hist.totals.goals : hist.totals.yellows + hist.totals.reds;
 
@@ -187,13 +190,18 @@ function PlayerStatPage() {
           compiled from PlaySports' historical dataset covering every World Cup match since 1930.
         </p>
         <p>
-          <Link to="/football/players/$slug" params={{ slug: statSlug }}>← Back to {hist.name}'s profile</Link>
+          <Link to="/football/players/$slug" params={{ slug }}>← Back to {hist.name}'s profile</Link>
           {" · "}
           <Link to="/tournaments/$tournament/$leaderboard" params={{ tournament: "fifa-world-cup-all-time", leaderboard: isGoals ? "top-scorers" : "yellow-cards" }}>
             All-time {isGoals ? "top scorers" : "card leaders"}
           </Link>
         </p>
       </section>
+
+      <RelatedLinks
+        title={`More World Cup stats for ${hist.name}`}
+        links={relatedForFootballPlayer(slug, hist.team, 10).filter((l) => l.href !== `/football/players/${slug}/${statSlug}`)}
+      />
     </main>
   );
 }
