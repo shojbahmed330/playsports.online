@@ -25,7 +25,7 @@ import {
   listCricketTournaments,
 } from "./cricket-entities";
 import { KEYWORD_TARGETS } from "./keyword-map";
-import { listArchives, listTeams } from "./programmatic";
+import { listArchives, listPlayers, listTeams } from "./programmatic";
 import { listCampaignSlugs, listTopScorerYears } from "./programmatic-pages";
 
 export type AuditLink = { from: string; to: string };
