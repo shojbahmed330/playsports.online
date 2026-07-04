@@ -270,7 +270,11 @@ export function relatedForLeaguePlayer(
     links.push({ label: `Team page`, href: `/${sport}/teams/${teamSlug}` });
     links.push({ label: `Team history`, href: `/${sport}/team-history/${teamSlug}` });
   }
-  links.push({ label: `${sport.toUpperCase()} leaders`, href: `/${sport}/leaders` });
+  if (sport !== "mlb") {
+    links.push({ label: `${sport.toUpperCase()} leaders`, href: `/${sport}/leaders` });
+  } else {
+    links.push({ label: "MLB players hub", href: "/mlb/players" });
+  }
   links.push({ label: `${sport.toUpperCase()} champions`, href: `/${sport}/champions` });
   for (const p of take(others, cap)) {
     links.push({ label: `${p.name}`, href: `/${sport}/players/${p.slug}` });
