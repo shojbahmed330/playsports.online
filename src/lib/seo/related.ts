@@ -29,7 +29,8 @@ import {
   listCricketPlayers,
   listCricketTournaments,
 } from "./cricket-entities";
-import { slugify } from "./programmatic";
+import { listTeams, slugify } from "./programmatic";
+import { listCampaignSlugs } from "./programmatic-pages";
 
 export type RelatedLink = { label: string; href: string; hint?: string };
 
@@ -46,6 +47,16 @@ function dedupeByHref(links: RelatedLink[]): RelatedLink[] {
     if (seen.has(l.href)) continue;
     seen.add(l.href);
     out.push(l);
+  }
+  return out;
+}
+
+function ringNeighbors<T>(full: T[], selfIdx: number, radius: number): T[] {
+  if (selfIdx < 0 || full.length <= 1) return [];
+  const out: T[] = [];
+  for (let step = 1; step <= Math.min(radius, full.length - 1); step++) {
+    out.push(full[(selfIdx + step) % full.length]);
+    out.push(full[(selfIdx - step + full.length) % full.length]);
   }
   return out;
 }
@@ -156,9 +167,37 @@ export function relatedTournamentStages(
   return dedupeByHref(links).slice(0, cap);
 }
 
+/** Team-year World Cup campaigns: same team + same year + nearby campaign pages. */
+export function relatedCampaigns(campaignSlug: string, cap = 12): RelatedLink[] {
+  const all = listCampaignSlugs();
+  const current = all.find((c) => c.slug === campaignSlug);
+  if (!current) return [];
+  const selfIdx = all.findIndex((c) => c.slug === campaignSlug);
+  const sameTeam = all.filter((c) => c.team === current.team && c.slug !== campaignSlug);
+  const sameYear = all.filter((c) => c.year === current.year && c.slug !== campaignSlug);
+  const nearby = ringNeighbors(all, selfIdx, 8).filter((c) => c.slug !== campaignSlug);
+  const links: RelatedLink[] = [
+    { label: "All World Cup campaigns", href: "/football/campaigns", hint: "browse every team and year" },
+    { label: `${current.team} team profile`, href: `/football/teams/${slugify(current.team)}` },
+    { label: `${current.year} World Cup archive`, href: `/archive/football_wc/${current.year}` },
+    { label: `${current.year} top scorers`, href: `/football/top-scorers/${current.year}` },
+  ];
+  for (const c of [...nearby, ...sameTeam, ...sameYear]) {
+    links.push({
+      label: `${c.team} at the ${c.year} World Cup`,
+      href: `/football/campaigns/${c.slug}`,
+      hint: c.team === current.team ? "same nation" : c.year === current.year ? "same tournament" : undefined,
+    });
+  }
+  return dedupeByHref(links).slice(0, cap);
+}
+
 /** Football team hub links (per-team programmatic pages). */
 export function relatedForFootballTeam(teamName: string, cap = DEFAULT_CAP): RelatedLink[] {
   const slug = slugify(teamName);
+  const teams = listTeams();
+  const selfIdx = teams.findIndex((t) => t.slug === slug);
+  const nearbyTeams = ringNeighbors(teams, selfIdx, cap).filter((t) => t.slug !== slug);
   const links: RelatedLink[] = [
     { label: `${teamName} — squad & profile`, href: `/football/teams/${slug}` },
     { label: `${teamName} World Cup campaigns`, href: `/football/campaigns/${slug}-world-cup-2022` },
@@ -166,6 +205,9 @@ export function relatedForFootballTeam(teamName: string, cap = DEFAULT_CAP): Rel
     { label: "All-time World Cup top scorers", href: "/football/top-scorers/all-time" },
     { label: "Football hub", href: "/football" },
   ];
+  for (const t of nearbyTeams) {
+    links.push({ label: `${t.name} — team profile`, href: `/football/teams/${t.slug}` });
+  }
   return dedupeByHref(links).slice(0, cap);
 }
 
@@ -177,8 +219,9 @@ export function relatedForFootballPlayer(
 ): RelatedLink[] {
   const links: RelatedLink[] = [
     { label: "Career profile", href: `/football/players/${playerSlug}` },
-    { label: "Goals breakdown", href: `/football/players/${playerSlug}/goals` },
-    { label: "Assists breakdown", href: `/football/players/${playerSlug}/assists` },
+    { label: "World Cup goals breakdown", href: `/football/players/${playerSlug}/world-cup-goals` },
+    { label: "World Cup cards breakdown", href: `/football/players/${playerSlug}/world-cup-cards` },
+    { label: "FIFA World Cup players hub", href: "/players" },
   ];
   if (countryTeam) {
     const t = slugify(countryTeam);
