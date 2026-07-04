@@ -104,7 +104,7 @@ function PlayerStatPage() {
         {" / "}
         <Link to="/football" className="hover:underline">Football</Link>
         {" / "}
-        <Link to="/football/players/$slug" params={{ slug: statSlug }} className="hover:underline">
+        <Link to="/football/players/$slug" params={{ slug }} className="hover:underline">
           {hist.name}
         </Link>
         {" / "}
