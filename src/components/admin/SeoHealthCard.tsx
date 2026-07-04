@@ -24,8 +24,8 @@ import { listNbaTeams, listNbaFinals, listNbaPlayers } from "@/lib/seo/nba-entit
 import { listNhlTeams, listStanleyCups, listNhlPlayers } from "@/lib/seo/nhl-entities";
 import { listMlsTeams, listMlsCups, listMlsPlayers } from "@/lib/seo/mls-entities";
 import { listCricketTeams, listCricketPlayers, listCricketTournaments } from "@/lib/seo/cricket-entities";
-import { listTeams } from "@/lib/seo/programmatic";
-import { listCampaignSlugs } from "@/lib/seo/programmatic-pages";
+import { listArchives, listTeams } from "@/lib/seo/programmatic";
+import { listCampaignSlugs, listTopScorerYears } from "@/lib/seo/programmatic-pages";
 
 /**
  * Builds a synthetic link graph by asking every entity registry for the
