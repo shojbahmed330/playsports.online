@@ -107,18 +107,27 @@ export async function set2026Video(home: string, away: string, url: string | nul
   if (error) throw error;
 }
 
-export async function bulkSet2026Videos(entries: { home: string; away: string; url: string }[]) {
+export async function bulkSet2026Videos(
+  entries: { home: string; away: string; url: string }[],
+  opts: { overwrite?: boolean } = {},
+) {
   const map = await readMap();
-  let added = 0, skipped = 0;
+  let added = 0, skipped = 0, updated = 0;
   for (const e of entries) {
     const k = videoKey(e.home, e.away);
-    if (map[k]) { skipped++; continue; }
-    map[k] = e.url;
-    added++;
+    if (map[k]) {
+      if (!opts.overwrite) { skipped++; continue; }
+      if (map[k] === e.url) { skipped++; continue; }
+      map[k] = e.url;
+      updated++;
+    } else {
+      map[k] = e.url;
+      added++;
+    }
   }
   const { error } = await supabase
     .from("site_settings")
     .upsert({ key: SETTING_KEY, value: map, updated_at: new Date().toISOString() });
   if (error) throw error;
-  return { added, skipped };
+  return { added, skipped, updated };
 }
