@@ -121,7 +121,7 @@ export function MatchComments({ matchId }: { matchId: number }) {
               <div className="flex items-center gap-2 mb-1">
                 <span className="text-[11px] font-bold text-cyan-200">{c.handle ?? "anonymous"}</span>
                 <span className="text-[10px] text-gray-600">· {relTime(c.created_at)}</span>
-                {(user?.id === c.user_id || isAdmin) && (
+                {(c.is_mine || isAdmin) && (
                   <button
                     onClick={() => del.mutate(c.id)}
                     className="ml-auto text-gray-500 hover:text-red-400"
