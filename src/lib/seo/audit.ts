@@ -93,14 +93,6 @@ export function collectAllInternalPaths(): string[] {
   for (const y of listTopScorerYears()) out.add(`/football/top-scorers/${y}`);
   for (const a of listArchives()) out.add(`/archive/${a.sport}/${a.year}`);
 
-  // Guarantee the well-known team-year combinations exist even if the loader failed.
-  for (const slug of FOOTBALL_TEAM_SLUGS) {
-    for (const year of [2022, 2018, 2014, 2010]) {
-      out.add(`/football/campaigns/${slug}-world-cup-${year}`);
-    }
-  }
-
-
   // League teams + championships + players
   for (const t of listMlbTeams()) {
     out.add(`/mlb/teams/${t.slug}`);
