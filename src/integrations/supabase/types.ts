@@ -737,6 +737,28 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_match_comments: {
+        Args: { p_match_id: number; p_sport: string }
+        Returns: {
+          body: string
+          created_at: string
+          handle: string
+          id: string
+          is_mine: boolean
+        }[]
+      }
+      get_match_predictions_leaderboard: {
+        Args: { p_match_id: number; p_sport: string }
+        Returns: {
+          away_score: number
+          handle: string
+          home_score: number
+          id: string
+          is_mine: boolean
+          points: number
+          settled: boolean
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
