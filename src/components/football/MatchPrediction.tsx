@@ -9,47 +9,33 @@ import type { Wc2026Fixture } from "@/lib/wc2026.functions";
 
 type PredictionRow = {
   id: string;
-  user_id: string;
   home_score: number;
   away_score: number;
   points: number;
   settled: boolean;
 };
 
-type LeaderRow = PredictionRow & { handle: string | null };
+type LeaderRow = PredictionRow & { handle: string | null; is_mine: boolean };
 
 async function fetchPredictions(matchId: number): Promise<LeaderRow[]> {
-  const { data: preds } = await supabase
-    .from("match_predictions" as any)
-    .select("id,user_id,home_score,away_score,points,settled")
-    .eq("sport", "football")
-    .eq("match_id", matchId)
-    .order("points", { ascending: false })
-    .limit(50);
-  const rows = (preds ?? []) as unknown as PredictionRow[];
-  if (rows.length === 0) return [];
-  const ids = Array.from(new Set(rows.map((r) => r.user_id)));
-  const { data: profiles } = await supabase
-    .from("public_profiles" as any)
-    .select("user_id,handle")
-    .in("user_id", ids);
-  const map = new Map<string, string>();
-  for (const p of (profiles ?? []) as unknown as { user_id: string; handle: string }[]) {
-    map.set(p.user_id, p.handle);
-  }
-  return rows.map((r) => ({ ...r, handle: map.get(r.user_id) ?? null }));
+  const { data } = await (supabase as any).rpc("get_match_predictions_leaderboard", {
+    p_sport: "football",
+    p_match_id: matchId,
+  });
+  return (data ?? []) as LeaderRow[];
 }
 
 async function fetchMyPrediction(matchId: number, userId: string): Promise<PredictionRow | null> {
   const { data } = await supabase
     .from("match_predictions" as any)
-    .select("id,user_id,home_score,away_score,points,settled")
+    .select("id,home_score,away_score,points,settled")
     .eq("sport", "football")
     .eq("match_id", matchId)
     .eq("user_id", userId)
     .maybeSingle();
   return (data as unknown as PredictionRow | null) ?? null;
 }
+
 
 export function MatchPrediction({ fx }: { fx: Wc2026Fixture }) {
   const { user, loading } = useAuth();
