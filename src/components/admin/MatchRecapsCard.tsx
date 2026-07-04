@@ -74,7 +74,9 @@ const PRESETS: Preset[] = [
   },
 ];
 
-const BATCH_SIZE = 8;
+// One item per server call to stay inside Vercel's 60s serverless timeout.
+const BATCH_SIZE = 1;
+const INTER_CALL_MS = 1200;
 
 export function MatchRecapsCard() {
   const runBatch = useServerFn(generateMatchRecapsBatch);
