@@ -5,37 +5,22 @@ import { MessageCircle, Loader2, Trash2, Send } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/hooks/use-auth";
 
-type CommentRow = {
+type CommentWithHandle = {
   id: string;
-  user_id: string;
   body: string;
-  hidden: boolean;
   created_at: string;
+  handle: string | null;
+  is_mine: boolean;
 };
-type CommentWithHandle = CommentRow & { handle: string | null };
 
 async function fetchComments(matchId: number): Promise<CommentWithHandle[]> {
-  const { data } = await supabase
-    .from("match_comments" as any)
-    .select("id,user_id,body,hidden,created_at")
-    .eq("sport", "football")
-    .eq("match_id", matchId)
-    .eq("hidden", false)
-    .order("created_at", { ascending: false })
-    .limit(100);
-  const rows = (data ?? []) as unknown as CommentRow[];
-  if (rows.length === 0) return [];
-  const ids = Array.from(new Set(rows.map((r) => r.user_id)));
-  const { data: profiles } = await supabase
-    .from("public_profiles" as any)
-    .select("user_id,handle")
-    .in("user_id", ids);
-  const map = new Map<string, string>();
-  for (const p of (profiles ?? []) as unknown as { user_id: string; handle: string }[]) {
-    map.set(p.user_id, p.handle);
-  }
-  return rows.map((r) => ({ ...r, handle: map.get(r.user_id) ?? null }));
+  const { data } = await (supabase as any).rpc("get_match_comments", {
+    p_sport: "football",
+    p_match_id: matchId,
+  });
+  return (data ?? []) as CommentWithHandle[];
 }
+
 
 function relTime(iso: string): string {
   const d = Date.now() - new Date(iso).getTime();
@@ -136,7 +121,7 @@ export function MatchComments({ matchId }: { matchId: number }) {
               <div className="flex items-center gap-2 mb-1">
                 <span className="text-[11px] font-bold text-cyan-200">{c.handle ?? "anonymous"}</span>
                 <span className="text-[10px] text-gray-600">· {relTime(c.created_at)}</span>
-                {(user?.id === c.user_id || isAdmin) && (
+                {(c.is_mine || isAdmin) && (
                   <button
                     onClick={() => del.mutate(c.id)}
                     className="ml-auto text-gray-500 hover:text-red-400"
