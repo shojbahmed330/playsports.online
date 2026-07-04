@@ -289,7 +289,10 @@ export function relatedForLeagueTeam(
   links.push({ label: `${sport.toUpperCase()} champions timeline`, href: `/${sport}/champions` });
   links.push({ label: `${sport.toUpperCase()} standings`, href: `/${sport}/standings` });
   links.push({ label: `${sport.toUpperCase()} scores`, href: `/${sport}/scores` });
-  for (const t of take(others, cap)) {
+  const selfIdx = teams.findIndex((t) => t.slug === teamSlug);
+  const ordered = [...ringNeighbors(teams, selfIdx, cap), ...others];
+  for (const t of take(ordered, cap)) {
+    links.push({ label: `${t.name} — roster`, href: `/${sport}/teams/${t.slug}` });
     links.push({ label: `${t.name} — history`, href: `/${sport}/team-history/${t.slug}` });
   }
   return dedupeByHref(links).slice(0, cap);
