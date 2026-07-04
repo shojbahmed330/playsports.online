@@ -35,6 +35,7 @@ import { Route as NbaIndexRouteImport } from './routes/nba.index'
 import { Route as MlsIndexRouteImport } from './routes/mls.index'
 import { Route as MlbIndexRouteImport } from './routes/mlb.index'
 import { Route as HighlightsIndexRouteImport } from './routes/highlights.index'
+import { Route as FootballIndexRouteImport } from './routes/football.index'
 import { Route as CricketIndexRouteImport } from './routes/cricket.index'
 import { Route as NhlTeamsRouteImport } from './routes/nhl.teams'
 import { Route as NhlStandingsRouteImport } from './routes/nhl.standings'
@@ -273,6 +274,11 @@ const HighlightsIndexRoute = HighlightsIndexRouteImport.update({
   id: '/highlights/',
   path: '/highlights/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const FootballIndexRoute = FootballIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => FootballRoute,
 } as any)
 const CricketIndexRoute = CricketIndexRouteImport.update({
   id: '/',
@@ -878,6 +884,7 @@ export interface FileRoutesByFullPath {
   '/nhl/standings': typeof NhlStandingsRoute
   '/nhl/teams': typeof NhlTeamsRouteWithChildren
   '/cricket/': typeof CricketIndexRoute
+  '/football/': typeof FootballIndexRoute
   '/highlights/': typeof HighlightsIndexRoute
   '/mlb/': typeof MlbIndexRoute
   '/mls/': typeof MlsIndexRoute
@@ -963,7 +970,6 @@ export interface FileRoutesByTo {
   '/cookies': typeof CookiesRoute
   '/disclaimer': typeof DisclaimerRoute
   '/feed.xml': typeof FeedDotxmlRoute
-  '/football': typeof FootballRouteWithChildren
   '/mine': typeof MineRoute
   '/players': typeof PlayersRoute
   '/premium': typeof PremiumRoute
@@ -1009,6 +1015,7 @@ export interface FileRoutesByTo {
   '/nhl/standings': typeof NhlStandingsRoute
   '/nhl/teams': typeof NhlTeamsRouteWithChildren
   '/cricket': typeof CricketIndexRoute
+  '/football': typeof FootballIndexRoute
   '/highlights': typeof HighlightsIndexRoute
   '/mlb': typeof MlbIndexRoute
   '/mls': typeof MlsIndexRoute
@@ -1146,6 +1153,7 @@ export interface FileRoutesById {
   '/nhl/standings': typeof NhlStandingsRoute
   '/nhl/teams': typeof NhlTeamsRouteWithChildren
   '/cricket/': typeof CricketIndexRoute
+  '/football/': typeof FootballIndexRoute
   '/highlights/': typeof HighlightsIndexRoute
   '/mlb/': typeof MlbIndexRoute
   '/mls/': typeof MlsIndexRoute
@@ -1284,6 +1292,7 @@ export interface FileRouteTypes {
     | '/nhl/standings'
     | '/nhl/teams'
     | '/cricket/'
+    | '/football/'
     | '/highlights/'
     | '/mlb/'
     | '/mls/'
@@ -1369,7 +1378,6 @@ export interface FileRouteTypes {
     | '/cookies'
     | '/disclaimer'
     | '/feed.xml'
-    | '/football'
     | '/mine'
     | '/players'
     | '/premium'
@@ -1415,6 +1423,7 @@ export interface FileRouteTypes {
     | '/nhl/standings'
     | '/nhl/teams'
     | '/cricket'
+    | '/football'
     | '/highlights'
     | '/mlb'
     | '/mls'
@@ -1551,6 +1560,7 @@ export interface FileRouteTypes {
     | '/nhl/standings'
     | '/nhl/teams'
     | '/cricket/'
+    | '/football/'
     | '/highlights/'
     | '/mlb/'
     | '/mls/'
@@ -1850,6 +1860,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/highlights/'
       preLoaderRoute: typeof HighlightsIndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/football/': {
+      id: '/football/'
+      path: '/'
+      fullPath: '/football/'
+      preLoaderRoute: typeof FootballIndexRouteImport
+      parentRoute: typeof FootballRoute
     }
     '/cricket/': {
       id: '/cricket/'
@@ -2684,6 +2701,7 @@ const FootballPlayersSlugRouteWithChildren =
 
 interface FootballRouteChildren {
   FootballMineRoute: typeof FootballMineRoute
+  FootballIndexRoute: typeof FootballIndexRoute
   FootballCampaignsSlugRoute: typeof FootballCampaignsSlugRoute
   FootballMatchIdRoute: typeof FootballMatchIdRoute
   FootballMatchesSlugRoute: typeof FootballMatchesSlugRoute
@@ -2696,6 +2714,7 @@ interface FootballRouteChildren {
 
 const FootballRouteChildren: FootballRouteChildren = {
   FootballMineRoute: FootballMineRoute,
+  FootballIndexRoute: FootballIndexRoute,
   FootballCampaignsSlugRoute: FootballCampaignsSlugRoute,
   FootballMatchIdRoute: FootballMatchIdRoute,
   FootballMatchesSlugRoute: FootballMatchesSlugRoute,
@@ -2957,3 +2976,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
