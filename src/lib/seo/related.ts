@@ -29,7 +29,7 @@ import {
   listCricketPlayers,
   listCricketTournaments,
 } from "./cricket-entities";
-import { listTeams, slugify } from "./programmatic";
+import { listPlayers, listTeams, slugify } from "./programmatic";
 import { listCampaignSlugs } from "./programmatic-pages";
 
 export type RelatedLink = { label: string; href: string; hint?: string };
@@ -226,6 +226,9 @@ export function relatedForFootballPlayer(
   countryTeam?: string,
   cap = DEFAULT_CAP,
 ): RelatedLink[] {
+  const footballPlayers = listPlayers();
+  const selfIdx = footballPlayers.findIndex((p) => p.slug === playerSlug);
+  const nearbyPlayers = ringNeighbors(footballPlayers, selfIdx, cap).filter((p) => p.slug !== playerSlug);
   const links: RelatedLink[] = [
     { label: "Career profile", href: `/football/players/${playerSlug}` },
     { label: "World Cup goals breakdown", href: `/football/players/${playerSlug}/world-cup-goals` },
@@ -238,6 +241,9 @@ export function relatedForFootballPlayer(
     links.push({ label: `${countryTeam} World Cup history`, href: `/football/campaigns/${t}-world-cup-2022` });
   }
   links.push({ label: "All-time World Cup top scorers", href: "/football/top-scorers/all-time" });
+  for (const p of nearbyPlayers) {
+    links.push({ label: `${p.name} — World Cup profile`, href: `/football/players/${p.slug}` });
+  }
   return dedupeByHref(links).slice(0, cap);
 }
 
