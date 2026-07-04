@@ -9,6 +9,8 @@ export type AdSenseSettings = {
   client: string;
   slots: Partial<Record<AdSenseSlotKey, string>>;
   auto_ads: boolean;
+  /** Optional raw ads.txt content. If empty, `/ads.txt` is auto-generated from `client`. */
+  ads_txt?: string;
 };
 
 export const DEFAULT_ADSENSE: AdSenseSettings = {
@@ -16,7 +18,9 @@ export const DEFAULT_ADSENSE: AdSenseSettings = {
   client: "",
   slots: {},
   auto_ads: false,
+  ads_txt: "",
 };
+
 
 // ============= Analytics =============
 export type AnalyticsSettings = {

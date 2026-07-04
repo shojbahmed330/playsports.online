@@ -138,6 +138,24 @@ export function AdSenseAdminCard() {
             ))}
           </div>
 
+          <div>
+            <label className="text-[10px] uppercase tracking-widest text-muted-foreground">
+              ads.txt content <span className="normal-case text-muted-foreground/70">(optional — leave blank to auto-generate from publisher ID)</span>
+            </label>
+            <textarea
+              value={form.ads_txt ?? ""}
+              onChange={(e) => setForm({ ...form, ads_txt: e.target.value })}
+              placeholder={`google.com, pub-1234567890123456, DIRECT, f08c47fec0942fa0`}
+              rows={3}
+              className="mt-1 w-full px-3 py-2 text-xs rounded-lg bg-background border border-input focus:border-emerald-500 focus:outline-none font-mono resize-y"
+            />
+            <p className="text-[10px] text-muted-foreground mt-1">
+              Copy the line AdSense shows on the "Verify site ownership → Ads.txt snippet" step. Served at{" "}
+              <a href="/ads.txt" target="_blank" rel="noreferrer" className="underline text-emerald-400">/ads.txt</a>
+              . Paste multiple lines here if you also use AdX, Ezoic, Mediavine, etc.
+            </p>
+          </div>
+
           <div className="flex items-center justify-between pt-2">
             <p className="text-[10px] text-muted-foreground">
               Tip: leave a slot blank to hide that placement without disabling AdSense globally.
@@ -152,6 +170,7 @@ export function AdSenseAdminCard() {
               {savedAt ? "Saved" : "Save settings"}
             </button>
           </div>
+
         </>
       )}
     </div>
