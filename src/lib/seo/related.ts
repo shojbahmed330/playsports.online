@@ -374,7 +374,13 @@ export function relatedForLeaguePlayer(
 export function relatedForCricketTeam(teamSlug: string, cap = DEFAULT_CAP): RelatedLink[] {
   const teams = listCricketTeams();
   const self = teams.find((t) => t.slug === teamSlug);
+  const selfIdx = teams.findIndex((t) => t.slug === teamSlug);
   const others = teams.filter((t) => t.slug !== teamSlug);
+  // Ring first so every team (not just the top of the list) receives inbound
+  // links from its neighbors; then fill remaining slots from the rest.
+  const ordered = [...ringNeighbors(teams, selfIdx, cap), ...others].filter(
+    (t) => t.slug !== teamSlug,
+  );
   const links: RelatedLink[] = [];
   if (self) {
     links.push({ label: `${self.name} — team history`, href: `/cricket/team-history/${teamSlug}` });
@@ -383,8 +389,10 @@ export function relatedForCricketTeam(teamSlug: string, cap = DEFAULT_CAP): Rela
   links.push({ label: "Cricket teams — all", href: "/cricket/teams" });
   links.push({ label: "Cricket rankings", href: "/cricket/rankings" });
   links.push({ label: "Cricket records", href: "/cricket/records" });
-  for (const t of take(others, cap)) {
+  for (const t of take(ordered, cap)) {
     links.push({ label: `${t.name}`, href: `/cricket/teams/${t.slug}` });
+    // Cross-link the sibling team-history page so it also earns inbound links.
+    links.push({ label: `${t.name} — history`, href: `/cricket/team-history/${t.slug}` });
   }
   return dedupeByHref(links).slice(0, cap);
 }
