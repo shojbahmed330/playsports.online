@@ -48,7 +48,7 @@ function withClassicVideo(m: WCMatch): WCMatch {
   return fallback ? { ...m, video_url: fallback } : m;
 }
 
-export const Route = createFileRoute("/football")({
+export const Route = createFileRoute("/football/")({
   validateSearch: (s: Record<string, unknown>): FootballSearch => {
     const y = Number(s.year);
     const f = String(s.filter ?? "");

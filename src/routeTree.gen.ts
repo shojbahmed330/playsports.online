@@ -20,7 +20,6 @@ import { Route as NbaRouteImport } from './routes/nba'
 import { Route as MlsRouteImport } from './routes/mls'
 import { Route as MlbRouteImport } from './routes/mlb'
 import { Route as MineRouteImport } from './routes/mine'
-import { Route as FootballRouteImport } from './routes/football'
 import { Route as FeedDotxmlRouteImport } from './routes/feed[.]xml'
 import { Route as DisclaimerRouteImport } from './routes/disclaimer'
 import { Route as CricketRouteImport } from './routes/cricket'
@@ -35,6 +34,7 @@ import { Route as NbaIndexRouteImport } from './routes/nba.index'
 import { Route as MlsIndexRouteImport } from './routes/mls.index'
 import { Route as MlbIndexRouteImport } from './routes/mlb.index'
 import { Route as HighlightsIndexRouteImport } from './routes/highlights.index'
+import { Route as FootballIndexRouteImport } from './routes/football.index'
 import { Route as CricketIndexRouteImport } from './routes/cricket.index'
 import { Route as NhlTeamsRouteImport } from './routes/nhl.teams'
 import { Route as NhlStandingsRouteImport } from './routes/nhl.standings'
@@ -199,11 +199,6 @@ const MineRoute = MineRouteImport.update({
   path: '/mine',
   getParentRoute: () => rootRouteImport,
 } as any)
-const FootballRoute = FootballRouteImport.update({
-  id: '/football',
-  path: '/football',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const FeedDotxmlRoute = FeedDotxmlRouteImport.update({
   id: '/feed.xml',
   path: '/feed.xml',
@@ -272,6 +267,11 @@ const MlbIndexRoute = MlbIndexRouteImport.update({
 const HighlightsIndexRoute = HighlightsIndexRouteImport.update({
   id: '/highlights/',
   path: '/highlights/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FootballIndexRoute = FootballIndexRouteImport.update({
+  id: '/football/',
+  path: '/football/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CricketIndexRoute = CricketIndexRouteImport.update({
@@ -445,9 +445,9 @@ const GuidesSlugRoute = GuidesSlugRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const FootballMineRoute = FootballMineRouteImport.update({
-  id: '/mine',
-  path: '/mine',
-  getParentRoute: () => FootballRoute,
+  id: '/football/mine',
+  path: '/football/mine',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const CricketScoresRoute = CricketScoresRouteImport.update({
   id: '/scores',
@@ -465,14 +465,14 @@ const CricketHistoryRoute = CricketHistoryRouteImport.update({
   getParentRoute: () => CricketRoute,
 } as any)
 const FootballTopScorersIndexRoute = FootballTopScorersIndexRouteImport.update({
-  id: '/top-scorers/',
-  path: '/top-scorers/',
-  getParentRoute: () => FootballRoute,
+  id: '/football/top-scorers/',
+  path: '/football/top-scorers/',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const FootballCampaignsIndexRoute = FootballCampaignsIndexRouteImport.update({
-  id: '/campaigns/',
-  path: '/campaigns/',
-  getParentRoute: () => FootballRoute,
+  id: '/football/campaigns/',
+  path: '/football/campaigns/',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const CricketTournamentsIndexRoute = CricketTournamentsIndexRouteImport.update({
   id: '/tournaments/',
@@ -687,34 +687,34 @@ const MlbGameIdRoute = MlbGameIdRouteImport.update({
   getParentRoute: () => MlbRoute,
 } as any)
 const FootballTopScorersYearRoute = FootballTopScorersYearRouteImport.update({
-  id: '/top-scorers/$year',
-  path: '/top-scorers/$year',
-  getParentRoute: () => FootballRoute,
+  id: '/football/top-scorers/$year',
+  path: '/football/top-scorers/$year',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const FootballTeamsSlugRoute = FootballTeamsSlugRouteImport.update({
-  id: '/teams/$slug',
-  path: '/teams/$slug',
-  getParentRoute: () => FootballRoute,
+  id: '/football/teams/$slug',
+  path: '/football/teams/$slug',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const FootballPlayersSlugRoute = FootballPlayersSlugRouteImport.update({
-  id: '/players/$slug',
-  path: '/players/$slug',
-  getParentRoute: () => FootballRoute,
+  id: '/football/players/$slug',
+  path: '/football/players/$slug',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const FootballMatchesSlugRoute = FootballMatchesSlugRouteImport.update({
-  id: '/matches/$slug',
-  path: '/matches/$slug',
-  getParentRoute: () => FootballRoute,
+  id: '/football/matches/$slug',
+  path: '/football/matches/$slug',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const FootballMatchIdRoute = FootballMatchIdRouteImport.update({
-  id: '/match/$id',
-  path: '/match/$id',
-  getParentRoute: () => FootballRoute,
+  id: '/football/match/$id',
+  path: '/football/match/$id',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const FootballCampaignsSlugRoute = FootballCampaignsSlugRouteImport.update({
-  id: '/campaigns/$slug',
-  path: '/campaigns/$slug',
-  getParentRoute: () => FootballRoute,
+  id: '/football/campaigns/$slug',
+  path: '/football/campaigns/$slug',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const CricketTournamentsSlugRoute = CricketTournamentsSlugRouteImport.update({
   id: '/tournaments/$slug',
@@ -828,7 +828,6 @@ export interface FileRoutesByFullPath {
   '/cricket': typeof CricketRouteWithChildren
   '/disclaimer': typeof DisclaimerRoute
   '/feed.xml': typeof FeedDotxmlRoute
-  '/football': typeof FootballRouteWithChildren
   '/mine': typeof MineRoute
   '/mlb': typeof MlbRouteWithChildren
   '/mls': typeof MlsRouteWithChildren
@@ -878,6 +877,7 @@ export interface FileRoutesByFullPath {
   '/nhl/standings': typeof NhlStandingsRoute
   '/nhl/teams': typeof NhlTeamsRouteWithChildren
   '/cricket/': typeof CricketIndexRoute
+  '/football/': typeof FootballIndexRoute
   '/highlights/': typeof HighlightsIndexRoute
   '/mlb/': typeof MlbIndexRoute
   '/mls/': typeof MlsIndexRoute
@@ -963,7 +963,6 @@ export interface FileRoutesByTo {
   '/cookies': typeof CookiesRoute
   '/disclaimer': typeof DisclaimerRoute
   '/feed.xml': typeof FeedDotxmlRoute
-  '/football': typeof FootballRouteWithChildren
   '/mine': typeof MineRoute
   '/players': typeof PlayersRoute
   '/premium': typeof PremiumRoute
@@ -1009,6 +1008,7 @@ export interface FileRoutesByTo {
   '/nhl/standings': typeof NhlStandingsRoute
   '/nhl/teams': typeof NhlTeamsRouteWithChildren
   '/cricket': typeof CricketIndexRoute
+  '/football': typeof FootballIndexRoute
   '/highlights': typeof HighlightsIndexRoute
   '/mlb': typeof MlbIndexRoute
   '/mls': typeof MlsIndexRoute
@@ -1096,7 +1096,6 @@ export interface FileRoutesById {
   '/cricket': typeof CricketRouteWithChildren
   '/disclaimer': typeof DisclaimerRoute
   '/feed.xml': typeof FeedDotxmlRoute
-  '/football': typeof FootballRouteWithChildren
   '/mine': typeof MineRoute
   '/mlb': typeof MlbRouteWithChildren
   '/mls': typeof MlsRouteWithChildren
@@ -1146,6 +1145,7 @@ export interface FileRoutesById {
   '/nhl/standings': typeof NhlStandingsRoute
   '/nhl/teams': typeof NhlTeamsRouteWithChildren
   '/cricket/': typeof CricketIndexRoute
+  '/football/': typeof FootballIndexRoute
   '/highlights/': typeof HighlightsIndexRoute
   '/mlb/': typeof MlbIndexRoute
   '/mls/': typeof MlsIndexRoute
@@ -1234,7 +1234,6 @@ export interface FileRouteTypes {
     | '/cricket'
     | '/disclaimer'
     | '/feed.xml'
-    | '/football'
     | '/mine'
     | '/mlb'
     | '/mls'
@@ -1284,6 +1283,7 @@ export interface FileRouteTypes {
     | '/nhl/standings'
     | '/nhl/teams'
     | '/cricket/'
+    | '/football/'
     | '/highlights/'
     | '/mlb/'
     | '/mls/'
@@ -1369,7 +1369,6 @@ export interface FileRouteTypes {
     | '/cookies'
     | '/disclaimer'
     | '/feed.xml'
-    | '/football'
     | '/mine'
     | '/players'
     | '/premium'
@@ -1415,6 +1414,7 @@ export interface FileRouteTypes {
     | '/nhl/standings'
     | '/nhl/teams'
     | '/cricket'
+    | '/football'
     | '/highlights'
     | '/mlb'
     | '/mls'
@@ -1501,7 +1501,6 @@ export interface FileRouteTypes {
     | '/cricket'
     | '/disclaimer'
     | '/feed.xml'
-    | '/football'
     | '/mine'
     | '/mlb'
     | '/mls'
@@ -1551,6 +1550,7 @@ export interface FileRouteTypes {
     | '/nhl/standings'
     | '/nhl/teams'
     | '/cricket/'
+    | '/football/'
     | '/highlights/'
     | '/mlb/'
     | '/mls/'
@@ -1638,7 +1638,6 @@ export interface RootRouteChildren {
   CricketRoute: typeof CricketRouteWithChildren
   DisclaimerRoute: typeof DisclaimerRoute
   FeedDotxmlRoute: typeof FeedDotxmlRoute
-  FootballRoute: typeof FootballRouteWithChildren
   MineRoute: typeof MineRoute
   MlbRoute: typeof MlbRouteWithChildren
   MlsRoute: typeof MlsRouteWithChildren
@@ -1650,19 +1649,29 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TermsRoute: typeof TermsRoute
   UnsubscribeRoute: typeof UnsubscribeRoute
+  FootballMineRoute: typeof FootballMineRoute
   GuidesSlugRoute: typeof GuidesSlugRoute
   HighlightsSlugRoute: typeof HighlightsSlugRoute
   LiveSportRoute: typeof LiveSportRoute
   LiveTodayRoute: typeof LiveTodayRoute
+  FootballIndexRoute: typeof FootballIndexRoute
   HighlightsIndexRoute: typeof HighlightsIndexRoute
   ApiPublicTrackClickRoute: typeof ApiPublicTrackClickRoute
   ArchiveSportYearRoute: typeof ArchiveSportYearRoute
+  FootballCampaignsSlugRoute: typeof FootballCampaignsSlugRoute
+  FootballMatchIdRoute: typeof FootballMatchIdRoute
+  FootballMatchesSlugRoute: typeof FootballMatchesSlugRoute
+  FootballPlayersSlugRoute: typeof FootballPlayersSlugRouteWithChildren
+  FootballTeamsSlugRoute: typeof FootballTeamsSlugRoute
+  FootballTopScorersYearRoute: typeof FootballTopScorersYearRoute
   OgTypeSlugDotsvgRoute: typeof OgTypeSlugDotsvgRoute
   PlayerSportSlugRoute: typeof PlayerSportSlugRoute
   TeamSportSlugRoute: typeof TeamSportSlugRoute
   TournamentsTournamentLeaderboardRoute: typeof TournamentsTournamentLeaderboardRoute
   TournamentsFifaWorldCup2026StageRoute: typeof TournamentsFifaWorldCup2026StageRoute
   VsSportMatchupRoute: typeof VsSportMatchupRoute
+  FootballCampaignsIndexRoute: typeof FootballCampaignsIndexRoute
+  FootballTopScorersIndexRoute: typeof FootballTopScorersIndexRoute
   ApiPublicHooksGscSyncRoute: typeof ApiPublicHooksGscSyncRoute
   ApiPublicHooksWeeklyDigestRoute: typeof ApiPublicHooksWeeklyDigestRoute
 }
@@ -1744,13 +1753,6 @@ declare module '@tanstack/react-router' {
       path: '/mine'
       fullPath: '/mine'
       preLoaderRoute: typeof MineRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/football': {
-      id: '/football'
-      path: '/football'
-      fullPath: '/football'
-      preLoaderRoute: typeof FootballRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/feed.xml': {
@@ -1849,6 +1851,13 @@ declare module '@tanstack/react-router' {
       path: '/highlights'
       fullPath: '/highlights/'
       preLoaderRoute: typeof HighlightsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/football/': {
+      id: '/football/'
+      path: '/football'
+      fullPath: '/football/'
+      preLoaderRoute: typeof FootballIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/cricket/': {
@@ -2091,10 +2100,10 @@ declare module '@tanstack/react-router' {
     }
     '/football/mine': {
       id: '/football/mine'
-      path: '/mine'
+      path: '/football/mine'
       fullPath: '/football/mine'
       preLoaderRoute: typeof FootballMineRouteImport
-      parentRoute: typeof FootballRoute
+      parentRoute: typeof rootRouteImport
     }
     '/cricket/scores': {
       id: '/cricket/scores'
@@ -2119,17 +2128,17 @@ declare module '@tanstack/react-router' {
     }
     '/football/top-scorers/': {
       id: '/football/top-scorers/'
-      path: '/top-scorers'
+      path: '/football/top-scorers'
       fullPath: '/football/top-scorers/'
       preLoaderRoute: typeof FootballTopScorersIndexRouteImport
-      parentRoute: typeof FootballRoute
+      parentRoute: typeof rootRouteImport
     }
     '/football/campaigns/': {
       id: '/football/campaigns/'
-      path: '/campaigns'
+      path: '/football/campaigns'
       fullPath: '/football/campaigns/'
       preLoaderRoute: typeof FootballCampaignsIndexRouteImport
-      parentRoute: typeof FootballRoute
+      parentRoute: typeof rootRouteImport
     }
     '/cricket/tournaments/': {
       id: '/cricket/tournaments/'
@@ -2427,45 +2436,45 @@ declare module '@tanstack/react-router' {
     }
     '/football/top-scorers/$year': {
       id: '/football/top-scorers/$year'
-      path: '/top-scorers/$year'
+      path: '/football/top-scorers/$year'
       fullPath: '/football/top-scorers/$year'
       preLoaderRoute: typeof FootballTopScorersYearRouteImport
-      parentRoute: typeof FootballRoute
+      parentRoute: typeof rootRouteImport
     }
     '/football/teams/$slug': {
       id: '/football/teams/$slug'
-      path: '/teams/$slug'
+      path: '/football/teams/$slug'
       fullPath: '/football/teams/$slug'
       preLoaderRoute: typeof FootballTeamsSlugRouteImport
-      parentRoute: typeof FootballRoute
+      parentRoute: typeof rootRouteImport
     }
     '/football/players/$slug': {
       id: '/football/players/$slug'
-      path: '/players/$slug'
+      path: '/football/players/$slug'
       fullPath: '/football/players/$slug'
       preLoaderRoute: typeof FootballPlayersSlugRouteImport
-      parentRoute: typeof FootballRoute
+      parentRoute: typeof rootRouteImport
     }
     '/football/matches/$slug': {
       id: '/football/matches/$slug'
-      path: '/matches/$slug'
+      path: '/football/matches/$slug'
       fullPath: '/football/matches/$slug'
       preLoaderRoute: typeof FootballMatchesSlugRouteImport
-      parentRoute: typeof FootballRoute
+      parentRoute: typeof rootRouteImport
     }
     '/football/match/$id': {
       id: '/football/match/$id'
-      path: '/match/$id'
+      path: '/football/match/$id'
       fullPath: '/football/match/$id'
       preLoaderRoute: typeof FootballMatchIdRouteImport
-      parentRoute: typeof FootballRoute
+      parentRoute: typeof rootRouteImport
     }
     '/football/campaigns/$slug': {
       id: '/football/campaigns/$slug'
-      path: '/campaigns/$slug'
+      path: '/football/campaigns/$slug'
       fullPath: '/football/campaigns/$slug'
       preLoaderRoute: typeof FootballCampaignsSlugRouteImport
-      parentRoute: typeof FootballRoute
+      parentRoute: typeof rootRouteImport
     }
     '/cricket/tournaments/$slug': {
       id: '/cricket/tournaments/$slug'
@@ -2670,45 +2679,6 @@ const CricketRouteChildren: CricketRouteChildren = {
 
 const CricketRouteWithChildren =
   CricketRoute._addFileChildren(CricketRouteChildren)
-
-interface FootballPlayersSlugRouteChildren {
-  FootballPlayersSlugStatRoute: typeof FootballPlayersSlugStatRoute
-}
-
-const FootballPlayersSlugRouteChildren: FootballPlayersSlugRouteChildren = {
-  FootballPlayersSlugStatRoute: FootballPlayersSlugStatRoute,
-}
-
-const FootballPlayersSlugRouteWithChildren =
-  FootballPlayersSlugRoute._addFileChildren(FootballPlayersSlugRouteChildren)
-
-interface FootballRouteChildren {
-  FootballMineRoute: typeof FootballMineRoute
-  FootballCampaignsSlugRoute: typeof FootballCampaignsSlugRoute
-  FootballMatchIdRoute: typeof FootballMatchIdRoute
-  FootballMatchesSlugRoute: typeof FootballMatchesSlugRoute
-  FootballPlayersSlugRoute: typeof FootballPlayersSlugRouteWithChildren
-  FootballTeamsSlugRoute: typeof FootballTeamsSlugRoute
-  FootballTopScorersYearRoute: typeof FootballTopScorersYearRoute
-  FootballCampaignsIndexRoute: typeof FootballCampaignsIndexRoute
-  FootballTopScorersIndexRoute: typeof FootballTopScorersIndexRoute
-}
-
-const FootballRouteChildren: FootballRouteChildren = {
-  FootballMineRoute: FootballMineRoute,
-  FootballCampaignsSlugRoute: FootballCampaignsSlugRoute,
-  FootballMatchIdRoute: FootballMatchIdRoute,
-  FootballMatchesSlugRoute: FootballMatchesSlugRoute,
-  FootballPlayersSlugRoute: FootballPlayersSlugRouteWithChildren,
-  FootballTeamsSlugRoute: FootballTeamsSlugRoute,
-  FootballTopScorersYearRoute: FootballTopScorersYearRoute,
-  FootballCampaignsIndexRoute: FootballCampaignsIndexRoute,
-  FootballTopScorersIndexRoute: FootballTopScorersIndexRoute,
-}
-
-const FootballRouteWithChildren = FootballRoute._addFileChildren(
-  FootballRouteChildren,
-)
 
 interface MlbPlayersRouteChildren {
   MlbPlayersSlugRoute: typeof MlbPlayersSlugRoute
@@ -2916,6 +2886,17 @@ const NhlRouteChildren: NhlRouteChildren = {
 
 const NhlRouteWithChildren = NhlRoute._addFileChildren(NhlRouteChildren)
 
+interface FootballPlayersSlugRouteChildren {
+  FootballPlayersSlugStatRoute: typeof FootballPlayersSlugStatRoute
+}
+
+const FootballPlayersSlugRouteChildren: FootballPlayersSlugRouteChildren = {
+  FootballPlayersSlugStatRoute: FootballPlayersSlugStatRoute,
+}
+
+const FootballPlayersSlugRouteWithChildren =
+  FootballPlayersSlugRoute._addFileChildren(FootballPlayersSlugRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
@@ -2926,7 +2907,6 @@ const rootRouteChildren: RootRouteChildren = {
   CricketRoute: CricketRouteWithChildren,
   DisclaimerRoute: DisclaimerRoute,
   FeedDotxmlRoute: FeedDotxmlRoute,
-  FootballRoute: FootballRouteWithChildren,
   MineRoute: MineRoute,
   MlbRoute: MlbRouteWithChildren,
   MlsRoute: MlsRouteWithChildren,
@@ -2938,19 +2918,29 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TermsRoute: TermsRoute,
   UnsubscribeRoute: UnsubscribeRoute,
+  FootballMineRoute: FootballMineRoute,
   GuidesSlugRoute: GuidesSlugRoute,
   HighlightsSlugRoute: HighlightsSlugRoute,
   LiveSportRoute: LiveSportRoute,
   LiveTodayRoute: LiveTodayRoute,
+  FootballIndexRoute: FootballIndexRoute,
   HighlightsIndexRoute: HighlightsIndexRoute,
   ApiPublicTrackClickRoute: ApiPublicTrackClickRoute,
   ArchiveSportYearRoute: ArchiveSportYearRoute,
+  FootballCampaignsSlugRoute: FootballCampaignsSlugRoute,
+  FootballMatchIdRoute: FootballMatchIdRoute,
+  FootballMatchesSlugRoute: FootballMatchesSlugRoute,
+  FootballPlayersSlugRoute: FootballPlayersSlugRouteWithChildren,
+  FootballTeamsSlugRoute: FootballTeamsSlugRoute,
+  FootballTopScorersYearRoute: FootballTopScorersYearRoute,
   OgTypeSlugDotsvgRoute: OgTypeSlugDotsvgRoute,
   PlayerSportSlugRoute: PlayerSportSlugRoute,
   TeamSportSlugRoute: TeamSportSlugRoute,
   TournamentsTournamentLeaderboardRoute: TournamentsTournamentLeaderboardRoute,
   TournamentsFifaWorldCup2026StageRoute: TournamentsFifaWorldCup2026StageRoute,
   VsSportMatchupRoute: VsSportMatchupRoute,
+  FootballCampaignsIndexRoute: FootballCampaignsIndexRoute,
+  FootballTopScorersIndexRoute: FootballTopScorersIndexRoute,
   ApiPublicHooksGscSyncRoute: ApiPublicHooksGscSyncRoute,
   ApiPublicHooksWeeklyDigestRoute: ApiPublicHooksWeeklyDigestRoute,
 }
