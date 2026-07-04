@@ -25,6 +25,7 @@ import {
   listCricketTournaments,
 } from "./cricket-entities";
 import { KEYWORD_TARGETS } from "./keyword-map";
+import { listCampaignSlugs } from "./programmatic-pages";
 
 export type AuditLink = { from: string; to: string };
 export type BrokenLink = AuditLink & { reason: string };
