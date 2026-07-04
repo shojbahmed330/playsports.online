@@ -39,10 +39,12 @@ import {
   nbaSeoTeamUrls,
   nbaSeoPlayerUrls,
   nbaSeoFinalsUrls,
-  type DynamicUrl,
 } from "@/lib/seo/sitemap-sources";
 
 const BASE_URL = "https://www.playsports.online";
+const SITEMAP_PARTS = ["core", "football", "cricket", "us-sports", "hockey-soccer", "legacy"] as const;
+
+type SitemapPart = (typeof SITEMAP_PARTS)[number];
 
 interface SitemapEntry {
   path: string;
@@ -157,6 +159,172 @@ function dedupe(entries: SitemapEntry[]): SitemapEntry[] {
   return Array.from(seen.values());
 }
 
+function renderUrlset(entries: SitemapEntry[], today: string): string {
+  const urls = dedupe(entries).map((e) =>
+    [
+      `  <url>`,
+      `    <loc>${absoluteLoc(e.path)}</loc>`,
+      `    <lastmod>${e.lastmod ?? today}</lastmod>`,
+      e.changefreq ? `    <changefreq>${e.changefreq}</changefreq>` : null,
+      e.priority ? `    <priority>${e.priority}</priority>` : null,
+      `  </url>`,
+    ]
+      .filter(Boolean)
+      .join("\n"),
+  );
+
+  return [
+    `<?xml version="1.0" encoding="UTF-8"?>`,
+    `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`,
+    ...urls,
+    `</urlset>`,
+  ].join("\n");
+}
+
+function renderSitemapIndex(today: string): string {
+  const sitemaps = SITEMAP_PARTS.map((part) =>
+    [`  <sitemap>`, `    <loc>${xmlEscape(`${BASE_URL}/sitemap.xml?part=${part}`)}</loc>`, `    <lastmod>${today}</lastmod>`, `  </sitemap>`].join("\n"),
+  );
+
+  return [
+    `<?xml version="1.0" encoding="UTF-8"?>`,
+    `<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`,
+    ...sitemaps,
+    `</sitemapindex>`,
+  ].join("\n");
+}
+
+async function entriesForPart(part: SitemapPart): Promise<SitemapEntry[]> {
+  switch (part) {
+    case "core":
+      return [
+        ...STATIC_ROUTES,
+        ...WC2026_STAGES.map((s) => ({
+          path: `/tournaments/fifa-world-cup-2026/${s.slug}`,
+          changefreq: "daily" as const,
+          priority: "0.8",
+        })),
+        ...listGuides().map((g) => ({
+          path: `/guides/${g.slug}`,
+          lastmod: g.updated,
+          changefreq: "monthly" as const,
+          priority: "0.7",
+        })),
+        { path: "/live/today", changefreq: "always" as const, priority: "0.8" },
+        ...["football", "cricket", "mlb", "nba", "nhl", "mls"].map((s) => ({
+          path: `/live/${s}`,
+          changefreq: "always" as const,
+          priority: "0.7",
+        })),
+        ...KEYWORD_TARGETS.map((k) => ({
+          path: k.url,
+          changefreq: "weekly" as const,
+          priority: priorityFromVolume(k.volume),
+        })),
+      ];
+    case "football":
+      return [
+        ...wc2026MatchUrls(),
+        ...listMatchSlugs().map((m) => ({
+          path: `/football/matches/${m.slug}`,
+          lastmod: m.match_date?.slice(0, 10),
+          changefreq: "yearly" as const,
+          priority: "0.6",
+        })),
+        ...listTeams().map((t) => ({
+          path: `/football/teams/${t.slug}`,
+          changefreq: "weekly" as const,
+          priority: "0.7",
+        })),
+        ...listPlayers().map((p) => ({
+          path: `/football/players/${p.slug}`,
+          changefreq: "monthly" as const,
+          priority: "0.6",
+        })),
+        ...listHighlights().map((h) => ({
+          path: `/highlights/${h.slug}`,
+          changefreq: "monthly" as const,
+          priority: "0.6",
+        })),
+        ...programmaticTopScorerUrls(),
+        ...programmaticCampaignUrls(),
+        ...listLeaderboardUrls().map((u) => ({
+          path: `/tournaments/${u.tournament}/${u.leaderboard}`,
+          changefreq: "weekly" as const,
+          priority: "0.7",
+        })),
+      ];
+    case "cricket": {
+      const [iplTeams, cricketSeries] = await Promise.all([iplTeamUrls(), cricketSeriesUrls()]);
+      return [
+        ...cricketSeoTeamUrls(),
+        ...cricketSeoPlayerUrls(),
+        ...cricketSeoTournamentUrls(),
+        ...cricketSeoRecordUrls(),
+        ...cricketSeoHighlightUrls(),
+        { path: "/cricket/highlights", changefreq: "weekly", priority: "0.75" },
+        ...cricketProgrammaticUrls(),
+        ...iplTeams,
+        ...cricketSeries,
+      ];
+    }
+    case "us-sports": {
+      const [mlbTeams, nbaTeams] = await Promise.all([mlbTeamUrls(), nbaTeamUrls()]);
+      return [
+        ...mlbSeoTeamUrls(),
+        ...mlbSeoPlayerUrls(),
+        ...mlbSeoWorldSeriesUrls(),
+        ...mlbSeoRecordUrls(),
+        ...nbaSeoTeamUrls(),
+        ...nbaSeoPlayerUrls(),
+        ...nbaSeoFinalsUrls(),
+        ...mlbProgrammaticUrls(),
+        ...nbaProgrammaticUrls(),
+        ...mlbTeams,
+        ...nbaTeams,
+      ];
+    }
+    case "hockey-soccer": {
+      const [nhlTeams, mlsTeams] = await Promise.all([nhlTeamUrls(), mlsTeamUrls()]);
+      return [
+        ...nhlSeoTeamUrls(),
+        ...nhlSeoPlayerUrls(),
+        ...nhlSeoStanleyCupUrls(),
+        ...mlsSeoTeamUrls(),
+        ...mlsSeoPlayerUrls(),
+        ...mlsSeoCupUrls(),
+        ...nhlProgrammaticUrls(),
+        ...mlsProgrammaticUrls(),
+        ...nhlTeams,
+        ...mlsTeams,
+      ];
+    }
+    case "legacy":
+      return [
+        ...listTeams().map((t) => ({
+          path: `/team/${t.sport}/${t.slug}`,
+          changefreq: "weekly" as const,
+          priority: "0.5",
+        })),
+        ...listPlayers().map((p) => ({
+          path: `/player/${p.sport}/${p.slug}`,
+          changefreq: "monthly" as const,
+          priority: "0.4",
+        })),
+        ...listH2H().map((h) => ({
+          path: `/vs/${h.sport}/${h.slug}`,
+          changefreq: "monthly" as const,
+          priority: "0.5",
+        })),
+        ...listArchives().map((a) => ({
+          path: `/archive/${a.sport}/${a.year}`,
+          changefreq: "yearly" as const,
+          priority: "0.6",
+        })),
+      ];
+  }
+}
+
 export const Route = createFileRoute("/sitemap.xml")({
   server: {
     handlers: {
@@ -169,165 +337,36 @@ export const Route = createFileRoute("/sitemap.xml")({
           },
         });
       },
-      GET: async () => {
+      GET: async ({ request }) => {
         const today = new Date().toISOString().slice(0, 10);
+        const url = new URL(request.url);
+        const part = url.searchParams.get("part");
 
-        // Fetch every enumerable source in parallel. Each helper is safe:
-        // a failing upstream yields an empty array, never a rejected promise.
-        const [mlbTeams, nbaTeams, nhlTeams, mlsTeams, iplTeams, cricketSeries] = await Promise.all([
-          mlbTeamUrls(),
-          nbaTeamUrls(),
-          nhlTeamUrls(),
-          mlsTeamUrls(),
-          iplTeamUrls(),
-          cricketSeriesUrls(),
-        ]);
+        if (!part) {
+          return new Response(renderSitemapIndex(today), {
+            headers: {
+              "Content-Type": "application/xml; charset=utf-8",
+              "Cache-Control": "public, max-age=3600, s-maxage=3600, stale-while-revalidate=21600",
+              "X-Sitemap-Type": "index",
+            },
+          });
+        }
 
-        const programmatic: DynamicUrl[] = [
-          ...wc2026MatchUrls(),
-          // Phase 2.1 canonical football landing pages
-          ...listMatchSlugs().map((m) => ({
-            path: `/football/matches/${m.slug}`,
-            lastmod: m.match_date?.slice(0, 10),
-            changefreq: "yearly" as const,
-            priority: "0.6",
-          })),
-          ...listTeams().map((t) => ({
-            path: `/football/teams/${t.slug}`,
-            changefreq: "weekly" as const,
-            priority: "0.7",
-          })),
-          ...listPlayers().map((p) => ({
-            path: `/football/players/${p.slug}`,
-            changefreq: "monthly" as const,
-            priority: "0.6",
-          })),
-          ...listHighlights().map((h) => ({
-            path: `/highlights/${h.slug}`,
-            changefreq: "monthly" as const,
-            priority: "0.6",
-          })),
-          // Phase 2.1 canonical cricket landing pages
-          ...cricketSeoTeamUrls(),
-          ...cricketSeoPlayerUrls(),
-          ...cricketSeoTournamentUrls(),
-          ...cricketSeoRecordUrls(),
-          ...cricketSeoHighlightUrls(),
-          { path: "/cricket/highlights", changefreq: "weekly", priority: "0.75" },
-          // Phase 2.1 canonical MLB landing pages
-          ...mlbSeoTeamUrls(),
-          ...mlbSeoPlayerUrls(),
-          ...mlbSeoWorldSeriesUrls(),
-          ...mlbSeoRecordUrls(),
-          // Phase 2.1 canonical NHL landing pages
-          ...nhlSeoTeamUrls(),
-          ...nhlSeoPlayerUrls(),
-          ...nhlSeoStanleyCupUrls(),
-          // Phase 2.1 canonical MLS landing pages
-          ...mlsSeoTeamUrls(),
-          ...mlsSeoPlayerUrls(),
-          ...mlsSeoCupUrls(),
-          // Phase 2.1 canonical NBA landing pages
-          ...nbaSeoTeamUrls(),
-          ...nbaSeoPlayerUrls(),
-          ...nbaSeoFinalsUrls(),
-          ...WC2026_STAGES.map((s) => ({
-            path: `/tournaments/fifa-world-cup-2026/${s.slug}`,
-            changefreq: "daily" as const,
-            priority: "0.8",
-          })),
-          // Phase 3 — Programmatic long-tail landing pages
-          ...programmaticTopScorerUrls(),
-          ...programmaticCampaignUrls(),
-          // Phase 3 (multi-sport) — /:sport/champions + /:sport/team-history/$slug
-          ...mlbProgrammaticUrls(),
-          ...nbaProgrammaticUrls(),
-          ...nhlProgrammaticUrls(),
-          ...mlsProgrammaticUrls(),
-          ...cricketProgrammaticUrls(),
-          // Phase 2.2 — Tournament leaderboards (top-scorers / yellow-cards / red-cards)
-          ...listLeaderboardUrls().map((u) => ({
-            path: `/tournaments/${u.tournament}/${u.leaderboard}`,
-            changefreq: "weekly" as const,
-            priority: "0.7",
-          })),
-          // Phase 2.2 — Evergreen guides
-          ...listGuides().map((g) => ({
-            path: `/guides/${g.slug}`,
-            lastmod: g.updated,
-            changefreq: "monthly" as const,
-            priority: "0.7",
-          })),
-          // Phase 2.2 — Live hubs
-          { path: "/live/today", changefreq: "always" as const, priority: "0.8" },
-          ...["football", "cricket", "mlb", "nba", "nhl", "mls"].map((s) => ({
-            path: `/live/${s}`,
-            changefreq: "always" as const,
-            priority: "0.7",
-          })),
-          // Phase 2.2 — Keyword-target priority boost (overrides earlier entries via dedupe first-writer)
-          ...KEYWORD_TARGETS.map((k) => ({
-            path: k.url,
-            changefreq: "weekly" as const,
-            priority: priorityFromVolume(k.volume),
-          })),
-          // Legacy multi-sport landing pages (redirect for football_wc)
-          ...listTeams().map((t) => ({
-            path: `/team/${t.sport}/${t.slug}`,
-            changefreq: "weekly" as const,
-            priority: "0.5",
-          })),
-          ...listPlayers().map((p) => ({
-            path: `/player/${p.sport}/${p.slug}`,
-            changefreq: "monthly" as const,
-            priority: "0.4",
-          })),
-          ...listH2H().map((h) => ({
-            path: `/vs/${h.sport}/${h.slug}`,
-            changefreq: "monthly" as const,
-            priority: "0.5",
-          })),
-          ...listArchives().map((a) => ({
-            path: `/archive/${a.sport}/${a.year}`,
-            changefreq: "yearly" as const,
-            priority: "0.6",
-          })),
-          ...mlbTeams,
-          ...nbaTeams,
-          ...nhlTeams,
-          ...mlsTeams,
-          ...iplTeams,
-          ...cricketSeries,
-        ];
+        if (!SITEMAP_PARTS.includes(part as SitemapPart)) {
+          return new Response("Sitemap part not found", { status: 404 });
+        }
 
-        const all = dedupe([...STATIC_ROUTES, ...programmatic]);
-
-        const urls = all.map((e) =>
-          [
-            `  <url>`,
-            `    <loc>${absoluteLoc(e.path)}</loc>`,
-            `    <lastmod>${e.lastmod ?? today}</lastmod>`,
-            e.changefreq ? `    <changefreq>${e.changefreq}</changefreq>` : null,
-            e.priority ? `    <priority>${e.priority}</priority>` : null,
-            `  </url>`,
-          ]
-            .filter(Boolean)
-            .join("\n"),
-        );
-
-        const xml = [
-          `<?xml version="1.0" encoding="UTF-8"?>`,
-          `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`,
-          ...urls,
-          `</urlset>`,
-        ].join("\n");
+        const entries = await entriesForPart(part as SitemapPart);
+        const xml = renderUrlset(entries, today);
 
         return new Response(xml, {
           headers: {
             "Content-Type": "application/xml; charset=utf-8",
             // Fresh for 1h at the edge, stale-while-revalidate for 6h.
             "Cache-Control": "public, max-age=3600, s-maxage=3600, stale-while-revalidate=21600",
-            "X-Sitemap-Url-Count": String(all.length),
+            "X-Sitemap-Type": "urlset",
+            "X-Sitemap-Part": part,
+            "X-Sitemap-Url-Count": String(dedupe(entries).length),
           },
         });
       },
