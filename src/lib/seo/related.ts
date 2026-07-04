@@ -338,6 +338,8 @@ export function relatedForLeaguePlayer(
 ): RelatedLink[] {
   const players = leaguePlayersIndex(sport) as Array<{ slug: string; name: string; team?: string; teamSlug?: string }>;
   const others = players.filter((p) => p.slug !== playerSlug);
+  const selfIdx = players.findIndex((p) => p.slug === playerSlug);
+  const ordered = [...ringNeighbors(players, selfIdx, cap), ...others];
   const links: RelatedLink[] = [];
   if (teamSlug) {
     links.push({ label: `Team page`, href: `/${sport}/teams/${teamSlug}` });
@@ -349,7 +351,7 @@ export function relatedForLeaguePlayer(
     links.push({ label: "MLB players hub", href: "/mlb/players" });
   }
   links.push({ label: `${sport.toUpperCase()} champions`, href: `/${sport}/champions` });
-  for (const p of take(others, cap)) {
+  for (const p of take(ordered, cap)) {
     links.push({ label: `${p.name}`, href: `/${sport}/players/${p.slug}` });
   }
   return dedupeByHref(links).slice(0, cap);
@@ -378,7 +380,12 @@ export function relatedForCricketTeam(teamSlug: string, cap = DEFAULT_CAP): Rela
 }
 
 export function relatedForCricketPlayer(playerSlug: string, cap = DEFAULT_CAP): RelatedLink[] {
-  const players = listCricketPlayers().filter((p) => p.slug !== playerSlug);
+  const full = listCricketPlayers();
+  const selfIdx = full.findIndex((p) => p.slug === playerSlug);
+  const players = [
+    ...ringNeighbors(full, selfIdx, cap),
+    ...full.filter((p) => p.slug !== playerSlug),
+  ];
   const links: RelatedLink[] = [
     { label: "All cricket players", href: "/cricket/players" },
     { label: "Cricket rankings", href: "/cricket/rankings" },
