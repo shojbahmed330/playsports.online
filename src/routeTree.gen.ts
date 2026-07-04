@@ -20,7 +20,6 @@ import { Route as NbaRouteImport } from './routes/nba'
 import { Route as MlsRouteImport } from './routes/mls'
 import { Route as MlbRouteImport } from './routes/mlb'
 import { Route as MineRouteImport } from './routes/mine'
-import { Route as HighlightsRouteImport } from './routes/highlights'
 import { Route as FootballRouteImport } from './routes/football'
 import { Route as FeedDotxmlRouteImport } from './routes/feed[.]xml'
 import { Route as DisclaimerRouteImport } from './routes/disclaimer'
@@ -197,11 +196,6 @@ const MlbRoute = MlbRouteImport.update({
 const MineRoute = MineRouteImport.update({
   id: '/mine',
   path: '/mine',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const HighlightsRoute = HighlightsRouteImport.update({
-  id: '/highlights',
-  path: '/highlights',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FootballRoute = FootballRouteImport.update({
@@ -435,9 +429,9 @@ const LiveSportRoute = LiveSportRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const HighlightsSlugRoute = HighlightsSlugRouteImport.update({
-  id: '/$slug',
-  path: '/$slug',
-  getParentRoute: () => HighlightsRoute,
+  id: '/highlights/$slug',
+  path: '/highlights/$slug',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const GuidesSlugRoute = GuidesSlugRouteImport.update({
   id: '/guides/$slug',
@@ -829,7 +823,6 @@ export interface FileRoutesByFullPath {
   '/disclaimer': typeof DisclaimerRoute
   '/feed.xml': typeof FeedDotxmlRoute
   '/football': typeof FootballRouteWithChildren
-  '/highlights': typeof HighlightsRouteWithChildren
   '/mine': typeof MineRoute
   '/mlb': typeof MlbRouteWithChildren
   '/mls': typeof MlsRouteWithChildren
@@ -964,7 +957,6 @@ export interface FileRoutesByTo {
   '/disclaimer': typeof DisclaimerRoute
   '/feed.xml': typeof FeedDotxmlRoute
   '/football': typeof FootballRouteWithChildren
-  '/highlights': typeof HighlightsRouteWithChildren
   '/mine': typeof MineRoute
   '/players': typeof PlayersRoute
   '/premium': typeof PremiumRoute
@@ -1097,7 +1089,6 @@ export interface FileRoutesById {
   '/disclaimer': typeof DisclaimerRoute
   '/feed.xml': typeof FeedDotxmlRoute
   '/football': typeof FootballRouteWithChildren
-  '/highlights': typeof HighlightsRouteWithChildren
   '/mine': typeof MineRoute
   '/mlb': typeof MlbRouteWithChildren
   '/mls': typeof MlsRouteWithChildren
@@ -1235,7 +1226,6 @@ export interface FileRouteTypes {
     | '/disclaimer'
     | '/feed.xml'
     | '/football'
-    | '/highlights'
     | '/mine'
     | '/mlb'
     | '/mls'
@@ -1370,7 +1360,6 @@ export interface FileRouteTypes {
     | '/disclaimer'
     | '/feed.xml'
     | '/football'
-    | '/highlights'
     | '/mine'
     | '/players'
     | '/premium'
@@ -1502,7 +1491,6 @@ export interface FileRouteTypes {
     | '/disclaimer'
     | '/feed.xml'
     | '/football'
-    | '/highlights'
     | '/mine'
     | '/mlb'
     | '/mls'
@@ -1639,7 +1627,6 @@ export interface RootRouteChildren {
   DisclaimerRoute: typeof DisclaimerRoute
   FeedDotxmlRoute: typeof FeedDotxmlRoute
   FootballRoute: typeof FootballRouteWithChildren
-  HighlightsRoute: typeof HighlightsRouteWithChildren
   MineRoute: typeof MineRoute
   MlbRoute: typeof MlbRouteWithChildren
   MlsRoute: typeof MlsRouteWithChildren
@@ -1652,6 +1639,7 @@ export interface RootRouteChildren {
   TermsRoute: typeof TermsRoute
   UnsubscribeRoute: typeof UnsubscribeRoute
   GuidesSlugRoute: typeof GuidesSlugRoute
+  HighlightsSlugRoute: typeof HighlightsSlugRoute
   LiveSportRoute: typeof LiveSportRoute
   LiveTodayRoute: typeof LiveTodayRoute
   ApiPublicTrackClickRoute: typeof ApiPublicTrackClickRoute
@@ -1743,13 +1731,6 @@ declare module '@tanstack/react-router' {
       path: '/mine'
       fullPath: '/mine'
       preLoaderRoute: typeof MineRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/highlights': {
-      id: '/highlights'
-      path: '/highlights'
-      fullPath: '/highlights'
-      preLoaderRoute: typeof HighlightsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/football': {
@@ -2076,10 +2057,10 @@ declare module '@tanstack/react-router' {
     }
     '/highlights/$slug': {
       id: '/highlights/$slug'
-      path: '/$slug'
+      path: '/highlights/$slug'
       fullPath: '/highlights/$slug'
       preLoaderRoute: typeof HighlightsSlugRouteImport
-      parentRoute: typeof HighlightsRoute
+      parentRoute: typeof rootRouteImport
     }
     '/guides/$slug': {
       id: '/guides/$slug'
@@ -2709,18 +2690,6 @@ const FootballRouteWithChildren = FootballRoute._addFileChildren(
   FootballRouteChildren,
 )
 
-interface HighlightsRouteChildren {
-  HighlightsSlugRoute: typeof HighlightsSlugRoute
-}
-
-const HighlightsRouteChildren: HighlightsRouteChildren = {
-  HighlightsSlugRoute: HighlightsSlugRoute,
-}
-
-const HighlightsRouteWithChildren = HighlightsRoute._addFileChildren(
-  HighlightsRouteChildren,
-)
-
 interface MlbPlayersRouteChildren {
   MlbPlayersSlugRoute: typeof MlbPlayersSlugRoute
 }
@@ -2938,7 +2907,6 @@ const rootRouteChildren: RootRouteChildren = {
   DisclaimerRoute: DisclaimerRoute,
   FeedDotxmlRoute: FeedDotxmlRoute,
   FootballRoute: FootballRouteWithChildren,
-  HighlightsRoute: HighlightsRouteWithChildren,
   MineRoute: MineRoute,
   MlbRoute: MlbRouteWithChildren,
   MlsRoute: MlsRouteWithChildren,
@@ -2951,6 +2919,7 @@ const rootRouteChildren: RootRouteChildren = {
   TermsRoute: TermsRoute,
   UnsubscribeRoute: UnsubscribeRoute,
   GuidesSlugRoute: GuidesSlugRoute,
+  HighlightsSlugRoute: HighlightsSlugRoute,
   LiveSportRoute: LiveSportRoute,
   LiveTodayRoute: LiveTodayRoute,
   ApiPublicTrackClickRoute: ApiPublicTrackClickRoute,

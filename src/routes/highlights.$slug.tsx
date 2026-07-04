@@ -1,5 +1,5 @@
 import { createFileRoute, notFound, Link } from "@tanstack/react-router";
-import { getHighlightBySlug, listHighlights } from "@/lib/seo/entities";
+import { getHighlightBySlug } from "@/lib/seo/entities";
 import { slugify } from "@/lib/seo/programmatic";
 import { canonical } from "@/lib/seo/canonical";
 import { breadcrumbList, videoObject, faqPage, ldScript } from "@/lib/seo/jsonld";
