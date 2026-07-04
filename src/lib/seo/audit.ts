@@ -25,7 +25,8 @@ import {
   listCricketTournaments,
 } from "./cricket-entities";
 import { KEYWORD_TARGETS } from "./keyword-map";
-import { listCampaignSlugs } from "./programmatic-pages";
+import { listArchives } from "./programmatic";
+import { listCampaignSlugs, listTopScorerYears } from "./programmatic-pages";
 
 export type AuditLink = { from: string; to: string };
 export type BrokenLink = AuditLink & { reason: string };
@@ -89,6 +90,8 @@ export function collectAllInternalPaths(): string[] {
 
   // Football campaign programmatic pages (team-year combinations).
   for (const c of listCampaignSlugs()) out.add(`/football/campaigns/${c.slug}`);
+  for (const y of listTopScorerYears()) out.add(`/football/top-scorers/${y}`);
+  for (const a of listArchives()) out.add(`/archive/${a.sport}/${a.year}`);
 
   // Guarantee the well-known team-year combinations exist even if the loader failed.
   for (const slug of FOOTBALL_TEAM_SLUGS) {
