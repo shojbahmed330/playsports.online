@@ -56,12 +56,20 @@ function AdminPage() {
   const navigate = useNavigate();
   const { user, isAdmin, loading, roleLoading } = useAuth();
 
+  // Track whether we've completed the initial auth+role check at least once.
+  // After that, we never unmount AdminShell for transient recheck cycles
+  // (e.g. Supabase USER_UPDATED events, token refreshes) — otherwise
+  // in-flight AI generation loops and the current tab selection get wiped.
+  const settledOnceRef = useRef(false);
+  if (!loading && user && !roleLoading) settledOnceRef.current = true;
+
   useEffect(() => {
     if (loading) return;
     if (!user) navigate({ to: "/auth", replace: true });
   }, [user, loading, navigate]);
 
-  if (loading || (user && roleLoading)) {
+  // Only block on the *initial* load. Subsequent rechecks keep the shell mounted.
+  if (!settledOnceRef.current && (loading || (user && roleLoading))) {
     return (
       <div className="min-h-screen grid place-items-center">
         <Loader2 className="size-7 text-gold animate-spin" />
@@ -69,7 +77,8 @@ function AdminPage() {
     );
   }
   if (!user) return null;
-  if (!isAdmin) return <NotAuthorized />;
+  if (!isAdmin && settledOnceRef.current === false) return <NotAuthorized />;
+  if (!isAdmin && !roleLoading) return <NotAuthorized />;
 
   return <AdminShell />;
 }
