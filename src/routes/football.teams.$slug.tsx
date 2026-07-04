@@ -146,6 +146,25 @@ function FootballTeamPage() {
         </div>
       </section>
 
+      {stats.allScorers && stats.allScorers.length > stats.topScorers.length && (
+        <section className="mt-8">
+          <h2 className="text-xl font-semibold mb-3">All {team.name} World Cup Scorers</h2>
+          <div className="flex flex-wrap gap-2">
+            {stats.allScorers.map((p: { name: string; goals: number }) => (
+              <Link
+                key={p.name}
+                to="/football/players/$slug"
+                params={{ slug: slugify(p.name) }}
+                className="px-3 py-1 rounded-full bg-muted text-xs hover:bg-accent"
+              >
+                {p.name} <span className="text-muted-foreground">· {p.goals}</span>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
+
       <FaqSection
         title={`Frequently asked about ${team.name}`}
         items={
