@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import {
@@ -56,12 +56,20 @@ function AdminPage() {
   const navigate = useNavigate();
   const { user, isAdmin, loading, roleLoading } = useAuth();
 
+  // Track whether we've completed the initial auth+role check at least once.
+  // After that, we never unmount AdminShell for transient recheck cycles
+  // (e.g. Supabase USER_UPDATED events, token refreshes) — otherwise
+  // in-flight AI generation loops and the current tab selection get wiped.
+  const settledOnceRef = useRef(false);
+  if (!loading && user && !roleLoading) settledOnceRef.current = true;
+
   useEffect(() => {
     if (loading) return;
     if (!user) navigate({ to: "/auth", replace: true });
   }, [user, loading, navigate]);
 
-  if (loading || (user && roleLoading)) {
+  // Only block on the *initial* load. Subsequent rechecks keep the shell mounted.
+  if (!settledOnceRef.current && (loading || (user && roleLoading))) {
     return (
       <div className="min-h-screen grid place-items-center">
         <Loader2 className="size-7 text-gold animate-spin" />
@@ -69,7 +77,8 @@ function AdminPage() {
     );
   }
   if (!user) return null;
-  if (!isAdmin) return <NotAuthorized />;
+  if (!isAdmin && settledOnceRef.current === false) return <NotAuthorized />;
+  if (!isAdmin && !roleLoading) return <NotAuthorized />;
 
   return <AdminShell />;
 }
@@ -98,7 +107,14 @@ function AdminShell() {
   const [year, setYear] = useState<number>(2026);
   const [search, setSearch] = useState("");
   const [missingOnly, setMissingOnly] = useState(false);
-  const [section, setSection] = useState<AdminSection>("overview");
+  const [section, setSection] = useState<AdminSection>(() => {
+    if (typeof window === "undefined") return "overview";
+    const saved = window.localStorage.getItem("admin.section");
+    return (saved as AdminSection) || "overview";
+  });
+  useEffect(() => {
+    try { window.localStorage.setItem("admin.section", section); } catch { /* ignore quota */ }
+  }, [section]);
   const [paletteOpen, setPaletteOpen] = useState(false);
 
   // ⌘K / Ctrl+K to open quick jump.
