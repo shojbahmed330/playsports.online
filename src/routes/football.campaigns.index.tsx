@@ -37,7 +37,7 @@ export const Route = createFileRoute("/football/campaigns/")({
 function CampaignsIndex() {
   const all = listCampaignSlugs();
   const years = useMemo(() => Array.from(new Set(all.map((c) => c.year))).sort((a, b) => b - a), [all]);
-  const [year, setYear] = useState<number | "all">(years[0] ?? "all");
+  const [year, setYear] = useState<number | "all">("all");
   const [q, setQ] = useState("");
   const filtered = useMemo(() => {
     return all.filter((c) => {
@@ -79,7 +79,7 @@ function CampaignsIndex() {
       </div>
 
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4">
-        {filtered.slice(0, 400).map((c) => (
+        {filtered.map((c) => (
           <Link
             key={c.slug}
             to="/football/campaigns/$slug"
