@@ -5,6 +5,8 @@ import { breadcrumbList, athlete, faqPage, ldScript } from "@/lib/seo/jsonld";
 import { AdSlot } from "@/components/ads/AdSlot";
 import { readCachedFaqs } from "@/lib/ai-faqs.server";
 import { FaqSection } from "@/components/seo/FaqSection";
+import { RelatedLinks } from "@/components/seo/RelatedLinks";
+import { relatedForFootballPlayer } from "@/lib/seo/related";
 
 export const Route = createFileRoute("/football/players/$slug")({
   loader: async ({ params }) => {
@@ -153,6 +155,11 @@ function FootballPlayerPage() {
           </div>
         </section>
       )}
+
+      <RelatedLinks
+        title={`More World Cup stats for ${player.name}`}
+        links={relatedForFootballPlayer(player.slug, player.team, 10)}
+      />
     </div>
   );
 }

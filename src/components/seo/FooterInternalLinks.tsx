@@ -56,11 +56,23 @@ const TOP_TEAMS: Array<{ label: string; href: string }> = [
 
 const STAR_PLAYERS: Array<{ label: string; href: string }> = [
   { label: "Lionel Messi", href: "/football/players/lionel-messi" },
+  { label: "Messi goals", href: "/football/players/lionel-messi/world-cup-goals" },
+  { label: "Messi cards", href: "/football/players/lionel-messi/world-cup-cards" },
   { label: "Cristiano Ronaldo", href: "/football/players/cristiano-ronaldo" },
+  { label: "Ronaldo goals", href: "/football/players/cristiano-ronaldo/world-cup-goals" },
+  { label: "Ronaldo cards", href: "/football/players/cristiano-ronaldo/world-cup-cards" },
   { label: "Kylian Mbappé", href: "/football/players/kylian-mbappe" },
+  { label: "Mbappé goals", href: "/football/players/kylian-mbappe/world-cup-goals" },
+  { label: "Mbappé cards", href: "/football/players/kylian-mbappe/world-cup-cards" },
   { label: "Neymar", href: "/football/players/neymar" },
+  { label: "Neymar goals", href: "/football/players/neymar/world-cup-goals" },
+  { label: "Neymar cards", href: "/football/players/neymar/world-cup-cards" },
   { label: "Vinícius Júnior", href: "/football/players/vinicius-junior" },
+  { label: "Vinícius goals", href: "/football/players/vinicius-junior/world-cup-goals" },
+  { label: "Vinícius cards", href: "/football/players/vinicius-junior/world-cup-cards" },
   { label: "Jude Bellingham", href: "/football/players/jude-bellingham" },
+  { label: "Bellingham goals", href: "/football/players/jude-bellingham/world-cup-goals" },
+  { label: "Bellingham cards", href: "/football/players/jude-bellingham/world-cup-cards" },
 ];
 
 const GUIDES: Array<{ label: string; href: string }> = [
