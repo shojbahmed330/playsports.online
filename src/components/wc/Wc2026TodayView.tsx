@@ -4,6 +4,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { Link } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { Flame, Clock, CheckCircle2, CalendarClock } from "lucide-react";
 import { getWc2026Fixtures, type Wc2026Fixture } from "@/lib/wc2026.functions";
 import { derivePulse } from "@/lib/football-live";
@@ -15,6 +16,7 @@ import { FootballPitchSkeleton } from "@/components/football/FootballSkeleton";
 const LIVE_MS = 20 * 1000;
 
 export function Wc2026TodayView() {
+  const [hydrated, setHydrated] = useState(false);
   const fn = useServerFn(getWc2026Fixtures);
   const q = useQuery({
     queryKey: ["wc2026", "fixtures"],
@@ -24,7 +26,11 @@ export function Wc2026TodayView() {
     retry: 1,
   });
 
-  if (q.isLoading) return <FootballPitchSkeleton rows={4} />;
+  useEffect(() => {
+    setHydrated(true);
+  }, []);
+
+  if (!hydrated || q.isLoading) return <FootballPitchSkeleton rows={4} />;
 
   const fixtures = q.data?.fixtures ?? [];
   const pulse = derivePulse(fixtures);
