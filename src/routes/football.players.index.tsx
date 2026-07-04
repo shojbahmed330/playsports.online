@@ -40,7 +40,8 @@ export const Route = createFileRoute("/football/players/")({
 
 function FootballPlayersIndex() {
   const { players } = Route.useLoaderData();
-  const groups = new Map<string, typeof players>();
+  type P = (typeof players)[number];
+  const groups = new Map<string, P[]>();
   for (const p of players) {
     const letter = (p.name[0] ?? "#").toUpperCase();
     const key = /[A-Z]/.test(letter) ? letter : "#";

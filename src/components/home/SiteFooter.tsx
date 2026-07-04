@@ -38,6 +38,7 @@ export function SiteFooter() {
 
           <FooterCol title="Explore" accent="from-indigo-500/20 to-transparent">
             <li><Link to="/players" className="hover:text-amber-400 transition-colors">🥇 Player Stats</Link></li>
+            <li><Link to="/football/players" className="hover:text-amber-400 transition-colors">⚽ All World Cup Players (A–Z)</Link></li>
             <li><Link to="/mine" className="hover:text-amber-400 transition-colors">⭐ My Feed</Link></li>
             <li><Link to="/cricket/history" className="hover:text-emerald-400 transition-colors">📜 Cricket History</Link></li>
             <li><Link to="/mlb/history" className="hover:text-sky-400 transition-colors">📜 MLB History</Link></li>
