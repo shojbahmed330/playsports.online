@@ -39,7 +39,6 @@ import {
   nbaSeoTeamUrls,
   nbaSeoPlayerUrls,
   nbaSeoFinalsUrls,
-  type DynamicUrl,
 } from "@/lib/seo/sitemap-sources";
 
 const BASE_URL = "https://www.playsports.online";
