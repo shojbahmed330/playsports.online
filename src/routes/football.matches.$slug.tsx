@@ -1,5 +1,5 @@
 import { createFileRoute, notFound, Link } from "@tanstack/react-router";
-import { getMatchBySlug, findHighlightUrl, listMatchSlugs } from "@/lib/seo/entities";
+import { getMatchBySlug, findHighlightUrl } from "@/lib/seo/entities";
 import { slugify } from "@/lib/seo/programmatic";
 import { canonical } from "@/lib/seo/canonical";
 import { breadcrumbList, sportsEvent, faqPage, articlePage, ldScript } from "@/lib/seo/jsonld";
