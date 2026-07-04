@@ -124,6 +124,35 @@ function buildLinkGraph(): AuditLink[] {
       links.push({ from: "/", to: `/${seg}` });
     }
   }
+  // Year-based hubs: link every archive/top-scorer/championship year to its
+  // neighbors so early editions (1934, 1938, and other early years without
+  // rich per-match data) still receive inbound links.
+  const archiveYears = [...new Set(listArchives().map((a) => a.year))].sort((a, b) => a - b);
+  for (let i = 0; i < archiveYears.length; i++) {
+    const y = archiveYears[i];
+    for (const step of [-2, -1, 1, 2]) {
+      const n = archiveYears[i + step];
+      if (n != null) links.push({ from: `/archive/football_wc/${y}`, to: `/archive/football_wc/${n}` });
+    }
+    links.push({ from: "/football", to: `/archive/football_wc/${y}` });
+    links.push({ from: "/football/campaigns", to: `/archive/football_wc/${y}` });
+  }
+  const topScorerYears = [...listTopScorerYears()].sort((a, b) => a - b);
+  for (let i = 0; i < topScorerYears.length; i++) {
+    const y = topScorerYears[i];
+    for (const step of [-2, -1, 1, 2]) {
+      const n = topScorerYears[i + step];
+      if (n != null) links.push({ from: `/football/top-scorers/${y}`, to: `/football/top-scorers/${n}` });
+    }
+    links.push({ from: "/football/top-scorers", to: `/football/top-scorers/${y}` });
+    links.push({ from: `/archive/football_wc/${y}`, to: `/football/top-scorers/${y}` });
+  }
+  // Championship editions hub → each year (guarantees ≥1 inbound from the hub
+  // in addition to the ring provided by relatedForLeagueChampionship).
+  for (const e of listWorldSeries())   links.push({ from: "/mlb/champions", to: `/mlb/world-series/${e.year}` });
+  for (const e of listNbaFinals())     links.push({ from: "/nba/champions", to: `/nba/finals/${e.year}` });
+  for (const e of listStanleyCups())   links.push({ from: "/nhl/champions", to: `/nhl/stanley-cup/${e.year}` });
+  for (const e of listMlsCups())       links.push({ from: "/mls/champions", to: `/mls/cup/${e.year}` });
 
   return links;
 }
