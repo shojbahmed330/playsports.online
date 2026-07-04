@@ -107,7 +107,7 @@
   html, body {
     background-color: var(--color-background);
     color: var(--color-foreground);
-    font-family: var(--font-sans);
+    font-family: var(--font-sans), "Noto Color Emoji", "Apple Color Emoji", "Segoe UI Emoji";
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
   }

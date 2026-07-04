@@ -125,6 +125,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     links: [
       { rel: "stylesheet", href: appCss },
+      // Noto Color Emoji: makes flag emojis render on Windows Chromium
+      // (default segoe UI emoji font has no country-flag glyphs; Chrome falls
+      // back to the two-letter regional-indicator codes like "CA" / "MA").
+      { rel: "preconnect", href: "https://fonts.googleapis.com", crossOrigin: "anonymous" },
+      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
+      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Noto+Color+Emoji&display=swap" },
       { rel: "manifest", href: "/manifest.webmanifest" },
       { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
       { rel: "icon", type: "image/png", sizes: "192x192", href: "/icon-192.png" },
