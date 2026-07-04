@@ -76,7 +76,6 @@ const PRESETS: Preset[] = [
           tournament: `FIFA World Cup ${m.tournament_year} — ${m.round}`,
           context: m.stadium ? `Venue: ${m.stadium}${m.city ? ", " + m.city : ""}` : "",
         })),
-        })),
   },
   {
     id: "cricket-highlights",
