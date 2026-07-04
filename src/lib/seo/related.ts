@@ -198,13 +198,22 @@ export function relatedForFootballTeam(teamName: string, cap = DEFAULT_CAP): Rel
   const teams = listTeams();
   const selfIdx = teams.findIndex((t) => t.slug === slug);
   const nearbyTeams = ringNeighbors(teams, selfIdx, cap).filter((t) => t.slug !== slug);
+  const latestCampaign = listCampaignSlugs()
+    .filter((c) => slugify(c.team) === slug)
+    .sort((a, b) => b.year - a.year)[0];
   const links: RelatedLink[] = [
     { label: `${teamName} — squad & profile`, href: `/football/teams/${slug}` },
-    { label: `${teamName} World Cup campaigns`, href: `/football/campaigns/${slug}-world-cup-2022` },
     { label: "All top scorers by tournament", href: "/football/top-scorers" },
     { label: "All-time World Cup top scorers", href: "/football/top-scorers/all-time" },
     { label: "Football hub", href: "/football" },
   ];
+  if (latestCampaign) {
+    links.push({
+      label: `${teamName} World Cup campaigns`,
+      href: `/football/campaigns/${latestCampaign.slug}`,
+      hint: `latest: ${latestCampaign.year}`,
+    });
+  }
   for (const t of nearbyTeams) {
     links.push({ label: `${t.name} — team profile`, href: `/football/teams/${t.slug}` });
   }
