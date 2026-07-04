@@ -76,6 +76,107 @@ const PRESETS: Preset[] = [
           tournament: `FIFA World Cup ${m.tournament_year} — ${m.round}`,
           context: m.stadium ? `Venue: ${m.stadium}${m.city ? ", " + m.city : ""}` : "",
         })),
+        })),
+  },
+  {
+    id: "cricket-highlights",
+    label: "Cricket — Highlighted matches",
+    sport: "cricket",
+    load: () =>
+      listCricketHighlights().map((h) => ({
+        sport: "cricket",
+        match_key: h.slug,
+        slug: h.slug,
+        home_team: h.teamA,
+        away_team: h.teamB,
+        home_score: null,
+        away_score: null,
+        match_date: h.date ?? null,
+        tournament: `${h.tournament}${h.stage ? " — " + h.stage : ""} (${h.format.toUpperCase()})`,
+        context: [h.venue ? `Venue: ${h.venue}` : null, h.result ? `Result: ${h.result}` : null]
+          .filter(Boolean)
+          .join(". "),
+      })),
+  },
+  {
+    id: "mlb-worldseries",
+    label: "MLB — World Series editions",
+    sport: "mlb",
+    load: () =>
+      listWorldSeries().map((w) => ({
+        sport: "mlb",
+        match_key: `world-series-${w.year}`,
+        slug: `world-series-${w.year}`,
+        home_team: w.champion,
+        away_team: w.runnerUp,
+        home_score: null,
+        away_score: null,
+        match_date: String(w.year),
+        tournament: `MLB World Series ${w.year}`,
+        context: [w.result ? `Series result: ${w.result}` : null, w.mvp ? `WS MVP: ${w.mvp}` : null]
+          .filter(Boolean)
+          .join(". "),
+      })),
+  },
+  {
+    id: "nba-finals",
+    label: "NBA — Finals editions",
+    sport: "nba",
+    load: () =>
+      listNbaFinals().map((f) => ({
+        sport: "nba",
+        match_key: `finals-${f.year}`,
+        slug: `finals-${f.year}`,
+        home_team: f.champion,
+        away_team: f.runnerUp,
+        home_score: null,
+        away_score: null,
+        match_date: String(f.year),
+        tournament: `NBA Finals ${f.year} (${f.season})`,
+        context: [f.result ? `Series result: ${f.result}` : null, f.fmvp ? `Finals MVP: ${f.fmvp}` : null]
+          .filter(Boolean)
+          .join(". "),
+      })),
+  },
+  {
+    id: "nhl-stanleycup",
+    label: "NHL — Stanley Cup editions",
+    sport: "nhl",
+    load: () =>
+      listStanleyCups().map((c) => ({
+        sport: "nhl",
+        match_key: `stanley-cup-${c.year}`,
+        slug: `stanley-cup-${c.year}`,
+        home_team: c.champion,
+        away_team: c.runnerUp,
+        home_score: null,
+        away_score: null,
+        match_date: String(c.year),
+        tournament: `NHL Stanley Cup Final ${c.year} (${c.season})`,
+        context: [c.result ? `Series result: ${c.result}` : null, c.fmvp ? `Conn Smythe: ${c.fmvp}` : null]
+          .filter(Boolean)
+          .join(". "),
+      })),
+  },
+  {
+    id: "mls-cup",
+    label: "MLS — Cup finals",
+    sport: "mls",
+    load: () =>
+      listMlsCups().map((c) => ({
+        sport: "mls",
+        match_key: `mls-cup-${c.year}`,
+        slug: `mls-cup-${c.year}`,
+        home_team: c.champion,
+        away_team: c.runnerUp,
+        home_score: null,
+        away_score: null,
+        match_date: String(c.year),
+        tournament: `MLS Cup ${c.year}`,
+        context: [c.result ? `Result: ${c.result}` : null, c.fmvp ? `MVP: ${c.fmvp}` : null]
+          .filter(Boolean)
+          .join(". "),
+      })),
   },
 ];
 
