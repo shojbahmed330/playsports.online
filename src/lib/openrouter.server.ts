@@ -41,7 +41,9 @@ export async function callOpenRouter(opts: {
   if (opts.maxTokens) body.max_tokens = opts.maxTokens;
   if (opts.jsonMode) body.response_format = { type: "json_object" };
 
-  const maxRetries = opts.maxRetries ?? 4;
+  // Default 1 retry — Vercel serverless has a 60s hard timeout; long
+  // exponential backoff would exceed it and the request appears "stuck".
+  const maxRetries = opts.maxRetries ?? 1;
   let attempt = 0;
   let lastErrText = "";
 
