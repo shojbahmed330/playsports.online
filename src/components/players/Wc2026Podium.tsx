@@ -26,7 +26,19 @@ export function Wc2026Podium({
     return Array.from(m.values()).sort((a, b) => b.goals - a.goals);
   }, [live2026Goals]);
 
-  if (ranked.length === 0) return null;
+  if (ranked.length === 0) {
+    return (
+      <section className="relative overflow-hidden rounded-2xl border border-amber-500/30 bg-gradient-to-br from-amber-500/10 via-rose-500/5 to-transparent p-6 text-center">
+        <div className="inline-flex items-center gap-2 rounded-full bg-amber-500/15 ring-1 ring-amber-400/30 px-3 py-1 text-[10px] uppercase tracking-widest text-amber-200 font-bold">
+          <Trophy className="size-3" /> Golden Boot 2026
+        </div>
+        <div className="mt-3 text-sm font-bold text-white">Live race starts once matches kick off</div>
+        <div className="text-xs text-white/60 mt-1">
+          2026 scorers will merge in here automatically as goals happen.
+        </div>
+      </section>
+    );
+  }
 
   const top = ranked[0]!.goals;
   const podium = ranked.slice(0, 3);
