@@ -144,8 +144,8 @@ export function relatedForFootballTeam(teamName: string, cap = DEFAULT_CAP): Rel
   const links: RelatedLink[] = [
     { label: `${teamName} — squad & profile`, href: `/football/teams/${slug}` },
     { label: `${teamName} World Cup campaigns`, href: `/football/campaigns/${slug}-world-cup-2022` },
-    { label: `${teamName} vs top rivals`, href: `/football/matches/${slug}` },
     { label: "All top scorers by tournament", href: "/football/top-scorers" },
+    { label: "All-time World Cup top scorers", href: "/football/top-scorers/all-time" },
     { label: "Football hub", href: "/football" },
   ];
   return dedupeByHref(links).slice(0, cap);
