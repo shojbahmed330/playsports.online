@@ -55,7 +55,8 @@ export function teamStats(name: string) {
   // top scorers for team
   const sc = new Map<string, number>();
   goals.forEach((g) => sc.set(g.name, (sc.get(g.name) ?? 0) + 1));
-  const topScorers = Array.from(sc.entries()).sort((a, b) => b[1] - a[1]).slice(0, 10).map(([name, goals]) => ({ name, goals }));
+  const allScorers = Array.from(sc.entries()).sort((a, b) => b[1] - a[1]).map(([name, goals]) => ({ name, goals }));
+  const topScorers = allScorers.slice(0, 10);
   // win/draw/loss
   let w = 0, d = 0, l = 0, gf = 0, ga = 0;
   matches.forEach((m) => {
@@ -67,7 +68,8 @@ export function teamStats(name: string) {
     else if (my < op) l++;
     else d++;
   });
-  return { goalsTotal: goals.length, cardsTotal: cards.length, matchesPlayed: matches.length, w, d, l, gf, ga, years, topScorers, recentMatches: matches.slice(-10).reverse() };
+  return { goalsTotal: goals.length, cardsTotal: cards.length, matchesPlayed: matches.length, w, d, l, gf, ga, years, topScorers, allScorers, recentMatches: matches.slice(-10).reverse() };
+
 }
 
 // ---------- PLAYERS ----------
@@ -152,6 +154,8 @@ export function archiveStats(year: number) {
     cur.goals++;
     sc.set(g.name, cur);
   });
-  const topScorers = Array.from(sc.values()).sort((a, b) => b.goals - a.goals).slice(0, 10);
-  return { matches, goals, champion, topScorers };
+  const allScorers = Array.from(sc.values()).sort((a, b) => b.goals - a.goals);
+  const topScorers = allScorers.slice(0, 10);
+  return { matches, goals, champion, topScorers, allScorers };
+
 }

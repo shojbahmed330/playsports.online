@@ -86,12 +86,31 @@ function ArchivePage() {
         <ul className="divide-y rounded-lg border">
           {stats.topScorers.map((p: { name: string; team: string; goals: number }) => (
             <li key={p.name} className="flex justify-between px-4 py-2">
-              <Link to="/player/$sport/$slug" params={{ sport: "football_wc", slug: slug(p.name) }} className="hover:underline">{p.name} <span className="text-muted-foreground text-xs">· {p.team}</span></Link>
+              <Link to="/football/players/$slug" params={{ slug: slug(p.name) }} className="hover:underline">{p.name} <span className="text-muted-foreground text-xs">· {p.team}</span></Link>
               <span className="font-mono">{p.goals}</span>
             </li>
           ))}
         </ul>
       </section>
+
+      {stats.allScorers && stats.allScorers.length > stats.topScorers.length && (
+        <section className="mt-6">
+          <h2 className="text-xl font-semibold mb-3">All {year} World Cup Scorers</h2>
+          <div className="flex flex-wrap gap-2">
+            {stats.allScorers.map((p: { name: string; team: string; goals: number }) => (
+              <Link
+                key={p.name}
+                to="/football/players/$slug"
+                params={{ slug: slug(p.name) }}
+                className="px-3 py-1 rounded-full bg-muted text-xs hover:bg-accent"
+              >
+                {p.name} <span className="text-muted-foreground">· {p.team} · {p.goals}</span>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
 
       <AdSlot slot="in_content" />
 
