@@ -125,6 +125,9 @@ export function MatchRecapsCard() {
       }
       done += chunk.length;
       setProgress({ done, total: all.length, generated: gen, skipped: skip, errors: err });
+      if (i + BATCH_SIZE < all.length) {
+        await new Promise((r) => setTimeout(r, INTER_CALL_MS));
+      }
     }
     setRunning(false);
     loadCoverage();
