@@ -3,6 +3,11 @@ import { Sparkles, Loader2, RefreshCw, CheckCircle2, AlertCircle, Newspaper } fr
 import { useServerFn } from "@tanstack/react-start";
 import { generateMatchRecapsBatch, getMatchRecapCoverage } from "@/lib/match-recaps.functions";
 import { listMatchSlugs } from "@/lib/seo/entities";
+import { listCricketHighlights } from "@/lib/seo/cricket-entities";
+import { listWorldSeries } from "@/lib/seo/mlb-entities";
+import { listNbaFinals } from "@/lib/seo/nba-entities";
+import { listStanleyCups } from "@/lib/seo/nhl-entities";
+import { listMlsCups } from "@/lib/seo/mls-entities";
 
 type Preset = {
   id: string;
