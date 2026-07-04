@@ -83,8 +83,8 @@ export function collectAllInternalPaths(): string[] {
   ];
   for (const slug of FOOTBALL_PLAYER_SLUGS) {
     out.add(`/football/players/${slug}`);
-    out.add(`/football/players/${slug}/goals`);
-    out.add(`/football/players/${slug}/assists`);
+    out.add(`/football/players/${slug}/world-cup-goals`);
+    out.add(`/football/players/${slug}/world-cup-cards`);
   }
 
   // Football campaign programmatic pages (team-year combinations).
