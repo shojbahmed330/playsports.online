@@ -79,8 +79,8 @@ export function collectAllInternalPaths(): string[] {
 
   // Football players (star profiles referenced in FooterInternalLinks + related links).
   const FOOTBALL_PLAYER_SLUGS = [
-    "lionel-messi", "cristiano-ronaldo", "kylian-mbappe", "erling-haaland",
-    "neymar-jr", "vinicius-junior", "jude-bellingham",
+    "lionel-messi", "cristiano-ronaldo", "kylian-mbappe",
+    "neymar", "vinicius-junior", "jude-bellingham",
   ];
   for (const slug of FOOTBALL_PLAYER_SLUGS) {
     out.add(`/football/players/${slug}`);
