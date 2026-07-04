@@ -4,6 +4,10 @@ import { useServerFn } from "@tanstack/react-start";
 import { generateAiFaqsBatch, getAiFaqCoverage } from "@/lib/ai-faqs.functions";
 import { listTeams, listPlayers } from "@/lib/seo/programmatic";
 import { listCricketTeams, listCricketPlayers } from "@/lib/seo/cricket-entities";
+import { listMlbTeams, listMlbPlayers } from "@/lib/seo/mlb-entities";
+import { listNbaTeams, listNbaPlayers } from "@/lib/seo/nba-entities";
+import { listNhlTeams, listNhlPlayers } from "@/lib/seo/nhl-entities";
+import { listMlsTeams, listMlsPlayers } from "@/lib/seo/mls-entities";
 
 type Preset = {
   id: string;
@@ -62,9 +66,108 @@ const PRESETS: Preset[] = [
         context: `${p.name} is a professional cricketer.`,
       })),
   },
+  {
+    id: "mlb-teams",
+    label: "MLB Teams",
+    entity_type: "mlb_team",
+    sport: "Baseball",
+    load: () =>
+      listMlbTeams().map((t) => ({
+        entity_slug: t.slug,
+        entity_name: t.name,
+        context: `${t.name} is a Major League Baseball franchise (${t.abbr}).`,
+      })),
+  },
+  {
+    id: "mlb-players",
+    label: "MLB Players (Legends)",
+    entity_type: "mlb_player",
+    sport: "Baseball",
+    load: () =>
+      listMlbPlayers().map((p) => ({
+        entity_slug: p.slug,
+        entity_name: p.name,
+        context: `${p.name} is a Major League Baseball player with career honors.`,
+      })),
+  },
+  {
+    id: "nba-teams",
+    label: "NBA Teams",
+    entity_type: "nba_team",
+    sport: "Basketball",
+    load: () =>
+      listNbaTeams().map((t) => ({
+        entity_slug: t.slug,
+        entity_name: t.name,
+        context: `${t.name} is an NBA franchise.`,
+      })),
+  },
+  {
+    id: "nba-players",
+    label: "NBA Players (Legends)",
+    entity_type: "nba_player",
+    sport: "Basketball",
+    load: () =>
+      listNbaPlayers().map((p) => ({
+        entity_slug: p.slug,
+        entity_name: p.name,
+        context: `${p.name} is an NBA player with career honors.`,
+      })),
+  },
+  {
+    id: "nhl-teams",
+    label: "NHL Teams",
+    entity_type: "nhl_team",
+    sport: "Ice Hockey",
+    load: () =>
+      listNhlTeams().map((t) => ({
+        entity_slug: t.slug,
+        entity_name: t.name,
+        context: `${t.name} is an NHL franchise.`,
+      })),
+  },
+  {
+    id: "nhl-players",
+    label: "NHL Players (Legends)",
+    entity_type: "nhl_player",
+    sport: "Ice Hockey",
+    load: () =>
+      listNhlPlayers().map((p) => ({
+        entity_slug: p.slug,
+        entity_name: p.name,
+        context: `${p.name} is an NHL player with career honors.`,
+      })),
+  },
+  {
+    id: "mls-teams",
+    label: "MLS Teams",
+    entity_type: "mls_team",
+    sport: "Soccer",
+    load: () =>
+      listMlsTeams().map((t) => ({
+        entity_slug: t.slug,
+        entity_name: t.name,
+        context: `${t.name} is a Major League Soccer club.`,
+      })),
+  },
+  {
+    id: "mls-players",
+    label: "MLS Players",
+    entity_type: "mls_player",
+    sport: "Soccer",
+    load: () =>
+      listMlsPlayers().map((p) => ({
+        entity_slug: p.slug,
+        entity_name: p.name,
+        context: `${p.name} is a Major League Soccer player.`,
+      })),
+  },
 ];
 
-const BATCH_SIZE = 10;
+// One item per server call — fits inside Vercel's 60s serverless timeout
+// even if the AI call needs a retry. Client paces between calls.
+const BATCH_SIZE = 1;
+const INTER_CALL_MS = 1200;
 
 export function AiFaqsCard() {
   const runBatch = useServerFn(generateAiFaqsBatch);
