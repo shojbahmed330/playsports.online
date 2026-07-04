@@ -25,7 +25,7 @@ import {
   listCricketTournaments,
 } from "./cricket-entities";
 import { KEYWORD_TARGETS } from "./keyword-map";
-import { listArchives } from "./programmatic";
+import { listArchives, listTeams } from "./programmatic";
 import { listCampaignSlugs, listTopScorerYears } from "./programmatic-pages";
 
 export type AuditLink = { from: string; to: string };
@@ -75,7 +75,7 @@ export function collectAllInternalPaths(): string[] {
     "netherlands", "italy", "belgium", "croatia", "uruguay", "mexico", "usa",
     "japan", "south-korea", "morocco", "senegal", "poland", "switzerland",
   ];
-  for (const slug of FOOTBALL_TEAM_SLUGS) out.add(`/football/teams/${slug}`);
+  for (const t of listTeams()) out.add(`/football/teams/${t.slug}`);
 
   // Football players (star profiles referenced in FooterInternalLinks + related links).
   const FOOTBALL_PLAYER_SLUGS = [
