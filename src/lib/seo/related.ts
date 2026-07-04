@@ -320,16 +320,20 @@ export function relatedForLeagueChampionship(
   cap = DEFAULT_CAP,
 ): RelatedLink[] {
   const editions = leagueChampionshipEditions(sport) as Array<{ year: number; champion?: string }>;
-  const sorted = [...editions].sort((a, b) => b.year - a.year);
-  const prev = sorted.find((e) => e.year < year);
-  const next = [...sorted].reverse().find((e) => e.year > year);
+  const sorted = [...editions].sort((a, b) => a.year - b.year);
+  const selfIdx = sorted.findIndex((e) => e.year === year);
+  const prev = selfIdx > 0 ? sorted[selfIdx - 1] : null;
+  const next = selfIdx >= 0 && selfIdx < sorted.length - 1 ? sorted[selfIdx + 1] : null;
   const base = LEAGUE_CHAMPION_PATH[sport];
   const links: RelatedLink[] = [];
   if (prev) links.push({ label: `${prev.year} — previous edition`, href: `${base}/${prev.year}` });
   if (next) links.push({ label: `${next.year} — next edition`, href: `${base}/${next.year}` });
   links.push({ label: `${sport.toUpperCase()} champions — all-time`, href: `/${sport}/champions` });
+  // Ring around the current year so every edition (oldest included) receives
+  // inbound links from its neighbors, then fill any remaining slots.
+  const ring = ringNeighbors(sorted, selfIdx, cap).filter((e) => e.year !== year);
   const others = sorted.filter((e) => e.year !== year);
-  for (const e of take(others, cap)) {
+  for (const e of take([...ring, ...others], cap)) {
     links.push({ label: `${e.year}${e.champion ? ` — ${e.champion}` : ""}`, href: `${base}/${e.year}` });
   }
   return dedupeByHref(links).slice(0, cap);
