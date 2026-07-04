@@ -560,10 +560,24 @@ export const getWc2026Match = createServerFn({ method: "GET" })
   })
   .handler(async ({ data }) => {
     try {
-      const raw = (await fetchSummary(data.matchId)) as any;
+      let realId = data.matchId;
+      // Sequential match numbers (1..200) from tournament stage pages are
+      // NOT ESPN event ids — resolve them via the fixture list, sorted by
+      // kickoff, so /football/match/1 → first match of the tournament, etc.
+      if (realId > 0 && realId < 10000) {
+        const raw = (await espnGet(
+          `${ESPN_SITE}/scoreboard?dates=${WC_RANGE}&limit=200`,
+          LIVE_TTL_MS,
+        )) as { events?: any[] };
+        const fixtures: Wc2026Fixture[] = (raw.events ?? []).map(mapEvent);
+        fixtures.sort((a, b) => a.startTs - b.startTs);
+        const fx = fixtures[realId - 1];
+        if (!fx) return { fixture: null as Wc2026Fixture | null, error: "Match not found" };
+        realId = fx.id;
+      }
+      const raw = (await fetchSummary(realId)) as any;
       const header = raw?.header;
       if (!header) return { fixture: null as Wc2026Fixture | null, error: "Not found" };
-      // Synthesize an event-shaped object for mapEvent
       const ev = {
         id: header.id,
         date: header.competitions?.[0]?.date,
