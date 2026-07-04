@@ -15,6 +15,8 @@ import {
 } from "@/lib/seo/cricket-entities";
 import { readCachedFaqs } from "@/lib/ai-faqs.server";
 import { FaqSection } from "@/components/seo/FaqSection";
+import { RelatedLinks } from "@/components/seo/RelatedLinks";
+import { relatedForCricketPlayer } from "@/lib/seo/related";
 
 export const Route = createFileRoute("/cricket/players/$slug")({
   loader: async ({ params }) => {
@@ -173,6 +175,8 @@ function CricketPlayerProfile() {
             </ul>
           </section>
         )}
+
+        <RelatedLinks title={`More cricket player pages`} links={relatedForCricketPlayer(player.slug, 12)} />
       </main>
     </div>
   );

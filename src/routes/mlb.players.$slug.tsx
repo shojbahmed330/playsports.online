@@ -4,6 +4,8 @@ import { createFileRoute, notFound, Link } from "@tanstack/react-router";
 import { getMlbPlayerBySlug, getMlbTeamByAbbr } from "@/lib/seo/mlb-entities";
 import { athlete, breadcrumbList, faqPage, ldScript } from "@/lib/seo/jsonld";
 import { canonical } from "@/lib/seo/canonical";
+import { RelatedLinks } from "@/components/seo/RelatedLinks";
+import { relatedForLeaguePlayer } from "@/lib/seo/related";
 
 export const Route = createFileRoute("/mlb/players/$slug")({
   loader: ({ params }) => {
@@ -136,6 +138,8 @@ function PlayerSlugPage() {
           </ul>
         </section>
       ))}
+
+      <RelatedLinks title={`More MLB player pages`} links={relatedForLeaguePlayer("mlb", player.slug, undefined, 12)} />
     </div>
   );
 }
