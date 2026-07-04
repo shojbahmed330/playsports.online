@@ -215,7 +215,7 @@ export function MatchRecapsCard() {
 
       <p className="mt-4 flex items-start gap-2 text-[11px] text-muted-foreground">
         <RefreshCw className="size-3 mt-0.5" />
-        Runs sequentially with ~0.7s pacing to respect AI rate limits. Batches of {BATCH_SIZE} per request.
+        One recap per server call ({INTER_CALL_MS}ms client pacing) — stays inside Vercel's 60s serverless timeout.
       </p>
     </section>
   );
