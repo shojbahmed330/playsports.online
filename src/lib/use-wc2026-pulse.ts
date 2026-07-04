@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { getWc2026Fixtures } from "@/lib/wc2026.functions";
@@ -23,6 +23,7 @@ export interface Wc2026Pulse {
  * Re-uses the exact queryKey football.tsx prefetches so no extra request.
  */
 export function useWc2026Pulse(): Wc2026Pulse {
+  const [hydrated, setHydrated] = useState(false);
   const fixturesFn = useServerFn(getWc2026Fixtures);
   const q = useQuery({
     queryKey: ["wc2026", "fixtures"],
@@ -32,8 +33,12 @@ export function useWc2026Pulse(): Wc2026Pulse {
     retry: 1,
   });
 
+  useEffect(() => {
+    setHydrated(true);
+  }, []);
+
   return useMemo<Wc2026Pulse>(() => {
-    const fixtures = q.data?.fixtures ?? [];
+    const fixtures = hydrated ? q.data?.fixtures ?? [] : [];
     const now = Date.now();
     const todayKey = dateKeyInTz(new Date());
     let liveCount = 0, todayCount = 0, groupToday = 0, knockoutToday = 0;
@@ -63,7 +68,7 @@ export function useWc2026Pulse(): Wc2026Pulse {
     }
 
     return {
-      loading: q.isLoading,
+      loading: !hydrated || q.isLoading,
       total: fixtures.length,
       liveCount,
       todayCount,
@@ -73,5 +78,5 @@ export function useWc2026Pulse(): Wc2026Pulse {
       groupStageOver: hasKnockout && groupRemaining === 0,
       finalToday,
     };
-  }, [q.data, q.isLoading]);
+  }, [hydrated, q.data, q.isLoading]);
 }
