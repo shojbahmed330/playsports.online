@@ -103,9 +103,15 @@ export function Wc2026HighlightsCard() {
       }
       const res = await bulkSet2026Videos(
         targets.map((m) => ({ home: m.home, away: m.away, url: m.video.url })),
+        { overwrite },
       );
-      toast.success(`Imported ${res.added} highlights`, {
-        description: res.skipped ? `${res.skipped} already had a video` : undefined,
+      const parts = [
+        res.added ? `${res.added} added` : null,
+        res.updated ? `${res.updated} replaced` : null,
+        res.skipped ? `${res.skipped} unchanged` : null,
+      ].filter(Boolean).join(" · ");
+      toast.success(overwrite ? "Overwrite complete" : `Imported ${res.added} highlights`, {
+        description: parts || undefined,
       });
       queryClient.invalidateQueries({ queryKey: ["admin_wc_matches", 2026] });
       queryClient.invalidateQueries({ queryKey: ["wc2026", "video_map"] });
