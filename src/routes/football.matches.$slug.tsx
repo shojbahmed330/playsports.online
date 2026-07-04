@@ -1,11 +1,12 @@
 import { createFileRoute, notFound, Link } from "@tanstack/react-router";
-import { getMatchBySlug, findHighlightUrl, listMatchSlugs } from "@/lib/seo/entities";
+import { getMatchBySlug, findHighlightUrl } from "@/lib/seo/entities";
 import { slugify } from "@/lib/seo/programmatic";
 import { canonical } from "@/lib/seo/canonical";
 import { breadcrumbList, sportsEvent, faqPage, articlePage, ldScript } from "@/lib/seo/jsonld";
 import { AdSlot } from "@/components/ads/AdSlot";
 import { readMatchRecap } from "@/lib/match-recaps.server";
 import { MatchRecapArticle } from "@/components/seo/MatchRecapArticle";
+import { relatedMatches } from "@/lib/seo/related";
 
 export const Route = createFileRoute("/football/matches/$slug")({
   loader: async ({ params }) => {
@@ -157,18 +158,15 @@ function MatchSlugPage() {
       <section className="mt-8">
         <h2 className="text-xl font-semibold mb-3">Related matches from World Cup {m.tournament_year}</h2>
         <div className="flex flex-wrap gap-2">
-          {listMatchSlugs()
-            .filter((x) => x.tournament_year === m.tournament_year && x.slug !== m.slug)
-            .slice(0, 12)
+          {relatedMatches(m, 12)
             .map((x) => (
-              <Link
-                key={x.slug}
-                to="/football/matches/$slug"
-                params={{ slug: x.slug }}
+              <a
+                key={x.href}
+                href={x.href}
                 className="px-3 py-1 rounded-full bg-muted text-xs hover:bg-accent"
               >
-                {x.home_team} vs {x.away_team}
-              </Link>
+                {x.label.replace(" — ", " · ")}
+              </a>
             ))}
         </div>
       </section>

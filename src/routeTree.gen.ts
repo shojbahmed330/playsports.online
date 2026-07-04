@@ -34,6 +34,7 @@ import { Route as NhlIndexRouteImport } from './routes/nhl.index'
 import { Route as NbaIndexRouteImport } from './routes/nba.index'
 import { Route as MlsIndexRouteImport } from './routes/mls.index'
 import { Route as MlbIndexRouteImport } from './routes/mlb.index'
+import { Route as HighlightsIndexRouteImport } from './routes/highlights.index'
 import { Route as CricketIndexRouteImport } from './routes/cricket.index'
 import { Route as NhlTeamsRouteImport } from './routes/nhl.teams'
 import { Route as NhlStandingsRouteImport } from './routes/nhl.standings'
@@ -267,6 +268,11 @@ const MlbIndexRoute = MlbIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => MlbRoute,
+} as any)
+const HighlightsIndexRoute = HighlightsIndexRouteImport.update({
+  id: '/highlights/',
+  path: '/highlights/',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const CricketIndexRoute = CricketIndexRouteImport.update({
   id: '/',
@@ -872,6 +878,7 @@ export interface FileRoutesByFullPath {
   '/nhl/standings': typeof NhlStandingsRoute
   '/nhl/teams': typeof NhlTeamsRouteWithChildren
   '/cricket/': typeof CricketIndexRoute
+  '/highlights/': typeof HighlightsIndexRoute
   '/mlb/': typeof MlbIndexRoute
   '/mls/': typeof MlsIndexRoute
   '/nba/': typeof NbaIndexRoute
@@ -1002,6 +1009,7 @@ export interface FileRoutesByTo {
   '/nhl/standings': typeof NhlStandingsRoute
   '/nhl/teams': typeof NhlTeamsRouteWithChildren
   '/cricket': typeof CricketIndexRoute
+  '/highlights': typeof HighlightsIndexRoute
   '/mlb': typeof MlbIndexRoute
   '/mls': typeof MlsIndexRoute
   '/nba': typeof NbaIndexRoute
@@ -1138,6 +1146,7 @@ export interface FileRoutesById {
   '/nhl/standings': typeof NhlStandingsRoute
   '/nhl/teams': typeof NhlTeamsRouteWithChildren
   '/cricket/': typeof CricketIndexRoute
+  '/highlights/': typeof HighlightsIndexRoute
   '/mlb/': typeof MlbIndexRoute
   '/mls/': typeof MlsIndexRoute
   '/nba/': typeof NbaIndexRoute
@@ -1275,6 +1284,7 @@ export interface FileRouteTypes {
     | '/nhl/standings'
     | '/nhl/teams'
     | '/cricket/'
+    | '/highlights/'
     | '/mlb/'
     | '/mls/'
     | '/nba/'
@@ -1405,6 +1415,7 @@ export interface FileRouteTypes {
     | '/nhl/standings'
     | '/nhl/teams'
     | '/cricket'
+    | '/highlights'
     | '/mlb'
     | '/mls'
     | '/nba'
@@ -1540,6 +1551,7 @@ export interface FileRouteTypes {
     | '/nhl/standings'
     | '/nhl/teams'
     | '/cricket/'
+    | '/highlights/'
     | '/mlb/'
     | '/mls/'
     | '/nba/'
@@ -1642,6 +1654,7 @@ export interface RootRouteChildren {
   HighlightsSlugRoute: typeof HighlightsSlugRoute
   LiveSportRoute: typeof LiveSportRoute
   LiveTodayRoute: typeof LiveTodayRoute
+  HighlightsIndexRoute: typeof HighlightsIndexRoute
   ApiPublicTrackClickRoute: typeof ApiPublicTrackClickRoute
   ArchiveSportYearRoute: typeof ArchiveSportYearRoute
   OgTypeSlugDotsvgRoute: typeof OgTypeSlugDotsvgRoute
@@ -1830,6 +1843,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/mlb/'
       preLoaderRoute: typeof MlbIndexRouteImport
       parentRoute: typeof MlbRoute
+    }
+    '/highlights/': {
+      id: '/highlights/'
+      path: '/highlights'
+      fullPath: '/highlights/'
+      preLoaderRoute: typeof HighlightsIndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/cricket/': {
       id: '/cricket/'
@@ -2922,6 +2942,7 @@ const rootRouteChildren: RootRouteChildren = {
   HighlightsSlugRoute: HighlightsSlugRoute,
   LiveSportRoute: LiveSportRoute,
   LiveTodayRoute: LiveTodayRoute,
+  HighlightsIndexRoute: HighlightsIndexRoute,
   ApiPublicTrackClickRoute: ApiPublicTrackClickRoute,
   ArchiveSportYearRoute: ArchiveSportYearRoute,
   OgTypeSlugDotsvgRoute: OgTypeSlugDotsvgRoute,

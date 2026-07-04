@@ -1,8 +1,9 @@
 import { createFileRoute, notFound, Link } from "@tanstack/react-router";
-import { getHighlightBySlug, listHighlights } from "@/lib/seo/entities";
+import { getHighlightBySlug } from "@/lib/seo/entities";
 import { slugify } from "@/lib/seo/programmatic";
 import { canonical } from "@/lib/seo/canonical";
 import { breadcrumbList, videoObject, faqPage, ldScript } from "@/lib/seo/jsonld";
+import { relatedHighlights } from "@/lib/seo/related";
 
 export const Route = createFileRoute("/highlights/$slug")({
   loader: ({ params }) => {
@@ -47,7 +48,7 @@ export const Route = createFileRoute("/highlights/$slug")({
           breadcrumbList([
             { name: "Home", path: "/" },
             { name: "Football", path: "/football" },
-            { name: "Highlights", path: "/football" },
+            { name: "Highlights", path: "/highlights" },
             { name: `${h.teamA} vs ${h.teamB}`, path },
           ]),
         ),
@@ -67,15 +68,13 @@ export const Route = createFileRoute("/highlights/$slug")({
 
 function HighlightPage() {
   const { highlight: h } = Route.useLoaderData();
-  const related = listHighlights()
-    .filter((x) => x.slug !== h.slug && (x.teamA === h.teamA || x.teamB === h.teamA || x.teamA === h.teamB || x.teamB === h.teamB))
-    .slice(0, 8);
+  const related = relatedHighlights(h, 12);
   return (
     <div className="container mx-auto px-4 py-6 pb-20 max-w-4xl">
       <nav className="text-xs text-muted-foreground mb-3">
         <Link to="/" className="hover:underline">Home</Link> /{" "}
         <Link to="/football" className="hover:underline">Football</Link> /{" "}
-        <span>Highlights</span>
+        <Link to="/highlights" className="hover:underline">Highlights</Link>
       </nav>
 
       <h1 className="text-2xl md:text-3xl font-bold mb-2">
@@ -120,14 +119,13 @@ function HighlightPage() {
           <h2 className="text-xl font-semibold mb-3">Related highlights</h2>
           <div className="flex flex-wrap gap-2">
             {related.map((x) => (
-              <Link
-                key={x.slug}
-                to="/highlights/$slug"
-                params={{ slug: x.slug }}
+              <a
+                key={x.href}
+                href={x.href}
                 className="px-3 py-1 rounded-full bg-muted text-xs hover:bg-accent"
               >
-                {x.teamA} vs {x.teamB}
-              </Link>
+                {x.label.replace(" — highlights", "")}
+              </a>
             ))}
           </div>
         </section>
