@@ -11,17 +11,19 @@ import {
   relatedForLeagueChampionship,
   relatedForLeaguePlayer,
   relatedForCricketTeam,
+  relatedForCricketPlayer,
+  relatedForCricketTournament,
   relatedMatches,
   relatedHighlights,
   relatedTournamentStages,
   relatedCampaigns,
 } from "@/lib/seo/related";
 import { listMatchSlugs, listHighlights, WC2026_STAGES } from "@/lib/seo/entities";
-import { listMlbTeams, listWorldSeries } from "@/lib/seo/mlb-entities";
-import { listNbaTeams, listNbaFinals } from "@/lib/seo/nba-entities";
-import { listNhlTeams, listStanleyCups } from "@/lib/seo/nhl-entities";
-import { listMlsTeams, listMlsCups } from "@/lib/seo/mls-entities";
-import { listCricketTeams } from "@/lib/seo/cricket-entities";
+import { listMlbTeams, listWorldSeries, listMlbPlayers } from "@/lib/seo/mlb-entities";
+import { listNbaTeams, listNbaFinals, listNbaPlayers } from "@/lib/seo/nba-entities";
+import { listNhlTeams, listStanleyCups, listNhlPlayers } from "@/lib/seo/nhl-entities";
+import { listMlsTeams, listMlsCups, listMlsPlayers } from "@/lib/seo/mls-entities";
+import { listCricketTeams, listCricketPlayers, listCricketTournaments } from "@/lib/seo/cricket-entities";
 import { listTeams } from "@/lib/seo/programmatic";
 import { listCampaignSlugs } from "@/lib/seo/programmatic-pages";
 
@@ -70,15 +72,21 @@ function buildLinkGraph(): AuditLink[] {
   // Leagues
   for (const t of listMlbTeams()) push(`/mlb/teams/${t.slug}`, relatedForLeagueTeam("mlb", t.slug));
   for (const e of listWorldSeries()) push(`/mlb/world-series/${e.year}`, relatedForLeagueChampionship("mlb", e.year));
+  for (const p of listMlbPlayers()) push(`/mlb/players/${p.slug}`, relatedForLeaguePlayer("mlb", p.slug, undefined, 12));
   for (const t of listNbaTeams()) push(`/nba/teams/${t.slug}`, relatedForLeagueTeam("nba", t.slug));
   for (const e of listNbaFinals()) push(`/nba/finals/${e.year}`, relatedForLeagueChampionship("nba", e.year));
+  for (const p of listNbaPlayers()) push(`/nba/players/${p.slug}`, relatedForLeaguePlayer("nba", p.slug, undefined, 12));
   for (const t of listNhlTeams()) push(`/nhl/teams/${t.slug}`, relatedForLeagueTeam("nhl", t.slug));
   for (const e of listStanleyCups()) push(`/nhl/stanley-cup/${e.year}`, relatedForLeagueChampionship("nhl", e.year));
+  for (const p of listNhlPlayers()) push(`/nhl/players/${p.slug}`, relatedForLeaguePlayer("nhl", p.slug, undefined, 12));
   for (const t of listMlsTeams()) push(`/mls/teams/${t.slug}`, relatedForLeagueTeam("mls", t.slug));
   for (const e of listMlsCups()) push(`/mls/cup/${e.year}`, relatedForLeagueChampionship("mls", e.year));
+  for (const p of listMlsPlayers()) push(`/mls/players/${p.slug}`, relatedForLeaguePlayer("mls", p.slug, undefined, 12));
 
   // Cricket
   for (const t of listCricketTeams()) push(`/cricket/teams/${t.slug}`, relatedForCricketTeam(t.slug));
+  for (const p of listCricketPlayers()) push(`/cricket/players/${p.slug}`, relatedForCricketPlayer(p.slug, 12));
+  for (const t of listCricketTournaments()) push(`/cricket/tournaments/${t.slug}`, relatedForCricketTournament(t.slug, 12));
 
   // Sitewide footer/hub block hits every page → simulate repeated footer edges.
   const footerTargets = [
@@ -115,14 +123,6 @@ function buildLinkGraph(): AuditLink[] {
       links.push({ from: `/${seg}`, to: p });
       links.push({ from: "/", to: `/${seg}` });
     }
-  }
-
-  // Sample player and championship pages should link back into leaders / rosters
-  const players = [
-    ...listMlbTeams().slice(0, 5).map((t) => ({ sport: "mlb" as const, slug: t.slug })),
-  ];
-  for (const p of players) {
-    push(`/${p.sport}/players/${p.slug}`, relatedForLeaguePlayer(p.sport, p.slug, p.slug));
   }
 
   return links;
