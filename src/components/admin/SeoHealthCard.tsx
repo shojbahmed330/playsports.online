@@ -14,6 +14,7 @@ import {
   relatedMatches,
   relatedHighlights,
   relatedTournamentStages,
+  relatedCampaigns,
 } from "@/lib/seo/related";
 import { listMatchSlugs, listHighlights, WC2026_STAGES } from "@/lib/seo/entities";
 import { listMlbTeams, listWorldSeries } from "@/lib/seo/mlb-entities";
@@ -21,6 +22,8 @@ import { listNbaTeams, listNbaFinals } from "@/lib/seo/nba-entities";
 import { listNhlTeams, listStanleyCups } from "@/lib/seo/nhl-entities";
 import { listMlsTeams, listMlsCups } from "@/lib/seo/mls-entities";
 import { listCricketTeams } from "@/lib/seo/cricket-entities";
+import { listTeams } from "@/lib/seo/programmatic";
+import { listCampaignSlugs } from "@/lib/seo/programmatic-pages";
 
 /**
  * Builds a synthetic link graph by asking every entity registry for the
@@ -49,11 +52,20 @@ function buildLinkGraph(): AuditLink[] {
     links.push({ from: "/football", to: `/tournaments/fifa-world-cup-2026/${s.slug}` });
     push(`/tournaments/fifa-world-cup-2026/${s.slug}`, relatedTournamentStages(s.slug, 12));
   }
-  for (const t of ["brazil", "argentina", "france", "germany", "england", "spain", "portugal"]) {
-    push(`/football/teams/${t}`, relatedForFootballTeam(t.replace(/-/g, " ")));
+  links.push({ from: "/football", to: "/football/campaigns" });
+  for (const c of listCampaignSlugs()) {
+    links.push({ from: "/football/campaigns", to: `/football/campaigns/${c.slug}` });
+    push(`/football/campaigns/${c.slug}`, relatedCampaigns(c.slug, 14));
+  }
+  for (const t of listTeams()) {
+    push(`/football/teams/${t.slug}`, relatedForFootballTeam(t.name, 18));
   }
   push("/football/players/lionel-messi", relatedForFootballPlayer("lionel-messi", "Argentina"));
   push("/football/players/cristiano-ronaldo", relatedForFootballPlayer("cristiano-ronaldo", "Portugal"));
+  push("/football/players/kylian-mbappe", relatedForFootballPlayer("kylian-mbappe", "France"));
+  push("/football/players/neymar", relatedForFootballPlayer("neymar", "Brazil"));
+  push("/football/players/vinicius-junior", relatedForFootballPlayer("vinicius-junior", "Brazil"));
+  push("/football/players/jude-bellingham", relatedForFootballPlayer("jude-bellingham", "England"));
 
   // Leagues
   for (const t of listMlbTeams()) push(`/mlb/teams/${t.slug}`, relatedForLeagueTeam("mlb", t.slug));
@@ -72,9 +84,28 @@ function buildLinkGraph(): AuditLink[] {
   const footerTargets = [
     "/football", "/cricket", "/mlb", "/nba", "/nhl", "/mls",
     "/live/today", "/players", "/highlights",
+    "/football/campaigns", "/cricket/ipl", "/cricket/teams", "/cricket/players",
+    "/cricket/tournaments", "/cricket/history", "/mlb/teams", "/nba/teams",
+    "/nba/leaders", "/nhl/teams", "/nhl/leaders", "/mls/teams", "/mls/leaders",
+    "/football/teams/brazil", "/football/teams/argentina", "/football/teams/france",
+    "/football/teams/germany", "/football/teams/england", "/football/teams/spain",
+    "/football/teams/portugal", "/football/teams/netherlands", "/football/teams/italy",
+    "/football/teams/belgium", "/football/teams/croatia", "/football/teams/uruguay",
+    "/football/teams/mexico", "/football/teams/usa", "/football/teams/japan",
+    "/football/teams/south-korea", "/football/teams/morocco", "/football/teams/senegal",
+    "/football/teams/poland", "/football/teams/switzerland",
+    "/football/players/lionel-messi", "/football/players/lionel-messi/world-cup-goals",
+    "/football/players/lionel-messi/world-cup-cards", "/football/players/cristiano-ronaldo",
+    "/football/players/cristiano-ronaldo/world-cup-goals", "/football/players/cristiano-ronaldo/world-cup-cards",
+    "/football/players/kylian-mbappe", "/football/players/kylian-mbappe/world-cup-goals",
+    "/football/players/kylian-mbappe/world-cup-cards", "/football/players/neymar",
+    "/football/players/neymar/world-cup-goals", "/football/players/neymar/world-cup-cards",
+    "/football/players/vinicius-junior", "/football/players/vinicius-junior/world-cup-goals",
+    "/football/players/vinicius-junior/world-cup-cards", "/football/players/jude-bellingham",
+    "/football/players/jude-bellingham/world-cup-goals", "/football/players/jude-bellingham/world-cup-cards",
     ...WC2026_STAGES.map((s) => `/tournaments/fifa-world-cup-2026/${s.slug}`),
   ];
-  for (const from of ["/", "/football", "/cricket", "/mlb", "/nba", "/nhl", "/mls"]) {
+  for (const from of collectAllInternalPaths()) {
     for (const to of footerTargets) links.push({ from, to });
   }
   // Also connect every entity back to its sport hub so depth stays shallow
