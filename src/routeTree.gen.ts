@@ -75,6 +75,7 @@ import { Route as CricketScoresRouteImport } from './routes/cricket.scores'
 import { Route as CricketRankingsRouteImport } from './routes/cricket.rankings'
 import { Route as CricketHistoryRouteImport } from './routes/cricket.history'
 import { Route as FootballTopScorersIndexRouteImport } from './routes/football.top-scorers.index'
+import { Route as FootballPlayersIndexRouteImport } from './routes/football.players.index'
 import { Route as FootballCampaignsIndexRouteImport } from './routes/football.campaigns.index'
 import { Route as CricketTournamentsIndexRouteImport } from './routes/cricket.tournaments.index'
 import { Route as CricketTeamsIndexRouteImport } from './routes/cricket.teams.index'
@@ -473,6 +474,11 @@ const CricketHistoryRoute = CricketHistoryRouteImport.update({
 const FootballTopScorersIndexRoute = FootballTopScorersIndexRouteImport.update({
   id: '/top-scorers/',
   path: '/top-scorers/',
+  getParentRoute: () => FootballRoute,
+} as any)
+const FootballPlayersIndexRoute = FootballPlayersIndexRouteImport.update({
+  id: '/players/',
+  path: '/players/',
   getParentRoute: () => FootballRoute,
 } as any)
 const FootballCampaignsIndexRoute = FootballCampaignsIndexRouteImport.update({
@@ -954,6 +960,7 @@ export interface FileRoutesByFullPath {
   '/cricket/teams/': typeof CricketTeamsIndexRoute
   '/cricket/tournaments/': typeof CricketTournamentsIndexRoute
   '/football/campaigns/': typeof FootballCampaignsIndexRoute
+  '/football/players/': typeof FootballPlayersIndexRoute
   '/football/top-scorers/': typeof FootballTopScorersIndexRoute
   '/api/public/hooks/gsc-sync': typeof ApiPublicHooksGscSyncRoute
   '/api/public/hooks/weekly-digest': typeof ApiPublicHooksWeeklyDigestRoute
@@ -1085,6 +1092,7 @@ export interface FileRoutesByTo {
   '/cricket/teams': typeof CricketTeamsIndexRoute
   '/cricket/tournaments': typeof CricketTournamentsIndexRoute
   '/football/campaigns': typeof FootballCampaignsIndexRoute
+  '/football/players': typeof FootballPlayersIndexRoute
   '/football/top-scorers': typeof FootballTopScorersIndexRoute
   '/api/public/hooks/gsc-sync': typeof ApiPublicHooksGscSyncRoute
   '/api/public/hooks/weekly-digest': typeof ApiPublicHooksWeeklyDigestRoute
@@ -1223,6 +1231,7 @@ export interface FileRoutesById {
   '/cricket/teams/': typeof CricketTeamsIndexRoute
   '/cricket/tournaments/': typeof CricketTournamentsIndexRoute
   '/football/campaigns/': typeof FootballCampaignsIndexRoute
+  '/football/players/': typeof FootballPlayersIndexRoute
   '/football/top-scorers/': typeof FootballTopScorersIndexRoute
   '/api/public/hooks/gsc-sync': typeof ApiPublicHooksGscSyncRoute
   '/api/public/hooks/weekly-digest': typeof ApiPublicHooksWeeklyDigestRoute
@@ -1362,6 +1371,7 @@ export interface FileRouteTypes {
     | '/cricket/teams/'
     | '/cricket/tournaments/'
     | '/football/campaigns/'
+    | '/football/players/'
     | '/football/top-scorers/'
     | '/api/public/hooks/gsc-sync'
     | '/api/public/hooks/weekly-digest'
@@ -1493,6 +1503,7 @@ export interface FileRouteTypes {
     | '/cricket/teams'
     | '/cricket/tournaments'
     | '/football/campaigns'
+    | '/football/players'
     | '/football/top-scorers'
     | '/api/public/hooks/gsc-sync'
     | '/api/public/hooks/weekly-digest'
@@ -1630,6 +1641,7 @@ export interface FileRouteTypes {
     | '/cricket/teams/'
     | '/cricket/tournaments/'
     | '/football/campaigns/'
+    | '/football/players/'
     | '/football/top-scorers/'
     | '/api/public/hooks/gsc-sync'
     | '/api/public/hooks/weekly-digest'
@@ -2139,6 +2151,13 @@ declare module '@tanstack/react-router' {
       path: '/top-scorers'
       fullPath: '/football/top-scorers/'
       preLoaderRoute: typeof FootballTopScorersIndexRouteImport
+      parentRoute: typeof FootballRoute
+    }
+    '/football/players/': {
+      id: '/football/players/'
+      path: '/players'
+      fullPath: '/football/players/'
+      preLoaderRoute: typeof FootballPlayersIndexRouteImport
       parentRoute: typeof FootballRoute
     }
     '/football/campaigns/': {
@@ -2709,6 +2728,7 @@ interface FootballRouteChildren {
   FootballTeamsSlugRoute: typeof FootballTeamsSlugRoute
   FootballTopScorersYearRoute: typeof FootballTopScorersYearRoute
   FootballCampaignsIndexRoute: typeof FootballCampaignsIndexRoute
+  FootballPlayersIndexRoute: typeof FootballPlayersIndexRoute
   FootballTopScorersIndexRoute: typeof FootballTopScorersIndexRoute
 }
 
@@ -2722,6 +2742,7 @@ const FootballRouteChildren: FootballRouteChildren = {
   FootballTeamsSlugRoute: FootballTeamsSlugRoute,
   FootballTopScorersYearRoute: FootballTopScorersYearRoute,
   FootballCampaignsIndexRoute: FootballCampaignsIndexRoute,
+  FootballPlayersIndexRoute: FootballPlayersIndexRoute,
   FootballTopScorersIndexRoute: FootballTopScorersIndexRoute,
 }
 
@@ -2976,13 +2997,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

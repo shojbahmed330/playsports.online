@@ -70,6 +70,7 @@ const STATIC_ROUTES: SitemapEntry[] = [
 
   // Football / FIFA World Cup
   { path: "/football", changefreq: "hourly", priority: "0.9" },
+  { path: "/football/players", changefreq: "weekly", priority: "0.8" },
 
   // Cricket
   { path: "/cricket", changefreq: "hourly", priority: "0.9" },
