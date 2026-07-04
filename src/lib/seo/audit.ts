@@ -87,16 +87,8 @@ export function collectAllInternalPaths(): string[] {
   }
 
   // Football campaign programmatic pages (team-year combinations).
-  try {
-    // Lazy import avoids a cycle if programmatic-pages later imports this file.
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const { listCampaignSlugs } = require("./programmatic-pages") as {
-      listCampaignSlugs: () => Array<{ slug: string }>;
-    };
-    for (const c of listCampaignSlugs()) out.add(`/football/campaigns/${c.slug}`);
-  } catch {
-    // programmatic-pages optional
-  }
+  for (const c of listCampaignSlugs()) out.add(`/football/campaigns/${c.slug}`);
+
   // Guarantee the well-known team-year combinations exist even if the loader failed.
   for (const slug of FOOTBALL_TEAM_SLUGS) {
     for (const year of [2022, 2018, 2014, 2010]) {
