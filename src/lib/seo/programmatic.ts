@@ -154,6 +154,8 @@ export function archiveStats(year: number) {
     cur.goals++;
     sc.set(g.name, cur);
   });
-  const topScorers = Array.from(sc.values()).sort((a, b) => b.goals - a.goals).slice(0, 10);
-  return { matches, goals, champion, topScorers };
+  const allScorers = Array.from(sc.values()).sort((a, b) => b.goals - a.goals);
+  const topScorers = allScorers.slice(0, 10);
+  return { matches, goals, champion, topScorers, allScorers };
+
 }
