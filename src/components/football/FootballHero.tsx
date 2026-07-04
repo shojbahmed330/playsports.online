@@ -19,15 +19,18 @@ export function FootballHero() {
     refetchInterval: LIVE_MS,
     retry: 1,
   });
-  const pulse = derivePulse(q.data?.fixtures);
 
   const [tick, setTick] = useState(0);
+  const [hydrated, setHydrated] = useState(false);
   useEffect(() => {
+    setHydrated(true);
     const id = setInterval(() => setTick((t) => t + 1), 1000);
     return () => clearInterval(id);
   }, []);
 
-  const countdown = pulse.next ? formatCountdown(pulse.next.startTs * 1000 - Date.now()) : null;
+  const pulse = derivePulse(hydrated ? q.data?.fixtures : undefined);
+
+  const countdown = hydrated && pulse.next ? formatCountdown(pulse.next.startTs * 1000 - Date.now()) : null;
   // Touch tick so re-renders flow (lint).
   void tick;
 
