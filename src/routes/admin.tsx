@@ -107,7 +107,14 @@ function AdminShell() {
   const [year, setYear] = useState<number>(2026);
   const [search, setSearch] = useState("");
   const [missingOnly, setMissingOnly] = useState(false);
-  const [section, setSection] = useState<AdminSection>("overview");
+  const [section, setSection] = useState<AdminSection>(() => {
+    if (typeof window === "undefined") return "overview";
+    const saved = window.localStorage.getItem("admin.section");
+    return (saved as AdminSection) || "overview";
+  });
+  useEffect(() => {
+    try { window.localStorage.setItem("admin.section", section); } catch { /* ignore quota */ }
+  }, [section]);
   const [paletteOpen, setPaletteOpen] = useState(false);
 
   // ⌘K / Ctrl+K to open quick jump.
