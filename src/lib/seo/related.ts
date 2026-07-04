@@ -60,6 +60,15 @@ export function relatedMatches(
   cap = DEFAULT_CAP,
 ): RelatedLink[] {
   const all = listMatchSlugs().filter((m) => m.slug !== match.slug);
+  const full = listMatchSlugs();
+  const selfIdx = full.findIndex((m) => m.slug === match.slug);
+  const ring: MatchEntity[] = [];
+  if (selfIdx !== -1 && full.length > 1) {
+    for (let step = 1; step <= Math.min(cap, full.length - 1); step++) {
+      ring.push(full[(selfIdx + step) % full.length]);
+      ring.push(full[(selfIdx - step + full.length) % full.length]);
+    }
+  }
   const sameYear = all.filter((m) => m.tournament_year === match.tournament_year);
   const sameTeamPair = all.filter(
     (m) =>
@@ -71,7 +80,7 @@ export function relatedMatches(
     return Math.abs(Date.parse(m.match_date) - Date.parse(match.match_date));
   };
   const nearby = [...all].sort((a, b) => dateScore(a) - dateScore(b));
-  const ordered = [...sameTeamPair, ...sameYear, ...nearby];
+  const ordered = [...ring, ...sameTeamPair, ...sameYear, ...nearby];
   return dedupeByHref(
     ordered.map((m) => ({
       label: `${m.home_team} vs ${m.away_team} — ${m.tournament_year}`,
@@ -87,6 +96,15 @@ export function relatedHighlights(
   cap = DEFAULT_CAP,
 ): RelatedLink[] {
   const all = listHighlights().filter((h) => h.slug !== highlight.slug);
+  const full = listHighlights();
+  const selfIdx = full.findIndex((h) => h.slug === highlight.slug);
+  const ring: HighlightEntity[] = [];
+  if (selfIdx !== -1 && full.length > 1) {
+    for (let step = 1; step <= Math.min(cap, full.length - 1); step++) {
+      ring.push(full[(selfIdx + step) % full.length]);
+      ring.push(full[(selfIdx - step + full.length) % full.length]);
+    }
+  }
   const sameTeams = all.filter(
     (h) =>
       h.teamA === highlight.teamA ||
@@ -96,7 +114,7 @@ export function relatedHighlights(
   );
   const others = all.filter((h) => !sameTeams.includes(h));
   return dedupeByHref(
-    [...sameTeams, ...others].map((h) => ({
+    [...ring, ...sameTeams, ...others].map((h) => ({
       label: `${h.teamA} vs ${h.teamB} — highlights`,
       href: `/highlights/${h.slug}`,
     })),

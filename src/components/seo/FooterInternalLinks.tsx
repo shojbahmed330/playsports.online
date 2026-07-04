@@ -13,6 +13,13 @@ import { Link } from "@tanstack/react-router";
 
 const POPULAR_TOURNAMENTS: Array<{ label: string; href: string }> = [
   { label: "FIFA World Cup 2026", href: "/football" },
+  { label: "2026 Group Stage", href: "/tournaments/fifa-world-cup-2026/group-stage" },
+  { label: "2026 Round of 32", href: "/tournaments/fifa-world-cup-2026/round-of-32" },
+  { label: "2026 Round of 16", href: "/tournaments/fifa-world-cup-2026/round-of-16" },
+  { label: "2026 Quarter-finals", href: "/tournaments/fifa-world-cup-2026/quarter-finals" },
+  { label: "2026 Semi-finals", href: "/tournaments/fifa-world-cup-2026/semi-finals" },
+  { label: "2026 Third-place", href: "/tournaments/fifa-world-cup-2026/third-place" },
+  { label: "2026 Final", href: "/tournaments/fifa-world-cup-2026/final" },
   { label: "World Cup 2022", href: "/football/campaigns/brazil-world-cup-2022" },
   { label: "World Cup 2018", href: "/football/campaigns/france-world-cup-2018" },
   { label: "IPL", href: "/cricket/ipl" },
@@ -44,6 +51,9 @@ const STAR_PLAYERS: Array<{ label: string; href: string }> = [
 ];
 
 const GUIDES: Array<{ label: string; href: string }> = [
+  { label: "Live sports today", href: "/live/today" },
+  { label: "Player stats hub", href: "/players" },
+  { label: "Football highlights", href: "/highlights" },
   { label: "How the World Cup works", href: "/guides/how-world-cup-works" },
   { label: "Watch football live", href: "/guides/watch-football-live" },
   { label: "Understanding VAR", href: "/guides/what-is-var" },

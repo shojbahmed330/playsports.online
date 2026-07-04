@@ -12,8 +12,10 @@ import {
   relatedForLeaguePlayer,
   relatedForCricketTeam,
   relatedMatches,
+  relatedHighlights,
+  relatedTournamentStages,
 } from "@/lib/seo/related";
-import { listMatchSlugs } from "@/lib/seo/entities";
+import { listMatchSlugs, listHighlights, WC2026_STAGES } from "@/lib/seo/entities";
 import { listMlbTeams, listWorldSeries } from "@/lib/seo/mlb-entities";
 import { listNbaTeams, listNbaFinals } from "@/lib/seo/nba-entities";
 import { listNhlTeams, listStanleyCups } from "@/lib/seo/nhl-entities";
@@ -34,8 +36,18 @@ function buildLinkGraph(): AuditLink[] {
   };
 
   // Football
-  for (const m of listMatchSlugs().slice(0, 200)) {
+  for (const m of listMatchSlugs()) {
     push(`/football/matches/${m.slug}`, relatedMatches(m));
+    links.push({ from: `/archive/football_wc/${m.tournament_year}`, to: `/football/matches/${m.slug}` });
+  }
+  links.push({ from: "/football", to: "/highlights" });
+  for (const h of listHighlights()) {
+    links.push({ from: "/highlights", to: `/highlights/${h.slug}` });
+    push(`/highlights/${h.slug}`, relatedHighlights(h, 12));
+  }
+  for (const s of WC2026_STAGES) {
+    links.push({ from: "/football", to: `/tournaments/fifa-world-cup-2026/${s.slug}` });
+    push(`/tournaments/fifa-world-cup-2026/${s.slug}`, relatedTournamentStages(s.slug, 12));
   }
   for (const t of ["brazil", "argentina", "france", "germany", "england", "spain", "portugal"]) {
     push(`/football/teams/${t}`, relatedForFootballTeam(t.replace(/-/g, " ")));
@@ -56,9 +68,15 @@ function buildLinkGraph(): AuditLink[] {
   // Cricket
   for (const t of listCricketTeams()) push(`/cricket/teams/${t.slug}`, relatedForCricketTeam(t.slug));
 
-  // Footer block hits every page → simulate as edges from "/"
-  const rootTargets = collectAllInternalPaths().slice(0, 40);
-  for (const to of rootTargets) links.push({ from: "/", to });
+  // Sitewide footer/hub block hits every page → simulate repeated footer edges.
+  const footerTargets = [
+    "/football", "/cricket", "/mlb", "/nba", "/nhl", "/mls",
+    "/live/today", "/players", "/highlights",
+    ...WC2026_STAGES.map((s) => `/tournaments/fifa-world-cup-2026/${s.slug}`),
+  ];
+  for (const from of ["/", "/football", "/cricket", "/mlb", "/nba", "/nhl", "/mls"]) {
+    for (const to of footerTargets) links.push({ from, to });
+  }
   // Also connect every entity back to its sport hub so depth stays shallow
   for (const p of collectAllInternalPaths()) {
     const seg = p.split("/")[1];

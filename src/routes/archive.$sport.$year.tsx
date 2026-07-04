@@ -4,6 +4,7 @@ import { canonical } from "@/lib/seo/canonical";
 import { breadcrumbList, faqPage, itemList, ldScript } from "@/lib/seo/jsonld";
 import { AffiliateStrip } from "@/components/affiliates/AffiliateStrip";
 import { AdSlot } from "@/components/ads/AdSlot";
+import { findMatchSlug } from "@/lib/seo/entities";
 
 export const Route = createFileRoute("/archive/$sport/$year")({
   loader: ({ params }) => {
@@ -97,12 +98,25 @@ function ArchivePage() {
       <section className="mt-8">
         <h2 className="text-xl font-semibold mb-3">All Matches ({stats.matches.length})</h2>
         <ul className="space-y-2">
-          {stats.matches.map((m: any, i: number) => (
-            <li key={i} className="flex justify-between border rounded px-3 py-2 text-sm">
+          {stats.matches.map((m: any, i: number) => {
+            const matchSlug = findMatchSlug(m.home_team, m.away_team, year, m.match_date);
+            return (
+            <li key={i} className="flex flex-col gap-1 border rounded px-3 py-2 text-sm sm:flex-row sm:items-center sm:justify-between">
               <span>{m.match_date} · {m.round}</span>
-              <span className="font-medium">{m.home_team} {m.home_score}–{m.away_score} {m.away_team}</span>
+              {matchSlug ? (
+                <Link
+                  to="/football/matches/$slug"
+                  params={{ slug: matchSlug }}
+                  className="font-medium hover:underline"
+                >
+                  {m.home_team} {m.home_score}–{m.away_score} {m.away_team}
+                </Link>
+              ) : (
+                <span className="font-medium">{m.home_team} {m.home_score}–{m.away_score} {m.away_team}</span>
+              )}
             </li>
-          ))}
+            );
+          })}
         </ul>
       </section>
       <section className="mt-8">
