@@ -3,6 +3,11 @@ import { Sparkles, Loader2, RefreshCw, CheckCircle2, AlertCircle, Newspaper } fr
 import { useServerFn } from "@tanstack/react-start";
 import { generateMatchRecapsBatch, getMatchRecapCoverage } from "@/lib/match-recaps.functions";
 import { listMatchSlugs } from "@/lib/seo/entities";
+import { listCricketHighlights } from "@/lib/seo/cricket-entities";
+import { listWorldSeries } from "@/lib/seo/mlb-entities";
+import { listNbaFinals } from "@/lib/seo/nba-entities";
+import { listStanleyCups } from "@/lib/seo/nhl-entities";
+import { listMlsCups } from "@/lib/seo/mls-entities";
 
 type Preset = {
   id: string;
@@ -72,9 +77,111 @@ const PRESETS: Preset[] = [
           context: m.stadium ? `Venue: ${m.stadium}${m.city ? ", " + m.city : ""}` : "",
         })),
   },
+  {
+    id: "cricket-highlights",
+    label: "Cricket — Highlighted matches",
+    sport: "cricket",
+    load: () =>
+      listCricketHighlights().map((h) => ({
+        sport: "cricket",
+        match_key: h.slug,
+        slug: h.slug,
+        home_team: h.teamA,
+        away_team: h.teamB,
+        home_score: null,
+        away_score: null,
+        match_date: h.date ?? null,
+        tournament: `${h.tournament}${h.stage ? " — " + h.stage : ""} (${h.format.toUpperCase()})`,
+        context: [h.venue ? `Venue: ${h.venue}` : null, h.result ? `Result: ${h.result}` : null]
+          .filter(Boolean)
+          .join(". "),
+      })),
+  },
+  {
+    id: "mlb-worldseries",
+    label: "MLB — World Series editions",
+    sport: "mlb",
+    load: () =>
+      listWorldSeries().map((w) => ({
+        sport: "mlb",
+        match_key: `world-series-${w.year}`,
+        slug: `world-series-${w.year}`,
+        home_team: w.champion,
+        away_team: w.runnerUp,
+        home_score: null,
+        away_score: null,
+        match_date: String(w.year),
+        tournament: `MLB World Series ${w.year}`,
+        context: [w.result ? `Series result: ${w.result}` : null, w.mvp ? `WS MVP: ${w.mvp}` : null]
+          .filter(Boolean)
+          .join(". "),
+      })),
+  },
+  {
+    id: "nba-finals",
+    label: "NBA — Finals editions",
+    sport: "nba",
+    load: () =>
+      listNbaFinals().map((f) => ({
+        sport: "nba",
+        match_key: `finals-${f.year}`,
+        slug: `finals-${f.year}`,
+        home_team: f.champion,
+        away_team: f.runnerUp,
+        home_score: null,
+        away_score: null,
+        match_date: String(f.year),
+        tournament: `NBA Finals ${f.year} (${f.season})`,
+        context: [f.result ? `Series result: ${f.result}` : null, f.fmvp ? `Finals MVP: ${f.fmvp}` : null]
+          .filter(Boolean)
+          .join(". "),
+      })),
+  },
+  {
+    id: "nhl-stanleycup",
+    label: "NHL — Stanley Cup editions",
+    sport: "nhl",
+    load: () =>
+      listStanleyCups().map((c) => ({
+        sport: "nhl",
+        match_key: `stanley-cup-${c.year}`,
+        slug: `stanley-cup-${c.year}`,
+        home_team: c.champion,
+        away_team: c.runnerUp,
+        home_score: null,
+        away_score: null,
+        match_date: String(c.year),
+        tournament: `NHL Stanley Cup Final ${c.year} (${c.season})`,
+        context: [c.result ? `Series result: ${c.result}` : null, c.fmvp ? `Conn Smythe: ${c.fmvp}` : null]
+          .filter(Boolean)
+          .join(". "),
+      })),
+  },
+  {
+    id: "mls-cup",
+    label: "MLS — Cup finals",
+    sport: "mls",
+    load: () =>
+      listMlsCups().map((c) => ({
+        sport: "mls",
+        match_key: `mls-cup-${c.year}`,
+        slug: `mls-cup-${c.year}`,
+        home_team: c.champion,
+        away_team: c.runnerUp,
+        home_score: null,
+        away_score: null,
+        match_date: String(c.year),
+        tournament: `MLS Cup ${c.year}`,
+        context: [c.result ? `Result: ${c.result}` : null, c.fmvp ? `MVP: ${c.fmvp}` : null]
+          .filter(Boolean)
+          .join(". "),
+      })),
+  },
 ];
 
-const BATCH_SIZE = 8;
+// One item per server call to stay inside Vercel's 60s serverless timeout.
+const BATCH_SIZE = 1;
+const INTER_CALL_MS = 1200;
 
 export function MatchRecapsCard() {
   const runBatch = useServerFn(generateMatchRecapsBatch);
@@ -123,6 +230,9 @@ export function MatchRecapsCard() {
       }
       done += chunk.length;
       setProgress({ done, total: all.length, generated: gen, skipped: skip, errors: err });
+      if (i + BATCH_SIZE < all.length) {
+        await new Promise((r) => setTimeout(r, INTER_CALL_MS));
+      }
     }
     setRunning(false);
     loadCoverage();
@@ -210,7 +320,7 @@ export function MatchRecapsCard() {
 
       <p className="mt-4 flex items-start gap-2 text-[11px] text-muted-foreground">
         <RefreshCw className="size-3 mt-0.5" />
-        Runs sequentially with ~0.7s pacing to respect AI rate limits. Batches of {BATCH_SIZE} per request.
+        One recap per server call ({INTER_CALL_MS}ms client pacing) — stays inside Vercel's 60s serverless timeout.
       </p>
     </section>
   );

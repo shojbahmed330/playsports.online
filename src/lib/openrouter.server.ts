@@ -41,7 +41,9 @@ export async function callOpenRouter(opts: {
   if (opts.maxTokens) body.max_tokens = opts.maxTokens;
   if (opts.jsonMode) body.response_format = { type: "json_object" };
 
-  const maxRetries = opts.maxRetries ?? 4;
+  // Default 1 retry — Vercel serverless has a 60s hard timeout; long
+  // exponential backoff would exceed it and the request appears "stuck".
+  const maxRetries = opts.maxRetries ?? 1;
   let attempt = 0;
   let lastErrText = "";
 
@@ -91,15 +93,15 @@ export async function callOpenRouter(opts: {
       throw new Error(`OpenRouter ${res.status}: ${lastErrText.slice(0, 300)}`);
     }
 
-    // Compute wait: honor Retry-After header if present, else exponential backoff.
+    // Compute wait: honor Retry-After header if present, else short backoff.
+    // Cap at 5s so a retry can still finish inside Vercel's 60s timeout.
     const retryAfterHeader = res.headers.get("retry-after");
     let waitMs: number;
     if (retryAfterHeader) {
       const asNum = Number(retryAfterHeader);
-      waitMs = Number.isFinite(asNum) ? asNum * 1000 : 5000;
+      waitMs = Number.isFinite(asNum) ? Math.min(5000, asNum * 1000) : 3000;
     } else {
-      // 4s, 8s, 16s, 32s...
-      waitMs = Math.min(32000, 4000 * Math.pow(2, attempt));
+      waitMs = Math.min(5000, 2000 * Math.pow(2, attempt));
     }
     // Jitter ±20% to avoid thundering herd.
     waitMs = Math.round(waitMs * (0.8 + Math.random() * 0.4));
