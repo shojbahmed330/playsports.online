@@ -320,16 +320,20 @@ export function relatedForLeagueChampionship(
   cap = DEFAULT_CAP,
 ): RelatedLink[] {
   const editions = leagueChampionshipEditions(sport) as Array<{ year: number; champion?: string }>;
-  const sorted = [...editions].sort((a, b) => b.year - a.year);
-  const prev = sorted.find((e) => e.year < year);
-  const next = [...sorted].reverse().find((e) => e.year > year);
+  const sorted = [...editions].sort((a, b) => a.year - b.year);
+  const selfIdx = sorted.findIndex((e) => e.year === year);
+  const prev = selfIdx > 0 ? sorted[selfIdx - 1] : null;
+  const next = selfIdx >= 0 && selfIdx < sorted.length - 1 ? sorted[selfIdx + 1] : null;
   const base = LEAGUE_CHAMPION_PATH[sport];
   const links: RelatedLink[] = [];
   if (prev) links.push({ label: `${prev.year} — previous edition`, href: `${base}/${prev.year}` });
   if (next) links.push({ label: `${next.year} — next edition`, href: `${base}/${next.year}` });
   links.push({ label: `${sport.toUpperCase()} champions — all-time`, href: `/${sport}/champions` });
+  // Ring around the current year so every edition (oldest included) receives
+  // inbound links from its neighbors, then fill any remaining slots.
+  const ring = ringNeighbors(sorted, selfIdx, cap).filter((e) => e.year !== year);
   const others = sorted.filter((e) => e.year !== year);
-  for (const e of take(others, cap)) {
+  for (const e of take([...ring, ...others], cap)) {
     links.push({ label: `${e.year}${e.champion ? ` — ${e.champion}` : ""}`, href: `${base}/${e.year}` });
   }
   return dedupeByHref(links).slice(0, cap);
@@ -370,7 +374,13 @@ export function relatedForLeaguePlayer(
 export function relatedForCricketTeam(teamSlug: string, cap = DEFAULT_CAP): RelatedLink[] {
   const teams = listCricketTeams();
   const self = teams.find((t) => t.slug === teamSlug);
+  const selfIdx = teams.findIndex((t) => t.slug === teamSlug);
   const others = teams.filter((t) => t.slug !== teamSlug);
+  // Ring first so every team (not just the top of the list) receives inbound
+  // links from its neighbors; then fill remaining slots from the rest.
+  const ordered = [...ringNeighbors(teams, selfIdx, cap), ...others].filter(
+    (t) => t.slug !== teamSlug,
+  );
   const links: RelatedLink[] = [];
   if (self) {
     links.push({ label: `${self.name} — team history`, href: `/cricket/team-history/${teamSlug}` });
@@ -379,8 +389,10 @@ export function relatedForCricketTeam(teamSlug: string, cap = DEFAULT_CAP): Rela
   links.push({ label: "Cricket teams — all", href: "/cricket/teams" });
   links.push({ label: "Cricket rankings", href: "/cricket/rankings" });
   links.push({ label: "Cricket records", href: "/cricket/records" });
-  for (const t of take(others, cap)) {
+  for (const t of take(ordered, cap)) {
     links.push({ label: `${t.name}`, href: `/cricket/teams/${t.slug}` });
+    // Cross-link the sibling team-history page so it also earns inbound links.
+    links.push({ label: `${t.name} — history`, href: `/cricket/team-history/${t.slug}` });
   }
   return dedupeByHref(links).slice(0, cap);
 }
