@@ -144,8 +144,8 @@ export function relatedForFootballTeam(teamName: string, cap = DEFAULT_CAP): Rel
   const links: RelatedLink[] = [
     { label: `${teamName} — squad & profile`, href: `/football/teams/${slug}` },
     { label: `${teamName} World Cup campaigns`, href: `/football/campaigns/${slug}-world-cup-2022` },
-    { label: `${teamName} vs top rivals`, href: `/football/matches/${slug}` },
     { label: "All top scorers by tournament", href: "/football/top-scorers" },
+    { label: "All-time World Cup top scorers", href: "/football/top-scorers/all-time" },
     { label: "Football hub", href: "/football" },
   ];
   return dedupeByHref(links).slice(0, cap);
@@ -270,7 +270,11 @@ export function relatedForLeaguePlayer(
     links.push({ label: `Team page`, href: `/${sport}/teams/${teamSlug}` });
     links.push({ label: `Team history`, href: `/${sport}/team-history/${teamSlug}` });
   }
-  links.push({ label: `${sport.toUpperCase()} leaders`, href: `/${sport}/leaders` });
+  if (sport !== "mlb") {
+    links.push({ label: `${sport.toUpperCase()} leaders`, href: `/${sport}/leaders` });
+  } else {
+    links.push({ label: "MLB players hub", href: "/mlb/players" });
+  }
   links.push({ label: `${sport.toUpperCase()} champions`, href: `/${sport}/champions` });
   for (const p of take(others, cap)) {
     links.push({ label: `${p.name}`, href: `/${sport}/players/${p.slug}` });
