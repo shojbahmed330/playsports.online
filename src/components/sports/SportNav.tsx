@@ -77,7 +77,7 @@ export function SportNav({ liveCount = 0 }: { liveCount?: number }) {
         {/* Sport dropdown — replaces the tab row */}
         <div className="ml-auto flex items-center gap-2">
           <SportDropdown current={current} tabs={allTabs} pathname={pathname} />
-          {liveCount > 0 && <LiveChip count={liveCount} />}
+          {mounted && liveCount > 0 && <LiveChip count={liveCount} />}
           {showStatsChip && <StatsChip pathname={pathname} />}
         </div>
       </div>
