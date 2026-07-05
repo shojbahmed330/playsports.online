@@ -66,7 +66,7 @@ export function SeoAnalyticsPanel() {
         </div>
         {sync.data && (
           <div className={`mt-3 text-xs ${sync.data.ok ? "text-emerald-400" : "text-red-400"}`}>
-            {sync.data.ok ? `Synced ${sync.data.rows_written ?? 0} rows` : `Error: ${sync.data.error ?? "unknown"}`}
+            {sync.data.ok ? `Synced ${sync.data.rows_written ?? 0} rows` : `Error: ${"error" in sync.data ? sync.data.error : "unknown"}`}
           </div>
         )}
       </div>
