@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { Trophy, BarChart3, ChevronDown, Check } from "lucide-react";
 import { SPORT_LIST } from "@/lib/sports-config";
@@ -33,6 +34,9 @@ const SPORT_GRADS: Record<string, { grad: string; accent: string }> = {
 
 export function SportNav({ liveCount = 0 }: { liveCount?: number }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
 
   const sportTabs: Tab[] = SPORT_LIST.map((s) => ({
     to: `/${s.slug}`,
@@ -73,7 +77,7 @@ export function SportNav({ liveCount = 0 }: { liveCount?: number }) {
         {/* Sport dropdown — replaces the tab row */}
         <div className="ml-auto flex items-center gap-2">
           <SportDropdown current={current} tabs={allTabs} pathname={pathname} />
-          {liveCount > 0 && <LiveChip count={liveCount} />}
+          {mounted && liveCount > 0 && <LiveChip count={liveCount} />}
           {showStatsChip && <StatsChip pathname={pathname} />}
         </div>
       </div>
