@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -91,6 +91,9 @@ export const Route = createFileRoute("/")({
 
 
 function HubPage() {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
   const multiFn = useServerFn(getMultiSportToday);
   const sportsInput = SPORT_LIST.map((s) => ({ path: s.path, league: s.label }));
 
@@ -190,14 +193,18 @@ function HubPage() {
   return (
     <div className="min-h-screen">
       <SportNav liveCount={totalLive} />
-      <LiveTicker items={liveGames} />
+      {mounted && <LiveTicker items={liveGames} />}
 
       {/* 1. COMPACT HERO — single most important match */}
-      <CompactHero
-        liveGames={liveGames}
-        upcomingGames={upcomingGames}
-        wcFeatured={wcFeatured}
-      />
+      {mounted ? (
+        <CompactHero
+          liveGames={liveGames}
+          upcomingGames={upcomingGames}
+          wcFeatured={wcFeatured}
+        />
+      ) : (
+        <CompactHero liveGames={[]} upcomingGames={[]} wcFeatured={null} />
+      )}
 
       {/* 2. STATUS BAR — thin one-liner with TZ + counts */}
       <StatusBar
