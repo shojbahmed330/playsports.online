@@ -85,11 +85,10 @@ export const triggerSeoSync = createServerFn({ method: "POST" })
   .inputValidator((d: { days?: number }) => ({ days: Math.min(Math.max(Number(d?.days) || 7, 1), 28) }))
   .handler(async ({ data, context }) => {
     await assertAdmin(context);
-    const res = await fetch("https://www.playsports.online/api/public/hooks/gsc-sync", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ days: data.days }),
-    });
-    const j = await res.json().catch(() => ({}));
-    return { ok: res.ok, ...j };
+    try {
+      const { runGscSync } = await import("@/lib/gsc-sync.server");
+      return await runGscSync(data.days);
+    } catch (e: any) {
+      return { ok: false, error: String(e?.message ?? e) };
+    }
   });
