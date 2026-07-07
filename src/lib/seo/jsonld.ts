@@ -4,6 +4,18 @@ import { SITE_URL, canonical } from "./canonical";
 
 type Crumb = { name: string; path: string };
 
+const DEFAULT_EVENT_LOCATION = "Venue to be announced";
+const DEFAULT_EVENT_IMAGE = canonical("/og/default/play-sports-event.svg");
+
+function eventOrganizerName(sport: string) {
+  if (/soccer|football/i.test(sport)) return "FIFA World Cup";
+  if (/baseball/i.test(sport)) return "Major League Baseball";
+  if (/basketball/i.test(sport)) return "National Basketball Association";
+  if (/hockey/i.test(sport)) return "National Hockey League";
+  if (/cricket/i.test(sport)) return "International Cricket";
+  return "PlaySports";
+}
+
 export function breadcrumbList(crumbs: Crumb[]) {
   return {
     "@context": "https://schema.org",
@@ -49,18 +61,39 @@ export function sportsEvent(opts: {
     name: opts.name,
     url: canonical(opts.path),
     sport: opts.sport,
+    image: DEFAULT_EVENT_IMAGE,
+    location: {
+      "@type": "Place",
+      name: opts.location ?? DEFAULT_EVENT_LOCATION,
+      address: opts.location ?? DEFAULT_EVENT_LOCATION,
+    },
+    organizer: {
+      "@type": "SportsOrganization",
+      name: eventOrganizerName(opts.sport),
+      url: SITE_URL,
+    },
+    offers: {
+      "@type": "Offer",
+      url: canonical(opts.path),
+      price: "0",
+      priceCurrency: "USD",
+      availability: "https://schema.org/InStock",
+      validFrom: opts.startDate ?? new Date().toISOString(),
+    },
   };
-  if (opts.startDate) node.startDate = opts.startDate;
+  if (opts.startDate) {
+    node.startDate = opts.startDate;
+    node.endDate = opts.startDate;
+  }
   if (opts.status) node.eventStatus = statusMap[opts.status];
   if (opts.homeTeam) node.homeTeam = { "@type": "SportsTeam", name: opts.homeTeam };
   if (opts.awayTeam) node.awayTeam = { "@type": "SportsTeam", name: opts.awayTeam };
-  if (opts.location) {
-    node.location = {
-      "@type": "Place",
-      name: opts.location,
-      address: opts.location,
-    };
-  }
+  const performers = [opts.homeTeam, opts.awayTeam]
+    .filter((team): team is string => Boolean(team))
+    .map((team) => ({ "@type": "SportsTeam", name: team }));
+  node.performer = performers.length
+    ? performers
+    : { "@type": "SportsOrganization", name: eventOrganizerName(opts.sport) };
   return node;
 }
 
