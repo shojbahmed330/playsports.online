@@ -54,7 +54,13 @@ export function sportsEvent(opts: {
   if (opts.status) node.eventStatus = statusMap[opts.status];
   if (opts.homeTeam) node.homeTeam = { "@type": "SportsTeam", name: opts.homeTeam };
   if (opts.awayTeam) node.awayTeam = { "@type": "SportsTeam", name: opts.awayTeam };
-  if (opts.location) node.location = { "@type": "Place", name: opts.location };
+  if (opts.location) {
+    node.location = {
+      "@type": "Place",
+      name: opts.location,
+      address: opts.location,
+    };
+  }
   return node;
 }
 
