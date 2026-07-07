@@ -160,12 +160,27 @@ function dedupe(entries: SitemapEntry[]): SitemapEntry[] {
   return Array.from(seen.values());
 }
 
+/**
+ * Validate a lastmod value. Google Search Console rejects anything that is
+ * not W3C datetime (YYYY-MM-DD or full ISO 8601) with "Invalid date".
+ * Falls back to `today` when the value is missing, malformed, or not a real
+ * date (e.g. "1930", "2026-13-40", or a non-ISO string).
+ */
+function safeLastmod(value: string | undefined, today: string): string {
+  if (!value) return today;
+  const iso = value.slice(0, 10);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(iso)) return today;
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime()) || d.toISOString().slice(0, 10) !== iso) return today;
+  return iso;
+}
+
 function renderUrlset(entries: SitemapEntry[], today: string): string {
   const urls = dedupe(entries).map((e) =>
     [
       `  <url>`,
       `    <loc>${absoluteLoc(e.path)}</loc>`,
-      `    <lastmod>${e.lastmod ?? today}</lastmod>`,
+      `    <lastmod>${safeLastmod(e.lastmod, today)}</lastmod>`,
       e.changefreq ? `    <changefreq>${e.changefreq}</changefreq>` : null,
       e.priority ? `    <priority>${e.priority}</priority>` : null,
       `  </url>`,
