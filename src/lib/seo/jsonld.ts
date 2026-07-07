@@ -16,6 +16,22 @@ function eventOrganizerName(sport: string) {
   return "PlaySports";
 }
 
+function eventDescription(opts: {
+  name: string;
+  sport: string;
+  startDate?: string;
+  homeTeam?: string;
+  awayTeam?: string;
+  location?: string;
+  status?: "scheduled" | "live" | "ended";
+}) {
+  const matchup = opts.homeTeam && opts.awayTeam ? `${opts.homeTeam} vs ${opts.awayTeam}` : opts.name;
+  const statusText = opts.status === "ended" ? "final result and match details" : opts.status === "live" ? "live score and match details" : "schedule, live score and match details";
+  const dateText = opts.startDate ? ` on ${opts.startDate.slice(0, 10)}` : "";
+  const venueText = opts.location ? ` at ${opts.location}` : "";
+  return `${matchup} ${statusText} for this ${opts.sport} event${dateText}${venueText} on PlaySports.`;
+}
+
 export function breadcrumbList(crumbs: Crumb[]) {
   return {
     "@context": "https://schema.org",
@@ -48,6 +64,7 @@ export function sportsEvent(opts: {
   homeTeam?: string;
   awayTeam?: string;
   location?: string;
+  description?: string;
   status?: "scheduled" | "live" | "ended";
 }) {
   const statusMap = {
@@ -59,6 +76,7 @@ export function sportsEvent(opts: {
     "@context": "https://schema.org",
     "@type": "SportsEvent",
     name: opts.name,
+    description: opts.description ?? eventDescription(opts),
     url: canonical(opts.path),
     sport: opts.sport,
     image: DEFAULT_EVENT_IMAGE,
