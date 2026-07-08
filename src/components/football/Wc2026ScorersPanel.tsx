@@ -43,7 +43,7 @@ export function Wc2026ScorersPanel() {
         </div>
       ) : scorers.length === 0 ? (
         <div className="rounded-xl border border-dashed border-white/10 bg-white/5 p-6 text-center text-xs text-muted-foreground">
-          {q.data?.error ?? "No goals scored yet — check back once matches begin."}
+          No goals scored yet — check back once matches begin.
         </div>
       ) : (
         <ol className="relative space-y-2">

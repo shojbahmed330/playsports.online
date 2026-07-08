@@ -587,7 +587,7 @@ export function Wc2026KnockoutView({ filter = "all", team, date, onDateChange }:
           <div className="text-xs text-gray-500 py-2">Loading…</div>
         ) : (tQ.data?.scorers?.length ?? 0) === 0 ? (
           <div className="text-xs text-gray-500 py-2">
-            {tQ.data?.error ?? "No goals scored yet."}
+            No goals scored yet.
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1.5 text-sm">

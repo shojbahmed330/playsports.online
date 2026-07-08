@@ -1,11 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { createClient } from "@supabase/supabase-js";
 
+const DEFAULT_ADS_TXT = "google.com, pub-6207821062051904, DIRECT, f08c47fec0942fa0\n";
+
 export const Route = createFileRoute("/ads.txt")({
   server: {
     handlers: {
       GET: async () => {
-        let body = "";
+        let body = DEFAULT_ADS_TXT;
         try {
           const sb = createClient(
             process.env.SUPABASE_URL!,
@@ -29,7 +31,7 @@ export const Route = createFileRoute("/ads.txt")({
             body = `google.com, ${pub}, DIRECT, f08c47fec0942fa0\n`;
           }
         } catch {
-          // fall through to empty body
+          // Keep the verified default line available even if settings are temporarily unavailable.
         }
         return new Response(body, {
           headers: {

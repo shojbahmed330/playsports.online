@@ -383,9 +383,12 @@ export const getWc2026TopScorers = createServerFn({ method: "GET" }).handler(asy
     }));
     return { scorers, error: null as string | null };
   } catch (e) {
+    // Do not surface provider/quota/404 details in the public UI. The scorer
+    // table is non-critical and can stay empty until official goal data exists.
+    console.warn("wc2026 top scorers unavailable", e instanceof Error ? e.message : e);
     return {
       scorers: [] as Wc2026Scorer[],
-      error: e instanceof Error ? e.message : "Unknown error",
+      error: null as string | null,
     };
   }
 });
