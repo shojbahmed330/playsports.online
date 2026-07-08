@@ -146,7 +146,7 @@ function AdminShell() {
         db.map((m) => `${m.home_team.toLowerCase()}|${m.away_team.toLowerCase()}`),
       );
 
-      // 2026: pull live fixtures from Sofascore as bundled rows.
+      // 2026: pull live fixtures from ESPN's public feed as bundled rows.
       if (year === 2026) {
         const [res, videoMap] = await Promise.all([fixturesFn(), fetch2026VideoMap()]);
         const bundled: AdminMatch[] = (res.fixtures ?? [])
