@@ -23,6 +23,46 @@ export type RecordCategoryKey =
 export type CompetitionRecords = Partial<Record<RecordCategoryKey, RecordRow[]>>;
 
 export const COMPETITION_RECORDS: Record<string, CompetitionRecords> = {
+  "world-cup": {
+    "top-scorers-all-time": [
+      { rank: 1, title: "Lionel Messi", value: "13 goals", context: "Argentina · 2006–2022 (5 tournaments)" },
+      { rank: 2, title: "Miroslav Klose", value: "16 goals", context: "Germany · 2002–2014 (4 tournaments)" },
+      { rank: 3, title: "Ronaldo", value: "15 goals", context: "Brazil · 1998–2006" },
+      { rank: 4, title: "Gerd Müller", value: "14 goals", context: "West Germany · 1970–1974" },
+      { rank: 4, title: "Just Fontaine", value: "13 goals", context: "France · 1958 (one tournament)" },
+      { rank: 6, title: "Pelé", value: "12 goals", context: "Brazil · 1958–1970" },
+      { rank: 6, title: "Kylian Mbappé", value: "12 goals", context: "France · 2018–2022" },
+      { rank: 8, title: "Sándor Kocsis", value: "11 goals", context: "Hungary · 1954" },
+      { rank: 8, title: "Jürgen Klinsmann", value: "11 goals", context: "West Germany / Germany" },
+      { rank: 8, title: "Gabriel Batistuta", value: "10 goals", context: "Argentina" },
+    ],
+    "most-titles": [
+      { rank: 1, title: "Brazil", value: "5 titles", context: "1958, 1962, 1970, 1994, 2002" },
+      { rank: 2, title: "Germany / West Germany", value: "4 titles", context: "1954, 1974, 1990, 2014" },
+      { rank: 2, title: "Italy", value: "4 titles", context: "1934, 1938, 1982, 2006" },
+      { rank: 4, title: "Argentina", value: "3 titles", context: "1978, 1986, 2022" },
+      { rank: 5, title: "France", value: "2 titles", context: "1998, 2018" },
+      { rank: 5, title: "Uruguay", value: "2 titles", context: "1930, 1950" },
+      { rank: 7, title: "England", value: "1 title", context: "1966" },
+      { rank: 7, title: "Spain", value: "1 title", context: "2010" },
+    ],
+    "most-appearances": [
+      { rank: 1, title: "Lionel Messi", value: "26 matches", context: "Argentina · 5 tournaments" },
+      { rank: 2, title: "Lothar Matthäus", value: "25 matches", context: "West Germany / Germany · 5 tournaments" },
+      { rank: 3, title: "Miroslav Klose", value: "24 matches", context: "Germany · 4 tournaments" },
+      { rank: 4, title: "Paolo Maldini", value: "23 matches", context: "Italy · 4 tournaments" },
+      { rank: 4, title: "Diego Maradona", value: "21 matches", context: "Argentina · 4 tournaments" },
+    ],
+    "records-and-firsts": [
+      { title: "First edition", value: "1930 · Uruguay", context: "Uruguay beat Argentina 4–2 in the first final" },
+      { title: "Most goals in one tournament", value: "13 — Just Fontaine", context: "France · 1958" },
+      { title: "Youngest scorer", value: "Pelé — 17y 239d", context: "Brazil vs Wales · 1958 quarter-final" },
+      { title: "Fastest goal", value: "Hakan Şükür — 10.8s", context: "Turkey vs South Korea · 2002 third-place" },
+      { title: "Biggest win", value: "Hungary 10–1 El Salvador", context: "1982 group stage" },
+      { title: "Most matches as head coach", value: "Helmut Schön — 25", context: "West Germany" },
+    ],
+  },
+
   euro: {
     "top-scorers-all-time": [
       { rank: 1, title: "Cristiano Ronaldo", value: "14 goals", context: "Portugal · 2004–2024" },
