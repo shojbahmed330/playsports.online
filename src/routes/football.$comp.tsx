@@ -123,6 +123,7 @@ function CompetitionLandingPage() {
             <CompetitionMatchList
               games={previewGames}
               emptyLabel={`No ${comp.shortName} matches right now. See fixtures for what's next.`}
+              h2hCompSlug={comp.slug}
             />
           )}
         </section>
