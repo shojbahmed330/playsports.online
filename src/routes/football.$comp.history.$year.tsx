@@ -125,7 +125,7 @@ function EditionPage() {
             <section className="mt-8">
               <h3 className="text-sm uppercase tracking-widest text-muted-foreground mb-3">Notable moments</h3>
               <ul className="space-y-2">
-                {e.notableMoments.map((m, i) => (
+                {e.notableMoments.map((m: string, i: number) => (
                   <li key={i} className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm">
                     {m}
                   </li>
