@@ -83,6 +83,7 @@ function FixturesPage() {
         <CompetitionMatchList
           games={q.data ?? []}
           emptyLabel={`No upcoming ${comp.shortName} matches in the next 2 weeks.`}
+          h2hCompSlug={comp.slug}
         />
       )}
     </CompetitionPageShell>
