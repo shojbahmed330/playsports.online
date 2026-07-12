@@ -170,66 +170,96 @@ export const getScoreboard = createServerFn({ method: "GET" })
     }
   });
 
-// Standings — longer TTL.
+// Standings — longer TTL. Tries site.api first; falls back to site.web.api
+// (which returns richer soccer group data — World Cup groups, LaLiga table).
 export const getStandings = createServerFn({ method: "GET" })
-  .inputValidator((d: { sportPath: string }) => d)
+  .inputValidator((d: { sportPath: string; season?: number }) => d)
   .handler(async ({ data }) => {
+    const groups: { name: string; rows: StandingRow[] }[] = [];
+
+    function mapEntry(e: any): StandingRow {
+      const stats: any[] = e?.stats ?? [];
+      const stat = (...keys: string[]) =>
+        stats.find((s: any) =>
+          keys.some((k) => s?.name === k || s?.type === k || s?.abbreviation === k),
+        );
+      const num = (...keys: string[]) => {
+        const s = stat(...keys);
+        const v = s?.value;
+        return typeof v === "number" ? v : null;
+      };
+      const str = (...keys: string[]) => {
+        const s = stat(...keys);
+        return s?.displayValue ?? null;
+      };
+      return {
+        teamId: String(e?.team?.id ?? ""),
+        team: e?.team?.displayName ?? e?.team?.name ?? "",
+        abbr: e?.team?.abbreviation ?? "",
+        logo: e?.team?.logos?.[0]?.href ?? e?.team?.logo ?? null,
+        gamesPlayed: num("gamesPlayed", "gamesplayed", "GP"),
+        wins: num("wins") ?? 0,
+        losses: num("losses") ?? 0,
+        ties: num("ties"),
+        otLosses: num("otLosses"),
+        pct: num("winPercent"),
+        gamesBack: str("gamesBehind"),
+        pointsFor: num("pointsFor", "pointsfor"),
+        pointsAgainst: num("pointsAgainst", "pointsagainst"),
+        goalDiff: num("pointDifferential", "pointdifferential"),
+        points: num("points"),
+        streak: str("streak"),
+        conference: null,
+        division: null,
+        rank: typeof e?.note?.rank === "number" ? e.note.rank : null,
+        noteColor: e?.note?.color ?? null,
+        noteDesc: e?.note?.description ?? null,
+      };
+    }
+
+    function pushRows(name: string, entries: any[]) {
+      if (!entries?.length) return;
+      groups.push({ name, rows: entries.map(mapEntry) });
+    }
+
     try {
-      // Try the "standings" endpoint which returns groups/children.
       const raw = (await apiGet(`/${data.sportPath}/standings`, 60 * 60_000)) as any;
-      const groups: { name: string; rows: StandingRow[] }[] = [];
-
-      function pushRows(name: string, entries: any[]) {
-        const rows: StandingRow[] = entries.map((e: any) => {
-          const stats: any[] = e?.stats ?? [];
-          const stat = (k: string) =>
-            stats.find((s: any) => s?.name === k || s?.type === k || s?.shortDisplayName === k);
-          const num = (k: string) => {
-            const s = stat(k);
-            const v = s?.value;
-            return typeof v === "number" ? v : null;
-          };
-          const str = (k: string) => {
-            const s = stat(k);
-            return s?.displayValue ?? null;
-          };
-          return {
-            teamId: String(e?.team?.id ?? ""),
-            team: e?.team?.displayName ?? e?.team?.name ?? "",
-            abbr: e?.team?.abbreviation ?? "",
-            logo: e?.team?.logos?.[0]?.href ?? e?.team?.logo ?? null,
-            wins: num("wins") ?? 0,
-            losses: num("losses") ?? 0,
-            ties: num("ties"),
-            otLosses: num("otLosses"),
-            pct: num("winPercent"),
-            gamesBack: str("gamesBehind"),
-            pointsFor: num("pointsFor") ?? num("pointsForPerGame"),
-            pointsAgainst: num("pointsAgainst") ?? num("pointsAgainstPerGame"),
-            streak: str("streak"),
-            conference: null,
-            division: null,
-          };
-        });
-        groups.push({ name, rows });
-      }
-
-      // Shape 1: { children: [{ name, standings: { entries } }] }
       if (Array.isArray(raw?.children)) {
-        for (const c of raw.children) {
-          const entries = c?.standings?.entries ?? [];
-          if (entries.length) pushRows(c.name ?? "Standings", entries);
-        }
+        for (const c of raw.children) pushRows(c?.name ?? "Standings", c?.standings?.entries ?? []);
       }
-      // Shape 2: { standings: { entries } } (single table; common for MLS/soccer)
       if (!groups.length && raw?.standings?.entries?.length) {
         pushRows("Standings", raw.standings.entries);
       }
-
-      return { groups, error: null as string | null };
-    } catch (e) {
-      return { groups: [] as { name: string; rows: StandingRow[] }[], error: e instanceof Error ? e.message : "Unknown" };
+    } catch {
+      /* fall through to web fallback */
     }
+
+    if (!groups.length) {
+      try {
+        const seasonQs = data.season ? `?season=${data.season}` : "";
+        const res = await fetch(
+          `https://site.web.api.espn.com/apis/v2/sports/${data.sportPath}/standings${seasonQs}`,
+          { headers: { "user-agent": "lovable-sports-archive/1.0" } },
+        );
+        if (res.ok) {
+          const raw: any = await res.json();
+          if (Array.isArray(raw?.children)) {
+            for (const c of raw.children)
+              pushRows(c?.name ?? "Standings", c?.standings?.entries ?? []);
+          }
+          if (!groups.length && raw?.standings?.entries?.length) {
+            pushRows("Standings", raw.standings.entries);
+          }
+        }
+      } catch (e) {
+        return {
+          groups,
+          error: groups.length ? null : e instanceof Error ? e.message : "Unknown",
+        };
+      }
+    }
+
+    return { groups, error: null as string | null };
   });
 
 // News — longer TTL.
