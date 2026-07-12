@@ -201,9 +201,25 @@ export const getCompHeadToHead = createServerFn({ method: "GET" })
         if (isPair) matches.push(m);
       }
 
-      matches.sort((x, y) => new Date(y.date).getTime() - new Date(x.date).getTime());
-      return { matches, error: null, teamAId, teamBId };
+      // Merge WC seed (dedupe by date+home+away+score) so ESPN matches always win.
+      const merged: H2HMatch[] = [...matches];
+      for (const s of wcSeed) {
+        const dupe = merged.some(
+          (m) =>
+            m.date.slice(0, 10) === s.date.slice(0, 10) &&
+            normalize(m.home) === normalize(s.home) &&
+            normalize(m.away) === normalize(s.away),
+        );
+        if (!dupe) merged.push(s);
+      }
+      merged.sort((x, y) => new Date(y.date).getTime() - new Date(x.date).getTime());
+      return { matches: merged, error: null, teamAId, teamBId };
     } catch (e) {
+      if (wcSeed.length) {
+        wcSeed.sort((x, y) => new Date(y.date).getTime() - new Date(x.date).getTime());
+        return { matches: wcSeed, error: null, teamAId: null, teamBId: null };
+      }
       return { matches: [], error: e instanceof Error ? e.message : "Unknown", teamAId: null, teamBId: null };
     }
+
   });
