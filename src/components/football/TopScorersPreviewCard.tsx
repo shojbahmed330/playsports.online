@@ -44,25 +44,38 @@ export function TopScorersPreviewCard({ comp }: { comp: Competition }) {
           ) : (
             <>
               <ol className="grid gap-2 sm:grid-cols-2">
-                {seededAllTime.slice(0, 6).map((r, i) => (
-                  <li
-                    key={`${r.title}-${i}`}
-                    className="flex items-center gap-3 rounded-xl border border-white/5 bg-white/[0.02] px-3 py-2"
-                  >
-                    <span className="text-xs w-5 text-center tabular-nums text-muted-foreground">
-                      {r.rank ?? i + 1}
-                    </span>
-                    <span className="size-6 rounded-full bg-white/10" />
-                    <div className="min-w-0 flex-1">
-                      <div className="text-sm font-semibold truncate">{r.title}</div>
-                      {r.context && (
-                        <div className="text-[11px] text-muted-foreground truncate">{r.context}</div>
-                      )}
-                    </div>
-                    <span className="text-sm font-black tabular-nums">{r.value}</span>
-                  </li>
-                ))}
+                {seededAllTime.slice(0, 6).map((r, i) => {
+                  const fallbackAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(r.title)}&background=0b1220&color=fff&bold=true&size=64`;
+                  return (
+                    <li
+                      key={`${r.title}-${i}`}
+                      className="flex items-center gap-3 rounded-xl border border-white/5 bg-white/[0.02] px-3 py-2"
+                    >
+                      <span className="text-xs w-5 text-center tabular-nums text-muted-foreground">
+                        {r.rank ?? i + 1}
+                      </span>
+                      <img
+                        src={r.image ?? fallbackAvatar}
+                        alt={r.title}
+                        loading="lazy"
+                        onError={(e) => {
+                          const img = e.currentTarget;
+                          if (img.src !== fallbackAvatar) img.src = fallbackAvatar;
+                        }}
+                        className="size-8 rounded-full object-cover bg-white/10 ring-1 ring-white/10"
+                      />
+                      <div className="min-w-0 flex-1">
+                        <div className="text-sm font-semibold truncate">{r.title}</div>
+                        {r.context && (
+                          <div className="text-[11px] text-muted-foreground truncate">{r.context}</div>
+                        )}
+                      </div>
+                      <span className="text-sm font-black tabular-nums">{r.value}</span>
+                    </li>
+                  );
+                })}
               </ol>
+
               <div className="mt-3 text-xs text-muted-foreground">
                 <Link
                   to="/football/$comp/records/$category"
