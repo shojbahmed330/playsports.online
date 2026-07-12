@@ -106,7 +106,7 @@ function EditionPage() {
             <section className="mt-8">
               <h3 className="text-sm uppercase tracking-widest text-muted-foreground mb-3">Squad of the tournament</h3>
               <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-                {e.squadOfTournament.map((p) => (
+                {e.squadOfTournament.map((p: SquadPick) => (
                   <div key={p.name} className="rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2 flex items-center justify-between">
                     <div>
                       <div className="text-sm font-semibold">{p.name}</div>
