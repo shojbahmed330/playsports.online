@@ -11,6 +11,10 @@ import { CompetitionPageShell } from "@/components/football/CompetitionPageShell
 import { CompetitionMatchList } from "@/components/football/CompetitionMatchList";
 import { CompetitionStandingsTable } from "@/components/football/CompetitionStandingsTable";
 import { CompetitionH2HPicker } from "@/components/football/CompetitionH2HPicker";
+import { CompetitionNewsRail } from "@/components/football/CompetitionNewsRail";
+import { CompetitionCountdown } from "@/components/football/CompetitionCountdown";
+import { ChampionsTimelineWidget } from "@/components/football/ChampionsTimelineWidget";
+import { TopScorersPreviewCard } from "@/components/football/TopScorersPreviewCard";
 import { SportNav } from "@/components/sports/SportNav";
 import { SiteFooter } from "@/components/home/SiteFooter";
 import { buildCompetitionHead } from "@/lib/competition-head";
