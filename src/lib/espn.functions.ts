@@ -479,3 +479,108 @@ export const getCompetitionPlayer = createServerFn({ method: "GET" })
       };
     }
   });
+
+
+// ───────────── TEAM RUN IN A SPECIFIC SEASON / EDITION ─────────────
+export type TeamSeasonMatch = {
+  id: string;
+  date: string;
+  status: "pre" | "in" | "post";
+  home: { id: string; name: string; logo: string | null; score: number | null; winner: boolean | null };
+  away: { id: string; name: string; logo: string | null; score: number | null; winner: boolean | null };
+  venue: string | null;
+  round: string | null;
+};
+
+export type TeamSeasonDTO = {
+  teamId: string;
+  teamName: string;
+  logo: string | null;
+  year: number;
+  matches: TeamSeasonMatch[];
+  summary: { played: number; wins: number; draws: number; losses: number; goalsFor: number; goalsAgainst: number };
+};
+
+export const getCompetitionTeamSeason = createServerFn({ method: "GET" })
+  .inputValidator((d: { sportPath: string; teamId: string; year: number | string }) => ({
+    sportPath: d.sportPath,
+    teamId: String(d.teamId),
+    year: Number(d.year),
+  }))
+  .handler(async ({ data }): Promise<{ season: TeamSeasonDTO | null; error: string | null }> => {
+    try {
+      const raw = (await apiGet(
+        `/${data.sportPath}/teams/${data.teamId}/schedule?season=${data.year}`,
+        60 * 60_000,
+      )) as any;
+      const teamRaw = raw?.team ?? {};
+      const events = (raw?.events ?? []) as any[];
+      const teamId = String(teamRaw?.id ?? data.teamId);
+      const matches: TeamSeasonMatch[] = events.map((ev) => {
+        const c = ev?.competitions?.[0] ?? {};
+        const cs = c?.competitors ?? [];
+        const h = cs.find((x: any) => x?.homeAway === "home") ?? cs[0] ?? {};
+        const a = cs.find((x: any) => x?.homeAway === "away") ?? cs[1] ?? {};
+        const state = c?.status?.type?.state ?? ev?.status?.type?.state ?? "pre";
+        const parse = (x: any) => {
+          const s = x?.score;
+          if (s == null) return null;
+          if (typeof s === "number") return Number.isFinite(s) ? s : null;
+          if (typeof s === "string") { const n = Number(s); return Number.isFinite(n) ? n : null; }
+          if (typeof s === "object") {
+            if (typeof s.value === "number") return s.value;
+            if (typeof s.displayValue === "string") { const n = Number(s.displayValue); return Number.isFinite(n) ? n : null; }
+          }
+          return null;
+        };
+        return {
+          id: String(ev?.id ?? ""),
+          date: ev?.date ?? "",
+          status: (state === "in" ? "in" : state === "post" ? "post" : "pre") as "pre" | "in" | "post",
+          home: {
+            id: String(h?.team?.id ?? h?.id ?? ""),
+            name: h?.team?.displayName ?? h?.team?.name ?? "",
+            logo: h?.team?.logos?.[0]?.href ?? h?.team?.logo ?? null,
+            score: parse(h),
+            winner: typeof h?.winner === "boolean" ? h.winner : null,
+          },
+          away: {
+            id: String(a?.team?.id ?? a?.id ?? ""),
+            name: a?.team?.displayName ?? a?.team?.name ?? "",
+            logo: a?.team?.logos?.[0]?.href ?? a?.team?.logo ?? null,
+            score: parse(a),
+            winner: typeof a?.winner === "boolean" ? a.winner : null,
+          },
+          venue: c?.venue?.fullName ?? ev?.venue?.fullName ?? null,
+          round: ev?.season?.type?.name ?? ev?.week?.text ?? null,
+        };
+      });
+
+      const summary = { played: 0, wins: 0, draws: 0, losses: 0, goalsFor: 0, goalsAgainst: 0 };
+      for (const m of matches) {
+        if (m.status !== "post") continue;
+        const isHome = m.home.id === teamId;
+        const gf = isHome ? m.home.score : m.away.score;
+        const ga = isHome ? m.away.score : m.home.score;
+        if (gf == null || ga == null) continue;
+        summary.played++;
+        summary.goalsFor += gf;
+        summary.goalsAgainst += ga;
+        if (gf > ga) summary.wins++;
+        else if (gf < ga) summary.losses++;
+        else summary.draws++;
+      }
+
+      const season: TeamSeasonDTO = {
+        teamId,
+        teamName: teamRaw?.displayName ?? teamRaw?.name ?? "",
+        logo: teamRaw?.logos?.[0]?.href ?? teamRaw?.logo ?? null,
+        year: data.year,
+        matches: matches.sort((x, y) => new Date(x.date).getTime() - new Date(y.date).getTime()),
+        summary,
+      };
+      return { season, error: null };
+    } catch (e) {
+      return { season: null, error: e instanceof Error ? e.message : "Unknown" };
+    }
+  });

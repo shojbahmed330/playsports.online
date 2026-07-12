@@ -77,6 +77,7 @@ function ScoresPage() {
         <CompetitionMatchList
           games={games}
           emptyLabel={`No ${comp.shortName} matches today. Check the Fixtures tab for what's next.`}
+          h2hCompSlug={comp.slug}
         />
       )}
     </CompetitionPageShell>
