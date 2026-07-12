@@ -1,5 +1,5 @@
 # PlaySports — robots.txt
-# https://allsportslive.lovable.app
+# https://www.playsports.online
 # Phase 1.2 — AI-friendly crawler policy
 # Last reviewed: 2026-07-02
 
@@ -182,4 +182,4 @@ Allow: /
 # =============================================================
 # Sitemaps
 # =============================================================
-Sitemap: https://allsportslive.lovable.app/sitemap.xml
+Sitemap: https://www.playsports.online/sitemap.xml
