@@ -33,10 +33,11 @@ export const Route = createFileRoute("/football/tournaments/$year")({
       scripts: [
         ldScript(sportsEvent({
           name: `${t.year} FIFA World Cup`,
+          path,
           sport: "Soccer",
           startDate: t.startDate,
           location: t.host,
-        } as Parameters<typeof sportsEvent>[0])),
+        })),
         ldScript(breadcrumbList([
           { name: "Home", path: "/" },
           { name: "Football", path: "/football" },
