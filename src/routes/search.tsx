@@ -13,21 +13,17 @@ const searchSchema = z.object({
 
 export const Route = createFileRoute("/search")({
   validateSearch: zodValidator(searchSchema),
-  head: ({ search }) => {
-    const q = (search as { q?: string })?.q ?? "";
-    const path = q ? `/search?q=${encodeURIComponent(q)}` : "/search";
-    const title = q ? `Search: "${q}" — PlaySports` : "Search — PlaySports";
-    const desc = q
-      ? `Search results for "${q}" across countries, players, tournaments and years.`
-      : "Search for any FIFA World Cup country, player, tournament or year.";
+  head: () => {
+    const title = "Search — PlaySports";
+    const desc = "Search for any FIFA World Cup country, player, tournament or year.";
     return {
       meta: [
         { title },
         { name: "description", content: desc },
         { property: "og:title", content: title },
         { property: "og:description", content: desc },
-        { property: "og:url", content: canonical(path) },
-        { name: "robots", content: q ? "noindex, follow" : "index, follow" },
+        { property: "og:url", content: canonical("/search") },
+        { name: "robots", content: "index, follow" },
       ],
       links: [{ rel: "canonical", href: canonical("/search") }],
     };

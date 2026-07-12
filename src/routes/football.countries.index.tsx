@@ -4,7 +4,7 @@ import { canonical } from "@/lib/seo/canonical";
 import { breadcrumbList, collectionPage, itemList, ldScript } from "@/lib/seo/jsonld";
 import { flagOf } from "@/lib/flags";
 
-export const Route = createFileRoute("/football/countries")({
+export const Route = createFileRoute("/football/countries/")({
   loader: () => {
     const rows = listTeams()
       .map((t) => {
@@ -72,7 +72,7 @@ function CountriesIndex() {
 
       <main className="container mx-auto max-w-5xl px-4 pt-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          {rows.map((r) => (
+          {rows.map((r: { name: string; slug: string; played: number; years: number; goals: number }) => (
             <Link
               key={r.slug}
               to="/football/teams/$slug"

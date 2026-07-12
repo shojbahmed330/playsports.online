@@ -113,7 +113,7 @@ function TournamentPage() {
           <section className="rounded-xl bg-card border p-5">
             <h2 className="text-xl font-bold mb-3">Top Scorers of {t.year}</h2>
             <ol className="space-y-1.5 text-sm">
-              {arch.topScorers.slice(0, 15).map((s, i) => (
+              {arch.topScorers.slice(0, 15).map((s: { name: string; team: string; goals: number }, i: number) => (
                 <li key={s.name} className="flex justify-between border-b border-border/50 pb-1">
                   <Link to="/football/players/$slug" params={{ slug: slugify(s.name) }} className="hover:text-primary">
                     <span className="tabular-nums text-muted-foreground mr-2">#{i + 1}</span>

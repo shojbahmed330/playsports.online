@@ -110,7 +110,7 @@ function CountryYearPage() {
           <section className="rounded-xl bg-card border p-5">
             <h2 className="text-xl font-bold mb-3">Match Results</h2>
             <ol className="space-y-1.5 text-sm">
-              {stats.matches.map((m, i) => (
+              {stats.matches.map((m: { home_team: string; away_team: string; home_score: number; away_score: number }, i: number) => (
                 <li key={i} className="flex justify-between border-b border-border/50 pb-1">
                   <span>{m.home_team} vs {m.away_team}</span>
                   <span className="font-semibold tabular-nums">{m.home_score} – {m.away_score}</span>
@@ -124,7 +124,7 @@ function CountryYearPage() {
           <section className="rounded-xl bg-card border p-5">
             <h2 className="text-xl font-bold mb-3">Goalscorers</h2>
             <ol className="space-y-1.5 text-sm">
-              {stats.topScorers.map((s) => (
+              {stats.topScorers.map((s: { name: string; goals: number }) => (
                 <li key={s.name} className="flex justify-between">
                   <Link
                     to="/football/players/$slug/world-cup-{$year}"
