@@ -73,6 +73,7 @@ import { Route as LiveSportRouteImport } from './routes/live.$sport'
 import { Route as HighlightsSlugRouteImport } from './routes/highlights.$slug'
 import { Route as GuidesSlugRouteImport } from './routes/guides.$slug'
 import { Route as FootballMineRouteImport } from './routes/football.mine'
+import { Route as FootballCompRouteImport } from './routes/football.$comp'
 import { Route as CricketScoresRouteImport } from './routes/cricket.scores'
 import { Route as CricketRankingsRouteImport } from './routes/cricket.rankings'
 import { Route as CricketHistoryRouteImport } from './routes/cricket.history'
@@ -471,6 +472,11 @@ const GuidesSlugRoute = GuidesSlugRouteImport.update({
 const FootballMineRoute = FootballMineRouteImport.update({
   id: '/mine',
   path: '/mine',
+  getParentRoute: () => FootballRoute,
+} as any)
+const FootballCompRoute = FootballCompRouteImport.update({
+  id: '/$comp',
+  path: '/$comp',
   getParentRoute: () => FootballRoute,
 } as any)
 const CricketScoresRoute = CricketScoresRouteImport.update({
@@ -901,6 +907,7 @@ export interface FileRoutesByFullPath {
   '/cricket/history': typeof CricketHistoryRoute
   '/cricket/rankings': typeof CricketRankingsRoute
   '/cricket/scores': typeof CricketScoresRoute
+  '/football/$comp': typeof FootballCompRoute
   '/football/mine': typeof FootballMineRoute
   '/guides/$slug': typeof GuidesSlugRoute
   '/highlights/$slug': typeof HighlightsSlugRoute
@@ -1040,6 +1047,7 @@ export interface FileRoutesByTo {
   '/cricket/history': typeof CricketHistoryRoute
   '/cricket/rankings': typeof CricketRankingsRoute
   '/cricket/scores': typeof CricketScoresRoute
+  '/football/$comp': typeof FootballCompRoute
   '/football/mine': typeof FootballMineRoute
   '/guides/$slug': typeof GuidesSlugRoute
   '/highlights/$slug': typeof HighlightsSlugRoute
@@ -1186,6 +1194,7 @@ export interface FileRoutesById {
   '/cricket/history': typeof CricketHistoryRoute
   '/cricket/rankings': typeof CricketRankingsRoute
   '/cricket/scores': typeof CricketScoresRoute
+  '/football/$comp': typeof FootballCompRoute
   '/football/mine': typeof FootballMineRoute
   '/guides/$slug': typeof GuidesSlugRoute
   '/highlights/$slug': typeof HighlightsSlugRoute
@@ -1333,6 +1342,7 @@ export interface FileRouteTypes {
     | '/cricket/history'
     | '/cricket/rankings'
     | '/cricket/scores'
+    | '/football/$comp'
     | '/football/mine'
     | '/guides/$slug'
     | '/highlights/$slug'
@@ -1472,6 +1482,7 @@ export interface FileRouteTypes {
     | '/cricket/history'
     | '/cricket/rankings'
     | '/cricket/scores'
+    | '/football/$comp'
     | '/football/mine'
     | '/guides/$slug'
     | '/highlights/$slug'
@@ -1617,6 +1628,7 @@ export interface FileRouteTypes {
     | '/cricket/history'
     | '/cricket/rankings'
     | '/cricket/scores'
+    | '/football/$comp'
     | '/football/mine'
     | '/guides/$slug'
     | '/highlights/$slug'
@@ -2225,6 +2237,13 @@ declare module '@tanstack/react-router' {
       path: '/mine'
       fullPath: '/football/mine'
       preLoaderRoute: typeof FootballMineRouteImport
+      parentRoute: typeof FootballRoute
+    }
+    '/football/$comp': {
+      id: '/football/$comp'
+      path: '/$comp'
+      fullPath: '/football/$comp'
+      preLoaderRoute: typeof FootballCompRouteImport
       parentRoute: typeof FootballRoute
     }
     '/cricket/scores': {
@@ -2859,6 +2878,7 @@ const FootballPlayersSlugRouteWithChildren =
   FootballPlayersSlugRoute._addFileChildren(FootballPlayersSlugRouteChildren)
 
 interface FootballRouteChildren {
+  FootballCompRoute: typeof FootballCompRoute
   FootballMineRoute: typeof FootballMineRoute
   FootballIndexRoute: typeof FootballIndexRoute
   FootballCampaignsSlugRoute: typeof FootballCampaignsSlugRoute
@@ -2877,6 +2897,7 @@ interface FootballRouteChildren {
 }
 
 const FootballRouteChildren: FootballRouteChildren = {
+  FootballCompRoute: FootballCompRoute,
   FootballMineRoute: FootballMineRoute,
   FootballIndexRoute: FootballIndexRoute,
   FootballCampaignsSlugRoute: FootballCampaignsSlugRoute,
