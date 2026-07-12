@@ -11,7 +11,7 @@ export const Route = createFileRoute("/football/$comp/h2h/$matchup")({
   loader: ({ params }) => {
     const comp = getCompetition(params.comp);
     if (!comp) throw notFound();
-    const teams = parseMatchup(params.matchup);
+    const teams = parseMatchupSlug(params.matchup);
     if (!teams) throw notFound();
     return { comp, teams };
   },
