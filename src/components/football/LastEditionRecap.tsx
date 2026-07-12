@@ -32,6 +32,21 @@ export function LastEditionRecap({
     );
   }
 
+  if (collapsible && !open) {
+    return (
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        className="w-full flex items-center justify-between gap-3 rounded-2xl border border-amber-400/20 bg-amber-500/[0.06] px-4 py-3 hover:border-amber-400/40 transition"
+      >
+        <span className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-amber-300/90">
+          <Trophy className="size-3.5" /> {comp.shortName} {last.year} recap · {last.winner}
+        </span>
+        <ChevronDown className="size-4 text-muted-foreground" />
+      </button>
+    );
+  }
+
   return (
     <div className="rounded-2xl border border-amber-400/20 bg-gradient-to-br from-amber-500/10 via-white/[0.03] to-white/[0.02] p-5 sm:p-6">
       <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-amber-300/90">
