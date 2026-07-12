@@ -87,12 +87,52 @@ function EditionPage() {
       </div>
 
       {e ? (
-        <div className="grid gap-3 sm:grid-cols-2">
-          <StatCard icon={<Trophy className="size-4 text-amber-300" />} label="Winner" value={e.winner} sub={e.finalScore ? `Final: ${e.finalScore}` : undefined} />
-          {e.runnerUp && <StatCard icon={<Users className="size-4" />} label="Runner-up" value={e.runnerUp} />}
-          {e.host && <StatCard icon={<MapPin className="size-4" />} label="Host" value={e.host} />}
-          {e.topScorer && <StatCard icon={<Target className="size-4" />} label="Top scorer" value={e.topScorer.name} sub={`${e.topScorer.goals} goals`} />}
-        </div>
+        <>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <StatCard icon={<Trophy className="size-4 text-amber-300" />} label="Winner" value={e.winner} sub={e.finalScore ? `Final: ${e.finalScore}` : undefined} />
+            {e.runnerUp && <StatCard icon={<Users className="size-4" />} label="Runner-up" value={e.runnerUp} />}
+            {e.host && <StatCard icon={<MapPin className="size-4" />} label="Host" value={e.host} />}
+            {e.topScorer && <StatCard icon={<Target className="size-4" />} label="Top scorer" value={e.topScorer.name} sub={`${e.topScorer.goals} goals`} />}
+            {e.bestPlayer && <StatCard icon={<Award className="size-4 text-amber-300" />} label={e.bestPlayer.award ?? "Best player"} value={e.bestPlayer.name} sub={e.bestPlayer.team} />}
+            {e.bestKeeper && <StatCard icon={<Shield className="size-4" />} label={e.bestKeeper.award ?? "Best keeper"} value={e.bestKeeper.name} sub={e.bestKeeper.team} />}
+            {e.youngPlayer && <StatCard icon={<Sparkles className="size-4" />} label={e.youngPlayer.award ?? "Young player"} value={e.youngPlayer.name} sub={e.youngPlayer.team} />}
+            {e.finalVenue && <StatCard icon={<MapPin className="size-4" />} label="Final venue" value={e.finalVenue} sub={e.finalAttendance ? `${e.finalAttendance.toLocaleString()} attendance` : undefined} />}
+            {e.winningCoach && <StatCard icon={<Users className="size-4" />} label="Winning coach" value={e.winningCoach} sub={e.winningCaptain ? `Captain: ${e.winningCaptain}` : undefined} />}
+            {e.format && <StatCard icon={<Calendar className="size-4" />} label="Format" value={e.format} sub={[e.teams && `${e.teams} teams`, e.matches && `${e.matches} matches`, e.goals && `${e.goals} goals`].filter(Boolean).join(" · ") || undefined} />}
+          </div>
+
+          {e.squadOfTournament && e.squadOfTournament.length > 0 && (
+            <section className="mt-8">
+              <h3 className="text-sm uppercase tracking-widest text-muted-foreground mb-3">Squad of the tournament</h3>
+              <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                {e.squadOfTournament.map((p) => (
+                  <div key={p.name} className="rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2 flex items-center justify-between">
+                    <div>
+                      <div className="text-sm font-semibold">{p.name}</div>
+                      {p.team && <div className="text-xs text-muted-foreground">{p.team}</div>}
+                    </div>
+                    {p.position && (
+                      <span className="text-[10px] uppercase tracking-widest rounded-full bg-white/10 px-2 py-0.5">{p.position}</span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {e.notableMoments && e.notableMoments.length > 0 && (
+            <section className="mt-8">
+              <h3 className="text-sm uppercase tracking-widest text-muted-foreground mb-3">Notable moments</h3>
+              <ul className="space-y-2">
+                {e.notableMoments.map((m, i) => (
+                  <li key={i} className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm">
+                    {m}
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+        </>
       ) : (
         <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-6 py-10 text-center text-sm text-muted-foreground">
           Detailed recap for {comp.shortName} {label} lands in the next update.
