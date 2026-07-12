@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as UnsubscribeRouteImport } from './routes/unsubscribe'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as SearchRouteImport } from './routes/search'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as PremiumRouteImport } from './routes/premium'
 import { Route as PlayersRouteImport } from './routes/players'
@@ -77,6 +78,7 @@ import { Route as CricketRankingsRouteImport } from './routes/cricket.rankings'
 import { Route as CricketHistoryRouteImport } from './routes/cricket.history'
 import { Route as FootballTopScorersIndexRouteImport } from './routes/football.top-scorers.index'
 import { Route as FootballPlayersIndexRouteImport } from './routes/football.players.index'
+import { Route as FootballCountriesIndexRouteImport } from './routes/football.countries.index'
 import { Route as FootballCampaignsIndexRouteImport } from './routes/football.campaigns.index'
 import { Route as CricketTournamentsIndexRouteImport } from './routes/cricket.tournaments.index'
 import { Route as CricketTeamsIndexRouteImport } from './routes/cricket.teams.index'
@@ -120,6 +122,7 @@ import { Route as MlbRecordsCategoryRouteImport } from './routes/mlb.records.$ca
 import { Route as MlbPlayersSlugRouteImport } from './routes/mlb.players.$slug'
 import { Route as MlbPlayerIdRouteImport } from './routes/mlb.player.$id'
 import { Route as MlbGameIdRouteImport } from './routes/mlb.game.$id'
+import { Route as FootballTournamentsYearRouteImport } from './routes/football.tournaments.$year'
 import { Route as FootballTopScorersYearRouteImport } from './routes/football.top-scorers.$year'
 import { Route as FootballTeamsSlugRouteImport } from './routes/football.teams.$slug'
 import { Route as FootballPlayersSlugRouteImport } from './routes/football.players.$slug'
@@ -142,7 +145,9 @@ import { Route as CricketHighlightsSlugRouteImport } from './routes/cricket.high
 import { Route as ArchiveSportYearRouteImport } from './routes/archive.$sport.$year'
 import { Route as ApiPublicTrackClickRouteImport } from './routes/api/public/track-click'
 import { Route as CricketIplTeamsIndexRouteImport } from './routes/cricket.ipl.teams.index'
+import { Route as FootballPlayersSlugWorldCupChar123yearChar125RouteImport } from './routes/football.players.$slug.world-cup-{$year}'
 import { Route as FootballPlayersSlugStatRouteImport } from './routes/football.players.$slug.$stat'
+import { Route as FootballCountriesSlugWorldCupChar123yearChar125RouteImport } from './routes/football.countries.$slug.world-cup-{$year}'
 import { Route as CricketIplTeamsTeamIdRouteImport } from './routes/cricket.ipl.teams.$teamId'
 import { Route as ApiPublicHooksWeeklyDigestRouteImport } from './routes/api/public/hooks/weekly-digest'
 import { Route as ApiPublicHooksGscSyncRouteImport } from './routes/api/public/hooks/gsc-sync'
@@ -160,6 +165,11 @@ const TermsRoute = TermsRouteImport.update({
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SearchRoute = SearchRouteImport.update({
+  id: '/search',
+  path: '/search',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PrivacyRoute = PrivacyRouteImport.update({
@@ -487,6 +497,11 @@ const FootballPlayersIndexRoute = FootballPlayersIndexRouteImport.update({
   path: '/players/',
   getParentRoute: () => FootballRoute,
 } as any)
+const FootballCountriesIndexRoute = FootballCountriesIndexRouteImport.update({
+  id: '/countries/',
+  path: '/countries/',
+  getParentRoute: () => FootballRoute,
+} as any)
 const FootballCampaignsIndexRoute = FootballCampaignsIndexRouteImport.update({
   id: '/campaigns/',
   path: '/campaigns/',
@@ -704,6 +719,11 @@ const MlbGameIdRoute = MlbGameIdRouteImport.update({
   path: '/game/$id',
   getParentRoute: () => MlbRoute,
 } as any)
+const FootballTournamentsYearRoute = FootballTournamentsYearRouteImport.update({
+  id: '/tournaments/$year',
+  path: '/tournaments/$year',
+  getParentRoute: () => FootballRoute,
+} as any)
 const FootballTopScorersYearRoute = FootballTopScorersYearRouteImport.update({
   id: '/top-scorers/$year',
   path: '/top-scorers/$year',
@@ -814,11 +834,23 @@ const CricketIplTeamsIndexRoute = CricketIplTeamsIndexRouteImport.update({
   path: '/ipl/teams/',
   getParentRoute: () => CricketRoute,
 } as any)
+const FootballPlayersSlugWorldCupChar123yearChar125Route =
+  FootballPlayersSlugWorldCupChar123yearChar125RouteImport.update({
+    id: '/world-cup-{$year}',
+    path: '/world-cup-{$year}',
+    getParentRoute: () => FootballPlayersSlugRoute,
+  } as any)
 const FootballPlayersSlugStatRoute = FootballPlayersSlugStatRouteImport.update({
   id: '/$stat',
   path: '/$stat',
   getParentRoute: () => FootballPlayersSlugRoute,
 } as any)
+const FootballCountriesSlugWorldCupChar123yearChar125Route =
+  FootballCountriesSlugWorldCupChar123yearChar125RouteImport.update({
+    id: '/countries/$slug/world-cup-{$year}',
+    path: '/countries/$slug/world-cup-{$year}',
+    getParentRoute: () => FootballRoute,
+  } as any)
 const CricketIplTeamsTeamIdRoute = CricketIplTeamsTeamIdRouteImport.update({
   id: '/ipl/teams/$teamId',
   path: '/ipl/teams/$teamId',
@@ -856,6 +888,7 @@ export interface FileRoutesByFullPath {
   '/players': typeof PlayersRoute
   '/premium': typeof PremiumRoute
   '/privacy': typeof PrivacyRoute
+  '/search': typeof SearchRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/unsubscribe': typeof UnsubscribeRoute
@@ -924,6 +957,7 @@ export interface FileRoutesByFullPath {
   '/football/players/$slug': typeof FootballPlayersSlugRouteWithChildren
   '/football/teams/$slug': typeof FootballTeamsSlugRoute
   '/football/top-scorers/$year': typeof FootballTopScorersYearRoute
+  '/football/tournaments/$year': typeof FootballTournamentsYearRoute
   '/mlb/game/$id': typeof MlbGameIdRoute
   '/mlb/player/$id': typeof MlbPlayerIdRoute
   '/mlb/players/$slug': typeof MlbPlayersSlugRoute
@@ -967,12 +1001,15 @@ export interface FileRoutesByFullPath {
   '/cricket/teams/': typeof CricketTeamsIndexRoute
   '/cricket/tournaments/': typeof CricketTournamentsIndexRoute
   '/football/campaigns/': typeof FootballCampaignsIndexRoute
+  '/football/countries/': typeof FootballCountriesIndexRoute
   '/football/players/': typeof FootballPlayersIndexRoute
   '/football/top-scorers/': typeof FootballTopScorersIndexRoute
   '/api/public/hooks/gsc-sync': typeof ApiPublicHooksGscSyncRoute
   '/api/public/hooks/weekly-digest': typeof ApiPublicHooksWeeklyDigestRoute
   '/cricket/ipl/teams/$teamId': typeof CricketIplTeamsTeamIdRoute
+  '/football/countries/$slug/world-cup-{$year}': typeof FootballCountriesSlugWorldCupChar123yearChar125Route
   '/football/players/$slug/$stat': typeof FootballPlayersSlugStatRoute
+  '/football/players/$slug/world-cup-{$year}': typeof FootballPlayersSlugWorldCupChar123yearChar125Route
   '/cricket/ipl/teams/': typeof CricketIplTeamsIndexRoute
 }
 export interface FileRoutesByTo {
@@ -989,6 +1026,7 @@ export interface FileRoutesByTo {
   '/players': typeof PlayersRoute
   '/premium': typeof PremiumRoute
   '/privacy': typeof PrivacyRoute
+  '/search': typeof SearchRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/unsubscribe': typeof UnsubscribeRoute
@@ -1057,6 +1095,7 @@ export interface FileRoutesByTo {
   '/football/players/$slug': typeof FootballPlayersSlugRouteWithChildren
   '/football/teams/$slug': typeof FootballTeamsSlugRoute
   '/football/top-scorers/$year': typeof FootballTopScorersYearRoute
+  '/football/tournaments/$year': typeof FootballTournamentsYearRoute
   '/mlb/game/$id': typeof MlbGameIdRoute
   '/mlb/player/$id': typeof MlbPlayerIdRoute
   '/mlb/players/$slug': typeof MlbPlayersSlugRoute
@@ -1100,12 +1139,15 @@ export interface FileRoutesByTo {
   '/cricket/teams': typeof CricketTeamsIndexRoute
   '/cricket/tournaments': typeof CricketTournamentsIndexRoute
   '/football/campaigns': typeof FootballCampaignsIndexRoute
+  '/football/countries': typeof FootballCountriesIndexRoute
   '/football/players': typeof FootballPlayersIndexRoute
   '/football/top-scorers': typeof FootballTopScorersIndexRoute
   '/api/public/hooks/gsc-sync': typeof ApiPublicHooksGscSyncRoute
   '/api/public/hooks/weekly-digest': typeof ApiPublicHooksWeeklyDigestRoute
   '/cricket/ipl/teams/$teamId': typeof CricketIplTeamsTeamIdRoute
+  '/football/countries/$slug/world-cup-{$year}': typeof FootballCountriesSlugWorldCupChar123yearChar125Route
   '/football/players/$slug/$stat': typeof FootballPlayersSlugStatRoute
+  '/football/players/$slug/world-cup-{$year}': typeof FootballPlayersSlugWorldCupChar123yearChar125Route
   '/cricket/ipl/teams': typeof CricketIplTeamsIndexRoute
 }
 export interface FileRoutesById {
@@ -1129,6 +1171,7 @@ export interface FileRoutesById {
   '/players': typeof PlayersRoute
   '/premium': typeof PremiumRoute
   '/privacy': typeof PrivacyRoute
+  '/search': typeof SearchRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/unsubscribe': typeof UnsubscribeRoute
@@ -1197,6 +1240,7 @@ export interface FileRoutesById {
   '/football/players/$slug': typeof FootballPlayersSlugRouteWithChildren
   '/football/teams/$slug': typeof FootballTeamsSlugRoute
   '/football/top-scorers/$year': typeof FootballTopScorersYearRoute
+  '/football/tournaments/$year': typeof FootballTournamentsYearRoute
   '/mlb/game/$id': typeof MlbGameIdRoute
   '/mlb/player/$id': typeof MlbPlayerIdRoute
   '/mlb/players/$slug': typeof MlbPlayersSlugRoute
@@ -1240,12 +1284,15 @@ export interface FileRoutesById {
   '/cricket/teams/': typeof CricketTeamsIndexRoute
   '/cricket/tournaments/': typeof CricketTournamentsIndexRoute
   '/football/campaigns/': typeof FootballCampaignsIndexRoute
+  '/football/countries/': typeof FootballCountriesIndexRoute
   '/football/players/': typeof FootballPlayersIndexRoute
   '/football/top-scorers/': typeof FootballTopScorersIndexRoute
   '/api/public/hooks/gsc-sync': typeof ApiPublicHooksGscSyncRoute
   '/api/public/hooks/weekly-digest': typeof ApiPublicHooksWeeklyDigestRoute
   '/cricket/ipl/teams/$teamId': typeof CricketIplTeamsTeamIdRoute
+  '/football/countries/$slug/world-cup-{$year}': typeof FootballCountriesSlugWorldCupChar123yearChar125Route
   '/football/players/$slug/$stat': typeof FootballPlayersSlugStatRoute
+  '/football/players/$slug/world-cup-{$year}': typeof FootballPlayersSlugWorldCupChar123yearChar125Route
   '/cricket/ipl/teams/': typeof CricketIplTeamsIndexRoute
 }
 export interface FileRouteTypes {
@@ -1270,6 +1317,7 @@ export interface FileRouteTypes {
     | '/players'
     | '/premium'
     | '/privacy'
+    | '/search'
     | '/sitemap.xml'
     | '/terms'
     | '/unsubscribe'
@@ -1338,6 +1386,7 @@ export interface FileRouteTypes {
     | '/football/players/$slug'
     | '/football/teams/$slug'
     | '/football/top-scorers/$year'
+    | '/football/tournaments/$year'
     | '/mlb/game/$id'
     | '/mlb/player/$id'
     | '/mlb/players/$slug'
@@ -1381,12 +1430,15 @@ export interface FileRouteTypes {
     | '/cricket/teams/'
     | '/cricket/tournaments/'
     | '/football/campaigns/'
+    | '/football/countries/'
     | '/football/players/'
     | '/football/top-scorers/'
     | '/api/public/hooks/gsc-sync'
     | '/api/public/hooks/weekly-digest'
     | '/cricket/ipl/teams/$teamId'
+    | '/football/countries/$slug/world-cup-{$year}'
     | '/football/players/$slug/$stat'
+    | '/football/players/$slug/world-cup-{$year}'
     | '/cricket/ipl/teams/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -1403,6 +1455,7 @@ export interface FileRouteTypes {
     | '/players'
     | '/premium'
     | '/privacy'
+    | '/search'
     | '/sitemap.xml'
     | '/terms'
     | '/unsubscribe'
@@ -1471,6 +1524,7 @@ export interface FileRouteTypes {
     | '/football/players/$slug'
     | '/football/teams/$slug'
     | '/football/top-scorers/$year'
+    | '/football/tournaments/$year'
     | '/mlb/game/$id'
     | '/mlb/player/$id'
     | '/mlb/players/$slug'
@@ -1514,12 +1568,15 @@ export interface FileRouteTypes {
     | '/cricket/teams'
     | '/cricket/tournaments'
     | '/football/campaigns'
+    | '/football/countries'
     | '/football/players'
     | '/football/top-scorers'
     | '/api/public/hooks/gsc-sync'
     | '/api/public/hooks/weekly-digest'
     | '/cricket/ipl/teams/$teamId'
+    | '/football/countries/$slug/world-cup-{$year}'
     | '/football/players/$slug/$stat'
+    | '/football/players/$slug/world-cup-{$year}'
     | '/cricket/ipl/teams'
   id:
     | '__root__'
@@ -1542,6 +1599,7 @@ export interface FileRouteTypes {
     | '/players'
     | '/premium'
     | '/privacy'
+    | '/search'
     | '/sitemap.xml'
     | '/terms'
     | '/unsubscribe'
@@ -1610,6 +1668,7 @@ export interface FileRouteTypes {
     | '/football/players/$slug'
     | '/football/teams/$slug'
     | '/football/top-scorers/$year'
+    | '/football/tournaments/$year'
     | '/mlb/game/$id'
     | '/mlb/player/$id'
     | '/mlb/players/$slug'
@@ -1653,12 +1712,15 @@ export interface FileRouteTypes {
     | '/cricket/teams/'
     | '/cricket/tournaments/'
     | '/football/campaigns/'
+    | '/football/countries/'
     | '/football/players/'
     | '/football/top-scorers/'
     | '/api/public/hooks/gsc-sync'
     | '/api/public/hooks/weekly-digest'
     | '/cricket/ipl/teams/$teamId'
+    | '/football/countries/$slug/world-cup-{$year}'
     | '/football/players/$slug/$stat'
+    | '/football/players/$slug/world-cup-{$year}'
     | '/cricket/ipl/teams/'
   fileRoutesById: FileRoutesById
 }
@@ -1682,6 +1744,7 @@ export interface RootRouteChildren {
   PlayersRoute: typeof PlayersRoute
   PremiumRoute: typeof PremiumRoute
   PrivacyRoute: typeof PrivacyRoute
+  SearchRoute: typeof SearchRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TermsRoute: typeof TermsRoute
   UnsubscribeRoute: typeof UnsubscribeRoute
@@ -1723,6 +1786,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/search': {
+      id: '/search'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof SearchRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/privacy': {
@@ -2180,6 +2250,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FootballPlayersIndexRouteImport
       parentRoute: typeof FootballRoute
     }
+    '/football/countries/': {
+      id: '/football/countries/'
+      path: '/countries'
+      fullPath: '/football/countries/'
+      preLoaderRoute: typeof FootballCountriesIndexRouteImport
+      parentRoute: typeof FootballRoute
+    }
     '/football/campaigns/': {
       id: '/football/campaigns/'
       path: '/campaigns'
@@ -2481,6 +2558,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MlbGameIdRouteImport
       parentRoute: typeof MlbRoute
     }
+    '/football/tournaments/$year': {
+      id: '/football/tournaments/$year'
+      path: '/tournaments/$year'
+      fullPath: '/football/tournaments/$year'
+      preLoaderRoute: typeof FootballTournamentsYearRouteImport
+      parentRoute: typeof FootballRoute
+    }
     '/football/top-scorers/$year': {
       id: '/football/top-scorers/$year'
       path: '/top-scorers/$year'
@@ -2635,12 +2719,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CricketIplTeamsIndexRouteImport
       parentRoute: typeof CricketRoute
     }
+    '/football/players/$slug/world-cup-{$year}': {
+      id: '/football/players/$slug/world-cup-{$year}'
+      path: '/world-cup-{$year}'
+      fullPath: '/football/players/$slug/world-cup-{$year}'
+      preLoaderRoute: typeof FootballPlayersSlugWorldCupChar123yearChar125RouteImport
+      parentRoute: typeof FootballPlayersSlugRoute
+    }
     '/football/players/$slug/$stat': {
       id: '/football/players/$slug/$stat'
       path: '/$stat'
       fullPath: '/football/players/$slug/$stat'
       preLoaderRoute: typeof FootballPlayersSlugStatRouteImport
       parentRoute: typeof FootballPlayersSlugRoute
+    }
+    '/football/countries/$slug/world-cup-{$year}': {
+      id: '/football/countries/$slug/world-cup-{$year}'
+      path: '/countries/$slug/world-cup-{$year}'
+      fullPath: '/football/countries/$slug/world-cup-{$year}'
+      preLoaderRoute: typeof FootballCountriesSlugWorldCupChar123yearChar125RouteImport
+      parentRoute: typeof FootballRoute
     }
     '/cricket/ipl/teams/$teamId': {
       id: '/cricket/ipl/teams/$teamId'
@@ -2729,10 +2827,13 @@ const CricketRouteWithChildren =
 
 interface FootballPlayersSlugRouteChildren {
   FootballPlayersSlugStatRoute: typeof FootballPlayersSlugStatRoute
+  FootballPlayersSlugWorldCupChar123yearChar125Route: typeof FootballPlayersSlugWorldCupChar123yearChar125Route
 }
 
 const FootballPlayersSlugRouteChildren: FootballPlayersSlugRouteChildren = {
   FootballPlayersSlugStatRoute: FootballPlayersSlugStatRoute,
+  FootballPlayersSlugWorldCupChar123yearChar125Route:
+    FootballPlayersSlugWorldCupChar123yearChar125Route,
 }
 
 const FootballPlayersSlugRouteWithChildren =
@@ -2747,9 +2848,12 @@ interface FootballRouteChildren {
   FootballPlayersSlugRoute: typeof FootballPlayersSlugRouteWithChildren
   FootballTeamsSlugRoute: typeof FootballTeamsSlugRoute
   FootballTopScorersYearRoute: typeof FootballTopScorersYearRoute
+  FootballTournamentsYearRoute: typeof FootballTournamentsYearRoute
   FootballCampaignsIndexRoute: typeof FootballCampaignsIndexRoute
+  FootballCountriesIndexRoute: typeof FootballCountriesIndexRoute
   FootballPlayersIndexRoute: typeof FootballPlayersIndexRoute
   FootballTopScorersIndexRoute: typeof FootballTopScorersIndexRoute
+  FootballCountriesSlugWorldCupChar123yearChar125Route: typeof FootballCountriesSlugWorldCupChar123yearChar125Route
 }
 
 const FootballRouteChildren: FootballRouteChildren = {
@@ -2761,9 +2865,13 @@ const FootballRouteChildren: FootballRouteChildren = {
   FootballPlayersSlugRoute: FootballPlayersSlugRouteWithChildren,
   FootballTeamsSlugRoute: FootballTeamsSlugRoute,
   FootballTopScorersYearRoute: FootballTopScorersYearRoute,
+  FootballTournamentsYearRoute: FootballTournamentsYearRoute,
   FootballCampaignsIndexRoute: FootballCampaignsIndexRoute,
+  FootballCountriesIndexRoute: FootballCountriesIndexRoute,
   FootballPlayersIndexRoute: FootballPlayersIndexRoute,
   FootballTopScorersIndexRoute: FootballTopScorersIndexRoute,
+  FootballCountriesSlugWorldCupChar123yearChar125Route:
+    FootballCountriesSlugWorldCupChar123yearChar125Route,
 }
 
 const FootballRouteWithChildren = FootballRoute._addFileChildren(
@@ -2996,6 +3104,7 @@ const rootRouteChildren: RootRouteChildren = {
   PlayersRoute: PlayersRoute,
   PremiumRoute: PremiumRoute,
   PrivacyRoute: PrivacyRoute,
+  SearchRoute: SearchRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TermsRoute: TermsRoute,
   UnsubscribeRoute: UnsubscribeRoute,

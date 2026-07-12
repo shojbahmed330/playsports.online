@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
-import { listTeams, listPlayers, listH2H, listArchives } from "@/lib/seo/programmatic";
+import { listTeams, listPlayers, listH2H, listArchives, listCountryYears, listPlayerYears } from "@/lib/seo/programmatic";
+import { WC_TOURNAMENTS } from "@/data/wc_tournaments";
 import { programmaticCampaignUrls, programmaticTopScorerUrls } from "@/lib/seo/programmatic-pages";
 import {
   mlbProgrammaticUrls,
@@ -71,6 +72,8 @@ const STATIC_ROUTES: SitemapEntry[] = [
   // Football / FIFA World Cup
   { path: "/football", changefreq: "hourly", priority: "0.9" },
   { path: "/football/players", changefreq: "weekly", priority: "0.8" },
+  { path: "/football/countries", changefreq: "weekly", priority: "0.8" },
+  { path: "/search", changefreq: "monthly", priority: "0.5" },
 
   // Cricket
   { path: "/cricket", changefreq: "hourly", priority: "0.9" },
@@ -256,6 +259,21 @@ async function entriesForPart(part: SitemapPart): Promise<SitemapEntry[]> {
           path: `/football/players/${p.slug}`,
           changefreq: "monthly" as const,
           priority: "0.6",
+        })),
+        ...WC_TOURNAMENTS.map((t) => ({
+          path: `/football/tournaments/${t.year}`,
+          changefreq: "monthly" as const,
+          priority: "0.75",
+        })),
+        ...listCountryYears().map((cy) => ({
+          path: `/football/countries/${cy.countrySlug}/world-cup-${cy.year}`,
+          changefreq: "yearly" as const,
+          priority: "0.65",
+        })),
+        ...listPlayerYears().map((py) => ({
+          path: `/football/players/${py.playerSlug}/world-cup-${py.year}`,
+          changefreq: "yearly" as const,
+          priority: "0.55",
         })),
         ...listHighlights().map((h) => ({
           path: `/highlights/${h.slug}`,
