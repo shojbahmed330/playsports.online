@@ -100,11 +100,8 @@ function TeamSelect({
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        // colorScheme: dark tells the browser to render the native dropdown
-        // popup with a dark background — otherwise Chrome/Safari fall back to
-        // the OS default (usually white) and the list is unreadable on dark UI.
         style={{ colorScheme: "dark", backgroundColor: "hsl(var(--card, 222 15% 8%))" }}
-        className="mt-1 w-full rounded-xl border border-white/10 px-3 py-2 text-sm text-foreground outline-none focus:border-white/25"
+        className="mt-1 w-full min-h-11 rounded-xl border border-white/10 px-3 py-2 text-base sm:text-sm text-foreground outline-none focus:border-white/25"
       >
         <option value="" style={{ backgroundColor: "#0b0f14", color: "#e5e7eb" }}>
           Select team…

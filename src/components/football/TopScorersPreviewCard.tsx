@@ -44,7 +44,7 @@ export function TopScorersPreviewCard({ comp }: { comp: Competition }) {
           ) : (
             <>
               <ol className="grid gap-2 sm:grid-cols-2">
-                {seededAllTime.slice(0, 6).map((r, i) => {
+                {seededAllTime.slice(0, 8).map((r, i) => {
                   const fallbackAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(r.title)}&background=0b1220&color=fff&bold=true&size=64`;
                   return (
                     <li
