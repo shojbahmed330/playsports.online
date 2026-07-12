@@ -4,7 +4,7 @@ import { CompetitionPageShell } from "@/components/football/CompetitionPageShell
 import { buildCompetitionHead } from "@/lib/competition-head";
 import { editionsByDecade } from "@/lib/competition-history";
 
-export const Route = createFileRoute("/football/$comp/records/decades/")({
+export const Route = createFileRoute("/football/$comp/records/decades")({
   loader: ({ params }) => {
     const comp = getCompetition(params.comp);
     if (!comp) throw notFound();
