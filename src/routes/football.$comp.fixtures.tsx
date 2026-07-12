@@ -1,15 +1,27 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
+import { useMemo, useState } from "react";
 import { getCompetition, requireCompetition } from "@/lib/competitions";
-import { getScoreboard } from "@/lib/espn.functions";
+import { getScoreboard, type SportGame } from "@/lib/espn.functions";
 import { CompetitionPageShell } from "@/components/football/CompetitionPageShell";
 import { CompetitionMatchList } from "@/components/football/CompetitionMatchList";
 import { LastEditionRecap } from "@/components/football/LastEditionRecap";
+import { EuroFixturesHero, type FixtureFilter } from "@/components/football/EuroFixturesHero";
+import { EuroFixturesRoadmap } from "@/components/football/EuroFixturesRoadmap";
+import { EuroHostVenuesCarousel } from "@/components/football/EuroHostVenuesCarousel";
+import { AddSeasonToCalendar } from "@/components/football/AddSeasonToCalendar";
+import { FixturesCalendarStrip } from "@/components/football/FixturesCalendarStrip";
+import { FixturesMonthGroups } from "@/components/football/FixturesMonthGroups";
+import { FixturesEmptyStateEuro } from "@/components/football/FixturesEmptyStateEuro";
+import {
+  EuroTeamFilterChips,
+  useEuroFavTeams,
+} from "@/components/football/EuroTeamFilterChips";
 import { buildCompetitionHead } from "@/lib/competition-head";
 import { Loader2, CalendarClock } from "lucide-react";
+import type { Competition } from "@/lib/competitions";
 
-
-/** Format YYYYMMDD from a Date (UTC). */
+/** YYYYMMDD from a Date (UTC). */
 function ymd(d: Date): string {
   return d.toISOString().slice(0, 10).replace(/-/g, "");
 }
@@ -47,16 +59,15 @@ export const Route = createFileRoute("/football/$comp/fixtures")({
 function FixturesPage() {
   const { comp: raw } = Route.useLoaderData();
   const comp = requireCompetition(raw.slug);
-  // Wider 60-day scan so tournaments with sparse schedules (WC 2026, Euro,
-  // Copa) reliably surface upcoming matches without an empty 2-week fallback.
-  const dates = buildDateRange(60);
+  const isEuro = comp.slug === "euro";
+  // Wider scan for tournaments; euro benefits from the full 180d window so
+  // late-year qualifiers still surface.
+  const dates = buildDateRange(isEuro ? 180 : 60);
 
   const q = useQuery({
-    queryKey: ["comp-fixtures", comp.slug],
+    queryKey: ["comp-fixtures", comp.slug, isEuro ? "wide" : "std"],
     queryFn: async () => {
       const results = await Promise.all([
-        // Base scoreboard (no date param) — catches whatever the league feed
-        // considers "current" even when it falls outside the date-range scan.
         getScoreboard({
           data: { sportPath: `soccer/${comp.espnLeague}`, league: comp.name },
         }).catch(() => null),
@@ -81,6 +92,16 @@ function FixturesPage() {
   });
 
   const games = q.data ?? [];
+
+  if (isEuro) {
+    return (
+      <CompetitionPageShell comp={comp}>
+        <EuroFixturesInner comp={comp} games={games} loading={q.isLoading} />
+      </CompetitionPageShell>
+    );
+  }
+
+  // Non-Euro competitions keep the original simple layout.
   const isEuro2028 = comp.slug === "euro" && comp.currentSeason === 2028;
   const showFutureNote = !q.isLoading && games.length === 0 && isEuro2028;
 
@@ -96,9 +117,9 @@ function FixturesPage() {
           <div className="rounded-2xl border border-blue-400/20 bg-blue-500/5 px-5 py-4 flex items-start gap-3">
             <CalendarClock className="size-5 text-blue-300 shrink-0 mt-0.5" />
             <div>
-              <div className="text-sm font-bold">Euro 2028 fixtures land after the qualifying draw</div>
+              <div className="text-sm font-bold">Fixtures land after the qualifying draw</div>
               <div className="text-xs text-muted-foreground mt-1">
-                Qualifying draw: December 2026 · Qualifiers begin March 2027 · Final tournament 9 Jun – 9 Jul 2028.
+                Qualifying draw: December 2026 · Qualifiers begin March 2027.
               </div>
             </div>
           </div>
@@ -115,3 +136,111 @@ function FixturesPage() {
   );
 }
 
+function EuroFixturesInner({
+  comp,
+  games,
+  loading,
+}: {
+  comp: Competition;
+  games: SportGame[];
+  loading: boolean;
+}) {
+  const [filter, setFilter] = useState<FixtureFilter>("all");
+  const [favTeams, toggleFav, clearFav] = useEuroFavTeams();
+
+  const classify = (g: SportGame): "qualifying" | "finals" => {
+    const s = (g.shortDetail || "").toLowerCase();
+    if (
+      s.includes("group") || s.includes("quarter") || s.includes("semi") ||
+      s.includes("final") || s.includes("round of 16") || s.includes("r16")
+    ) {
+      // Finals-tournament stages start June 2028
+      const yr = new Date(g.startTs).getUTCFullYear();
+      return yr >= 2028 && new Date(g.startTs).getUTCMonth() >= 5 ? "finals" : "qualifying";
+    }
+    return "qualifying";
+  };
+
+  const filteredByType = useMemo(() => {
+    return games.filter((g) => {
+      const kind = classify(g);
+      if (filter === "qualifying" && kind !== "qualifying") return false;
+      if (filter === "finals" && kind !== "finals") return false;
+      if (filter === "my") {
+        if (favTeams.length === 0) return false;
+        return favTeams.some((t) => g.home.name === t || g.away.name === t);
+      }
+      return true;
+    });
+  }, [games, filter, favTeams]);
+
+  const counts = useMemo(() => {
+    const c = { all: games.length, qualifying: 0, finals: 0, my: 0 };
+    for (const g of games) {
+      const k = classify(g);
+      c[k]++;
+      if (favTeams.some((t) => g.home.name === t || g.away.name === t)) c.my++;
+    }
+    return c as Record<FixtureFilter, number>;
+  }, [games, favTeams]);
+
+  const filterLabel = filter === "my" ? "My teams" : filter === "all" ? "All" : filter === "qualifying" ? "Qualifying" : "Finals";
+
+  return (
+    <>
+      <EuroFixturesHero
+        filter={filter}
+        onFilterChange={setFilter}
+        counts={counts}
+      />
+      <EuroFixturesRoadmap />
+
+      <div className="mb-4 flex flex-wrap items-center gap-2">
+        <AddSeasonToCalendar />
+      </div>
+
+      <EuroHostVenuesCarousel />
+
+      {loading ? (
+        <SkeletonList />
+      ) : games.length > 0 ? (
+        <>
+          <FixturesCalendarStrip games={filteredByType} />
+          <EuroTeamFilterChips
+            selected={favTeams}
+            onToggle={toggleFav}
+            onClear={clearFav}
+          />
+          {filteredByType.length === 0 ? (
+            <FixturesEmptyStateEuro
+              filterLabel={filterLabel}
+              onReset={() => { setFilter("all"); clearFav(); }}
+            />
+          ) : (
+            <FixturesMonthGroups games={filteredByType} compSlug={comp.slug} />
+          )}
+        </>
+      ) : null}
+
+      <div className="mt-8">
+        <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-2">
+          From the archives
+        </div>
+        <LastEditionRecap comp={comp} collapsible />
+      </div>
+    </>
+  );
+}
+
+function SkeletonList() {
+  return (
+    <ul className="grid gap-2 sm:gap-3 sm:grid-cols-2">
+      {Array.from({ length: 6 }).map((_, i) => (
+        <li
+          key={i}
+          className="h-[104px] rounded-2xl border border-white/10 bg-white/[0.03] animate-pulse"
+        />
+      ))}
+    </ul>
+  );
+}
