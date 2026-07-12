@@ -80,6 +80,10 @@ function FixturesPage() {
     staleTime: 5 * 60_000,
   });
 
+  const games = q.data ?? [];
+  const isEuro2028 = comp.slug === "euro" && comp.currentSeason === 2028;
+  const showFutureNote = !q.isLoading && games.length === 0 && isEuro2028;
+
   return (
     <CompetitionPageShell comp={comp}>
       <h2 className="text-lg sm:text-xl font-bold mb-4">Upcoming Fixtures</h2>
@@ -87,9 +91,22 @@ function FixturesPage() {
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <Loader2 className="size-4 animate-spin" /> Loading fixtures…
         </div>
+      ) : showFutureNote ? (
+        <div className="space-y-4">
+          <div className="rounded-2xl border border-blue-400/20 bg-blue-500/5 px-5 py-4 flex items-start gap-3">
+            <CalendarClock className="size-5 text-blue-300 shrink-0 mt-0.5" />
+            <div>
+              <div className="text-sm font-bold">Euro 2028 fixtures land after the qualifying draw</div>
+              <div className="text-xs text-muted-foreground mt-1">
+                Qualifying draw: December 2026 · Qualifiers begin March 2027 · Final tournament 9 Jun – 9 Jul 2028.
+              </div>
+            </div>
+          </div>
+          <LastEditionRecap comp={comp} />
+        </div>
       ) : (
         <CompetitionMatchList
-          games={q.data ?? []}
+          games={games}
           emptyLabel={`No upcoming ${comp.shortName} matches in the next 60 days.`}
           h2hCompSlug={comp.slug}
         />
@@ -97,3 +114,4 @@ function FixturesPage() {
     </CompetitionPageShell>
   );
 }
+
