@@ -241,3 +241,10 @@
   }
   .ticker-track { animation: none !important; }
 }
+
+/* ── Hide scrollbars on horizontal scroll rails ── */
+@utility scrollbar-hide {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar { display: none; }
+}
