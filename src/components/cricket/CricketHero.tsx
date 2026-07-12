@@ -46,10 +46,11 @@ export function CricketHero({ matches, liveCount }: { matches: CricketMatch[]; l
             </div>
             <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight leading-[1.05]">
               <span className="bg-gradient-to-r from-emerald-300 via-amber-300 to-rose-300 bg-clip-text text-transparent">
-                Every ball.
+                Live Cricket Scores,
               </span>{" "}
-              <span className="text-white">Every series.</span>
+              <span className="text-white">Series & Rankings</span>
             </h1>
+
             <p className="mt-3 text-sm sm:text-base text-emerald-100/75 max-w-xl">
               Live scoreboards, fixtures, standings, player profiles and records — from IPL and the
               ICC World Cup to Big Bash, PSL and the international calendar.
