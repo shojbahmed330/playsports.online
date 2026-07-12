@@ -37,8 +37,8 @@ export function CookieConsent() {
           <>
             <div className="text-sm text-foreground">
               {settings.banner_text}{" "}
-              <Link to="/cookies" className="underline text-primary">
-                Learn more
+              <Link to="/cookies" className="underline text-primary" aria-label="Learn about our cookie policy">
+                Learn about our cookie policy
               </Link>
               .
             </div>
