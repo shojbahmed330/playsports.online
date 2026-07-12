@@ -52,8 +52,9 @@ export const Route = createFileRoute("/football/$comp/records/$category")({
 });
 
 function RecordsCategoryPage() {
-  const { comp: raw, category } = Route.useLoaderData();
-  const comp = requireCompetition(raw.slug);
+  const data = Route.useLoaderData();
+  const comp = requireCompetition(data.comp.slug);
+  const category = data.category as RecordCategoryKey;
   const meta = CATEGORY_LABELS[category];
   const rows = getCompetitionRecords(comp.slug)[category] ?? [];
 
