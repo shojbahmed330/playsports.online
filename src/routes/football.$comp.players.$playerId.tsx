@@ -107,6 +107,7 @@ function PlayerDetailPage() {
               )}
             </section>
           )}
+          <CareerInCompetition comp={comp} playerName={p.fullName || p.displayName} />
 
           {p.stats.length > 0 && (
             <section className="mb-6">
