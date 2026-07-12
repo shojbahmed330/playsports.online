@@ -1,5 +1,6 @@
+import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Trophy, ArrowRight } from "lucide-react";
+import { Trophy, ArrowRight, ChevronDown } from "lucide-react";
 import type { Competition } from "@/lib/competitions";
 import { latestCompletedEdition } from "@/lib/competition-history";
 
@@ -8,20 +9,41 @@ import { latestCompletedEdition } from "@/lib/competition-history";
  * is between editions (no live/upcoming data). Instead of an empty "table will
  * appear once the season begins" state, we surface the most recent completed
  * edition's champion, final and top scorer, plus deep-links into history.
+ *
+ * Pass `collapsible` to render the recap under a "Show" toggle (used on
+ * pages where the recap is secondary content).
  */
 export function LastEditionRecap({
   comp,
   variant = "wide",
+  collapsible = false,
 }: {
   comp: Competition;
   variant?: "wide" | "compact";
+  collapsible?: boolean;
 }) {
+  const [open, setOpen] = useState(!collapsible);
   const last = latestCompletedEdition(comp.slug);
   if (!last) {
     return (
       <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-6 py-10 text-center text-sm text-muted-foreground">
         {comp.shortName} is between editions. Check back closer to the next tournament.
       </div>
+    );
+  }
+
+  if (collapsible && !open) {
+    return (
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        className="w-full flex items-center justify-between gap-3 rounded-2xl border border-amber-400/20 bg-amber-500/[0.06] px-4 py-3 hover:border-amber-400/40 transition"
+      >
+        <span className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-amber-300/90">
+          <Trophy className="size-3.5" /> {comp.shortName} {last.year} recap · {last.winner}
+        </span>
+        <ChevronDown className="size-4 text-muted-foreground" />
+      </button>
     );
   }
 
