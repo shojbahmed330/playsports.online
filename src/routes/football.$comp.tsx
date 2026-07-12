@@ -126,44 +126,12 @@ function CompetitionLandingPage() {
     >
       {isFutureEdition && <CompetitionCountdown comp={comp} />}
 
-      {(isFutureEdition || isOffSeason) ? (
+      {(isFutureEdition || isOffSeason) && (
         <div className="mt-6">
           <LastEditionRecap comp={comp} />
         </div>
-      ) : (
-        <div className="grid gap-8 lg:grid-cols-3 mt-6">
-          <section className="lg:col-span-2">
-            <SectionHeader
-              title={live.length > 0 ? "Live & Today" : "Latest Matches"}
-              to={`/football/${comp.slug}/scores`}
-              cta="All scores"
-            />
-            {scoreboard.isLoading ? (
-              <Loading label="Loading scores…" />
-            ) : (
-              <CompetitionMatchList
-                games={previewGames}
-                emptyLabel={`No ${comp.shortName} matches right now. See fixtures for what's next.`}
-                h2hCompSlug={comp.slug}
-              />
-            )}
-          </section>
-
-          <section>
-            <SectionHeader
-              title={comp.kind === "league" ? "Table" : "Standings"}
-              to={`/football/${comp.slug}/standings`}
-              cta="Full table"
-            />
-            {standings.isLoading ? (
-              <Loading label="Loading standings…" />
-            ) : (
-              <CompetitionStandingsTable groups={previewGroups} compact />
-            )}
-          </section>
-
-        </div>
       )}
+
 
       <TopScorersPreviewCard comp={comp} />
       <ChampionsTimelineWidget comp={comp} />
