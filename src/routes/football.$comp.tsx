@@ -123,49 +123,43 @@ function CompetitionLandingPage() {
     >
       {isFutureEdition && <CompetitionCountdown comp={comp} />}
 
-      <div className="grid gap-8 lg:grid-cols-3 mt-6">
-        <section className="lg:col-span-2">
-          <SectionHeader
-            title={live.length > 0 ? "Live & Today" : "Latest Matches"}
-            to={`/football/${comp.slug}/scores`}
-            cta="All scores"
-          />
-          {scoreboard.isLoading ? (
-            <Loading label="Loading scores…" />
-          ) : isOffSeason ? (
-            <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-6 py-10 text-center text-sm text-muted-foreground">
-              {comp.shortName} is between matches right now. Explore{" "}
-              <a href={`/football/${comp.slug}/history`} className="underline underline-offset-4 hover:text-foreground">
-                history
-              </a>{" "}
-              or{" "}
-              <a href={`/football/${comp.slug}/records`} className="underline underline-offset-4 hover:text-foreground">
-                records
-              </a>{" "}
-              while you wait.
-            </div>
-          ) : (
-            <CompetitionMatchList
-              games={previewGames}
-              emptyLabel={`No ${comp.shortName} matches right now. See fixtures for what's next.`}
-              h2hCompSlug={comp.slug}
+      {(isFutureEdition || isOffSeason) ? (
+        <div className="mt-6">
+          <LastEditionRecap comp={comp} />
+        </div>
+      ) : (
+        <div className="grid gap-8 lg:grid-cols-3 mt-6">
+          <section className="lg:col-span-2">
+            <SectionHeader
+              title={live.length > 0 ? "Live & Today" : "Latest Matches"}
+              to={`/football/${comp.slug}/scores`}
+              cta="All scores"
             />
-          )}
-        </section>
+            {scoreboard.isLoading ? (
+              <Loading label="Loading scores…" />
+            ) : (
+              <CompetitionMatchList
+                games={previewGames}
+                emptyLabel={`No ${comp.shortName} matches right now. See fixtures for what's next.`}
+                h2hCompSlug={comp.slug}
+              />
+            )}
+          </section>
 
-        <section>
-          <SectionHeader
-            title={comp.kind === "league" ? "Table" : "Standings"}
-            to={`/football/${comp.slug}/standings`}
-            cta="Full table"
-          />
-          {standings.isLoading ? (
-            <Loading label="Loading standings…" />
-          ) : (
-            <CompetitionStandingsTable groups={previewGroups} />
-          )}
-        </section>
-      </div>
+          <section>
+            <SectionHeader
+              title={comp.kind === "league" ? "Table" : "Standings"}
+              to={`/football/${comp.slug}/standings`}
+              cta="Full table"
+            />
+            {standings.isLoading ? (
+              <Loading label="Loading standings…" />
+            ) : (
+              <CompetitionStandingsTable groups={previewGroups} />
+            )}
+          </section>
+        </div>
+      )}
 
       <TopScorersPreviewCard comp={comp} />
       <ChampionsTimelineWidget comp={comp} />
