@@ -24,7 +24,7 @@ export function CompetitionH2HPicker({ comp }: { comp: Competition }) {
 
   const teamNames = useMemo(() => {
     const list = q.data?.teams ?? [];
-    return [...list.map((t) => t.displayName || t.shortName || t.name).filter(Boolean)].sort();
+    return [...list.map((t) => t.name || t.shortName).filter(Boolean)].sort();
   }, [q.data]);
 
   const canGo = a && b && a !== b;
