@@ -166,6 +166,7 @@ import { Route as FootballCompH2hMatchupRouteImport } from './routes/football.$c
 import { Route as CricketIplTeamsTeamIdRouteImport } from './routes/cricket.ipl.teams.$teamId'
 import { Route as ApiPublicHooksWeeklyDigestRouteImport } from './routes/api/public/hooks/weekly-digest'
 import { Route as ApiPublicHooksGscSyncRouteImport } from './routes/api/public/hooks/gsc-sync'
+import { Route as FootballCompRecordsDecadesIndexRouteImport } from './routes/football.$comp.records.decades.index'
 import { Route as FootballCompTeamsTeamIdSeasonChar123yearChar125RouteImport } from './routes/football.$comp.teams.$teamId.season-{$year}'
 
 const UnsubscribeRoute = UnsubscribeRouteImport.update({
@@ -961,6 +962,12 @@ const ApiPublicHooksGscSyncRoute = ApiPublicHooksGscSyncRouteImport.update({
   path: '/api/public/hooks/gsc-sync',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FootballCompRecordsDecadesIndexRoute =
+  FootballCompRecordsDecadesIndexRouteImport.update({
+    id: '/decades/',
+    path: '/decades/',
+    getParentRoute: () => FootballCompRecordsRoute,
+  } as any)
 const FootballCompTeamsTeamIdSeasonChar123yearChar125Route =
   FootballCompTeamsTeamIdSeasonChar123yearChar125RouteImport.update({
     id: '/season-{$year}',
@@ -1127,6 +1134,7 @@ export interface FileRoutesByFullPath {
   '/football/players/$slug/world-cup-{$year}': typeof FootballPlayersSlugWorldCupChar123yearChar125Route
   '/cricket/ipl/teams/': typeof CricketIplTeamsIndexRoute
   '/football/$comp/teams/$teamId/season-{$year}': typeof FootballCompTeamsTeamIdSeasonChar123yearChar125Route
+  '/football/$comp/records/decades/': typeof FootballCompRecordsDecadesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -1281,6 +1289,7 @@ export interface FileRoutesByTo {
   '/football/players/$slug/world-cup-{$year}': typeof FootballPlayersSlugWorldCupChar123yearChar125Route
   '/cricket/ipl/teams': typeof CricketIplTeamsIndexRoute
   '/football/$comp/teams/$teamId/season-{$year}': typeof FootballCompTeamsTeamIdSeasonChar123yearChar125Route
+  '/football/$comp/records/decades': typeof FootballCompRecordsDecadesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -1442,6 +1451,7 @@ export interface FileRoutesById {
   '/football/players/$slug/world-cup-{$year}': typeof FootballPlayersSlugWorldCupChar123yearChar125Route
   '/cricket/ipl/teams/': typeof CricketIplTeamsIndexRoute
   '/football/$comp/teams/$teamId/season-{$year}': typeof FootballCompTeamsTeamIdSeasonChar123yearChar125Route
+  '/football/$comp/records/decades/': typeof FootballCompRecordsDecadesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -1604,6 +1614,7 @@ export interface FileRouteTypes {
     | '/football/players/$slug/world-cup-{$year}'
     | '/cricket/ipl/teams/'
     | '/football/$comp/teams/$teamId/season-{$year}'
+    | '/football/$comp/records/decades/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -1758,6 +1769,7 @@ export interface FileRouteTypes {
     | '/football/players/$slug/world-cup-{$year}'
     | '/cricket/ipl/teams'
     | '/football/$comp/teams/$teamId/season-{$year}'
+    | '/football/$comp/records/decades'
   id:
     | '__root__'
     | '/'
@@ -1918,6 +1930,7 @@ export interface FileRouteTypes {
     | '/football/players/$slug/world-cup-{$year}'
     | '/cricket/ipl/teams/'
     | '/football/$comp/teams/$teamId/season-{$year}'
+    | '/football/$comp/records/decades/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -3062,6 +3075,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHooksGscSyncRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/football/$comp/records/decades/': {
+      id: '/football/$comp/records/decades/'
+      path: '/decades'
+      fullPath: '/football/$comp/records/decades/'
+      preLoaderRoute: typeof FootballCompRecordsDecadesIndexRouteImport
+      parentRoute: typeof FootballCompRecordsRoute
+    }
     '/football/$comp/teams/$teamId/season-{$year}': {
       id: '/football/$comp/teams/$teamId/season-{$year}'
       path: '/season-{$year}'
@@ -3157,10 +3177,12 @@ const FootballCompPlayersRouteWithChildren =
 
 interface FootballCompRecordsRouteChildren {
   FootballCompRecordsCategoryRoute: typeof FootballCompRecordsCategoryRoute
+  FootballCompRecordsDecadesIndexRoute: typeof FootballCompRecordsDecadesIndexRoute
 }
 
 const FootballCompRecordsRouteChildren: FootballCompRecordsRouteChildren = {
   FootballCompRecordsCategoryRoute: FootballCompRecordsCategoryRoute,
+  FootballCompRecordsDecadesIndexRoute: FootballCompRecordsDecadesIndexRoute,
 }
 
 const FootballCompRecordsRouteWithChildren =
