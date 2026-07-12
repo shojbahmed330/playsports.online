@@ -92,6 +92,28 @@ export function collectAllInternalPaths(): string[] {
   for (const y of listTopScorerYears()) out.add(`/football/top-scorers/${y}`);
   for (const a of listArchives()) out.add(`/archive/${a.sport}/${a.year}`);
 
+  // Competition-scoped hubs (Phase 1–5): every /football/<comp>/* section per comp.
+  try {
+    // Lazy imports to keep this list stable if either source ever changes shape.
+    const { COMPETITIONS } = require("@/lib/competitions") as typeof import("@/lib/competitions");
+    const { COMPETITION_EDITIONS } = require("@/data/competition-editions") as typeof import("@/data/competition-editions");
+    for (const c of COMPETITIONS) {
+      const base = `/football/${c.slug}`;
+      out.add(base);
+      for (const sec of ["scores", "fixtures", "standings", "history", "records", "records/decades", "teams", "players"]) {
+        out.add(`${base}/${sec}`);
+      }
+      for (const cat of ["top-scorers-all-time", "most-titles", "most-appearances", "records-and-firsts"]) {
+        out.add(`${base}/records/${cat}`);
+      }
+      for (const e of COMPETITION_EDITIONS[c.slug] ?? []) {
+        out.add(`${base}/history/${e.year}`);
+      }
+    }
+  } catch {
+    /* competition data optional */
+  }
+
   // League teams + championships + players
   for (const t of listMlbTeams()) {
     out.add(`/mlb/teams/${t.slug}`);

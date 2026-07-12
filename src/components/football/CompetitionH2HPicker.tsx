@@ -92,13 +92,13 @@ function TeamSelect({
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="mt-1 w-full rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2 text-sm outline-none focus:border-white/25"
+        className="mt-1 w-full rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2 text-sm text-foreground outline-none focus:border-white/25 [&>option]:bg-background [&>option]:text-foreground"
       >
-        <option value="">Select team…</option>
+        <option value="" className="bg-background text-foreground">Select team…</option>
         {options
           .filter((t) => t !== exclude)
           .map((t) => (
-            <option key={t} value={t}>
+            <option key={t} value={t} className="bg-background text-foreground">
               {t}
             </option>
           ))}

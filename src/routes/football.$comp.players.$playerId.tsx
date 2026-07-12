@@ -4,6 +4,7 @@ import { getCompetition, requireCompetition } from "@/lib/competitions";
 import { CompetitionPageShell } from "@/components/football/CompetitionPageShell";
 import { buildCompetitionHead } from "@/lib/competition-head";
 import { getCompetitionPlayer } from "@/lib/espn.functions";
+import { CareerInCompetition } from "@/components/football/CareerInCompetition";
 import { Loader2 } from "lucide-react";
 
 export const Route = createFileRoute("/football/$comp/players/$playerId")({
@@ -106,6 +107,7 @@ function PlayerDetailPage() {
               )}
             </section>
           )}
+          <CareerInCompetition comp={comp} playerName={p.fullName || p.displayName} />
 
           {p.stats.length > 0 && (
             <section className="mb-6">

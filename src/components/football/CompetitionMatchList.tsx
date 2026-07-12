@@ -28,13 +28,24 @@ export function CompetitionMatchList({
     <ul className="grid gap-2 sm:grid-cols-2">
       {games.map((g) => (
         <li key={g.id} className="relative">
-          <MatchRow g={g} />
+          {h2hCompSlug ? (
+            <Link
+              to="/football/$comp/matches/$matchId"
+              params={{ comp: h2hCompSlug, matchId: g.id }}
+              className="block"
+            >
+              <MatchRow g={g} />
+            </Link>
+          ) : (
+            <MatchRow g={g} />
+          )}
           {h2hCompSlug && g.home.name && g.away.name && (
             <Link
               to="/football/$comp/h2h/$matchup"
               params={{ comp: h2hCompSlug, matchup: matchupSlug(g.home.name, g.away.name) }}
               className="absolute top-2 right-2 inline-flex items-center gap-1 rounded-full border border-white/10 bg-black/40 backdrop-blur px-2 py-1 text-[10px] uppercase tracking-widest text-muted-foreground hover:text-foreground hover:border-white/25"
               title={`${g.home.name} vs ${g.away.name} head-to-head`}
+              onClick={(e) => e.stopPropagation()}
             >
               <Swords className="size-3" /> H2H
             </Link>
