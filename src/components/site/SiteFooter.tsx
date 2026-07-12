@@ -33,7 +33,23 @@ export function SiteFooter() {
 
   return (
     <footer className="mt-16 px-4 pb-20 sm:pb-8">
+      <div className="mx-auto w-full max-w-7xl mb-6 rounded-2xl border border-border bg-card/40 p-4 sm:p-5">
+        <form method="get" action="/search" className="flex gap-2 items-center">
+          <label htmlFor="site-search" className="sr-only">Search PlaySports</label>
+          <input
+            id="site-search"
+            name="q"
+            type="search"
+            placeholder="Search any country, player, year or World Cup…"
+            className="flex-1 rounded-xl px-4 py-2.5 text-sm bg-background border border-border focus:outline-none focus:ring-2 focus:ring-primary/50"
+          />
+          <button type="submit" className="rounded-xl px-4 py-2.5 text-sm font-semibold bg-primary text-primary-foreground hover:opacity-90">
+            Search
+          </button>
+        </form>
+      </div>
       <FooterInternalLinks />
+
       <div className="mx-auto w-full max-w-7xl bg-card/40 text-muted-foreground rounded-2xl overflow-hidden border border-border shadow-2xl">
 
         {/* Affiliate strip */}
