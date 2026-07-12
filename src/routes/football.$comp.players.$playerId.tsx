@@ -4,6 +4,7 @@ import { getCompetition, requireCompetition } from "@/lib/competitions";
 import { CompetitionPageShell } from "@/components/football/CompetitionPageShell";
 import { buildCompetitionHead } from "@/lib/competition-head";
 import { getCompetitionPlayer } from "@/lib/espn.functions";
+import { CareerInCompetition } from "@/components/football/CareerInCompetition";
 import { Loader2 } from "lucide-react";
 
 export const Route = createFileRoute("/football/$comp/players/$playerId")({
