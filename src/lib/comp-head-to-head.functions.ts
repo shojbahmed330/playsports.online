@@ -1,5 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import type { H2HMatch } from "./head-to-head.functions";
+import { seededWcH2H } from "@/data/wc_h2h_seed";
+
 
 /**
  * Competition-scoped head-to-head. Uses the ESPN team schedule endpoint for a
