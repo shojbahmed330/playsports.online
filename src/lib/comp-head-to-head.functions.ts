@@ -1,5 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import type { H2HMatch } from "./head-to-head.functions";
+import { seededWcH2H } from "@/data/wc_h2h_seed";
+
 
 /**
  * Competition-scoped head-to-head. Uses the ESPN team schedule endpoint for a
@@ -133,14 +135,36 @@ export const getCompHeadToHead = createServerFn({ method: "GET" })
     if (!data.league || !data.teamA || !data.teamB) {
       return { matches: [], error: "Missing league or team.", teamAId: null, teamBId: null };
     }
+
+    // World Cup: ESPN's fifa.world schedule endpoint only returns the current
+    // tournament, so we prepend a curated historical seed to keep famous
+    // matchups (ARG-BRA, ARG-GER, ENG-GER, …) from returning zero results.
+    const wcSeed: H2HMatch[] =
+      data.league === "fifa.world"
+        ? seededWcH2H(data.teamA, data.teamB).map((s) => ({
+            date: s.date,
+            home: s.home,
+            away: s.away,
+            homeScore: s.homeScore,
+            awayScore: s.awayScore,
+            competition: `FIFA World Cup · ${s.round}`,
+          }))
+        : [];
+
     try {
       const [teamAId, teamBId] = await Promise.all([
         fetchTeamId(data.league, data.teamA),
         fetchTeamId(data.league, data.teamB),
       ]);
       if (!teamAId) {
+        // No live team id, but we may still have a curated WC seed to return.
+        if (wcSeed.length) {
+          wcSeed.sort((x, y) => new Date(y.date).getTime() - new Date(x.date).getTime());
+          return { matches: wcSeed, error: null, teamAId: null, teamBId };
+        }
         return { matches: [], error: `Team not found in this competition: ${data.teamA}`, teamAId: null, teamBId };
       }
+
 
       const seasons = data.seasons?.length ? data.seasons : defaultSeasonsFor();
       // Also try current-schedule (no season param) — it returns the "in-season" event set.
@@ -177,9 +201,25 @@ export const getCompHeadToHead = createServerFn({ method: "GET" })
         if (isPair) matches.push(m);
       }
 
-      matches.sort((x, y) => new Date(y.date).getTime() - new Date(x.date).getTime());
-      return { matches, error: null, teamAId, teamBId };
+      // Merge WC seed (dedupe by date+home+away+score) so ESPN matches always win.
+      const merged: H2HMatch[] = [...matches];
+      for (const s of wcSeed) {
+        const dupe = merged.some(
+          (m) =>
+            m.date.slice(0, 10) === s.date.slice(0, 10) &&
+            normalize(m.home) === normalize(s.home) &&
+            normalize(m.away) === normalize(s.away),
+        );
+        if (!dupe) merged.push(s);
+      }
+      merged.sort((x, y) => new Date(y.date).getTime() - new Date(x.date).getTime());
+      return { matches: merged, error: null, teamAId, teamBId };
     } catch (e) {
+      if (wcSeed.length) {
+        wcSeed.sort((x, y) => new Date(y.date).getTime() - new Date(x.date).getTime());
+        return { matches: wcSeed, error: null, teamAId: null, teamBId: null };
+      }
       return { matches: [], error: e instanceof Error ? e.message : "Unknown", teamAId: null, teamBId: null };
     }
+
   });

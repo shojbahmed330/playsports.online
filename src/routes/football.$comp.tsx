@@ -106,7 +106,10 @@ function CompetitionLandingPage() {
     : null;
 
   const previewGames = games.slice(0, 6);
-  const previewGroups = (standings.data?.groups ?? []).slice(0, 1);
+  // Show ALL groups (not just Group A). WC has 12 groups; users want to see
+  // the full field on the landing page, not scroll through a single group.
+  const previewGroups = standings.data?.groups ?? [];
+
 
   const isFutureEdition =
     comp.kind === "tournament" &&
@@ -155,9 +158,10 @@ function CompetitionLandingPage() {
             {standings.isLoading ? (
               <Loading label="Loading standings…" />
             ) : (
-              <CompetitionStandingsTable groups={previewGroups} />
+              <CompetitionStandingsTable groups={previewGroups} compact />
             )}
           </section>
+
         </div>
       )}
 
@@ -174,15 +178,16 @@ function SectionHeader({ title, to, cta }: { title: string; to: string; cta: str
   return (
     <div className="flex items-baseline justify-between mb-3">
       <h2 className="text-lg sm:text-xl font-bold">{title}</h2>
-      <a
-        href={to}
+      <Link
+        to={to}
         className="text-xs sm:text-sm font-semibold text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
       >
         {cta} <ArrowRight className="size-3.5" />
-      </a>
+      </Link>
     </div>
   );
 }
+
 
 function Loading({ label }: { label: string }) {
   return (
@@ -207,14 +212,15 @@ function QuickLinks({ comp }: { comp: Competition }) {
       </h3>
       <div className="flex flex-wrap gap-2">
         {links.map((l) => (
-          <a
+          <Link
             key={l.to}
-            href={l.to}
+            to={l.to}
             className="rounded-full border border-white/10 bg-white/[0.03] px-4 py-1.5 text-sm font-semibold hover:border-white/20 hover:bg-white/[0.06]"
           >
             {l.label}
-          </a>
+          </Link>
         ))}
+
       </div>
     </section>
   );
