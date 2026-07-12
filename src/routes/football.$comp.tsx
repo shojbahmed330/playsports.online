@@ -1,75 +1,53 @@
 import { createFileRoute, notFound, Link } from "@tanstack/react-router";
-import { SportNav } from "@/components/sports/SportNav";
-import { SiteFooter } from "@/components/home/SiteFooter";
-import { Breadcrumbs } from "@/components/nav/Breadcrumbs";
+import { useQuery } from "@tanstack/react-query";
 import {
   getCompetition,
+  requireCompetition,
   formatSeasonLabel,
   type Competition,
 } from "@/lib/competitions";
-import { FootballHubSwitcher } from "@/components/football/FootballHubSwitcher";
-import { CompetitionHero } from "@/components/football/CompetitionHero";
-import { CompetitionSubNav } from "@/components/football/CompetitionSubNav";
-import {
-  breadcrumbList,
-  collectionPage,
-  sportsOrganization,
-  ldScript,
-} from "@/lib/seo/jsonld";
-
-const BASE_URL = "https://www.playsports.online";
+import { getScoreboard, getStandings } from "@/lib/espn.functions";
+import { CompetitionPageShell } from "@/components/football/CompetitionPageShell";
+import { CompetitionMatchList } from "@/components/football/CompetitionMatchList";
+import { CompetitionStandingsTable } from "@/components/football/CompetitionStandingsTable";
+import { SportNav } from "@/components/sports/SportNav";
+import { SiteFooter } from "@/components/home/SiteFooter";
+import { buildCompetitionHead } from "@/lib/competition-head";
+import { Loader2, ArrowRight } from "lucide-react";
 
 export const Route = createFileRoute("/football/$comp")({
-  loader: ({ params }) => {
+  loader: ({ params, context }) => {
     const comp = getCompetition(params.comp);
     if (!comp) throw notFound();
+    void context.queryClient
+      .prefetchQuery({
+        queryKey: ["comp-scoreboard", comp.slug],
+        queryFn: () =>
+          getScoreboard({ data: { sportPath: `soccer/${comp.espnLeague}`, league: comp.name } }),
+        staleTime: 20_000,
+      })
+      .catch(() => null);
+    void context.queryClient
+      .prefetchQuery({
+        queryKey: ["comp-standings", comp.slug],
+        queryFn: () => getStandings({ data: { sportPath: `soccer/${comp.espnLeague}` } }),
+        staleTime: 5 * 60_000,
+      })
+      .catch(() => null);
     return { comp };
   },
   head: ({ params, loaderData }) => {
-    const comp = loaderData?.comp;
-    if (!comp) {
-      return {
-        meta: [{ title: "Football competition — PlaySports" }, { name: "robots", content: "noindex" }],
-      };
-    }
-    const season = formatSeasonLabel(comp, comp.currentSeason);
-    const path = `/football/${params.comp}`;
-    const title = `${comp.name} ${season} — Scores, Standings & History`;
-    const description = `Live ${comp.name} ${season} scores, standings, fixtures, history and records — every edition in one place.`;
-    return {
-      meta: [
-        { title },
-        { name: "description", content: description },
-        { property: "og:title", content: title },
-        { property: "og:description", content: description },
-        { property: "og:url", content: `${BASE_URL}${path}` },
-        { property: "og:type", content: "website" },
-      ],
-      links: [{ rel: "canonical", href: `${BASE_URL}${path}` }],
-      scripts: [
-        ldScript(
-          collectionPage({
-            name: title,
-            description,
-            path,
-          }),
-        ),
-        ldScript(
-          sportsOrganization({
-            name: comp.name,
-            path,
-            sport: "Football",
-          }),
-        ),
-        ldScript(
-          breadcrumbList([
-            { name: "Home", path: "/" },
-            { name: "Football", path: "/football" },
-            { name: comp.shortName, path },
-          ]),
-        ),
-      ],
-    };
+    const comp = loaderData?.comp ?? getCompetition(params.comp);
+    if (!comp) return { meta: [{ title: "Football competition" }, { name: "robots", content: "noindex" }] };
+    return buildCompetitionHead({
+      comp,
+      section: "Live Scores, Standings & History",
+      path: `/football/${comp.slug}`,
+      descriptionOverride: `Live ${comp.name} ${formatSeasonLabel(
+        comp,
+        comp.currentSeason,
+      )} scores, standings, fixtures, records and full history — one home for everything ${comp.shortName}.`,
+    });
   },
   notFoundComponent: () => (
     <div className="min-h-screen bg-background text-foreground">
@@ -93,34 +71,125 @@ export const Route = createFileRoute("/football/$comp")({
 });
 
 function CompetitionLandingPage() {
-  const { comp } = Route.useLoaderData();
+  const { comp: raw } = Route.useLoaderData();
+  const comp = requireCompetition(raw.slug);
+
+  const scoreboard = useQuery({
+    queryKey: ["comp-scoreboard", comp.slug],
+    queryFn: () =>
+      getScoreboard({ data: { sportPath: `soccer/${comp.espnLeague}`, league: comp.name } }),
+    staleTime: 20_000,
+    refetchInterval: 30_000,
+  });
+  const standings = useQuery({
+    queryKey: ["comp-standings", comp.slug],
+    queryFn: () => getStandings({ data: { sportPath: `soccer/${comp.espnLeague}` } }),
+    staleTime: 5 * 60_000,
+  });
+
+  const games = scoreboard.data?.games ?? [];
+  const live = games.filter((g) => g.status === "in");
+  const today = games.filter((g) => g.status !== "post");
+  const nextGame = games.find((g) => g.status === "pre");
+  const nextLabel = nextGame
+    ? new Date(nextGame.startTs).toLocaleString(undefined, {
+        weekday: "short",
+        hour: "numeric",
+        minute: "2-digit",
+      })
+    : null;
+
+  const previewGames = games.slice(0, 6);
+  const previewGroups = (standings.data?.groups ?? []).slice(0, 1);
+
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <SportNav />
-      <FootballHubSwitcher activeSlug={comp.slug} />
-      <Breadcrumbs />
-      <CompetitionHero comp={comp} />
-      <CompetitionSubNav comp={comp} />
-      <ComingSoon comp={comp} />
-      <SiteFooter />
+    <CompetitionPageShell
+      comp={comp}
+      liveCount={live.length}
+      todayCount={today.length}
+      nextLabel={nextLabel}
+    >
+      <div className="grid gap-8 lg:grid-cols-3">
+        <section className="lg:col-span-2">
+          <SectionHeader
+            title={live.length > 0 ? "Live & Today" : "Latest Matches"}
+            to={`/football/${comp.slug}/scores`}
+            cta="All scores"
+          />
+          {scoreboard.isLoading ? (
+            <Loading label="Loading scores…" />
+          ) : (
+            <CompetitionMatchList
+              games={previewGames}
+              emptyLabel={`No ${comp.shortName} matches right now. See fixtures for what's next.`}
+            />
+          )}
+        </section>
+
+        <section>
+          <SectionHeader
+            title={comp.kind === "league" ? "Table" : "Standings"}
+            to={`/football/${comp.slug}/standings`}
+            cta="Full table"
+          />
+          {standings.isLoading ? (
+            <Loading label="Loading standings…" />
+          ) : (
+            <CompetitionStandingsTable groups={previewGroups} />
+          )}
+        </section>
+      </div>
+
+      <QuickLinks comp={comp} />
+    </CompetitionPageShell>
+  );
+}
+
+function SectionHeader({ title, to, cta }: { title: string; to: string; cta: string }) {
+  return (
+    <div className="flex items-baseline justify-between mb-3">
+      <h2 className="text-lg sm:text-xl font-bold">{title}</h2>
+      <a
+        href={to}
+        className="text-xs sm:text-sm font-semibold text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
+      >
+        {cta} <ArrowRight className="size-3.5" />
+      </a>
     </div>
   );
 }
 
-function ComingSoon({ comp }: { comp: Competition }) {
-  const season = formatSeasonLabel(comp, comp.currentSeason);
+function Loading({ label }: { label: string }) {
   return (
-    <section className="max-w-4xl mx-auto px-4 sm:px-6 py-10">
-      <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 sm:p-8">
-        <h2 className="text-xl sm:text-2xl font-bold">
-          {comp.name} — {season}
-        </h2>
-        <p className="mt-2 text-sm sm:text-base text-muted-foreground">
-          {comp.tagline}
-        </p>
-        <p className="mt-4 text-sm text-muted-foreground">
-          Full landing page with live scores, standings, history and records is rolling out shortly. Use the tabs above to jump ahead as each section ships.
-        </p>
+    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+      <Loader2 className="size-4 animate-spin" /> {label}
+    </div>
+  );
+}
+
+function QuickLinks({ comp }: { comp: Competition }) {
+  const links = [
+    { label: "Fixtures", to: `/football/${comp.slug}/fixtures` },
+    { label: "History", to: `/football/${comp.slug}/history` },
+    { label: "Records", to: `/football/${comp.slug}/records` },
+    { label: comp.kind === "league" ? "Clubs" : "Teams", to: `/football/${comp.slug}/teams` },
+    { label: "Players", to: `/football/${comp.slug}/players` },
+  ];
+  return (
+    <section className="mt-10">
+      <h3 className="text-sm font-bold uppercase tracking-widest text-muted-foreground mb-3">
+        More {comp.shortName}
+      </h3>
+      <div className="flex flex-wrap gap-2">
+        {links.map((l) => (
+          <a
+            key={l.to}
+            href={l.to}
+            className="rounded-full border border-white/10 bg-white/[0.03] px-4 py-1.5 text-sm font-semibold hover:border-white/20 hover:bg-white/[0.06]"
+          >
+            {l.label}
+          </a>
+        ))}
       </div>
     </section>
   );
