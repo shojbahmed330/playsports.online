@@ -80,8 +80,23 @@ export const COMPETITION_EDITIONS: Record<string, EditionSummary[]> = {
     { year: 2012, winner: "Real Madrid", runnerUp: "Barcelona", host: "—", topScorer: { name: "Lionel Messi", goals: 50 }, blurb: "Madrid hit a record 100 points; Messi's 50-goal LaLiga." },
     { year: 2011, winner: "Barcelona", runnerUp: "Real Madrid", host: "—", topScorer: { name: "Cristiano Ronaldo", goals: 40 } },
     { year: 2010, winner: "Barcelona", runnerUp: "Real Madrid", host: "—", topScorer: { name: "Lionel Messi", goals: 34 } },
+    { year: 2009, winner: "Barcelona", runnerUp: "Real Madrid", host: "—", topScorer: { name: "Diego Forlán", goals: 32 }, blurb: "Guardiola's first season — the sextuple year began here." },
+    { year: 2008, winner: "Real Madrid", runnerUp: "Villarreal", host: "—", topScorer: { name: "Daniel Güiza", goals: 27 } },
+    { year: 2007, winner: "Real Madrid", runnerUp: "Barcelona", host: "—", topScorer: { name: "Ruud van Nistelrooy", goals: 25 }, blurb: "Capello's Madrid pipped Barça on head-to-head." },
+    { year: 2006, winner: "Barcelona", runnerUp: "Real Madrid", host: "—", topScorer: { name: "Samuel Eto'o", goals: 26 }, blurb: "Rijkaard's Barça added the league to their Champions League." },
+    { year: 2005, winner: "Barcelona", runnerUp: "Real Madrid", host: "—", topScorer: { name: "Diego Forlán", goals: 25 } },
+    { year: 2004, winner: "Valencia", runnerUp: "Barcelona", host: "—", topScorer: { name: "Ronaldo", goals: 24 }, blurb: "Rafa Benítez's Valencia won LaLiga and the UEFA Cup." },
+    { year: 2003, winner: "Real Madrid", runnerUp: "Real Sociedad", host: "—", topScorer: { name: "Roy Makaay", goals: 29 }, blurb: "Galácticos' peak — Zidane, Figo, Raúl, Ronaldo." },
+    { year: 2002, winner: "Valencia", runnerUp: "Deportivo La Coruña", host: "—", topScorer: { name: "Diego Tristán", goals: 21 }, blurb: "Valencia's first title in 31 years." },
+    { year: 2001, winner: "Real Madrid", runnerUp: "Deportivo La Coruña", host: "—", topScorer: { name: "Raúl", goals: 24 } },
+    { year: 2000, winner: "Deportivo La Coruña", runnerUp: "Barcelona", host: "—", topScorer: { name: "Salva Ballesta", goals: 27 }, blurb: "SuperDepor stunned the giants for their only LaLiga title." },
+    { year: 1999, winner: "Barcelona", runnerUp: "Real Madrid", host: "—", topScorer: { name: "Raúl", goals: 25 } },
+    { year: 1998, winner: "Barcelona", runnerUp: "Athletic Bilbao", host: "—", topScorer: { name: "Christian Vieri", goals: 24 }, blurb: "Van Gaal's first Barça title." },
+    { year: 1997, winner: "Real Madrid", runnerUp: "Barcelona", host: "—", topScorer: { name: "Ronaldo", goals: 34 }, blurb: "Ronaldo Nazário's iconic Barça season before leaving for Inter." },
+    { year: 1996, winner: "Atlético Madrid", runnerUp: "Valencia", host: "—", topScorer: { name: "Iván Zamorano", goals: 28 }, blurb: "Radomir Antić's Atleti won the league and cup double." },
   ],
 };
+
 
 export function getEdition(compSlug: string, year: number): EditionSummary | null {
   return COMPETITION_EDITIONS[compSlug]?.find((e) => e.year === year) ?? null;
