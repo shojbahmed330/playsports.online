@@ -27,7 +27,9 @@ export function CompetitionNewsRail({ comp }: { comp: Competition }) {
           <Loader2 className="size-4 animate-spin" /> Loading news…
         </div>
       ) : (
-        <div className="flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory -mx-4 px-4 sm:mx-0 sm:px-0">
+        <div className="edge-fade-x -mx-4 sm:-mx-2">
+          <div className="flex gap-3 overflow-x-auto no-scrollbar pb-2 snap-x snap-mandatory px-4 sm:px-2">
+
           {items.map((n) => (
             <a
               key={n.id}
