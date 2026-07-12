@@ -16,10 +16,17 @@ import { CompetitionCountdown } from "@/components/football/CompetitionCountdown
 import { ChampionsTimelineWidget } from "@/components/football/ChampionsTimelineWidget";
 import { TopScorersPreviewCard } from "@/components/football/TopScorersPreviewCard";
 import { LastEditionRecap } from "@/components/football/LastEditionRecap";
+import { Euro2028Hero } from "@/components/football/Euro2028Hero";
 import { Euro2028InfoCard } from "@/components/football/Euro2028InfoCard";
 import { Euro2028VenuesCard } from "@/components/football/Euro2028VenuesCard";
 import { EuroLegendsRail } from "@/components/football/EuroLegendsRail";
 import { EuroSquadOfTournament2024 } from "@/components/football/EuroSquadOfTournament2024";
+import { EuroHonoursStrip } from "@/components/football/EuroHonoursStrip";
+import { EuroFactsGrid } from "@/components/football/EuroFactsGrid";
+import { EuroOnThisDayCard } from "@/components/football/EuroOnThisDayCard";
+import { EuroGoldenBootTimeline } from "@/components/football/EuroGoldenBootTimeline";
+import { EuroPopularMatchups } from "@/components/football/EuroPopularMatchups";
+import { MobileJumpNav } from "@/components/football/MobileJumpNav";
 
 import { SportNav } from "@/components/sports/SportNav";
 import { SiteFooter } from "@/components/home/SiteFooter";
