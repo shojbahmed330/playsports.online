@@ -154,11 +154,42 @@ function EditionPage() {
             </section>
           )}
         </>
+      ) : data.year > new Date().getFullYear() ? (
+        <div className="rounded-2xl border border-blue-400/20 bg-blue-500/5 px-6 py-8 space-y-3">
+          <div className="flex items-center gap-2 text-[11px] uppercase tracking-widest text-blue-200 font-bold">
+            <Calendar className="size-4" /> Future edition
+          </div>
+          <div className="text-lg font-bold">
+            {comp.shortName} {label} — recap lands after the tournament.
+          </div>
+          <p className="text-sm text-muted-foreground max-w-2xl">
+            {comp.slug === "euro" && data.year === 2028
+              ? "UK & Ireland host UEFA Euro 2028 from 9 June to 9 July 2028. Qualifying draw is in December 2026; qualifying matches begin March 2027. Full draw, group tables, squads and results will populate here as they happen."
+              : `${comp.shortName} ${label} hasn't been played yet. Bookmark this page — winner, top scorer, squad-of-tournament and full recap will land as soon as the edition is played.`}
+          </p>
+          <div className="flex flex-wrap gap-2 pt-1">
+            <Link
+              to="/football/$comp/history"
+              params={{ comp: comp.slug }}
+              className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs hover:bg-white/10"
+            >
+              All {comp.shortName} editions →
+            </Link>
+            <Link
+              to="/football/$comp/records"
+              params={{ comp: comp.slug }}
+              className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs hover:bg-white/10"
+            >
+              {comp.shortName} records →
+            </Link>
+          </div>
+        </div>
       ) : (
         <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-6 py-10 text-center text-sm text-muted-foreground">
           Detailed recap for {comp.shortName} {label} lands in the next update.
         </div>
       )}
+
 
       <div className="mt-8 flex flex-wrap items-center gap-2 text-xs">
         <Link
