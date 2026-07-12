@@ -71,17 +71,23 @@ export type StandingRow = {
   team: string;
   abbr: string;
   logo: string | null;
+  gamesPlayed: number | null;
   wins: number;
   losses: number;
-  ties: number | null;     // hockey/soccer
+  ties: number | null;     // hockey/soccer (draws)
   otLosses: number | null; // hockey
   pct: number | null;
   gamesBack: string | null;
   pointsFor: number | null;
   pointsAgainst: number | null;
+  goalDiff: number | null;   // soccer GD
+  points: number | null;     // soccer league points
   streak: string | null;
   conference: string | null;
   division: string | null;
+  rank: number | null;
+  noteColor: string | null;
+  noteDesc: string | null;
 };
 
 export type NewsItem = {
