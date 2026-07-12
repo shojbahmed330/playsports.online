@@ -44,43 +44,28 @@ function RecordsPage() {
       <ul className="grid gap-3 sm:grid-cols-2">
         {CATEGORIES.map((cat) => {
           const Icon = cat.icon;
-          const isWorldCup = comp.slug === "world-cup";
-          const wcSlug = cat.slug === "top-scorers-all-time" ? "top-scorers-all-time" : "iconic-records";
-          const inner = (
-            <div className="flex items-start gap-3">
-              <span className="mt-0.5 size-9 rounded-xl bg-white/5 grid place-items-center ring-1 ring-white/10">
-                <Icon className="size-4 text-foreground" />
-              </span>
-              <div>
-                <div className="font-semibold group-hover:text-foreground">{cat.label}</div>
-                <div className="text-xs text-muted-foreground mt-0.5">{cat.blurb}</div>
-                {!isWorldCup && (
-                  <div className="text-[10px] uppercase tracking-widest text-amber-300/80 mt-1">
-                    Coming soon
-                  </div>
-                )}
-              </div>
-            </div>
-          );
           return (
             <li key={cat.slug}>
-              {isWorldCup ? (
-                <Link
-                  to="/football/records/$category"
-                  params={{ category: wcSlug }}
-                  className="group block rounded-2xl border border-white/10 bg-white/[0.03] p-4 hover:border-white/20 hover:bg-white/[0.06] transition"
-                >
-                  {inner}
-                </Link>
-              ) : (
-                <div className="group block rounded-2xl border border-white/10 bg-white/[0.03] p-4 opacity-80">
-                  {inner}
+              <Link
+                to="/football/$comp/records/$category"
+                params={{ comp: comp.slug, category: cat.slug }}
+                className="group block rounded-2xl border border-white/10 bg-white/[0.03] p-4 hover:border-white/20 hover:bg-white/[0.06] transition"
+              >
+                <div className="flex items-start gap-3">
+                  <span className="mt-0.5 size-9 rounded-xl bg-white/5 grid place-items-center ring-1 ring-white/10">
+                    <Icon className="size-4 text-foreground" />
+                  </span>
+                  <div>
+                    <div className="font-semibold group-hover:text-foreground">{cat.label}</div>
+                    <div className="text-xs text-muted-foreground mt-0.5">{cat.blurb}</div>
+                  </div>
                 </div>
-              )}
+              </Link>
             </li>
           );
         })}
       </ul>
+
 
     </CompetitionPageShell>
   );
