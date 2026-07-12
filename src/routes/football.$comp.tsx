@@ -73,7 +73,7 @@ export const Route = createFileRoute("/football/$comp")({
   },
   notFoundComponent: () => (
     <div className="min-h-screen bg-background text-foreground">
-      <SportNav sport="football" />
+      <SportNav />
       <div className="max-w-3xl mx-auto px-4 py-16 text-center">
         <h1 className="text-2xl font-bold">Competition not found</h1>
         <p className="mt-3 text-muted-foreground">
@@ -96,7 +96,7 @@ function CompetitionLandingPage() {
   const { comp } = Route.useLoaderData();
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <SportNav sport="football" />
+      <SportNav />
       <FootballHubSwitcher activeSlug={comp.slug} />
       <Breadcrumbs />
       <CompetitionHero comp={comp} />
