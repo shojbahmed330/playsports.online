@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import goalsData from "@/data/wc_goals.json";
+import seed2026 from "@/data/wc_2026_goals.json";
 import { getWc2026TopScorers, type Wc2026Scorer } from "@/lib/wc2026.functions";
 import { norm } from "@/lib/players-filters";
 
