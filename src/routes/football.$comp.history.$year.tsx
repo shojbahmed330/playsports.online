@@ -4,7 +4,7 @@ import { CompetitionPageShell } from "@/components/football/CompetitionPageShell
 import { buildCompetitionHead } from "@/lib/competition-head";
 import { getEdition } from "@/data/competition-editions";
 import { sportsEvent, ldScript } from "@/lib/seo/jsonld";
-import { Trophy, MapPin, Target, Users } from "lucide-react";
+import { Trophy, MapPin, Target, Users, Award, Shield, Sparkles, Calendar } from "lucide-react";
 
 export const Route = createFileRoute("/football/$comp/history/$year")({
   loader: ({ params }) => {
