@@ -730,16 +730,25 @@ function RankingsTab() {
     <section className="space-y-4">
       <div className="flex items-baseline justify-between flex-wrap gap-2">
         <h2 className="text-xl sm:text-2xl font-bold">🏆 Current FIFA Rankings</h2>
-        <span className="text-xs text-muted-foreground inline-flex items-center gap-1.5">
-          <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
-          Live from Sofascore
-        </span>
+        <span className="text-xs text-muted-foreground">Updated June 2026 · Source: FIFA.com</span>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div className="rounded-2xl border border-border bg-card/60 p-4">
           <h3 className="text-sm font-bold mb-3 text-gold">Men's National Teams</h3>
-          <LiveFifaRankings />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1.5 text-sm">
+            {fifaRankings.countries.map((c) => (
+              <div key={c.rank} className="flex items-center justify-between gap-2 py-1 border-b border-border/60">
+                <div className="flex items-center gap-2 min-w-0">
+                  <span className="text-xs text-muted-foreground w-6 tabular-nums">#{c.rank}</span>
+                  <span className="text-lg">{flagOf(c.country)}</span>
+                  <span className="truncate">{c.country}</span>
+                </div>
+                <span className="text-xs text-gold tabular-nums">{c.points}</span>
+              </div>
+            ))}
+          </div>
         </div>
+
         <div className="rounded-2xl border border-border bg-card/60 p-4">
           <h3 className="text-sm font-bold mb-3 text-gold">Top Current Players</h3>
           <div className="space-y-1.5 text-sm">
