@@ -2,7 +2,7 @@ import { createFileRoute, notFound, Link } from "@tanstack/react-router";
 import { getCompetition, requireCompetition } from "@/lib/competitions";
 import { CompetitionPageShell } from "@/components/football/CompetitionPageShell";
 import { buildCompetitionHead } from "@/lib/competition-head";
-import { Goal, Trophy, Users, Award } from "lucide-react";
+import { Goal, Trophy, Users, Award, CalendarRange } from "lucide-react";
 
 const CATEGORIES = [
   { slug: "top-scorers-all-time", label: "Top Scorers (All-Time)", icon: Goal, blurb: "Career goals across every edition." },
