@@ -28,17 +28,18 @@ export type CompetitionRecords = Partial<Record<RecordCategoryKey, RecordRow[]>>
 export const COMPETITION_RECORDS: Record<string, CompetitionRecords> = {
   "world-cup": {
     "top-scorers-all-time": [
-      { rank: 1, title: "Lionel Messi", value: "13 goals", context: "Argentina · 2006–2022 (5 tournaments)" },
-      { rank: 2, title: "Miroslav Klose", value: "16 goals", context: "Germany · 2002–2014 (4 tournaments)" },
-      { rank: 3, title: "Ronaldo", value: "15 goals", context: "Brazil · 1998–2006" },
-      { rank: 4, title: "Gerd Müller", value: "14 goals", context: "West Germany · 1970–1974" },
+      { rank: 1, title: "Miroslav Klose", value: "16 goals", context: "Germany · 2002–2014 (4 tournaments)", image: "https://a.espncdn.com/i/headshots/soccer/players/full/45843.png" },
+      { rank: 2, title: "Ronaldo", value: "15 goals", context: "Brazil · 1998–2006", image: "https://a.espncdn.com/i/headshots/soccer/players/full/13.png" },
+      { rank: 3, title: "Gerd Müller", value: "14 goals", context: "West Germany · 1970–1974" },
+      { rank: 4, title: "Lionel Messi", value: "13 goals", context: "Argentina · 2006–2026 (incl. WC 2026 to date)", image: "https://a.espncdn.com/i/headshots/soccer/players/full/45843.png" },
       { rank: 4, title: "Just Fontaine", value: "13 goals", context: "France · 1958 (one tournament)" },
+      { rank: 6, title: "Kylian Mbappé", value: "13 goals", context: "France · 2018–2026 (incl. WC 2026 to date)", image: "https://a.espncdn.com/i/headshots/soccer/players/full/241668.png" },
       { rank: 6, title: "Pelé", value: "12 goals", context: "Brazil · 1958–1970" },
-      { rank: 6, title: "Kylian Mbappé", value: "12 goals", context: "France · 2018–2022" },
       { rank: 8, title: "Sándor Kocsis", value: "11 goals", context: "Hungary · 1954" },
       { rank: 8, title: "Jürgen Klinsmann", value: "11 goals", context: "West Germany / Germany" },
-      { rank: 8, title: "Gabriel Batistuta", value: "10 goals", context: "Argentina" },
+      { rank: 10, title: "Gabriel Batistuta", value: "10 goals", context: "Argentina" },
     ],
+
     "most-titles": [
       { rank: 1, title: "Brazil", value: "5 titles", context: "1958, 1962, 1970, 1994, 2002" },
       { rank: 2, title: "Germany / West Germany", value: "4 titles", context: "1954, 1974, 1990, 2014" },
