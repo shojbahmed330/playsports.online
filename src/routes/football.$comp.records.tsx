@@ -64,9 +64,26 @@ function RecordsPage() {
             </li>
           );
         })}
+        <li>
+          <Link
+            to="/football/$comp/records/decades"
+            params={{ comp: comp.slug }}
+            className="group block rounded-2xl border border-white/10 bg-white/[0.03] p-4 hover:border-white/20 hover:bg-white/[0.06] transition h-full"
+          >
+            <div className="flex items-start gap-3">
+              <span className="mt-0.5 size-9 rounded-xl bg-white/5 grid place-items-center ring-1 ring-white/10">
+                <CalendarRange className="size-4 text-foreground" />
+              </span>
+              <div>
+                <div className="font-semibold group-hover:text-foreground">Records by Decade</div>
+                <div className="text-xs text-muted-foreground mt-0.5">
+                  Champions and roll-up stats grouped by 10-year periods.
+                </div>
+              </div>
+            </div>
+          </Link>
+        </li>
       </ul>
-
-
     </CompetitionPageShell>
   );
 }
