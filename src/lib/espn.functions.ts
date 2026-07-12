@@ -584,3 +584,131 @@ export const getCompetitionTeamSeason = createServerFn({ method: "GET" })
       return { season: null, error: e instanceof Error ? e.message : "Unknown" };
     }
   });
+
+
+// ───────────── MATCH DETAIL / SUMMARY ─────────────
+export type MatchSummaryTeam = {
+  id: string;
+  name: string;
+  shortName: string;
+  abbr: string;
+  logo: string | null;
+  score: number | null;
+  winner: boolean | null;
+  record: string | null;
+};
+
+export type MatchGoalEvent = {
+  minute: string;
+  team: "home" | "away" | null;
+  scorer: string;
+  assist: string | null;
+  type: string | null;
+};
+
+export type MatchSummaryDTO = {
+  id: string;
+  date: string;
+  status: "pre" | "in" | "post";
+  statusDetail: string;
+  clock: string | null;
+  venue: string | null;
+  broadcast: string | null;
+  league: string;
+  home: MatchSummaryTeam;
+  away: MatchSummaryTeam;
+  goals: MatchGoalEvent[];
+  attendance: number | null;
+  officials: { name: string; role: string }[];
+};
+
+export const getCompetitionMatch = createServerFn({ method: "GET" })
+  .inputValidator((d: { sportPath: string; matchId: string }) => d)
+  .handler(async ({ data }): Promise<{ match: MatchSummaryDTO | null; error: string | null }> => {
+    try {
+      const raw = (await apiGet(
+        `/${data.sportPath}/summary?event=${data.matchId}`,
+        30_000,
+      )) as any;
+      const header = raw?.header ?? {};
+      const c = header?.competitions?.[0] ?? {};
+      const cs = c?.competitors ?? [];
+      const homeRaw = cs.find((x: any) => x?.homeAway === "home") ?? cs[0] ?? {};
+      const awayRaw = cs.find((x: any) => x?.homeAway === "away") ?? cs[1] ?? {};
+      const state = c?.status?.type?.state ?? "pre";
+      const parseScore = (x: any) => {
+        const s = x?.score;
+        if (s == null) return null;
+        const n = typeof s === "number" ? s : Number(s);
+        return Number.isFinite(n) ? n : null;
+      };
+      const mapTeam = (t: any): MatchSummaryTeam => ({
+        id: String(t?.team?.id ?? t?.id ?? ""),
+        name: t?.team?.displayName ?? t?.team?.name ?? "",
+        shortName: t?.team?.shortDisplayName ?? t?.team?.name ?? "",
+        abbr: t?.team?.abbreviation ?? "",
+        logo: t?.team?.logos?.[0]?.href ?? t?.team?.logo ?? null,
+        score: parseScore(t),
+        winner: typeof t?.winner === "boolean" ? t.winner : null,
+        record: t?.record?.[0]?.summary ?? null,
+      });
+      const home = mapTeam(homeRaw);
+      const away = mapTeam(awayRaw);
+
+      // Goals from key events / details
+      const details: any[] = raw?.plays ?? raw?.commentary ?? c?.details ?? [];
+      const goals: MatchGoalEvent[] = [];
+      for (const d of details) {
+        const isGoal =
+          d?.scoringPlay === true ||
+          d?.type?.text?.toLowerCase?.().includes("goal") ||
+          d?.type?.id === "70" ||
+          d?.type?.id === "98";
+        if (!isGoal) continue;
+        const teamId = String(d?.team?.id ?? "");
+        const side = teamId === home.id ? "home" : teamId === away.id ? "away" : null;
+        goals.push({
+          minute: d?.clock?.displayValue ?? d?.time?.displayValue ?? "",
+          team: side,
+          scorer:
+            d?.athletesInvolved?.[0]?.displayName ??
+            d?.participants?.[0]?.athlete?.displayName ??
+            d?.text ??
+            "Goal",
+          assist:
+            d?.athletesInvolved?.[1]?.displayName ??
+            d?.participants?.[1]?.athlete?.displayName ??
+            null,
+          type: d?.type?.text ?? null,
+        });
+      }
+
+      const officialsRaw: any[] = raw?.gameInfo?.officials ?? c?.officials ?? [];
+      const officials = officialsRaw.map((o: any) => ({
+        name: o?.displayName ?? o?.fullName ?? "",
+        role: o?.position?.displayName ?? o?.position?.name ?? "Official",
+      }));
+
+      const attendance =
+        typeof raw?.gameInfo?.attendance === "number" ? raw.gameInfo.attendance : null;
+
+      const match: MatchSummaryDTO = {
+        id: String(header?.id ?? data.matchId),
+        date: c?.date ?? header?.date ?? "",
+        status: (state === "in" ? "in" : state === "post" ? "post" : "pre") as "pre" | "in" | "post",
+        statusDetail: c?.status?.type?.shortDetail ?? c?.status?.type?.description ?? "",
+        clock: c?.status?.displayClock ?? null,
+        venue: c?.venue?.fullName ?? raw?.gameInfo?.venue?.fullName ?? null,
+        broadcast: c?.broadcasts?.[0]?.names?.join(", ") ?? null,
+        league: header?.league?.name ?? "",
+        home,
+        away,
+        goals,
+        attendance,
+        officials,
+      };
+      return { match, error: null };
+    } catch (e) {
+      return { match: null, error: e instanceof Error ? e.message : "Unknown" };
+    }
+  });
