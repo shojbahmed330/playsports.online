@@ -8,6 +8,13 @@
  * placeholder card.
  */
 
+export type SquadPick = {
+  name: string;
+  team?: string;
+  /** Position code — GK, DF, MF, FW. */
+  position?: "GK" | "DF" | "MF" | "FW";
+};
+
 export type EditionSummary = {
   year: number;
   /** Winning team/nation/club. */
@@ -22,15 +29,136 @@ export type EditionSummary = {
   topScorer?: { name: string; goals: number };
   /** One-line story of the edition. */
   blurb?: string;
+
+  // ---------- Phase 3 richer historical seed ----------
+  /** Tournament format description, e.g. "24 teams · groups + knockouts". */
+  format?: string;
+  /** Number of participating teams / clubs. */
+  teams?: number;
+  /** Matches played across the edition. */
+  matches?: number;
+  /** Total goals scored across the edition. */
+  goals?: number;
+  /** Final venue (stadium, city). */
+  finalVenue?: string;
+  /** Final attendance if notable. */
+  finalAttendance?: number;
+  /** Best player award (Golden Ball / MVP / Pichichi-adjacent). */
+  bestPlayer?: { name: string; team?: string; award?: string };
+  /** Best goalkeeper award. */
+  bestKeeper?: { name: string; team?: string; award?: string };
+  /** Best young player award. */
+  youngPlayer?: { name: string; team?: string; award?: string };
+  /** Team/squad of the tournament — condensed pick list. */
+  squadOfTournament?: SquadPick[];
+  /** Notable moments / storylines for the edition (bulleted). */
+  notableMoments?: string[];
+  /** Head coach of the winning side. */
+  winningCoach?: string;
+  /** Captain of the winning side. */
+  winningCaptain?: string;
 };
 
 export const COMPETITION_EDITIONS: Record<string, EditionSummary[]> = {
   euro: [
-    { year: 2024, winner: "Spain", runnerUp: "England", host: "Germany", finalScore: "2–1", topScorer: { name: "Dani Olmo / Harry Kane / Jamal Musiala (tied)", goals: 3 }, blurb: "Spain's fourth Euro — a record — with a young side led by Rodri, Yamal and Nico Williams." },
-    { year: 2020, winner: "Italy", runnerUp: "England", host: "Pan-Europe", finalScore: "1–1 (3–2 pens)", topScorer: { name: "Cristiano Ronaldo / Patrik Schick", goals: 5 }, blurb: "Delayed by a year, Italy beat England on penalties at Wembley." },
-    { year: 2016, winner: "Portugal", runnerUp: "France", host: "France", finalScore: "1–0 (a.e.t.)", topScorer: { name: "Antoine Griezmann", goals: 6 }, blurb: "Éder's extra-time winner sealed Portugal's first major trophy." },
+    {
+      year: 2024,
+      winner: "Spain",
+      runnerUp: "England",
+      host: "Germany",
+      finalScore: "2–1",
+      topScorer: { name: "Dani Olmo / Harry Kane / Jamal Musiala (tied)", goals: 3 },
+      blurb: "Spain's fourth Euro — a record — with a young side led by Rodri, Yamal and Nico Williams.",
+      format: "24 teams · 6 groups of 4 + knockouts",
+      teams: 24,
+      matches: 51,
+      goals: 117,
+      finalVenue: "Olympiastadion, Berlin",
+      finalAttendance: 65600,
+      bestPlayer: { name: "Rodri", team: "Spain", award: "Player of the Tournament" },
+      youngPlayer: { name: "Lamine Yamal", team: "Spain", award: "Young Player of the Tournament" },
+      winningCoach: "Luis de la Fuente",
+      winningCaptain: "Álvaro Morata",
+      squadOfTournament: [
+        { name: "Mike Maignan", team: "France", position: "GK" },
+        { name: "Marc Cucurella", team: "Spain", position: "DF" },
+        { name: "William Saliba", team: "France", position: "DF" },
+        { name: "Dani Olmo", team: "Spain", position: "MF" },
+        { name: "Rodri", team: "Spain", position: "MF" },
+        { name: "Jude Bellingham", team: "England", position: "MF" },
+        { name: "Lamine Yamal", team: "Spain", position: "FW" },
+        { name: "Nico Williams", team: "Spain", position: "FW" },
+        { name: "Harry Kane", team: "England", position: "FW" },
+      ],
+      notableMoments: [
+        "Yamal's Semi-final wonder-strike vs France — youngest Euros scorer ever (16y 362d).",
+        "Turkey's Merih Demiral scored both goals in a 2–1 win over Austria — first Euros brace by a Turkey defender.",
+        "Cole Palmer's 73rd-minute equaliser in the final — before Oyarzabal won it late for Spain.",
+      ],
+    },
+    {
+      year: 2020,
+      winner: "Italy",
+      runnerUp: "England",
+      host: "Pan-Europe",
+      finalScore: "1–1 (3–2 pens)",
+      topScorer: { name: "Cristiano Ronaldo / Patrik Schick", goals: 5 },
+      blurb: "Delayed by a year, Italy beat England on penalties at Wembley.",
+      format: "24 teams · played across 11 host cities",
+      teams: 24,
+      matches: 51,
+      goals: 142,
+      finalVenue: "Wembley Stadium, London",
+      finalAttendance: 67173,
+      bestPlayer: { name: "Gianluigi Donnarumma", team: "Italy", award: "Player of the Tournament" },
+      winningCoach: "Roberto Mancini",
+      winningCaptain: "Giorgio Chiellini",
+      notableMoments: [
+        "Christian Eriksen collapsed on the pitch during Denmark vs Finland — resuscitated and recovered.",
+        "Patrik Schick's 45-metre lob against Scotland — goal of the tournament.",
+        "Donnarumma saved Saka's penalty to seal Italy's second Euro.",
+      ],
+    },
+    {
+      year: 2016,
+      winner: "Portugal",
+      runnerUp: "France",
+      host: "France",
+      finalScore: "1–0 (a.e.t.)",
+      topScorer: { name: "Antoine Griezmann", goals: 6 },
+      blurb: "Éder's extra-time winner sealed Portugal's first major trophy.",
+      format: "First 24-team Euro · expanded from 16",
+      teams: 24,
+      matches: 51,
+      goals: 108,
+      finalVenue: "Stade de France, Saint-Denis",
+      finalAttendance: 75868,
+      bestPlayer: { name: "Antoine Griezmann", team: "France", award: "Player of the Tournament" },
+      winningCoach: "Fernando Santos",
+      winningCaptain: "Cristiano Ronaldo",
+      notableMoments: [
+        "Ronaldo went off injured in the final at 25' — coached from the touchline until Éder's 109th-minute winner.",
+        "Iceland's fairytale run to the quarter-finals, knocking out England 2–1.",
+      ],
+    },
     { year: 2012, winner: "Spain", runnerUp: "Italy", host: "Poland / Ukraine", finalScore: "4–0", topScorer: { name: "Fernando Torres", goals: 3 }, blurb: "Spain's tiki-taka side became the first to win consecutive Euros." },
-    { year: 2008, winner: "Spain", runnerUp: "Germany", host: "Austria / Switzerland", finalScore: "1–0", topScorer: { name: "David Villa", goals: 4 }, blurb: "Torres' Vienna winner ended Spain's 44-year trophy drought." },
+    {
+      year: 2008,
+      winner: "Spain",
+      runnerUp: "Germany",
+      host: "Austria / Switzerland",
+      finalScore: "1–0",
+      topScorer: { name: "David Villa", goals: 4 },
+      blurb: "Torres' Vienna winner ended Spain's 44-year trophy drought.",
+      format: "16 teams · 4 groups of 4 + knockouts",
+      teams: 16,
+      matches: 31,
+      goals: 77,
+      finalVenue: "Ernst-Happel-Stadion, Vienna",
+      bestPlayer: { name: "Xavi", team: "Spain", award: "Player of the Tournament" },
+      winningCoach: "Luis Aragonés",
+      winningCaptain: "Iker Casillas",
+    },
     { year: 2004, winner: "Greece", runnerUp: "Portugal", host: "Portugal", finalScore: "1–0", topScorer: { name: "Milan Baroš", goals: 5 }, blurb: "The greatest upset in Euros history — Otto Rehhagel's Greece stunned the hosts." },
     { year: 2000, winner: "France", runnerUp: "Italy", host: "Belgium / Netherlands", finalScore: "2–1 (Golden Goal)", topScorer: { name: "Patrick Kluivert / Savo Milošević", goals: 5 }, blurb: "France added the Euro to their World Cup with Trezeguet's golden goal." },
     { year: 1996, winner: "Germany", runnerUp: "Czech Republic", host: "England", finalScore: "2–1 (Golden Goal)", topScorer: { name: "Alan Shearer", goals: 5 }, blurb: "Oliver Bierhoff's golden goal delivered Germany's third Euro." },
@@ -45,8 +173,52 @@ export const COMPETITION_EDITIONS: Record<string, EditionSummary[]> = {
     { year: 1960, winner: "USSR", runnerUp: "Yugoslavia", host: "France", finalScore: "2–1 (a.e.t.)", blurb: "The inaugural European Nations' Cup." },
   ],
   "copa-america": [
-    { year: 2024, winner: "Argentina", runnerUp: "Colombia", host: "United States", finalScore: "1–0 (a.e.t.)", topScorer: { name: "Lautaro Martínez", goals: 5 }, blurb: "Argentina became the first back-to-back Copa champions since 1993–95." },
-    { year: 2021, winner: "Argentina", runnerUp: "Brazil", host: "Brazil", finalScore: "1–0", topScorer: { name: "Lionel Messi / Luis Díaz", goals: 4 }, blurb: "Messi's first major trophy with Argentina — 28 years after their last Copa." },
+    {
+      year: 2024,
+      winner: "Argentina",
+      runnerUp: "Colombia",
+      host: "United States",
+      finalScore: "1–0 (a.e.t.)",
+      topScorer: { name: "Lautaro Martínez", goals: 5 },
+      blurb: "Argentina became the first back-to-back Copa champions since 1993–95.",
+      format: "16 teams · 4 groups of 4 + knockouts",
+      teams: 16,
+      matches: 32,
+      goals: 60,
+      finalVenue: "Hard Rock Stadium, Miami Gardens",
+      finalAttendance: 65300,
+      bestPlayer: { name: "James Rodríguez", team: "Colombia", award: "Best Player" },
+      bestKeeper: { name: "Emiliano Martínez", team: "Argentina", award: "Golden Glove" },
+      winningCoach: "Lionel Scaloni",
+      winningCaptain: "Lionel Messi",
+      notableMoments: [
+        "Final delayed 82 minutes after crowd-control chaos at gates.",
+        "Messi injured in the first half, watched from the bench as Lautaro scored the 112th-minute winner.",
+        "Argentina's 16th Copa — sole record holder ahead of Uruguay.",
+      ],
+    },
+    {
+      year: 2021,
+      winner: "Argentina",
+      runnerUp: "Brazil",
+      host: "Brazil",
+      finalScore: "1–0",
+      topScorer: { name: "Lionel Messi / Luis Díaz", goals: 4 },
+      blurb: "Messi's first major trophy with Argentina — 28 years after their last Copa.",
+      format: "10 teams · single group phase + knockouts (COVID-era)",
+      teams: 10,
+      matches: 28,
+      goals: 65,
+      finalVenue: "Maracanã, Rio de Janeiro",
+      bestPlayer: { name: "Lionel Messi", team: "Argentina", award: "Best Player" },
+      bestKeeper: { name: "Emiliano Martínez", team: "Argentina", award: "Golden Glove" },
+      winningCoach: "Lionel Scaloni",
+      winningCaptain: "Lionel Messi",
+      notableMoments: [
+        "Ángel Di María's chip over Ederson decided the final.",
+        "Argentina ended a 28-year international trophy drought.",
+      ],
+    },
     { year: 2019, winner: "Brazil", runnerUp: "Peru", host: "Brazil", finalScore: "3–1", topScorer: { name: "Everton / Paolo Guerrero", goals: 3 } },
     { year: 2016, winner: "Chile", runnerUp: "Argentina", host: "United States", finalScore: "0–0 (4–2 pens)", topScorer: { name: "Eduardo Vargas", goals: 6 }, blurb: "Centenario edition — Chile beat Argentina on penalties for the second year running." },
     { year: 2015, winner: "Chile", runnerUp: "Argentina", host: "Chile", finalScore: "0–0 (4–1 pens)", topScorer: { name: "Eduardo Vargas / Paolo Guerrero", goals: 4 } },
@@ -96,8 +268,43 @@ export const COMPETITION_EDITIONS: Record<string, EditionSummary[]> = {
 
   laliga: [
     { year: 2026, winner: "TBD", host: "—", blurb: "Season in progress." },
-    { year: 2025, winner: "Barcelona", runnerUp: "Real Madrid", host: "—", topScorer: { name: "Kylian Mbappé", goals: 31 }, blurb: "Barça reclaimed the title under Hansi Flick." },
-    { year: 2024, winner: "Real Madrid", runnerUp: "Barcelona", host: "—", topScorer: { name: "Artem Dovbyk", goals: 24 }, blurb: "Bellingham's debut season — Madrid's 36th title." },
+    {
+      year: 2025,
+      winner: "Barcelona",
+      runnerUp: "Real Madrid",
+      host: "—",
+      topScorer: { name: "Kylian Mbappé", goals: 31 },
+      blurb: "Barça reclaimed the title under Hansi Flick.",
+      format: "20 clubs · 38 matchdays · double round-robin",
+      teams: 20,
+      matches: 380,
+      bestPlayer: { name: "Lamine Yamal", team: "Barcelona", award: "LaLiga MVP" },
+      bestKeeper: { name: "Joan García", team: "Espanyol → Barcelona", award: "Zamora Trophy" },
+      winningCoach: "Hansi Flick",
+      winningCaptain: "Marc-André ter Stegen",
+      notableMoments: [
+        "Barcelona clinched with four matchdays to spare, ending Madrid's title defence.",
+        "Mbappé's debut season saw him win the Pichichi with 31 goals.",
+      ],
+    },
+    {
+      year: 2024,
+      winner: "Real Madrid",
+      runnerUp: "Barcelona",
+      host: "—",
+      topScorer: { name: "Artem Dovbyk", goals: 24 },
+      blurb: "Bellingham's debut season — Madrid's 36th title.",
+      format: "20 clubs · 38 matchdays",
+      teams: 20,
+      matches: 380,
+      bestPlayer: { name: "Jude Bellingham", team: "Real Madrid", award: "LaLiga MVP" },
+      winningCoach: "Carlo Ancelotti",
+      winningCaptain: "Nacho Fernández",
+      notableMoments: [
+        "Bellingham scored 19 LaLiga goals as a midfielder in his first Spanish season.",
+        "Girona finished 3rd — their best-ever LaLiga campaign.",
+      ],
+    },
     { year: 2023, winner: "Barcelona", runnerUp: "Real Madrid", host: "—", topScorer: { name: "Robert Lewandowski", goals: 23 } },
     { year: 2022, winner: "Real Madrid", runnerUp: "Barcelona", host: "—", topScorer: { name: "Karim Benzema", goals: 27 }, blurb: "Benzema's Ballon d'Or season." },
     { year: 2021, winner: "Atlético Madrid", runnerUp: "Real Madrid", host: "—", topScorer: { name: "Lionel Messi", goals: 30 } },
