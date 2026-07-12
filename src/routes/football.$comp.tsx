@@ -16,6 +16,11 @@ import { CompetitionCountdown } from "@/components/football/CompetitionCountdown
 import { ChampionsTimelineWidget } from "@/components/football/ChampionsTimelineWidget";
 import { TopScorersPreviewCard } from "@/components/football/TopScorersPreviewCard";
 import { LastEditionRecap } from "@/components/football/LastEditionRecap";
+import { Euro2028InfoCard } from "@/components/football/Euro2028InfoCard";
+import { Euro2028VenuesCard } from "@/components/football/Euro2028VenuesCard";
+import { EuroLegendsRail } from "@/components/football/EuroLegendsRail";
+import { EuroSquadOfTournament2024 } from "@/components/football/EuroSquadOfTournament2024";
+
 import { SportNav } from "@/components/sports/SportNav";
 import { SiteFooter } from "@/components/home/SiteFooter";
 import { buildCompetitionHead } from "@/lib/competition-head";
@@ -124,7 +129,18 @@ function CompetitionLandingPage() {
       todayCount={today.length}
       nextLabel={nextLabel}
     >
-      {isFutureEdition && <CompetitionCountdown comp={comp} />}
+      {isFutureEdition && (
+        <CompetitionCountdown
+          comp={comp}
+          targetIso={
+            comp.slug === "euro" && comp.currentSeason === 2028
+              ? "2028-06-09T19:00:00Z"
+              : undefined
+          }
+        />
+      )}
+
+      {comp.slug === "euro" && comp.currentSeason === 2028 && <Euro2028InfoCard />}
 
       {(isFutureEdition || isOffSeason) && (
         <div className="mt-6">
@@ -132,12 +148,16 @@ function CompetitionLandingPage() {
         </div>
       )}
 
+      {comp.slug === "euro" && comp.currentSeason === 2028 && <Euro2028VenuesCard />}
+      {comp.slug === "euro" && <EuroSquadOfTournament2024 />}
 
       <TopScorersPreviewCard comp={comp} />
+      {comp.slug === "euro" && <EuroLegendsRail />}
       <ChampionsTimelineWidget comp={comp} />
       <CompetitionNewsRail comp={comp} />
       <CompetitionH2HPicker comp={comp} />
       <QuickLinks comp={comp} />
+
     </CompetitionPageShell>
   );
 }

@@ -21,7 +21,9 @@ export type RecordCategoryKey =
   | "top-scorers-all-time"
   | "most-titles"
   | "most-appearances"
-  | "records-and-firsts";
+  | "records-and-firsts"
+  | "iconic-moments";
+
 
 export type CompetitionRecords = Partial<Record<RecordCategoryKey, RecordRow[]>>;
 
@@ -69,15 +71,20 @@ export const COMPETITION_RECORDS: Record<string, CompetitionRecords> = {
 
   euro: {
     "top-scorers-all-time": [
-      { rank: 1, title: "Cristiano Ronaldo", value: "14 goals", context: "Portugal · 2004–2024" },
-      { rank: 2, title: "Michel Platini", value: "9 goals", context: "France · 1984" },
+      { rank: 1, title: "Cristiano Ronaldo", value: "14 goals", context: "Portugal · 2004–2024", image: "https://a.espncdn.com/i/headshots/soccer/players/full/44877.png" },
+      { rank: 2, title: "Michel Platini", value: "9 goals", context: "France · 1984 (single tournament)" },
       { rank: 3, title: "Alan Shearer", value: "7 goals", context: "England · 1992–2000" },
-      { rank: 3, title: "Antoine Griezmann", value: "7 goals", context: "France · 2016–2024" },
-      { rank: 3, title: "Ruud van Nistelrooy", value: "6 goals", context: "Netherlands · 2004–2008" },
+      { rank: 3, title: "Antoine Griezmann", value: "7 goals", context: "France · 2016–2024", image: "https://a.espncdn.com/i/headshots/soccer/players/full/150211.png" },
+      { rank: 5, title: "Ruud van Nistelrooy", value: "6 goals", context: "Netherlands · 2004–2008" },
+      { rank: 5, title: "Álvaro Morata", value: "6 goals", context: "Spain · 2016–2024" },
+      { rank: 5, title: "Wayne Rooney", value: "6 goals", context: "England · 2004–2016" },
+      { rank: 5, title: "Zlatan Ibrahimović", value: "6 goals", context: "Sweden · 2004–2016" },
+      { rank: 5, title: "Thierry Henry", value: "6 goals", context: "France · 2000–2008" },
+      { rank: 5, title: "Nuno Gomes", value: "6 goals", context: "Portugal · 2000–2008" },
     ],
     "most-titles": [
-      { rank: 1, title: "Germany", value: "3 titles", context: "1972, 1980, 1996" },
       { rank: 1, title: "Spain", value: "4 titles", context: "1964, 2008, 2012, 2024" },
+      { rank: 2, title: "Germany", value: "3 titles", context: "1972, 1980, 1996" },
       { rank: 3, title: "France", value: "2 titles", context: "1984, 2000" },
       { rank: 3, title: "Italy", value: "2 titles", context: "1968, 2020" },
     ],
@@ -88,11 +95,22 @@ export const COMPETITION_RECORDS: Record<string, CompetitionRecords> = {
     ],
     "records-and-firsts": [
       { title: "First edition", value: "1960 · France", context: "Soviet Union won 2–1 vs Yugoslavia (a.e.t.)" },
-      { title: "Youngest goalscorer", value: "Johan Vonlanthen — 18y 141d", context: "Switzerland vs France · 2004" },
+      { title: "Youngest goalscorer", value: "Lamine Yamal — 16y 362d", context: "Spain vs France · 2024 semi-final" },
       { title: "Fastest goal", value: "Dmitri Kirichenko — 1m 07s", context: "Russia vs Greece · 2004" },
-      { title: "Biggest win", value: "Netherlands 6–1 Yugoslavia", context: "Euro 2000 quarterfinal" },
+      { title: "Biggest win", value: "Netherlands 6–1 Yugoslavia", context: "Euro 2000 quarter-final" },
+      { title: "Most goals in a single edition", value: "Michel Platini — 9", context: "France · Euro 1984 (in 5 games)" },
+    ],
+    "iconic-moments": [
+      { title: "Panenka's chip", value: "1976", context: "Antonín Panenka's audacious final penalty vs West Germany — introduced the world to a new spot-kick." },
+      { title: "Van Basten volley", value: "1988", context: "Marco van Basten's near-impossible volley from the byline in the Final vs USSR — often called the greatest goal in Euros history." },
+      { title: "Bierhoff Golden Goal", value: "1996", context: "First Golden Goal in a major final — Germany 2–1 Czech Republic." },
+      { title: "Greece 2004", value: "2004", context: "The greatest upset in international football — Otto Rehhagel's Greece beat hosts Portugal 1–0 in the final." },
+      { title: "Éder wins it for Portugal", value: "2016", context: "Ronaldo went off injured in the 25th minute — Éder scored a 109th-minute worldie to beat France." },
+      { title: "Schick from 45 metres", value: "2020", context: "Patrik Schick lobbed David Marshall from beyond halfway — goal of the tournament." },
+      { title: "Yamal at 16", value: "2024", context: "Lamine Yamal's semi-final wonder-strike vs France — youngest Euros scorer ever (16y 362d)." },
     ],
   },
+
   "copa-america": {
     "top-scorers-all-time": [
       { rank: 1, title: "Norberto Méndez", value: "17 goals", context: "Argentina · 1945–1947" },
