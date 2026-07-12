@@ -136,33 +136,64 @@ function CompetitionLandingPage() {
       todayCount={today.length}
       nextLabel={nextLabel}
     >
-      {isFutureEdition && (
-        <CompetitionCountdown
-          comp={comp}
-          targetIso={
-            comp.slug === "euro" && comp.currentSeason === 2028
-              ? "2028-06-09T19:00:00Z"
-              : undefined
-          }
-        />
+      {comp.slug === "euro" && comp.currentSeason === 2028 ? (
+        <>
+          <Euro2028Hero />
+          <MobileJumpNav
+            items={[
+              { id: "facts", label: "Facts" },
+              { id: "honours", label: "Honours" },
+              { id: "golden-boot", label: "Golden Boot" },
+              { id: "venues", label: "Venues" },
+              { id: "squad-2024", label: "Squad 2024" },
+              { id: "scorers", label: "Scorers" },
+              { id: "legends", label: "Legends" },
+              { id: "h2h", label: "H2H" },
+            ]}
+          />
+        </>
+      ) : (
+        <>
+          {isFutureEdition && (
+            <CompetitionCountdown
+              comp={comp}
+              targetIso={undefined}
+            />
+          )}
+          {/* Keep the fallback info card for non-euro future editions */}
+          {false && <Euro2028InfoCard />}
+        </>
       )}
 
-      {comp.slug === "euro" && comp.currentSeason === 2028 && <Euro2028InfoCard />}
+      {comp.slug === "euro" && <EuroFactsGrid />}
 
       {(isFutureEdition || isOffSeason) && (
-        <div className="mt-6">
+        <div className="mt-8 sm:mt-10">
           <LastEditionRecap comp={comp} />
         </div>
       )}
 
-      {comp.slug === "euro" && comp.currentSeason === 2028 && <Euro2028VenuesCard />}
-      {comp.slug === "euro" && <EuroSquadOfTournament2024 />}
+      {comp.slug === "euro" && <EuroHonoursStrip />}
+      {comp.slug === "euro" && <EuroGoldenBootTimeline />}
 
-      <TopScorersPreviewCard comp={comp} />
+      {comp.slug === "euro" && comp.currentSeason === 2028 && <Euro2028VenuesCard />}
+      {comp.slug === "euro" && (
+        <div id="squad-2024" className="scroll-mt-24">
+          <EuroSquadOfTournament2024 />
+        </div>
+      )}
+
+      <div id="scorers" className="scroll-mt-24">
+        <TopScorersPreviewCard comp={comp} />
+      </div>
       {comp.slug === "euro" && <EuroLegendsRail />}
+      {comp.slug === "euro" && <EuroOnThisDayCard />}
       <ChampionsTimelineWidget comp={comp} />
       <CompetitionNewsRail comp={comp} />
-      <CompetitionH2HPicker comp={comp} />
+      <div id="h2h" className="scroll-mt-24">
+        <CompetitionH2HPicker comp={comp} />
+        {comp.slug === "euro" && <EuroPopularMatchups />}
+      </div>
       <QuickLinks comp={comp} />
 
     </CompetitionPageShell>
@@ -201,21 +232,20 @@ function QuickLinks({ comp }: { comp: Competition }) {
     { label: "Players", to: `/football/${comp.slug}/players` },
   ];
   return (
-    <section className="mt-10">
+    <section className="mt-8 sm:mt-10">
       <h3 className="text-sm font-bold uppercase tracking-widest text-muted-foreground mb-3">
         More {comp.shortName}
       </h3>
-      <div className="flex flex-wrap gap-2">
+      <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2">
         {links.map((l) => (
           <Link
             key={l.to}
             to={l.to}
-            className="rounded-full border border-white/10 bg-white/[0.03] px-4 py-1.5 text-sm font-semibold hover:border-white/20 hover:bg-white/[0.06]"
+            className="tap-target rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-sm font-semibold text-center hover:border-white/20 hover:bg-white/[0.06]"
           >
             {l.label}
           </Link>
         ))}
-
       </div>
     </section>
   );
