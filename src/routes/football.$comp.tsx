@@ -158,9 +158,10 @@ function CompetitionLandingPage() {
             {standings.isLoading ? (
               <Loading label="Loading standings…" />
             ) : (
-              <CompetitionStandingsTable groups={previewGroups} />
+              <CompetitionStandingsTable groups={previewGroups} compact />
             )}
           </section>
+
         </div>
       )}
 
