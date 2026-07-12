@@ -159,3 +159,79 @@ export function archiveStats(year: number) {
   return { matches, goals, champion, topScorers, allScorers };
 
 }
+
+// ---------- COUNTRY × YEAR ----------
+export type CountryYear = { sport: Sport2; countrySlug: string; countryName: string; year: number };
+
+export function teamYearStats(name: string, year: number) {
+  const goals = GOALS.filter((g) => g.team === name && g.year === year);
+  const matches = (GROUPS[String(year)] ?? []).filter((m) => m.home_team === name || m.away_team === name);
+  let w = 0, d = 0, l = 0, gf = 0, ga = 0;
+  matches.forEach((m) => {
+    const isHome = m.home_team === name;
+    const my = isHome ? m.home_score : m.away_score;
+    const op = isHome ? m.away_score : m.home_score;
+    gf += my; ga += op;
+    if (my > op) w++;
+    else if (my < op) l++;
+    else d++;
+  });
+  const sc = new Map<string, number>();
+  goals.forEach((g) => sc.set(g.name, (sc.get(g.name) ?? 0) + 1));
+  const topScorers = Array.from(sc.entries()).sort((a, b) => b[1] - a[1]).map(([n, gs]) => ({ name: n, goals: gs }));
+  return { year, matches, w, d, l, gf, ga, played: matches.length, goals, topScorers };
+}
+
+export function listCountryYears(): CountryYear[] {
+  const out: CountryYear[] = [];
+  const seen = new Set<string>();
+  GOALS.forEach((g) => {
+    const key = `${g.team}__${g.year}`;
+    if (seen.has(key)) return;
+    seen.add(key);
+    out.push({ sport: "football_wc", countrySlug: slugify(g.team), countryName: g.team, year: g.year });
+  });
+  Object.entries(GROUPS).forEach(([y, arr]) => {
+    const year = Number(y);
+    arr.forEach((m) => {
+      for (const team of [m.home_team, m.away_team]) {
+        const key = `${team}__${year}`;
+        if (seen.has(key)) continue;
+        seen.add(key);
+        out.push({ sport: "football_wc", countrySlug: slugify(team), countryName: team, year });
+      }
+    });
+  });
+  return out;
+}
+
+export function findCountryYear(slug: string, year: number): CountryYear | null {
+  return listCountryYears().find((c) => c.countrySlug === slug && c.year === year) ?? null;
+}
+
+// ---------- PLAYER × YEAR ----------
+export type PlayerYear = { sport: Sport2; playerSlug: string; playerName: string; team: string; year: number };
+
+export function playerYearStats(name: string, year: number) {
+  const goals = GOALS.filter((g) => g.name === name && g.year === year);
+  const cards = CARDS.filter((c) => c.name === name && c.year === year);
+  const team = goals[0]?.team ?? "";
+  return { year, team, goals: goals.length, pen: goals.filter((g) => g.pen).length, og: goals.filter((g) => g.og).length, cards: cards.length };
+}
+
+export function listPlayerYears(): PlayerYear[] {
+  const seen = new Set<string>();
+  const out: PlayerYear[] = [];
+  GOALS.forEach((g) => {
+    const key = `${g.name}__${g.year}`;
+    if (seen.has(key)) return;
+    seen.add(key);
+    out.push({ sport: "football_wc", playerSlug: slugify(g.name), playerName: g.name, team: g.team, year: g.year });
+  });
+  return out;
+}
+
+export function findPlayerYear(slug: string, year: number): PlayerYear | null {
+  return listPlayerYears().find((p) => p.playerSlug === slug && p.year === year) ?? null;
+}
+
