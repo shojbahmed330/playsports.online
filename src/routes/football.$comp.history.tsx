@@ -36,29 +36,39 @@ function HistoryPage() {
         {editions.length} {comp.kind === "league" ? "seasons" : "editions"} from {comp.years[0]} to {comp.years[comp.years.length - 1]}.
       </p>
       <ul className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-        {editions.map((year) => (
-          <li key={year}>
-            <Link
-              to="/football/tournaments/$year"
-              params={{ year: String(year) }}
-              className="group flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.03] p-3 hover:border-white/20 hover:bg-white/[0.06] transition"
-            >
+        {editions.map((year) => {
+          const inner = (
+            <>
               <span className="flex items-center gap-3">
                 <span className="size-8 rounded-full bg-gradient-to-br from-amber-500/30 to-rose-500/20 grid place-items-center ring-1 ring-white/10">
                   <Trophy className="size-4 text-amber-300" />
                 </span>
                 <span className="font-semibold">{formatSeasonLabel(comp, year)}</span>
               </span>
-              <span className="text-xs text-muted-foreground group-hover:text-foreground">
-                View →
-              </span>
-            </Link>
-          </li>
-        ))}
+              <span className="text-xs text-muted-foreground group-hover:text-foreground">View →</span>
+            </>
+          );
+          const cls =
+            "group flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.03] p-3 hover:border-white/20 hover:bg-white/[0.06] transition";
+          return (
+            <li key={year}>
+              {comp.slug === "world-cup" ? (
+                <Link to="/football/tournaments/$year" params={{ year: String(year) }} className={cls}>
+                  {inner}
+                </Link>
+              ) : (
+                <Link
+                  to="/football/$comp/history/$year"
+                  params={{ comp: comp.slug, year: String(year) }}
+                  className={cls}
+                >
+                  {inner}
+                </Link>
+              )}
+            </li>
+          );
+        })}
       </ul>
-      <p className="mt-6 text-xs text-muted-foreground">
-        Detailed edition pages (brackets, top scorers, records) roll out per competition — {comp.shortName}-specific pages are being wired in.
-      </p>
     </CompetitionPageShell>
   );
 }
