@@ -107,6 +107,12 @@ function CompetitionLandingPage() {
   const previewGames = games.slice(0, 6);
   const previewGroups = (standings.data?.groups ?? []).slice(0, 1);
 
+  const isFutureEdition =
+    comp.kind === "tournament" &&
+    comp.currentSeason > new Date().getFullYear() &&
+    games.length === 0;
+  const isOffSeason = !scoreboard.isLoading && games.length === 0 && !isFutureEdition;
+
   return (
     <CompetitionPageShell
       comp={comp}
@@ -114,7 +120,9 @@ function CompetitionLandingPage() {
       todayCount={today.length}
       nextLabel={nextLabel}
     >
-      <div className="grid gap-8 lg:grid-cols-3">
+      {isFutureEdition && <CompetitionCountdown comp={comp} />}
+
+      <div className="grid gap-8 lg:grid-cols-3 mt-6">
         <section className="lg:col-span-2">
           <SectionHeader
             title={live.length > 0 ? "Live & Today" : "Latest Matches"}
@@ -123,6 +131,18 @@ function CompetitionLandingPage() {
           />
           {scoreboard.isLoading ? (
             <Loading label="Loading scores…" />
+          ) : isOffSeason ? (
+            <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-6 py-10 text-center text-sm text-muted-foreground">
+              {comp.shortName} is between matches right now. Explore{" "}
+              <a href={`/football/${comp.slug}/history`} className="underline underline-offset-4 hover:text-foreground">
+                history
+              </a>{" "}
+              or{" "}
+              <a href={`/football/${comp.slug}/records`} className="underline underline-offset-4 hover:text-foreground">
+                records
+              </a>{" "}
+              while you wait.
+            </div>
           ) : (
             <CompetitionMatchList
               games={previewGames}
@@ -146,6 +166,9 @@ function CompetitionLandingPage() {
         </section>
       </div>
 
+      <TopScorersPreviewCard comp={comp} />
+      <ChampionsTimelineWidget comp={comp} />
+      <CompetitionNewsRail comp={comp} />
       <CompetitionH2HPicker comp={comp} />
       <QuickLinks comp={comp} />
     </CompetitionPageShell>
