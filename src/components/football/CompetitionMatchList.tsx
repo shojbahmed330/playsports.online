@@ -1,15 +1,21 @@
 import type { SportGame } from "@/lib/espn.functions";
+import { Link } from "@tanstack/react-router";
+import { matchupSlug } from "@/lib/matchup";
+import { Swords } from "lucide-react";
 
 /**
  * Compact soccer match card list. Used for scores + fixtures.
- * Purely presentational — parent decides the game list (live vs upcoming).
+ * When `h2hCompSlug` is passed, each row exposes a Head-to-Head link scoped
+ * to that competition so users can dive from any score into the rivalry page.
  */
 export function CompetitionMatchList({
   games,
   emptyLabel,
+  h2hCompSlug,
 }: {
   games: SportGame[];
   emptyLabel: string;
+  h2hCompSlug?: string;
 }) {
   if (games.length === 0) {
     return (
@@ -21,8 +27,18 @@ export function CompetitionMatchList({
   return (
     <ul className="grid gap-2 sm:grid-cols-2">
       {games.map((g) => (
-        <li key={g.id}>
+        <li key={g.id} className="relative">
           <MatchRow g={g} />
+          {h2hCompSlug && g.home.name && g.away.name && (
+            <Link
+              to="/football/$comp/h2h/$matchup"
+              params={{ comp: h2hCompSlug, matchup: matchupSlug(g.home.name, g.away.name) }}
+              className="absolute top-2 right-2 inline-flex items-center gap-1 rounded-full border border-white/10 bg-black/40 backdrop-blur px-2 py-1 text-[10px] uppercase tracking-widest text-muted-foreground hover:text-foreground hover:border-white/25"
+              title={`${g.home.name} vs ${g.away.name} head-to-head`}
+            >
+              <Swords className="size-3" /> H2H
+            </Link>
+          )}
         </li>
       ))}
     </ul>
