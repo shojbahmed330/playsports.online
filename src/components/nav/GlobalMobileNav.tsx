@@ -27,7 +27,7 @@ const HUB_TABS: MobileTab[] = [
   { to: "/football", label: "Football", Icon: Goal,    match: (p) => p.startsWith("/football") || p.startsWith("/players") },
   { to: "/cricket",  label: "Cricket",  Icon: Activity,match: (p) => p.startsWith("/cricket") },
   {
-    to: "/mlb", label: "More", Icon: Flame,
+    to: "/mlb", label: "Other Sports", Icon: Flame,
     match: (p) => p.startsWith("/mlb") || p.startsWith("/nba") || p.startsWith("/nhl") || p.startsWith("/mls") || p === "/mine",
     items: [
       { to: "/mine", label: "My Feed", emoji: "⭐" },
