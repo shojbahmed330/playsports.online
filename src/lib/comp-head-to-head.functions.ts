@@ -138,9 +138,9 @@ export const getCompHeadToHead = createServerFn({ method: "GET" })
       return { matches: [], error: "Missing league or team.", teamAId: null, teamBId: null };
     }
 
-    // World Cup: ESPN's fifa.world schedule endpoint only returns the current
-    // tournament, so we prepend a curated historical seed to keep famous
-    // matchups (ARG-BRA, ARG-GER, ENG-GER, …) from returning zero results.
+    // Tournament schedule endpoints (fifa.world, uefa.euro) only return the
+    // CURRENT edition on ESPN, so historical meetings (WC finals, Euro
+    // knockouts) must be seeded manually to keep famous matchups populated.
     const wcSeed: H2HMatch[] =
       data.league === "fifa.world"
         ? seededWcH2H(data.teamA, data.teamB).map((s) => ({
@@ -151,7 +151,17 @@ export const getCompHeadToHead = createServerFn({ method: "GET" })
             awayScore: s.awayScore,
             competition: `FIFA World Cup · ${s.round}`,
           }))
+        : data.league === "uefa.euro"
+        ? seededEuroH2H(data.teamA, data.teamB).map((s) => ({
+            date: s.date,
+            home: s.home,
+            away: s.away,
+            homeScore: s.homeScore,
+            awayScore: s.awayScore,
+            competition: s.round,
+          }))
         : [];
+
 
     try {
       const [teamAId, teamBId] = await Promise.all([
