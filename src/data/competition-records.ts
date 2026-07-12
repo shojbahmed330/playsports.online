@@ -1,0 +1,109 @@
+/**
+ * Per-competition record seed data. All values are hand-curated so pages render
+ * with real content the moment they ship. Wire ESPN/other feeds later if we get
+ * an authoritative live source; for now records are inherently historical.
+ *
+ * Add a competition's slug as a top-level key. Categories are optional per comp;
+ * missing categories render a scoped "coming soon" state.
+ */
+
+export type RecordRow = {
+  rank?: number;
+  title: string;
+  value: string;
+  context?: string;
+};
+
+export type RecordCategoryKey =
+  | "top-scorers-all-time"
+  | "most-titles"
+  | "most-appearances"
+  | "records-and-firsts";
+
+export type CompetitionRecords = Partial<Record<RecordCategoryKey, RecordRow[]>>;
+
+export const COMPETITION_RECORDS: Record<string, CompetitionRecords> = {
+  euro: {
+    "top-scorers-all-time": [
+      { rank: 1, title: "Cristiano Ronaldo", value: "14 goals", context: "Portugal · 2004–2024" },
+      { rank: 2, title: "Michel Platini", value: "9 goals", context: "France · 1984" },
+      { rank: 3, title: "Alan Shearer", value: "7 goals", context: "England · 1992–2000" },
+      { rank: 3, title: "Antoine Griezmann", value: "7 goals", context: "France · 2016–2024" },
+      { rank: 3, title: "Ruud van Nistelrooy", value: "6 goals", context: "Netherlands · 2004–2008" },
+    ],
+    "most-titles": [
+      { rank: 1, title: "Germany", value: "3 titles", context: "1972, 1980, 1996" },
+      { rank: 1, title: "Spain", value: "4 titles", context: "1964, 2008, 2012, 2024" },
+      { rank: 3, title: "France", value: "2 titles", context: "1984, 2000" },
+      { rank: 3, title: "Italy", value: "2 titles", context: "1968, 2020" },
+    ],
+    "most-appearances": [
+      { rank: 1, title: "Cristiano Ronaldo", value: "30 matches", context: "Portugal · 6 tournaments" },
+      { rank: 2, title: "Bastian Schweinsteiger", value: "18 matches", context: "Germany" },
+      { rank: 3, title: "Pepe", value: "18 matches", context: "Portugal" },
+    ],
+    "records-and-firsts": [
+      { title: "First edition", value: "1960 · France", context: "Soviet Union won 2–1 vs Yugoslavia (a.e.t.)" },
+      { title: "Youngest goalscorer", value: "Johan Vonlanthen — 18y 141d", context: "Switzerland vs France · 2004" },
+      { title: "Fastest goal", value: "Dmitri Kirichenko — 1m 07s", context: "Russia vs Greece · 2004" },
+      { title: "Biggest win", value: "Netherlands 6–1 Yugoslavia", context: "Euro 2000 quarterfinal" },
+    ],
+  },
+  "copa-america": {
+    "top-scorers-all-time": [
+      { rank: 1, title: "Norberto Méndez", value: "17 goals", context: "Argentina · 1945–1947" },
+      { rank: 1, title: "Zizinho", value: "17 goals", context: "Brazil · 1942–1957" },
+      { rank: 3, title: "Teodoro Fernández", value: "15 goals", context: "Peru · 1935–1947" },
+      { rank: 4, title: "Severino Varela", value: "15 goals", context: "Uruguay · 1939–1942" },
+      { rank: 5, title: "Lionel Messi", value: "14 goals", context: "Argentina · 2007–2024" },
+    ],
+    "most-titles": [
+      { rank: 1, title: "Uruguay", value: "15 titles", context: "1916 – 2011" },
+      { rank: 1, title: "Argentina", value: "16 titles", context: "1921 – 2024" },
+      { rank: 3, title: "Brazil", value: "9 titles", context: "1919 – 2019" },
+      { rank: 4, title: "Paraguay", value: "2 titles", context: "1953, 1979" },
+      { rank: 4, title: "Peru", value: "2 titles", context: "1939, 1975" },
+    ],
+    "most-appearances": [
+      { rank: 1, title: "Sergio Livingstone", value: "34 matches", context: "Chile" },
+      { rank: 2, title: "Zizinho", value: "33 matches", context: "Brazil" },
+      { rank: 3, title: "Lionel Messi", value: "39 matches", context: "Argentina (all-time record)" },
+    ],
+    "records-and-firsts": [
+      { title: "First edition", value: "1916 · Argentina", context: "Uruguay champions — oldest continental trophy in football" },
+      { title: "Most recent champion", value: "Argentina 2024", context: "1–0 vs Colombia (a.e.t.) · Hard Rock Stadium, Miami" },
+      { title: "Biggest win", value: "Argentina 12–0 Ecuador", context: "1942 edition" },
+    ],
+  },
+  laliga: {
+    "top-scorers-all-time": [
+      { rank: 1, title: "Lionel Messi", value: "474 goals", context: "Barcelona · 2004–2021" },
+      { rank: 2, title: "Cristiano Ronaldo", value: "311 goals", context: "Real Madrid · 2009–2018" },
+      { rank: 3, title: "Telmo Zarra", value: "251 goals", context: "Athletic Bilbao · 1940s–50s" },
+      { rank: 4, title: "Karim Benzema", value: "238 goals", context: "Real Madrid · 2009–2023" },
+      { rank: 5, title: "Hugo Sánchez", value: "234 goals", context: "Atlético / Real Madrid" },
+    ],
+    "most-titles": [
+      { rank: 1, title: "Real Madrid", value: "36 titles", context: "First: 1931–32 · Most recent: 2023–24" },
+      { rank: 2, title: "Barcelona", value: "27 titles", context: "First: 1928–29 · Most recent: 2022–23" },
+      { rank: 3, title: "Atlético Madrid", value: "11 titles", context: "Most recent: 2020–21" },
+      { rank: 4, title: "Athletic Bilbao", value: "8 titles" },
+      { rank: 4, title: "Valencia", value: "6 titles" },
+    ],
+    "most-appearances": [
+      { rank: 1, title: "Andoni Zubizarreta", value: "622 matches", context: "Athletic / Barcelona / Valencia" },
+      { rank: 2, title: "Joaquín", value: "622 matches", context: "Betis / Valencia" },
+      { rank: 3, title: "Raúl", value: "550 matches", context: "Real Madrid" },
+    ],
+    "records-and-firsts": [
+      { title: "First season", value: "1928–29", context: "Barcelona won the inaugural title" },
+      { title: "Most goals in a season", value: "50 — Lionel Messi", context: "2011–12 · still stands" },
+      { title: "Most Pichichi awards", value: "8 — Lionel Messi", context: "2010, 2012, 2013, 2017–2021" },
+      { title: "Longest unbeaten run", value: "43 matches — Real Sociedad", context: "1978–1980" },
+    ],
+  },
+};
+
+export function getCompetitionRecords(slug: string): CompetitionRecords {
+  return COMPETITION_RECORDS[slug] ?? {};
+}
