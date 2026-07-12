@@ -129,7 +129,18 @@ function CompetitionLandingPage() {
       todayCount={today.length}
       nextLabel={nextLabel}
     >
-      {isFutureEdition && <CompetitionCountdown comp={comp} />}
+      {isFutureEdition && (
+        <CompetitionCountdown
+          comp={comp}
+          targetIso={
+            comp.slug === "euro" && comp.currentSeason === 2028
+              ? "2028-06-09T19:00:00Z"
+              : undefined
+          }
+        />
+      )}
+
+      {comp.slug === "euro" && comp.currentSeason === 2028 && <Euro2028InfoCard />}
 
       {(isFutureEdition || isOffSeason) && (
         <div className="mt-6">
@@ -137,12 +148,16 @@ function CompetitionLandingPage() {
         </div>
       )}
 
+      {comp.slug === "euro" && comp.currentSeason === 2028 && <Euro2028VenuesCard />}
+      {comp.slug === "euro" && <EuroSquadOfTournament2024 />}
 
       <TopScorersPreviewCard comp={comp} />
+      {comp.slug === "euro" && <EuroLegendsRail />}
       <ChampionsTimelineWidget comp={comp} />
       <CompetitionNewsRail comp={comp} />
       <CompetitionH2HPicker comp={comp} />
       <QuickLinks comp={comp} />
+
     </CompetitionPageShell>
   );
 }
