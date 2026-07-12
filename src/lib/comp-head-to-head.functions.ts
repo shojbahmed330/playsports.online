@@ -135,14 +135,36 @@ export const getCompHeadToHead = createServerFn({ method: "GET" })
     if (!data.league || !data.teamA || !data.teamB) {
       return { matches: [], error: "Missing league or team.", teamAId: null, teamBId: null };
     }
+
+    // World Cup: ESPN's fifa.world schedule endpoint only returns the current
+    // tournament, so we prepend a curated historical seed to keep famous
+    // matchups (ARG-BRA, ARG-GER, ENG-GER, …) from returning zero results.
+    const wcSeed: H2HMatch[] =
+      data.league === "fifa.world"
+        ? seededWcH2H(data.teamA, data.teamB).map((s) => ({
+            date: s.date,
+            home: s.home,
+            away: s.away,
+            homeScore: s.homeScore,
+            awayScore: s.awayScore,
+            competition: `FIFA World Cup · ${s.round}`,
+          }))
+        : [];
+
     try {
       const [teamAId, teamBId] = await Promise.all([
         fetchTeamId(data.league, data.teamA),
         fetchTeamId(data.league, data.teamB),
       ]);
       if (!teamAId) {
+        // No live team id, but we may still have a curated WC seed to return.
+        if (wcSeed.length) {
+          wcSeed.sort((x, y) => new Date(y.date).getTime() - new Date(x.date).getTime());
+          return { matches: wcSeed, error: null, teamAId: null, teamBId };
+        }
         return { matches: [], error: `Team not found in this competition: ${data.teamA}`, teamAId: null, teamBId };
       }
+
 
       const seasons = data.seasons?.length ? data.seasons : defaultSeasonsFor();
       // Also try current-schedule (no season param) — it returns the "in-season" event set.
