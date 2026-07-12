@@ -772,46 +772,14 @@ function RankingsTab() {
   );
 }
 
-function LiveFifaRankings() {
-  const fn = useServerFn(getFifaRankings);
-  const q = useQuery({
-    queryKey: ["fifa_rankings_2026"],
-    queryFn: () => fn(),
-    staleTime: 60 * 60 * 1000,
-  });
-  if (q.isLoading) return <div className="text-xs text-muted-foreground py-2">Loading…</div>;
-  const rows = q.data?.rows ?? [];
-  if (rows.length === 0) {
-    return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1.5 text-sm">
-        {fifaRankings.countries.map((c) => (
-          <div key={c.rank} className="flex items-center justify-between gap-2 py-1 border-b border-border/60">
-            <div className="flex items-center gap-2 min-w-0">
-              <span className="text-xs text-muted-foreground w-6 tabular-nums">#{c.rank}</span>
-              <span className="text-lg">{flagOf(c.country)}</span>
-              <span className="truncate">{c.country}</span>
-            </div>
-            <span className="text-xs text-gold tabular-nums">{c.points}</span>
-          </div>
-        ))}
-      </div>
-    );
-  }
+function EmptyBlock({ label }: { label: string }) {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1.5 text-sm">
-      {rows.map((r) => (
-        <div key={r.team.id} className="flex items-center justify-between gap-2 py-1 border-b border-border/60">
-          <div className="flex items-center gap-2 min-w-0">
-            <span className="text-xs text-muted-foreground w-6 tabular-nums">#{r.rank}</span>
-            <span className="text-base leading-none">{flagOf(r.team.name)}</span>
-            <span className="truncate">{r.team.name}</span>
-          </div>
-          <span className="text-[10px] text-muted-foreground tabular-nums">{r.group}</span>
-        </div>
-      ))}
+    <div className="rounded-2xl border border-dashed border-border p-10 text-center text-sm text-muted-foreground bg-card/30">
+      {label}
     </div>
   );
 }
+
 
 function EmptyBlock({ label }: { label: string }) {
   return (
