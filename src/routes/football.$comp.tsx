@@ -106,7 +106,10 @@ function CompetitionLandingPage() {
     : null;
 
   const previewGames = games.slice(0, 6);
-  const previewGroups = (standings.data?.groups ?? []).slice(0, 1);
+  // Show ALL groups (not just Group A). WC has 12 groups; users want to see
+  // the full field on the landing page, not scroll through a single group.
+  const previewGroups = standings.data?.groups ?? [];
+
 
   const isFutureEdition =
     comp.kind === "tournament" &&
