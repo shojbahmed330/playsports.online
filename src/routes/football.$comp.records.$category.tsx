@@ -76,17 +76,7 @@ function RecordsCategoryPage() {
 
       {rows.length === 0 ? (
         <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-6 py-10 text-center text-sm text-muted-foreground">
-          {comp.slug === "world-cup" ? (
-            <>
-              For World Cup records visit the{" "}
-              <Link to="/football/records/$category" params={{ category: "top-scorers-all-time" }} className="underline hover:text-foreground">
-                dedicated WC records page
-              </Link>
-              .
-            </>
-          ) : (
-            <>Data being finalised — scoped {comp.shortName} records land in the next update.</>
-          )}
+          Data being finalised — scoped {comp.shortName} records land in the next update.
         </div>
       ) : (
         <ol className="rounded-2xl border border-white/10 bg-white/[0.02] divide-y divide-white/5 overflow-hidden">

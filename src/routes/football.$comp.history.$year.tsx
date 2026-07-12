@@ -1,9 +1,10 @@
-import { createFileRoute, notFound, Link, redirect } from "@tanstack/react-router";
+import { createFileRoute, notFound, Link } from "@tanstack/react-router";
 import { getCompetition, requireCompetition, formatSeasonLabel } from "@/lib/competitions";
 import { CompetitionPageShell } from "@/components/football/CompetitionPageShell";
 import { buildCompetitionHead } from "@/lib/competition-head";
 import { getEdition } from "@/data/competition-editions";
-import type { SquadPick } from "@/data/competition-editions";
+import type { SquadPick, EditionSummary } from "@/data/competition-editions";
+import { getTournament } from "@/data/wc_tournaments";
 import { sportsEvent, ldScript } from "@/lib/seo/jsonld";
 import { Trophy, MapPin, Target, Users, Award, Shield, Sparkles, Calendar } from "lucide-react";
 
@@ -11,13 +12,32 @@ export const Route = createFileRoute("/football/$comp/history/$year")({
   loader: ({ params }) => {
     const comp = getCompetition(params.comp);
     if (!comp) throw notFound();
-    // World Cup has its own dedicated edition pages already — bounce there.
-    if (comp.slug === "world-cup") {
-      throw redirect({ to: "/football/tournaments/$year", params: { year: params.year } });
-    }
     const year = Number(params.year);
     if (!Number.isFinite(year) || !comp.years.includes(year)) throw notFound();
-    const edition = getEdition(comp.slug, year);
+    let edition = getEdition(comp.slug, year);
+    // World Cup: no per-year seed rows in COMPETITION_EDITIONS — synthesize
+    // from wc_tournaments.ts so the comp-scoped page renders alongside the
+    // richer /football/tournaments/$year page.
+    if (!edition && comp.slug === "world-cup") {
+      const t = getTournament(year);
+      if (t) {
+        edition = {
+          year: t.year,
+          winner: t.champion,
+          runnerUp: t.runnerUp,
+          host: t.host,
+          finalScore: t.finalScore,
+          topScorer: t.topScorer && t.topScorer !== "TBD"
+            ? { name: t.topScorer, goals: t.topScorerGoals }
+            : undefined,
+          bestPlayer: t.goldenBall ? { name: t.goldenBall, award: "Golden Ball" } : undefined,
+          format: `${t.teams} teams · ${t.matches} matches`,
+          teams: t.teams,
+          matches: t.matches,
+          goals: t.totalGoals || undefined,
+        } as EditionSummary;
+      }
+    }
     return { comp, year, edition };
   },
   head: ({ params, loaderData }) => {

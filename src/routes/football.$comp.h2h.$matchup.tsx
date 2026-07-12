@@ -95,8 +95,29 @@ function H2HPage() {
           {q.data.error}
         </div>
       ) : matches.length === 0 ? (
-        <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-6 py-10 text-center text-sm text-muted-foreground">
-          No completed {comp.shortName} matches between {a} and {b} in ESPN&apos;s recent schedule window.
+        <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-6 py-10 text-center text-sm text-muted-foreground space-y-3">
+          <div>
+            No completed {comp.shortName} matches between{" "}
+            <span className="font-semibold text-foreground">{a}</span> and{" "}
+            <span className="font-semibold text-foreground">{b}</span> in the
+            available ESPN schedule window.
+          </div>
+          <div className="flex flex-wrap justify-center gap-2 text-xs">
+            <Link
+              to="/football/$comp/fixtures"
+              params={{ comp: comp.slug }}
+              className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 hover:bg-white/10"
+            >
+              {comp.shortName} fixtures →
+            </Link>
+            <Link
+              to="/football/$comp/history"
+              params={{ comp: comp.slug }}
+              className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 hover:bg-white/10"
+            >
+              {comp.shortName} history →
+            </Link>
+          </div>
         </div>
       ) : (
         <ol className="rounded-2xl border border-white/10 bg-white/[0.02] divide-y divide-white/5 overflow-hidden">
