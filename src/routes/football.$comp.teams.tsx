@@ -1,4 +1,4 @@
-import { createFileRoute, notFound } from "@tanstack/react-router";
+import { createFileRoute, notFound, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { getCompetition, requireCompetition } from "@/lib/competitions";
 import { CompetitionPageShell } from "@/components/football/CompetitionPageShell";
