@@ -17,7 +17,7 @@ import { ChampionsTimelineWidget } from "@/components/football/ChampionsTimeline
 import { TopScorersPreviewCard } from "@/components/football/TopScorersPreviewCard";
 import { LastEditionRecap } from "@/components/football/LastEditionRecap";
 import { Euro2028Hero } from "@/components/football/Euro2028Hero";
-import { Euro2028InfoCard } from "@/components/football/Euro2028InfoCard";
+
 import { Euro2028VenuesCard } from "@/components/football/Euro2028VenuesCard";
 import { EuroLegendsRail } from "@/components/football/EuroLegendsRail";
 import { EuroSquadOfTournament2024 } from "@/components/football/EuroSquadOfTournament2024";
@@ -153,16 +153,7 @@ function CompetitionLandingPage() {
           />
         </>
       ) : (
-        <>
-          {isFutureEdition && (
-            <CompetitionCountdown
-              comp={comp}
-              targetIso={undefined}
-            />
-          )}
-          {/* Keep the fallback info card for non-euro future editions */}
-          {false && <Euro2028InfoCard />}
-        </>
+        isFutureEdition && <CompetitionCountdown comp={comp} />
       )}
 
       {comp.slug === "euro" && <EuroFactsGrid />}
