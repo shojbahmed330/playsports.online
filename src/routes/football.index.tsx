@@ -25,6 +25,7 @@ import { Wc2026ScorersPanel } from "@/components/football/Wc2026ScorersPanel";
 import { FootballFilterBar } from "@/components/football/FootballFilterBar";
 import { FootballCoachmark, ReplayTourButton } from "@/components/football/FootballCoachmark";
 import { BackToTopFab } from "@/components/football/BackToTopFab";
+import { FootballHubSwitcher } from "@/components/football/FootballHubSwitcher";
 import { useWc2026Pulse } from "@/lib/use-wc2026-pulse";
 import { applyFilter, uniqueTeams, useMyTeams, type FootballFilter } from "@/lib/football-filters";
 import { SiteFooter } from "@/components/home/SiteFooter";
