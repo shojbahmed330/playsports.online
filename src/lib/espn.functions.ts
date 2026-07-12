@@ -319,6 +319,7 @@ export type CompetitionLeaderDTO = {
   displayName: string;
   leaders: {
     rank: number;
+    athleteId: string | null;
     athlete: string;
     team: string | null;
     teamLogo: string | null;
@@ -337,6 +338,7 @@ export const getCompetitionLeaders = createServerFn({ method: "GET" })
         displayName: c?.displayName ?? c?.name ?? "",
         leaders: (c?.leaders ?? []).slice(0, 10).map((l: any, i: number) => ({
           rank: i + 1,
+          athleteId: l?.athlete?.id ? String(l.athlete.id) : null,
           athlete: l?.athlete?.displayName ?? l?.displayName ?? "",
           team: l?.team?.displayName ?? l?.team?.name ?? null,
           teamLogo: l?.team?.logos?.[0]?.href ?? l?.team?.logo ?? null,
@@ -348,6 +350,7 @@ export const getCompetitionLeaders = createServerFn({ method: "GET" })
       return { categories: [] as CompetitionLeaderDTO[], error: e instanceof Error ? e.message : "Unknown" };
     }
   });
+
 
 // ───────────── SINGLE COMPETITION TEAM ─────────────
 export type CompetitionTeamDetailDTO = {
