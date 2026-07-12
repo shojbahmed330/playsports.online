@@ -3,6 +3,7 @@ import { getCompetition, requireCompetition, formatSeasonLabel } from "@/lib/com
 import { CompetitionPageShell } from "@/components/football/CompetitionPageShell";
 import { buildCompetitionHead } from "@/lib/competition-head";
 import { getEdition } from "@/data/competition-editions";
+import { sportsEvent, ldScript } from "@/lib/seo/jsonld";
 import { Trophy, MapPin, Target, Users } from "lucide-react";
 
 export const Route = createFileRoute("/football/$comp/history/$year")({
@@ -24,8 +25,9 @@ export const Route = createFileRoute("/football/$comp/history/$year")({
       return { meta: [{ title: "Edition" }, { name: "robots", content: "noindex" }] };
     }
     const label = formatSeasonLabel(comp, loaderData.year);
-    const winner = loaderData.edition?.winner;
-    return buildCompetitionHead({
+    const edition = loaderData.edition;
+    const winner = edition?.winner;
+    const base = buildCompetitionHead({
       comp,
       section: `${label} Edition`,
       path: `/football/${comp.slug}/history/${loaderData.year}`,
@@ -33,10 +35,32 @@ export const Route = createFileRoute("/football/$comp/history/$year")({
         ? `${comp.name} ${label} — ${winner} won. Full recap: final, top scorer, host and more.`
         : `${comp.name} ${label} — recap, winners, top scorer and full context.`,
     });
+    if (edition && winner && winner !== "TBD") {
+      base.scripts = [
+        ...base.scripts,
+        ldScript(
+          sportsEvent({
+            name: `${comp.name} ${label}`,
+            path: `/football/${comp.slug}/history/${loaderData.year}`,
+            sport: "Football",
+            startDate: `${loaderData.year}-01-01`,
+            location: edition.host,
+            description: edition.blurb ??
+              `${comp.name} ${label}${edition.host ? ` in ${edition.host}` : ""}: ${winner} won${edition.runnerUp ? ` beating ${edition.runnerUp}` : ""}${edition.finalScore ? ` ${edition.finalScore}` : ""}.`,
+            homeTeam: winner,
+            awayTeam: edition.runnerUp,
+            status: loaderData.year <= new Date().getFullYear() ? "ended" : "scheduled",
+          }),
+        ),
+      ];
+    }
+    return base;
   },
   notFoundComponent: () => <div className="p-10 text-center">Edition not found.</div>,
   component: EditionPage,
 });
+
+
 
 function EditionPage() {
   const data = Route.useLoaderData();
