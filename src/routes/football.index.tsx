@@ -68,7 +68,7 @@ export const Route = createFileRoute("/football/")({
     const cur = pickCurrentWcYear();
     return {
       meta: [
-        { title: `FIFA World Cup ${cur} — Live Scores, Bracket & Archive 1930–${cur}` },
+        { title: `FIFA World Cup ${cur} — Scores, Bracket & Archive` },
         { name: "description", content: `Live FIFA World Cup ${cur} fixtures, group standings, knockout bracket and complete tournament history from 1930 to ${cur}.` },
         { property: "og:title", content: `FIFA World Cup ${cur} — Live Scores & Complete Archive` },
         { property: "og:description", content: `Live ${cur} fixtures with kickoff countdowns, full bracket, top scorers and historical tournaments.` },

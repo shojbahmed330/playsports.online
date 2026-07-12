@@ -19,7 +19,7 @@ export const Route = createFileRoute("/cricket/rankings")({
   validateSearch: zodValidator(search),
   head: () => ({
     meta: [
-      { title: "ICC Cricket Rankings — Teams, Batters, Bowlers & All-rounders" },
+      { title: "ICC Cricket Rankings — Player & Team Rankings" },
       { name: "description", content: "Official ICC rankings across T20I, ODI and Test." },
       { property: "og:title", content: "ICC Cricket Rankings" },
       { property: "og:description", content: "Team and player rankings across T20I, ODI and Test." },

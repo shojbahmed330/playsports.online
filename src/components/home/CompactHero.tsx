@@ -203,8 +203,9 @@ function EmptyHero() {
     <section className="relative overflow-hidden border-b border-white/10 bg-gradient-to-br from-gray-900 via-gray-950 to-gray-900">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12 text-center">
         <Flame className="size-8 mx-auto text-gray-600 mb-3" />
-        <h1 className="text-xl sm:text-2xl font-extrabold">No live matches right now</h1>
-        <p className="text-sm text-gray-400 mt-1">Browse today's full slate below</p>
+        <h1 className="text-xl sm:text-2xl font-extrabold">PlaySports — Live Scores & Sports Hub</h1>
+        <p className="text-sm text-gray-400 mt-1">No live matches right now — browse today's full slate below</p>
+
       </div>
     </section>
   );
