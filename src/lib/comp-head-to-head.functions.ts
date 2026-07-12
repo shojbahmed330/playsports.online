@@ -1,6 +1,8 @@
 import { createServerFn } from "@tanstack/react-start";
 import type { H2HMatch } from "./head-to-head.functions";
 import { seededWcH2H } from "@/data/wc_h2h_seed";
+import { seededEuroH2H } from "@/data/euro_h2h_seed";
+
 
 
 /**
