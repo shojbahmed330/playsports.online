@@ -4,6 +4,7 @@ import { getCompetition, requireCompetition } from "@/lib/competitions";
 import { getStandings } from "@/lib/espn.functions";
 import { CompetitionPageShell } from "@/components/football/CompetitionPageShell";
 import { CompetitionStandingsTable } from "@/components/football/CompetitionStandingsTable";
+import { LastEditionRecap } from "@/components/football/LastEditionRecap";
 import { buildCompetitionHead } from "@/lib/competition-head";
 import { Loader2 } from "lucide-react";
 
