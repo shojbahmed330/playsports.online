@@ -212,14 +212,15 @@ function QuickLinks({ comp }: { comp: Competition }) {
       </h3>
       <div className="flex flex-wrap gap-2">
         {links.map((l) => (
-          <a
+          <Link
             key={l.to}
-            href={l.to}
+            to={l.to}
             className="rounded-full border border-white/10 bg-white/[0.03] px-4 py-1.5 text-sm font-semibold hover:border-white/20 hover:bg-white/[0.06]"
           >
             {l.label}
-          </a>
+          </Link>
         ))}
+
       </div>
     </section>
   );
