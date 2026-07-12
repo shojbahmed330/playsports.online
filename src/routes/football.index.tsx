@@ -357,7 +357,9 @@ function Index() {
     <div className="min-h-screen">
       {/* HEADER — shared sport nav (same look as Hub / MLB / NBA) */}
       <SportNav />
+      <FootballHubSwitcher activeSlug="world-cup" />
       <Breadcrumbs />
+
 
 
       {/* HERO — live-aware for the active WC year, classic for archive years */}
