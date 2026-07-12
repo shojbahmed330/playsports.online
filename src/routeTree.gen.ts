@@ -160,6 +160,7 @@ import { Route as FootballCountriesSlugWorldCupChar123yearChar125RouteImport } f
 import { Route as FootballCompTeamsTeamIdRouteImport } from './routes/football.$comp.teams.$teamId'
 import { Route as FootballCompRecordsCategoryRouteImport } from './routes/football.$comp.records.$category'
 import { Route as FootballCompPlayersPlayerIdRouteImport } from './routes/football.$comp.players.$playerId'
+import { Route as FootballCompMatchesMatchIdRouteImport } from './routes/football.$comp.matches.$matchId'
 import { Route as FootballCompHistoryYearRouteImport } from './routes/football.$comp.history.$year'
 import { Route as FootballCompH2hMatchupRouteImport } from './routes/football.$comp.h2h.$matchup'
 import { Route as CricketIplTeamsTeamIdRouteImport } from './routes/cricket.ipl.teams.$teamId'
@@ -928,6 +929,12 @@ const FootballCompPlayersPlayerIdRoute =
     path: '/$playerId',
     getParentRoute: () => FootballCompPlayersRoute,
   } as any)
+const FootballCompMatchesMatchIdRoute =
+  FootballCompMatchesMatchIdRouteImport.update({
+    id: '/matches/$matchId',
+    path: '/matches/$matchId',
+    getParentRoute: () => FootballCompRoute,
+  } as any)
 const FootballCompHistoryYearRoute = FootballCompHistoryYearRouteImport.update({
   id: '/$year',
   path: '/$year',
@@ -1111,6 +1118,7 @@ export interface FileRoutesByFullPath {
   '/cricket/ipl/teams/$teamId': typeof CricketIplTeamsTeamIdRoute
   '/football/$comp/h2h/$matchup': typeof FootballCompH2hMatchupRoute
   '/football/$comp/history/$year': typeof FootballCompHistoryYearRoute
+  '/football/$comp/matches/$matchId': typeof FootballCompMatchesMatchIdRoute
   '/football/$comp/players/$playerId': typeof FootballCompPlayersPlayerIdRoute
   '/football/$comp/records/$category': typeof FootballCompRecordsCategoryRoute
   '/football/$comp/teams/$teamId': typeof FootballCompTeamsTeamIdRouteWithChildren
@@ -1264,6 +1272,7 @@ export interface FileRoutesByTo {
   '/cricket/ipl/teams/$teamId': typeof CricketIplTeamsTeamIdRoute
   '/football/$comp/h2h/$matchup': typeof FootballCompH2hMatchupRoute
   '/football/$comp/history/$year': typeof FootballCompHistoryYearRoute
+  '/football/$comp/matches/$matchId': typeof FootballCompMatchesMatchIdRoute
   '/football/$comp/players/$playerId': typeof FootballCompPlayersPlayerIdRoute
   '/football/$comp/records/$category': typeof FootballCompRecordsCategoryRoute
   '/football/$comp/teams/$teamId': typeof FootballCompTeamsTeamIdRouteWithChildren
@@ -1424,6 +1433,7 @@ export interface FileRoutesById {
   '/cricket/ipl/teams/$teamId': typeof CricketIplTeamsTeamIdRoute
   '/football/$comp/h2h/$matchup': typeof FootballCompH2hMatchupRoute
   '/football/$comp/history/$year': typeof FootballCompHistoryYearRoute
+  '/football/$comp/matches/$matchId': typeof FootballCompMatchesMatchIdRoute
   '/football/$comp/players/$playerId': typeof FootballCompPlayersPlayerIdRoute
   '/football/$comp/records/$category': typeof FootballCompRecordsCategoryRoute
   '/football/$comp/teams/$teamId': typeof FootballCompTeamsTeamIdRouteWithChildren
@@ -1585,6 +1595,7 @@ export interface FileRouteTypes {
     | '/cricket/ipl/teams/$teamId'
     | '/football/$comp/h2h/$matchup'
     | '/football/$comp/history/$year'
+    | '/football/$comp/matches/$matchId'
     | '/football/$comp/players/$playerId'
     | '/football/$comp/records/$category'
     | '/football/$comp/teams/$teamId'
@@ -1738,6 +1749,7 @@ export interface FileRouteTypes {
     | '/cricket/ipl/teams/$teamId'
     | '/football/$comp/h2h/$matchup'
     | '/football/$comp/history/$year'
+    | '/football/$comp/matches/$matchId'
     | '/football/$comp/players/$playerId'
     | '/football/$comp/records/$category'
     | '/football/$comp/teams/$teamId'
@@ -1897,6 +1909,7 @@ export interface FileRouteTypes {
     | '/cricket/ipl/teams/$teamId'
     | '/football/$comp/h2h/$matchup'
     | '/football/$comp/history/$year'
+    | '/football/$comp/matches/$matchId'
     | '/football/$comp/players/$playerId'
     | '/football/$comp/records/$category'
     | '/football/$comp/teams/$teamId'
@@ -3007,6 +3020,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FootballCompPlayersPlayerIdRouteImport
       parentRoute: typeof FootballCompPlayersRoute
     }
+    '/football/$comp/matches/$matchId': {
+      id: '/football/$comp/matches/$matchId'
+      path: '/matches/$matchId'
+      fullPath: '/football/$comp/matches/$matchId'
+      preLoaderRoute: typeof FootballCompMatchesMatchIdRouteImport
+      parentRoute: typeof FootballCompRoute
+    }
     '/football/$comp/history/$year': {
       id: '/football/$comp/history/$year'
       path: '/$year'
@@ -3181,6 +3201,7 @@ interface FootballCompRouteChildren {
   FootballCompStandingsRoute: typeof FootballCompStandingsRoute
   FootballCompTeamsRoute: typeof FootballCompTeamsRouteWithChildren
   FootballCompH2hMatchupRoute: typeof FootballCompH2hMatchupRoute
+  FootballCompMatchesMatchIdRoute: typeof FootballCompMatchesMatchIdRoute
 }
 
 const FootballCompRouteChildren: FootballCompRouteChildren = {
@@ -3192,6 +3213,7 @@ const FootballCompRouteChildren: FootballCompRouteChildren = {
   FootballCompStandingsRoute: FootballCompStandingsRoute,
   FootballCompTeamsRoute: FootballCompTeamsRouteWithChildren,
   FootballCompH2hMatchupRoute: FootballCompH2hMatchupRoute,
+  FootballCompMatchesMatchIdRoute: FootballCompMatchesMatchIdRoute,
 }
 
 const FootballCompRouteWithChildren = FootballCompRoute._addFileChildren(
