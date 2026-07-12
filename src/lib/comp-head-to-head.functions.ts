@@ -3,8 +3,9 @@ import type { H2HMatch } from "./head-to-head.functions";
 
 /**
  * Competition-scoped head-to-head using the ESPN team schedule endpoint for a
- * specific soccer league (e.g. `uefa.euro`, `esp.1`). Filters returned events
- * to matches between the two team names, restricted to that league only.
+ * specific soccer league (e.g. `uefa.euro`, `esp.1`). The league acts as the
+ * `leagueFilter`: only that competition's meetings are ever returned — no
+ * cross-competition bleed. Callers pass `league = comp.espnLeague`.
  */
 
 type EspnScore = number | string | { value?: number; displayValue?: string } | null | undefined;
