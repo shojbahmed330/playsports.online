@@ -21,7 +21,12 @@ const CATEGORY_LABELS: Record<RecordCategoryKey, { label: string; blurb: string 
     label: "Records & Firsts",
     blurb: "Youngest scorer, biggest win, historic firsts.",
   },
+  "iconic-moments": {
+    label: "Iconic Moments",
+    blurb: "The goals, saves and stories that defined the competition.",
+  },
 };
+
 
 const VALID_KEYS = Object.keys(CATEGORY_LABELS) as RecordCategoryKey[];
 
