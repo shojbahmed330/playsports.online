@@ -10,6 +10,7 @@ import { getScoreboard, getStandings } from "@/lib/espn.functions";
 import { CompetitionPageShell } from "@/components/football/CompetitionPageShell";
 import { CompetitionMatchList } from "@/components/football/CompetitionMatchList";
 import { CompetitionStandingsTable } from "@/components/football/CompetitionStandingsTable";
+import { CompetitionH2HPicker } from "@/components/football/CompetitionH2HPicker";
 import { SportNav } from "@/components/sports/SportNav";
 import { SiteFooter } from "@/components/home/SiteFooter";
 import { buildCompetitionHead } from "@/lib/competition-head";
