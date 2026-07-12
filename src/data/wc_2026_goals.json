@@ -1,0 +1,165 @@
+[
+  { "pid": "lionel-messi", "name": "Lionel Messi", "team": "Argentina", "pteam": "Argentina", "year": 2026, "og": false, "pen": true, "pos": "FW" },
+  { "pid": "lionel-messi", "name": "Lionel Messi", "team": "Argentina", "pteam": "Argentina", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "lionel-messi", "name": "Lionel Messi", "team": "Argentina", "pteam": "Argentina", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "lionel-messi", "name": "Lionel Messi", "team": "Argentina", "pteam": "Argentina", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "lionel-messi", "name": "Lionel Messi", "team": "Argentina", "pteam": "Argentina", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "lionel-messi", "name": "Lionel Messi", "team": "Argentina", "pteam": "Argentina", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "lionel-messi", "name": "Lionel Messi", "team": "Argentina", "pteam": "Argentina", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "lionel-messi", "name": "Lionel Messi", "team": "Argentina", "pteam": "Argentina", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+
+  { "pid": "kylian-mbappe", "name": "Kylian Mbappé", "team": "France", "pteam": "France", "year": 2026, "og": false, "pen": true, "pos": "FW" },
+  { "pid": "kylian-mbappe", "name": "Kylian Mbappé", "team": "France", "pteam": "France", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "kylian-mbappe", "name": "Kylian Mbappé", "team": "France", "pteam": "France", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "kylian-mbappe", "name": "Kylian Mbappé", "team": "France", "pteam": "France", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "kylian-mbappe", "name": "Kylian Mbappé", "team": "France", "pteam": "France", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "kylian-mbappe", "name": "Kylian Mbappé", "team": "France", "pteam": "France", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "kylian-mbappe", "name": "Kylian Mbappé", "team": "France", "pteam": "France", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "kylian-mbappe", "name": "Kylian Mbappé", "team": "France", "pteam": "France", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+
+  { "pid": "erling-haaland", "name": "Erling Haaland", "team": "Norway", "pteam": "Norway", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "erling-haaland", "name": "Erling Haaland", "team": "Norway", "pteam": "Norway", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "erling-haaland", "name": "Erling Haaland", "team": "Norway", "pteam": "Norway", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "erling-haaland", "name": "Erling Haaland", "team": "Norway", "pteam": "Norway", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "erling-haaland", "name": "Erling Haaland", "team": "Norway", "pteam": "Norway", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "erling-haaland", "name": "Erling Haaland", "team": "Norway", "pteam": "Norway", "year": 2026, "og": false, "pen": true, "pos": "FW" },
+  { "pid": "erling-haaland", "name": "Erling Haaland", "team": "Norway", "pteam": "Norway", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+
+  { "pid": "jude-bellingham", "name": "Jude Bellingham", "team": "England", "pteam": "England", "year": 2026, "og": false, "pen": false, "pos": "MF" },
+  { "pid": "jude-bellingham", "name": "Jude Bellingham", "team": "England", "pteam": "England", "year": 2026, "og": false, "pen": false, "pos": "MF" },
+  { "pid": "jude-bellingham", "name": "Jude Bellingham", "team": "England", "pteam": "England", "year": 2026, "og": false, "pen": false, "pos": "MF" },
+  { "pid": "jude-bellingham", "name": "Jude Bellingham", "team": "England", "pteam": "England", "year": 2026, "og": false, "pen": false, "pos": "MF" },
+  { "pid": "jude-bellingham", "name": "Jude Bellingham", "team": "England", "pteam": "England", "year": 2026, "og": false, "pen": false, "pos": "MF" },
+  { "pid": "jude-bellingham", "name": "Jude Bellingham", "team": "England", "pteam": "England", "year": 2026, "og": false, "pen": false, "pos": "MF" },
+
+  { "pid": "harry-kane", "name": "Harry Kane", "team": "England", "pteam": "England", "year": 2026, "og": false, "pen": true, "pos": "FW" },
+  { "pid": "harry-kane", "name": "Harry Kane", "team": "England", "pteam": "England", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "harry-kane", "name": "Harry Kane", "team": "England", "pteam": "England", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "harry-kane", "name": "Harry Kane", "team": "England", "pteam": "England", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "harry-kane", "name": "Harry Kane", "team": "England", "pteam": "England", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "harry-kane", "name": "Harry Kane", "team": "England", "pteam": "England", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+
+  { "pid": "ousmane-dembele", "name": "Ousmane Dembélé", "team": "France", "pteam": "France", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "ousmane-dembele", "name": "Ousmane Dembélé", "team": "France", "pteam": "France", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "ousmane-dembele", "name": "Ousmane Dembélé", "team": "France", "pteam": "France", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "ousmane-dembele", "name": "Ousmane Dembélé", "team": "France", "pteam": "France", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "ousmane-dembele", "name": "Ousmane Dembélé", "team": "France", "pteam": "France", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+
+  { "pid": "mikel-oyarzabal", "name": "Mikel Oyarzabal", "team": "Spain", "pteam": "Spain", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "mikel-oyarzabal", "name": "Mikel Oyarzabal", "team": "Spain", "pteam": "Spain", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "mikel-oyarzabal", "name": "Mikel Oyarzabal", "team": "Spain", "pteam": "Spain", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "mikel-oyarzabal", "name": "Mikel Oyarzabal", "team": "Spain", "pteam": "Spain", "year": 2026, "og": false, "pen": true, "pos": "FW" },
+
+  { "pid": "lamine-yamal", "name": "Lamine Yamal", "team": "Spain", "pteam": "Spain", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "lamine-yamal", "name": "Lamine Yamal", "team": "Spain", "pteam": "Spain", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "lamine-yamal", "name": "Lamine Yamal", "team": "Spain", "pteam": "Spain", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "lamine-yamal", "name": "Lamine Yamal", "team": "Spain", "pteam": "Spain", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+
+  { "pid": "julian-alvarez", "name": "Julián Álvarez", "team": "Argentina", "pteam": "Argentina", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "julian-alvarez", "name": "Julián Álvarez", "team": "Argentina", "pteam": "Argentina", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "julian-alvarez", "name": "Julián Álvarez", "team": "Argentina", "pteam": "Argentina", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "julian-alvarez", "name": "Julián Álvarez", "team": "Argentina", "pteam": "Argentina", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+
+  { "pid": "lautaro-martinez", "name": "Lautaro Martínez", "team": "Argentina", "pteam": "Argentina", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "lautaro-martinez", "name": "Lautaro Martínez", "team": "Argentina", "pteam": "Argentina", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "lautaro-martinez", "name": "Lautaro Martínez", "team": "Argentina", "pteam": "Argentina", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+
+  { "pid": "bradley-barcola", "name": "Bradley Barcola", "team": "France", "pteam": "France", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "bradley-barcola", "name": "Bradley Barcola", "team": "France", "pteam": "France", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "bradley-barcola", "name": "Bradley Barcola", "team": "France", "pteam": "France", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+
+  { "pid": "jonathan-david", "name": "Jonathan David", "team": "Canada", "pteam": "Canada", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "jonathan-david", "name": "Jonathan David", "team": "Canada", "pteam": "Canada", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "jonathan-david", "name": "Jonathan David", "team": "Canada", "pteam": "Canada", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+
+  { "pid": "cristiano-ronaldo", "name": "Cristiano Ronaldo", "team": "Portugal", "pteam": "Portugal", "year": 2026, "og": false, "pen": true, "pos": "FW" },
+  { "pid": "cristiano-ronaldo", "name": "Cristiano Ronaldo", "team": "Portugal", "pteam": "Portugal", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "cristiano-ronaldo", "name": "Cristiano Ronaldo", "team": "Portugal", "pteam": "Portugal", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+
+  { "pid": "achraf-hakimi", "name": "Achraf Hakimi", "team": "Morocco", "pteam": "Morocco", "year": 2026, "og": false, "pen": false, "pos": "DF" },
+  { "pid": "achraf-hakimi", "name": "Achraf Hakimi", "team": "Morocco", "pteam": "Morocco", "year": 2026, "og": false, "pen": false, "pos": "DF" },
+  { "pid": "youssef-en-nesyri", "name": "Youssef En-Nesyri", "team": "Morocco", "pteam": "Morocco", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "youssef-en-nesyri", "name": "Youssef En-Nesyri", "team": "Morocco", "pteam": "Morocco", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "youssef-en-nesyri", "name": "Youssef En-Nesyri", "team": "Morocco", "pteam": "Morocco", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+
+  { "pid": "vinicius-jr", "name": "Vinícius Júnior", "team": "Brazil", "pteam": "Brazil", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "vinicius-jr", "name": "Vinícius Júnior", "team": "Brazil", "pteam": "Brazil", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "vinicius-jr", "name": "Vinícius Júnior", "team": "Brazil", "pteam": "Brazil", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "raphinha", "name": "Raphinha", "team": "Brazil", "pteam": "Brazil", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "raphinha", "name": "Raphinha", "team": "Brazil", "pteam": "Brazil", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "raphinha", "name": "Raphinha", "team": "Brazil", "pteam": "Brazil", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+
+  { "pid": "florian-wirtz", "name": "Florian Wirtz", "team": "Germany", "pteam": "Germany", "year": 2026, "og": false, "pen": false, "pos": "MF" },
+  { "pid": "florian-wirtz", "name": "Florian Wirtz", "team": "Germany", "pteam": "Germany", "year": 2026, "og": false, "pen": false, "pos": "MF" },
+  { "pid": "kai-havertz", "name": "Kai Havertz", "team": "Germany", "pteam": "Germany", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "kai-havertz", "name": "Kai Havertz", "team": "Germany", "pteam": "Germany", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+
+  { "pid": "folarin-balogun", "name": "Folarin Balogun", "team": "USA", "pteam": "USA", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "folarin-balogun", "name": "Folarin Balogun", "team": "USA", "pteam": "USA", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "christian-pulisic", "name": "Christian Pulisic", "team": "USA", "pteam": "USA", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "christian-pulisic", "name": "Christian Pulisic", "team": "USA", "pteam": "USA", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+
+  { "pid": "hirving-lozano", "name": "Hirving Lozano", "team": "Mexico", "pteam": "Mexico", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "hirving-lozano", "name": "Hirving Lozano", "team": "Mexico", "pteam": "Mexico", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "santiago-gimenez", "name": "Santiago Giménez", "team": "Mexico", "pteam": "Mexico", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "santiago-gimenez", "name": "Santiago Giménez", "team": "Mexico", "pteam": "Mexico", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "santiago-gimenez", "name": "Santiago Giménez", "team": "Mexico", "pteam": "Mexico", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+
+  { "pid": "pedri", "name": "Pedri", "team": "Spain", "pteam": "Spain", "year": 2026, "og": false, "pen": false, "pos": "MF" },
+  { "pid": "pedri", "name": "Pedri", "team": "Spain", "pteam": "Spain", "year": 2026, "og": false, "pen": false, "pos": "MF" },
+  { "pid": "nico-williams", "name": "Nico Williams", "team": "Spain", "pteam": "Spain", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "nico-williams", "name": "Nico Williams", "team": "Spain", "pteam": "Spain", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "mikel-merino", "name": "Mikel Merino", "team": "Spain", "pteam": "Spain", "year": 2026, "og": false, "pen": false, "pos": "MF" },
+  { "pid": "mikel-merino", "name": "Mikel Merino", "team": "Spain", "pteam": "Spain", "year": 2026, "og": false, "pen": false, "pos": "MF" },
+
+  { "pid": "cody-gakpo", "name": "Cody Gakpo", "team": "Netherlands", "pteam": "Netherlands", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "cody-gakpo", "name": "Cody Gakpo", "team": "Netherlands", "pteam": "Netherlands", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "memphis-depay", "name": "Memphis Depay", "team": "Netherlands", "pteam": "Netherlands", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+
+  { "pid": "romelu-lukaku", "name": "Romelu Lukaku", "team": "Belgium", "pteam": "Belgium", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "romelu-lukaku", "name": "Romelu Lukaku", "team": "Belgium", "pteam": "Belgium", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "kevin-de-bruyne", "name": "Kevin De Bruyne", "team": "Belgium", "pteam": "Belgium", "year": 2026, "og": false, "pen": true, "pos": "MF" },
+
+  { "pid": "khvicha-kvaratskhelia", "name": "Khvicha Kvaratskhelia", "team": "Georgia", "pteam": "Georgia", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+
+  { "pid": "sadio-mane", "name": "Sadio Mané", "team": "Senegal", "pteam": "Senegal", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "sadio-mane", "name": "Sadio Mané", "team": "Senegal", "pteam": "Senegal", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "sadio-mane", "name": "Sadio Mané", "team": "Senegal", "pteam": "Senegal", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+
+  { "pid": "victor-osimhen", "name": "Victor Osimhen", "team": "Nigeria", "pteam": "Nigeria", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "victor-osimhen", "name": "Victor Osimhen", "team": "Nigeria", "pteam": "Nigeria", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+
+  { "pid": "mohamed-salah", "name": "Mohamed Salah", "team": "Egypt", "pteam": "Egypt", "year": 2026, "og": false, "pen": true, "pos": "FW" },
+  { "pid": "mohamed-salah", "name": "Mohamed Salah", "team": "Egypt", "pteam": "Egypt", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "mohamed-salah", "name": "Mohamed Salah", "team": "Egypt", "pteam": "Egypt", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+
+  { "pid": "luka-modric", "name": "Luka Modrić", "team": "Croatia", "pteam": "Croatia", "year": 2026, "og": false, "pen": false, "pos": "MF" },
+  { "pid": "andrej-kramaric", "name": "Andrej Kramarić", "team": "Croatia", "pteam": "Croatia", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "andrej-kramaric", "name": "Andrej Kramarić", "team": "Croatia", "pteam": "Croatia", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+
+  { "pid": "granit-xhaka", "name": "Granit Xhaka", "team": "Switzerland", "pteam": "Switzerland", "year": 2026, "og": false, "pen": false, "pos": "MF" },
+  { "pid": "breel-embolo", "name": "Breel Embolo", "team": "Switzerland", "pteam": "Switzerland", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+
+  { "pid": "kaoru-mitoma", "name": "Kaoru Mitoma", "team": "Japan", "pteam": "Japan", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "takefusa-kubo", "name": "Takefusa Kubo", "team": "Japan", "pteam": "Japan", "year": 2026, "og": false, "pen": false, "pos": "MF" },
+  { "pid": "takefusa-kubo", "name": "Takefusa Kubo", "team": "Japan", "pteam": "Japan", "year": 2026, "og": false, "pen": false, "pos": "MF" },
+
+  { "pid": "son-heung-min", "name": "Son Heung-min", "team": "South Korea", "pteam": "South Korea", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "son-heung-min", "name": "Son Heung-min", "team": "South Korea", "pteam": "South Korea", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+
+  { "pid": "arda-guler", "name": "Arda Güler", "team": "Türkiye", "pteam": "Türkiye", "year": 2026, "og": false, "pen": false, "pos": "MF" },
+  { "pid": "kenan-yildiz", "name": "Kenan Yıldız", "team": "Türkiye", "pteam": "Türkiye", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+
+  { "pid": "james-rodriguez", "name": "James Rodríguez", "team": "Colombia", "pteam": "Colombia", "year": 2026, "og": false, "pen": false, "pos": "MF" },
+  { "pid": "luis-diaz", "name": "Luis Díaz", "team": "Colombia", "pteam": "Colombia", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "luis-diaz", "name": "Luis Díaz", "team": "Colombia", "pteam": "Colombia", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+
+  { "pid": "darwin-nunez", "name": "Darwin Núñez", "team": "Uruguay", "pteam": "Uruguay", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+  { "pid": "federico-valverde", "name": "Federico Valverde", "team": "Uruguay", "pteam": "Uruguay", "year": 2026, "og": false, "pen": false, "pos": "MF" },
+
+  { "pid": "enner-valencia", "name": "Enner Valencia", "team": "Ecuador", "pteam": "Ecuador", "year": 2026, "og": false, "pen": true, "pos": "FW" },
+  { "pid": "enner-valencia", "name": "Enner Valencia", "team": "Ecuador", "pteam": "Ecuador", "year": 2026, "og": false, "pen": false, "pos": "FW" },
+
+  { "pid": "yassine-bounou-og-marker", "name": "Own goal", "team": "Morocco", "pteam": "Own Goal", "year": 2026, "og": true, "pen": false, "pos": "" },
+  { "pid": "og-2026-1", "name": "Own goal", "team": "Qatar", "pteam": "Own Goal", "year": 2026, "og": true, "pen": false, "pos": "" }
+]
