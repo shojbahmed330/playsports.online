@@ -8,6 +8,13 @@
  * placeholder card.
  */
 
+export type SquadPick = {
+  name: string;
+  team?: string;
+  /** Position code — GK, DF, MF, FW. */
+  position?: "GK" | "DF" | "MF" | "FW";
+};
+
 export type EditionSummary = {
   year: number;
   /** Winning team/nation/club. */
@@ -22,6 +29,34 @@ export type EditionSummary = {
   topScorer?: { name: string; goals: number };
   /** One-line story of the edition. */
   blurb?: string;
+
+  // ---------- Phase 3 richer historical seed ----------
+  /** Tournament format description, e.g. "24 teams · groups + knockouts". */
+  format?: string;
+  /** Number of participating teams / clubs. */
+  teams?: number;
+  /** Matches played across the edition. */
+  matches?: number;
+  /** Total goals scored across the edition. */
+  goals?: number;
+  /** Final venue (stadium, city). */
+  finalVenue?: string;
+  /** Final attendance if notable. */
+  finalAttendance?: number;
+  /** Best player award (Golden Ball / MVP / Pichichi-adjacent). */
+  bestPlayer?: { name: string; team?: string; award?: string };
+  /** Best goalkeeper award. */
+  bestKeeper?: { name: string; team?: string; award?: string };
+  /** Best young player award. */
+  youngPlayer?: { name: string; team?: string; award?: string };
+  /** Team/squad of the tournament — condensed pick list. */
+  squadOfTournament?: SquadPick[];
+  /** Notable moments / storylines for the edition (bulleted). */
+  notableMoments?: string[];
+  /** Head coach of the winning side. */
+  winningCoach?: string;
+  /** Captain of the winning side. */
+  winningCaptain?: string;
 };
 
 export const COMPETITION_EDITIONS: Record<string, EditionSummary[]> = {
