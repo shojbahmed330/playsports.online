@@ -122,7 +122,14 @@ function TeamDetailPage() {
             </section>
           )}
 
-          <nav className="grid gap-2 sm:grid-cols-3">
+          <nav className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+            <Link
+              to="/football/$comp/teams/$teamId/season-{$year}"
+              params={{ comp: comp.slug, teamId, year: String(comp.currentSeason) }}
+              className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm hover:border-white/20 hover:bg-white/[0.06] transition"
+            >
+              Season {comp.currentSeason} run →
+            </Link>
             <Link
               to="/football/$comp/fixtures"
               params={{ comp: comp.slug }}
