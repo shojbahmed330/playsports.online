@@ -278,3 +278,75 @@ export const getMultiSportToday = createServerFn({ method: "GET" })
     return { byLeague: out };
   });
 
+// ───────────── COMPETITION TEAMS + LEADERS ─────────────
+export type CompetitionTeamDTO = {
+  id: string;
+  name: string;
+  shortName: string;
+  abbr: string;
+  logo: string | null;
+  color: string | null;
+  location: string | null;
+};
+
+export const getCompetitionTeams = createServerFn({ method: "GET" })
+  .inputValidator((d: { sportPath: string }) => d)
+  .handler(async ({ data }) => {
+    try {
+      const raw = (await apiGet(`/${data.sportPath}/teams`, 24 * 60 * 60_000)) as any;
+      const buckets: any[] = raw?.sports?.[0]?.leagues?.[0]?.teams ?? [];
+      const teams: CompetitionTeamDTO[] = buckets.map((b: any) => {
+        const t = b?.team ?? {};
+        return {
+          id: String(t.id ?? ""),
+          name: t.displayName ?? t.name ?? "",
+          shortName: t.shortDisplayName ?? t.nickname ?? t.name ?? "",
+          abbr: t.abbreviation ?? "",
+          logo: t.logos?.[0]?.href ?? t.logo ?? null,
+          color: t.color ? `#${t.color}` : null,
+          location: t.location ?? null,
+        };
+      });
+      teams.sort((a, b) => a.name.localeCompare(b.name));
+      return { teams, error: null as string | null };
+    } catch (e) {
+      return { teams: [] as CompetitionTeamDTO[], error: e instanceof Error ? e.message : "Unknown" };
+    }
+  });
+
+export type CompetitionLeaderDTO = {
+  category: string;
+  displayName: string;
+  leaders: {
+    rank: number;
+    athlete: string;
+    team: string | null;
+    teamLogo: string | null;
+    value: string;
+  }[];
+};
+
+export const getCompetitionLeaders = createServerFn({ method: "GET" })
+  .inputValidator((d: { sportPath: string }) => d)
+  .handler(async ({ data }) => {
+    try {
+      const raw = (await apiGet(`/${data.sportPath}/leaders`, 60 * 60_000)) as any;
+      const cats: any[] = raw?.leaders?.categories ?? raw?.categories ?? [];
+      const out: CompetitionLeaderDTO[] = cats.map((c: any) => ({
+        category: c?.name ?? "",
+        displayName: c?.displayName ?? c?.name ?? "",
+        leaders: (c?.leaders ?? []).slice(0, 10).map((l: any, i: number) => ({
+          rank: i + 1,
+          athlete: l?.athlete?.displayName ?? l?.displayName ?? "",
+          team: l?.team?.displayName ?? l?.team?.name ?? null,
+          teamLogo: l?.team?.logos?.[0]?.href ?? l?.team?.logo ?? null,
+          value: l?.displayValue ?? String(l?.value ?? ""),
+        })),
+      })).filter((c) => c.leaders.length > 0);
+      return { categories: out, error: null as string | null };
+    } catch (e) {
+      return { categories: [] as CompetitionLeaderDTO[], error: e instanceof Error ? e.message : "Unknown" };
+    }
+  });
+
+
