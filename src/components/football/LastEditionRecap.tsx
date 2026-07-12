@@ -1,5 +1,6 @@
+import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Trophy, ArrowRight } from "lucide-react";
+import { Trophy, ArrowRight, ChevronDown } from "lucide-react";
 import type { Competition } from "@/lib/competitions";
 import { latestCompletedEdition } from "@/lib/competition-history";
 
@@ -8,14 +9,20 @@ import { latestCompletedEdition } from "@/lib/competition-history";
  * is between editions (no live/upcoming data). Instead of an empty "table will
  * appear once the season begins" state, we surface the most recent completed
  * edition's champion, final and top scorer, plus deep-links into history.
+ *
+ * Pass `collapsible` to render the recap under a "Show" toggle (used on
+ * pages where the recap is secondary content).
  */
 export function LastEditionRecap({
   comp,
   variant = "wide",
+  collapsible = false,
 }: {
   comp: Competition;
   variant?: "wide" | "compact";
+  collapsible?: boolean;
 }) {
+  const [open, setOpen] = useState(!collapsible);
   const last = latestCompletedEdition(comp.slug);
   if (!last) {
     return (
