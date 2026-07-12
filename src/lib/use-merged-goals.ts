@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import goalsData from "@/data/wc_goals.json";
+import seed2026 from "@/data/wc_2026_goals.json";
 import { getWc2026TopScorers, type Wc2026Scorer } from "@/lib/wc2026.functions";
 import { norm } from "@/lib/players-filters";
 
@@ -68,16 +69,30 @@ export function useMergedGoals() {
     retry: 1,
   });
 
+  const SEED_2026 = seed2026 as GoalRow[];
+
   const live = useMemo<GoalRow[]>(() => {
     const out: GoalRow[] = [];
     for (const s of q.data?.scorers ?? []) out.push(...scorerToRows(s));
     return out;
   }, [q.data]);
 
-  const goals = useMemo<GoalRow[]>(
-    () => (live.length ? [...HISTORICAL, ...live] : HISTORICAL),
-    [live],
-  );
+  const goals = useMemo<GoalRow[]>(() => {
+    // If Sofascore returned live 2026 rows and they cover more goals than the
+    // seed for a given player, prefer live counts. Otherwise use the seed.
+    if (!live.length) return [...HISTORICAL, ...SEED_2026];
+    const livePidCount = new Map<string, number>();
+    for (const r of live) livePidCount.set(r.pid, (livePidCount.get(r.pid) ?? 0) + 1);
+    const seedPidCount = new Map<string, number>();
+    for (const r of SEED_2026) seedPidCount.set(r.pid, (seedPidCount.get(r.pid) ?? 0) + 1);
+    const preferLiveForPid = new Set<string>();
+    for (const [pid, n] of livePidCount) {
+      if (n >= (seedPidCount.get(pid) ?? 0)) preferLiveForPid.add(pid);
+    }
+    const seedKept = SEED_2026.filter((r) => !preferLiveForPid.has(r.pid));
+    return [...HISTORICAL, ...seedKept, ...live];
+  }, [live]);
+
 
   return {
     goals,
