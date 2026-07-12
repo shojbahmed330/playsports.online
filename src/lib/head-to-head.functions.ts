@@ -37,19 +37,44 @@ async function jget<T>(url: string): Promise<T | null> {
   } catch { return null; }
 }
 
+type EspnScore = number | string | { value?: number; displayValue?: string } | null | undefined;
 type EspnEvent = {
   date?: string;
   name?: string;
   competitions?: Array<{
+    status?: { type?: { completed?: boolean; state?: string } };
     competitors?: Array<{
       id?: string;
       homeAway?: string;
-      score?: string | number;
+      score?: EspnScore;
       team?: { id?: string; displayName?: string; abbreviation?: string };
     }>;
   }>;
+  status?: { type?: { completed?: boolean; state?: string } };
   league?: { name?: string };
 };
+
+function parseScore(s: EspnScore): number | null {
+  if (s == null) return null;
+  if (typeof s === "number") return Number.isFinite(s) ? s : null;
+  if (typeof s === "string") {
+    const n = Number(s);
+    return Number.isFinite(n) ? n : null;
+  }
+  if (typeof s === "object") {
+    if (typeof s.value === "number" && Number.isFinite(s.value)) return s.value;
+    if (typeof s.displayValue === "string") {
+      const n = Number(s.displayValue);
+      return Number.isFinite(n) ? n : null;
+    }
+  }
+  return null;
+}
+
+function isCompleted(ev: EspnEvent): boolean {
+  const st = ev.competitions?.[0]?.status?.type ?? ev.status?.type;
+  return st?.completed === true || st?.state === "post";
+}
 
 function extractMatch(ev: EspnEvent): H2HMatch | null {
   const comp = ev.competitions?.[0];
@@ -60,11 +85,12 @@ function extractMatch(ev: EspnEvent): H2HMatch | null {
     date: ev.date ?? "",
     home: home.team?.displayName ?? "",
     away: away.team?.displayName ?? "",
-    homeScore: home.score != null ? Number(home.score) : null,
-    awayScore: away.score != null ? Number(away.score) : null,
+    homeScore: parseScore(home.score),
+    awayScore: parseScore(away.score),
     competition: ev.league?.name ?? ev.name ?? "",
   };
 }
+
 
 // ESPN team schedule endpoint — returns recent + upcoming fixtures.
 export const getTeamForm = createServerFn({ method: "GET" })
