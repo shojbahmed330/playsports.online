@@ -178,15 +178,16 @@ function SectionHeader({ title, to, cta }: { title: string; to: string; cta: str
   return (
     <div className="flex items-baseline justify-between mb-3">
       <h2 className="text-lg sm:text-xl font-bold">{title}</h2>
-      <a
-        href={to}
+      <Link
+        to={to}
         className="text-xs sm:text-sm font-semibold text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
       >
         {cta} <ArrowRight className="size-3.5" />
-      </a>
+      </Link>
     </div>
   );
 }
+
 
 function Loading({ label }: { label: string }) {
   return (
