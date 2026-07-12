@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 import { listTeams, listPlayers, listH2H, listArchives, listCountryYears, listPlayerYears } from "@/lib/seo/programmatic";
+import { COMPETITIONS } from "@/lib/competitions";
+import { COMPETITION_EDITIONS } from "@/data/competition-editions";
 import { WC_TOURNAMENTS } from "@/data/wc_tournaments";
 import { programmaticCampaignUrls, programmaticTopScorerUrls } from "@/lib/seo/programmatic-pages";
 import {
@@ -292,6 +294,7 @@ async function entriesForPart(part: SitemapPart): Promise<SitemapEntry[]> {
           changefreq: "weekly" as const,
           priority: "0.7",
         })),
+        ...competitionSitemapEntries(),
       ];
     case "cricket": {
       const [iplTeams, cricketSeries] = await Promise.all([iplTeamUrls(), cricketSeriesUrls()]);
