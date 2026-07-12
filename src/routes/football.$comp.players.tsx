@@ -68,23 +68,41 @@ function PlayersPage() {
                 <h3 className="text-sm font-bold">{cat.displayName}</h3>
               </header>
               <ol className="divide-y divide-white/5">
-                {cat.leaders.map((l) => (
-                  <li key={`${cat.category}-${l.rank}-${l.athlete}`} className="flex items-center gap-3 px-4 py-2">
-                    <span className="w-6 text-right tabular-nums text-xs text-muted-foreground">{l.rank}</span>
-                    {l.teamLogo ? (
-                      <img src={l.teamLogo} alt="" className="size-5 object-contain" loading="lazy" />
-                    ) : (
-                      <span className="size-5" />
-                    )}
-                    <div className="flex-1 min-w-0">
-                      <div className="text-sm font-medium truncate">{l.athlete}</div>
-                      {l.team && (
-                        <div className="text-[11px] text-muted-foreground truncate">{l.team}</div>
+                {cat.leaders.map((l) => {
+                  const row = (
+                    <>
+                      <span className="w-6 text-right tabular-nums text-xs text-muted-foreground">{l.rank}</span>
+                      {l.teamLogo ? (
+                        <img src={l.teamLogo} alt="" className="size-5 object-contain" loading="lazy" />
+                      ) : (
+                        <span className="size-5" />
                       )}
-                    </div>
-                    <div className="tabular-nums font-bold text-sm">{l.value}</div>
-                  </li>
-                ))}
+                      <div className="flex-1 min-w-0">
+                        <div className="text-sm font-medium truncate">{l.athlete}</div>
+                        {l.team && (
+                          <div className="text-[11px] text-muted-foreground truncate">{l.team}</div>
+                        )}
+                      </div>
+                      <div className="tabular-nums font-bold text-sm">{l.value}</div>
+                    </>
+                  );
+                  return (
+                    <li key={`${cat.category}-${l.rank}-${l.athlete}`}>
+                      {l.athleteId ? (
+                        <Link
+                          to="/football/$comp/players/$playerId"
+                          params={{ comp: comp.slug, playerId: l.athleteId }}
+                          className="flex items-center gap-3 px-4 py-2 hover:bg-white/[0.04] transition"
+                        >
+                          {row}
+                        </Link>
+                      ) : (
+                        <div className="flex items-center gap-3 px-4 py-2">{row}</div>
+                      )}
+                    </li>
+                  );
+                })}
+
               </ol>
             </section>
           ))}

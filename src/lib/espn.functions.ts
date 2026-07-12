@@ -319,6 +319,7 @@ export type CompetitionLeaderDTO = {
   displayName: string;
   leaders: {
     rank: number;
+    athleteId: string | null;
     athlete: string;
     team: string | null;
     teamLogo: string | null;
@@ -337,6 +338,7 @@ export const getCompetitionLeaders = createServerFn({ method: "GET" })
         displayName: c?.displayName ?? c?.name ?? "",
         leaders: (c?.leaders ?? []).slice(0, 10).map((l: any, i: number) => ({
           rank: i + 1,
+          athleteId: l?.athlete?.id ? String(l.athlete.id) : null,
           athlete: l?.athlete?.displayName ?? l?.displayName ?? "",
           team: l?.team?.displayName ?? l?.team?.name ?? null,
           teamLogo: l?.team?.logos?.[0]?.href ?? l?.team?.logo ?? null,
@@ -348,6 +350,7 @@ export const getCompetitionLeaders = createServerFn({ method: "GET" })
       return { categories: [] as CompetitionLeaderDTO[], error: e instanceof Error ? e.message : "Unknown" };
     }
   });
+
 
 // ───────────── SINGLE COMPETITION TEAM ─────────────
 export type CompetitionTeamDetailDTO = {
@@ -415,3 +418,64 @@ export const getCompetitionTeam = createServerFn({ method: "GET" })
 
 
 
+// ───────────── SINGLE COMPETITION PLAYER ─────────────
+export type CompetitionPlayerDTO = {
+  id: string;
+  displayName: string;
+  fullName: string;
+  jersey: string | null;
+  position: string | null;
+  age: number | null;
+  height: string | null;
+  weight: string | null;
+  headshot: string | null;
+  citizenship: string | null;
+  team: { id: string; name: string; logo: string | null } | null;
+  stats: { label: string; value: string }[];
+};
+
+export const getCompetitionPlayer = createServerFn({ method: "GET" })
+  .inputValidator((d: { sportPath: string; playerId: string }) => d)
+  .handler(async ({ data }) => {
+    try {
+      const raw = (await apiGet(
+        `/${data.sportPath}/athletes/${data.playerId}`,
+        6 * 60 * 60_000,
+      )) as any;
+      const a = raw?.athlete ?? raw?.items?.[0] ?? {};
+      const teamRaw = a?.team ?? null;
+      const statsRaw: any[] =
+        a?.statistics?.splits?.categories?.[0]?.stats ??
+        a?.statistics?.categories?.[0]?.stats ??
+        [];
+      const player: CompetitionPlayerDTO = {
+        id: String(a?.id ?? data.playerId),
+        displayName: a?.displayName ?? a?.fullName ?? "",
+        fullName: a?.fullName ?? a?.displayName ?? "",
+        jersey: a?.jersey ? String(a.jersey) : null,
+        position: a?.position?.displayName ?? a?.position?.name ?? null,
+        age: typeof a?.age === "number" ? a.age : null,
+        height: a?.displayHeight ?? null,
+        weight: a?.displayWeight ?? null,
+        headshot: a?.headshot?.href ?? null,
+        citizenship: a?.citizenship ?? a?.birthPlace?.country ?? null,
+        team: teamRaw
+          ? {
+              id: String(teamRaw?.id ?? ""),
+              name: teamRaw?.displayName ?? teamRaw?.name ?? "",
+              logo: teamRaw?.logos?.[0]?.href ?? teamRaw?.logo ?? null,
+            }
+          : null,
+        stats: statsRaw.slice(0, 12).map((s: any) => ({
+          label: s?.displayName ?? s?.name ?? "",
+          value: s?.displayValue ?? String(s?.value ?? ""),
+        })),
+      };
+      return { player, error: null as string | null };
+    } catch (e) {
+      return {
+        player: null as CompetitionPlayerDTO | null,
+        error: e instanceof Error ? e.message : "Unknown",
+      };
+    }
+  });
