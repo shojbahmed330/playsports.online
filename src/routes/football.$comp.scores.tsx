@@ -1,9 +1,11 @@
-import { createFileRoute, notFound } from "@tanstack/react-router";
+import { createFileRoute, notFound, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 import { getCompetition, requireCompetition } from "@/lib/competitions";
 import { getScoreboard } from "@/lib/espn.functions";
 import { CompetitionPageShell } from "@/components/football/CompetitionPageShell";
 import { CompetitionMatchList } from "@/components/football/CompetitionMatchList";
+import { DateScrubber, toYmd } from "@/components/football/DateScrubber";
 import { buildCompetitionHead } from "@/lib/competition-head";
 import { Loader2 } from "lucide-react";
 
@@ -37,12 +39,18 @@ export const Route = createFileRoute("/football/$comp/scores")({
 function ScoresPage() {
   const { comp: raw } = Route.useLoaderData();
   const comp = requireCompetition(raw.slug);
+  const [day, setDay] = useState<Date>(() => new Date());
+  const isToday = toYmd(day) === toYmd(new Date());
+  const yyyymmdd = isToday ? undefined : toYmd(day);
+
   const q = useQuery({
-    queryKey: ["comp-scoreboard", comp.slug],
+    queryKey: ["comp-scoreboard", comp.slug, yyyymmdd ?? "today"],
     queryFn: () =>
-      getScoreboard({ data: { sportPath: `soccer/${comp.espnLeague}`, league: comp.name } }),
+      getScoreboard({
+        data: { sportPath: `soccer/${comp.espnLeague}`, league: comp.name, yyyymmdd },
+      }),
     staleTime: 20_000,
-    refetchInterval: 30_000,
+    refetchInterval: isToday ? 30_000 : false,
   });
 
   const games = q.data?.games ?? [];
@@ -64,7 +72,10 @@ function ScoresPage() {
       todayCount={today.length}
       nextLabel={nextLabel}
     >
-      <h2 className="text-lg sm:text-xl font-bold mb-4">Live &amp; Today</h2>
+      <h2 className="text-lg sm:text-xl font-bold mb-4">
+        {isToday ? "Live & Today" : day.toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" })}
+      </h2>
+      <DateScrubber value={day} onChange={setDay} />
       {q.isLoading ? (
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <Loader2 className="size-4 animate-spin" /> Loading scores…
@@ -74,11 +85,26 @@ function ScoresPage() {
           Live scores are temporarily unavailable. Please refresh in a moment.
         </div>
       ) : (
-        <CompetitionMatchList
-          games={games}
-          emptyLabel={`No ${comp.shortName} matches today. Check the Fixtures tab for what's next.`}
-          h2hCompSlug={comp.slug}
-        />
+        <>
+          <CompetitionMatchList
+            games={games}
+            emptyLabel={`No ${comp.shortName} matches on this date.`}
+            h2hCompSlug={comp.slug}
+          />
+          {games.length > 0 && (
+            <p className="mt-4 text-xs text-muted-foreground">
+              Tap any match to open the{" "}
+              <Link
+                to="/football/$comp/matches/$matchId"
+                params={{ comp: comp.slug, matchId: games[0].id }}
+                className="underline underline-offset-4 hover:text-foreground"
+              >
+                match center
+              </Link>
+              .
+            </p>
+          )}
+        </>
       )}
     </CompetitionPageShell>
   );
