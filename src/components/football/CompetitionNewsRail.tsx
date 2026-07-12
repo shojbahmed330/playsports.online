@@ -57,6 +57,7 @@ export function CompetitionNewsRail({ comp }: { comp: Competition }) {
                 <div className="text-sm font-semibold line-clamp-3">{n.headline}</div>
               </div>
             </a>
+          ))}
           </div>
         </div>
       )}
