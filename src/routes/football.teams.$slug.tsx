@@ -149,6 +149,8 @@ function gradientFor(name: string) {
 
 function FootballTeamPage() {
   const { team, stats, aiFaqs } = Route.useLoaderData();
+  const params = Route.useParams();
+
   const flag = flagOf(team.name);
   const gradient = gradientFor(team.name);
   const winPct = stats.matchesPlayed
