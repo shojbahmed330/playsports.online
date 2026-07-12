@@ -2,14 +2,14 @@ import { useMemo, lazy, Suspense } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { zodValidator } from "@tanstack/zod-adapter";
 import { useQuery } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
+
 import { Trophy, ShieldCheck, Share2, TrendingUp } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { flagOf } from "@/lib/flags";
 import { AdSlot } from "@/components/ads/AdSlot";
 import cardsData from "@/data/wc_cards.json";
 import fifaRankings from "@/data/fifa_rankings.json";
-import { getFifaRankings } from "@/lib/wc2026.functions";
+
 import { useMergedGoals, type GoalRow } from "@/lib/use-merged-goals";
 import { breadcrumbList, collectionPage, ldScript } from "@/lib/seo/jsonld";
 
@@ -730,16 +730,25 @@ function RankingsTab() {
     <section className="space-y-4">
       <div className="flex items-baseline justify-between flex-wrap gap-2">
         <h2 className="text-xl sm:text-2xl font-bold">🏆 Current FIFA Rankings</h2>
-        <span className="text-xs text-muted-foreground inline-flex items-center gap-1.5">
-          <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
-          Live from Sofascore
-        </span>
+        <span className="text-xs text-muted-foreground">Updated June 2026 · Source: FIFA.com</span>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div className="rounded-2xl border border-border bg-card/60 p-4">
           <h3 className="text-sm font-bold mb-3 text-gold">Men's National Teams</h3>
-          <LiveFifaRankings />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1.5 text-sm">
+            {fifaRankings.countries.map((c) => (
+              <div key={c.rank} className="flex items-center justify-between gap-2 py-1 border-b border-border/60">
+                <div className="flex items-center gap-2 min-w-0">
+                  <span className="text-xs text-muted-foreground w-6 tabular-nums">#{c.rank}</span>
+                  <span className="text-lg">{flagOf(c.country)}</span>
+                  <span className="truncate">{c.country}</span>
+                </div>
+                <span className="text-xs text-gold tabular-nums">{c.points}</span>
+              </div>
+            ))}
+          </div>
         </div>
+
         <div className="rounded-2xl border border-border bg-card/60 p-4">
           <h3 className="text-sm font-bold mb-3 text-gold">Top Current Players</h3>
           <div className="space-y-1.5 text-sm">
@@ -763,47 +772,6 @@ function RankingsTab() {
   );
 }
 
-function LiveFifaRankings() {
-  const fn = useServerFn(getFifaRankings);
-  const q = useQuery({
-    queryKey: ["fifa_rankings_2026"],
-    queryFn: () => fn(),
-    staleTime: 60 * 60 * 1000,
-  });
-  if (q.isLoading) return <div className="text-xs text-muted-foreground py-2">Loading…</div>;
-  const rows = q.data?.rows ?? [];
-  if (rows.length === 0) {
-    return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1.5 text-sm">
-        {fifaRankings.countries.map((c) => (
-          <div key={c.rank} className="flex items-center justify-between gap-2 py-1 border-b border-border/60">
-            <div className="flex items-center gap-2 min-w-0">
-              <span className="text-xs text-muted-foreground w-6 tabular-nums">#{c.rank}</span>
-              <span className="text-lg">{flagOf(c.country)}</span>
-              <span className="truncate">{c.country}</span>
-            </div>
-            <span className="text-xs text-gold tabular-nums">{c.points}</span>
-          </div>
-        ))}
-      </div>
-    );
-  }
-  return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1.5 text-sm">
-      {rows.map((r) => (
-        <div key={r.team.id} className="flex items-center justify-between gap-2 py-1 border-b border-border/60">
-          <div className="flex items-center gap-2 min-w-0">
-            <span className="text-xs text-muted-foreground w-6 tabular-nums">#{r.rank}</span>
-            <span className="text-base leading-none">{flagOf(r.team.name)}</span>
-            <span className="truncate">{r.team.name}</span>
-          </div>
-          <span className="text-[10px] text-muted-foreground tabular-nums">{r.group}</span>
-        </div>
-      ))}
-    </div>
-  );
-}
-
 function EmptyBlock({ label }: { label: string }) {
   return (
     <div className="rounded-2xl border border-dashed border-border p-10 text-center text-sm text-muted-foreground bg-card/30">
@@ -811,6 +779,8 @@ function EmptyBlock({ label }: { label: string }) {
     </div>
   );
 }
+
+
 
 function SectionSkeleton() {
   return (
