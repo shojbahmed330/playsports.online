@@ -103,11 +103,11 @@ export const getTeamForm = createServerFn({ method: "GET" })
     const url = `https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/teams/${data.teamId}/schedule`;
     const j = await jget<{ events?: EspnEvent[] }>(url);
     if (!j?.events) return [];
-    const now = Date.now();
     const past = j.events
-      .filter((e) => e.date && new Date(e.date).getTime() < now)
+      .filter((e) => e.date && isCompleted(e))
       .sort((a, b) => new Date(b.date!).getTime() - new Date(a.date!).getTime())
       .slice(0, 5);
+
     return past.map((e): TeamFormEntry => {
       const m = extractMatch(e);
       if (!m) return { date: e.date ?? "", opponent: "", home: false, scoreFor: null, scoreAgainst: null, result: null, competition: "" };
