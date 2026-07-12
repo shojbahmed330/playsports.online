@@ -12,7 +12,10 @@ export type RecordRow = {
   title: string;
   value: string;
   context?: string;
+  /** Optional headshot URL. Component falls back to ui-avatars when omitted. */
+  image?: string;
 };
+
 
 export type RecordCategoryKey =
   | "top-scorers-all-time"
