@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 import { listTeams, listPlayers, listH2H, listArchives, listCountryYears, listPlayerYears } from "@/lib/seo/programmatic";
+import { COMPETITIONS } from "@/lib/competitions";
+import { COMPETITION_EDITIONS } from "@/data/competition-editions";
 import { WC_TOURNAMENTS } from "@/data/wc_tournaments";
 import { programmaticCampaignUrls, programmaticTopScorerUrls } from "@/lib/seo/programmatic-pages";
 import {
@@ -218,6 +220,29 @@ function renderSitemapIndex(today: string): string {
   ].join("\n");
 }
 
+function competitionSitemapEntries(): SitemapEntry[] {
+  const out: SitemapEntry[] = [];
+  const sections = ["", "/scores", "/fixtures", "/standings", "/history", "/records", "/teams", "/players"] as const;
+  const recordCats = ["top-scorers-all-time", "most-titles", "most-appearances", "records-and-firsts"] as const;
+  for (const c of COMPETITIONS) {
+    if (c.slug === "world-cup") continue; // WC has bespoke routes already in the sitemap.
+    for (const s of sections) {
+      out.push({
+        path: `/football/${c.slug}${s}`,
+        changefreq: s === "/scores" || s === "" ? "hourly" : "weekly",
+        priority: s === "" ? "0.85" : "0.7",
+      });
+    }
+    for (const cat of recordCats) {
+      out.push({ path: `/football/${c.slug}/records/${cat}`, changefreq: "weekly", priority: "0.6" });
+    }
+    for (const e of COMPETITION_EDITIONS[c.slug] ?? []) {
+      out.push({ path: `/football/${c.slug}/history/${e.year}`, changefreq: "monthly", priority: "0.65" });
+    }
+  }
+  return out;
+}
+
 async function entriesForPart(part: SitemapPart): Promise<SitemapEntry[]> {
   switch (part) {
     case "core":
@@ -292,6 +317,7 @@ async function entriesForPart(part: SitemapPart): Promise<SitemapEntry[]> {
           changefreq: "weekly" as const,
           priority: "0.7",
         })),
+        ...competitionSitemapEntries(),
       ];
     case "cricket": {
       const [iplTeams, cricketSeries] = await Promise.all([iplTeamUrls(), cricketSeriesUrls()]);
