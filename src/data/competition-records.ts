@@ -21,7 +21,9 @@ export type RecordCategoryKey =
   | "top-scorers-all-time"
   | "most-titles"
   | "most-appearances"
-  | "records-and-firsts";
+  | "records-and-firsts"
+  | "iconic-moments";
+
 
 export type CompetitionRecords = Partial<Record<RecordCategoryKey, RecordRow[]>>;
 
