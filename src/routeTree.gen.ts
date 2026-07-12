@@ -125,6 +125,7 @@ import { Route as MlbGameIdRouteImport } from './routes/mlb.game.$id'
 import { Route as FootballTournamentsYearRouteImport } from './routes/football.tournaments.$year'
 import { Route as FootballTopScorersYearRouteImport } from './routes/football.top-scorers.$year'
 import { Route as FootballTeamsSlugRouteImport } from './routes/football.teams.$slug'
+import { Route as FootballRecordsCategoryRouteImport } from './routes/football.records.$category'
 import { Route as FootballPlayersSlugRouteImport } from './routes/football.players.$slug'
 import { Route as FootballMatchesSlugRouteImport } from './routes/football.matches.$slug'
 import { Route as FootballMatchIdRouteImport } from './routes/football.match.$id'
@@ -734,6 +735,11 @@ const FootballTeamsSlugRoute = FootballTeamsSlugRouteImport.update({
   path: '/teams/$slug',
   getParentRoute: () => FootballRoute,
 } as any)
+const FootballRecordsCategoryRoute = FootballRecordsCategoryRouteImport.update({
+  id: '/records/$category',
+  path: '/records/$category',
+  getParentRoute: () => FootballRoute,
+} as any)
 const FootballPlayersSlugRoute = FootballPlayersSlugRouteImport.update({
   id: '/players/$slug',
   path: '/players/$slug',
@@ -955,6 +961,7 @@ export interface FileRoutesByFullPath {
   '/football/match/$id': typeof FootballMatchIdRoute
   '/football/matches/$slug': typeof FootballMatchesSlugRoute
   '/football/players/$slug': typeof FootballPlayersSlugRouteWithChildren
+  '/football/records/$category': typeof FootballRecordsCategoryRoute
   '/football/teams/$slug': typeof FootballTeamsSlugRoute
   '/football/top-scorers/$year': typeof FootballTopScorersYearRoute
   '/football/tournaments/$year': typeof FootballTournamentsYearRoute
@@ -1093,6 +1100,7 @@ export interface FileRoutesByTo {
   '/football/match/$id': typeof FootballMatchIdRoute
   '/football/matches/$slug': typeof FootballMatchesSlugRoute
   '/football/players/$slug': typeof FootballPlayersSlugRouteWithChildren
+  '/football/records/$category': typeof FootballRecordsCategoryRoute
   '/football/teams/$slug': typeof FootballTeamsSlugRoute
   '/football/top-scorers/$year': typeof FootballTopScorersYearRoute
   '/football/tournaments/$year': typeof FootballTournamentsYearRoute
@@ -1238,6 +1246,7 @@ export interface FileRoutesById {
   '/football/match/$id': typeof FootballMatchIdRoute
   '/football/matches/$slug': typeof FootballMatchesSlugRoute
   '/football/players/$slug': typeof FootballPlayersSlugRouteWithChildren
+  '/football/records/$category': typeof FootballRecordsCategoryRoute
   '/football/teams/$slug': typeof FootballTeamsSlugRoute
   '/football/top-scorers/$year': typeof FootballTopScorersYearRoute
   '/football/tournaments/$year': typeof FootballTournamentsYearRoute
@@ -1384,6 +1393,7 @@ export interface FileRouteTypes {
     | '/football/match/$id'
     | '/football/matches/$slug'
     | '/football/players/$slug'
+    | '/football/records/$category'
     | '/football/teams/$slug'
     | '/football/top-scorers/$year'
     | '/football/tournaments/$year'
@@ -1522,6 +1532,7 @@ export interface FileRouteTypes {
     | '/football/match/$id'
     | '/football/matches/$slug'
     | '/football/players/$slug'
+    | '/football/records/$category'
     | '/football/teams/$slug'
     | '/football/top-scorers/$year'
     | '/football/tournaments/$year'
@@ -1666,6 +1677,7 @@ export interface FileRouteTypes {
     | '/football/match/$id'
     | '/football/matches/$slug'
     | '/football/players/$slug'
+    | '/football/records/$category'
     | '/football/teams/$slug'
     | '/football/top-scorers/$year'
     | '/football/tournaments/$year'
@@ -2579,6 +2591,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FootballTeamsSlugRouteImport
       parentRoute: typeof FootballRoute
     }
+    '/football/records/$category': {
+      id: '/football/records/$category'
+      path: '/records/$category'
+      fullPath: '/football/records/$category'
+      preLoaderRoute: typeof FootballRecordsCategoryRouteImport
+      parentRoute: typeof FootballRoute
+    }
     '/football/players/$slug': {
       id: '/football/players/$slug'
       path: '/players/$slug'
@@ -2846,6 +2865,7 @@ interface FootballRouteChildren {
   FootballMatchIdRoute: typeof FootballMatchIdRoute
   FootballMatchesSlugRoute: typeof FootballMatchesSlugRoute
   FootballPlayersSlugRoute: typeof FootballPlayersSlugRouteWithChildren
+  FootballRecordsCategoryRoute: typeof FootballRecordsCategoryRoute
   FootballTeamsSlugRoute: typeof FootballTeamsSlugRoute
   FootballTopScorersYearRoute: typeof FootballTopScorersYearRoute
   FootballTournamentsYearRoute: typeof FootballTournamentsYearRoute
@@ -2863,6 +2883,7 @@ const FootballRouteChildren: FootballRouteChildren = {
   FootballMatchIdRoute: FootballMatchIdRoute,
   FootballMatchesSlugRoute: FootballMatchesSlugRoute,
   FootballPlayersSlugRoute: FootballPlayersSlugRouteWithChildren,
+  FootballRecordsCategoryRoute: FootballRecordsCategoryRoute,
   FootballTeamsSlugRoute: FootballTeamsSlugRoute,
   FootballTopScorersYearRoute: FootballTopScorersYearRoute,
   FootballTournamentsYearRoute: FootballTournamentsYearRoute,

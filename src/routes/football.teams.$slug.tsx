@@ -149,6 +149,8 @@ function gradientFor(name: string) {
 
 function FootballTeamPage() {
   const { team, stats, aiFaqs } = Route.useLoaderData();
+  const params = Route.useParams();
+
   const flag = flagOf(team.name);
   const gradient = gradientFor(team.name);
   const winPct = stats.matchesPlayed
@@ -342,14 +344,15 @@ function FootballTeamPage() {
             {stats.years.map((y: number) => (
               <Link
                 key={y}
-                to="/archive/$sport/$year"
-                params={{ sport: "football_wc", year: String(y) }}
+                to="/football/countries/$slug/world-cup-{$year}"
+                params={{ slug: params.slug, year: String(y) }}
                 className="px-3 py-1.5 rounded-full bg-gradient-to-br from-card to-muted border border-border font-mono text-sm font-bold hover:border-primary hover:text-primary hover:scale-105 transition-all"
               >
                 {y}
               </Link>
             ))}
           </div>
+
         </Section>
 
         {/* ALL SCORERS */}

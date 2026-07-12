@@ -100,8 +100,8 @@ function FootballPlayerPage() {
           {stats.byYear.map((y: { year: number; goals: number }) => (
             <li key={y.year} className="flex justify-between px-4 py-2">
               <Link
-                to="/archive/$sport/$year"
-                params={{ sport: "football_wc", year: String(y.year) }}
+                to="/football/players/$slug/world-cup-{$year}"
+                params={{ slug: player.slug, year: String(y.year) }}
                 className="hover:underline"
               >
                 World Cup {y.year}
@@ -109,6 +109,7 @@ function FootballPlayerPage() {
               <span className="font-mono">{y.goals} goal{y.goals === 1 ? "" : "s"}</span>
             </li>
           ))}
+
         </ul>
       </section>
 
