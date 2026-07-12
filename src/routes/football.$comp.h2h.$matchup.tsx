@@ -4,19 +4,8 @@ import { getCompetition, requireCompetition } from "@/lib/competitions";
 import { getCompHeadToHead } from "@/lib/comp-head-to-head.functions";
 import { CompetitionPageShell } from "@/components/football/CompetitionPageShell";
 import { buildCompetitionHead } from "@/lib/competition-head";
+import { parseMatchupSlug } from "@/lib/matchup";
 import { Loader2, Swords } from "lucide-react";
-
-/** Parse "germany-vs-spain" → { a: "Germany", b: "Spain" }. */
-function parseMatchup(slug: string): { a: string; b: string } | null {
-  const parts = slug.split("-vs-");
-  if (parts.length !== 2) return null;
-  const cap = (s: string) =>
-    s
-      .split("-")
-      .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-      .join(" ");
-  return { a: cap(parts[0]), b: cap(parts[1]) };
-}
 
 export const Route = createFileRoute("/football/$comp/h2h/$matchup")({
   loader: ({ params }) => {
