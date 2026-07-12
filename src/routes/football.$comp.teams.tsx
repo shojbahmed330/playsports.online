@@ -1,4 +1,4 @@
-import { createFileRoute, notFound } from "@tanstack/react-router";
+import { createFileRoute, notFound, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { getCompetition, requireCompetition } from "@/lib/competitions";
 import { CompetitionPageShell } from "@/components/football/CompetitionPageShell";
@@ -58,28 +58,32 @@ function TeamsPage() {
       ) : (
         <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {teams.map((t) => (
-            <li
-              key={t.id}
-              className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-3 hover:border-white/20 hover:bg-white/[0.06] transition"
-            >
-              <span
-                className="size-10 shrink-0 rounded-xl bg-white/5 ring-1 ring-white/10 grid place-items-center overflow-hidden"
-                style={t.color ? { backgroundColor: `${t.color}20` } : undefined}
+            <li key={t.id}>
+              <Link
+                to="/football/$comp/teams/$teamId"
+                params={{ comp: comp.slug, teamId: t.id }}
+                className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-3 hover:border-white/20 hover:bg-white/[0.06] transition"
               >
-                {t.logo ? (
-                  <img src={t.logo} alt="" className="size-8 object-contain" loading="lazy" />
-                ) : (
-                  <span className="text-xs font-bold">{t.abbr || t.shortName.slice(0, 3)}</span>
-                )}
-              </span>
-              <div className="min-w-0">
-                <div className="font-semibold truncate">{t.name}</div>
-                {t.location && (
-                  <div className="text-xs text-muted-foreground truncate">{t.location}</div>
-                )}
-              </div>
+                <span
+                  className="size-10 shrink-0 rounded-xl bg-white/5 ring-1 ring-white/10 grid place-items-center overflow-hidden"
+                  style={t.color ? { backgroundColor: `${t.color}20` } : undefined}
+                >
+                  {t.logo ? (
+                    <img src={t.logo} alt="" className="size-8 object-contain" loading="lazy" />
+                  ) : (
+                    <span className="text-xs font-bold">{t.abbr || t.shortName.slice(0, 3)}</span>
+                  )}
+                </span>
+                <div className="min-w-0">
+                  <div className="font-semibold truncate">{t.name}</div>
+                  {t.location && (
+                    <div className="text-xs text-muted-foreground truncate">{t.location}</div>
+                  )}
+                </div>
+              </Link>
             </li>
           ))}
+
         </ul>
       )}
     </CompetitionPageShell>
