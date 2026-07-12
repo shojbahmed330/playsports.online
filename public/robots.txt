@@ -182,4 +182,4 @@ Allow: /
 # =============================================================
 # Sitemaps
 # =============================================================
-Sitemap: https://allsportslive.lovable.app/sitemap.xml
+Sitemap: https://www.playsports.online/sitemap.xml
