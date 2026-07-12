@@ -6,6 +6,7 @@ import { getScoreboard } from "@/lib/espn.functions";
 import { CompetitionPageShell } from "@/components/football/CompetitionPageShell";
 import { CompetitionMatchList } from "@/components/football/CompetitionMatchList";
 import { DateScrubber, toYmd } from "@/components/football/DateScrubber";
+import { LastEditionRecap } from "@/components/football/LastEditionRecap";
 import { buildCompetitionHead } from "@/lib/competition-head";
 import { Loader2 } from "lucide-react";
 
@@ -83,6 +84,13 @@ function ScoresPage() {
       ) : q.data?.error ? (
         <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-6 py-10 text-center text-sm text-muted-foreground">
           Live scores are temporarily unavailable. Please refresh in a moment.
+        </div>
+      ) : games.length === 0 && comp.kind === "tournament" && isToday ? (
+        <div className="mt-2">
+          <p className="mb-4 text-sm text-muted-foreground">
+            No {comp.shortName} matches scheduled around this date. Here&apos;s the last completed edition:
+          </p>
+          <LastEditionRecap comp={comp} />
         </div>
       ) : (
         <>

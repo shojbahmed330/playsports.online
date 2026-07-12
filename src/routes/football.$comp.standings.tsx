@@ -4,6 +4,7 @@ import { getCompetition, requireCompetition } from "@/lib/competitions";
 import { getStandings } from "@/lib/espn.functions";
 import { CompetitionPageShell } from "@/components/football/CompetitionPageShell";
 import { CompetitionStandingsTable } from "@/components/football/CompetitionStandingsTable";
+import { LastEditionRecap } from "@/components/football/LastEditionRecap";
 import { buildCompetitionHead } from "@/lib/competition-head";
 import { Loader2 } from "lucide-react";
 
@@ -42,6 +43,10 @@ function StandingsPage() {
     staleTime: 5 * 60_000,
   });
 
+  const groups = q.data?.groups ?? [];
+  const showFallback =
+    !q.isLoading && comp.kind === "tournament" && groups.length === 0;
+
   return (
     <CompetitionPageShell comp={comp}>
       <h2 className="text-lg sm:text-xl font-bold mb-4">
@@ -51,8 +56,15 @@ function StandingsPage() {
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <Loader2 className="size-4 animate-spin" /> Loading standings…
         </div>
+      ) : showFallback ? (
+        <div>
+          <p className="mb-4 text-sm text-muted-foreground">
+            The next {comp.shortName} tournament hasn&apos;t started yet, so there&apos;s no live table. Here&apos;s the last completed edition:
+          </p>
+          <LastEditionRecap comp={comp} />
+        </div>
       ) : (
-        <CompetitionStandingsTable groups={q.data?.groups ?? []} />
+        <CompetitionStandingsTable groups={groups} />
       )}
     </CompetitionPageShell>
   );
