@@ -42,7 +42,7 @@ import {
   nbaSeoFinalsUrls,
 } from "@/lib/seo/sitemap-sources";
 
-const BASE_URL = "https://allsportslive.lovable.app";
+const BASE_URL = "https://www.playsports.online";
 const SITEMAP_PARTS = ["core", "football", "cricket", "us-sports", "hockey-soccer", "legacy"] as const;
 
 type SitemapPart = (typeof SITEMAP_PARTS)[number];
