@@ -142,6 +142,7 @@ function CompetitionLandingPage() {
         </section>
       </div>
 
+      <CompetitionH2HPicker comp={comp} />
       <QuickLinks comp={comp} />
     </CompetitionPageShell>
   );
