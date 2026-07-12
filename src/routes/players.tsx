@@ -2,7 +2,7 @@ import { useMemo, lazy, Suspense } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { zodValidator } from "@tanstack/zod-adapter";
 import { useQuery } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
+
 import { Trophy, ShieldCheck, Share2, TrendingUp } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { flagOf } from "@/lib/flags";
