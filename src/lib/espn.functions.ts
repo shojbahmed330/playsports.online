@@ -349,4 +349,69 @@ export const getCompetitionLeaders = createServerFn({ method: "GET" })
     }
   });
 
+// ───────────── SINGLE COMPETITION TEAM ─────────────
+export type CompetitionTeamDetailDTO = {
+  id: string;
+  name: string;
+  displayName: string;
+  shortName: string;
+  abbr: string;
+  logo: string | null;
+  color: string | null;
+  location: string | null;
+  venue: string | null;
+  record: string | null;
+  standingSummary: string | null;
+  nextEvent: {
+    id: string;
+    date: string;
+    name: string;
+    shortName: string;
+    homeAway: string | null;
+    opponent: string | null;
+  } | null;
+};
+
+export const getCompetitionTeam = createServerFn({ method: "GET" })
+  .inputValidator((d: { sportPath: string; teamId: string }) => d)
+  .handler(async ({ data }) => {
+    try {
+      const raw = (await apiGet(
+        `/${data.sportPath}/teams/${data.teamId}`,
+        6 * 60 * 60_000,
+      )) as any;
+      const t = raw?.team ?? {};
+      const nextEv = t?.nextEvent?.[0];
+      const nextComp = nextEv?.competitions?.[0];
+      const opp = nextComp?.competitors?.find((c: any) => String(c?.id) !== String(t.id));
+      const team: CompetitionTeamDetailDTO = {
+        id: String(t.id ?? data.teamId),
+        name: t.name ?? "",
+        displayName: t.displayName ?? t.name ?? "",
+        shortName: t.shortDisplayName ?? t.nickname ?? t.name ?? "",
+        abbr: t.abbreviation ?? "",
+        logo: t.logos?.[0]?.href ?? t.logo ?? null,
+        color: t.color ? `#${t.color}` : null,
+        location: t.location ?? null,
+        venue: t?.franchise?.venue?.fullName ?? t?.venue?.fullName ?? null,
+        record: t?.record?.items?.[0]?.summary ?? null,
+        standingSummary: t?.standingSummary ?? null,
+        nextEvent: nextEv
+          ? {
+              id: String(nextEv?.id ?? ""),
+              date: nextEv?.date ?? "",
+              name: nextEv?.name ?? "",
+              shortName: nextEv?.shortName ?? "",
+              homeAway: nextComp?.competitors?.find((c: any) => String(c?.id) === String(t.id))?.homeAway ?? null,
+              opponent: opp?.team?.displayName ?? opp?.team?.name ?? null,
+            }
+          : null,
+      };
+      return { team, error: null as string | null };
+    } catch (e) {
+      return { team: null as CompetitionTeamDetailDTO | null, error: e instanceof Error ? e.message : "Unknown" };
+    }
+  });
+
+
 
