@@ -75,9 +75,27 @@ export function collectAllInternalPaths(): string[] {
   // Football players — include EVERY player derived from the goals dataset,
   // because relatedForFootballPlayer's ring links across the full list.
   // Featured stars additionally get /world-cup-goals + /world-cup-cards subpages.
+  // Top 50 most-searched WC players (modern stars + all-time legends).
+  // Every slug below is present in the merged goals dataset (wc_goals + wc_2026),
+  // so listPlayers() includes them and the /world-cup-goals + /world-cup-cards
+  // subpages resolve with real data.
   const FEATURED_FOOTBALL_PLAYERS = new Set([
-    "lionel-messi", "cristiano-ronaldo", "kylian-mbappe",
-    "neymar", "vinicius-junior", "jude-bellingham",
+    // Current era
+    "lionel-messi", "cristiano-ronaldo", "kylian-mbappe", "neymar",
+    "vinicius-junior", "jude-bellingham", "erling-haaland", "harry-kane",
+    "julian-alvarez", "luis-suarez", "james-rodriguez", "romelu-lukaku",
+    "thomas-muller", "enner-valencia", "youssef-en-nesyri",
+    // Modern legends
+    "david-villa", "wesley-sneijder", "arjen-robben", "robin-van-persie",
+    "thierry-henry", "dennis-bergkamp", "diego-forlan", "asamoah-gyan",
+    "mario-mandzukic", "ivan-perisic", "christian-vieri", "roberto-baggio",
+    "rivaldo", "bebeto", "hristo-stoichkov", "davor-suker",
+    // All-time greats
+    "pele", "diego-maradona", "ronaldo", "gerd-muller", "miroslav-klose",
+    "just-fontaine", "gary-lineker", "gabriel-batistuta", "paolo-rossi",
+    "jurgen-klinsmann", "lothar-matthaus", "franz-beckenbauer",
+    "eusebio", "jairzinho", "garrincha", "mario-kempes",
+    "grzegorz-lato", "teofilo-cubillas", "sandor-kocsis", "careca",
   ]);
   for (const p of listPlayers()) {
     out.add(`/football/players/${p.slug}`);
