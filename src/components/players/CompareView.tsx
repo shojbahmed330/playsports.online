@@ -22,7 +22,7 @@ import {
   playerKey,
   type PlayersSearch,
 } from "@/lib/players-filters";
-import { useMergedGoals, HISTORICAL_GOALS, type GoalRow } from "@/lib/use-merged-goals";
+import { useMergedGoals, type GoalRow } from "@/lib/use-merged-goals";
 import { useMergedCards } from "@/lib/use-merged-cards";
 import { CompareChart } from "@/components/players/CompareChart";
 
