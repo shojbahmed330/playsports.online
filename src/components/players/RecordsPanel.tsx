@@ -31,11 +31,12 @@ export function RecordsPanel() {
     const penalties2026 = goals2026.filter((g) => g.pen).length;
     const yellow2026 = CARDS.filter((c) => c.year === 2026 && c.type === "yellow").length;
     const red2026 = CARDS.filter((c) => c.year === 2026 && c.type === "red").length;
-    const leaders = goldenBoot2026.filter((p) => p.goals === goldenBoot2026[0]?.goals).slice(0, 3);
+    const top2026 = goldenBoot2026[0] ?? null;
+    const leaders = top2026 ? goldenBoot2026.filter((p) => p.goals === top2026.goals).slice(0, 3) : [];
     const liveCards = [
       {
         title: "2026 Golden Boot leader",
-        value: leaders.length ? `${goldenBoot2026[0].goals} — ${leaders.map((p) => p.name).join(" / ")}` : "No goals yet",
+        value: top2026 ? `${top2026.goals} — ${leaders.map((p) => p.name).join(" / ")}` : "No goals yet",
         context: leaders.length ? leaders.map((p) => p.country).join(" / ") : "Waiting for official match events",
       },
       {
