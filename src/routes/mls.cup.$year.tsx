@@ -5,6 +5,7 @@ import { breadcrumbList, faqPage, ldScript, sportsEvent } from "@/lib/seo/jsonld
 import { canonical } from "@/lib/seo/canonical";
 import { slugify } from "@/lib/seo/programmatic";
 
+import { withYearNav } from "@/components/seo/withYearNav";
 export const Route = createFileRoute("/mls/cup/$year")({
   loader: ({ params }) => {
     const year = Number(params.year);
@@ -61,7 +62,7 @@ export const Route = createFileRoute("/mls/cup/$year")({
         : [],
     };
   },
-  component: MlsCupPage,
+  component: withYearNav(MlsCupPage, { basePath: "/mls/cup", minYear: 1996, maxYear: 2024, label: "MLS Cup" }),
   notFoundComponent: () => (
     <div className="rounded-2xl border border-dashed border-border p-10 text-center text-sm text-muted-foreground">
       Edition not found. <Link to="/mls/history" className="underline">Browse MLS history</Link>.

@@ -10,6 +10,7 @@ import { canonical } from "@/lib/seo/canonical";
 import { breadcrumbList, faqPage, ldScript } from "@/lib/seo/jsonld";
 import { AdSlot } from "@/components/ads/AdSlot";
 
+import { withYearNav } from "@/components/seo/withYearNav";
 export const Route = createFileRoute("/football/top-scorers/$year")({
   loader: ({ params }) => {
     if (params.year === "all-time") {
@@ -74,7 +75,7 @@ export const Route = createFileRoute("/football/top-scorers/$year")({
       ].filter(Boolean) as ReturnType<typeof ldScript>[],
     };
   },
-  component: TopScorersPage,
+  component: withYearNav(TopScorersPage, { basePath: "/football/top-scorers", minYear: 1930, maxYear: 2026, label: "Top scorers" }),
   errorComponent: ({ error }) => <div className="p-6">Error: {error.message}</div>,
   notFoundComponent: () => <div className="p-6">No data for this tournament.</div>,
 });

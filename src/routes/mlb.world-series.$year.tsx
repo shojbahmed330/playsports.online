@@ -5,6 +5,7 @@ import { breadcrumbList, faqPage, ldScript, sportsEvent } from "@/lib/seo/jsonld
 import { canonical } from "@/lib/seo/canonical";
 import { slugify } from "@/lib/seo/programmatic";
 
+import { withYearNav } from "@/components/seo/withYearNav";
 export const Route = createFileRoute("/mlb/world-series/$year")({
   loader: ({ params }) => {
     const year = Number(params.year);
@@ -61,7 +62,7 @@ export const Route = createFileRoute("/mlb/world-series/$year")({
         : [],
     };
   },
-  component: WorldSeriesPage,
+  component: withYearNav(WorldSeriesPage, { basePath: "/mlb/world-series", minYear: 1903, maxYear: 2025, label: "World Series" }),
   notFoundComponent: () => (
     <div className="rounded-2xl border border-dashed border-border p-10 text-center text-sm text-muted-foreground">
       Edition not found. <Link to="/mlb/history" className="underline">Browse MLB history</Link>.
