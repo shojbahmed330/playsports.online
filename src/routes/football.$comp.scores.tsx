@@ -53,6 +53,7 @@ function ScoresPage() {
   const { comp: raw } = Route.useLoaderData();
   const comp = requireCompetition(raw.slug);
   const isEuro = comp.slug === "euro";
+  const isCopa = comp.slug === "copa-america";
   const [day, setDay] = useState<Date>(() => new Date());
   const [filter, setFilter] = useState<ScoresFilter>("all");
   const isToday = toYmd(day) === toYmd(new Date());
