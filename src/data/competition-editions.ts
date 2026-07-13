@@ -57,6 +57,8 @@ export type EditionSummary = {
   winningCoach?: string;
   /** Captain of the winning side. */
   winningCaptain?: string;
+  /** ISO date (YYYY-MM-DD) of the final. Used for "on this day" surfaces. */
+  finalDate?: string;
 };
 
 export const COMPETITION_EDITIONS: Record<string, EditionSummary[]> = {
