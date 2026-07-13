@@ -22,19 +22,23 @@ export type TeamFormEntry = {
   competition: string;
 };
 
-const cache = new Map<string, { at: number; data: unknown }>();
+import { cachedFetch } from "@/lib/sports-cache";
+
 const TTL = 15 * 60 * 1000;
 
 async function jget<T>(url: string): Promise<T | null> {
-  const hit = cache.get(url);
-  if (hit && Date.now() - hit.at < TTL) return hit.data as T;
   try {
-    const r = await fetch(url, { headers: { accept: "application/json" } });
-    if (!r.ok) return null;
-    const j = (await r.json()) as T;
-    cache.set(url, { at: Date.now(), data: j });
-    return j;
-  } catch { return null; }
+    return await cachedFetch<T | null>(
+      { key: `espn:h2h:${url}`, sport: "football", category: "h2h", ttlMs: TTL },
+      async () => {
+        const r = await fetch(url, { headers: { accept: "application/json" } });
+        if (!r.ok) return null;
+        return (await r.json()) as T;
+      },
+    );
+  } catch {
+    return null;
+  }
 }
 
 type EspnScore = number | string | { value?: number; displayValue?: string } | null | undefined;

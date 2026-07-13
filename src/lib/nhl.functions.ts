@@ -1,22 +1,21 @@
 import { createServerFn } from "@tanstack/react-start";
 import { setResponseHeader } from "@tanstack/react-start/server";
+import { cachedFetch } from "@/lib/sports-cache";
 
 const SITE = "https://site.api.espn.com/apis/site/v2/sports/hockey/nhl";
 const CORE = "https://site.web.api.espn.com/apis/common/v3/sports/hockey/nhl";
 const STATS_BYATHLETE =
   "https://site.web.api.espn.com/apis/common/v3/sports/hockey/nhl/statistics/byathlete";
 
-type CacheEntry = { at: number; ttl: number; data: unknown };
-const cache = new Map<string, CacheEntry>();
-
 async function get(url: string, ttlMs: number): Promise<unknown> {
-  const hit = cache.get(url);
-  if (hit && Date.now() - hit.at < hit.ttl) return hit.data;
-  const res = await fetch(url, { headers: { "user-agent": "lovable-nhl/1.0" } });
-  if (!res.ok) throw new Error(`ESPN ${res.status} ${url}`);
-  const json = await res.json();
-  cache.set(url, { at: Date.now(), ttl: ttlMs, data: json });
-  return json;
+  return cachedFetch<unknown>(
+    { key: `espn:nhl:${url}`, sport: "nhl", category: "raw", ttlMs },
+    async () => {
+      const res = await fetch(url, { headers: { "user-agent": "lovable-nhl/1.0" } });
+      if (!res.ok) throw new Error(`ESPN ${res.status} ${url}`);
+      return res.json();
+    },
+  );
 }
 
 function setEdge(hasLive: boolean) {
