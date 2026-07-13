@@ -39,6 +39,10 @@ export const Route = createFileRoute("/football/$comp/scores")({
       comp,
       section: "Live Scores",
       path: `/football/${comp.slug}/scores`,
+      descriptionOverride:
+        comp.slug === "copa-america"
+          ? "Copa América live scores, fixtures and results — every kickoff across the tournament window with today's live board and the full match archive."
+          : undefined,
     });
   },
   component: ScoresPage,
