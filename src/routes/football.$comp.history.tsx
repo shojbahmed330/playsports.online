@@ -3,7 +3,18 @@ import { getCompetition, requireCompetition, formatSeasonLabel } from "@/lib/com
 import { CompetitionPageShell } from "@/components/football/CompetitionPageShell";
 import { buildCompetitionHead } from "@/lib/competition-head";
 import { getEdition } from "@/data/competition-editions";
-import { titleCounts, editionsByDecade } from "@/lib/competition-history";
+import { titleCounts, editionsByDecade, championsTimeline } from "@/lib/competition-history";
+import { euroStats } from "@/lib/euro-history";
+import { EuroHistoryHero } from "@/components/football/EuroHistoryHero";
+import { EuroTitleRace } from "@/components/football/EuroTitleRace";
+import { EuroChampionsTimelineDeluxe } from "@/components/football/EuroChampionsTimelineDeluxe";
+import { EuroDecadeCards } from "@/components/football/EuroDecadeCards";
+import { EuroOnThisDayHistory } from "@/components/football/EuroOnThisDayHistory";
+import { EuroRecordBook } from "@/components/football/EuroRecordBook";
+import { EuroHostsMap } from "@/components/football/EuroHostsMap";
+import { EuroHistoryFilters, useEuroHistoryFilter } from "@/components/football/EuroHistoryFilters";
+import { EuroHistoryJumpBar } from "@/components/football/EuroHistoryJumpBar";
+import { LastEditionRecap } from "@/components/football/LastEditionRecap";
 import { Trophy } from "lucide-react";
 
 export const Route = createFileRoute("/football/$comp/history")({
@@ -15,6 +26,36 @@ export const Route = createFileRoute("/football/$comp/history")({
   head: ({ params, loaderData }) => {
     const comp = loaderData?.comp ?? getCompetition(params.comp);
     if (!comp) return { meta: [{ title: "History" }, { name: "robots", content: "noindex" }] };
+    if (comp.slug === "euro") {
+      const s = euroStats();
+      const title = `UEFA Euro History — ${s.tournaments} tournaments, ${s.champions} champions (${s.span})`;
+      const description = `Every UEFA European Championship since 1960 — Spain's record 4 titles, every final, top scorer and host. Euro 2028 heads to UK & Ireland next.`;
+      const url = `https://allsportslive.lovable.app/football/euro/history`;
+      const itemList = {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        itemListElement: championsTimeline("euro").map((c, i) => ({
+          "@type": "ListItem",
+          position: i + 1,
+          name: `UEFA Euro ${c.year} — ${c.winner}`,
+          url: `${url}/${c.year}`,
+        })),
+      };
+      return {
+        meta: [
+          { title },
+          { name: "description", content: description },
+          { property: "og:title", content: title },
+          { property: "og:description", content: description },
+          { property: "og:url", content: url },
+          { property: "og:type", content: "website" },
+        ],
+        links: [{ rel: "canonical", href: url }],
+        scripts: [
+          { type: "application/ld+json", children: JSON.stringify(itemList) },
+        ],
+      };
+    }
     return buildCompetitionHead({
       comp,
       section: "History",
@@ -22,11 +63,59 @@ export const Route = createFileRoute("/football/$comp/history")({
       descriptionOverride: `Every ${comp.name} edition since ${comp.years[0]} — winners, hosts, top scorers and full brackets.`,
     });
   },
-  component: HistoryPage,
+  component: HistoryRoute,
   notFoundComponent: () => <div className="p-10 text-center">Competition not found.</div>,
 });
 
-function HistoryPage() {
+function HistoryRoute() {
+  const { comp: raw } = Route.useLoaderData();
+  const comp = requireCompetition(raw.slug);
+  if (comp.slug === "euro") return <EuroHistoryPage />;
+  return <GenericHistoryPage />;
+}
+
+function EuroHistoryPage() {
+  const { comp: raw } = Route.useLoaderData();
+  const comp = requireCompetition(raw.slug);
+  const [filter, setFilter] = useEuroHistoryFilter();
+
+  return (
+    <CompetitionPageShell comp={comp}>
+      <div className="sm:hidden mb-4">
+        <LastEditionRecap comp={comp} collapsible />
+      </div>
+
+      <EuroHistoryHero />
+      <EuroHistoryFilters value={filter} onChange={setFilter} />
+
+      <EuroTitleRace />
+      <EuroChampionsTimelineDeluxe />
+      <EuroOnThisDayHistory />
+      <EuroRecordBook />
+      <EuroHostsMap />
+
+      <div className="mt-10">
+        <div className="mb-3 flex items-baseline justify-between">
+          <h2 className="text-sm sm:text-base font-bold uppercase tracking-widest text-muted-foreground">
+            By decade
+          </h2>
+          <Link
+            to="/football/$comp"
+            params={{ comp: "euro" }}
+            className="text-[11px] text-muted-foreground hover:text-foreground"
+          >
+            ← Back to overview
+          </Link>
+        </div>
+        <EuroDecadeCards filter={filter} />
+      </div>
+
+      <EuroHistoryJumpBar />
+    </CompetitionPageShell>
+  );
+}
+
+function GenericHistoryPage() {
   const { comp: raw } = Route.useLoaderData();
   const comp = requireCompetition(raw.slug);
   const decades = editionsByDecade(comp.slug);
@@ -108,4 +197,3 @@ function HistoryPage() {
     </CompetitionPageShell>
   );
 }
-

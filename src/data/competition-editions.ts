@@ -57,6 +57,8 @@ export type EditionSummary = {
   winningCoach?: string;
   /** Captain of the winning side. */
   winningCaptain?: string;
+  /** ISO date (YYYY-MM-DD) of the final. Used for "on this day" surfaces. */
+  finalDate?: string;
 };
 
 export const COMPETITION_EDITIONS: Record<string, EditionSummary[]> = {
@@ -95,6 +97,7 @@ export const COMPETITION_EDITIONS: Record<string, EditionSummary[]> = {
         "Turkey's Merih Demiral scored both goals in a 2–1 win over Austria — first Euros brace by a Turkey defender.",
         "Cole Palmer's 73rd-minute equaliser in the final — before Oyarzabal won it late for Spain.",
       ],
+      finalDate: "2024-07-14",
     },
     {
       year: 2020,
@@ -118,6 +121,7 @@ export const COMPETITION_EDITIONS: Record<string, EditionSummary[]> = {
         "Patrik Schick's 45-metre lob against Scotland — goal of the tournament.",
         "Donnarumma saved Saka's penalty to seal Italy's second Euro.",
       ],
+      finalDate: "2021-07-11",
     },
     {
       year: 2016,
@@ -140,8 +144,9 @@ export const COMPETITION_EDITIONS: Record<string, EditionSummary[]> = {
         "Ronaldo went off injured in the final at 25' — coached from the touchline until Éder's 109th-minute winner.",
         "Iceland's fairytale run to the quarter-finals, knocking out England 2–1.",
       ],
+      finalDate: "2016-07-10",
     },
-    { year: 2012, winner: "Spain", runnerUp: "Italy", host: "Poland / Ukraine", finalScore: "4–0", topScorer: { name: "Fernando Torres", goals: 3 }, blurb: "Spain's tiki-taka side became the first to win consecutive Euros." },
+    { year: 2012, winner: "Spain", runnerUp: "Italy", host: "Poland / Ukraine", finalScore: "4–0", topScorer: { name: "Fernando Torres", goals: 3 }, blurb: "Spain's tiki-taka side became the first to win consecutive Euros.", finalDate: "2012-07-01" },
     {
       year: 2008,
       winner: "Spain",
@@ -158,19 +163,20 @@ export const COMPETITION_EDITIONS: Record<string, EditionSummary[]> = {
       bestPlayer: { name: "Xavi", team: "Spain", award: "Player of the Tournament" },
       winningCoach: "Luis Aragonés",
       winningCaptain: "Iker Casillas",
+      finalDate: "2008-06-29",
     },
-    { year: 2004, winner: "Greece", runnerUp: "Portugal", host: "Portugal", finalScore: "1–0", topScorer: { name: "Milan Baroš", goals: 5 }, blurb: "The greatest upset in Euros history — Otto Rehhagel's Greece stunned the hosts." },
-    { year: 2000, winner: "France", runnerUp: "Italy", host: "Belgium / Netherlands", finalScore: "2–1 (Golden Goal)", topScorer: { name: "Patrick Kluivert / Savo Milošević", goals: 5 }, blurb: "France added the Euro to their World Cup with Trezeguet's golden goal." },
-    { year: 1996, winner: "Germany", runnerUp: "Czech Republic", host: "England", finalScore: "2–1 (Golden Goal)", topScorer: { name: "Alan Shearer", goals: 5 }, blurb: "Oliver Bierhoff's golden goal delivered Germany's third Euro." },
-    { year: 1992, winner: "Denmark", runnerUp: "Germany", host: "Sweden", finalScore: "2–0", topScorer: { name: "Henrik Larsen / Karl-Heinz Riedle / Dennis Bergkamp / Tomas Brolin", goals: 3 }, blurb: "Called in as late replacements for Yugoslavia, Denmark won it all." },
-    { year: 1988, winner: "Netherlands", runnerUp: "USSR", host: "West Germany", finalScore: "2–0", topScorer: { name: "Marco van Basten", goals: 5 }, blurb: "Van Basten's volley remains one of the great goals in football history." },
-    { year: 1984, winner: "France", runnerUp: "Spain", host: "France", finalScore: "2–0", topScorer: { name: "Michel Platini", goals: 9 }, blurb: "Platini scored in every match — a record nine goals in five games." },
-    { year: 1980, winner: "West Germany", runnerUp: "Belgium", host: "Italy", finalScore: "2–1", topScorer: { name: "Klaus Allofs", goals: 3 } },
-    { year: 1976, winner: "Czechoslovakia", runnerUp: "West Germany", host: "Yugoslavia", finalScore: "2–2 (5–3 pens)", topScorer: { name: "Dieter Müller", goals: 4 }, blurb: "Panenka's chip introduced the world to a new penalty." },
-    { year: 1972, winner: "West Germany", runnerUp: "USSR", host: "Belgium", finalScore: "3–0", topScorer: { name: "Gerd Müller", goals: 4 } },
-    { year: 1968, winner: "Italy", runnerUp: "Yugoslavia", host: "Italy", finalScore: "2–0 (replay)" },
-    { year: 1964, winner: "Spain", runnerUp: "USSR", host: "Spain", finalScore: "2–1" },
-    { year: 1960, winner: "USSR", runnerUp: "Yugoslavia", host: "France", finalScore: "2–1 (a.e.t.)", blurb: "The inaugural European Nations' Cup." },
+    { year: 2004, winner: "Greece", runnerUp: "Portugal", host: "Portugal", finalScore: "1–0", topScorer: { name: "Milan Baroš", goals: 5 }, blurb: "The greatest upset in Euros history — Otto Rehhagel's Greece stunned the hosts.", finalDate: "2004-07-04" },
+    { year: 2000, winner: "France", runnerUp: "Italy", host: "Belgium / Netherlands", finalScore: "2–1 (Golden Goal)", topScorer: { name: "Patrick Kluivert / Savo Milošević", goals: 5 }, blurb: "France added the Euro to their World Cup with Trezeguet's golden goal.", finalDate: "2000-07-02" },
+    { year: 1996, winner: "Germany", runnerUp: "Czech Republic", host: "England", finalScore: "2–1 (Golden Goal)", topScorer: { name: "Alan Shearer", goals: 5 }, blurb: "Oliver Bierhoff's golden goal delivered Germany's third Euro.", finalDate: "1996-06-30" },
+    { year: 1992, winner: "Denmark", runnerUp: "Germany", host: "Sweden", finalScore: "2–0", topScorer: { name: "Henrik Larsen / Karl-Heinz Riedle / Dennis Bergkamp / Tomas Brolin", goals: 3 }, blurb: "Called in as late replacements for Yugoslavia, Denmark won it all.", finalDate: "1992-06-26" },
+    { year: 1988, winner: "Netherlands", runnerUp: "USSR", host: "West Germany", finalScore: "2–0", topScorer: { name: "Marco van Basten", goals: 5 }, blurb: "Van Basten's volley remains one of the great goals in football history.", finalDate: "1988-06-25" },
+    { year: 1984, winner: "France", runnerUp: "Spain", host: "France", finalScore: "2–0", topScorer: { name: "Michel Platini", goals: 9 }, blurb: "Platini scored in every match — a record nine goals in five games.", finalDate: "1984-06-27" },
+    { year: 1980, winner: "West Germany", runnerUp: "Belgium", host: "Italy", finalScore: "2–1", topScorer: { name: "Klaus Allofs", goals: 3 }, finalDate: "1980-06-22" },
+    { year: 1976, winner: "Czechoslovakia", runnerUp: "West Germany", host: "Yugoslavia", finalScore: "2–2 (5–3 pens)", topScorer: { name: "Dieter Müller", goals: 4 }, blurb: "Panenka's chip introduced the world to a new penalty.", finalDate: "1976-06-20" },
+    { year: 1972, winner: "West Germany", runnerUp: "USSR", host: "Belgium", finalScore: "3–0", topScorer: { name: "Gerd Müller", goals: 4 }, finalDate: "1972-06-18" },
+    { year: 1968, winner: "Italy", runnerUp: "Yugoslavia", host: "Italy", finalScore: "2–0 (replay)", finalDate: "1968-06-10" },
+    { year: 1964, winner: "Spain", runnerUp: "USSR", host: "Spain", finalScore: "2–1", finalDate: "1964-06-21" },
+    { year: 1960, winner: "USSR", runnerUp: "Yugoslavia", host: "France", finalScore: "2–1 (a.e.t.)", blurb: "The inaugural European Nations' Cup.", finalDate: "1960-07-10" },
   ],
   "copa-america": [
     {
