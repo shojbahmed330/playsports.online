@@ -41,7 +41,7 @@ import {
 import { CONFEDERATIONS } from "@/lib/confederations";
 import { WC_YEARS } from "@/lib/supabase";
 
-const ALL_YEARS = [...WC_YEARS, 2026].sort((a, b) => b - a);
+const ALL_YEARS = Array.from(new Set([...WC_YEARS, 2026])).sort((a, b) => b - a);
 
 const SORT_LABELS: Record<SortKey, string> = {
   goals: "Goals",
