@@ -81,6 +81,7 @@ import { Route as FootballTopScorersIndexRouteImport } from './routes/football.t
 import { Route as FootballPlayersIndexRouteImport } from './routes/football.players.index'
 import { Route as FootballCountriesIndexRouteImport } from './routes/football.countries.index'
 import { Route as FootballCampaignsIndexRouteImport } from './routes/football.campaigns.index'
+import { Route as FootballCompIndexRouteImport } from './routes/football.$comp.index'
 import { Route as CricketTournamentsIndexRouteImport } from './routes/cricket.tournaments.index'
 import { Route as CricketTeamsIndexRouteImport } from './routes/cricket.teams.index'
 import { Route as CricketSeriesIndexRouteImport } from './routes/cricket.series.index'
@@ -529,6 +530,11 @@ const FootballCampaignsIndexRoute = FootballCampaignsIndexRouteImport.update({
   id: '/campaigns/',
   path: '/campaigns/',
   getParentRoute: () => FootballRoute,
+} as any)
+const FootballCompIndexRoute = FootballCompIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => FootballCompRoute,
 } as any)
 const CricketTournamentsIndexRoute = CricketTournamentsIndexRouteImport.update({
   id: '/tournaments/',
@@ -1122,6 +1128,7 @@ export interface FileRoutesByFullPath {
   '/cricket/series/': typeof CricketSeriesIndexRoute
   '/cricket/teams/': typeof CricketTeamsIndexRoute
   '/cricket/tournaments/': typeof CricketTournamentsIndexRoute
+  '/football/$comp/': typeof FootballCompIndexRoute
   '/football/campaigns/': typeof FootballCampaignsIndexRoute
   '/football/countries/': typeof FootballCountriesIndexRoute
   '/football/players/': typeof FootballPlayersIndexRoute
@@ -1164,7 +1171,6 @@ export interface FileRoutesByTo {
   '/cricket/history': typeof CricketHistoryRoute
   '/cricket/rankings': typeof CricketRankingsRoute
   '/cricket/scores': typeof CricketScoresRoute
-  '/football/$comp': typeof FootballCompRouteWithChildren
   '/football/mine': typeof FootballMineRoute
   '/guides/$slug': typeof GuidesSlugRoute
   '/highlights/$slug': typeof HighlightsSlugRoute
@@ -1278,6 +1284,7 @@ export interface FileRoutesByTo {
   '/cricket/series': typeof CricketSeriesIndexRoute
   '/cricket/teams': typeof CricketTeamsIndexRoute
   '/cricket/tournaments': typeof CricketTournamentsIndexRoute
+  '/football/$comp': typeof FootballCompIndexRoute
   '/football/campaigns': typeof FootballCampaignsIndexRoute
   '/football/countries': typeof FootballCountriesIndexRoute
   '/football/players': typeof FootballPlayersIndexRoute
@@ -1441,6 +1448,7 @@ export interface FileRoutesById {
   '/cricket/series/': typeof CricketSeriesIndexRoute
   '/cricket/teams/': typeof CricketTeamsIndexRoute
   '/cricket/tournaments/': typeof CricketTournamentsIndexRoute
+  '/football/$comp/': typeof FootballCompIndexRoute
   '/football/campaigns/': typeof FootballCampaignsIndexRoute
   '/football/countries/': typeof FootballCountriesIndexRoute
   '/football/players/': typeof FootballPlayersIndexRoute
@@ -1605,6 +1613,7 @@ export interface FileRouteTypes {
     | '/cricket/series/'
     | '/cricket/teams/'
     | '/cricket/tournaments/'
+    | '/football/$comp/'
     | '/football/campaigns/'
     | '/football/countries/'
     | '/football/players/'
@@ -1647,7 +1656,6 @@ export interface FileRouteTypes {
     | '/cricket/history'
     | '/cricket/rankings'
     | '/cricket/scores'
-    | '/football/$comp'
     | '/football/mine'
     | '/guides/$slug'
     | '/highlights/$slug'
@@ -1761,6 +1769,7 @@ export interface FileRouteTypes {
     | '/cricket/series'
     | '/cricket/teams'
     | '/cricket/tournaments'
+    | '/football/$comp'
     | '/football/campaigns'
     | '/football/countries'
     | '/football/players'
@@ -1923,6 +1932,7 @@ export interface FileRouteTypes {
     | '/cricket/series/'
     | '/cricket/teams/'
     | '/cricket/tournaments/'
+    | '/football/$comp/'
     | '/football/campaigns/'
     | '/football/countries/'
     | '/football/players/'
@@ -2491,6 +2501,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/football/campaigns/'
       preLoaderRoute: typeof FootballCampaignsIndexRouteImport
       parentRoute: typeof FootballRoute
+    }
+    '/football/$comp/': {
+      id: '/football/$comp/'
+      path: '/'
+      fullPath: '/football/$comp/'
+      preLoaderRoute: typeof FootballCompIndexRouteImport
+      parentRoute: typeof FootballCompRoute
     }
     '/cricket/tournaments/': {
       id: '/cricket/tournaments/'
@@ -3241,6 +3258,7 @@ interface FootballCompRouteChildren {
   FootballCompScoresRoute: typeof FootballCompScoresRoute
   FootballCompStandingsRoute: typeof FootballCompStandingsRoute
   FootballCompTeamsRoute: typeof FootballCompTeamsRouteWithChildren
+  FootballCompIndexRoute: typeof FootballCompIndexRoute
   FootballCompH2hMatchupRoute: typeof FootballCompH2hMatchupRoute
   FootballCompMatchesMatchIdRoute: typeof FootballCompMatchesMatchIdRoute
   FootballCompSeasonsYearRoute: typeof FootballCompSeasonsYearRoute
@@ -3254,6 +3272,7 @@ const FootballCompRouteChildren: FootballCompRouteChildren = {
   FootballCompScoresRoute: FootballCompScoresRoute,
   FootballCompStandingsRoute: FootballCompStandingsRoute,
   FootballCompTeamsRoute: FootballCompTeamsRouteWithChildren,
+  FootballCompIndexRoute: FootballCompIndexRoute,
   FootballCompH2hMatchupRoute: FootballCompH2hMatchupRoute,
   FootballCompMatchesMatchIdRoute: FootballCompMatchesMatchIdRoute,
   FootballCompSeasonsYearRoute: FootballCompSeasonsYearRoute,
@@ -3569,13 +3588,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
