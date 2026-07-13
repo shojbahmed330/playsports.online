@@ -45,9 +45,12 @@ import {
 } from "@/lib/seo/sitemap-sources";
 
 const BASE_URL = "https://www.playsports.online";
-const SITEMAP_PARTS = ["core", "football", "cricket", "us-sports", "hockey-soccer", "legacy"] as const;
+const BASE_SITEMAP_PARTS = ["core", "cricket", "us-sports", "hockey-soccer", "legacy"] as const;
+const FOOTBALL_CHUNK_SIZE = 900;
 
-type SitemapPart = (typeof SITEMAP_PARTS)[number];
+type BaseSitemapPart = (typeof BASE_SITEMAP_PARTS)[number];
+type FootballChunkPart = `football-${number}`;
+type SitemapPart = BaseSitemapPart | "football" | FootballChunkPart;
 
 interface SitemapEntry {
   path: string;
@@ -211,8 +214,8 @@ function renderUrlset(entries: SitemapEntry[], today: string): string {
   ].join("\n");
 }
 
-function renderSitemapIndex(today: string): string {
-  const sitemaps = SITEMAP_PARTS.map((part) =>
+function renderSitemapIndex(today: string, parts: string[] = rootSitemapParts()): string {
+  const sitemaps = parts.map((part) =>
     [`  <sitemap>`, `    <loc>${xmlEscape(`${BASE_URL}/sitemap.xml?part=${part}`)}</loc>`, `    <lastmod>${today}</lastmod>`, `  </sitemap>`].join("\n"),
   );
 
@@ -247,7 +250,96 @@ function competitionSitemapEntries(): SitemapEntry[] {
   return out;
 }
 
+function footballSitemapEntries(): SitemapEntry[] {
+  return [
+    ...wc2026MatchUrls(),
+    ...listMatchSlugs().map((m) => {
+      // lastmod = page-modified date, NOT the match/event date.
+      // Historical dates (e.g. 1930) are flagged "Invalid date" by Google.
+      // Only use match_date when it's recent (last ~2 years); otherwise fall
+      // back to today via safeLastmod (undefined lastmod).
+      const iso = m.match_date?.slice(0, 10);
+      const isRecent = iso ? Date.now() - Date.parse(iso) < 2 * 365 * 24 * 3600 * 1000 : false;
+      return {
+        path: `/football/matches/${m.slug}`,
+        lastmod: isRecent ? iso : undefined,
+        changefreq: "yearly" as const,
+        priority: "0.6",
+      };
+    }),
+    ...listTeams().map((t) => ({
+      path: `/football/teams/${t.slug}`,
+      changefreq: "weekly" as const,
+      priority: "0.7",
+    })),
+    ...listPlayers().map((p) => ({
+      path: `/football/players/${p.slug}`,
+      changefreq: "monthly" as const,
+      priority: "0.6",
+    })),
+    ...WC_TOURNAMENTS.map((t) => ({
+      path: `/football/tournaments/${t.year}`,
+      changefreq: "monthly" as const,
+      priority: "0.75",
+    })),
+    ...listCountryYears().map((cy) => ({
+      path: `/football/countries/${cy.countrySlug}/world-cup-${cy.year}`,
+      changefreq: "yearly" as const,
+      priority: "0.65",
+    })),
+    ...listPlayerYears().map((py) => ({
+      path: `/football/players/${py.playerSlug}/world-cup-${py.year}`,
+      changefreq: "yearly" as const,
+      priority: "0.55",
+    })),
+    ...listHighlights().map((h) => ({
+      path: `/highlights/${h.slug}`,
+      changefreq: "monthly" as const,
+      priority: "0.6",
+    })),
+    ...programmaticTopScorerUrls(),
+    ...programmaticCampaignUrls(),
+    ...listLeaderboardUrls().map((u) => ({
+      path: `/tournaments/${u.tournament}/${u.leaderboard}`,
+      changefreq: "weekly" as const,
+      priority: "0.7",
+    })),
+    ...competitionSitemapEntries(),
+  ];
+}
+
+function footballChunkCount(): number {
+  return Math.max(1, Math.ceil(dedupe(footballSitemapEntries()).length / FOOTBALL_CHUNK_SIZE));
+}
+
+function footballChunkParts(): FootballChunkPart[] {
+  return Array.from({ length: footballChunkCount() }, (_, i) => `football-${i + 1}` as FootballChunkPart);
+}
+
+function rootSitemapParts(): string[] {
+  return ["core", ...footballChunkParts(), "cricket", "us-sports", "hockey-soccer", "legacy"];
+}
+
+function isFootballChunkPart(part: string): part is FootballChunkPart {
+  return /^football-[1-9]\d*$/.test(part);
+}
+
+function isValidSitemapPart(part: string): part is SitemapPart {
+  if (part === "football") return true;
+  if ((BASE_SITEMAP_PARTS as readonly string[]).includes(part)) return true;
+  if (!isFootballChunkPart(part)) return false;
+  const chunkNumber = Number(part.replace("football-", ""));
+  return chunkNumber >= 1 && chunkNumber <= footballChunkCount();
+}
+
 async function entriesForPart(part: SitemapPart): Promise<SitemapEntry[]> {
+  if (isFootballChunkPart(part)) {
+    const entries = dedupe(footballSitemapEntries());
+    const chunkNumber = Number(part.replace("football-", ""));
+    const start = (chunkNumber - 1) * FOOTBALL_CHUNK_SIZE;
+    return entries.slice(start, start + FOOTBALL_CHUNK_SIZE);
+  }
+
   switch (part) {
     case "core":
       return [
@@ -276,61 +368,7 @@ async function entriesForPart(part: SitemapPart): Promise<SitemapEntry[]> {
         })),
       ];
     case "football":
-      return [
-        ...wc2026MatchUrls(),
-        ...listMatchSlugs().map((m) => {
-          // lastmod = page-modified date, NOT the match/event date.
-          // Historical dates (e.g. 1930) are flagged "Invalid date" by Google.
-          // Only use match_date when it's recent (last ~2 years); otherwise fall
-          // back to today via safeLastmod (undefined lastmod).
-          const iso = m.match_date?.slice(0, 10);
-          const isRecent = iso ? Date.now() - Date.parse(iso) < 2 * 365 * 24 * 3600 * 1000 : false;
-          return {
-            path: `/football/matches/${m.slug}`,
-            lastmod: isRecent ? iso : undefined,
-            changefreq: "yearly" as const,
-            priority: "0.6",
-          };
-        }),
-        ...listTeams().map((t) => ({
-          path: `/football/teams/${t.slug}`,
-          changefreq: "weekly" as const,
-          priority: "0.7",
-        })),
-        ...listPlayers().map((p) => ({
-          path: `/football/players/${p.slug}`,
-          changefreq: "monthly" as const,
-          priority: "0.6",
-        })),
-        ...WC_TOURNAMENTS.map((t) => ({
-          path: `/football/tournaments/${t.year}`,
-          changefreq: "monthly" as const,
-          priority: "0.75",
-        })),
-        ...listCountryYears().map((cy) => ({
-          path: `/football/countries/${cy.countrySlug}/world-cup-${cy.year}`,
-          changefreq: "yearly" as const,
-          priority: "0.65",
-        })),
-        ...listPlayerYears().map((py) => ({
-          path: `/football/players/${py.playerSlug}/world-cup-${py.year}`,
-          changefreq: "yearly" as const,
-          priority: "0.55",
-        })),
-        ...listHighlights().map((h) => ({
-          path: `/highlights/${h.slug}`,
-          changefreq: "monthly" as const,
-          priority: "0.6",
-        })),
-        ...programmaticTopScorerUrls(),
-        ...programmaticCampaignUrls(),
-        ...listLeaderboardUrls().map((u) => ({
-          path: `/tournaments/${u.tournament}/${u.leaderboard}`,
-          changefreq: "weekly" as const,
-          priority: "0.7",
-        })),
-        ...competitionSitemapEntries(),
-      ];
+      return footballSitemapEntries();
     case "cricket": {
       const [iplTeams, cricketSeries] = await Promise.all([iplTeamUrls(), cricketSeriesUrls()]);
       return [
@@ -429,8 +467,19 @@ export const Route = createFileRoute("/sitemap.xml")({
           });
         }
 
-        if (!SITEMAP_PARTS.includes(part as SitemapPart)) {
+        if (!isValidSitemapPart(part)) {
           return new Response("Sitemap part not found", { status: 404 });
+        }
+
+        if (part === "football") {
+          return new Response(renderSitemapIndex(today, footballChunkParts()), {
+            headers: {
+              "Content-Type": "application/xml; charset=utf-8",
+              "Cache-Control": "public, max-age=3600, s-maxage=3600, stale-while-revalidate=21600",
+              "X-Sitemap-Type": "index",
+              "X-Sitemap-Part": part,
+            },
+          });
         }
 
         const entries = await entriesForPart(part as SitemapPart);
