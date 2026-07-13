@@ -9,23 +9,37 @@ import { GameGridSkeleton } from "@/components/sports/Skeletons";
 import { CricketMatchCard } from "@/components/cricket/CricketMatchCard";
 import { getCricketScoreboard, type CricketMatch } from "@/lib/cricket.functions";
 import { CRICKET_LEAGUE_BY_ID } from "@/lib/cricket-leagues";
-import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
+import { breadcrumbList, ldScript, sportsEvent, sportsOrganization } from "@/lib/seo/jsonld";
 
 export const Route = createFileRoute("/cricket/series/$id")({
   head: ({ params }) => {
     const l = CRICKET_LEAGUE_BY_ID[params.id];
     const name = l?.longName ?? "Cricket Series";
     const url = `https://www.playsports.online/cricket/series/${params.id}`;
+    const title = `${name} — Fixtures, Results & Squads`;
+    const desc = `Complete ${name} fixtures, live scores, standings and recent results on PlaySports.`;
     return {
       meta: [
-        { title: `${name} — Fixtures, Results & Squads` },
-        { name: "description", content: `Complete ${name} fixtures, live scores and recent results.` },
+        { title },
+        { name: "description", content: desc },
         { property: "og:title", content: `${name} — Cricket Hub` },
-        { property: "og:description", content: `Live scores and full schedule for ${name}.` },
+        { property: "og:description", content: desc },
         { property: "og:url", content: url },
+        { property: "og:type", content: "website" },
+        { property: "og:site_name", content: "PlaySports" },
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: `${name} — Cricket Hub` },
+        { name: "twitter:description", content: desc },
       ],
       links: [{ rel: "canonical", href: url }],
       scripts: [
+        ldScript(sportsEvent({
+          name,
+          path: `/cricket/series/${params.id}`,
+          sport: "Cricket",
+          description: desc,
+        })),
+        ldScript(sportsOrganization({ name, path: `/cricket/series/${params.id}`, sport: "Cricket" })),
         ldScript(breadcrumbList([
           { name: "Home", path: "/" },
           { name: "Cricket", path: "/cricket" },

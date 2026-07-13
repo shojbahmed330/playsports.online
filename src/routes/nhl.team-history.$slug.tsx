@@ -1,7 +1,7 @@
 // Phase 3 — NHL per-team Stanley Cup history programmatic SEO page.
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { canonical } from "@/lib/seo/canonical";
-import { breadcrumbList, faqPage, ldScript } from "@/lib/seo/jsonld";
+import { breadcrumbList, faqPage, ldScript, sportsTeam } from "@/lib/seo/jsonld";
 import { getNhlTeamHistory, type ChampionRow } from "@/lib/seo/multisport-programmatic";
 import { getNhlTeamBySlug } from "@/lib/seo/nhl-entities";
 import { RelatedLinks } from "@/components/seo/RelatedLinks";
@@ -36,6 +36,7 @@ export const Route = createFileRoute("/nhl/team-history/$slug")({
       ],
       links: [{ rel: "canonical", href: url }],
       scripts: [
+        ldScript(sportsTeam({ name: h.name, path: `/nhl/team-history/${params.slug}`, sport: "Ice Hockey", league: "National Hockey League" })),
         ldScript(breadcrumbList([
           { name: "Home", path: "/" }, { name: "NHL", path: "/nhl" },
           { name: "Champions", path: "/nhl/champions" },

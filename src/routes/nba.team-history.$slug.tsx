@@ -1,7 +1,7 @@
 // Phase 3 — NBA per-team championship history programmatic SEO page.
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { canonical } from "@/lib/seo/canonical";
-import { breadcrumbList, faqPage, ldScript } from "@/lib/seo/jsonld";
+import { breadcrumbList, faqPage, ldScript, sportsTeam } from "@/lib/seo/jsonld";
 import { getNbaTeamHistory, type ChampionRow } from "@/lib/seo/multisport-programmatic";
 import { getNbaTeamBySlug } from "@/lib/seo/nba-entities";
 import { RelatedLinks } from "@/components/seo/RelatedLinks";
@@ -36,6 +36,7 @@ export const Route = createFileRoute("/nba/team-history/$slug")({
       ],
       links: [{ rel: "canonical", href: url }],
       scripts: [
+        ldScript(sportsTeam({ name: h.name, path: `/nba/team-history/${params.slug}`, sport: "Basketball", league: "National Basketball Association" })),
         ldScript(breadcrumbList([
           { name: "Home", path: "/" }, { name: "NBA", path: "/nba" },
           { name: "Champions", path: "/nba/champions" },
