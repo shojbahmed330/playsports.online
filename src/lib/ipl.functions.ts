@@ -35,15 +35,17 @@ type CacheEntry = { at: number; ttl: number; data: unknown };
 const cache = new Map<string, CacheEntry>();
 
 async function apiGet(path: string, ttlMs: number): Promise<unknown> {
-  const hit = cache.get(path);
-  if (hit && Date.now() - hit.at < hit.ttl) return hit.data;
-  const res = await fetch(`${BASE}${path}`, {
-    headers: { "user-agent": "lovable-sports-archive/1.0" },
-  });
-  if (!res.ok) throw new Error(`ESPN cricket ${res.status} for ${path}`);
-  const json = await res.json();
-  cache.set(path, { at: Date.now(), ttl: ttlMs, data: json });
-  return json;
+  const { cachedFetch } = await import("@/lib/sports-cache");
+  return cachedFetch<unknown>(
+    { key: `espn:ipl:${path}`, sport: "ipl", category: "raw", ttlMs },
+    async () => {
+      const res = await fetch(`${BASE}${path}`, {
+        headers: { "user-agent": "lovable-sports-archive/1.0" },
+      });
+      if (!res.ok) throw new Error(`ESPN cricket ${res.status} for ${path}`);
+      return res.json();
+    },
+  );
 }
 
 // ─── DTOs ─────────────────────────────────────────────
