@@ -12,6 +12,8 @@ import { ScoresEmptyState } from "@/components/football/ScoresEmptyState";
 import { ScoresJumpBar } from "@/components/football/ScoresJumpBar";
 import { EuroQualifyingBanner } from "@/components/football/EuroQualifyingBanner";
 import { EuroPastFinalsStrip } from "@/components/football/EuroPastFinalsStrip";
+import { CopaScoresHero } from "@/components/football/CopaScoresHero";
+import { CopaOnThisDayFinal } from "@/components/football/CopaOnThisDayFinal";
 import { CompetitionMatchList } from "@/components/football/CompetitionMatchList";
 import { LastEditionRecap } from "@/components/football/LastEditionRecap";
 import { buildCompetitionHead } from "@/lib/competition-head";
