@@ -68,7 +68,7 @@ export const Route = createFileRoute("/players")({
             name: "Who is the top scorer of the 2026 FIFA World Cup?",
             acceptedAnswer: {
               "@type": "Answer",
-              text: "Kylian Mbappé (France) and Lionel Messi (Argentina) are tied at the top of the 2026 FIFA World Cup Golden Boot race with 8 goals each, with Mbappé leading on assists (3 vs 2). Jude Bellingham and Harry Kane (both England) follow with 6 goals apiece.",
+              text: "The 2026 FIFA World Cup top scorer table is generated from live ESPN match events and updates as official scoring events are available.",
             },
           },
           {
@@ -76,15 +76,7 @@ export const Route = createFileRoute("/players")({
             name: "How many goals have been scored at the 2026 FIFA World Cup so far?",
             acceptedAnswer: {
               "@type": "Answer",
-              text: "158 goals have been scored across 88 matches at the 2026 FIFA World Cup through the quarterfinals (updated July 12, 2026). This is the first 48-team World Cup, co-hosted by Canada, Mexico and the United States.",
-            },
-          },
-          {
-            "@type": "Question",
-            name: "Who scored the first hat-trick at the 2026 World Cup?",
-            acceptedAnswer: {
-              "@type": "Answer",
-              text: "Lionel Messi scored the first hat-trick of the 2026 World Cup in Argentina's 4–0 opening win over Algeria. Ousmane Dembélé (France vs Norway) and Jonathan David (Canada 6–0 Qatar) followed with the tournament's second and third hat-tricks.",
+              text: "2026 goal totals are calculated from official ESPN match scoring events. Shoot-out goals and own-goal scorer credits are not counted in player scoring totals.",
             },
           },
           {
@@ -92,7 +84,7 @@ export const Route = createFileRoute("/players")({
             name: "How many World Cup goals does Cristiano Ronaldo have (2006–2026)?",
             acceptedAnswer: {
               "@type": "Answer",
-              text: "Cristiano Ronaldo has scored 11 career World Cup goals across six tournaments: 1 (2006), 1 (2010), 1 (2014), 4 (2018), 1 (2022) and 3 in the 2026 edition — making him the top-scoring European in men's World Cup history.",
+              text: "Career totals on this page combine the verified historical World Cup dataset with live 2026 ESPN scoring events when available.",
             },
           },
           {
@@ -100,7 +92,7 @@ export const Route = createFileRoute("/players")({
             name: "Who is the all-time top scorer at the FIFA World Cup?",
             acceptedAnswer: {
               "@type": "Answer",
-              text: "Lionel Messi is the all-time leading goalscorer in FIFA men's World Cup history with 21 goals, surpassing Miroslav Klose's record of 16 during the 2026 tournament. Kylian Mbappé is second among active players with 20.",
+              text: "All-time scorer rankings are computed from verified historical data plus official live 2026 match events, so the leaderboard reflects the current source data.",
             },
           },
         ],
