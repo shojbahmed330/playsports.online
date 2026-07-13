@@ -13,6 +13,7 @@ import { getMultiCricketToday, type CricketMatch } from "@/lib/cricket.functions
 import { CRICKET_LEAGUES, FORMAT_META } from "@/lib/cricket-leagues";
 import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
 
+import { withHubLinks } from "@/components/seo/withHubLinks";
 type Tab = "live" | "today" | "upcoming" | "results";
 
 const searchSchema = z.object({
@@ -41,7 +42,7 @@ export const Route = createFileRoute("/cricket/scores")({
     links: [{ rel: "canonical", href: "https://www.playsports.online/cricket/scores" }],
     scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "Cricket", path: "/cricket" }, { name: "Scores", path: "/cricket/scores" }]))],
   }),
-  component: CricketScoresPage,
+  component: withHubLinks(CricketScoresPage, { sport: "cricket", currentPath: "/cricket/scores" }),
 });
 
 function isoDate(d: Date) {

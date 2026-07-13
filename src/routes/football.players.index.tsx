@@ -3,6 +3,7 @@ import { listPlayers } from "@/lib/seo/programmatic";
 import { canonical } from "@/lib/seo/canonical";
 import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
 
+import { withHubLinks } from "@/components/seo/withHubLinks";
 export const Route = createFileRoute("/football/players/")({
   loader: () => {
     const players = listPlayers()
@@ -35,7 +36,7 @@ export const Route = createFileRoute("/football/players/")({
       ],
     };
   },
-  component: FootballPlayersIndex,
+  component: withHubLinks(FootballPlayersIndex, { sport: "football", currentPath: "/football/players" }),
 });
 
 function FootballPlayersIndex() {

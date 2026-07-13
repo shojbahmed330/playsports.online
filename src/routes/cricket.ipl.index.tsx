@@ -16,6 +16,7 @@ import { formatLocalTime, relativeDay } from "@/lib/time";
 import { breadcrumbList, collectionPage, ldScript } from "@/lib/seo/jsonld";
 import { AffiliateStrip } from "@/components/affiliates/AffiliateStrip";
 
+import { withHubLinks } from "@/components/seo/withHubLinks";
 const overviewQO = queryOptions({
   queryKey: ["ipl", "overview"],
   queryFn: () => getIplOverview(),
@@ -66,7 +67,7 @@ export const Route = createFileRoute("/cricket/ipl/")({
       context.queryClient.ensureQueryData(orangeQO),
       context.queryClient.ensureQueryData(purpleQO),
     ]),
-  component: IplHome,
+  component: withHubLinks(IplHome, { sport: "ipl", currentPath: "/cricket/ipl" }),
 });
 
 function IplHome() {

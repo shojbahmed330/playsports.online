@@ -6,6 +6,7 @@ import { breadcrumbList, faqPage, itemList, ldScript, sportsEvent } from "@/lib/
 import { tournamentFaqs } from "@/lib/seo/faq-templates";
 import { flagOf } from "@/lib/flags";
 
+import { withYearNav } from "@/components/seo/withYearNav";
 export const Route = createFileRoute("/football/tournaments/$year")({
   loader: ({ params }) => {
     const year = Number(params.year);
@@ -48,7 +49,7 @@ export const Route = createFileRoute("/football/tournaments/$year")({
       ],
     };
   },
-  component: TournamentPage,
+  component: withYearNav(TournamentPage, { basePath: "/football/tournaments", minYear: 1930, maxYear: 2026, label: "Tournament" }),
   notFoundComponent: () => <div className="p-6">Tournament not found.</div>,
 });
 

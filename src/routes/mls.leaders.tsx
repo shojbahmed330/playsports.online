@@ -6,6 +6,7 @@ import { getMlsLeaders } from "@/lib/mls.functions";
 import { MlsLeaderBoard } from "@/components/mls/MlsLeaderBoard";
 import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
 
+import { withHubLinks } from "@/components/seo/withHubLinks";
 export const Route = createFileRoute("/mls/leaders")({
   head: () => ({
     meta: [
@@ -32,7 +33,7 @@ export const Route = createFileRoute("/mls/leaders")({
     }).catch(() => null);
     return null;
   },
-  component: MlsLeaders,
+  component: withHubLinks(MlsLeaders, { sport: "mls", currentPath: "/mls/leaders" }),
 });
 
 type Group = "offensive" | "defensive" | "general";

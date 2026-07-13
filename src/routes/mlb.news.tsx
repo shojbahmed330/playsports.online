@@ -6,6 +6,7 @@ import { MlbNewsHub } from "@/components/mlb/MlbNewsHub";
 import { GameGridSkeleton } from "@/components/sports/Skeletons";
 import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
 
+import { withHubLinks } from "@/components/seo/withHubLinks";
 export const Route = createFileRoute("/mlb/news")({
   head: () => ({
     meta: [
@@ -24,7 +25,7 @@ export const Route = createFileRoute("/mlb/news")({
     links: [{ rel: "canonical", href: "https://www.playsports.online/mlb/news" }],
     scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "MLB", path: "/mlb" }, { name: "News", path: "/mlb/news" }]))],
   }),
-  component: NewsPage,
+  component: withHubLinks(NewsPage, { sport: "mlb", currentPath: "/mlb/news" }),
 });
 
 function NewsPage() {

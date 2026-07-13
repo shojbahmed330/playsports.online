@@ -6,6 +6,7 @@ import { getNhlLeaders } from "@/lib/nhl.functions";
 import { NhlLeaderBoard } from "@/components/nhl/NhlLeaderBoard";
 import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
 
+import { withHubLinks } from "@/components/seo/withHubLinks";
 export const Route = createFileRoute("/nhl/leaders")({
   head: () => ({
     meta: [
@@ -32,7 +33,7 @@ export const Route = createFileRoute("/nhl/leaders")({
     }).catch(() => null);
     return null;
   },
-  component: NhlLeaders,
+  component: withHubLinks(NhlLeaders, { sport: "nhl", currentPath: "/nhl/leaders" }),
 });
 
 type Group = "offensive" | "defensive" | "general";

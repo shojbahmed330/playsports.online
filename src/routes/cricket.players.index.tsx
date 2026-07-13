@@ -8,6 +8,7 @@ import rankings from "@/data/cricket/rankings.json";
 import { breadcrumbList, collectionPage, ldScript } from "@/lib/seo/jsonld";
 
 
+import { withHubLinks } from "@/components/seo/withHubLinks";
 export const Route = createFileRoute("/cricket/players/")({
   head: () => ({
     meta: [
@@ -29,7 +30,7 @@ export const Route = createFileRoute("/cricket/players/")({
       ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "Cricket", path: "/cricket" }, { name: "Players", path: "/cricket/players" }])),
     ],
   }),
-  component: PlayersPage,
+  component: withHubLinks(PlayersPage, { sport: "cricket", currentPath: "/cricket/players" }),
 });
 
 type Row = { rank: number; player: string; team: string; flag: string; rating: number; trend: number; role: string; format: string };

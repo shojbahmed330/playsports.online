@@ -5,6 +5,7 @@ import { getNbaTeams } from "@/lib/nba.functions";
 import { NbaTeamCard } from "@/components/nba/NbaTeamCard";
 import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
 
+import { withHubLinks } from "@/components/seo/withHubLinks";
 export const Route = createFileRoute("/nba/teams")({
   head: () => ({
     meta: [
@@ -31,7 +32,7 @@ export const Route = createFileRoute("/nba/teams")({
     }).catch(() => null);
     return null;
   },
-  component: NbaTeams,
+  component: withHubLinks(NbaTeams, { sport: "nba", currentPath: "/nba/teams" }),
 });
 
 function NbaTeams() {

@@ -11,6 +11,7 @@ import { AdSlot } from "@/components/ads/AdSlot";
 import { todayYmd } from "@/components/sports/DateScrubber";
 import { breadcrumbList, collectionPage, sportsOrganization, faqPage, ldScript } from "@/lib/seo/jsonld";
 
+import { withHubLinks } from "@/components/seo/withHubLinks";
 export const Route = createFileRoute("/mlb/")({
   head: () => ({
     meta: [
@@ -60,7 +61,7 @@ export const Route = createFileRoute("/mlb/")({
     ]);
     return null;
   },
-  component: MlbToday,
+  component: withHubLinks(MlbToday, { sport: "mlb", currentPath: "/mlb" }),
 });
 
 

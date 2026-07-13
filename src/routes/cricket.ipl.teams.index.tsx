@@ -6,6 +6,7 @@ import { getIplTeams } from "@/lib/ipl.functions";
 import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
 
 
+import { withHubLinks } from "@/components/seo/withHubLinks";
 const teamsQO = queryOptions({
   queryKey: ["ipl", "teams"],
   queryFn: () => getIplTeams(),
@@ -31,7 +32,7 @@ export const Route = createFileRoute("/cricket/ipl/teams/")({
     scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "Cricket", path: "/cricket" }, { name: "IPL", path: "/cricket/ipl" }, { name: "Teams", path: "/cricket/ipl/teams" }]))],
   }),
   loader: ({ context }) => context.queryClient.ensureQueryData(teamsQO),
-  component: TeamsPage,
+  component: withHubLinks(TeamsPage, { sport: "ipl", currentPath: "/cricket/ipl/teams" }),
 });
 
 function TeamsPage() {

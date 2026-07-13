@@ -5,6 +5,7 @@ import { getMlsStandingsPro } from "@/lib/mls.functions";
 import { MlsStandingsPro } from "@/components/mls/MlsStandingsPro";
 import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
 
+import { withHubLinks } from "@/components/seo/withHubLinks";
 export const Route = createFileRoute("/mls/standings")({
   head: () => ({
     meta: [
@@ -31,7 +32,7 @@ export const Route = createFileRoute("/mls/standings")({
     }).catch(() => null);
     return null;
   },
-  component: MlsStandings,
+  component: withHubLinks(MlsStandings, { sport: "mls", currentPath: "/mls/standings" }),
 });
 
 function MlsStandings() {

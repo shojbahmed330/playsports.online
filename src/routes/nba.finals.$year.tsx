@@ -5,6 +5,7 @@ import { breadcrumbList, faqPage, ldScript, sportsEvent } from "@/lib/seo/jsonld
 import { canonical } from "@/lib/seo/canonical";
 import { slugify } from "@/lib/seo/programmatic";
 
+import { withYearNav } from "@/components/seo/withYearNav";
 export const Route = createFileRoute("/nba/finals/$year")({
   loader: ({ params }) => {
     const year = Number(params.year);
@@ -61,7 +62,7 @@ export const Route = createFileRoute("/nba/finals/$year")({
         : [],
     };
   },
-  component: FinalsPage,
+  component: withYearNav(FinalsPage, { basePath: "/nba/finals", minYear: 1947, maxYear: 2025, label: "NBA Finals" }),
   notFoundComponent: () => (
     <div className="rounded-2xl border border-dashed border-border p-10 text-center text-sm text-muted-foreground">
       Edition not found. <Link to="/nba/history" className="underline">Browse NBA history</Link>.

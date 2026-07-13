@@ -10,6 +10,7 @@ import { getCricketTeamsForLeague, type CricketTeamSummary } from "@/lib/cricket
 import { CRICKET_LEAGUES } from "@/lib/cricket-leagues";
 import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
 
+import { withHubLinks } from "@/components/seo/withHubLinks";
 export const Route = createFileRoute("/cricket/teams/")({
   head: () => ({
     meta: [
@@ -28,7 +29,7 @@ export const Route = createFileRoute("/cricket/teams/")({
     links: [{ rel: "canonical", href: "https://www.playsports.online/cricket/teams" }],
     scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "Cricket", path: "/cricket" }, { name: "Teams", path: "/cricket/teams" }]))],
   }),
-  component: TeamsIndex,
+  component: withHubLinks(TeamsIndex, { sport: "cricket", currentPath: "/cricket/teams" }),
 });
 
 function TeamsIndex() {

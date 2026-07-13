@@ -9,6 +9,7 @@ import { DateScrubber, todayYmd } from "@/components/sports/DateScrubber";
 import { GameGridSkeleton } from "@/components/sports/Skeletons";
 import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
 
+import { withHubLinks } from "@/components/seo/withHubLinks";
 type Filter = "all" | "live" | "upcoming" | "final";
 
 export const Route = createFileRoute("/mlb/scores")({
@@ -29,7 +30,7 @@ export const Route = createFileRoute("/mlb/scores")({
     links: [{ rel: "canonical", href: "https://www.playsports.online/mlb/scores" }],
     scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "MLB", path: "/mlb" }, { name: "Scores", path: "/mlb/scores" }]))],
   }),
-  component: ScoresPage,
+  component: withHubLinks(ScoresPage, { sport: "mlb", currentPath: "/mlb/scores" }),
 });
 
 function ScoresPage() {

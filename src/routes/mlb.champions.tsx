@@ -2,6 +2,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { canonical } from "@/lib/seo/canonical";
 import { breadcrumbList, faqPage, ldScript, itemList } from "@/lib/seo/jsonld";
+import { withHubLinks } from "@/components/seo/withHubLinks";
 import {
   aggregateMlbChampions,
   listMlbChampions,
@@ -45,7 +46,7 @@ export const Route = createFileRoute("/mlb/champions")({
       ],
     };
   },
-  component: MlbChampionsPage,
+  component: withHubLinks(MlbChampionsPage, { sport: "mlb", currentPath: "/mlb/champions" }),
 });
 
 function MlbChampionsPage() {
