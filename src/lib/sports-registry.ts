@@ -14,6 +14,8 @@
  * naturally point at whatever ESPN calls "current".
  */
 
+import { FOOTBALL_WC, liveWcYear } from "@/lib/tournament-config";
+
 export type SportRegistryEntry = {
   id: string;                // "football" | "cricket" | "mlb" …
   label: string;
@@ -29,7 +31,6 @@ const espn = "https://site.api.espn.com/apis/site/v2/sports";
 const espnCore = "https://site.web.api.espn.com/apis/common/v3/sports";
 
 function worldCupRange() {
-  const { FOOTBALL_WC, liveWcYear } = require("@/lib/tournament-config") as typeof import("@/lib/tournament-config");
   const season = liveWcYear();
   const window = FOOTBALL_WC.seasonWindows[season];
   return {
