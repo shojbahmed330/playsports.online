@@ -148,6 +148,50 @@ function ScoresPage() {
 
           <ScoresJumpBar value={day} onChange={setDay} />
         </>
+      ) : isCopa ? (
+        <>
+          <CopaScoresHero
+            comp={comp}
+            liveCount={live.length}
+            todayCount={today.length}
+            nextLabel={nextLabel}
+            filter={filter}
+            onFilterChange={setFilter}
+            counts={counts}
+          />
+          <ScoresLiveTicker games={live} compSlug={comp.slug} />
+          <DateScrubber value={day} onChange={setDay} />
+          <CopaOnThisDayFinal value={day} />
+
+          <div className="mt-4">
+            {q.isLoading ? (
+              <SkeletonList />
+            ) : q.data?.error ? (
+              <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-6 py-10 text-center text-sm text-muted-foreground">
+                Live scores are temporarily unavailable. Please refresh in a moment.
+              </div>
+            ) : filtered.length === 0 ? (
+              <div className="space-y-4">
+                {isToday && (
+                  <div className="rounded-2xl border border-amber-400/20 bg-amber-500/[0.05] px-4 py-3 text-[13px] text-amber-100">
+                    Next Copa América · <span className="font-bold">2028</span> — off-season below, browse the {" "}
+                    <span className="font-bold">2024 recap</span>.
+                  </div>
+                )}
+                <ScoresEmptyState
+                  comp={comp}
+                  value={day}
+                  onJumpTo={setDay}
+                  showRecap={isToday}
+                />
+              </div>
+            ) : (
+              <ScoresGroupedList games={filtered} compSlug={comp.slug} />
+            )}
+          </div>
+
+          <ScoresJumpBar value={day} onChange={setDay} />
+        </>
       ) : (
         // Non-Euro competitions: keep existing simple layout.
         <>
