@@ -1,15 +1,33 @@
 // Phase 2.2 — Internal-link strip for high-volume long-tail keyword pages.
 // Renders on homepage and sport hubs to spread PageRank + give crawlers
-// entry points to the new SSR landing pages.
+// entry points to the SSR landing pages. When `sport` is passed, the
+// strip is filtered to that sport (+ multi-sport queries) so hub context
+// stays tight.
 
 import { Link } from "@tanstack/react-router";
-import { popularTargets } from "@/lib/seo/keyword-map";
+import {
+  popularTargets,
+  popularTargetsBySport,
+  type KeywordSport,
+} from "@/lib/seo/keyword-map";
 
-export function PopularSearches({ limit = 8, className = "" }: { limit?: number; className?: string }) {
-  const items = popularTargets(limit);
+export function PopularSearches({
+  limit = 8,
+  sport,
+  className = "",
+}: {
+  limit?: number;
+  sport?: KeywordSport;
+  className?: string;
+}) {
+  const items = sport ? popularTargetsBySport(sport, limit) : popularTargets(limit);
+  if (!items.length) return null;
   return (
     <section aria-labelledby="popular-searches-heading" className={className}>
-      <h2 id="popular-searches-heading" className="text-sm font-semibold uppercase tracking-wide text-muted-foreground mb-3">
+      <h2
+        id="popular-searches-heading"
+        className="text-sm font-semibold uppercase tracking-wide text-muted-foreground mb-3"
+      >
         Popular searches
       </h2>
       <ul className="flex flex-wrap gap-2">
