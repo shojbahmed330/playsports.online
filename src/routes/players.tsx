@@ -7,10 +7,10 @@ import { Trophy, ShieldCheck, Share2, TrendingUp } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { flagOf } from "@/lib/flags";
 import { AdSlot } from "@/components/ads/AdSlot";
-import cardsData from "@/data/wc_cards.json";
 import fifaRankings from "@/data/fifa_rankings.json";
 
 import { useMergedGoals, type GoalRow } from "@/lib/use-merged-goals";
+import { useMergedCards, type CardRow } from "@/lib/use-merged-cards";
 import { breadcrumbList, collectionPage, ldScript } from "@/lib/seo/jsonld";
 
 import {
@@ -36,13 +36,6 @@ const CompareView = lazy(() =>
 const RecordsPanel = lazy(() =>
   import("@/components/players/RecordsPanel").then((m) => ({ default: m.RecordsPanel })),
 );
-
-type CardRow = {
-  pid: string; name: string; team: string; year: number;
-  type: "yellow" | "red"; pos: string;
-};
-
-const CARDS = cardsData as CardRow[];
 
 export const Route = createFileRoute("/players")({
   validateSearch: zodValidator(playersSearchSchema),
@@ -123,6 +116,7 @@ function PlayersPage() {
   const search = Route.useSearch() as PlayersSearch;
   const navigate = useNavigate({ from: "/players" });
   const { goals: GOALS, live2026Goals } = useMergedGoals();
+  const { cards: CARDS } = useMergedCards();
 
   const countries = useMemo(() => {
     const s = new Set<string>();
@@ -419,7 +413,7 @@ function PlayersPage() {
       </main>
 
       <footer className="border-t border-border mt-10 py-8 text-center text-xs text-muted-foreground">
-        Player data: jfjelstul/worldcup (1930–2022) · Live 2026 from Sofascore
+        Player data: jfjelstul/worldcup (1930–2022) · Live 2026 goals/cards from ESPN match events
       </footer>
 
       <PlayerProfileSheet />

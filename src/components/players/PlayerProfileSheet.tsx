@@ -16,15 +16,9 @@ import {
   playerKey,
   type PlayersSearch,
 } from "@/lib/players-filters";
-import cardsData from "@/data/wc_cards.json";
 import { useMergedGoals } from "@/lib/use-merged-goals";
+import { useMergedCards } from "@/lib/use-merged-cards";
 import { CareerSparkline } from "@/components/players/CareerSparkline";
-
-type CardRow = {
-  pid: string; name: string; team: string; year: number;
-  type: "yellow" | "red"; pos: string;
-};
-const CARDS = cardsData as CardRow[];
 
 export function PlayerProfileSheet() {
   const search = useSearch({ from: "/players" });
@@ -52,6 +46,7 @@ export function PlayerProfileSheet() {
 
 function ProfileBody({ player }: { player: { name: string; country: string } }) {
   const { goals: ALL_GOALS } = useMergedGoals();
+  const { cards: ALL_CARDS } = useMergedCards();
   const search = useSearch({ from: "/players" });
   const navigate = useNavigate({ from: "/players" });
 
@@ -60,8 +55,8 @@ function ProfileBody({ player }: { player: { name: string; country: string } }) 
     [player, ALL_GOALS],
   );
   const cards = useMemo(
-    () => CARDS.filter((c) => c.name === player.name && c.team === player.country),
-    [player],
+    () => ALL_CARDS.filter((c) => c.name === player.name && c.team === player.country),
+    [player, ALL_CARDS],
   );
 
   const compareList = parseComparePlayers(search.compare);

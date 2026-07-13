@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import goalsData from "@/data/wc_goals.json";
 import seed2026 from "@/data/wc_2026_goals.json";
-import { getWc2026TopScorers, type Wc2026Scorer } from "@/lib/wc2026.functions";
+import { getWc2026PlayerEvents, type Wc2026PlayerEvent } from "@/lib/wc2026.functions";
 import { norm } from "@/lib/players-filters";
 
 export type GoalRow = {
@@ -31,39 +31,37 @@ const HISTORICAL_PID_INDEX = (() => {
   return m;
 })();
 
-function scorerToRows(s: Wc2026Scorer): GoalRow[] {
-  const country = s.team.name;
-  const nk = `${norm(s.name)}|${norm(country)}`;
+function eventToGoalRow(e: Wc2026PlayerEvent): GoalRow | null {
+  if (e.type !== "goal" && e.type !== "penalty_goal" && e.type !== "own_goal") return null;
+  const country = e.team.name;
+  if (!country) return null;
+  const nk = `${norm(e.playerName)}|${norm(country)}`;
   const existing = HISTORICAL_PID_INDEX.get(nk);
-  const pid = existing?.pid ?? `wc2026_${s.playerId}`;
-  const name = existing?.name ?? s.name;
+  const pid = existing?.pid ?? `wc2026_${e.playerId}`;
+  const name = existing?.name ?? e.playerName;
   const pteam = existing?.pteam ?? country;
-  const rows: GoalRow[] = [];
-  for (let i = 0; i < s.goals; i++) {
-    rows.push({
-      pid,
-      name,
-      team: pteam,
-      pteam,
-      year: 2026,
-      og: false,
-      pen: false, // Sofascore top-scorers endpoint doesn't split penalty kicks
-      pos: "",
-      live: true,
-    });
-  }
-  return rows;
+  return {
+    pid,
+    name,
+    team: pteam,
+    pteam,
+    year: 2026,
+    og: e.type === "own_goal",
+    pen: e.type === "penalty_goal",
+    pos: "",
+    live: true,
+  };
 }
 
 /**
- * Returns the historical World Cup goals dataset merged with live 2026 goals
- * from Sofascore. Safe to call from any component on /players — the underlying
+ * Returns the historical World Cup goals dataset merged with live 2026 goal
+ * events from ESPN. Safe to call from any component on /players — the underlying
  * server fn is cached for 1 hour and shared via TanStack Query.
  */
 export function useMergedGoals() {
-  const fn = useServerFn(getWc2026TopScorers);
+  const fn = useServerFn(getWc2026PlayerEvents);
   const q = useQuery({
-    queryKey: ["wc2026", "scorers"],
+    queryKey: ["wc2026", "player-events", "goals"],
     queryFn: () => fn(),
     staleTime: 60 * 60 * 1000,
     retry: 1,
@@ -71,7 +69,10 @@ export function useMergedGoals() {
 
   const live = useMemo<GoalRow[]>(() => {
     const out: GoalRow[] = [];
-    for (const s of q.data?.scorers ?? []) out.push(...scorerToRows(s));
+    for (const e of q.data?.events ?? []) {
+      const row = eventToGoalRow(e);
+      if (row) out.push(row);
+    }
     return out;
   }, [q.data]);
 
