@@ -4,13 +4,14 @@
 import goalsData from "@/data/wc_goals.json";
 import goals2026 from "@/data/wc_2026_goals.json";
 import cardsData from "@/data/wc_cards.json";
+import cards2026 from "@/data/wc_2026_cards.json";
 import { slugify } from "@/lib/seo/programmatic";
 
 type Goal = { pid: string; name: string; team: string; year: number; og: boolean; pen: boolean; pos: string };
 type Card = { pid: string; name: string; team: string; year: number; type: "yellow" | "red"; pos: string };
 
 const GOALS = [...(goalsData as Goal[]), ...(goals2026 as unknown as Goal[])];
-const CARDS = cardsData as Card[];
+const CARDS = [...(cardsData as Card[]), ...(cards2026 as unknown as Card[])];
 
 // ── Tournaments ───────────────────────────────────────────────────────
 export const TOURNAMENTS = [
