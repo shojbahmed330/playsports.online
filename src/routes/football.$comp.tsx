@@ -1,38 +1,19 @@
-import { createFileRoute, notFound, Link } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { createFileRoute, notFound, Link, Outlet } from "@tanstack/react-router";
 import {
   getCompetition,
-  requireCompetition,
   formatSeasonLabel,
-  type Competition,
 } from "@/lib/competitions";
 import { getScoreboard, getStandings } from "@/lib/espn.functions";
-import { CompetitionPageShell } from "@/components/football/CompetitionPageShell";
-import { CompetitionMatchList } from "@/components/football/CompetitionMatchList";
-import { CompetitionStandingsTable } from "@/components/football/CompetitionStandingsTable";
-import { CompetitionH2HPicker } from "@/components/football/CompetitionH2HPicker";
-import { CompetitionNewsRail } from "@/components/football/CompetitionNewsRail";
-import { CompetitionCountdown } from "@/components/football/CompetitionCountdown";
-import { ChampionsTimelineWidget } from "@/components/football/ChampionsTimelineWidget";
-import { TopScorersPreviewCard } from "@/components/football/TopScorersPreviewCard";
-import { LastEditionRecap } from "@/components/football/LastEditionRecap";
-import { Euro2028Hero } from "@/components/football/Euro2028Hero";
-
-import { Euro2028VenuesCard } from "@/components/football/Euro2028VenuesCard";
-import { EuroLegendsRail } from "@/components/football/EuroLegendsRail";
-import { EuroSquadOfTournament2024 } from "@/components/football/EuroSquadOfTournament2024";
-import { EuroHonoursStrip } from "@/components/football/EuroHonoursStrip";
-import { EuroFactsGrid } from "@/components/football/EuroFactsGrid";
-import { EuroOnThisDayCard } from "@/components/football/EuroOnThisDayCard";
-import { EuroGoldenBootTimeline } from "@/components/football/EuroGoldenBootTimeline";
-import { EuroPopularMatchups } from "@/components/football/EuroPopularMatchups";
-import { MobileJumpNav } from "@/components/football/MobileJumpNav";
-
 import { SportNav } from "@/components/sports/SportNav";
 import { SiteFooter } from "@/components/home/SiteFooter";
 import { buildCompetitionHead } from "@/lib/competition-head";
-import { Loader2, ArrowRight } from "lucide-react";
 
+/**
+ * Layout route for /football/$comp/*. Prefetches shared data and delegates
+ * rendering to the matched child (index / scores / fixtures / ...). It MUST
+ * render <Outlet /> — otherwise child routes match but never mount, so every
+ * tab renders the parent's content instead of its own.
+ */
 export const Route = createFileRoute("/football/$comp")({
   loader: ({ params, context }) => {
     const comp = getCompetition(params.comp);
@@ -85,159 +66,5 @@ export const Route = createFileRoute("/football/$comp")({
       <SiteFooter />
     </div>
   ),
-  component: CompetitionLandingPage,
+  component: () => <Outlet />,
 });
-
-function CompetitionLandingPage() {
-  const { comp: raw } = Route.useLoaderData();
-  const comp = requireCompetition(raw.slug);
-
-  const scoreboard = useQuery({
-    queryKey: ["comp-scoreboard", comp.slug],
-    queryFn: () =>
-      getScoreboard({ data: { sportPath: `soccer/${comp.espnLeague}`, league: comp.name } }),
-    staleTime: 20_000,
-    refetchInterval: 30_000,
-  });
-  const standings = useQuery({
-    queryKey: ["comp-standings", comp.slug],
-    queryFn: () => getStandings({ data: { sportPath: `soccer/${comp.espnLeague}` } }),
-    staleTime: 5 * 60_000,
-  });
-
-  const games = scoreboard.data?.games ?? [];
-  const live = games.filter((g) => g.status === "in");
-  const today = games.filter((g) => g.status !== "post");
-  const nextGame = games.find((g) => g.status === "pre");
-  const nextLabel = nextGame
-    ? new Date(nextGame.startTs).toLocaleString(undefined, {
-        weekday: "short",
-        hour: "numeric",
-        minute: "2-digit",
-      })
-    : null;
-
-  const previewGames = games.slice(0, 6);
-  // Show ALL groups (not just Group A). WC has 12 groups; users want to see
-  // the full field on the landing page, not scroll through a single group.
-  const previewGroups = standings.data?.groups ?? [];
-
-
-  const isFutureEdition =
-    comp.kind === "tournament" &&
-    comp.currentSeason > new Date().getFullYear() &&
-    games.length === 0;
-  const isOffSeason = !scoreboard.isLoading && games.length === 0 && !isFutureEdition;
-
-  return (
-    <CompetitionPageShell
-      comp={comp}
-      liveCount={live.length}
-      todayCount={today.length}
-      nextLabel={nextLabel}
-    >
-      {comp.slug === "euro" && comp.currentSeason === 2028 ? (
-        <>
-          <Euro2028Hero />
-          <MobileJumpNav
-            items={[
-              { id: "facts", label: "Facts" },
-              { id: "honours", label: "Honours" },
-              { id: "golden-boot", label: "Golden Boot" },
-              { id: "venues", label: "Venues" },
-              { id: "squad-2024", label: "Squad 2024" },
-              { id: "scorers", label: "Scorers" },
-              { id: "legends", label: "Legends" },
-              { id: "h2h", label: "H2H" },
-            ]}
-          />
-        </>
-      ) : (
-        isFutureEdition && <CompetitionCountdown comp={comp} />
-      )}
-
-      {comp.slug === "euro" && <EuroFactsGrid />}
-
-      {(isFutureEdition || isOffSeason) && (
-        <div className="mt-8 sm:mt-10">
-          <LastEditionRecap comp={comp} />
-        </div>
-      )}
-
-      {comp.slug === "euro" && <EuroHonoursStrip />}
-      {comp.slug === "euro" && <EuroGoldenBootTimeline />}
-
-      {comp.slug === "euro" && comp.currentSeason === 2028 && <Euro2028VenuesCard />}
-      {comp.slug === "euro" && (
-        <div id="squad-2024" className="scroll-mt-24">
-          <EuroSquadOfTournament2024 />
-        </div>
-      )}
-
-      <div id="scorers" className="scroll-mt-24">
-        <TopScorersPreviewCard comp={comp} />
-      </div>
-      {comp.slug === "euro" && <EuroLegendsRail />}
-      {comp.slug === "euro" && <EuroOnThisDayCard />}
-      <ChampionsTimelineWidget comp={comp} />
-      <CompetitionNewsRail comp={comp} />
-      <div id="h2h" className="scroll-mt-24">
-        <CompetitionH2HPicker comp={comp} />
-        {comp.slug === "euro" && <EuroPopularMatchups />}
-      </div>
-      <QuickLinks comp={comp} />
-
-    </CompetitionPageShell>
-  );
-}
-
-function SectionHeader({ title, to, cta }: { title: string; to: string; cta: string }) {
-  return (
-    <div className="flex items-baseline justify-between mb-3">
-      <h2 className="text-lg sm:text-xl font-bold">{title}</h2>
-      <Link
-        to={to}
-        className="text-xs sm:text-sm font-semibold text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
-      >
-        {cta} <ArrowRight className="size-3.5" />
-      </Link>
-    </div>
-  );
-}
-
-
-function Loading({ label }: { label: string }) {
-  return (
-    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-      <Loader2 className="size-4 animate-spin" /> {label}
-    </div>
-  );
-}
-
-function QuickLinks({ comp }: { comp: Competition }) {
-  const links = [
-    { label: "Fixtures", to: `/football/${comp.slug}/fixtures` },
-    { label: "History", to: `/football/${comp.slug}/history` },
-    { label: "Records", to: `/football/${comp.slug}/records` },
-    { label: comp.kind === "league" ? "Clubs" : "Teams", to: `/football/${comp.slug}/teams` },
-    { label: "Players", to: `/football/${comp.slug}/players` },
-  ];
-  return (
-    <section className="mt-8 sm:mt-10">
-      <h3 className="text-sm font-bold uppercase tracking-widest text-muted-foreground mb-3">
-        More {comp.shortName}
-      </h3>
-      <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2">
-        {links.map((l) => (
-          <Link
-            key={l.to}
-            to={l.to}
-            className="tap-target rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-sm font-semibold text-center hover:border-white/20 hover:bg-white/[0.06]"
-          >
-            {l.label}
-          </Link>
-        ))}
-      </div>
-    </section>
-  );
-}
