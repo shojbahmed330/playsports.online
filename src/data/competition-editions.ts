@@ -202,6 +202,7 @@ export const COMPETITION_EDITIONS: Record<string, EditionSummary[]> = {
         "Messi injured in the first half, watched from the bench as Lautaro scored the 112th-minute winner.",
         "Argentina's 16th Copa — sole record holder ahead of Uruguay.",
       ],
+      finalDate: "2024-07-14",
     },
     {
       year: 2021,
