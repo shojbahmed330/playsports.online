@@ -109,6 +109,7 @@ const STATIC_ROUTES: SitemapEntry[] = [
   { path: "/mlb/players", changefreq: "daily", priority: "0.8" },
   { path: "/mlb/news", changefreq: "hourly", priority: "0.7" },
   { path: "/mlb/postseason", changefreq: "daily", priority: "0.7" },
+  { path: "/mlb/champions", changefreq: "monthly", priority: "0.6" },
   { path: "/mlb/history", changefreq: "monthly", priority: "0.5" },
 
   // NBA
@@ -118,6 +119,7 @@ const STATIC_ROUTES: SitemapEntry[] = [
   { path: "/nba/teams", changefreq: "weekly", priority: "0.7" },
   { path: "/nba/leaders", changefreq: "daily", priority: "0.8" },
   { path: "/nba/news", changefreq: "hourly", priority: "0.7" },
+  { path: "/nba/champions", changefreq: "monthly", priority: "0.6" },
   { path: "/nba/history", changefreq: "monthly", priority: "0.5" },
 
   // NHL
@@ -127,6 +129,7 @@ const STATIC_ROUTES: SitemapEntry[] = [
   { path: "/nhl/teams", changefreq: "weekly", priority: "0.7" },
   { path: "/nhl/leaders", changefreq: "daily", priority: "0.8" },
   { path: "/nhl/news", changefreq: "hourly", priority: "0.7" },
+  { path: "/nhl/champions", changefreq: "monthly", priority: "0.6" },
   { path: "/nhl/history", changefreq: "monthly", priority: "0.5" },
 
   // MLS / Soccer
@@ -136,6 +139,7 @@ const STATIC_ROUTES: SitemapEntry[] = [
   { path: "/mls/teams", changefreq: "weekly", priority: "0.7" },
   { path: "/mls/leaders", changefreq: "daily", priority: "0.8" },
   { path: "/mls/news", changefreq: "hourly", priority: "0.7" },
+  { path: "/mls/champions", changefreq: "monthly", priority: "0.6" },
   { path: "/mls/history", changefreq: "monthly", priority: "0.5" },
 ];
 
