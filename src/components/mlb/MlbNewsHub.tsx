@@ -113,7 +113,7 @@ function HeroCard({ n }: { n: NewsItem }) {
               alt=""
               loading="lazy"
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-            / decoding="async">
+             decoding="async" />
           </div>
         ) : (
           <div className="aspect-[16/10] md:aspect-auto bg-gradient-to-br from-[#002d72] to-[#d50032]" />
@@ -157,7 +157,7 @@ function StoryCard({ n }: { n: NewsItem }) {
             alt=""
             loading="lazy"
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-          / decoding="async">
+           decoding="async" />
         </div>
       ) : (
         <div className="aspect-[16/9] bg-gradient-to-br from-[#002d72]/60 to-[#d50032]/40" />

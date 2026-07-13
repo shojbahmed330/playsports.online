@@ -161,7 +161,7 @@ function StandingsCard({
                       className="flex items-center gap-2 py-0.5 group"
                     >
                       {r.logo && (
-                        <img src={r.logo} alt="" loading="lazy" className="size-5 object-contain" / decoding="async">
+                        <img src={r.logo} alt="" loading="lazy" className="size-5 object-contain"  decoding="async" />
                       )}
                       <span className="truncate font-medium text-white group-hover:text-amber-300 transition">
                         {r.shortName || r.team}

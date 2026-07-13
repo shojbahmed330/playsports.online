@@ -82,7 +82,7 @@ export function MlbSeasonLeaderHistory() {
                       {i + 1}
                     </span>
                     {p.headshot ? (
-                      <img src={p.headshot} alt="" loading="lazy" className="size-7 rounded-full bg-muted object-cover" / decoding="async">
+                      <img src={p.headshot} alt="" loading="lazy" className="size-7 rounded-full bg-muted object-cover"  decoding="async" />
                     ) : (
                       <div className="size-7 rounded-full bg-muted" />
                     )}
@@ -94,7 +94,7 @@ export function MlbSeasonLeaderHistory() {
                       {p.athleteName}
                     </Link>
                     {p.teamLogo ? (
-                      <img src={p.teamLogo} alt={p.teamAbbr ?? ""} className="size-4 object-contain" loading="lazy" / decoding="async">
+                      <img src={p.teamLogo} alt={p.teamAbbr ?? ""} className="size-4 object-contain" loading="lazy"  decoding="async" />
                     ) : null}
                     <span className="font-extrabold tabular-nums text-[#f7e6c4] w-12 text-right">{p.value}</span>
                   </li>

@@ -262,7 +262,7 @@ function RosterTab({ roster }: { roster: MlbRosterPlayer[] }) {
                     <td className="px-3 py-2 tabular-nums text-muted-foreground">{p.jersey ?? "—"}</td>
                     <td className="px-3 py-2">
                       <Link to="/mlb/player/$id" params={{ id: p.id }} className="font-semibold text-white hover:text-[#f7e6c4] inline-flex items-center gap-2">
-                        {p.headshot && <img src={p.headshot} alt="" className="size-6 rounded-full object-cover bg-white/10" loading="lazy" / decoding="async">}
+                        {p.headshot && <img src={p.headshot} alt="" className="size-6 rounded-full object-cover bg-white/10" loading="lazy"  decoding="async" />}
                         {p.name}
                       </Link>
                     </td>

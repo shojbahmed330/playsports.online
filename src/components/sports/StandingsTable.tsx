@@ -32,7 +32,7 @@ export function StandingsTable({
       sticky: true,
       render: (r) => (
         <div className="flex items-center gap-2 min-w-0">
-          {r.logo && <img src={r.logo} alt="" loading="lazy" className="size-5 shrink-0 object-contain" / decoding="async">}
+          {r.logo && <img src={r.logo} alt="" loading="lazy" className="size-5 shrink-0 object-contain"  decoding="async" />}
           <span className="truncate">{r.team}</span>
         </div>
       ),

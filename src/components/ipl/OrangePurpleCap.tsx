@@ -88,7 +88,7 @@ function CapCard({
                 alt={top.athleteName}
                 className="h-14 w-14 shrink-0 rounded-full object-cover bg-gray-800 ring-2 ring-white/10"
                 loading="lazy"
-              / decoding="async">
+               decoding="async" />
             ) : (
               <div className="h-14 w-14 shrink-0 rounded-full bg-gray-800 ring-2 ring-white/10 grid place-items-center text-lg font-black text-white/60">
                 {top.athleteName.slice(0, 1)}

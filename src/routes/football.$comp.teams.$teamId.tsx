@@ -67,7 +67,7 @@ function TeamDetailPage() {
               style={team.color ? { backgroundColor: `${team.color}20` } : undefined}
             >
               {team.logo ? (
-                <img src={team.logo} alt="" className="size-12 object-contain" / decoding="async" loading="lazy">
+                <img src={team.logo} alt="" className="size-12 object-contain"  decoding="async" loading="lazy" />
               ) : (
                 <span className="text-lg font-bold">{team.abbr || team.shortName.slice(0, 3)}</span>
               )}

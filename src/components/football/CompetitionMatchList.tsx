@@ -125,7 +125,7 @@ function TeamRow({
           alt=""
           className="size-6 rounded-full bg-white/5 object-contain"
           loading="lazy"
-        / decoding="async">
+         decoding="async" />
       ) : (
         <span className="size-6 rounded-full bg-white/10" />
       )}

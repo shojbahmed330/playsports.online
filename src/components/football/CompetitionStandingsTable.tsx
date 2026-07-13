@@ -76,7 +76,7 @@ export function CompetitionStandingsTable({
                       <td className="px-2 py-1.5">
                         <div className="flex items-center gap-1.5 min-w-0">
                           {r.logo ? (
-                            <img src={r.logo} alt="" className="size-4 rounded-full bg-white/5 object-contain shrink-0" loading="lazy" / decoding="async">
+                            <img src={r.logo} alt="" className="size-4 rounded-full bg-white/5 object-contain shrink-0" loading="lazy"  decoding="async" />
                           ) : (
                             <span className="size-4 rounded-full bg-white/10 shrink-0" />
                           )}

@@ -44,7 +44,7 @@ export function CompetitionNewsRail({ comp }: { comp: Competition }) {
                   alt=""
                   className="h-32 w-full object-cover"
                   loading="lazy"
-                / decoding="async">
+                 decoding="async" />
               ) : (
                 <div className="h-32 w-full bg-gradient-to-br from-white/5 to-white/[0.02]" />
               )}

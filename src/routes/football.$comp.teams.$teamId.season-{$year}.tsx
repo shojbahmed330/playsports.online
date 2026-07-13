@@ -77,7 +77,7 @@ function TeamSeasonPage() {
         <>
           <header className="flex items-center gap-4 mb-6">
             {s.logo && (
-              <img src={s.logo} alt="" className="size-14 rounded-2xl bg-white/5 ring-1 ring-white/10 p-1 object-contain" / decoding="async" loading="lazy">
+              <img src={s.logo} alt="" className="size-14 rounded-2xl bg-white/5 ring-1 ring-white/10 p-1 object-contain"  decoding="async" loading="lazy" />
             )}
             <div className="min-w-0">
               <h1 className="text-xl sm:text-2xl font-bold truncate">{s.teamName}</h1>

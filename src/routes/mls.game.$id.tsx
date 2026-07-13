@@ -126,7 +126,7 @@ function MlsGame() {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                 {s.leaders.slice(0, 12).map((l, i) => (
                   <Link key={i} to="/mls/player/$id" params={{ id: l.athleteId }} className="rounded-xl ring-1 ring-border bg-card p-3 flex items-center gap-3 hover:ring-orange-400/40 transition">
-                    {l.headshot && <img src={l.headshot} alt="" className="size-10 rounded-full object-cover bg-muted" / decoding="async" loading="lazy">}
+                    {l.headshot && <img src={l.headshot} alt="" className="size-10 rounded-full object-cover bg-muted"  decoding="async" loading="lazy" />}
                     <div className="min-w-0 flex-1">
                       <div className="text-[10px] uppercase tracking-wider text-orange-300/80 font-bold">{l.teamAbbr} · {l.label}</div>
                       <div className="text-sm font-bold text-white truncate">{l.name}</div>
@@ -173,14 +173,14 @@ function MlsGame() {
 function TeamSide({ team, align = "left" }: { team: any; align?: "left" | "right" }) {
   return (
     <div className={`flex items-center gap-3 min-w-0 ${align === "right" ? "justify-end" : ""}`}>
-      {align === "left" && team.logo && <img src={team.logo} alt="" className="size-12 sm:size-16 object-contain" / decoding="async" loading="lazy">}
+      {align === "left" && team.logo && <img src={team.logo} alt="" className="size-12 sm:size-16 object-contain"  decoding="async" loading="lazy" />}
       <div className={`min-w-0 ${align === "right" ? "text-right" : ""}`}>
         <Link to="/mls/team/$id" params={{ id: team.id }} className="text-base sm:text-xl font-bold text-white truncate block hover:text-orange-300 transition">
           {team.shortName || team.name}
         </Link>
         {team.record && <div className="text-[11px] text-muted-foreground">{team.record}</div>}
       </div>
-      {align === "right" && team.logo && <img src={team.logo} alt="" className="size-12 sm:size-16 object-contain" / decoding="async" loading="lazy">}
+      {align === "right" && team.logo && <img src={team.logo} alt="" className="size-12 sm:size-16 object-contain"  decoding="async" loading="lazy" />}
     </div>
   );
 }

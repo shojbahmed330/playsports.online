@@ -7,7 +7,7 @@ export function NbaLinescore({ home, away, periodCount }: { home: NbaLinescoreTe
       <tr className={team.winner ? "bg-orange-500/[0.05]" : ""}>
         <td className="py-2 pl-3 sticky left-0 bg-card z-10">
           <div className="flex items-center gap-2 min-w-0">
-            {team.logo && <img src={team.logo} alt="" className="size-6 object-contain" loading="lazy" / decoding="async">}
+            {team.logo && <img src={team.logo} alt="" className="size-6 object-contain" loading="lazy"  decoding="async" />}
             <div className="min-w-0">
               <div className="text-sm font-bold text-white truncate">{team.shortName || team.abbr}</div>
               {team.record && <div className="text-[10px] text-muted-foreground">{team.record}</div>}

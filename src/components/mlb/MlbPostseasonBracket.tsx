@@ -96,7 +96,7 @@ function TeamRow({
       ].join(" ")}
     >
       {t.logo ? (
-        <img src={t.logo} alt={t.abbr} className="size-7 object-contain" loading="lazy" / decoding="async">
+        <img src={t.logo} alt={t.abbr} className="size-7 object-contain" loading="lazy"  decoding="async" />
       ) : (
         <div className="size-7 rounded bg-muted text-[10px] font-bold grid place-items-center">
           {t.abbr || "?"}
