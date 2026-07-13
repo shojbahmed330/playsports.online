@@ -25,7 +25,6 @@ async function warmSport(entry: SportRegistryEntry) {
       // the fresh payload with the DEFAULT TTL derived from `ttlMs`.
       await cachedFetch(
         {
-          key: `espn:${entry.id}:warmup:${url}`,
           key: entry.cacheKey?.(url) ?? `espn:${entry.id}:warmup:${url}`,
           sport: entry.id,
           category: "warmup",
