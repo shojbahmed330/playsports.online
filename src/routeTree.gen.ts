@@ -156,6 +156,7 @@ import { Route as CricketIplHistoryRouteImport } from './routes/cricket.ipl.hist
 import { Route as CricketHighlightsSlugRouteImport } from './routes/cricket.highlights.$slug'
 import { Route as ArchiveSportYearRouteImport } from './routes/archive.$sport.$year'
 import { Route as ApiPublicTrackClickRouteImport } from './routes/api/public/track-click'
+import { Route as ApiPublicSyncSportsRouteImport } from './routes/api/public/sync-sports'
 import { Route as ApiPublicSeoHealthRouteImport } from './routes/api/public/seo-health'
 import { Route as ApiPublicIndexnowPingRouteImport } from './routes/api/public/indexnow-ping'
 import { Route as ApiPublicIndexnowAutoRouteImport } from './routes/api/public/indexnow-auto'
@@ -912,6 +913,11 @@ const ApiPublicTrackClickRoute = ApiPublicTrackClickRouteImport.update({
   path: '/api/public/track-click',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicSyncSportsRoute = ApiPublicSyncSportsRouteImport.update({
+  id: '/api/public/sync-sports',
+  path: '/api/public/sync-sports',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicSeoHealthRoute = ApiPublicSeoHealthRouteImport.update({
   id: '/api/public/seo-health',
   path: '/api/public/seo-health',
@@ -1085,6 +1091,7 @@ export interface FileRoutesByFullPath {
   '/api/public/indexnow-auto': typeof ApiPublicIndexnowAutoRoute
   '/api/public/indexnow-ping': typeof ApiPublicIndexnowPingRoute
   '/api/public/seo-health': typeof ApiPublicSeoHealthRoute
+  '/api/public/sync-sports': typeof ApiPublicSyncSportsRoute
   '/api/public/track-click': typeof ApiPublicTrackClickRoute
   '/archive/$sport/$year': typeof ArchiveSportYearRoute
   '/cricket/highlights/$slug': typeof CricketHighlightsSlugRoute
@@ -1245,6 +1252,7 @@ export interface FileRoutesByTo {
   '/api/public/indexnow-auto': typeof ApiPublicIndexnowAutoRoute
   '/api/public/indexnow-ping': typeof ApiPublicIndexnowPingRoute
   '/api/public/seo-health': typeof ApiPublicSeoHealthRoute
+  '/api/public/sync-sports': typeof ApiPublicSyncSportsRoute
   '/api/public/track-click': typeof ApiPublicTrackClickRoute
   '/archive/$sport/$year': typeof ArchiveSportYearRoute
   '/cricket/highlights/$slug': typeof CricketHighlightsSlugRoute
@@ -1413,6 +1421,7 @@ export interface FileRoutesById {
   '/api/public/indexnow-auto': typeof ApiPublicIndexnowAutoRoute
   '/api/public/indexnow-ping': typeof ApiPublicIndexnowPingRoute
   '/api/public/seo-health': typeof ApiPublicSeoHealthRoute
+  '/api/public/sync-sports': typeof ApiPublicSyncSportsRoute
   '/api/public/track-click': typeof ApiPublicTrackClickRoute
   '/archive/$sport/$year': typeof ArchiveSportYearRoute
   '/cricket/highlights/$slug': typeof CricketHighlightsSlugRoute
@@ -1582,6 +1591,7 @@ export interface FileRouteTypes {
     | '/api/public/indexnow-auto'
     | '/api/public/indexnow-ping'
     | '/api/public/seo-health'
+    | '/api/public/sync-sports'
     | '/api/public/track-click'
     | '/archive/$sport/$year'
     | '/cricket/highlights/$slug'
@@ -1742,6 +1752,7 @@ export interface FileRouteTypes {
     | '/api/public/indexnow-auto'
     | '/api/public/indexnow-ping'
     | '/api/public/seo-health'
+    | '/api/public/sync-sports'
     | '/api/public/track-click'
     | '/archive/$sport/$year'
     | '/cricket/highlights/$slug'
@@ -1909,6 +1920,7 @@ export interface FileRouteTypes {
     | '/api/public/indexnow-auto'
     | '/api/public/indexnow-ping'
     | '/api/public/seo-health'
+    | '/api/public/sync-sports'
     | '/api/public/track-click'
     | '/archive/$sport/$year'
     | '/cricket/highlights/$slug'
@@ -2037,6 +2049,7 @@ export interface RootRouteChildren {
   ApiPublicIndexnowAutoRoute: typeof ApiPublicIndexnowAutoRoute
   ApiPublicIndexnowPingRoute: typeof ApiPublicIndexnowPingRoute
   ApiPublicSeoHealthRoute: typeof ApiPublicSeoHealthRoute
+  ApiPublicSyncSportsRoute: typeof ApiPublicSyncSportsRoute
   ApiPublicTrackClickRoute: typeof ApiPublicTrackClickRoute
   ArchiveSportYearRoute: typeof ArchiveSportYearRoute
   OgTypeSlugDotsvgRoute: typeof OgTypeSlugDotsvgRoute
@@ -3080,6 +3093,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicTrackClickRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/sync-sports': {
+      id: '/api/public/sync-sports'
+      path: '/api/public/sync-sports'
+      fullPath: '/api/public/sync-sports'
+      preLoaderRoute: typeof ApiPublicSyncSportsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/seo-health': {
       id: '/api/public/seo-health'
       path: '/api/public/seo-health'
@@ -3658,6 +3678,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicIndexnowAutoRoute: ApiPublicIndexnowAutoRoute,
   ApiPublicIndexnowPingRoute: ApiPublicIndexnowPingRoute,
   ApiPublicSeoHealthRoute: ApiPublicSeoHealthRoute,
+  ApiPublicSyncSportsRoute: ApiPublicSyncSportsRoute,
   ApiPublicTrackClickRoute: ApiPublicTrackClickRoute,
   ArchiveSportYearRoute: ArchiveSportYearRoute,
   OgTypeSlugDotsvgRoute: OgTypeSlugDotsvgRoute,
