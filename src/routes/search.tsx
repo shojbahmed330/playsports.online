@@ -23,7 +23,7 @@ export const Route = createFileRoute("/search")({
         { property: "og:title", content: title },
         { property: "og:description", content: desc },
         { property: "og:url", content: canonical("/search") },
-        { name: "robots", content: "index, follow" },
+        { name: "robots", content: "noindex, follow" },
       ],
       links: [{ rel: "canonical", href: canonical("/search") }],
     };
