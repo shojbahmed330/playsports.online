@@ -24,6 +24,12 @@ export const Route = createFileRoute("/cricket/rankings")({
       { property: "og:title", content: "ICC Cricket Rankings" },
       { property: "og:description", content: "Team and player rankings across T20I, ODI and Test." },
       { property: "og:url", content: "https://www.playsports.online/cricket/rankings" },
+      { property: "og:type", content: "website" },
+      { property: "og:site_name", content: "PlaySports" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "ICC Cricket Rankings — Player & Team Rankings" },
+      { name: "twitter:description", content: "Official ICC rankings across T20I, ODI and Test." },
+    
     ],
     links: [{ rel: "canonical", href: "https://www.playsports.online/cricket/rankings" }],
     scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "Cricket", path: "/cricket" }, { name: "Rankings", path: "/cricket/rankings" }]))],

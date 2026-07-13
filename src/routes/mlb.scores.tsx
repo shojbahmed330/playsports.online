@@ -19,6 +19,12 @@ export const Route = createFileRoute("/mlb/scores")({
       { property: "og:title", content: "MLB Scores & Schedule" },
       { property: "og:description", content: "Live MLB scores and today's schedule." },
       { property: "og:url", content: "https://www.playsports.online/mlb/scores" },
+      { property: "og:type", content: "website" },
+      { property: "og:site_name", content: "PlaySports" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "MLB Scores & Schedule — Live, Upcoming, Final" },
+      { name: "twitter:description", content: "Live MLB scores, today's schedule, and final results across the league with broadcast info and quick filters." },
+    
     ],
     links: [{ rel: "canonical", href: "https://www.playsports.online/mlb/scores" }],
     scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "MLB", path: "/mlb" }, { name: "Scores", path: "/mlb/scores" }]))],

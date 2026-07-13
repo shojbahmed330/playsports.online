@@ -18,6 +18,12 @@ export const Route = createFileRoute("/cricket/teams/")({
       { property: "og:title", content: "Cricket Teams" },
       { property: "og:description", content: "Squads across major leagues and international series." },
       { property: "og:url", content: "https://www.playsports.online/cricket/teams" },
+      { property: "og:type", content: "website" },
+      { property: "og:site_name", content: "PlaySports" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Cricket Teams — Squads across IPL, BBL, PSL & World Cups" },
+      { name: "twitter:description", content: "Browse cricket teams across major leagues and international series." },
+    
     ],
     links: [{ rel: "canonical", href: "https://www.playsports.online/cricket/teams" }],
     scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "Cricket", path: "/cricket" }, { name: "Teams", path: "/cricket/teams" }]))],

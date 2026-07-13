@@ -45,6 +45,12 @@ export const Route = createFileRoute("/cricket/ipl/players")({
       { property: "og:title", content: "IPL Player Leaderboards" },
       { property: "og:description", content: "Orange Cap, Purple Cap and six-hitting leaders per season." },
       { property: "og:url", content: "https://www.playsports.online/cricket/ipl/players" },
+      { property: "og:type", content: "website" },
+      { property: "og:site_name", content: "PlaySports" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "IPL Players — Orange Cap, Purple Cap & Six-hitters" },
+      { name: "twitter:description", content: "IPL player leaderboards: most runs (Orange Cap), most wickets (Purple Cap), most sixes — by season." },
+    
     ],
     links: [{ rel: "canonical", href: "https://www.playsports.online/cricket/ipl/players" }],
     scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "Cricket", path: "/cricket" }, { name: "IPL", path: "/cricket/ipl" }, { name: "Players", path: "/cricket/ipl/players" }]))],

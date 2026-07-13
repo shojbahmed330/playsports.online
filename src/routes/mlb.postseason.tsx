@@ -15,6 +15,12 @@ export const Route = createFileRoute("/mlb/postseason")({
       { property: "og:title", content: "MLB Postseason Bracket" },
       { property: "og:description", content: "Wild Card → Division Series → LCS → World Series with live updates." },
       { property: "og:url", content: "https://www.playsports.online/mlb/postseason" },
+      { property: "og:type", content: "website" },
+      { property: "og:site_name", content: "PlaySports" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "MLB Postseason Bracket — Wild Card, ALDS/NLDS, ALCS/NLCS, World Series" },
+      { name: "twitter:description", content: "Live MLB playoff bracket: Wild Card, Division Series, League Championship, and World Series with series scores and game-by-game results." },
+    
     ],
     links: [{ rel: "canonical", href: "https://www.playsports.online/mlb/postseason" }],
     scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "MLB", path: "/mlb" }, { name: "Postseason", path: "/mlb/postseason" }]))],

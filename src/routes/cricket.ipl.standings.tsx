@@ -27,6 +27,12 @@ export const Route = createFileRoute("/cricket/ipl/standings")({
       { property: "og:title", content: "IPL Points Table" },
       { property: "og:description", content: "Live IPL standings with form guide for every team." },
       { property: "og:url", content: "https://www.playsports.online/cricket/ipl/standings" },
+      { property: "og:type", content: "website" },
+      { property: "og:site_name", content: "PlaySports" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "IPL Standings — Points Table & Form Guide" },
+      { name: "twitter:description", content: "Live IPL points table with wins, losses, points and recent form for every franchise." },
+    
     ],
     links: [{ rel: "canonical", href: "https://www.playsports.online/cricket/ipl/standings" }],
     scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "Cricket", path: "/cricket" }, { name: "IPL", path: "/cricket/ipl" }, { name: "Standings", path: "/cricket/ipl/standings" }]))],

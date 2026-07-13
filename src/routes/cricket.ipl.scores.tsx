@@ -29,6 +29,12 @@ export const Route = createFileRoute("/cricket/ipl/scores")({
       { property: "og:title", content: "IPL Scores & Fixtures" },
       { property: "og:description", content: "Every IPL fixture and result, filterable by season and status." },
       { property: "og:url", content: "https://www.playsports.online/cricket/ipl/scores" },
+      { property: "og:type", content: "website" },
+      { property: "og:site_name", content: "PlaySports" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "IPL Scores — Live, Upcoming & Results" },
+      { name: "twitter:description", content: "Live IPL scores, upcoming fixtures and full results for every season." },
+    
     ],
     links: [{ rel: "canonical", href: "https://www.playsports.online/cricket/ipl/scores" }],
     scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "Cricket", path: "/cricket" }, { name: "IPL", path: "/cricket/ipl" }, { name: "Scores", path: "/cricket/ipl/scores" }]))],

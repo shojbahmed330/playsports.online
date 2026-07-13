@@ -55,6 +55,12 @@ export const Route = createFileRoute("/terms")({
       { property: "og:title", content: "Terms of Service — PlaySports" },
       { property: "og:description", content: "Plain-language terms for using PlaySports's scores, archive and editorial content." },
       { property: "og:url", content: URL },
+      { property: "og:type", content: "website" },
+      { property: "og:site_name", content: "PlaySports" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Terms of Service — PlaySports" },
+      { name: "twitter:description", content: "The terms that govern use of PlaySports — acceptable use, third-party content, advertising, gambling content and liability." },
+    
     ],
     links: [{ rel: "canonical", href: URL }],
   }),

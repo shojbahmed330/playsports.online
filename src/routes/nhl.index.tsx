@@ -22,6 +22,9 @@ export const Route = createFileRoute("/nhl/")({
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "NHL Today — Live Scores, Standings, Leaders" },
       { name: "twitter:description", content: "Today's NHL games, standings, league leaders and hockey headlines." },
+      { property: "og:type", content: "website" },
+      { property: "og:site_name", content: "PlaySports" },
+    
     ],
     links: [{ rel: "canonical", href: "https://www.playsports.online/nhl" }],
     scripts: [

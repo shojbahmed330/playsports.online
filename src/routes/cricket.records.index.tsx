@@ -16,6 +16,12 @@ export const Route = createFileRoute("/cricket/records/")({
       { property: "og:title", content: "All-time Cricket Records" },
       { property: "og:description", content: "Runs, wickets, centuries and partnerships across formats." },
       { property: "og:url", content: "https://www.playsports.online/cricket/records" },
+      { property: "og:type", content: "website" },
+      { property: "og:site_name", content: "PlaySports" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "All-time Cricket Records — Runs, Wickets & Centuries" },
+      { name: "twitter:description", content: "All-time cricket records across Test, ODI and T20I." },
+    
     ],
     links: [{ rel: "canonical", href: "https://www.playsports.online/cricket/records" }],
     scripts: [

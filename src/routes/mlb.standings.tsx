@@ -14,6 +14,12 @@ export const Route = createFileRoute("/mlb/standings")({
       { property: "og:title", content: "MLB Standings — AL · NL · Wild Card" },
       { property: "og:description", content: "Live MLB standings with playoff probability and run differential." },
       { property: "og:url", content: "https://www.playsports.online/mlb/standings" },
+      { property: "og:type", content: "website" },
+      { property: "og:site_name", content: "PlaySports" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "MLB Standings — AL · NL · Wild Card" },
+      { name: "twitter:description", content: "Live MLB standings by Division, League, and Wild Card with GB, PCT, L10, streak, run differential, and playoff probability." },
+    
     ],
     links: [{ rel: "canonical", href: "https://www.playsports.online/mlb/standings" }],
     scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "MLB", path: "/mlb" }, { name: "Standings", path: "/mlb/standings" }]))],

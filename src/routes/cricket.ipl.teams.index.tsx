@@ -20,6 +20,12 @@ export const Route = createFileRoute("/cricket/ipl/teams/")({
       { property: "og:title", content: "IPL Franchises" },
       { property: "og:description", content: "Every IPL franchise with full team metadata and title history." },
       { property: "og:url", content: "https://www.playsports.online/cricket/ipl/teams" },
+      { property: "og:type", content: "website" },
+      { property: "og:site_name", content: "PlaySports" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "IPL Teams — Franchises, Captains & Titles" },
+      { name: "twitter:description", content: "All ten IPL franchises with colors, captains, head coaches, home grounds and title counts." },
+    
     ],
     links: [{ rel: "canonical", href: "https://www.playsports.online/cricket/ipl/teams" }],
     scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "Cricket", path: "/cricket" }, { name: "IPL", path: "/cricket/ipl" }, { name: "Teams", path: "/cricket/ipl/teams" }]))],

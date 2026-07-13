@@ -23,6 +23,9 @@ export const Route = createFileRoute("/mlb/")({
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "MLB Today — Live Scores, Standings, Leaders" },
       { name: "twitter:description", content: "Today's MLB games, standings, leaders and headlines." },
+      { property: "og:type", content: "website" },
+      { property: "og:site_name", content: "PlaySports" },
+    
     ],
     links: [{ rel: "canonical", href: "https://www.playsports.online/mlb" }],
     scripts: [

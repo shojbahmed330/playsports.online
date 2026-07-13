@@ -47,6 +47,12 @@ export const Route = createFileRoute("/cricket/ipl/history")({
       { property: "og:title", content: "IPL — Complete History" },
       { property: "og:description", content: "Every IPL final and award winner with era filters and a Hall of Champions." },
       { property: "og:url", content: "https://www.playsports.online/cricket/ipl/history" },
+      { property: "og:type", content: "website" },
+      { property: "og:site_name", content: "PlaySports" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "IPL History — Champions, Finals, Awards & Auctions" },
+      { name: "twitter:description", content: "Every IPL final, champion, runner-up, orange/purple cap winner, MoF and auction headline since 2008." },
+    
     ],
     links: [{ rel: "canonical", href: "https://www.playsports.online/cricket/ipl/history" }],
     scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "Cricket", path: "/cricket" }, { name: "IPL", path: "/cricket/ipl" }, { name: "History", path: "/cricket/ipl/history" }]))],

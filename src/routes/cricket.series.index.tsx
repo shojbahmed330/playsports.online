@@ -26,6 +26,12 @@ export const Route = createFileRoute("/cricket/series/")({
       { property: "og:title", content: "Cricket Series Hub" },
       { property: "og:description", content: "Every major cricket series with live fixture counts." },
       { property: "og:url", content: "https://www.playsports.online/cricket/series" },
+      { property: "og:type", content: "website" },
+      { property: "og:site_name", content: "PlaySports" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Cricket Series — IPL, BBL, World Cups & more" },
+      { name: "twitter:description", content: "All major cricket series, live counts, and fixtures." },
+    
     ],
     links: [{ rel: "canonical", href: "https://www.playsports.online/cricket/series" }],
     scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "Cricket", path: "/cricket" }, { name: "Series", path: "/cricket/series" }]))],
