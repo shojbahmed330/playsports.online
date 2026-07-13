@@ -4,6 +4,7 @@
 // spreads PageRank without changing visual weight of the page.
 
 import { Link } from "@tanstack/react-router";
+import { LastUpdated } from "./LastUpdated";
 import { PopularSearches } from "./PopularSearches";
 
 type HubLink = { label: string; to: string; hint?: string };
@@ -129,7 +130,10 @@ export function HubInternalLinks({
         aria-label={title ?? `Explore ${hub.name}`}
         className="rounded-2xl border border-border bg-card/40 p-5"
       >
-        <h2 className="mb-3 text-lg font-semibold">{title ?? `Explore ${hub.name}`}</h2>
+        <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+          <h2 className="text-lg font-semibold">{title ?? `Explore ${hub.name}`}</h2>
+          <LastUpdated />
+        </div>
         <ul className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
           {links.map((l) => (
             <li key={l.to}>
