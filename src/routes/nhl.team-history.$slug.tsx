@@ -36,6 +36,7 @@ export const Route = createFileRoute("/nhl/team-history/$slug")({
       ],
       links: [{ rel: "canonical", href: url }],
       scripts: [
+        ldScript(sportsTeam({ name: h.name, path: `/nhl/team-history/${params.slug}`, sport: "Ice Hockey", league: "National Hockey League" })),
         ldScript(breadcrumbList([
           { name: "Home", path: "/" }, { name: "NHL", path: "/nhl" },
           { name: "Champions", path: "/nhl/champions" },
