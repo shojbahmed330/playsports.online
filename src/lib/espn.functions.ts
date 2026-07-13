@@ -15,27 +15,27 @@ function setEdgeCache(hasLive: boolean) {
   }
 }
 
+import { cachedFetch } from "@/lib/sports-cache";
 
 // ESPN's public "site.api" — same source ESPN.com itself uses.
 // No API key, works on Cloudflare Workers (pure fetch).
 const BASE = "https://site.api.espn.com/apis/site/v2/sports";
 
-// In-memory cache per warm Worker instance.
-type CacheEntry = { at: number; ttl: number; data: unknown };
-const cache = new Map<string, CacheEntry>();
-
+// Persistent Supabase-backed cache (survives cold starts; falls back to stale
+// data if ESPN is down).
 async function apiGet(path: string, ttlMs: number): Promise<unknown> {
-  const hit = cache.get(path);
-  if (hit && Date.now() - hit.at < hit.ttl) return hit.data;
-  const res = await fetch(`${BASE}${path}`, {
-    headers: { "user-agent": "lovable-sports-archive/1.0" },
-  });
-  if (!res.ok) {
-    throw new Error(`ESPN ${res.status} for ${path}`);
-  }
-  const json = await res.json();
-  cache.set(path, { at: Date.now(), ttl: ttlMs, data: json });
-  return json;
+  // Derive sport from the path (e.g. "/baseball/mlb/…" → "baseball/mlb").
+  const sport = path.split("/").filter(Boolean).slice(0, 2).join("/") || "misc";
+  return cachedFetch<unknown>(
+    { key: `espn:generic:${path}`, sport, category: "raw", ttlMs },
+    async () => {
+      const res = await fetch(`${BASE}${path}`, {
+        headers: { "user-agent": "lovable-sports-archive/1.0" },
+      });
+      if (!res.ok) throw new Error(`ESPN ${res.status} for ${path}`);
+      return res.json();
+    },
+  );
 }
 
 // ───────────── DTO TYPES (clean, serializable) ─────────────

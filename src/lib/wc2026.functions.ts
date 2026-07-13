@@ -28,21 +28,42 @@ const WC_RANGE = (() => {
   return `${w.start.replace(/-/g, "")}-${w.end.replace(/-/g, "")}`;
 })();
 
+import { cachedFetch } from "@/lib/sports-cache";
+
 const DEFAULT_TTL_MS = 60 * 60 * 1000;
 const LIVE_TTL_MS = 20 * 1000;
-const cache = new Map<string, { at: number; data: unknown }>();
 
+/**
+ * Fetch a JSON URL from ESPN with two-tier caching:
+ *  - Persistent Supabase cache (`sports_data_cache`)  ← survives cold starts
+ *  - In-process memory fallback inside `cachedFetch`
+ *
+ * Cache key is the URL itself, scoped as football/espn so future season
+ * archiving can target it by prefix.
+ */
 async function espnGet(url: string, ttlMs: number = DEFAULT_TTL_MS): Promise<unknown> {
-  const hit = cache.get(url);
-  if (hit && Date.now() - hit.at < ttlMs) return hit.data;
-  const res = await fetch(url, { headers: { accept: "application/json" } });
-  if (!res.ok) {
-    const txt = await res.text().catch(() => "");
-    throw new Error(`ESPN ${res.status}: ${txt.slice(0, 200)}`);
-  }
-  const json = await res.json();
-  cache.set(url, { at: Date.now(), data: json });
-  return json;
+  // Derive a category from the URL path so `sports_data_cache.category` stays
+  // meaningful (scorers / standings / summary / …).
+  const path = (() => {
+    try { return new URL(url).pathname.split("/").filter(Boolean).slice(-2).join("/"); }
+    catch { return "misc"; }
+  })();
+  return cachedFetch<unknown>(
+    {
+      key: `espn:soccer:fifa.world:${SEASON}:${url}`,
+      sport: "football",
+      category: path,
+      ttlMs,
+    },
+    async () => {
+      const res = await fetch(url, { headers: { accept: "application/json" } });
+      if (!res.ok) {
+        const txt = await res.text().catch(() => "");
+        throw new Error(`ESPN ${res.status}: ${txt.slice(0, 200)}`);
+      }
+      return res.json();
+    },
+  );
 }
 
 // ===================== TYPES (unchanged shape — consumers don't need to change) =====================
@@ -790,7 +811,15 @@ export const getWc2026MatchOfficials = createServerFn({ method: "GET" })
 // ===================== ADMIN: clear cache =====================
 
 export const clearWc2026Cache = createServerFn({ method: "POST" }).handler(async () => {
-  cache.clear();
+  // Cache lives in Supabase (`sports_data_cache`) now. Purge the football
+  // rows scoped to the current season so the next request refetches ESPN.
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { error } = await supabaseAdmin
+    .from("sports_data_cache")
+    .delete()
+    .like("cache_key", `espn:soccer:fifa.world:%`)
+    .eq("is_archived", false);
+  if (error) throw new Error(error.message);
   return { ok: true, clearedAt: new Date().toISOString() };
 });
 

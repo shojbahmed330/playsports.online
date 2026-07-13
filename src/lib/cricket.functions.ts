@@ -24,19 +24,19 @@ function setEdgeCache(hasLive: boolean) {
 const BASE = "https://site.api.espn.com/apis/site/v2/sports/cricket";
 
 
-type CacheEntry = { at: number; ttl: number; data: unknown };
-const cache = new Map<string, CacheEntry>();
+import { cachedFetch } from "@/lib/sports-cache";
 
 async function apiGet(path: string, ttlMs: number): Promise<unknown> {
-  const hit = cache.get(path);
-  if (hit && Date.now() - hit.at < hit.ttl) return hit.data;
-  const res = await fetch(`${BASE}${path}`, {
-    headers: { "user-agent": "lovable-sports-archive/1.0" },
-  });
-  if (!res.ok) throw new Error(`ESPN cricket ${res.status} for ${path}`);
-  const json = await res.json();
-  cache.set(path, { at: Date.now(), ttl: ttlMs, data: json });
-  return json;
+  return cachedFetch<unknown>(
+    { key: `espn:cricket:${path}`, sport: "cricket", category: "raw", ttlMs },
+    async () => {
+      const res = await fetch(`${BASE}${path}`, {
+        headers: { "user-agent": "lovable-sports-archive/1.0" },
+      });
+      if (!res.ok) throw new Error(`ESPN cricket ${res.status} for ${path}`);
+      return res.json();
+    },
+  );
 }
 
 // ───────── DTOs ─────────

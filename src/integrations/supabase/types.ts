@@ -551,6 +551,45 @@ export type Database = {
         }
         Relationships: []
       }
+      sports_data_cache: {
+        Row: {
+          cache_key: string
+          category: string
+          created_at: string
+          expires_at: string
+          fetched_at: string
+          is_archived: boolean
+          payload: Json
+          source: string
+          sport: string
+          updated_at: string
+        }
+        Insert: {
+          cache_key: string
+          category: string
+          created_at?: string
+          expires_at: string
+          fetched_at?: string
+          is_archived?: boolean
+          payload: Json
+          source?: string
+          sport: string
+          updated_at?: string
+        }
+        Update: {
+          cache_key?: string
+          category?: string
+          created_at?: string
+          expires_at?: string
+          fetched_at?: string
+          is_archived?: boolean
+          payload?: Json
+          source?: string
+          sport?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -737,6 +776,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      archive_sports_cache: { Args: { _key_prefix: string }; Returns: number }
       get_match_comments: {
         Args: { p_match_id: number; p_sport: string }
         Returns: {

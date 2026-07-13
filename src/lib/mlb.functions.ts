@@ -1,19 +1,23 @@
 import { createServerFn } from "@tanstack/react-start";
+import { cachedFetch } from "@/lib/sports-cache";
 
 const SITE = "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb";
 const CORE = "https://site.web.api.espn.com/apis/common/v3/sports/baseball/mlb";
 
-type CacheEntry = { at: number; ttl: number; data: unknown };
-const cache = new Map<string, CacheEntry>();
-
+/**
+ * Persistent ESPN fetch: reads/writes `sports_data_cache` in Supabase so
+ * cold Vercel workers still serve fast data, and stale data survives ESPN
+ * outages. Cache key includes the full URL so query params are scoped.
+ */
 async function get(url: string, ttlMs: number): Promise<unknown> {
-  const hit = cache.get(url);
-  if (hit && Date.now() - hit.at < hit.ttl) return hit.data;
-  const res = await fetch(url, { headers: { "user-agent": "lovable-mlb/1.0" } });
-  if (!res.ok) throw new Error(`ESPN ${res.status} ${url}`);
-  const json = await res.json();
-  cache.set(url, { at: Date.now(), ttl: ttlMs, data: json });
-  return json;
+  return cachedFetch<unknown>(
+    { key: `espn:mlb:${url}`, sport: "mlb", category: "raw", ttlMs },
+    async () => {
+      const res = await fetch(url, { headers: { "user-agent": "lovable-mlb/1.0" } });
+      if (!res.ok) throw new Error(`ESPN ${res.status} ${url}`);
+      return res.json();
+    },
+  );
 }
 
 // ───────── DTOs ─────────
