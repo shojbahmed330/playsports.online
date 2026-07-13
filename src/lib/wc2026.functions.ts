@@ -359,11 +359,13 @@ function eventMinute(d: any): number | null {
   return d?.minute != null ? Number(d.minute) : null;
 }
 
-function eventTeam(d: any): { id: number; name: string; code: string } {
+function eventTeam(d: any, teamsById?: Map<number, { name: string; code: string }>): { id: number; name: string; code: string } {
+  const id = Number(d?.team?.id ?? d?.teamId ?? d?.athletesInvolved?.[0]?.team?.id ?? 0);
+  const indexed = teamsById?.get(id);
   return {
-    id: Number(d?.team?.id ?? d?.teamId ?? 0),
-    name: d?.team?.displayName ?? d?.team?.name ?? "",
-    code: (d?.team?.abbreviation ?? "").toUpperCase(),
+    id,
+    name: d?.team?.displayName ?? d?.team?.name ?? indexed?.name ?? "",
+    code: (d?.team?.abbreviation ?? indexed?.code ?? "").toUpperCase(),
   };
 }
 
@@ -397,9 +399,54 @@ async function collectWc2026PlayerEvents(): Promise<Wc2026PlayerEvent[]> {
 
   const out: Wc2026PlayerEvent[] = [];
   const seen = new Set<string>();
+  const appendDetails = (
+    details: any[],
+    eventId: number,
+    teamsById?: Map<number, { name: string; code: string }>,
+  ) => {
+    for (const d of details) {
+      const type = classifyPlayerEvent(d);
+      if (!type) continue;
+      const athlete = eventAthlete(d);
+      if (!athlete) continue;
+      const dedupe = `${eventId}:${d?.id ?? ""}:${athlete.id}:${type}:${d?.clock?.displayValue ?? d?.displayTime ?? ""}:${d?.text ?? ""}`;
+      if (seen.has(dedupe)) continue;
+      seen.add(dedupe);
+      out.push({
+        id: String(d?.id ?? dedupe),
+        eventId,
+        minute: eventMinute(d),
+        type,
+        playerId: athlete.id,
+        playerName: athlete.name,
+        team: eventTeam(d, teamsById),
+      });
+    }
+  };
+
+  const needsSummary: any[] = [];
+  for (const ev of events) {
+    const eventId = Number(ev?.id ?? 0);
+    if (!eventId) continue;
+    const comp = ev?.competitions?.[0] ?? {};
+    const teamsById = new Map<number, { name: string; code: string }>();
+    for (const c of comp?.competitors ?? []) {
+      const id = Number(c?.team?.id ?? 0);
+      if (id) {
+        teamsById.set(id, {
+          name: c?.team?.displayName ?? c?.team?.name ?? "",
+          code: (c?.team?.abbreviation ?? "").toUpperCase(),
+        });
+      }
+    }
+    const details: any[] = comp?.details ?? [];
+    if (details.length > 0) appendDetails(details, eventId, teamsById);
+    else needsSummary.push(ev);
+  }
+
   const batch = 8;
-  for (let i = 0; i < events.length; i += batch) {
-    const chunk = events.slice(i, i + batch);
+  for (let i = 0; i < needsSummary.length; i += batch) {
+    const chunk = needsSummary.slice(i, i + batch);
     const sums = await Promise.all(
       chunk.map((ev: any) =>
         espnGet(`${ESPN_SITE}/summary?event=${ev.id}`, SCORERS_TTL_MS).catch(() => null),
@@ -410,24 +457,7 @@ async function collectWc2026PlayerEvents(): Promise<Wc2026PlayerEvent[]> {
       const eventId = Number(chunk[j]?.id ?? 0);
       if (!summary || typeof summary !== "object" || !eventId) continue;
       const details: any[] = (summary as any).keyEvents ?? (summary as any).details ?? [];
-      for (const d of details) {
-        const type = classifyPlayerEvent(d);
-        if (!type) continue;
-        const athlete = eventAthlete(d);
-        if (!athlete) continue;
-        const dedupe = `${eventId}:${d?.id ?? ""}:${athlete.id}:${type}:${d?.clock?.displayValue ?? d?.displayTime ?? ""}:${d?.text ?? ""}`;
-        if (seen.has(dedupe)) continue;
-        seen.add(dedupe);
-        out.push({
-          id: String(d?.id ?? dedupe),
-          eventId,
-          minute: eventMinute(d),
-          type,
-          playerId: athlete.id,
-          playerName: athlete.name,
-          team: eventTeam(d),
-        });
-      }
+      appendDetails(details, eventId);
     }
   }
   out.sort((a, b) => a.eventId - b.eventId || (a.minute ?? 0) - (b.minute ?? 0));

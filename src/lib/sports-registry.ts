@@ -14,11 +14,15 @@
  * naturally point at whatever ESPN calls "current".
  */
 
+import { FOOTBALL_WC, liveWcYear } from "@/lib/tournament-config";
+
 export type SportRegistryEntry = {
   id: string;                // "football" | "cricket" | "mlb" …
   label: string;
   /** Warmup URLs. `{season}` is expanded from `seasonFn` if provided. */
   warmup: string[];
+  /** Optional exact cache key used by the app data functions for a warmup URL. */
+  cacheKey?: (url: string) => string;
   /** Optional dynamic season resolver (returns current year/id). */
   seasonFn?: () => number | string;
   /** ISO-week-style peak days (0=Sun..6=Sat) — if omitted, always peak. */
@@ -26,7 +30,17 @@ export type SportRegistryEntry = {
 };
 
 const espn = "https://site.api.espn.com/apis/site/v2/sports";
+const espnV2 = "https://site.api.espn.com/apis/v2/sports";
 const espnCore = "https://site.web.api.espn.com/apis/common/v3/sports";
+
+function worldCupRange() {
+  const season = liveWcYear();
+  const window = FOOTBALL_WC.seasonWindows[season];
+  return {
+    season,
+    dates: window ? `${window.start.replace(/-/g, "")}-${window.end.replace(/-/g, "")}` : "20260611-20260719",
+  };
+}
 
 // Football (World Cup + friendlies). tournament-config resolves the live WC.
 export const FOOTBALL_WC_SEASON = () => {
@@ -40,15 +54,18 @@ export const FOOTBALL_WC_SEASON = () => {
 };
 
 export const SPORTS: SportRegistryEntry[] = [
-  {
-    id: "football",
-    label: "FIFA World Cup",
-    warmup: [
-      `${espn}/soccer/fifa.world/scoreboard`,
-      `${espn}/soccer/fifa.world/standings`,
-      // top scorers pulled via getWc2026TopScorers server fn which uses cache
-    ],
-  },
+  (() => {
+    const wc = worldCupRange();
+    return {
+      id: "football",
+      label: "FIFA World Cup",
+      warmup: [
+        `${espn}/soccer/fifa.world/scoreboard?dates=${wc.dates}&limit=200`,
+        `${espnV2}/soccer/fifa.world/standings?season=${wc.season}`,
+      ],
+      cacheKey: (url: string) => `espn:soccer:fifa.world:${wc.season}:${url}`,
+    };
+  })(),
   {
     id: "euro",
     label: "UEFA EURO",

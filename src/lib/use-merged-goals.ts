@@ -63,7 +63,9 @@ export function useMergedGoals() {
   const q = useQuery({
     queryKey: ["wc2026", "player-events"],
     queryFn: () => fn(),
-    staleTime: 60 * 60 * 1000,
+    staleTime: 2 * 60 * 1000,
+    refetchInterval: 15 * 60 * 1000,
+    refetchOnWindowFocus: true,
     retry: 1,
   });
 
