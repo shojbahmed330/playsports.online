@@ -23,7 +23,8 @@ export const Route = createFileRoute("/nba/game/$id")({
     const away = s?.away?.shortName || s?.away?.name || s?.away?.abbr;
     const home = s?.home?.shortName || s?.home?.name || s?.home?.abbr;
     const matchup = away && home ? `${away} vs ${home}` : `NBA Game ${params.id}`;
-    const title = `${matchup} — NBA Box Score, Play-by-Play & Live Updates`;
+    const rawTitle = `${matchup} — NBA Live Score`;
+    const title = rawTitle.length > 60 ? rawTitle.slice(0, 57) + "…" : rawTitle;
     const desc = away && home
       ? `Live box score, scoring plays and full play-by-play for ${away} vs ${home}. Stats, leaders, venue and more on PlaySports.`
       : "Live box score, scoring plays, and full play-by-play for this NBA game.";

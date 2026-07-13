@@ -43,11 +43,12 @@ export const Route = createFileRoute("/cricket/match/$id")({
     let desc = "Live cricket scorecard, batting and bowling figures, commentary and lineups.";
     const jsonld: unknown[] = [];
     if (m) {
-      const vs = `${m.away.name} vs ${m.home.name}`;
-      const ctx = m.leagueName || m.leagueAbbr || "Cricket";
-      const statusTag = m.status === "in" ? "Live Scorecard" : m.status === "post" ? "Result & Scorecard" : "Preview & Scorecard";
-      title = `${vs} — ${ctx} ${statusTag} | PlaySports`;
-      desc = `${vs} in ${ctx}${m.venue ? ` at ${m.venue}${m.city ? `, ${m.city}` : ""}` : ""}. ${m.status === "post" && m.note ? m.note + ". " : ""}Live scorecard, batting/bowling figures, commentary and lineups.`;
+      const vs = `${m.away.abbr || m.away.name} vs ${m.home.abbr || m.home.name}`;
+      const ctx = m.leagueAbbr || m.leagueName || "Cricket";
+      const statusTag = m.status === "in" ? "Live" : m.status === "post" ? "Result" : "Preview";
+      const rawTitle = `${vs} — ${ctx} ${statusTag} Scorecard`;
+      title = rawTitle.length > 60 ? rawTitle.slice(0, 57) + "…" : rawTitle;
+      desc = `${m.away.name} vs ${m.home.name} in ${m.leagueName || ctx}${m.venue ? ` at ${m.venue}${m.city ? `, ${m.city}` : ""}` : ""}. ${m.status === "post" && m.note ? m.note + ". " : ""}Live scorecard, batting/bowling figures, commentary and lineups.`;
       jsonld.push(sportsEvent({
         name: `${vs} — ${ctx}`,
         path: `/cricket/match/${params.id}`,

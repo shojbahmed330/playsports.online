@@ -122,6 +122,7 @@ const GUIDES: Array<{ label: string; href: string }> = [
   { label: "How World Cup knockouts work", href: "/guides/how-fifa-world-cup-knockouts-work" },
   { label: "How many teams in WC 2026", href: "/guides/how-many-teams-fifa-world-cup-2026" },
   { label: "FIFA World Cup 2026 format", href: "/guides/fifa-world-cup-2026-format" },
+  { label: "WC 2026 host cities & venues", href: "/football/venues" },
   { label: "Understanding VAR", href: "/guides/what-is-var" },
   { label: "IPL format explained", href: "/guides/ipl-format" },
   { label: "NBA Playoffs bracket", href: "/guides/nba-playoffs-format" },

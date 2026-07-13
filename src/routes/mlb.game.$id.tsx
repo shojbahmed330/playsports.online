@@ -26,7 +26,8 @@ export const Route = createFileRoute("/mlb/game/$id")({
     const away = s?.away?.shortName || s?.away?.name || s?.away?.abbr;
     const home = s?.home?.shortName || s?.home?.name || s?.home?.abbr;
     const matchup = away && home ? `${away} vs ${home}` : `MLB Game ${params.id}`;
-    const title = `${matchup} — MLB Box Score, Linescore & Live Updates`;
+    const rawTitle = `${matchup} — MLB Live Score`;
+    const title = rawTitle.length > 60 ? rawTitle.slice(0, 57) + "…" : rawTitle;
     const desc = away && home
       ? `Live MLB game: ${away} vs ${home}. Inning-by-inning linescore, batting & pitching stats, scoring plays, probables and win probability on PlaySports.`
       : "Live MLB boxscore: inning-by-inning linescore, batting and pitching stats, scoring plays, probables, venue, weather, odds.";

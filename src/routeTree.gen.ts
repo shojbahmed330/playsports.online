@@ -74,6 +74,7 @@ import { Route as LiveTodayRouteImport } from './routes/live.today'
 import { Route as LiveSportRouteImport } from './routes/live.$sport'
 import { Route as HighlightsSlugRouteImport } from './routes/highlights.$slug'
 import { Route as GuidesSlugRouteImport } from './routes/guides.$slug'
+import { Route as FootballVenuesRouteImport } from './routes/football.venues'
 import { Route as FootballMineRouteImport } from './routes/football.mine'
 import { Route as FootballCompRouteImport } from './routes/football.$comp'
 import { Route as CricketScoresRouteImport } from './routes/cricket.scores'
@@ -500,6 +501,11 @@ const GuidesSlugRoute = GuidesSlugRouteImport.update({
   id: '/guides/$slug',
   path: '/guides/$slug',
   getParentRoute: () => rootRouteImport,
+} as any)
+const FootballVenuesRoute = FootballVenuesRouteImport.update({
+  id: '/venues',
+  path: '/venues',
+  getParentRoute: () => FootballRoute,
 } as any)
 const FootballMineRoute = FootballMineRouteImport.update({
   id: '/mine',
@@ -1047,6 +1053,7 @@ export interface FileRoutesByFullPath {
   '/cricket/scores': typeof CricketScoresRoute
   '/football/$comp': typeof FootballCompRouteWithChildren
   '/football/mine': typeof FootballMineRoute
+  '/football/venues': typeof FootballVenuesRoute
   '/guides/$slug': typeof GuidesSlugRoute
   '/highlights/$slug': typeof HighlightsSlugRoute
   '/live/$sport': typeof LiveSportRoute
@@ -1208,6 +1215,7 @@ export interface FileRoutesByTo {
   '/cricket/rankings': typeof CricketRankingsRoute
   '/cricket/scores': typeof CricketScoresRoute
   '/football/mine': typeof FootballMineRoute
+  '/football/venues': typeof FootballVenuesRoute
   '/guides/$slug': typeof GuidesSlugRoute
   '/highlights/$slug': typeof HighlightsSlugRoute
   '/live/$sport': typeof LiveSportRoute
@@ -1377,6 +1385,7 @@ export interface FileRoutesById {
   '/cricket/scores': typeof CricketScoresRoute
   '/football/$comp': typeof FootballCompRouteWithChildren
   '/football/mine': typeof FootballMineRoute
+  '/football/venues': typeof FootballVenuesRoute
   '/guides/$slug': typeof GuidesSlugRoute
   '/highlights/$slug': typeof HighlightsSlugRoute
   '/live/$sport': typeof LiveSportRoute
@@ -1547,6 +1556,7 @@ export interface FileRouteTypes {
     | '/cricket/scores'
     | '/football/$comp'
     | '/football/mine'
+    | '/football/venues'
     | '/guides/$slug'
     | '/highlights/$slug'
     | '/live/$sport'
@@ -1708,6 +1718,7 @@ export interface FileRouteTypes {
     | '/cricket/rankings'
     | '/cricket/scores'
     | '/football/mine'
+    | '/football/venues'
     | '/guides/$slug'
     | '/highlights/$slug'
     | '/live/$sport'
@@ -1876,6 +1887,7 @@ export interface FileRouteTypes {
     | '/cricket/scores'
     | '/football/$comp'
     | '/football/mine'
+    | '/football/venues'
     | '/guides/$slug'
     | '/highlights/$slug'
     | '/live/$sport'
@@ -2518,6 +2530,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/guides/$slug'
       preLoaderRoute: typeof GuidesSlugRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/football/venues': {
+      id: '/football/venues'
+      path: '/venues'
+      fullPath: '/football/venues'
+      preLoaderRoute: typeof FootballVenuesRouteImport
+      parentRoute: typeof FootballRoute
     }
     '/football/mine': {
       id: '/football/mine'
@@ -3398,6 +3417,7 @@ const FootballPlayersSlugRouteWithChildren =
 interface FootballRouteChildren {
   FootballCompRoute: typeof FootballCompRouteWithChildren
   FootballMineRoute: typeof FootballMineRoute
+  FootballVenuesRoute: typeof FootballVenuesRoute
   FootballIndexRoute: typeof FootballIndexRoute
   FootballCampaignsSlugRoute: typeof FootballCampaignsSlugRoute
   FootballMatchIdRoute: typeof FootballMatchIdRoute
@@ -3417,6 +3437,7 @@ interface FootballRouteChildren {
 const FootballRouteChildren: FootballRouteChildren = {
   FootballCompRoute: FootballCompRouteWithChildren,
   FootballMineRoute: FootballMineRoute,
+  FootballVenuesRoute: FootballVenuesRoute,
   FootballIndexRoute: FootballIndexRoute,
   FootballCampaignsSlugRoute: FootballCampaignsSlugRoute,
   FootballMatchIdRoute: FootballMatchIdRoute,
