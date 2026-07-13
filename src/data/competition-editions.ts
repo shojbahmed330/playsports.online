@@ -97,6 +97,7 @@ export const COMPETITION_EDITIONS: Record<string, EditionSummary[]> = {
         "Turkey's Merih Demiral scored both goals in a 2–1 win over Austria — first Euros brace by a Turkey defender.",
         "Cole Palmer's 73rd-minute equaliser in the final — before Oyarzabal won it late for Spain.",
       ],
+      finalDate: "2024-07-14",
     },
     {
       year: 2020,
@@ -120,6 +121,7 @@ export const COMPETITION_EDITIONS: Record<string, EditionSummary[]> = {
         "Patrik Schick's 45-metre lob against Scotland — goal of the tournament.",
         "Donnarumma saved Saka's penalty to seal Italy's second Euro.",
       ],
+      finalDate: "2021-07-11",
     },
     {
       year: 2016,
@@ -142,6 +144,7 @@ export const COMPETITION_EDITIONS: Record<string, EditionSummary[]> = {
         "Ronaldo went off injured in the final at 25' — coached from the touchline until Éder's 109th-minute winner.",
         "Iceland's fairytale run to the quarter-finals, knocking out England 2–1.",
       ],
+      finalDate: "2016-07-10",
     },
     { year: 2012, winner: "Spain", runnerUp: "Italy", host: "Poland / Ukraine", finalScore: "4–0", topScorer: { name: "Fernando Torres", goals: 3 }, blurb: "Spain's tiki-taka side became the first to win consecutive Euros.", finalDate: "2012-07-01" },
     {
