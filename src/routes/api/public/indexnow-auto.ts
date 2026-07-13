@@ -44,10 +44,16 @@ export const Route = createFileRoute("/api/public/indexnow-auto")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        const expected = process.env.INDEXNOW_PING_SECRET;
-        if (!expected || request.headers.get("x-indexnow-secret") !== expected) {
-          return new Response("Unauthorized", { status: 401 });
-        }
+        // Auth: accept either the Supabase anon key (standard pg_cron pattern)
+        // or the INDEXNOW_PING_SECRET (manual/admin use).
+        const expectedAnon = process.env.VITE_SUPABASE_PUBLISHABLE_KEY ?? process.env.SUPABASE_ANON_KEY;
+        const expectedSecret = process.env.INDEXNOW_PING_SECRET;
+        const apikey = request.headers.get("apikey");
+        const custom = request.headers.get("x-indexnow-secret");
+        const ok =
+          (expectedAnon && apikey === expectedAnon) ||
+          (expectedSecret && custom === expectedSecret);
+        if (!ok) return new Response("Unauthorized", { status: 401 });
         const paths = collectPaths();
         const result = await pingIndexNow(paths);
         return new Response(

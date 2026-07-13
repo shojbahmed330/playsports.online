@@ -157,6 +157,7 @@ import { Route as ArchiveSportYearRouteImport } from './routes/archive.$sport.$y
 import { Route as ApiPublicTrackClickRouteImport } from './routes/api/public/track-click'
 import { Route as ApiPublicSeoHealthRouteImport } from './routes/api/public/seo-health'
 import { Route as ApiPublicIndexnowPingRouteImport } from './routes/api/public/indexnow-ping'
+import { Route as ApiPublicIndexnowAutoRouteImport } from './routes/api/public/indexnow-auto'
 import { Route as CricketIplTeamsIndexRouteImport } from './routes/cricket.ipl.teams.index'
 import { Route as FootballPlayersSlugWorldCupChar123yearChar125RouteImport } from './routes/football.players.$slug.world-cup-{$year}'
 import { Route as FootballPlayersSlugStatRouteImport } from './routes/football.players.$slug.$stat'
@@ -916,6 +917,11 @@ const ApiPublicIndexnowPingRoute = ApiPublicIndexnowPingRouteImport.update({
   path: '/api/public/indexnow-ping',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicIndexnowAutoRoute = ApiPublicIndexnowAutoRouteImport.update({
+  id: '/api/public/indexnow-auto',
+  path: '/api/public/indexnow-auto',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CricketIplTeamsIndexRoute = CricketIplTeamsIndexRouteImport.update({
   id: '/ipl/teams/',
   path: '/ipl/teams/',
@@ -1075,6 +1081,7 @@ export interface FileRoutesByFullPath {
   '/mls/': typeof MlsIndexRoute
   '/nba/': typeof NbaIndexRoute
   '/nhl/': typeof NhlIndexRoute
+  '/api/public/indexnow-auto': typeof ApiPublicIndexnowAutoRoute
   '/api/public/indexnow-ping': typeof ApiPublicIndexnowPingRoute
   '/api/public/seo-health': typeof ApiPublicSeoHealthRoute
   '/api/public/track-click': typeof ApiPublicTrackClickRoute
@@ -1234,6 +1241,7 @@ export interface FileRoutesByTo {
   '/mls': typeof MlsIndexRoute
   '/nba': typeof NbaIndexRoute
   '/nhl': typeof NhlIndexRoute
+  '/api/public/indexnow-auto': typeof ApiPublicIndexnowAutoRoute
   '/api/public/indexnow-ping': typeof ApiPublicIndexnowPingRoute
   '/api/public/seo-health': typeof ApiPublicSeoHealthRoute
   '/api/public/track-click': typeof ApiPublicTrackClickRoute
@@ -1401,6 +1409,7 @@ export interface FileRoutesById {
   '/mls/': typeof MlsIndexRoute
   '/nba/': typeof NbaIndexRoute
   '/nhl/': typeof NhlIndexRoute
+  '/api/public/indexnow-auto': typeof ApiPublicIndexnowAutoRoute
   '/api/public/indexnow-ping': typeof ApiPublicIndexnowPingRoute
   '/api/public/seo-health': typeof ApiPublicSeoHealthRoute
   '/api/public/track-click': typeof ApiPublicTrackClickRoute
@@ -1569,6 +1578,7 @@ export interface FileRouteTypes {
     | '/mls/'
     | '/nba/'
     | '/nhl/'
+    | '/api/public/indexnow-auto'
     | '/api/public/indexnow-ping'
     | '/api/public/seo-health'
     | '/api/public/track-click'
@@ -1728,6 +1738,7 @@ export interface FileRouteTypes {
     | '/mls'
     | '/nba'
     | '/nhl'
+    | '/api/public/indexnow-auto'
     | '/api/public/indexnow-ping'
     | '/api/public/seo-health'
     | '/api/public/track-click'
@@ -1894,6 +1905,7 @@ export interface FileRouteTypes {
     | '/mls/'
     | '/nba/'
     | '/nhl/'
+    | '/api/public/indexnow-auto'
     | '/api/public/indexnow-ping'
     | '/api/public/seo-health'
     | '/api/public/track-click'
@@ -2021,6 +2033,7 @@ export interface RootRouteChildren {
   LiveSportRoute: typeof LiveSportRoute
   LiveTodayRoute: typeof LiveTodayRoute
   HighlightsIndexRoute: typeof HighlightsIndexRoute
+  ApiPublicIndexnowAutoRoute: typeof ApiPublicIndexnowAutoRoute
   ApiPublicIndexnowPingRoute: typeof ApiPublicIndexnowPingRoute
   ApiPublicSeoHealthRoute: typeof ApiPublicSeoHealthRoute
   ApiPublicTrackClickRoute: typeof ApiPublicTrackClickRoute
@@ -3073,6 +3086,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicIndexnowPingRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/indexnow-auto': {
+      id: '/api/public/indexnow-auto'
+      path: '/api/public/indexnow-auto'
+      fullPath: '/api/public/indexnow-auto'
+      preLoaderRoute: typeof ApiPublicIndexnowAutoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/cricket/ipl/teams/': {
       id: '/cricket/ipl/teams/'
       path: '/ipl/teams'
@@ -3635,6 +3655,7 @@ const rootRouteChildren: RootRouteChildren = {
   LiveSportRoute: LiveSportRoute,
   LiveTodayRoute: LiveTodayRoute,
   HighlightsIndexRoute: HighlightsIndexRoute,
+  ApiPublicIndexnowAutoRoute: ApiPublicIndexnowAutoRoute,
   ApiPublicIndexnowPingRoute: ApiPublicIndexnowPingRoute,
   ApiPublicSeoHealthRoute: ApiPublicSeoHealthRoute,
   ApiPublicTrackClickRoute: ApiPublicTrackClickRoute,
