@@ -4,6 +4,8 @@ import { getCompetition, requireCompetition } from "@/lib/competitions";
 import { CompetitionPageShell } from "@/components/football/CompetitionPageShell";
 import { buildCompetitionHead } from "@/lib/competition-head";
 import { getCompetitionLeaders } from "@/lib/espn.functions";
+import { EuroPlayersPage } from "@/components/football/EuroPlayersPage";
+import { EURO_TOP_SCORERS } from "@/lib/euro-records";
 import { Loader2 } from "lucide-react";
 
 export const Route = createFileRoute("/football/$comp/players")({
@@ -15,6 +17,34 @@ export const Route = createFileRoute("/football/$comp/players")({
   head: ({ params, loaderData }) => {
     const comp = loaderData?.comp ?? getCompetition(params.comp);
     if (!comp) return { meta: [{ title: "Players" }, { name: "robots", content: "noindex" }] };
+    if (comp.slug === "euro") {
+      const title = "UEFA Euro Players — All-Time Top Scorers, Legends & Rising Stars";
+      const description =
+        "Every UEFA Euro legend — Cristiano Ronaldo's 14 goals, Platini's 9-goal record, the 2024 Squad of the Tournament and the next generation to watch at Euro 2028.";
+      const url = "https://allsportslive.lovable.app/football/euro/players";
+      const itemList = {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        name: "UEFA Euro all-time top scorers",
+        itemListElement: EURO_TOP_SCORERS.map((r) => ({
+          "@type": "ListItem",
+          position: r.rank,
+          name: `${r.name} (${r.nation}) — ${r.value} goals`,
+        })),
+      };
+      return {
+        meta: [
+          { title },
+          { name: "description", content: description },
+          { property: "og:title", content: title },
+          { property: "og:description", content: description },
+          { property: "og:url", content: url },
+          { property: "og:type", content: "website" },
+        ],
+        links: [{ rel: "canonical", href: url }],
+        scripts: [{ type: "application/ld+json", children: JSON.stringify(itemList) }],
+      };
+    }
     return buildCompetitionHead({
       comp,
       section: "Players",
@@ -22,11 +52,18 @@ export const Route = createFileRoute("/football/$comp/players")({
       descriptionOverride: `${comp.name} top players this season — goals, assists and appearances live from ESPN.`,
     });
   },
-  component: PlayersPage,
+  component: PlayersRoute,
   notFoundComponent: () => <div className="p-10 text-center">Competition not found.</div>,
 });
 
-function PlayersPage() {
+function PlayersRoute() {
+  const { comp: raw } = Route.useLoaderData();
+  const comp = requireCompetition(raw.slug);
+  if (comp.slug === "euro") return <EuroPlayersPage />;
+  return <GenericPlayersPage />;
+}
+
+function GenericPlayersPage() {
   const { comp: raw } = Route.useLoaderData();
   const comp = requireCompetition(raw.slug);
 
@@ -102,7 +139,6 @@ function PlayersPage() {
                     </li>
                   );
                 })}
-
               </ol>
             </section>
           ))}

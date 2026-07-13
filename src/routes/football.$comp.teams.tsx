@@ -4,6 +4,8 @@ import { getCompetition, requireCompetition } from "@/lib/competitions";
 import { CompetitionPageShell } from "@/components/football/CompetitionPageShell";
 import { buildCompetitionHead } from "@/lib/competition-head";
 import { getCompetitionTeams } from "@/lib/espn.functions";
+import { EuroTeamsPage } from "@/components/football/EuroTeamsPage";
+import { euroChampionNations } from "@/lib/euro-teams";
 import { Loader2 } from "lucide-react";
 
 export const Route = createFileRoute("/football/$comp/teams")({
@@ -15,17 +17,52 @@ export const Route = createFileRoute("/football/$comp/teams")({
   head: ({ params, loaderData }) => {
     const comp = loaderData?.comp ?? getCompetition(params.comp);
     if (!comp) return { meta: [{ title: "Teams" }, { name: "robots", content: "noindex" }] };
+    if (comp.slug === "euro") {
+      const title = "UEFA Euro Nations — 55 Teams, Champions & Euro 2028 Hosts";
+      const description =
+        "Every UEFA member nation ranked by their best Euro finish — Spain's 4 titles, England's 2024 final, Euro 2028 host nations and each team's tournament history.";
+      const url = "https://allsportslive.lovable.app/football/euro/teams";
+      const itemList = {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        name: "UEFA Euro champion nations",
+        itemListElement: euroChampionNations().map((c, i) => ({
+          "@type": "ListItem",
+          position: i + 1,
+          name: `${c.team} — ${c.titles} Euro title${c.titles === 1 ? "" : "s"}`,
+        })),
+      };
+      return {
+        meta: [
+          { title },
+          { name: "description", content: description },
+          { property: "og:title", content: title },
+          { property: "og:description", content: description },
+          { property: "og:url", content: url },
+          { property: "og:type", content: "website" },
+        ],
+        links: [{ rel: "canonical", href: url }],
+        scripts: [{ type: "application/ld+json", children: JSON.stringify(itemList) }],
+      };
+    }
     return buildCompetitionHead({
       comp,
       section: comp.kind === "league" ? "Clubs" : "Teams",
       path: `/football/${comp.slug}/teams`,
     });
   },
-  component: TeamsPage,
+  component: TeamsRoute,
   notFoundComponent: () => <div className="p-10 text-center">Competition not found.</div>,
 });
 
-function TeamsPage() {
+function TeamsRoute() {
+  const { comp: raw } = Route.useLoaderData();
+  const comp = requireCompetition(raw.slug);
+  if (comp.slug === "euro") return <EuroTeamsPage />;
+  return <GenericTeamsPage />;
+}
+
+function GenericTeamsPage() {
   const { comp: raw } = Route.useLoaderData();
   const comp = requireCompetition(raw.slug);
   const label = comp.kind === "league" ? "Clubs" : "Teams";
@@ -83,7 +120,6 @@ function TeamsPage() {
               </Link>
             </li>
           ))}
-
         </ul>
       )}
     </CompetitionPageShell>
