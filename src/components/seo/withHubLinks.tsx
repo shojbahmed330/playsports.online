@@ -2,16 +2,16 @@
 // Keeps existing routes untouched — one-line change on the route's
 // `component:` field wires internal linking into every hub.
 
-import type { ComponentType } from "react";
+import type { FC } from "react";
 import { HubInternalLinks } from "./HubInternalLinks";
 
 type SportKey = "nba" | "mlb" | "nhl" | "mls" | "cricket" | "football" | "ipl" | "live";
 
 export function withHubLinks<P extends object>(
-  Inner: ComponentType<P>,
+  Inner: FC<P>,
   opts: { sport: SportKey; currentPath?: string; title?: string; showPopular?: boolean },
-): ComponentType<P> {
-  const Wrapped = (props: P) => (
+): FC<P> {
+  const Wrapped: FC<P> = (props) => (
     <>
       <Inner {...props} />
       <HubInternalLinks
