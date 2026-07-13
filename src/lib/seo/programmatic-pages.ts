@@ -1,6 +1,7 @@
 // Programmatic long-tail SEO pages derived from existing WC datasets.
 // Zero external data — safe in SSR loaders.
 import goalsData from "@/data/wc_goals.json";
+import goals2026 from "@/data/wc_2026_goals.json";
 import groupMatches from "@/data/wc_group_matches.json";
 import { CHAMPIONS_OVERRIDE } from "@/lib/champions";
 import { slugify } from "./programmatic";
