@@ -24,7 +24,17 @@ import { EuroOnThisDayCard } from "@/components/football/EuroOnThisDayCard";
 import { EuroGoldenBootTimeline } from "@/components/football/EuroGoldenBootTimeline";
 import { EuroPopularMatchups } from "@/components/football/EuroPopularMatchups";
 import { MobileJumpNav } from "@/components/football/MobileJumpNav";
+import { CopaHero } from "@/components/football/CopaHero";
+import { CopaFactsGrid } from "@/components/football/CopaFactsGrid";
+import { CopaHonoursStrip } from "@/components/football/CopaHonoursStrip";
+import { CopaGoldenBootTimeline } from "@/components/football/CopaGoldenBootTimeline";
+import { CopaLegendsRail } from "@/components/football/CopaLegendsRail";
+import { CopaPastFinalsStrip } from "@/components/football/CopaPastFinalsStrip";
+import { CopaOnThisDayCard } from "@/components/football/CopaOnThisDayCard";
+import { CopaPopularMatchups } from "@/components/football/CopaPopularMatchups";
+import { copaTitleCounts } from "@/lib/copa-history";
 import { buildCompetitionHead } from "@/lib/competition-head";
+import { ldScript } from "@/lib/seo/jsonld";
 import { ArrowRight } from "lucide-react";
 
 /**
