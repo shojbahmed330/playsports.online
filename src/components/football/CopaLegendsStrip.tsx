@@ -25,7 +25,7 @@ export function CopaLegendsStrip() {
                     alt={l.name}
                     loading="lazy"
                     className="h-full w-full object-cover"
-                    onError={(e) = decoding="async"> { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
+                    onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
                   />
                 ) : (
                   <span className="text-4xl" aria-hidden>⭐</span>

@@ -74,7 +74,7 @@ export function EuroLegendsRail() {
                   src={l.image ?? fallback}
                   alt={l.name}
                   loading="lazy"
-                  onError={(e) = decoding="async"> {
+                  onError={(e) => {
                     const img = e.currentTarget;
                     if (img.src !== fallback) img.src = fallback;
                   }}

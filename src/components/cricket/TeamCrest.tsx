@@ -25,7 +25,7 @@ export function TeamCrest({ src, abbr, name, className = "size-8", rounded = fal
         src={src}
         alt={name ?? ""}
         loading="lazy"
-        onError={() = decoding="async"> setFailed(true)}
+        onError={() => setFailed(true)}
         className={`${className} object-contain ${rounded ? "rounded-full" : ""}`}
       />
     );

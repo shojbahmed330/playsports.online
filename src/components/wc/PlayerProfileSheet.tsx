@@ -48,7 +48,7 @@ export function PlayerProfileSheet({
                 src={data.headshot}
                 alt={data.name}
                 className="size-full object-cover"
-                onError={(e) = decoding="async" loading="lazy"> ((e.currentTarget.style.display = "none"))}
+                onError={(e) => ((e.currentTarget.style.display = "none"))}
               />
             ) : (
               <User className="size-7 text-gray-600" />

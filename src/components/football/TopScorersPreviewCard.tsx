@@ -58,7 +58,7 @@ export function TopScorersPreviewCard({ comp }: { comp: Competition }) {
                         src={r.image ?? fallbackAvatar}
                         alt={r.title}
                         loading="lazy"
-                        onError={(e) = decoding="async"> {
+                        onError={(e) => {
                           const img = e.currentTarget;
                           if (img.src !== fallbackAvatar) img.src = fallbackAvatar;
                         }}
