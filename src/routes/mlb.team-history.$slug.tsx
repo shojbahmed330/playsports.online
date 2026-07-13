@@ -1,7 +1,7 @@
 // Phase 3 — MLB per-team World Series history programmatic SEO page.
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { canonical } from "@/lib/seo/canonical";
-import { breadcrumbList, faqPage, ldScript } from "@/lib/seo/jsonld";
+import { breadcrumbList, faqPage, ldScript, sportsTeam } from "@/lib/seo/jsonld";
 import { getMlbTeamHistory, mlbTeamHistorySlugs, type ChampionRow } from "@/lib/seo/multisport-programmatic";
 import { getMlbTeamBySlug } from "@/lib/seo/mlb-entities";
 import { RelatedLinks } from "@/components/seo/RelatedLinks";
