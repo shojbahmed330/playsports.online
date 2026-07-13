@@ -5,6 +5,7 @@
 import goalsData from "@/data/wc_goals.json";
 import goals2026 from "@/data/wc_2026_goals.json";
 import cardsData from "@/data/wc_cards.json";
+import cards2026 from "@/data/wc_2026_cards.json";
 import groupMatches from "@/data/wc_group_matches.json";
 import { CHAMPIONS_OVERRIDE } from "@/lib/champions";
 import type { Sport } from "@/lib/champions";
@@ -25,7 +26,7 @@ type Card = { pid?: string; name: string; team: string; year: number; type?: str
 type Match = { home_team: string; away_team: string; home_score: number; away_score: number; match_date?: string; tournament_year: number; round?: string; stadium?: string; city?: string };
 
 const GOALS = [...(goalsData as Goal[]), ...(goals2026 as Goal[])];
-const CARDS = cardsData as Card[];
+const CARDS = [...(cardsData as Card[]), ...(cards2026 as Card[])];
 const GROUPS = groupMatches as Record<string, Match[]>;
 
 // ---------- TEAMS ----------
