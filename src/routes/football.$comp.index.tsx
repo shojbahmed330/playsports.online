@@ -24,7 +24,17 @@ import { EuroOnThisDayCard } from "@/components/football/EuroOnThisDayCard";
 import { EuroGoldenBootTimeline } from "@/components/football/EuroGoldenBootTimeline";
 import { EuroPopularMatchups } from "@/components/football/EuroPopularMatchups";
 import { MobileJumpNav } from "@/components/football/MobileJumpNav";
+import { CopaHero } from "@/components/football/CopaHero";
+import { CopaFactsGrid } from "@/components/football/CopaFactsGrid";
+import { CopaHonoursStrip } from "@/components/football/CopaHonoursStrip";
+import { CopaGoldenBootTimeline } from "@/components/football/CopaGoldenBootTimeline";
+import { CopaLegendsRail } from "@/components/football/CopaLegendsRail";
+import { CopaPastFinalsStrip } from "@/components/football/CopaPastFinalsStrip";
+import { CopaOnThisDayCard } from "@/components/football/CopaOnThisDayCard";
+import { CopaPopularMatchups } from "@/components/football/CopaPopularMatchups";
+import { copaTitleCounts } from "@/lib/copa-history";
 import { buildCompetitionHead } from "@/lib/competition-head";
+import { ldScript } from "@/lib/seo/jsonld";
 import { ArrowRight } from "lucide-react";
 
 /**
@@ -41,15 +51,32 @@ export const Route = createFileRoute("/football/$comp/")({
   head: ({ params, loaderData }) => {
     const comp = loaderData?.comp ?? getCompetition(params.comp);
     if (!comp) return { meta: [{ title: "Overview" }, { name: "robots", content: "noindex" }] };
-    return buildCompetitionHead({
+    const isCopa = comp.slug === "copa-america";
+    const copaTop = isCopa ? copaTitleCounts()[0] : undefined;
+    const base = buildCompetitionHead({
       comp,
       section: "Overview",
       path: `/football/${comp.slug}`,
-      descriptionOverride: `${comp.name} ${formatSeasonLabel(
-        comp,
-        comp.currentSeason,
-      )} overview — hero facts, honours, top scorers, legends and full archive for ${comp.shortName}.`,
+      descriptionOverride: isCopa
+        ? `Copa América — ${copaTop ? `${copaTop.team} lead with ${copaTop.titles} titles` : "South America's oldest continental trophy"}. Reigning champion Argentina (2024), Messi's crown, every final, every top scorer.`
+        : `${comp.name} ${formatSeasonLabel(
+            comp,
+            comp.currentSeason,
+          )} overview — hero facts, honours, top scorers, legends and full archive for ${comp.shortName}.`,
     });
+    if (!isCopa) return base;
+    const counts = copaTitleCounts();
+    const honoursLD = ldScript({
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      name: "Copa América honours by nation",
+      itemListElement: counts.map((c, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        name: `${c.team} — ${c.titles} Copa América title${c.titles === 1 ? "" : "s"}`,
+      })),
+    });
+    return { ...base, scripts: [...(base.scripts ?? []), honoursLD] };
   },
   component: CompetitionLandingPage,
   notFoundComponent: () => <div className="p-10 text-center">Competition not found.</div>,
@@ -108,11 +135,27 @@ function CompetitionLandingPage() {
             ]}
           />
         </>
+      ) : comp.slug === "copa-america" ? (
+        <>
+          <CopaHero />
+          <MobileJumpNav
+            items={[
+              { id: "facts", label: "Facts" },
+              { id: "honours", label: "Honours" },
+              { id: "golden-boot", label: "Top scorers" },
+              { id: "finals", label: "Finals" },
+              { id: "legends", label: "Legends" },
+              { id: "scorers", label: "Leaders" },
+              { id: "h2h", label: "H2H" },
+            ]}
+          />
+        </>
       ) : (
         isFutureEdition && <CompetitionCountdown comp={comp} />
       )}
 
       {comp.slug === "euro" && <EuroFactsGrid />}
+      {comp.slug === "copa-america" && <CopaFactsGrid />}
 
       {(isFutureEdition || isOffSeason) && (
         <div className="mt-8 sm:mt-10">
@@ -122,6 +165,10 @@ function CompetitionLandingPage() {
 
       {comp.slug === "euro" && <EuroHonoursStrip />}
       {comp.slug === "euro" && <EuroGoldenBootTimeline />}
+
+      {comp.slug === "copa-america" && <CopaHonoursStrip />}
+      {comp.slug === "copa-america" && <CopaGoldenBootTimeline />}
+      {comp.slug === "copa-america" && <CopaPastFinalsStrip />}
 
       {comp.slug === "euro" && comp.currentSeason === 2028 && <Euro2028VenuesCard />}
       {comp.slug === "euro" && (
@@ -135,11 +182,14 @@ function CompetitionLandingPage() {
       </div>
       {comp.slug === "euro" && <EuroLegendsRail />}
       {comp.slug === "euro" && <EuroOnThisDayCard />}
+      {comp.slug === "copa-america" && <CopaLegendsRail />}
+      {comp.slug === "copa-america" && <CopaOnThisDayCard />}
       <ChampionsTimelineWidget comp={comp} />
       <CompetitionNewsRail comp={comp} />
       <div id="h2h" className="scroll-mt-24">
         <CompetitionH2HPicker comp={comp} />
         {comp.slug === "euro" && <EuroPopularMatchups />}
+        {comp.slug === "copa-america" && <CopaPopularMatchups />}
       </div>
       <QuickLinks comp={comp} />
     </CompetitionPageShell>
