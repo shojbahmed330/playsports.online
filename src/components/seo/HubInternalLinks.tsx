@@ -150,7 +150,12 @@ export function HubInternalLinks({
           ))}
         </ul>
       </nav>
-      {showPopular && <PopularSearches limit={10} />}
+      {showPopular && (
+        <PopularSearches
+          limit={10}
+          sport={sport === "ipl" ? "ipl" : sport === "live" ? undefined : sport}
+        />
+      )}
     </section>
   );
 }
