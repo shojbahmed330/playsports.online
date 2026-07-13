@@ -1,7 +1,7 @@
 // Phase 3 — MLS per-club MLS Cup history programmatic SEO page.
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { canonical } from "@/lib/seo/canonical";
-import { breadcrumbList, faqPage, ldScript } from "@/lib/seo/jsonld";
+import { breadcrumbList, faqPage, ldScript, sportsTeam } from "@/lib/seo/jsonld";
 import { getMlsTeamHistory, type ChampionRow } from "@/lib/seo/multisport-programmatic";
 import { getMlsTeamBySlug } from "@/lib/seo/mls-entities";
 import { RelatedLinks } from "@/components/seo/RelatedLinks";
