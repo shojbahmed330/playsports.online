@@ -61,7 +61,7 @@ function eventToGoalRow(e: Wc2026PlayerEvent): GoalRow | null {
 export function useMergedGoals() {
   const fn = useServerFn(getWc2026PlayerEvents);
   const q = useQuery({
-    queryKey: ["wc2026", "player-events", "goals"],
+    queryKey: ["wc2026", "player-events"],
     queryFn: () => fn(),
     staleTime: 60 * 60 * 1000,
     retry: 1,
