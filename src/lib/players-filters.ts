@@ -41,20 +41,21 @@ export const ERA_YEARS: Record<Exclude<Era, "ALL">, number[]> = {
 // so deep links stay short and TanStack's zod adapter stays happy.
 const csv = (s: string): string[] =>
   s.split(",").map((x) => x.trim()).filter(Boolean);
+const searchString = z.preprocess((value) => value == null ? "" : String(value), z.string());
 
 export const playersSearchSchema = z.object({
   tab: fallback(z.enum(PLAYER_TABS), "overview").default("overview"),
-  q: fallback(z.string(), "").default(""),
-  years: fallback(z.string(), "").default(""), // CSV of years
-  countries: fallback(z.string(), "").default(""), // CSV of countries
-  confeds: fallback(z.string(), "").default(""), // CSV of confederations
+  q: fallback(searchString, "").default(""),
+  years: fallback(searchString, "").default(""), // CSV of years
+  countries: fallback(searchString, "").default(""), // CSV of countries
+  confeds: fallback(searchString, "").default(""), // CSV of confederations
   pos: fallback(z.enum(POSITIONS), "ALL").default("ALL"),
   era: fallback(z.enum(ERAS), "ALL").default("ALL"),
   goalType: fallback(z.enum(GOAL_TYPES), "ALL").default("ALL"),
   minGoals: fallback(z.number().int().min(1).max(20), 1).default(1),
   sort: fallback(z.enum(SORTS), "goals").default("goals"),
-  player: fallback(z.string(), "").default(""), // "Name||Country"
-  compare: fallback(z.string(), "").default(""), // "Name||Country" entries joined by ;;
+  player: fallback(searchString, "").default(""), // "Name||Country"
+  compare: fallback(searchString, "").default(""), // "Name||Country" entries joined by ;;
 });
 
 export type PlayersSearch = {
