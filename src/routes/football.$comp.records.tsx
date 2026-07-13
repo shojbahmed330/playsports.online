@@ -3,7 +3,9 @@ import { getCompetition, requireCompetition } from "@/lib/competitions";
 import { CompetitionPageShell } from "@/components/football/CompetitionPageShell";
 import { buildCompetitionHead } from "@/lib/competition-head";
 import { EuroRecordsPage } from "@/components/football/EuroRecordsPage";
+import { CopaRecordsPage } from "@/components/football/CopaRecordsPage";
 import { EURO_TOP_SCORERS } from "@/lib/euro-records";
+import { COPA_TOP_SCORERS_LB } from "@/lib/copa-records";
 import { Goal, Trophy, Users, Award, CalendarRange } from "lucide-react";
 
 const CATEGORIES = [
@@ -50,6 +52,34 @@ export const Route = createFileRoute("/football/$comp/records")({
         scripts: [{ type: "application/ld+json", children: JSON.stringify(itemList) }],
       };
     }
+    if (comp.slug === "copa-america") {
+      const title = "Copa América Records — Top Scorers, Most Titles, Golden Boot & Firsts";
+      const description =
+        "Every Copa América record — Méndez & Zizinho's 17 goals, Argentina's 16 titles, Messi's 39 appearances and every historical first since 1916.";
+      const url = "https://allsportslive.lovable.app/football/copa-america/records";
+      const itemList = {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        name: "Copa América all-time top scorers",
+        itemListElement: COPA_TOP_SCORERS_LB.map((r) => ({
+          "@type": "ListItem",
+          position: r.rank,
+          name: `${r.name} (${r.nation}) — ${r.value} goals`,
+        })),
+      };
+      return {
+        meta: [
+          { title },
+          { name: "description", content: description },
+          { property: "og:title", content: title },
+          { property: "og:description", content: description },
+          { property: "og:url", content: url },
+          { property: "og:type", content: "website" },
+        ],
+        links: [{ rel: "canonical", href: url }],
+        scripts: [{ type: "application/ld+json", children: JSON.stringify(itemList) }],
+      };
+    }
     return buildCompetitionHead({
       comp,
       section: "Records",
@@ -65,6 +95,7 @@ function RecordsRoute() {
   const { comp: raw } = Route.useLoaderData();
   const comp = requireCompetition(raw.slug);
   if (comp.slug === "euro") return <EuroRecordsPage />;
+  if (comp.slug === "copa-america") return <CopaRecordsPage />;
   return <GenericRecordsPage />;
 }
 
