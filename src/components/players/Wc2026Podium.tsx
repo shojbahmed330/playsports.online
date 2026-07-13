@@ -34,7 +34,7 @@ export function Wc2026Podium({
         </div>
         <div className="mt-3 text-sm font-bold text-white">Live race starts once matches kick off</div>
         <div className="text-xs text-white/60 mt-1">
-          2026 scorers will merge in here automatically as goals happen.
+          2026 scorers will appear from official ESPN scoring events.
         </div>
       </section>
     );
