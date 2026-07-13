@@ -31,7 +31,6 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AdsDottxtRouteImport } from './routes/ads[.]txt'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AboutRouteImport } from './routes/about'
-import { Route as KeyRouteImport } from './routes/$key'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as NhlIndexRouteImport } from './routes/nhl.index'
 import { Route as NbaIndexRouteImport } from './routes/nba.index'
@@ -281,11 +280,6 @@ const AdminRoute = AdminRouteImport.update({
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const KeyRoute = KeyRouteImport.update({
-  id: '/$key',
-  path: '/$key',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -1001,7 +995,6 @@ const FootballCompTeamsTeamIdSeasonChar123yearChar125Route =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/$key': typeof KeyRoute
   '/about': typeof AboutRoute
   '/admin': typeof AdminRoute
   '/ads.txt': typeof AdsDottxtRoute
@@ -1166,7 +1159,6 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/$key': typeof KeyRoute
   '/about': typeof AboutRoute
   '/admin': typeof AdminRoute
   '/ads.txt': typeof AdsDottxtRoute
@@ -1325,7 +1317,6 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/$key': typeof KeyRoute
   '/about': typeof AboutRoute
   '/admin': typeof AdminRoute
   '/ads.txt': typeof AdsDottxtRoute
@@ -1492,7 +1483,6 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/$key'
     | '/about'
     | '/admin'
     | '/ads.txt'
@@ -1657,7 +1647,6 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/$key'
     | '/about'
     | '/admin'
     | '/ads.txt'
@@ -1815,7 +1804,6 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
-    | '/$key'
     | '/about'
     | '/admin'
     | '/ads.txt'
@@ -1981,7 +1969,6 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  KeyRoute: typeof KeyRoute
   AboutRoute: typeof AboutRoute
   AdminRoute: typeof AdminRoute
   AdsDottxtRoute: typeof AdsDottxtRoute
@@ -2176,13 +2163,6 @@ declare module '@tanstack/react-router' {
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof AboutRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/$key': {
-      id: '/$key'
-      path: '/$key'
-      fullPath: '/$key'
-      preLoaderRoute: typeof KeyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -3587,7 +3567,6 @@ const NhlRouteWithChildren = NhlRoute._addFileChildren(NhlRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  KeyRoute: KeyRoute,
   AboutRoute: AboutRoute,
   AdminRoute: AdminRoute,
   AdsDottxtRoute: AdsDottxtRoute,
