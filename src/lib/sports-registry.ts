@@ -28,6 +28,16 @@ export type SportRegistryEntry = {
 const espn = "https://site.api.espn.com/apis/site/v2/sports";
 const espnCore = "https://site.web.api.espn.com/apis/common/v3/sports";
 
+function worldCupRange() {
+  const { FOOTBALL_WC, liveWcYear } = require("@/lib/tournament-config") as typeof import("@/lib/tournament-config");
+  const season = liveWcYear();
+  const window = FOOTBALL_WC.seasonWindows[season];
+  return {
+    season,
+    dates: window ? `${window.start.replace(/-/g, "")}-${window.end.replace(/-/g, "")}` : "20260611-20260719",
+  };
+}
+
 // Football (World Cup + friendlies). tournament-config resolves the live WC.
 export const FOOTBALL_WC_SEASON = () => {
   // Late import so client bundles don't pull server-only chains.
@@ -40,15 +50,17 @@ export const FOOTBALL_WC_SEASON = () => {
 };
 
 export const SPORTS: SportRegistryEntry[] = [
-  {
-    id: "football",
-    label: "FIFA World Cup",
-    warmup: [
-      `${espn}/soccer/fifa.world/scoreboard`,
-      `${espn}/soccer/fifa.world/standings`,
-      // top scorers pulled via getWc2026TopScorers server fn which uses cache
-    ],
-  },
+  (() => {
+    const wc = worldCupRange();
+    return {
+      id: "football",
+      label: "FIFA World Cup",
+      warmup: [
+        `${espn}/soccer/fifa.world/scoreboard?dates=${wc.dates}&limit=200`,
+        `${espnCore}/soccer/fifa.world/standings?season=${wc.season}`,
+      ],
+    };
+  })(),
   {
     id: "euro",
     label: "UEFA EURO",
