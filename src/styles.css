@@ -248,3 +248,102 @@
   -ms-overflow-style: none;
   &::-webkit-scrollbar { display: none; }
 }
+
+/* ── Guide article typography (custom, since @tailwindcss/typography is not installed) ── */
+.guide-content {
+  font-size: 1.0625rem;
+  line-height: 1.75;
+  color: var(--foreground);
+}
+.guide-content > * + * { margin-top: 1.25em; }
+.guide-content h2 {
+  font-size: 1.625rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+  margin-top: 2.5em;
+  margin-bottom: 0.75em;
+  color: var(--foreground);
+  padding-bottom: 0.4em;
+  border-bottom: 1px solid var(--border);
+}
+.guide-content h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-top: 2em;
+  margin-bottom: 0.5em;
+  color: var(--foreground);
+}
+.guide-content p {
+  color: color-mix(in oklab, var(--foreground) 88%, transparent);
+}
+.guide-content strong { color: var(--foreground); font-weight: 600; }
+.guide-content a {
+  color: var(--primary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
+.guide-content a:hover { text-decoration-thickness: 2px; }
+.guide-content ul, .guide-content ol {
+  padding-left: 0;
+  list-style: none;
+}
+.guide-content ul > li, .guide-content ol > li {
+  position: relative;
+  padding-left: 1.75rem;
+  margin-top: 0.6em;
+  color: color-mix(in oklab, var(--foreground) 88%, transparent);
+}
+.guide-content ul > li::before {
+  content: "";
+  position: absolute;
+  left: 0.35rem;
+  top: 0.75em;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--primary);
+}
+.guide-content ol { counter-reset: guide-ol; }
+.guide-content ol > li { counter-increment: guide-ol; }
+.guide-content ol > li::before {
+  content: counter(guide-ol);
+  position: absolute;
+  left: 0;
+  top: 0.15em;
+  width: 1.4rem;
+  height: 1.4rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--primary) 15%, transparent);
+  color: var(--primary);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+.guide-content blockquote {
+  border-left: 3px solid var(--primary);
+  padding: 0.25rem 0 0.25rem 1rem;
+  font-style: italic;
+  color: var(--muted-foreground);
+}
+.guide-content code {
+  background: var(--muted);
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+.guide-content table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+.guide-content th, .guide-content td {
+  border: 1px solid var(--border);
+  padding: 0.6rem 0.85rem;
+  text-align: left;
+}
+.guide-content th { background: var(--muted); font-weight: 600; }
+
