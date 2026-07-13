@@ -1,7 +1,7 @@
 // Phase 3 — NHL per-team Stanley Cup history programmatic SEO page.
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { canonical } from "@/lib/seo/canonical";
-import { breadcrumbList, faqPage, ldScript } from "@/lib/seo/jsonld";
+import { breadcrumbList, faqPage, ldScript, sportsTeam } from "@/lib/seo/jsonld";
 import { getNhlTeamHistory, type ChampionRow } from "@/lib/seo/multisport-programmatic";
 import { getNhlTeamBySlug } from "@/lib/seo/nhl-entities";
 import { RelatedLinks } from "@/components/seo/RelatedLinks";
