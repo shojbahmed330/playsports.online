@@ -135,11 +135,27 @@ function CompetitionLandingPage() {
             ]}
           />
         </>
+      ) : comp.slug === "copa-america" ? (
+        <>
+          <CopaHero />
+          <MobileJumpNav
+            items={[
+              { id: "facts", label: "Facts" },
+              { id: "honours", label: "Honours" },
+              { id: "golden-boot", label: "Top scorers" },
+              { id: "finals", label: "Finals" },
+              { id: "legends", label: "Legends" },
+              { id: "scorers", label: "Leaders" },
+              { id: "h2h", label: "H2H" },
+            ]}
+          />
+        </>
       ) : (
         isFutureEdition && <CompetitionCountdown comp={comp} />
       )}
 
       {comp.slug === "euro" && <EuroFactsGrid />}
+      {comp.slug === "copa-america" && <CopaFactsGrid />}
 
       {(isFutureEdition || isOffSeason) && (
         <div className="mt-8 sm:mt-10">
@@ -149,6 +165,10 @@ function CompetitionLandingPage() {
 
       {comp.slug === "euro" && <EuroHonoursStrip />}
       {comp.slug === "euro" && <EuroGoldenBootTimeline />}
+
+      {comp.slug === "copa-america" && <CopaHonoursStrip />}
+      {comp.slug === "copa-america" && <CopaGoldenBootTimeline />}
+      {comp.slug === "copa-america" && <CopaPastFinalsStrip />}
 
       {comp.slug === "euro" && comp.currentSeason === 2028 && <Euro2028VenuesCard />}
       {comp.slug === "euro" && (
@@ -162,11 +182,14 @@ function CompetitionLandingPage() {
       </div>
       {comp.slug === "euro" && <EuroLegendsRail />}
       {comp.slug === "euro" && <EuroOnThisDayCard />}
+      {comp.slug === "copa-america" && <CopaLegendsRail />}
+      {comp.slug === "copa-america" && <CopaOnThisDayCard />}
       <ChampionsTimelineWidget comp={comp} />
       <CompetitionNewsRail comp={comp} />
       <div id="h2h" className="scroll-mt-24">
         <CompetitionH2HPicker comp={comp} />
         {comp.slug === "euro" && <EuroPopularMatchups />}
+        {comp.slug === "copa-america" && <CopaPopularMatchups />}
       </div>
       <QuickLinks comp={comp} />
     </CompetitionPageShell>
