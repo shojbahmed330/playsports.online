@@ -14,7 +14,7 @@ export const Route = createFileRoute("/$key.txt")({
     handlers: {
       GET: async ({ params }) => {
         const key = process.env.INDEXNOW_KEY;
-        const requested = (params as { "key.txt": string })["key.txt"];
+        const requested = (params as unknown as { "key.txt": string })["key.txt"];
         if (!key || requested !== key) {
           return new Response("Not Found", { status: 404 });
         }
