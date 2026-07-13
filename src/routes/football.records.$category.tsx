@@ -1,10 +1,10 @@
 import { createFileRoute, notFound, Link } from "@tanstack/react-router";
-import { listPlayers, playerStats, slugify } from "@/lib/seo/programmatic";
+import { listPlayers, playerStats } from "@/lib/seo/programmatic";
 import wcRecords from "@/data/wc_records.json";
 import { useMergedGoals } from "@/lib/use-merged-goals";
 import { useMergedCards } from "@/lib/use-merged-cards";
 import { canonical } from "@/lib/seo/canonical";
-import { breadcrumbList, collectionPage, faqPage, itemList, ldScript } from "@/lib/seo/jsonld";
+import { breadcrumbList, collectionPage, faqPage, ldScript } from "@/lib/seo/jsonld";
 
 type Category = {
   slug: string;
