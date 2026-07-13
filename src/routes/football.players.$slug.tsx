@@ -1,4 +1,5 @@
 import { createFileRoute, notFound, Link } from "@tanstack/react-router";
+import { useMemo } from "react";
 import { findPlayer, playerStats, listPlayers, slugify } from "@/lib/seo/programmatic";
 import { getPlayerStatHistory } from "@/lib/seo/leaderboards";
 import { canonical } from "@/lib/seo/canonical";
