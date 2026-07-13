@@ -28,6 +28,7 @@ export type SportRegistryEntry = {
 };
 
 const espn = "https://site.api.espn.com/apis/site/v2/sports";
+const espnV2 = "https://site.api.espn.com/apis/v2/sports";
 const espnCore = "https://site.web.api.espn.com/apis/common/v3/sports";
 
 function worldCupRange() {
@@ -58,7 +59,7 @@ export const SPORTS: SportRegistryEntry[] = [
       label: "FIFA World Cup",
       warmup: [
         `${espn}/soccer/fifa.world/scoreboard?dates=${wc.dates}&limit=200`,
-        `${espnCore}/soccer/fifa.world/standings?season=${wc.season}`,
+        `${espnV2}/soccer/fifa.world/standings?season=${wc.season}`,
       ],
     };
   })(),
