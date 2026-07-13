@@ -3,12 +3,13 @@ import { Sparkles, Trophy, Zap, Crown, Flame, Target } from "lucide-react";
 import records from "@/data/wc_records.json";
 import { flagOf } from "@/lib/flags";
 import { useMergedGoals } from "@/lib/use-merged-goals";
+import { useMergedCards } from "@/lib/use-merged-cards";
 
 const TOURNAMENT_TOTALS = (records as { tournamentTotals?: { year: number; goals: number; matches: number; note?: string }[] }).tournamentTotals ?? [];
-const CURATED_2026 = (records as { curated2026?: { title: string; value: string; context: string }[] }).curated2026 ?? [];
 
 export function RecordsPanel() {
   const { goals: GOALS } = useMergedGoals();
+  const { cards: CARDS } = useMergedCards();
 
   const derived = useMemo(() => {
     // Per-player, per-year goal totals
@@ -26,13 +27,42 @@ export function RecordsPanel() {
     const hatTrick = arr.filter((x) => x.goals >= 3).slice(0, 8);
     const goldenBoot2026 = arr.filter((x) => x.year === 2026).slice(0, 10);
 
-    // Prefer deterministic tournamentTotals from records.json for the
-    // "Highest-scoring tournaments" list — dataset-derived counts under-count
-    // when we don't seed every single goal.
-    const totals = [...TOURNAMENT_TOTALS].sort((a, b) => b.goals - a.goals).slice(0, 6);
+    const goals2026 = GOALS.filter((g) => g.year === 2026 && !g.og);
+    const penalties2026 = goals2026.filter((g) => g.pen).length;
+    const yellow2026 = CARDS.filter((c) => c.year === 2026 && c.type === "yellow").length;
+    const red2026 = CARDS.filter((c) => c.year === 2026 && c.type === "red").length;
+    const leaders = goldenBoot2026.filter((p) => p.goals === goldenBoot2026[0]?.goals).slice(0, 3);
+    const liveCards = [
+      {
+        title: "2026 Golden Boot leader",
+        value: leaders.length ? `${goldenBoot2026[0].goals} — ${leaders.map((p) => p.name).join(" / ")}` : "No goals yet",
+        context: leaders.length ? leaders.map((p) => p.country).join(" / ") : "Waiting for official match events",
+      },
+      {
+        title: "2026 goals recorded",
+        value: String(goals2026.length),
+        context: "From ESPN scoring events, excluding own goals and shoot-outs",
+      },
+      {
+        title: "2026 penalty goals",
+        value: String(penalties2026),
+        context: "Only converted penalties during match play",
+      },
+      {
+        title: "2026 cards recorded",
+        value: `${yellow2026} yellow · ${red2026} red`,
+        context: "From ESPN disciplinary events",
+      },
+    ];
 
-    return { topSingleYear, hatTrick, goldenBoot2026, totals };
-  }, [GOALS]);
+    const totals = [...TOURNAMENT_TOTALS]
+      .filter((t) => t.year !== 2026)
+      .concat([{ year: 2026, goals: goals2026.length, matches: 104, note: "Live from ESPN events" }])
+      .sort((a, b) => b.goals - a.goals)
+      .slice(0, 6);
+
+    return { topSingleYear, hatTrick, goldenBoot2026, totals, liveCards };
+  }, [GOALS, CARDS]);
 
   return (
     <div className="space-y-6">
@@ -45,11 +75,11 @@ export function RecordsPanel() {
           </div>
           <span className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-wider text-emerald-400 font-bold">
             <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            Live · Updated Jul 12, 2026
+            Live from ESPN events
           </span>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-          {CURATED_2026.map((r) => (
+          {derived.liveCards.map((r) => (
             <div
               key={r.title}
               className="rounded-xl bg-background/80 border border-border p-4 hover:border-gold/60 transition-colors"
@@ -94,7 +124,7 @@ export function RecordsPanel() {
           </div>
           {derived.goldenBoot2026.length === 0 ? (
             <div className="text-xs text-muted-foreground py-4">
-              No goals seeded yet. Check back once the tournament kicks off.
+              No official scoring events yet.
             </div>
           ) : (
             <ol className="divide-y divide-border">
