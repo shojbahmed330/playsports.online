@@ -31,6 +31,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AdsDottxtRouteImport } from './routes/ads[.]txt'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as KeyRouteImport } from './routes/$key'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as NhlIndexRouteImport } from './routes/nhl.index'
 import { Route as NbaIndexRouteImport } from './routes/nba.index'
@@ -154,6 +155,7 @@ import { Route as CricketIplHistoryRouteImport } from './routes/cricket.ipl.hist
 import { Route as CricketHighlightsSlugRouteImport } from './routes/cricket.highlights.$slug'
 import { Route as ArchiveSportYearRouteImport } from './routes/archive.$sport.$year'
 import { Route as ApiPublicTrackClickRouteImport } from './routes/api/public/track-click'
+import { Route as ApiPublicIndexnowPingRouteImport } from './routes/api/public/indexnow-ping'
 import { Route as CricketIplTeamsIndexRouteImport } from './routes/cricket.ipl.teams.index'
 import { Route as FootballPlayersSlugWorldCupChar123yearChar125RouteImport } from './routes/football.players.$slug.world-cup-{$year}'
 import { Route as FootballPlayersSlugStatRouteImport } from './routes/football.players.$slug.$stat'
@@ -279,6 +281,11 @@ const AdminRoute = AdminRouteImport.update({
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KeyRoute = KeyRouteImport.update({
+  id: '/$key',
+  path: '/$key',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -898,6 +905,11 @@ const ApiPublicTrackClickRoute = ApiPublicTrackClickRouteImport.update({
   path: '/api/public/track-click',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicIndexnowPingRoute = ApiPublicIndexnowPingRouteImport.update({
+  id: '/api/public/indexnow-ping',
+  path: '/api/public/indexnow-ping',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CricketIplTeamsIndexRoute = CricketIplTeamsIndexRouteImport.update({
   id: '/ipl/teams/',
   path: '/ipl/teams/',
@@ -989,6 +1001,7 @@ const FootballCompTeamsTeamIdSeasonChar123yearChar125Route =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/$key': typeof KeyRoute
   '/about': typeof AboutRoute
   '/admin': typeof AdminRoute
   '/ads.txt': typeof AdsDottxtRoute
@@ -1056,6 +1069,7 @@ export interface FileRoutesByFullPath {
   '/mls/': typeof MlsIndexRoute
   '/nba/': typeof NbaIndexRoute
   '/nhl/': typeof NhlIndexRoute
+  '/api/public/indexnow-ping': typeof ApiPublicIndexnowPingRoute
   '/api/public/track-click': typeof ApiPublicTrackClickRoute
   '/archive/$sport/$year': typeof ArchiveSportYearRoute
   '/cricket/highlights/$slug': typeof CricketHighlightsSlugRoute
@@ -1152,6 +1166,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/$key': typeof KeyRoute
   '/about': typeof AboutRoute
   '/admin': typeof AdminRoute
   '/ads.txt': typeof AdsDottxtRoute
@@ -1212,6 +1227,7 @@ export interface FileRoutesByTo {
   '/mls': typeof MlsIndexRoute
   '/nba': typeof NbaIndexRoute
   '/nhl': typeof NhlIndexRoute
+  '/api/public/indexnow-ping': typeof ApiPublicIndexnowPingRoute
   '/api/public/track-click': typeof ApiPublicTrackClickRoute
   '/archive/$sport/$year': typeof ArchiveSportYearRoute
   '/cricket/highlights/$slug': typeof CricketHighlightsSlugRoute
@@ -1309,6 +1325,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/$key': typeof KeyRoute
   '/about': typeof AboutRoute
   '/admin': typeof AdminRoute
   '/ads.txt': typeof AdsDottxtRoute
@@ -1376,6 +1393,7 @@ export interface FileRoutesById {
   '/mls/': typeof MlsIndexRoute
   '/nba/': typeof NbaIndexRoute
   '/nhl/': typeof NhlIndexRoute
+  '/api/public/indexnow-ping': typeof ApiPublicIndexnowPingRoute
   '/api/public/track-click': typeof ApiPublicTrackClickRoute
   '/archive/$sport/$year': typeof ArchiveSportYearRoute
   '/cricket/highlights/$slug': typeof CricketHighlightsSlugRoute
@@ -1474,6 +1492,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/$key'
     | '/about'
     | '/admin'
     | '/ads.txt'
@@ -1541,6 +1560,7 @@ export interface FileRouteTypes {
     | '/mls/'
     | '/nba/'
     | '/nhl/'
+    | '/api/public/indexnow-ping'
     | '/api/public/track-click'
     | '/archive/$sport/$year'
     | '/cricket/highlights/$slug'
@@ -1637,6 +1657,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/$key'
     | '/about'
     | '/admin'
     | '/ads.txt'
@@ -1697,6 +1718,7 @@ export interface FileRouteTypes {
     | '/mls'
     | '/nba'
     | '/nhl'
+    | '/api/public/indexnow-ping'
     | '/api/public/track-click'
     | '/archive/$sport/$year'
     | '/cricket/highlights/$slug'
@@ -1793,6 +1815,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/$key'
     | '/about'
     | '/admin'
     | '/ads.txt'
@@ -1860,6 +1883,7 @@ export interface FileRouteTypes {
     | '/mls/'
     | '/nba/'
     | '/nhl/'
+    | '/api/public/indexnow-ping'
     | '/api/public/track-click'
     | '/archive/$sport/$year'
     | '/cricket/highlights/$slug'
@@ -1957,6 +1981,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  KeyRoute: typeof KeyRoute
   AboutRoute: typeof AboutRoute
   AdminRoute: typeof AdminRoute
   AdsDottxtRoute: typeof AdsDottxtRoute
@@ -1984,6 +2009,7 @@ export interface RootRouteChildren {
   LiveSportRoute: typeof LiveSportRoute
   LiveTodayRoute: typeof LiveTodayRoute
   HighlightsIndexRoute: typeof HighlightsIndexRoute
+  ApiPublicIndexnowPingRoute: typeof ApiPublicIndexnowPingRoute
   ApiPublicTrackClickRoute: typeof ApiPublicTrackClickRoute
   ArchiveSportYearRoute: typeof ArchiveSportYearRoute
   OgTypeSlugDotsvgRoute: typeof OgTypeSlugDotsvgRoute
@@ -2150,6 +2176,13 @@ declare module '@tanstack/react-router' {
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/$key': {
+      id: '/$key'
+      path: '/$key'
+      fullPath: '/$key'
+      preLoaderRoute: typeof KeyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -3013,6 +3046,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicTrackClickRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/indexnow-ping': {
+      id: '/api/public/indexnow-ping'
+      path: '/api/public/indexnow-ping'
+      fullPath: '/api/public/indexnow-ping'
+      preLoaderRoute: typeof ApiPublicIndexnowPingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/cricket/ipl/teams/': {
       id: '/cricket/ipl/teams/'
       path: '/ipl/teams'
@@ -3547,6 +3587,7 @@ const NhlRouteWithChildren = NhlRoute._addFileChildren(NhlRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  KeyRoute: KeyRoute,
   AboutRoute: AboutRoute,
   AdminRoute: AdminRoute,
   AdsDottxtRoute: AdsDottxtRoute,
@@ -3574,6 +3615,7 @@ const rootRouteChildren: RootRouteChildren = {
   LiveSportRoute: LiveSportRoute,
   LiveTodayRoute: LiveTodayRoute,
   HighlightsIndexRoute: HighlightsIndexRoute,
+  ApiPublicIndexnowPingRoute: ApiPublicIndexnowPingRoute,
   ApiPublicTrackClickRoute: ApiPublicTrackClickRoute,
   ArchiveSportYearRoute: ArchiveSportYearRoute,
   OgTypeSlugDotsvgRoute: OgTypeSlugDotsvgRoute,
