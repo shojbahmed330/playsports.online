@@ -160,8 +160,8 @@ function FootballPlayerPage() {
               <div className="p-6 text-sm text-muted-foreground">No World Cup goals on record.</div>
             ) : (
               <ul className="divide-y divide-border">
-                {stats.byYear.map((y) => {
-                  const row = hist?.rows.find((r) => r.year === y.year);
+                {stats.byYear.map((y: { year: number; goals: number }) => {
+                  const row = hist?.rows.find((r: { year: number }) => r.year === y.year);
                   const isLive = y.year === 2026;
                   return (
                     <li key={y.year}>
