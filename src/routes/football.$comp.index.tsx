@@ -51,15 +51,32 @@ export const Route = createFileRoute("/football/$comp/")({
   head: ({ params, loaderData }) => {
     const comp = loaderData?.comp ?? getCompetition(params.comp);
     if (!comp) return { meta: [{ title: "Overview" }, { name: "robots", content: "noindex" }] };
-    return buildCompetitionHead({
+    const isCopa = comp.slug === "copa-america";
+    const copaTop = isCopa ? copaTitleCounts()[0] : undefined;
+    const base = buildCompetitionHead({
       comp,
       section: "Overview",
       path: `/football/${comp.slug}`,
-      descriptionOverride: `${comp.name} ${formatSeasonLabel(
-        comp,
-        comp.currentSeason,
-      )} overview — hero facts, honours, top scorers, legends and full archive for ${comp.shortName}.`,
+      descriptionOverride: isCopa
+        ? `Copa América — ${copaTop ? `${copaTop.team} lead with ${copaTop.titles} titles` : "South America's oldest continental trophy"}. Reigning champion Argentina (2024), Messi's crown, every final, every top scorer.`
+        : `${comp.name} ${formatSeasonLabel(
+            comp,
+            comp.currentSeason,
+          )} overview — hero facts, honours, top scorers, legends and full archive for ${comp.shortName}.`,
     });
+    if (!isCopa) return base;
+    const counts = copaTitleCounts();
+    const honoursLD = ldScript({
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      name: "Copa América honours by nation",
+      itemListElement: counts.map((c, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        name: `${c.team} — ${c.titles} Copa América title${c.titles === 1 ? "" : "s"}`,
+      })),
+    });
+    return { ...base, scripts: [...(base.scripts ?? []), honoursLD] };
   },
   component: CompetitionLandingPage,
   notFoundComponent: () => <div className="p-10 text-center">Competition not found.</div>,
