@@ -30,7 +30,7 @@ type Match = {
   city?: string;
 };
 
-const GOALS = goalsData as Goal[];
+const GOALS = [...(goalsData as Goal[]), ...(goals2026 as Goal[])];
 const GROUPS = groupMatches as Record<string, Match[]>;
 
 // ============ TOP SCORERS ============
