@@ -94,7 +94,7 @@ export function CricketPlayerSheet({ athleteId, leagueId, onClose }: Props) {
                       src={p.headshot}
                       alt={p.name}
                       className="size-24 rounded-2xl object-cover bg-emerald-900/60 ring-2 ring-emerald-400/30 shadow-lg"
-                      onError={(e) => ((e.currentTarget.style.display = "none"))}
+                      onError={(e) = decoding="async" loading="lazy"> ((e.currentTarget.style.display = "none"))}
                     />
                   ) : (
                     <div className="size-24 rounded-2xl bg-emerald-900/60 ring-2 ring-emerald-400/30 grid place-items-center text-3xl">

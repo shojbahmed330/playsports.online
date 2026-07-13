@@ -82,7 +82,7 @@ function RelatedTeams({ currentSlug, conference }: { currentSlug: string; confer
               params={{ slug: t.slug }}
               className="flex items-center gap-2 rounded-xl bg-white/[0.03] hover:bg-white/[0.07] ring-1 ring-border p-2.5"
             >
-              <img src={t.logo} alt="" className="size-6 object-contain" loading="lazy" />
+              <img src={t.logo} alt="" className="size-6 object-contain" loading="lazy" / decoding="async">
               <span className="text-sm font-semibold text-white truncate">{t.short}</span>
             </Link>
           </li>

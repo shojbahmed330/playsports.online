@@ -21,7 +21,7 @@ export function EuroRisingStars() {
                   src={s.image ?? fallback}
                   alt={s.name}
                   loading="lazy"
-                  onError={(e) => {
+                  onError={(e) = decoding="async"> {
                     const img = e.currentTarget;
                     if (img.src !== fallback) img.src = fallback;
                   }}

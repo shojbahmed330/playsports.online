@@ -154,7 +154,7 @@ function MlsToday() {
                   {c.rows.map((r, i) => (
                     <li key={r.teamId} className="flex items-center gap-3 px-4 py-2 text-sm">
                       <span className="w-5 text-xs tabular-nums text-muted-foreground">{i + 1}</span>
-                      {r.logo && <img src={r.logo} alt="" className="size-5 object-contain" loading="lazy" />}
+                      {r.logo && <img src={r.logo} alt="" className="size-5 object-contain" loading="lazy" / decoding="async">}
                       <Link to="/mls/team/$id" params={{ id: r.teamId }} className="flex-1 truncate font-medium text-white hover:text-orange-300 transition">
                         {r.shortName || r.team}
                       </Link>
@@ -188,7 +188,7 @@ function MlsToday() {
                  className="group rounded-2xl ring-1 ring-border bg-card overflow-hidden hover:ring-orange-400/40 transition">
                 {n.image && (
                   <div className="aspect-[16/9] overflow-hidden bg-background">
-                    <img src={n.image} alt="" loading="lazy" className="size-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                    <img src={n.image} alt="" loading="lazy" className="size-full object-cover group-hover:scale-105 transition-transform duration-500" / decoding="async">
                   </div>
                 )}
                 <div className="p-3">

@@ -115,7 +115,7 @@ function CricketTeamProfile() {
 
         <header className="flex items-center gap-4 mb-8">
           {team.logo ? (
-            <img src={team.logo} alt="" className="w-16 h-16 rounded-lg" loading="eager" />
+            <img src={team.logo} alt="" className="w-16 h-16 rounded-lg" loading="eager" / decoding="async">
           ) : team.flag ? (
             <span className="text-5xl" aria-hidden>{team.flag}</span>
           ) : null}

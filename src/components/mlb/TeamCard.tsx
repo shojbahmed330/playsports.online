@@ -21,7 +21,7 @@ export function TeamCard({ team }: { team: MlbTeam }) {
       <div className="relative p-4 flex items-center gap-3">
         <div className="size-14 grid place-items-center rounded-xl bg-white/5 ring-1 ring-white/10 shrink-0">
           {team.logo ? (
-            <img src={team.logo} alt={team.name} className="size-11 object-contain" loading="lazy" />
+            <img src={team.logo} alt={team.name} className="size-11 object-contain" loading="lazy" / decoding="async">
           ) : (
             <span className="text-xs font-bold">{team.abbr}</span>
           )}

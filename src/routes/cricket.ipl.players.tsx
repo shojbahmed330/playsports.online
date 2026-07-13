@@ -125,7 +125,7 @@ function PlayersPage() {
               <li key={p.athleteId} className="grid grid-cols-[28px_44px_minmax(0,1fr)_60px_56px] items-center gap-2 px-3 py-2 text-sm">
                 <span className="text-center text-[11px] font-black text-white/50">{p.rank}</span>
                 {p.headshot ? (
-                  <img src={p.headshot} alt="" className="h-9 w-9 rounded-full object-cover bg-gray-800 ring-1 ring-white/10" loading="lazy" />
+                  <img src={p.headshot} alt="" className="h-9 w-9 rounded-full object-cover bg-gray-800 ring-1 ring-white/10" loading="lazy" / decoding="async">
                 ) : (
                   <span className="grid h-9 w-9 place-items-center rounded-full bg-gray-800 text-xs font-black text-white/70 ring-1 ring-white/10">
                     {p.athleteName.slice(0, 1)}

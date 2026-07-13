@@ -223,7 +223,7 @@ function SeasonLeadersPanel() {
             <li key={l.athleteId} className="flex items-center gap-3 rounded-lg bg-white/[0.04] px-3 py-2 ring-1 ring-white/5">
               <span className="w-6 shrink-0 text-center text-xs font-black text-white/55">{i + 1}</span>
               {l.headshot ? (
-                <img src={l.headshot} alt="" className="size-8 shrink-0 rounded-full object-cover ring-1 ring-white/10" loading="lazy" />
+                <img src={l.headshot} alt="" className="size-8 shrink-0 rounded-full object-cover ring-1 ring-white/10" loading="lazy" / decoding="async">
               ) : (
                 <div className="size-8 shrink-0 rounded-full bg-white/10" />
               )}

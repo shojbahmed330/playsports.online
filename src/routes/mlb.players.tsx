@@ -253,7 +253,7 @@ function SearchResults({
                 alt=""
                 className="size-12 rounded-full object-cover bg-white/10 shrink-0"
                 loading="lazy"
-              />
+              / decoding="async">
             ) : (
               <div className="size-12 rounded-full bg-white/10 shrink-0" />
             )}

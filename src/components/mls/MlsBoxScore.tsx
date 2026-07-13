@@ -19,7 +19,7 @@ export function MlsBoxScore({ groups }: { groups: MlsBoxGroup[] }) {
               i === activeIdx ? "bg-orange-500/20 text-orange-200 ring-1 ring-orange-500/40" : "text-muted-foreground hover:text-white"
             }`}
           >
-            {grp.teamLogo && <img src={grp.teamLogo} alt="" className="size-4 object-contain" loading="lazy" />}
+            {grp.teamLogo && <img src={grp.teamLogo} alt="" className="size-4 object-contain" loading="lazy" / decoding="async">}
             {grp.teamAbbr || "Team"}
           </button>
         ))}

@@ -161,7 +161,7 @@ function EspnHero({ t, live }: { t: Tagged; live: boolean }) {
           <div className="flex items-center gap-2 sm:gap-3 min-w-0">
             {game.home.logo && (
               <img src={game.home.logo} alt="" width={48} height={48} loading="eager"
-                className="size-10 sm:size-14 object-contain shrink-0" />
+                className="size-10 sm:size-14 object-contain shrink-0" / decoding="async">
             )}
             <span className="truncate text-sm sm:text-xl font-extrabold">{game.home.name}</span>
           </div>
@@ -176,7 +176,7 @@ function EspnHero({ t, live }: { t: Tagged; live: boolean }) {
             <span className="truncate text-sm sm:text-xl font-extrabold text-right">{game.away.name}</span>
             {game.away.logo && (
               <img src={game.away.logo} alt="" width={48} height={48} loading="eager"
-                className="size-10 sm:size-14 object-contain shrink-0" />
+                className="size-10 sm:size-14 object-contain shrink-0" / decoding="async">
             )}
           </div>
         </div>

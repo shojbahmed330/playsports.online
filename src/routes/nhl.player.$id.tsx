@@ -61,7 +61,7 @@ function NhlPlayer() {
     <div className="space-y-6">
       <div className="rounded-3xl ring-1 ring-border bg-card overflow-hidden p-5 sm:p-7 relative bg-gradient-to-br from-[#041e42]/30 via-transparent to-[#c8102e]/20">
         <div className="flex items-center gap-4">
-          {a.headshot && <img src={a.headshot} alt="" className="size-24 sm:size-32 rounded-2xl object-cover bg-muted" />}
+          {a.headshot && <img src={a.headshot} alt="" className="size-24 sm:size-32 rounded-2xl object-cover bg-muted" / decoding="async" loading="lazy">}
           <div className="min-w-0 flex-1">
             <div className="text-[10px] uppercase tracking-[0.22em] text-orange-300 font-bold">{a.team?.name ?? "NHL Player"}</div>
             <h1 className="text-2xl sm:text-4xl font-extrabold text-white truncate">{a.name}</h1>
@@ -77,7 +77,7 @@ function NhlPlayer() {
             </div>
             {a.team && (
               <Link to="/nhl/team/$id" params={{ id: a.team.id }} className="inline-flex items-center gap-2 mt-2 text-xs text-orange-300 hover:text-orange-200">
-                {a.team.logo && <img src={a.team.logo} alt="" className="size-4 object-contain" />}
+                {a.team.logo && <img src={a.team.logo} alt="" className="size-4 object-contain" / decoding="async" loading="lazy">}
                 View team →
               </Link>
             )}

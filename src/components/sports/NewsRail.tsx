@@ -24,7 +24,7 @@ export function NewsRail({ items }: { items: NewsItem[] }) {
                   alt=""
                   loading="lazy"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
+                / decoding="async">
               </div>
             )}
             <div className="p-4 space-y-1.5">

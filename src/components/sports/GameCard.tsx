@@ -86,7 +86,7 @@ function TeamRow({
     <div className={`flex items-center gap-3 px-3 py-2.5 ${winner ? "bg-amber-500/[0.06]" : ""}`}>
       <div className="shrink-0 size-7 rounded bg-gray-800/60 grid place-items-center overflow-hidden">
         {t.logo ? (
-          <img src={t.logo} alt="" loading="lazy" className="size-6 object-contain" />
+          <img src={t.logo} alt="" loading="lazy" className="size-6 object-contain" / decoding="async">
         ) : (
           <span className="text-[10px] text-gray-500">{t.abbr}</span>
         )}

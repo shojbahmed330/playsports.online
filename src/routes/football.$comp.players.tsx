@@ -110,7 +110,7 @@ function GenericPlayersPage() {
                     <>
                       <span className="w-6 text-right tabular-nums text-xs text-muted-foreground">{l.rank}</span>
                       {l.teamLogo ? (
-                        <img src={l.teamLogo} alt="" className="size-5 object-contain" loading="lazy" />
+                        <img src={l.teamLogo} alt="" className="size-5 object-contain" loading="lazy" / decoding="async">
                       ) : (
                         <span className="size-5" />
                       )}

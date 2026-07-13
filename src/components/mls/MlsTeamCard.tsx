@@ -16,7 +16,7 @@ export function MlsTeamCard({ team }: { team: MlsTeam }) {
         style={{ background: `radial-gradient(120% 80% at 30% 20%, ${bg}, transparent 60%), radial-gradient(80% 70% at 90% 100%, ${alt}, transparent 60%)` }}
       />
       <div className="relative p-4 flex items-center gap-3">
-        {team.logo && <img src={team.logo} alt="" className="size-12 object-contain" loading="lazy" />}
+        {team.logo && <img src={team.logo} alt="" className="size-12 object-contain" loading="lazy" / decoding="async">}
         <div className="min-w-0">
           <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold">{team.abbr}</div>
           <div className="text-sm font-bold text-white truncate">{team.name}</div>

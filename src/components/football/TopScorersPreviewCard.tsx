@@ -58,7 +58,7 @@ export function TopScorersPreviewCard({ comp }: { comp: Competition }) {
                         src={r.image ?? fallbackAvatar}
                         alt={r.title}
                         loading="lazy"
-                        onError={(e) => {
+                        onError={(e) = decoding="async"> {
                           const img = e.currentTarget;
                           if (img.src !== fallbackAvatar) img.src = fallbackAvatar;
                         }}
@@ -98,7 +98,7 @@ export function TopScorersPreviewCard({ comp }: { comp: Competition }) {
                   {l.rank}
                 </span>
                 {l.teamLogo ? (
-                  <img src={l.teamLogo} alt="" className="size-6 rounded-full object-contain" loading="lazy" />
+                  <img src={l.teamLogo} alt="" className="size-6 rounded-full object-contain" loading="lazy" / decoding="async">
                 ) : (
                   <span className="size-6 rounded-full bg-white/10" />
                 )}
