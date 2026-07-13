@@ -15,6 +15,8 @@ import { EuroHostsMap } from "@/components/football/EuroHostsMap";
 import { EuroHistoryFilters, useEuroHistoryFilter } from "@/components/football/EuroHistoryFilters";
 import { EuroHistoryJumpBar } from "@/components/football/EuroHistoryJumpBar";
 import { LastEditionRecap } from "@/components/football/LastEditionRecap";
+import { CopaHistoryPage } from "@/components/football/CopaHistoryPage";
+import { copaStats } from "@/lib/copa-history";
 import { Trophy } from "lucide-react";
 
 export const Route = createFileRoute("/football/$comp/history")({
@@ -56,6 +58,34 @@ export const Route = createFileRoute("/football/$comp/history")({
         ],
       };
     }
+    if (comp.slug === "copa-america") {
+      const s = copaStats();
+      const title = `Copa América History — ${s.tournaments} tournaments, ${s.champions} champions (${s.span})`;
+      const description = `Every Copa América since 1916 — Argentina's record 16 titles, Uruguay's 15, every final, top scorer and host. Next Copa América: 2028.`;
+      const url = `https://allsportslive.lovable.app/football/copa-america/history`;
+      const itemList = {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        itemListElement: championsTimeline("copa-america").map((c, i) => ({
+          "@type": "ListItem",
+          position: i + 1,
+          name: `Copa América ${c.year} — ${c.winner}`,
+          url: `${url}/${c.year}`,
+        })),
+      };
+      return {
+        meta: [
+          { title },
+          { name: "description", content: description },
+          { property: "og:title", content: title },
+          { property: "og:description", content: description },
+          { property: "og:url", content: url },
+          { property: "og:type", content: "website" },
+        ],
+        links: [{ rel: "canonical", href: url }],
+        scripts: [{ type: "application/ld+json", children: JSON.stringify(itemList) }],
+      };
+    }
     return buildCompetitionHead({
       comp,
       section: "History",
@@ -71,6 +101,7 @@ function HistoryRoute() {
   const { comp: raw } = Route.useLoaderData();
   const comp = requireCompetition(raw.slug);
   if (comp.slug === "euro") return <EuroHistoryPage />;
+  if (comp.slug === "copa-america") return <CopaHistoryPage />;
   return <GenericHistoryPage />;
 }
 
