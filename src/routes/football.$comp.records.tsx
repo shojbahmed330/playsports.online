@@ -2,6 +2,8 @@ import { createFileRoute, notFound, Link } from "@tanstack/react-router";
 import { getCompetition, requireCompetition } from "@/lib/competitions";
 import { CompetitionPageShell } from "@/components/football/CompetitionPageShell";
 import { buildCompetitionHead } from "@/lib/competition-head";
+import { EuroRecordsPage } from "@/components/football/EuroRecordsPage";
+import { EURO_TOP_SCORERS } from "@/lib/euro-records";
 import { Goal, Trophy, Users, Award, CalendarRange } from "lucide-react";
 
 const CATEGORIES = [
@@ -20,6 +22,34 @@ export const Route = createFileRoute("/football/$comp/records")({
   head: ({ params, loaderData }) => {
     const comp = loaderData?.comp ?? getCompetition(params.comp);
     if (!comp) return { meta: [{ title: "Records" }, { name: "robots", content: "noindex" }] };
+    if (comp.slug === "euro") {
+      const title = "UEFA Euro Records — Top Scorers, Most Titles, Golden Boot & Firsts";
+      const description =
+        "Every UEFA European Championship record — Cristiano Ronaldo's 14 goals, Spain's 4 titles, Platini's 9-goal single-Euro record and every historical first since 1960.";
+      const url = "https://allsportslive.lovable.app/football/euro/records";
+      const itemList = {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        name: "UEFA Euro all-time top scorers",
+        itemListElement: EURO_TOP_SCORERS.map((r) => ({
+          "@type": "ListItem",
+          position: r.rank,
+          name: `${r.name} (${r.nation}) — ${r.value} goals`,
+        })),
+      };
+      return {
+        meta: [
+          { title },
+          { name: "description", content: description },
+          { property: "og:title", content: title },
+          { property: "og:description", content: description },
+          { property: "og:url", content: url },
+          { property: "og:type", content: "website" },
+        ],
+        links: [{ rel: "canonical", href: url }],
+        scripts: [{ type: "application/ld+json", children: JSON.stringify(itemList) }],
+      };
+    }
     return buildCompetitionHead({
       comp,
       section: "Records",
@@ -27,11 +57,18 @@ export const Route = createFileRoute("/football/$comp/records")({
       descriptionOverride: `${comp.name} all-time records — top scorers, most titles, longest streaks and every historical first.`,
     });
   },
-  component: RecordsPage,
+  component: RecordsRoute,
   notFoundComponent: () => <div className="p-10 text-center">Competition not found.</div>,
 });
 
-function RecordsPage() {
+function RecordsRoute() {
+  const { comp: raw } = Route.useLoaderData();
+  const comp = requireCompetition(raw.slug);
+  if (comp.slug === "euro") return <EuroRecordsPage />;
+  return <GenericRecordsPage />;
+}
+
+function GenericRecordsPage() {
   const { comp: raw } = Route.useLoaderData();
   const comp = requireCompetition(raw.slug);
 
