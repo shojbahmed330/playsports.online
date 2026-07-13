@@ -81,7 +81,7 @@ function FootballPlayerPage() {
   const reds = hist?.totals.reds ?? 0;
   const initials = player.name
     .split(/\s+/)
-    .map((w) => w[0])
+    .map((w: string) => w[0])
     .filter(Boolean)
     .slice(0, 2)
     .join("")
