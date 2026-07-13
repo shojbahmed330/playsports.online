@@ -49,7 +49,7 @@ const BASE_SITEMAP_PARTS = ["core", "cricket", "us-sports", "hockey-soccer", "le
 // Keep football sitemap chunks intentionally small. Google Search Console was
 // fetching 1–2 but failing 3–6 when chunks had ~900 URLs each, so split into
 // safer 250-URL files.
-const FOOTBALL_CHUNK_SIZE = 250;
+const FOOTBALL_CHUNK_SIZE = 50;
 
 type BaseSitemapPart = (typeof BASE_SITEMAP_PARTS)[number];
 type FootballChunkPart = `football-${number}`;
