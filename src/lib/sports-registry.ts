@@ -21,6 +21,8 @@ export type SportRegistryEntry = {
   label: string;
   /** Warmup URLs. `{season}` is expanded from `seasonFn` if provided. */
   warmup: string[];
+  /** Optional exact cache key used by the app data functions for a warmup URL. */
+  cacheKey?: (url: string) => string;
   /** Optional dynamic season resolver (returns current year/id). */
   seasonFn?: () => number | string;
   /** ISO-week-style peak days (0=Sun..6=Sat) — if omitted, always peak. */
@@ -61,6 +63,7 @@ export const SPORTS: SportRegistryEntry[] = [
         `${espn}/soccer/fifa.world/scoreboard?dates=${wc.dates}&limit=200`,
         `${espnV2}/soccer/fifa.world/standings?season=${wc.season}`,
       ],
+      cacheKey: (url: string) => `espn:soccer:fifa.world:${wc.season}:${url}`,
     };
   })(),
   {
