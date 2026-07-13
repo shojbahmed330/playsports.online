@@ -1,6 +1,8 @@
 import { createFileRoute, notFound, Link } from "@tanstack/react-router";
 import { listPlayers, playerStats, slugify } from "@/lib/seo/programmatic";
 import wcRecords from "@/data/wc_records.json";
+import { useMergedGoals } from "@/lib/use-merged-goals";
+import { useMergedCards } from "@/lib/use-merged-cards";
 import { canonical } from "@/lib/seo/canonical";
 import { breadcrumbList, collectionPage, faqPage, itemList, ldScript } from "@/lib/seo/jsonld";
 
@@ -28,14 +30,14 @@ const CATEGORIES: Category[] = [
     title: "Iconic FIFA World Cup Records — Fastest, Oldest, Youngest | PlaySports",
     description:
       "Historic FIFA World Cup records: fastest goal, oldest and youngest scorers, most career goals, most finals played and most titles won.",
-    intro: "Records that shape the FIFA World Cup story — from Fontaine's 13 goals to Messi surpassing Klose in 2026.",
+    intro: "Records that shape the FIFA World Cup story — from Fontaine's 13 goals to Klose's all-time scoring mark.",
   },
   {
     slug: "2026-tournament",
     h1: "FIFA World Cup 2026 — Records & Milestones",
     title: "FIFA World Cup 2026 Records — Golden Boot, Hat-tricks, Milestones | PlaySports",
     description:
-      "Live-updated records from the 2026 FIFA World Cup: Golden Boot chase, hat-tricks, biggest wins, milestone goals and semifinal line-up.",
+      "Live-updated records from the 2026 FIFA World Cup: Golden Boot chase, goals, penalties and disciplinary totals from official match events.",
     intro: "Every notable record set at the 2026 FIFA World Cup — updated through the current round.",
   },
   {
@@ -62,8 +64,8 @@ export const Route = createFileRoute("/football/records/$category")({
     const path = `/football/records/${params.category}`;
     const faqs = [
       { q: `What are the ${cat.h1.toLowerCase()}?`, a: cat.description },
-      { q: `Who is the all-time FIFA World Cup top scorer?`, a: `Lionel Messi (Argentina) is the all-time FIFA World Cup top scorer with 21 goals, surpassing Miroslav Klose's 16 in 2026.` },
-      { q: `How many goals were scored at the 2026 World Cup?`, a: `Through the quarterfinals of the 2026 FIFA World Cup, 158 goals have been scored in 88 matches.` },
+      { q: `Who is the all-time FIFA World Cup top scorer?`, a: `All-time rankings are calculated from verified historical data plus official live 2026 scoring events when available.` },
+      { q: `How many goals were scored at the 2026 World Cup?`, a: `2026 totals are calculated from official ESPN match events and update as the tournament progresses.` },
     ];
     return {
       meta: [
@@ -112,7 +114,7 @@ function RecordsCategoryPage() {
       <main className="container mx-auto max-w-5xl px-4 pt-6 space-y-6">
         {cat.slug === "top-scorers-all-time" && <TopScorersAllTime />}
         {cat.slug === "iconic-records" && <CuratedList items={wcRecords.curated as CuratedItem[]} />}
-        {cat.slug === "2026-tournament" && <CuratedList items={wcRecords.curated2026 as CuratedItem[]} />}
+        {cat.slug === "2026-tournament" && <Live2026Records />}
         {cat.slug === "tournament-totals" && <TournamentTotals />}
 
         <section className="rounded-xl bg-card border p-5">
@@ -176,7 +178,11 @@ function CuratedList({ items }: { items: CuratedItem[] }) {
 }
 
 function TournamentTotals() {
-  const rows = (wcRecords.tournamentTotals ?? []) as Array<{ year: number; goals: number; matches: number; note?: string }>;
+  const { goals: GOALS } = useMergedGoals();
+  const live2026Goals = GOALS.filter((g) => g.year === 2026 && !g.og).length;
+  const rows = ((wcRecords.tournamentTotals ?? []) as Array<{ year: number; goals: number; matches: number; note?: string }>)
+    .filter((r) => r.year !== 2026)
+    .concat([{ year: 2026, goals: live2026Goals, matches: 104, note: "Live from ESPN events" }]);
   return (
     <section className="rounded-xl bg-card border p-5">
       <h2 className="text-xl font-bold mb-3">Goals & matches by tournament</h2>
@@ -204,4 +210,29 @@ function TournamentTotals() {
       </div>
     </section>
   );
+}
+
+function Live2026Records() {
+  const { goals: GOALS } = useMergedGoals();
+  const { cards: CARDS } = useMergedCards();
+  const goals2026 = GOALS.filter((g) => g.year === 2026 && !g.og);
+  const penalties2026 = goals2026.filter((g) => g.pen).length;
+  const yellow2026 = CARDS.filter((c) => c.year === 2026 && c.type === "yellow").length;
+  const red2026 = CARDS.filter((c) => c.year === 2026 && c.type === "red").length;
+  const scorerMap = new Map<string, { name: string; team: string; goals: number }>();
+  for (const g of goals2026) {
+    const key = `${g.pid}|${g.pteam}`;
+    const cur = scorerMap.get(key) ?? { name: g.name, team: g.pteam, goals: 0 };
+    cur.goals += 1;
+    scorerMap.set(key, cur);
+  }
+  const leaders = Array.from(scorerMap.values()).sort((a, b) => b.goals - a.goals || a.name.localeCompare(b.name));
+  const top = leaders[0] ?? null;
+  const cards: CuratedItem[] = [
+    { title: "Golden Boot leader", value: top ? `${top.goals} — ${top.name}` : "No goals yet", context: top ? top.team : "Waiting for official scoring events" },
+    { title: "Goals recorded", value: String(goals2026.length), context: "ESPN scoring events; own goals excluded from player scorer credit" },
+    { title: "Penalty goals", value: String(penalties2026), context: "Converted penalties during match play only" },
+    { title: "Cards recorded", value: `${yellow2026} yellow · ${red2026} red`, context: "Official match disciplinary events" },
+  ];
+  return <CuratedList items={cards} />;
 }
