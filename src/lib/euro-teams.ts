@@ -9,7 +9,7 @@
 import { flagFor } from "@/lib/euro-history";
 import { titleCounts } from "@/lib/competition-history";
 
-export type EuroFinishTag = "Winners" | "Runners-up" | "Semi-finals" | "Quarter-finals" | "Group stage" | "Never qualified";
+export type EuroFinishTag = "Winners" | "Runners-up" | "Semi-finals" | "Quarter-finals" | "Round of 16" | "Group stage" | "Never qualified";
 
 export type EuroNation = {
   name: string;
