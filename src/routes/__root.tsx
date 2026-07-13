@@ -96,6 +96,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:site_name", content: "PlaySports" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "google-site-verification", content: "JITBIisVBAG_2B3RjQPjxct01RQuY1JwETp-8FvpTCk" },
+      // Bing Webmaster Tools — replace `content` with the value from
+      // https://www.bing.com/webmasters (Site → Ownership → Meta tag).
+      // Leaving the placeholder is harmless — Bing simply won't verify.
+      { name: "msvalidate.01", content: "REPLACE_WITH_BING_WEBMASTER_VERIFICATION_CODE" },
+      // Yandex Webmaster — optional; replace with the value from
+      // https://webmaster.yandex.com/ (Settings → Verification → Meta tag).
+      { name: "yandex-verification", content: "REPLACE_WITH_YANDEX_VERIFICATION_CODE" },
     ],
     scripts: [
       {
