@@ -1,7 +1,7 @@
 {
   "curated": [
     { "title": "Most goals in a single tournament", "value": "13 — Just Fontaine", "context": "France · 1958 · still unmatched" },
-    { "title": "Most career WC goals", "value": "21 — Lionel Messi", "context": "Argentina · 2006–2026 · surpassed Klose (16) in 2026" },
+    { "title": "Most career WC goals", "value": "16 — Miroslav Klose", "context": "Germany · 2002–2014 · official all-time record" },
     { "title": "Fastest goal", "value": "10.8 sec — Hakan Şükür", "context": "Türkiye vs South Korea · 2002" },
     { "title": "Oldest scorer", "value": "42y 39d — Roger Milla", "context": "Cameroon vs Russia · 1994" },
     { "title": "Youngest scorer", "value": "17y 239d — Pelé", "context": "Brazil vs Wales · 1958" },
@@ -10,17 +10,17 @@
     { "title": "Most goals in a final", "value": "3 — Geoff Hurst", "context": "England 4–2 W. Germany · 1966" }
   ],
   "curated2026": [
-    { "title": "2026 Golden Boot leaders", "value": "8 — Messi & Mbappé", "context": "Argentina & France · tied entering semifinals" },
-    { "title": "All-time WC top scorer", "value": "21 — Lionel Messi", "context": "Broke Klose's 16-goal record in 2026" },
-    { "title": "First WC hat-trick 2026", "value": "Lionel Messi", "context": "Argentina 4–0 Algeria · Group A opener" },
-    { "title": "Hat-tricks in 2026", "value": "3 — Messi, Dembélé, J. David", "context": "Most trebles in a single WC in 40 years" },
-    { "title": "Biggest win 2026", "value": "Canada 6–0 Qatar", "context": "Canada's first-ever World Cup win" },
-    { "title": "Players with 7+ goals", "value": "3 — Messi, Mbappé, Haaland", "context": "First WC ever with three 7-goal scorers" },
-    { "title": "Semifinalists 2026", "value": "Argentina · England · Spain · France", "context": "Final: July 19, 2026 · MetLife Stadium" },
+    { "title": "2026 Golden Boot leaders", "value": "Live ESPN events", "context": "Generated from official match scoring events" },
+    { "title": "2026 goals", "value": "Live ESPN events", "context": "Own goals and shoot-outs handled separately" },
+    { "title": "2026 penalty goals", "value": "Live ESPN events", "context": "Only converted match-play penalties" },
+    { "title": "2026 cards", "value": "Live ESPN events", "context": "Yellow/red cards from match event feed" },
+    { "title": "Biggest win 2026", "value": "Live ESPN results", "context": "Derived from completed match scores" },
+    { "title": "Hat-tricks in 2026", "value": "Live ESPN events", "context": "Derived from per-match scorer totals" },
+    { "title": "Knockout progress", "value": "Live ESPN bracket", "context": "Updates from completed match results" },
     { "title": "Host cities", "value": "16 — USA, Canada, Mexico", "context": "First 48-team, 3-nation FIFA World Cup" }
   ],
   "tournamentTotals": [
-    { "year": 2026, "goals": 158, "matches": 88, "note": "Through quarterfinals · updated Jul 12, 2026" },
+    { "year": 2026, "goals": 0, "matches": 104, "note": "Live total is derived from ESPN events in the app" },
     { "year": 2022, "goals": 172, "matches": 64 },
     { "year": 2018, "goals": 169, "matches": 64 },
     { "year": 2014, "goals": 171, "matches": 64 },

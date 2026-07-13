@@ -1,4 +1,5 @@
 import { createFileRoute, notFound, Link } from "@tanstack/react-router";
+import { useMemo } from "react";
 import { findPlayer, playerStats, listPlayers, slugify } from "@/lib/seo/programmatic";
 import { getPlayerStatHistory } from "@/lib/seo/leaderboards";
 import { canonical } from "@/lib/seo/canonical";
@@ -10,6 +11,8 @@ import { RelatedLinks } from "@/components/seo/RelatedLinks";
 import { relatedForFootballPlayer } from "@/lib/seo/related";
 import { flagOf } from "@/lib/flags";
 import { Trophy, Target, Flag, ShieldAlert, Goal as GoalIcon } from "lucide-react";
+import { useMergedGoals } from "@/lib/use-merged-goals";
+import { useMergedCards } from "@/lib/use-merged-cards";
 
 export const Route = createFileRoute("/football/players/$slug")({
   loader: async ({ params }) => {
@@ -71,7 +74,48 @@ export const Route = createFileRoute("/football/players/$slug")({
 });
 
 function FootballPlayerPage() {
-  const { player, stats, hist, aiFaqs } = Route.useLoaderData();
+  const { player, stats: loaderStats, hist: loaderHist, aiFaqs } = Route.useLoaderData();
+  const { goals: ALL_GOALS } = useMergedGoals();
+  const { cards: ALL_CARDS } = useMergedCards();
+  const { stats, hist } = useMemo(() => {
+    const goals = ALL_GOALS.filter((g) => g.name === player.name && g.pteam === player.team);
+    const cards = ALL_CARDS.filter((c) => c.name === player.name && c.team === player.team);
+    if (goals.length === 0 && cards.length === 0) return { stats: loaderStats, hist: loaderHist };
+    const goalYears = Array.from(new Set(goals.map((g) => g.year))).sort((a, b) => a - b);
+    const years = new Set<number>([...goalYears, ...cards.map((c) => c.year)]);
+    const rows = Array.from(years).sort((a, b) => a - b).map((year) => {
+      const yg = goals.filter((g) => g.year === year);
+      const yc = cards.filter((c) => c.year === year);
+      return {
+        year,
+        goals: yg.filter((g) => !g.og).length,
+        penalties: yg.filter((g) => g.pen).length,
+        ownGoals: yg.filter((g) => g.og).length,
+        yellows: yc.filter((c) => c.type === "yellow").length,
+        reds: yc.filter((c) => c.type === "red").length,
+        team: player.team,
+      };
+    });
+    const nextStats = {
+      ...loaderStats,
+      goalsTotal: goals.filter((g) => !g.og).length,
+      cardsTotal: cards.length,
+      years: goalYears,
+      byYear: goalYears.map((year) => ({ year, goals: goals.filter((g) => g.year === year && !g.og).length })),
+      pen: goals.filter((g) => g.pen).length,
+      og: goals.filter((g) => g.og).length,
+    };
+    const totals = {
+      year: 0,
+      goals: rows.reduce((s, r) => s + r.goals, 0),
+      penalties: rows.reduce((s, r) => s + r.penalties, 0),
+      ownGoals: rows.reduce((s, r) => s + r.ownGoals, 0),
+      yellows: rows.reduce((s, r) => s + r.yellows, 0),
+      reds: rows.reduce((s, r) => s + r.reds, 0),
+      team: player.team,
+    };
+    return { stats: nextStats, hist: { name: player.name, team: player.team, rows, totals } };
+  }, [ALL_GOALS, ALL_CARDS, player, loaderStats, loaderHist]);
   const related = listPlayers()
     .filter((p) => p.team === player.team && p.slug !== player.slug)
     .slice(0, 12);

@@ -22,15 +22,9 @@ import {
   playerKey,
   type PlayersSearch,
 } from "@/lib/players-filters";
-import cardsData from "@/data/wc_cards.json";
-import { useMergedGoals, HISTORICAL_GOALS, type GoalRow } from "@/lib/use-merged-goals";
+import { useMergedGoals, type GoalRow } from "@/lib/use-merged-goals";
+import { useMergedCards } from "@/lib/use-merged-cards";
 import { CompareChart } from "@/components/players/CompareChart";
-
-type CardRow = {
-  pid: string; name: string; team: string; year: number;
-  type: "yellow" | "red"; pos: string;
-};
-const CARDS = cardsData as CardRow[];
 
 // Build a player index from any goal dataset (used by the picker).
 function buildPlayerIndex(goals: GoalRow[]) {
@@ -47,6 +41,7 @@ function buildPlayerIndex(goals: GoalRow[]) {
 
 export function CompareView() {
   const { goals: GOALS } = useMergedGoals();
+  const { cards: CARDS } = useMergedCards();
   const search = useSearch({ from: "/players" });
   const navigate = useNavigate({ from: "/players" });
   const selected = parseComparePlayers(search.compare);
@@ -81,7 +76,7 @@ export function CompareView() {
           live2026,
         };
       }),
-    [selected, GOALS],
+    [selected, GOALS, CARDS],
   );
 
   return (
