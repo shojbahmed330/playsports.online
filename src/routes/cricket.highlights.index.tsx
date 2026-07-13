@@ -30,6 +30,12 @@ export const Route = createFileRoute("/cricket/highlights/")({
             "Full match highlights from every major ICC final, IPL final and classic Test match.",
         },
         { property: "og:url", content: url },
+      { property: "og:type", content: "website" },
+      { property: "og:site_name", content: "PlaySports" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Cricket Highlights — World Cup, T20 WC, IPL Finals & Classics" },
+      { name: "twitter:description", content: "Watch highlights from cricket's most iconic matches: ICC Cricket World Cup finals, T20 World Cup finals, Champions Trophy, IPL finals and classic Test matches." },
+    
       ],
       links: [{ rel: "canonical", href: url }],
       scripts: [

@@ -15,6 +15,12 @@ export const Route = createFileRoute("/mlb/teams")({
       { property: "og:title", content: "MLB Teams — All 30 Franchises" },
       { property: "og:description", content: "Every MLB team with schedule, roster, leaders and season stats." },
       { property: "og:url", content: "https://www.playsports.online/mlb/teams" },
+      { property: "og:type", content: "website" },
+      { property: "og:site_name", content: "PlaySports" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "MLB Teams — All 30 Franchises" },
+      { name: "twitter:description", content: "Every MLB team with logo, league, division, schedule, roster, leaders, injuries and season stats." },
+    
     ],
     links: [{ rel: "canonical", href: "https://www.playsports.online/mlb/teams" }],
     scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "MLB", path: "/mlb" }, { name: "Teams", path: "/mlb/teams" }]))],

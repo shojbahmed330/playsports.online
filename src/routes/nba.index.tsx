@@ -22,6 +22,9 @@ export const Route = createFileRoute("/nba/")({
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "NBA Today — Live Scores, Standings, Leaders" },
       { name: "twitter:description", content: "Today's NBA games, standings, league leaders and headlines." },
+      { property: "og:type", content: "website" },
+      { property: "og:site_name", content: "PlaySports" },
+    
     ],
     links: [{ rel: "canonical", href: "https://www.playsports.online/nba" }],
     scripts: [

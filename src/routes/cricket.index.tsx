@@ -24,6 +24,12 @@ export const Route = createFileRoute("/cricket/")({
       { property: "og:title", content: "Cricket — Live Scores, Series & Players" },
       { property: "og:description", content: "Live scores, fixtures, results, players and records from every major cricket competition." },
       { property: "og:url", content: "https://www.playsports.online/cricket" },
+      { property: "og:type", content: "website" },
+      { property: "og:site_name", content: "PlaySports" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Live Cricket Scores, Fixtures & Stats — PlaySports" },
+      { name: "twitter:description", content: "Live cricket scoreboards, fixtures, series, players, rankings and records across IPL, ICC World Cup, Big Bash, PSL and more." },
+    
     ],
     links: [{ rel: "canonical", href: "https://www.playsports.online/cricket" }],
     scripts: [

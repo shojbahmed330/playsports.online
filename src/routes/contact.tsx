@@ -16,6 +16,13 @@ export const Route = createFileRoute("/contact")({
       { name: "description", content: "Get in touch with the PlaySports team." },
       { property: "og:title", content: "Contact — PlaySports" },
       { property: "og:url", content: URL },
+      { property: "og:description", content: "Get in touch with the PlaySports team." },
+      { property: "og:type", content: "website" },
+      { property: "og:site_name", content: "PlaySports" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Contact — PlaySports" },
+      { name: "twitter:description", content: "Get in touch with the PlaySports team." },
+    
     ],
     links: [{ rel: "canonical", href: URL }],
   }),

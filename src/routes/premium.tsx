@@ -11,6 +11,12 @@ export const Route = createFileRoute("/premium")({
       { name: "description", content: "Support PlaySports and enjoy an ad-free experience across every sport hub." },
       { property: "og:title", content: "Become a Supporter — PlaySports" },
       { property: "og:description", content: "Ad-free browsing, priority features, and direct support for independent sports coverage." },
+      { property: "og:type", content: "website" },
+      { property: "og:site_name", content: "PlaySports" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Become a Supporter — PlaySports" },
+      { name: "twitter:description", content: "Support PlaySports and enjoy an ad-free experience across every sport hub." },
+    
     ],
   }),
 });

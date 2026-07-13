@@ -29,6 +29,12 @@ export const Route = createFileRoute("/cricket/tournaments/")({
           content: "All-time champions, top scorers and wicket-takers across every major cricket tournament.",
         },
         { property: "og:url", content: url },
+      { property: "og:type", content: "website" },
+      { property: "og:site_name", content: "PlaySports" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Cricket Tournaments — IPL, World Cup, T20 WC & more" },
+      { name: "twitter:description", content: "Every major cricket tournament: full champions list, top scorers, wicket-takers and fixtures. IPL, ICC World Cup, T20 WC, BBL, PSL and more." },
+    
       ],
       links: [{ rel: "canonical", href: url }],
       scripts: [

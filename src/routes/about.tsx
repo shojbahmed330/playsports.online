@@ -34,6 +34,12 @@ export const Route = createFileRoute("/about")({
       { property: "og:title", content: "About PlaySports" },
       { property: "og:description", content: "One home for live scores, fixtures, lineups and historical archives across the world's biggest sports." },
       { property: "og:url", content: URL },
+      { property: "og:type", content: "website" },
+      { property: "og:site_name", content: "PlaySports" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "About PlaySports — Live Scores & Sports Archive" },
+      { name: "twitter:description", content: "PlaySports delivers live scores, player stats and the complete FIFA World Cup archive across football, cricket, MLB, NBA, NHL and MLS." },
+    
     ],
     links: [{ rel: "canonical", href: URL }],
   }),

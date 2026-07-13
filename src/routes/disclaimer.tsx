@@ -45,6 +45,12 @@ export const Route = createFileRoute("/disclaimer")({
       { property: "og:title", content: "Editorial & Affiliate Disclosure — PlaySports" },
       { property: "og:description", content: "How PlaySports sources data, discloses affiliate links and handles advertising and gambling content." },
       { property: "og:url", content: URL },
+      { property: "og:type", content: "website" },
+      { property: "og:site_name", content: "PlaySports" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Editorial & Affiliate Disclosure — PlaySports" },
+      { name: "twitter:description", content: "PlaySports's editorial standards, affiliate-link disclosure, AdSense notice and gambling-content policy." },
+    
     ],
     links: [{ rel: "canonical", href: URL }],
   }),

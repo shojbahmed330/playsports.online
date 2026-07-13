@@ -30,6 +30,12 @@ export const Route = createFileRoute("/cricket/history")({
       { property: "og:title", content: "Cricket History & Records" },
       { property: "og:description", content: "Champions and records across the ICC World Cup, IPL, BBL and PSL." },
       { property: "og:url", content: "https://www.playsports.online/cricket/history" },
+      { property: "og:type", content: "website" },
+      { property: "og:site_name", content: "PlaySports" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Cricket History & Records — World Cup, IPL, BBL, PSL" },
+      { name: "twitter:description", content: "Champions, runs and wickets records for the ICC World Cup, T20 World Cup, IPL, BBL and PSL — full hall of fame." },
+    
     ],
     links: [{ rel: "canonical", href: "https://www.playsports.online/cricket/history" }],
     scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "Cricket", path: "/cricket" }, { name: "History", path: "/cricket/history" }]))],

@@ -36,6 +36,12 @@ export const Route = createFileRoute("/cricket/ipl/records")({
       { property: "og:title", content: "IPL Records" },
       { property: "og:description", content: "Every key IPL record — batting, bowling, team and fielding." },
       { property: "og:url", content: "https://www.playsports.online/cricket/ipl/records" },
+      { property: "og:type", content: "website" },
+      { property: "og:site_name", content: "PlaySports" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "IPL Records — Batting, Bowling, Team & Fielding" },
+      { name: "twitter:description", content: "All-time IPL records: most runs, fastest century, best bowling, highest team total, most catches and more." },
+    
     ],
     links: [{ rel: "canonical", href: "https://www.playsports.online/cricket/ipl/records" }],
     scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "Cricket", path: "/cricket" }, { name: "IPL", path: "/cricket/ipl" }, { name: "Records", path: "/cricket/ipl/records" }]))],

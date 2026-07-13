@@ -16,6 +16,12 @@ export const Route = createFileRoute("/cricket/players/")({
       { property: "og:title", content: "Cricket Players — Top Performers" },
       { property: "og:description", content: "Top-ranked batters, bowlers and all-rounders across formats." },
       { property: "og:url", content: "https://www.playsports.online/cricket/players" },
+      { property: "og:type", content: "website" },
+      { property: "og:site_name", content: "PlaySports" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Cricket Players — Top batters, bowlers & all-rounders" },
+      { name: "twitter:description", content: "Top-ranked cricket players across T20I, ODI and Test formats." },
+    
     ],
     links: [{ rel: "canonical", href: "https://www.playsports.online/cricket/players" }],
     scripts: [

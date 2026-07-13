@@ -14,6 +14,12 @@ export const Route = createFileRoute("/mlb/news")({
       { property: "og:title", content: "MLB News — Latest Headlines, Trades, Injuries" },
       { property: "og:description", content: "Live MLB headlines and analysis updated throughout the day." },
       { property: "og:url", content: "https://www.playsports.online/mlb/news" },
+      { property: "og:type", content: "website" },
+      { property: "og:site_name", content: "PlaySports" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "MLB News — Latest Headlines, Trades, Injuries" },
+      { name: "twitter:description", content: "The latest MLB news: headlines, trades, injuries, recaps, and analysis updated throughout the day." },
+    
     ],
     links: [{ rel: "canonical", href: "https://www.playsports.online/mlb/news" }],
     scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "MLB", path: "/mlb" }, { name: "News", path: "/mlb/news" }]))],

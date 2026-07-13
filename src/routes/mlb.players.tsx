@@ -15,6 +15,12 @@ export const Route = createFileRoute("/mlb/players")({
       { property: "og:title", content: "MLB Leaders & Player Search" },
       { property: "og:description", content: "Batting and pitching leaders by season, plus player search." },
       { property: "og:url", content: "https://www.playsports.online/mlb/players" },
+      { property: "og:type", content: "website" },
+      { property: "og:site_name", content: "PlaySports" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "MLB Leaders & Player Search — Batting · Pitching" },
+      { name: "twitter:description", content: "MLB batting and pitching leaders by season with Top 10/25 toggles, plus player search across the league." },
+    
     ],
     links: [{ rel: "canonical", href: "https://www.playsports.online/mlb/players" }],
     scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "MLB", path: "/mlb" }, { name: "Players", path: "/mlb/players" }]))],

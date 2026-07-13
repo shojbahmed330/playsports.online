@@ -11,6 +11,13 @@ export const Route = createFileRoute("/cookies")({
       { name: "description", content: "What cookies PlaySports uses and how to manage them." },
       { property: "og:title", content: "Cookie Policy — PlaySports" },
       { property: "og:url", content: URL },
+      { property: "og:description", content: "What cookies PlaySports uses and how to manage them." },
+      { property: "og:type", content: "website" },
+      { property: "og:site_name", content: "PlaySports" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Cookie Policy — PlaySports" },
+      { name: "twitter:description", content: "What cookies PlaySports uses and how to manage them." },
+    
     ],
     links: [{ rel: "canonical", href: URL }],
   }),

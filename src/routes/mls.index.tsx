@@ -22,6 +22,9 @@ export const Route = createFileRoute("/mls/")({
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "MLS Today — Live Scores, Standings, Leaders" },
       { name: "twitter:description", content: "Today's MLS games, standings, league leaders and soccer headlines." },
+      { property: "og:type", content: "website" },
+      { property: "og:site_name", content: "PlaySports" },
+    
     ],
     links: [{ rel: "canonical", href: "https://www.playsports.online/mls" }],
     scripts: [

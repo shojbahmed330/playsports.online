@@ -57,6 +57,12 @@ export const Route = createFileRoute("/privacy")({
       { property: "og:title", content: "Privacy Policy — PlaySports" },
       { property: "og:description", content: "Transparent privacy practices for analytics, advertising, newsletter and affiliate links." },
       { property: "og:url", content: URL },
+      { property: "og:type", content: "website" },
+      { property: "og:site_name", content: "PlaySports" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Privacy Policy — PlaySports" },
+      { name: "twitter:description", content: "How PlaySports collects, uses and protects your data — covering analytics, AdSense, newsletter, and affiliate links." },
+    
     ],
     links: [{ rel: "canonical", href: URL }],
   }),
