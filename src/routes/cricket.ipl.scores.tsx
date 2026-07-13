@@ -8,6 +8,7 @@ import { toCricketMatch } from "@/components/ipl/toCricketMatch";
 import { getIplSeason, IPL_SEASON_IDS, type IplMatchLite } from "@/lib/ipl.functions";
 import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
 
+import { withHubLinks } from "@/components/seo/withHubLinks";
 const searchSchema = z.object({
   year: z.union([z.literal("current"), z.coerce.number()]).default("current"),
   status: z.enum(["all", "live", "upcoming", "finished"]).default("all"),
@@ -42,7 +43,7 @@ export const Route = createFileRoute("/cricket/ipl/scores")({
   validateSearch: zodValidator(searchSchema),
   loaderDeps: ({ search }) => ({ year: search.year }),
   loader: ({ context, deps }) => context.queryClient.ensureQueryData(qo(deps.year)),
-  component: ScoresPage,
+  component: withHubLinks(ScoresPage, { sport: "ipl", currentPath: "/cricket/ipl/scores" }),
 });
 
 function ScoresPage() {

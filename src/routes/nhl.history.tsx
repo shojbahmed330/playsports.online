@@ -3,6 +3,7 @@ import { Trophy } from "lucide-react";
 import data from "@/data/nhl/history.json";
 import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
 
+import { withHubLinks } from "@/components/seo/withHubLinks";
 export const Route = createFileRoute("/nhl/history")({
   head: () => ({
     meta: [
@@ -21,7 +22,7 @@ export const Route = createFileRoute("/nhl/history")({
     links: [{ rel: "canonical", href: "https://www.playsports.online/nhl/history" }],
     scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "NHL", path: "/nhl" }, { name: "History", path: "/nhl/history" }]))],
   }),
-  component: NhlHistory,
+  component: withHubLinks(NhlHistory, { sport: "nhl", currentPath: "/nhl/history" }),
 });
 
 function NhlHistory() {

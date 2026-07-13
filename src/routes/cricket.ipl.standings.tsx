@@ -7,6 +7,7 @@ import { IplPageShell } from "@/components/ipl/IplPageShell";
 import { getIplSeason, IPL_SEASON_IDS } from "@/lib/ipl.functions";
 import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
 
+import { withHubLinks } from "@/components/seo/withHubLinks";
 const searchSchema = z.object({
   year: z.union([z.literal("current"), z.coerce.number()]).default("current"),
 });
@@ -40,7 +41,7 @@ export const Route = createFileRoute("/cricket/ipl/standings")({
   validateSearch: zodValidator(searchSchema),
   loaderDeps: ({ search }) => ({ year: search.year }),
   loader: ({ context, deps }) => context.queryClient.ensureQueryData(qo(deps.year)),
-  component: StandingsPage,
+  component: withHubLinks(StandingsPage, { sport: "ipl", currentPath: "/cricket/ipl/standings" }),
 });
 
 function StandingsPage() {

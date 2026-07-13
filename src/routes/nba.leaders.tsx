@@ -6,6 +6,7 @@ import { getNbaLeaders } from "@/lib/nba.functions";
 import { NbaLeaderBoard } from "@/components/nba/NbaLeaderBoard";
 import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
 
+import { withHubLinks } from "@/components/seo/withHubLinks";
 export const Route = createFileRoute("/nba/leaders")({
   head: () => ({
     meta: [
@@ -32,7 +33,7 @@ export const Route = createFileRoute("/nba/leaders")({
     }).catch(() => null);
     return null;
   },
-  component: NbaLeaders,
+  component: withHubLinks(NbaLeaders, { sport: "nba", currentPath: "/nba/leaders" }),
 });
 
 type Group = "offensive" | "defensive" | "general";

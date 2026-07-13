@@ -9,6 +9,7 @@ import { PlayerLink } from "@/components/cricket/PlayerLink";
 import { getIplLeaders, getIplHistory, IPL_SEASON_IDS } from "@/lib/ipl.functions";
 import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
 
+import { withHubLinks } from "@/components/seo/withHubLinks";
 const searchSchema = z.object({
   year: z.union([z.literal("current"), z.coerce.number()]).default("current"),
 });
@@ -64,7 +65,7 @@ export const Route = createFileRoute("/cricket/ipl/players")({
       context.queryClient.ensureQueryData(sixesQO(deps.year)),
       context.queryClient.ensureQueryData(historyQO),
     ]),
-  component: PlayersPage,
+  component: withHubLinks(PlayersPage, { sport: "ipl", currentPath: "/cricket/ipl/players" }),
 });
 
 function PlayersPage() {

@@ -5,6 +5,7 @@ import { getNhlStandingsPro } from "@/lib/nhl.functions";
 import { NhlStandingsPro } from "@/components/nhl/NhlStandingsPro";
 import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
 
+import { withHubLinks } from "@/components/seo/withHubLinks";
 export const Route = createFileRoute("/nhl/standings")({
   head: () => ({
     meta: [
@@ -31,7 +32,7 @@ export const Route = createFileRoute("/nhl/standings")({
     }).catch(() => null);
     return null;
   },
-  component: NhlStandings,
+  component: withHubLinks(NhlStandings, { sport: "nhl", currentPath: "/nhl/standings" }),
 });
 
 function NhlStandings() {

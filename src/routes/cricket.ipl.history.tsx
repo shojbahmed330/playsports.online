@@ -10,6 +10,7 @@ import auctions from "@/data/cricket/ipl/auctions.json";
 import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
 
 
+import { withHubLinks } from "@/components/seo/withHubLinks";
 const qo = queryOptions({
   queryKey: ["ipl", "history"],
   queryFn: () => getIplHistory(),
@@ -58,7 +59,7 @@ export const Route = createFileRoute("/cricket/ipl/history")({
     scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "Cricket", path: "/cricket" }, { name: "IPL", path: "/cricket/ipl" }, { name: "History", path: "/cricket/ipl/history" }]))],
   }),
   loader: ({ context }) => context.queryClient.ensureQueryData(qo),
-  component: HistoryPage,
+  component: withHubLinks(HistoryPage, { sport: "ipl", currentPath: "/cricket/ipl/history" }),
 });
 
 function HistoryPage() {

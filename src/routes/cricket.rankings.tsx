@@ -10,6 +10,7 @@ import rankings from "@/data/cricket/rankings.json";
 import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
 
 
+import { withHubLinks } from "@/components/seo/withHubLinks";
 const search = z.object({
   cat: fallback(z.enum(["teams", "batters", "bowlers", "allrounders"]), "teams").default("teams"),
   fmt: fallback(z.enum(["t20i", "odi", "test"]), "t20i").default("t20i"),
@@ -34,7 +35,7 @@ export const Route = createFileRoute("/cricket/rankings")({
     links: [{ rel: "canonical", href: "https://www.playsports.online/cricket/rankings" }],
     scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "Cricket", path: "/cricket" }, { name: "Rankings", path: "/cricket/rankings" }]))],
   }),
-  component: RankingsPage,
+  component: withHubLinks(RankingsPage, { sport: "cricket", currentPath: "/cricket/rankings" }),
 });
 
 type Cat = "teams" | "batters" | "bowlers" | "allrounders";

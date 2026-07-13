@@ -5,6 +5,7 @@ import { getNhlTeams } from "@/lib/nhl.functions";
 import { NhlTeamCard } from "@/components/nhl/NhlTeamCard";
 import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
 
+import { withHubLinks } from "@/components/seo/withHubLinks";
 export const Route = createFileRoute("/nhl/teams")({
   head: () => ({
     meta: [
@@ -31,7 +32,7 @@ export const Route = createFileRoute("/nhl/teams")({
     }).catch(() => null);
     return null;
   },
-  component: NhlTeams,
+  component: withHubLinks(NhlTeams, { sport: "nhl", currentPath: "/nhl/teams" }),
 });
 
 function NhlTeams() {

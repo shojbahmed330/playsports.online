@@ -3,6 +3,7 @@ import { HistoryTimeline } from "@/components/mlb/HistoryTimeline";
 import { MlbSeasonLeaderHistory } from "@/components/mlb/MlbSeasonLeaderHistory";
 import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
 
+import { withHubLinks } from "@/components/seo/withHubLinks";
 export const Route = createFileRoute("/mlb/history")({
   head: () => ({
     meta: [
@@ -21,7 +22,7 @@ export const Route = createFileRoute("/mlb/history")({
     links: [{ rel: "canonical", href: "https://www.playsports.online/mlb/history" }],
     scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "MLB", path: "/mlb" }, { name: "History", path: "/mlb/history" }]))],
   }),
-  component: HistoryPage,
+  component: withHubLinks(HistoryPage, { sport: "mlb", currentPath: "/mlb/history" }),
 });
 
 function HistoryPage() {

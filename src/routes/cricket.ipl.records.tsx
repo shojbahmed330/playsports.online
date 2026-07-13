@@ -9,6 +9,7 @@ import { getIplLeaders, IPL_SEASON_IDS } from "@/lib/ipl.functions";
 import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
 
 
+import { withHubLinks } from "@/components/seo/withHubLinks";
 type Record = {
   label: string;
   value: string;
@@ -46,7 +47,7 @@ export const Route = createFileRoute("/cricket/ipl/records")({
     links: [{ rel: "canonical", href: "https://www.playsports.online/cricket/ipl/records" }],
     scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "Cricket", path: "/cricket" }, { name: "IPL", path: "/cricket/ipl" }, { name: "Records", path: "/cricket/ipl/records" }]))],
   }),
-  component: RecordsPage,
+  component: withHubLinks(RecordsPage, { sport: "ipl", currentPath: "/cricket/ipl/records" }),
 });
 
 function RecordsPage() {

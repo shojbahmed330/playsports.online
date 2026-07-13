@@ -7,6 +7,7 @@ import { getMlbTeams } from "@/lib/mlb.functions";
 import { TeamCard } from "@/components/mlb/TeamCard";
 import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
 
+import { withHubLinks } from "@/components/seo/withHubLinks";
 export const Route = createFileRoute("/mlb/teams")({
   head: () => ({
     meta: [
@@ -25,7 +26,7 @@ export const Route = createFileRoute("/mlb/teams")({
     links: [{ rel: "canonical", href: "https://www.playsports.online/mlb/teams" }],
     scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "MLB", path: "/mlb" }, { name: "Teams", path: "/mlb/teams" }]))],
   }),
-  component: TeamsPage,
+  component: withHubLinks(TeamsPage, { sport: "mlb", currentPath: "/mlb/teams" }),
 });
 
 function TeamsPage() {

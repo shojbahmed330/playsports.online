@@ -6,6 +6,7 @@ import { MlbStandingsPro } from "@/components/mlb/MlbStandingsPro";
 import { StandingsSkeleton } from "@/components/sports/Skeletons";
 import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
 
+import { withHubLinks } from "@/components/seo/withHubLinks";
 export const Route = createFileRoute("/mlb/standings")({
   head: () => ({
     meta: [
@@ -24,7 +25,7 @@ export const Route = createFileRoute("/mlb/standings")({
     links: [{ rel: "canonical", href: "https://www.playsports.online/mlb/standings" }],
     scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "MLB", path: "/mlb" }, { name: "Standings", path: "/mlb/standings" }]))],
   }),
-  component: StandingsPage,
+  component: withHubLinks(StandingsPage, { sport: "mlb", currentPath: "/mlb/standings" }),
 });
 
 function StandingsPage() {

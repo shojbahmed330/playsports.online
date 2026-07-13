@@ -5,6 +5,7 @@ import { getSportNews } from "@/lib/espn.functions";
 import { NewsRail } from "@/components/sports/NewsRail";
 import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
 
+import { withHubLinks } from "@/components/seo/withHubLinks";
 export const Route = createFileRoute("/nhl/news")({
   head: () => ({
     meta: [
@@ -23,7 +24,7 @@ export const Route = createFileRoute("/nhl/news")({
     links: [{ rel: "canonical", href: "https://www.playsports.online/nhl/news" }],
     scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "NHL", path: "/nhl" }, { name: "News", path: "/nhl/news" }]))],
   }),
-  component: NhlNews,
+  component: withHubLinks(NhlNews, { sport: "nhl", currentPath: "/nhl/news" }),
 });
 
 function NhlNews() {

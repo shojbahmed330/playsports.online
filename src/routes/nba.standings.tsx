@@ -5,6 +5,7 @@ import { getNbaStandingsPro } from "@/lib/nba.functions";
 import { NbaStandingsPro } from "@/components/nba/NbaStandingsPro";
 import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
 
+import { withHubLinks } from "@/components/seo/withHubLinks";
 export const Route = createFileRoute("/nba/standings")({
   head: () => ({
     meta: [
@@ -31,7 +32,7 @@ export const Route = createFileRoute("/nba/standings")({
     }).catch(() => null);
     return null;
   },
-  component: NbaStandings,
+  component: withHubLinks(NbaStandings, { sport: "nba", currentPath: "/nba/standings" }),
 });
 
 function NbaStandings() {

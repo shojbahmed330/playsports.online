@@ -8,6 +8,7 @@ import records from "@/data/cricket/records.json";
 import { breadcrumbList, collectionPage, ldScript } from "@/lib/seo/jsonld";
 
 
+import { withHubLinks } from "@/components/seo/withHubLinks";
 export const Route = createFileRoute("/cricket/records/")({
   head: () => ({
     meta: [
@@ -29,7 +30,7 @@ export const Route = createFileRoute("/cricket/records/")({
       ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "Cricket", path: "/cricket" }, { name: "Records", path: "/cricket/records" }])),
     ],
   }),
-  component: RecordsPage,
+  component: withHubLinks(RecordsPage, { sport: "cricket", currentPath: "/cricket/records" }),
 });
 
 const FORMATS = [

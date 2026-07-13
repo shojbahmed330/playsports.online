@@ -3,6 +3,7 @@ import { listTopScorerYears } from "@/lib/seo/programmatic-pages";
 import { canonical } from "@/lib/seo/canonical";
 import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
 
+import { withHubLinks } from "@/components/seo/withHubLinks";
 export const Route = createFileRoute("/football/top-scorers/")({
   head: () => {
     const path = "/football/top-scorers";
@@ -30,7 +31,7 @@ export const Route = createFileRoute("/football/top-scorers/")({
       ],
     };
   },
-  component: TopScorersIndex,
+  component: withHubLinks(TopScorersIndex, { sport: "football", currentPath: "/football/top-scorers" }),
 });
 
 function TopScorersIndex() {

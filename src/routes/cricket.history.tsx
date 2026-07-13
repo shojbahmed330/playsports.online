@@ -8,6 +8,7 @@ import history from "@/data/cricket/history.json";
 import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
 
 
+import { withHubLinks } from "@/components/seo/withHubLinks";
 type Champ = { year: number; champion: string; runnerUp: string; host?: string; venue?: string; result?: string };
 type Stat = { player: string; country: string; matches: number; runs?: number; wickets?: number; avg: number; hundreds?: number };
 type Tournament = {
@@ -40,7 +41,7 @@ export const Route = createFileRoute("/cricket/history")({
     links: [{ rel: "canonical", href: "https://www.playsports.online/cricket/history" }],
     scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "Cricket", path: "/cricket" }, { name: "History", path: "/cricket/history" }]))],
   }),
-  component: HistoryPage,
+  component: withHubLinks(HistoryPage, { sport: "cricket", currentPath: "/cricket/history" }),
 });
 
 function HistoryPage() {

@@ -7,6 +7,7 @@ import { currentSeason } from "@/lib/tournament-config";
 import { LeaderBoard } from "@/components/mlb/LeaderBoard";
 import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
 
+import { withHubLinks } from "@/components/seo/withHubLinks";
 export const Route = createFileRoute("/mlb/players")({
   head: () => ({
     meta: [
@@ -25,7 +26,7 @@ export const Route = createFileRoute("/mlb/players")({
     links: [{ rel: "canonical", href: "https://www.playsports.online/mlb/players" }],
     scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "MLB", path: "/mlb" }, { name: "Players", path: "/mlb/players" }]))],
   }),
-  component: LeadersPage,
+  component: withHubLinks(LeadersPage, { sport: "mlb", currentPath: "/mlb/players" }),
 });
 
 function LeadersPage() {

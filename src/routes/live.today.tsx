@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { canonical } from "@/lib/seo/canonical";
 import { breadcrumbList, collectionPage, faqPage, itemList, ldScript } from "@/lib/seo/jsonld";
 
+import { withHubLinks } from "@/components/seo/withHubLinks";
 const SPORTS = [
   { slug: "football", name: "Football", link: "/football" as const },
   { slug: "cricket", name: "Cricket", link: "/cricket" as const },
@@ -50,7 +51,7 @@ export const Route = createFileRoute("/live/today")({
       ],
     };
   },
-  component: LiveTodayHub,
+  component: withHubLinks(LiveTodayHub, { sport: "live", currentPath: "/live/today" }),
 });
 
 function LiveTodayHub() {

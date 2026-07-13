@@ -7,6 +7,7 @@ import { currentSeason } from "@/lib/tournament-config";
 import { MlbPostseasonBracket } from "@/components/mlb/MlbPostseasonBracket";
 import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
 
+import { withHubLinks } from "@/components/seo/withHubLinks";
 export const Route = createFileRoute("/mlb/postseason")({
   head: () => ({
     meta: [
@@ -25,7 +26,7 @@ export const Route = createFileRoute("/mlb/postseason")({
     links: [{ rel: "canonical", href: "https://www.playsports.online/mlb/postseason" }],
     scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "MLB", path: "/mlb" }, { name: "Postseason", path: "/mlb/postseason" }]))],
   }),
-  component: PostseasonPage,
+  component: withHubLinks(PostseasonPage, { sport: "mlb", currentPath: "/mlb/postseason" }),
 });
 
 const CURRENT = currentSeason("mlb");

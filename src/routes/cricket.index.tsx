@@ -16,6 +16,7 @@ import { CRICKET_LEAGUES, CRICKET_LEAGUE_BY_ID, type CricketLeague } from "@/lib
 import { breadcrumbList, collectionPage, sportsOrganization, faqPage, ldScript } from "@/lib/seo/jsonld";
 
 
+import { withHubLinks } from "@/components/seo/withHubLinks";
 export const Route = createFileRoute("/cricket/")({
   head: () => ({
     meta: [
@@ -55,7 +56,7 @@ export const Route = createFileRoute("/cricket/")({
       .catch(() => null);
     return null;
   },
-  component: CricketIndex,
+  component: withHubLinks(CricketIndex, { sport: "cricket", currentPath: "/cricket" }),
 });
 
 

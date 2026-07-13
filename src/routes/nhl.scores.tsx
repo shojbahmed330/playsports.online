@@ -7,6 +7,7 @@ import { GameCard } from "@/components/sports/GameCard";
 import { DateScrubber, todayYmd } from "@/components/sports/DateScrubber";
 import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
 
+import { withHubLinks } from "@/components/seo/withHubLinks";
 export const Route = createFileRoute("/nhl/scores")({
   head: () => ({
     meta: [
@@ -25,7 +26,7 @@ export const Route = createFileRoute("/nhl/scores")({
     links: [{ rel: "canonical", href: "https://www.playsports.online/nhl/scores" }],
     scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "NHL", path: "/nhl" }, { name: "Scores", path: "/nhl/scores" }]))],
   }),
-  component: NhlScores,
+  component: withHubLinks(NhlScores, { sport: "nhl", currentPath: "/nhl/scores" }),
 });
 
 type Filter = "all" | "live" | "upcoming" | "final";
