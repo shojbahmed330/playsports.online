@@ -26,7 +26,7 @@ import {
 } from "@/components/football/CopaTeamFilterChips";
 import { FixturesEmptyStateCopa } from "@/components/football/FixturesEmptyStateCopa";
 import { buildCompetitionHead } from "@/lib/competition-head";
-import { Loader2, CalendarClock } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import type { Competition } from "@/lib/competitions";
 
 /** YYYYMMDD from a Date (UTC). */
