@@ -106,7 +106,7 @@ function GenericTeamsPage() {
                   style={t.color ? { backgroundColor: `${t.color}20` } : undefined}
                 >
                   {t.logo ? (
-                    <img src={t.logo} alt="" className="size-8 object-contain" loading="lazy" />
+                    <img src={t.logo} alt="" className="size-8 object-contain" loading="lazy"  decoding="async" />
                   ) : (
                     <span className="text-xs font-bold">{t.abbr || t.shortName.slice(0, 3)}</span>
                   )}

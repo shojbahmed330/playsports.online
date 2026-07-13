@@ -179,7 +179,7 @@ function TeamBlock({
   return (
     <div className={`flex items-center gap-3 ${align === "right" ? "justify-end flex-row-reverse text-right" : ""}`}>
       {team.logo ? (
-        <img src={team.logo} alt="" className="size-12 sm:size-16 object-contain" />
+        <img src={team.logo} alt="" className="size-12 sm:size-16 object-contain"  decoding="async" loading="lazy" />
       ) : (
         <span className="size-12 sm:size-16 rounded-full bg-white/10" />
       )}

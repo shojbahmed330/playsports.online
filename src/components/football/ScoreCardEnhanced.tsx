@@ -130,7 +130,7 @@ function TeamRow({
           alt=""
           className="size-6 rounded-full bg-white/5 object-contain shrink-0"
           loading="lazy"
-        />
+         decoding="async" />
       ) : (
         <span className="size-6 rounded-full bg-white/10 shrink-0" />
       )}

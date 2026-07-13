@@ -98,7 +98,7 @@ export function TopScorersPreviewCard({ comp }: { comp: Competition }) {
                   {l.rank}
                 </span>
                 {l.teamLogo ? (
-                  <img src={l.teamLogo} alt="" className="size-6 rounded-full object-contain" loading="lazy" />
+                  <img loading="lazy" decoding="async" src={l.teamLogo} alt="" className="size-6 rounded-full object-contain" />
                 ) : (
                   <span className="size-6 rounded-full bg-white/10" />
                 )}

@@ -81,7 +81,7 @@ export function AffiliateStrip({ heading = "Shop the matchup", className, ...ctx
                         alt=""
                         loading="lazy"
                         className="size-14 rounded-lg object-cover bg-muted"
-                      />
+                       decoding="async" />
                     ) : (
                       <div className="size-14 rounded-lg bg-muted grid place-items-center">
                         <Icon className="size-6 text-muted-foreground" />

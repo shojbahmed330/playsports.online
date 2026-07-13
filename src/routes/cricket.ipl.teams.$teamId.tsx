@@ -279,7 +279,7 @@ function TeamPage() {
                   />
                   <div className="flex flex-col items-center text-center">
                     {p.headshot ? (
-                      <img src={p.headshot} alt="" loading="lazy" className="size-14 rounded-full bg-black/30 object-cover ring-1 ring-white/15" />
+                      <img src={p.headshot} alt="" loading="lazy" className="size-14 rounded-full bg-black/30 object-cover ring-1 ring-white/15"  decoding="async" />
                     ) : (
                       <div className="grid size-14 place-items-center rounded-full bg-black/30 text-sm font-black text-white/60 ring-1 ring-white/15">
                         {p.name.split(" ").map((n) => n[0]).slice(0, 2).join("")}

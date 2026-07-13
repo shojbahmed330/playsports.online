@@ -119,7 +119,7 @@ function Card({
                   </td>
                   <td>
                     <Link to="/mls/team/$id" params={{ id: r.teamId }} className="flex items-center gap-2 py-0.5 group">
-                      {r.logo && <img src={r.logo} alt="" loading="lazy" className="size-5 object-contain" />}
+                      {r.logo && <img src={r.logo} alt="" loading="lazy" className="size-5 object-contain"  decoding="async" />}
                       <span className={`truncate font-medium text-white group-hover:text-orange-300 transition ${playin ? "italic" : ""}`}>
                         {r.shortName || r.team}
                       </span>

@@ -19,7 +19,7 @@ export function NbaLeaderBoard({ category, compact = false }: { category: NbaLea
               <span className="w-6 text-center text-xs font-bold tabular-nums text-muted-foreground">{e.rank}</span>
               <div className="size-8 rounded-full bg-white/5 ring-1 ring-white/10 overflow-hidden grid place-items-center shrink-0">
                 {e.headshot
-                  ? <img src={e.headshot} alt="" className="size-full object-cover" loading="lazy" />
+                  ? <img src={e.headshot} alt="" className="size-full object-cover" loading="lazy"  decoding="async" />
                   : <span className="text-[10px] text-muted-foreground">{e.position ?? "?"}</span>}
               </div>
               <div className="min-w-0 flex-1">

@@ -29,7 +29,7 @@ export function MlsTeamView({ id }: { id: string }) {
       >
         <div aria-hidden className="absolute inset-0 bg-black/30" />
         <div className="relative flex items-center gap-4">
-          {team.logo && <img src={team.logo} alt={team.name} className="size-20 sm:size-24 object-contain drop-shadow-2xl" />}
+          {team.logo && <img src={team.logo} alt={team.name} className="size-20 sm:size-24 object-contain drop-shadow-2xl"  decoding="async" loading="lazy" />}
           <div className="min-w-0">
             <div className="text-[10px] uppercase tracking-[0.22em] text-white/70 font-bold">{team.conference ?? team.division ?? "MLS"}</div>
             <h1 className="text-2xl sm:text-4xl font-extrabold text-white truncate">{team.name}</h1>
@@ -76,7 +76,7 @@ export function MlsTeamView({ id }: { id: string }) {
                   <tr key={p.id} className="border-b border-border/40 hover:bg-white/[0.03]">
                     <td className="py-2 pl-3">
                       <Link to="/mls/player/$id" params={{ id: p.id }} className="flex items-center gap-2 font-medium text-white hover:text-orange-300 transition">
-                        {p.headshot && <img src={p.headshot} alt="" className="size-7 rounded-full bg-muted object-cover" loading="lazy" />}
+                        {p.headshot && <img src={p.headshot} alt="" className="size-7 rounded-full bg-muted object-cover" loading="lazy"  decoding="async" />}
                         <span className="truncate">{p.name}</span>
                       </Link>
                     </td>
@@ -99,7 +99,7 @@ export function MlsTeamView({ id }: { id: string }) {
           {leaders.length === 0 && <div className="text-sm text-muted-foreground col-span-full">No leaders available.</div>}
           {leaders.map((l, i) => (
             <div key={i} className="rounded-2xl ring-1 ring-border bg-card p-4 flex items-center gap-3">
-              {l.headshot && <img src={l.headshot} alt="" className="size-12 rounded-full bg-muted object-cover" loading="lazy" />}
+              {l.headshot && <img src={l.headshot} alt="" className="size-12 rounded-full bg-muted object-cover" loading="lazy"  decoding="async" />}
               <div className="min-w-0 flex-1">
                 <div className="text-[10px] uppercase tracking-wider text-orange-300/80 font-bold">{l.category}</div>
                 <Link to={l.athleteId ? "/mls/player/$id" : "/mls"} params={l.athleteId ? { id: l.athleteId } : ({} as any)} className="text-sm font-bold text-white hover:text-orange-300 transition truncate block">
@@ -121,7 +121,7 @@ export function MlsTeamView({ id }: { id: string }) {
             <ul className="divide-y divide-border">
               {injuries.map((inj, i) => (
                 <li key={i} className="flex items-center gap-3 p-3">
-                  {inj.headshot && <img src={inj.headshot} alt="" className="size-9 rounded-full bg-muted object-cover" loading="lazy" />}
+                  {inj.headshot && <img src={inj.headshot} alt="" className="size-9 rounded-full bg-muted object-cover" loading="lazy"  decoding="async" />}
                   <div className="min-w-0 flex-1">
                     {inj.athleteId ? (
                       <Link to="/mls/player/$id" params={{ id: inj.athleteId }} className="text-sm font-semibold text-white hover:text-orange-300 transition">
@@ -166,7 +166,7 @@ function ScheduleList({ title, rows }: { title: string; rows: any[] }) {
           {rows.map((g) => (
             <li key={g.id} className="px-3 py-2.5 flex items-center gap-3 text-sm">
               <span className="text-[10px] uppercase tracking-wider text-muted-foreground w-12">{g.homeAway === "home" ? "vs" : "@"}</span>
-              {g.opponent.logo && <img src={g.opponent.logo} alt="" className="size-6 object-contain" loading="lazy" />}
+              {g.opponent.logo && <img src={g.opponent.logo} alt="" className="size-6 object-contain" loading="lazy"  decoding="async" />}
               <Link to="/mls/team/$id" params={{ id: g.opponent.id }} className="flex-1 truncate font-medium text-white hover:text-orange-300 transition">
                 {g.opponent.name}
               </Link>

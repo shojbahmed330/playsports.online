@@ -190,7 +190,7 @@ function MlbToday() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {(nwQ.data?.items ?? []).slice(0, 6).map((n) => (
             <a key={n.id} href={n.link} target="_blank" rel="noopener noreferrer" className="group rounded-2xl bg-card ring-1 ring-border overflow-hidden hover:ring-[#d50032]/40 transition-all">
-              {n.image && <img src={n.image} alt="" className="w-full h-32 object-cover" loading="lazy" />}
+              {n.image && <img src={n.image} alt="" className="w-full h-32 object-cover" loading="lazy"  decoding="async" />}
               <div className="p-3">
                 <div className="text-sm font-bold text-white line-clamp-2 group-hover:text-[#f7e6c4] transition-colors">{n.headline}</div>
                 <div className="text-[11px] text-muted-foreground mt-1 line-clamp-2">{n.description}</div>

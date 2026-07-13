@@ -45,7 +45,7 @@ export function IplTitlesBoard({ teams }: { teams: Franchise[] }) {
                   alt=""
                   className="h-9 w-9 shrink-0 rounded-md bg-black/20 object-contain p-1 ring-1 ring-white/20"
                   loading="lazy"
-                />
+                 decoding="async" />
               )}
             </div>
             <div className="mt-3 flex items-end justify-between">

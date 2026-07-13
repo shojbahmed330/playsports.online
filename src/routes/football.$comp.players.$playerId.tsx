@@ -65,7 +65,7 @@ function PlayerDetailPage() {
           <header className="flex items-center gap-4 mb-6">
             <span className="size-20 rounded-2xl bg-white/5 ring-1 ring-white/10 grid place-items-center overflow-hidden shrink-0">
               {p.headshot ? (
-                <img src={p.headshot} alt="" className="size-full object-cover" />
+                <img src={p.headshot} alt="" className="size-full object-cover"  decoding="async" loading="lazy" />
               ) : (
                 <span className="text-2xl font-bold">
                   {p.displayName
@@ -90,7 +90,7 @@ function PlayerDetailPage() {
           {p.team && (
             <section className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 mb-6 flex items-center gap-3">
               {p.team.logo && (
-                <img src={p.team.logo} alt="" className="size-10 object-contain" />
+                <img src={p.team.logo} alt="" className="size-10 object-contain"  decoding="async" loading="lazy" />
               )}
               <div className="flex-1 min-w-0">
                 <div className="text-xs uppercase tracking-wide text-muted-foreground">Team</div>

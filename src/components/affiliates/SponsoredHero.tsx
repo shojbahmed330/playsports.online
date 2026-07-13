@@ -33,7 +33,7 @@ export function SponsoredHero({ slotType = "banner", sport, refId, className }: 
             alt={slot.sponsor_name}
             loading="lazy"
             className="size-12 rounded-lg object-contain bg-background/60 p-1.5 shrink-0"
-          />
+           decoding="async" />
         ) : (
           <div className="size-12 rounded-lg bg-gold/20 grid place-items-center shrink-0">
             <Sparkles className="size-5 text-gold" />
