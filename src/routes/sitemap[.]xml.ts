@@ -278,12 +278,20 @@ async function entriesForPart(part: SitemapPart): Promise<SitemapEntry[]> {
     case "football":
       return [
         ...wc2026MatchUrls(),
-        ...listMatchSlugs().map((m) => ({
-          path: `/football/matches/${m.slug}`,
-          lastmod: m.match_date?.slice(0, 10),
-          changefreq: "yearly" as const,
-          priority: "0.6",
-        })),
+        ...listMatchSlugs().map((m) => {
+          // lastmod = page-modified date, NOT the match/event date.
+          // Historical dates (e.g. 1930) are flagged "Invalid date" by Google.
+          // Only use match_date when it's recent (last ~2 years); otherwise fall
+          // back to today via safeLastmod (undefined lastmod).
+          const iso = m.match_date?.slice(0, 10);
+          const isRecent = iso ? Date.now() - Date.parse(iso) < 2 * 365 * 24 * 3600 * 1000 : false;
+          return {
+            path: `/football/matches/${m.slug}`,
+            lastmod: isRecent ? iso : undefined,
+            changefreq: "yearly" as const,
+            priority: "0.6",
+          };
+        }),
         ...listTeams().map((t) => ({
           path: `/football/teams/${t.slug}`,
           changefreq: "weekly" as const,
