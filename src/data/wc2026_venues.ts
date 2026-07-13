@@ -11,7 +11,7 @@ export type Wc2026Venue = {
   countryCode: "US" | "CA" | "MX";
   capacity: number;
   opened: number;
-  surface: "Grass" | "Hybrid grass" | "Artificial (grass overlay for WC)";
+  surface: "Grass" | "Hybrid grass" | "Grass overlay for WC" | "Artificial (grass overlay for WC)";
   clubTenant: string;
   role: string;
   flag: string;
