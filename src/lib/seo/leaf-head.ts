@@ -1,6 +1,7 @@
 // Standard SEO head builder for leaf routes.
 // Guarantees title, description, og:*, twitter:*, canonical, and optional breadcrumb JSON-LD.
 import { canonical } from "./canonical";
+import { freshnessMeta } from "./freshness";
 import { breadcrumbList, ldScript } from "./jsonld";
 
 export type Crumb = { name: string; path: string };
@@ -43,6 +44,7 @@ export function buildLeafHead(input: LeafHeadInput) {
     meta.push({ name: "twitter:image", content: image });
   }
   if (noindex) meta.push({ name: "robots", content: "noindex, nofollow" });
+  meta.push(...freshnessMeta());
   meta.push(...extraMeta);
 
   const scripts = [...extraScripts];
