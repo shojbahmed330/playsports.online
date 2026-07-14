@@ -176,6 +176,16 @@ function MlsGame() {
 
       {tab === "box" && <div className="tab-slide"><MlsBoxScore groups={s.boxscore} /></div>}
       {tab === "pbp" && <div className="tab-slide"><MlsPlayByPlay plays={s.plays} /></div>}
+
+      <MatchFaqBlock
+        sport="MLS" leagueName="Major League Soccer"
+        home={s.home?.shortName || s.home?.name}
+        away={s.away?.shortName || s.away?.name}
+        venue={s.venue?.name ?? undefined}
+        startDate={s.startTs ? new Date(s.startTs).toISOString() : undefined}
+        status={s.status === "in" ? "live" : s.status === "post" ? "ended" : "scheduled"}
+        homeScore={s.home?.score ?? null} awayScore={s.away?.score ?? null}
+      />
     </div>
   );
 }
