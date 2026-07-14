@@ -160,6 +160,7 @@ import { Route as ApiPublicTrackClickRouteImport } from './routes/api/public/tra
 import { Route as ApiPublicSyncSportsRouteImport } from './routes/api/public/sync-sports'
 import { Route as ApiPublicSeoHealthRouteImport } from './routes/api/public/seo-health'
 import { Route as ApiPublicIndexnowPingRouteImport } from './routes/api/public/indexnow-ping'
+import { Route as ApiPublicIndexnowKeyDottxtRouteImport } from './routes/api/public/indexnow-key[.]txt'
 import { Route as ApiPublicIndexnowAutoRouteImport } from './routes/api/public/indexnow-auto'
 import { Route as CricketIplTeamsIndexRouteImport } from './routes/cricket.ipl.teams.index'
 import { Route as FootballPlayersSlugWorldCupChar123yearChar125RouteImport } from './routes/football.players.$slug.world-cup-{$year}'
@@ -934,6 +935,12 @@ const ApiPublicIndexnowPingRoute = ApiPublicIndexnowPingRouteImport.update({
   path: '/api/public/indexnow-ping',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicIndexnowKeyDottxtRoute =
+  ApiPublicIndexnowKeyDottxtRouteImport.update({
+    id: '/api/public/indexnow-key.txt',
+    path: '/api/public/indexnow-key.txt',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicIndexnowAutoRoute = ApiPublicIndexnowAutoRouteImport.update({
   id: '/api/public/indexnow-auto',
   path: '/api/public/indexnow-auto',
@@ -1096,6 +1103,7 @@ export interface FileRoutesByFullPath {
   '/nba/': typeof NbaIndexRoute
   '/nhl/': typeof NhlIndexRoute
   '/api/public/indexnow-auto': typeof ApiPublicIndexnowAutoRoute
+  '/api/public/indexnow-key.txt': typeof ApiPublicIndexnowKeyDottxtRoute
   '/api/public/indexnow-ping': typeof ApiPublicIndexnowPingRoute
   '/api/public/seo-health': typeof ApiPublicSeoHealthRoute
   '/api/public/sync-sports': typeof ApiPublicSyncSportsRoute
@@ -1258,6 +1266,7 @@ export interface FileRoutesByTo {
   '/nba': typeof NbaIndexRoute
   '/nhl': typeof NhlIndexRoute
   '/api/public/indexnow-auto': typeof ApiPublicIndexnowAutoRoute
+  '/api/public/indexnow-key.txt': typeof ApiPublicIndexnowKeyDottxtRoute
   '/api/public/indexnow-ping': typeof ApiPublicIndexnowPingRoute
   '/api/public/seo-health': typeof ApiPublicSeoHealthRoute
   '/api/public/sync-sports': typeof ApiPublicSyncSportsRoute
@@ -1428,6 +1437,7 @@ export interface FileRoutesById {
   '/nba/': typeof NbaIndexRoute
   '/nhl/': typeof NhlIndexRoute
   '/api/public/indexnow-auto': typeof ApiPublicIndexnowAutoRoute
+  '/api/public/indexnow-key.txt': typeof ApiPublicIndexnowKeyDottxtRoute
   '/api/public/indexnow-ping': typeof ApiPublicIndexnowPingRoute
   '/api/public/seo-health': typeof ApiPublicSeoHealthRoute
   '/api/public/sync-sports': typeof ApiPublicSyncSportsRoute
@@ -1599,6 +1609,7 @@ export interface FileRouteTypes {
     | '/nba/'
     | '/nhl/'
     | '/api/public/indexnow-auto'
+    | '/api/public/indexnow-key.txt'
     | '/api/public/indexnow-ping'
     | '/api/public/seo-health'
     | '/api/public/sync-sports'
@@ -1761,6 +1772,7 @@ export interface FileRouteTypes {
     | '/nba'
     | '/nhl'
     | '/api/public/indexnow-auto'
+    | '/api/public/indexnow-key.txt'
     | '/api/public/indexnow-ping'
     | '/api/public/seo-health'
     | '/api/public/sync-sports'
@@ -1930,6 +1942,7 @@ export interface FileRouteTypes {
     | '/nba/'
     | '/nhl/'
     | '/api/public/indexnow-auto'
+    | '/api/public/indexnow-key.txt'
     | '/api/public/indexnow-ping'
     | '/api/public/seo-health'
     | '/api/public/sync-sports'
@@ -2059,6 +2072,7 @@ export interface RootRouteChildren {
   GuidesIndexRoute: typeof GuidesIndexRoute
   HighlightsIndexRoute: typeof HighlightsIndexRoute
   ApiPublicIndexnowAutoRoute: typeof ApiPublicIndexnowAutoRoute
+  ApiPublicIndexnowKeyDottxtRoute: typeof ApiPublicIndexnowKeyDottxtRoute
   ApiPublicIndexnowPingRoute: typeof ApiPublicIndexnowPingRoute
   ApiPublicSeoHealthRoute: typeof ApiPublicSeoHealthRoute
   ApiPublicSyncSportsRoute: typeof ApiPublicSyncSportsRoute
@@ -3133,6 +3147,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicIndexnowPingRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/indexnow-key.txt': {
+      id: '/api/public/indexnow-key.txt'
+      path: '/api/public/indexnow-key.txt'
+      fullPath: '/api/public/indexnow-key.txt'
+      preLoaderRoute: typeof ApiPublicIndexnowKeyDottxtRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/indexnow-auto': {
       id: '/api/public/indexnow-auto'
       path: '/api/public/indexnow-auto'
@@ -3697,6 +3718,7 @@ const rootRouteChildren: RootRouteChildren = {
   GuidesIndexRoute: GuidesIndexRoute,
   HighlightsIndexRoute: HighlightsIndexRoute,
   ApiPublicIndexnowAutoRoute: ApiPublicIndexnowAutoRoute,
+  ApiPublicIndexnowKeyDottxtRoute: ApiPublicIndexnowKeyDottxtRoute,
   ApiPublicIndexnowPingRoute: ApiPublicIndexnowPingRoute,
   ApiPublicSeoHealthRoute: ApiPublicSeoHealthRoute,
   ApiPublicSyncSportsRoute: ApiPublicSyncSportsRoute,
@@ -3714,13 +3736,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
