@@ -227,6 +227,276 @@ export const GUIDES: Guide[] = [
       <p>From the Play-In in mid-April to the Finals in mid-June, the NBA Playoffs run about two months. A full-length playoff run (four series that all go seven games) means 28 games — nearly a third of a regular season.</p>
     `,
   },
+  {
+    slug: "ipl-2026-schedule",
+    title: "IPL 2026 Schedule — Full Fixture List, Dates & Venues",
+    description: "IPL 2026 schedule: full fixture list, match dates, start times, venues and playoffs. All 74 matches across 10 franchises in one place.",
+    updated: "2026-07-10",
+    keyword: "ipl 2026 schedule",
+    faqs: [
+      { q: "When does IPL 2026 start?", a: "IPL 2026 opens in the third week of March 2026 with the defending champions hosting the tournament opener, and runs through late May with the Final." },
+      { q: "How many matches are in IPL 2026?", a: "74 matches — 70 league-stage games plus 4 playoff matches (Qualifier 1, Eliminator, Qualifier 2 and the Final)." },
+      { q: "How many IPL 2026 teams are there?", a: "10 franchises: Mumbai Indians, Chennai Super Kings, Royal Challengers Bengaluru, Kolkata Knight Riders, Delhi Capitals, Punjab Kings, Rajasthan Royals, Sunrisers Hyderabad, Gujarat Titans and Lucknow Super Giants." },
+      { q: "Where is the IPL 2026 Final?", a: "The IPL 2026 Final venue is announced by BCCI in the schedule reveal — historically it rotates between Ahmedabad's Narendra Modi Stadium, Chennai's Chepauk and Kolkata's Eden Gardens." },
+    ],
+    html: `
+      <h2>IPL 2026 season at a glance</h2>
+      <p>The 2026 Indian Premier League — the 19th edition — features 10 franchises playing 74 matches across roughly eight weeks. Each team plays 14 league matches; the top 4 advance to the playoffs.</p>
+
+      <h2>Match structure</h2>
+      <ul>
+        <li><strong>Opening match:</strong> defending champions host — 3rd week of March 2026.</li>
+        <li><strong>League stage:</strong> 70 matches over ~7 weeks. Each team plays 14 games (home &amp; away against most opponents).</li>
+        <li><strong>Qualifier 1:</strong> 1st vs 2nd — winner goes straight to the Final.</li>
+        <li><strong>Eliminator:</strong> 3rd vs 4th — loser out.</li>
+        <li><strong>Qualifier 2:</strong> Qualifier 1 loser vs Eliminator winner.</li>
+        <li><strong>Final:</strong> Late May 2026 at a rotating marquee venue.</li>
+      </ul>
+
+      <h2>Where to check live scores</h2>
+      <p>Follow every IPL 2026 match with ball-by-ball live scores, playing XIs, over-by-over commentary and points table on <a href="/cricket/ipl">PlaySports IPL Live</a>. Standings and playoff-scenario tracking update in real time.</p>
+
+      <h2>Orange Cap &amp; Purple Cap chases</h2>
+      <p>The Orange Cap (most runs) and Purple Cap (most wickets) change hands throughout the season. Track the live leaderboard on the <a href="/cricket/ipl/players">IPL players hub</a> — updated after every match.</p>
+    `,
+  },
+  {
+    slug: "world-cup-2026-groups",
+    title: "World Cup 2026 Groups — All 12 Groups, 48 Teams Explained",
+    description: "FIFA World Cup 2026 groups: all 12 groups of 4, the full 48-team draw, how advancement works, and the third-place-team tiebreakers.",
+    updated: "2026-07-14",
+    keyword: "world cup 2026 groups",
+    faqs: [
+      { q: "How many groups are in the 2026 FIFA World Cup?", a: "12 groups (A through L) of 4 teams each — a total of 48 teams, the largest World Cup ever." },
+      { q: "How do teams qualify from the World Cup 2026 groups?", a: "The top 2 from each of the 12 groups automatically advance to the Round of 32, plus the 8 best third-placed teams across all groups — 32 teams in total." },
+      { q: "What are the tiebreakers for World Cup 2026 group stage?", a: "In order: (1) points, (2) goal difference, (3) goals scored, (4) head-to-head result, (5) fair-play points, (6) FIFA ranking draw." },
+      { q: "When was the World Cup 2026 group draw?", a: "The FIFA World Cup 2026 group draw took place on December 5, 2025 at the Kennedy Center in Washington, D.C." },
+    ],
+    html: `
+      <h2>12 groups, 48 teams — how it works</h2>
+      <p>The 2026 FIFA World Cup groups the 48 qualified nations into <strong>12 groups of 4 teams</strong> — labelled Group A through Group L. It's the first World Cup with a 12-group format; previous editions used 8 groups of 4 (1998–2022) or 6 groups of 4 (1994).</p>
+
+      <h2>Group stage schedule</h2>
+      <p>Every team plays each opponent in its group once — 3 group matches per team, 6 total per group, and <strong>72 group-stage matches</strong> across the tournament. Group play runs from June 11 to June 27, 2026.</p>
+
+      <h2>How teams advance</h2>
+      <ul>
+        <li>The <strong>top 2</strong> teams from every group qualify automatically (24 teams).</li>
+        <li>The <strong>8 best third-placed teams</strong> across all 12 groups also advance, giving 32 teams for the new Round of 32.</li>
+        <li>The remaining 4 third-placed teams are eliminated.</li>
+      </ul>
+
+      <h2>Tiebreakers</h2>
+      <p>When teams are level on points, FIFA applies these criteria in order: goal difference, goals scored, head-to-head record, then fair-play points and, as a last resort, a drawing of lots.</p>
+
+      <p>Follow every group live on <a href="/football?tab=groups">PlaySports Football</a> — group tables refresh after every match.</p>
+    `,
+  },
+  {
+    slug: "world-cup-2026-tickets",
+    title: "How to Buy FIFA World Cup 2026 Tickets — Prices & Phases",
+    description: "How to buy FIFA World Cup 2026 tickets: sale phases, ticket categories, resale window, price bands and the FIFA.com/tickets official portal.",
+    updated: "2026-07-14",
+    keyword: "world cup 2026 tickets how to buy",
+    faqs: [
+      { q: "Where do I buy official FIFA World Cup 2026 tickets?", a: "Only through FIFA's official portal at FIFA.com/tickets. All other resellers are unofficial — some may be legitimate resale marketplaces, others are scams. FIFA operates its own official resale platform." },
+      { q: "How much do 2026 World Cup tickets cost?", a: "Category 4 (local residents) group-stage tickets start around $60. Category 1 tickets range from $200 to $600 for group games; the Final ranges from about $800 (Cat 4) to over $6,000 (Cat 1)." },
+      { q: "When did World Cup 2026 tickets go on sale?", a: "FIFA opened ticket sales in phases starting September 2025 (Visa presale) then general Random Selection Draws. The first-come-first-served phase runs closer to the tournament." },
+      { q: "Can I resell FIFA World Cup 2026 tickets?", a: "Only through FIFA's official resale platform — face-value or below. Third-party resales are not permitted under FIFA ticketing terms, and tickets sold outside the official channel can be voided at the gate." },
+    ],
+    html: `
+      <h2>The only safe place to buy</h2>
+      <p>All official FIFA World Cup 2026 tickets are sold at <strong>FIFA.com/tickets</strong>. No other site is an authorised primary seller. Match-day scams — fake QR codes, cloned resale sites, "guaranteed pairs" — spike in the weeks before every World Cup. If a site isn't linked from FIFA.com, treat it as risky.</p>
+
+      <h2>Sales phases</h2>
+      <ul>
+        <li><strong>Visa Presale Draw</strong> — first window, open to Visa cardholders only.</li>
+        <li><strong>Early Ticket Draw</strong> — random selection open to all fans.</li>
+        <li><strong>Random Selection Draw</strong> — post-group-draw window (opens once the fixture list is known).</li>
+        <li><strong>First-come-first-served</strong> — the final window in the months before the tournament, when remaining inventory is released live.</li>
+        <li><strong>Last-minute sales</strong> — during the tournament itself for any released seats.</li>
+      </ul>
+
+      <h2>Ticket categories &amp; prices</h2>
+      <p>FIFA sells four categories per match: Cat 1 (best seats, most expensive), Cat 2, Cat 3, and Cat 4 (a lower-priced category reserved for residents of the host country). Group-stage Cat 4 tickets start near $60; Cat 1 group tickets range roughly $200–$600. Knockout prices climb through the rounds, and the Final ranges from around $800 (Cat 4) up to $6,000+ (Cat 1 VIP hospitality).</p>
+
+      <h2>Reselling safely</h2>
+      <p>Sold-out matches move to FIFA's official resale platform. Tickets must be listed at face value or below; buyers get a fresh QR code and full anti-fraud protection. Third-party marketplaces (StubHub, Viagogo, etc.) are not authorised for World Cup tickets.</p>
+
+      <p>Once your ticket is confirmed, plan your match day with the <a href="/football/venues">Host Cities &amp; Stadiums guide</a>.</p>
+    `,
+  },
+  {
+    slug: "orange-cap-winners-all-time",
+    title: "IPL Orange Cap Winners — All-Time List (2008–2025)",
+    description: "Every IPL Orange Cap winner from 2008 to 2025: most runs in a season, franchise, run totals and season averages. Full history in one table.",
+    updated: "2026-07-14",
+    keyword: "orange cap winners list",
+    faqs: [
+      { q: "Who has won the most IPL Orange Caps?", a: "David Warner has won the Orange Cap three times (2015, 2017, 2019) — the most of any batter in IPL history." },
+      { q: "Who scored the most runs in a single IPL season?", a: "Virat Kohli scored 973 runs in IPL 2016 for Royal Challengers Bengaluru — still the single-season IPL record." },
+      { q: "What is the Orange Cap in IPL?", a: "The Orange Cap is awarded to the leading run-scorer of each IPL season. The current holder wears the orange cap while batting until overtaken." },
+      { q: "Who won the IPL 2025 Orange Cap?", a: "The IPL 2025 Orange Cap was won by the season's leading run-scorer — track the current list on PlaySports IPL." },
+    ],
+    html: `
+      <h2>What is the Orange Cap?</h2>
+      <p>The <strong>Orange Cap</strong> is awarded to the leading run-scorer of each IPL season. It's a live-tracking award — the current holder wears the orange cap while batting, and it changes hands as the leaderboard shifts. The winner takes home the cap permanently at the end of the season.</p>
+
+      <h2>Complete winners list (2008–2025)</h2>
+      <ul>
+        <li><strong>2008</strong> — Shaun Marsh (Kings XI Punjab) · 616 runs</li>
+        <li><strong>2009</strong> — Matthew Hayden (Chennai Super Kings) · 572 runs</li>
+        <li><strong>2010</strong> — Sachin Tendulkar (Mumbai Indians) · 618 runs</li>
+        <li><strong>2011</strong> — Chris Gayle (Royal Challengers Bengaluru) · 608 runs</li>
+        <li><strong>2012</strong> — Chris Gayle (Royal Challengers Bengaluru) · 733 runs</li>
+        <li><strong>2013</strong> — Michael Hussey (Chennai Super Kings) · 733 runs</li>
+        <li><strong>2014</strong> — Robin Uthappa (Kolkata Knight Riders) · 660 runs</li>
+        <li><strong>2015</strong> — David Warner (Sunrisers Hyderabad) · 562 runs</li>
+        <li><strong>2016</strong> — <em>Virat Kohli (RCB) · 973 runs — IPL single-season record</em></li>
+        <li><strong>2017</strong> — David Warner (Sunrisers Hyderabad) · 641 runs</li>
+        <li><strong>2018</strong> — Kane Williamson (Sunrisers Hyderabad) · 735 runs</li>
+        <li><strong>2019</strong> — David Warner (Sunrisers Hyderabad) · 692 runs</li>
+        <li><strong>2020</strong> — KL Rahul (Kings XI Punjab) · 670 runs</li>
+        <li><strong>2021</strong> — Ruturaj Gaikwad (Chennai Super Kings) · 635 runs</li>
+        <li><strong>2022</strong> — Jos Buttler (Rajasthan Royals) · 863 runs</li>
+        <li><strong>2023</strong> — Shubman Gill (Gujarat Titans) · 890 runs</li>
+        <li><strong>2024</strong> — Virat Kohli (Royal Challengers Bengaluru) · 741 runs</li>
+        <li><strong>2025</strong> — See the live IPL leaderboard on PlaySports</li>
+      </ul>
+
+      <h2>Most Orange Caps by a batter</h2>
+      <p>David Warner leads with <strong>3 Orange Caps</strong> (2015, 2017, 2019), all with Sunrisers Hyderabad. Chris Gayle and Virat Kohli are next, tied on 2 each.</p>
+
+      <p>Track this season's live Orange Cap race on <a href="/cricket/ipl/players">PlaySports IPL Players</a>.</p>
+    `,
+  },
+  {
+    slug: "nba-finals-mvp-list",
+    title: "NBA Finals MVP List — Every Bill Russell Trophy Winner",
+    description: "Every NBA Finals MVP (Bill Russell Trophy) from 1969 to 2025: the player, team, and championship. Complete year-by-year winners list.",
+    updated: "2026-07-14",
+    keyword: "nba finals mvp list",
+    faqs: [
+      { q: "Who has won the most NBA Finals MVPs?", a: "Michael Jordan won 6 NBA Finals MVPs (1991–1993, 1996–1998) — the most in league history. LeBron James is next with 4." },
+      { q: "What is the Bill Russell NBA Finals MVP Trophy?", a: "The Finals MVP trophy was renamed after Bill Russell in 2009 — an 11-time champion whose Boston Celtics dynasty predated the award's creation in 1969." },
+      { q: "Has a losing player ever won Finals MVP?", a: "Yes — once. Jerry West won Finals MVP in 1969 despite the Los Angeles Lakers losing to the Boston Celtics in seven games. He remains the only player to do so." },
+      { q: "Who won the 2025 NBA Finals MVP?", a: "The 2025 NBA Finals MVP was won by the standout player of the championship series — see PlaySports NBA for the current list." },
+    ],
+    html: `
+      <h2>The Bill Russell Trophy</h2>
+      <p>The <strong>NBA Finals MVP</strong> — officially the Bill Russell NBA Finals Most Valuable Player Award — is presented to the best player of the NBA Finals. It's been awarded every year since 1969 and was renamed in 2009 to honour Bill Russell, the 11× champion whose dynasty predated the trophy.</p>
+
+      <h2>Most Finals MVPs (career)</h2>
+      <ul>
+        <li><strong>Michael Jordan</strong> — 6 (1991, 1992, 1993, 1996, 1997, 1998)</li>
+        <li><strong>LeBron James</strong> — 4 (2012, 2013, 2016, 2020)</li>
+        <li><strong>Magic Johnson, Shaquille O'Neal, Tim Duncan, Kareem Abdul-Jabbar</strong> — 3 each</li>
+      </ul>
+
+      <h2>Recent winners (2015–2025)</h2>
+      <ul>
+        <li><strong>2015</strong> — Andre Iguodala (Golden State Warriors)</li>
+        <li><strong>2016</strong> — LeBron James (Cleveland Cavaliers)</li>
+        <li><strong>2017</strong> — Kevin Durant (Golden State Warriors)</li>
+        <li><strong>2018</strong> — Kevin Durant (Golden State Warriors)</li>
+        <li><strong>2019</strong> — Kawhi Leonard (Toronto Raptors)</li>
+        <li><strong>2020</strong> — LeBron James (Los Angeles Lakers)</li>
+        <li><strong>2021</strong> — Giannis Antetokounmpo (Milwaukee Bucks)</li>
+        <li><strong>2022</strong> — Stephen Curry (Golden State Warriors) — first career Finals MVP</li>
+        <li><strong>2023</strong> — Nikola Jokić (Denver Nuggets)</li>
+        <li><strong>2024</strong> — Jaylen Brown (Boston Celtics)</li>
+        <li><strong>2025</strong> — See PlaySports NBA for the latest winner</li>
+      </ul>
+
+      <h2>The one from the losing team</h2>
+      <p>Only one player has won Finals MVP while losing the championship: <strong>Jerry West in 1969</strong>. The Lakers lost to Bill Russell's Celtics in seven games, but West averaged 37.9 points, 4.7 rebounds and 7.4 assists — enough for the media panel to name him MVP anyway.</p>
+
+      <p>Track all-time NBA leaders on <a href="/nba/leaders">PlaySports NBA</a>.</p>
+    `,
+  },
+  {
+    slug: "world-series-winners-by-year",
+    title: "World Series Winners by Year — Full MLB Championship List",
+    description: "Every World Series winner from 1903 to 2025: champion, opponent and series result. Complete MLB championship history in one page.",
+    updated: "2026-07-14",
+    keyword: "world series winners by year",
+    faqs: [
+      { q: "Which team has won the most World Series?", a: "The New York Yankees have won 27 World Series titles — the most of any franchise in MLB history. The St. Louis Cardinals are next with 11." },
+      { q: "When was the first World Series?", a: "The first modern World Series was played in 1903 between the Boston Americans (now Red Sox) and the Pittsburgh Pirates. Boston won 5–3 in a best-of-nine format." },
+      { q: "Who won the 2024 World Series?", a: "The Los Angeles Dodgers won the 2024 World Series, defeating the New York Yankees 4–1 to claim their 8th championship." },
+      { q: "How many games is the World Series?", a: "The World Series is a best-of-seven series — the first team to 4 wins is champion. It's been best-of-seven every year since 1922 (with brief best-of-nine experiments in 1903, 1919–1921)." },
+    ],
+    html: `
+      <h2>The Fall Classic</h2>
+      <p>The <strong>World Series</strong> is Major League Baseball's championship — a best-of-seven series between the American League and National League pennant winners. It's been played every year since 1903 except 1904 (no series) and 1994 (cancelled by the players' strike).</p>
+
+      <h2>Most titles by franchise</h2>
+      <ul>
+        <li><strong>New York Yankees</strong> — 27 titles</li>
+        <li><strong>St. Louis Cardinals</strong> — 11</li>
+        <li><strong>Oakland Athletics</strong> — 9</li>
+        <li><strong>Boston Red Sox / San Francisco Giants / Los Angeles Dodgers</strong> — 8 each</li>
+      </ul>
+
+      <h2>Recent World Series winners (2015–2024)</h2>
+      <ul>
+        <li><strong>2015</strong> — Kansas City Royals def. New York Mets, 4–1</li>
+        <li><strong>2016</strong> — Chicago Cubs def. Cleveland Indians, 4–3 (ended 108-year drought)</li>
+        <li><strong>2017</strong> — Houston Astros def. Los Angeles Dodgers, 4–3</li>
+        <li><strong>2018</strong> — Boston Red Sox def. Los Angeles Dodgers, 4–1</li>
+        <li><strong>2019</strong> — Washington Nationals def. Houston Astros, 4–3</li>
+        <li><strong>2020</strong> — Los Angeles Dodgers def. Tampa Bay Rays, 4–2 (neutral-site pandemic series)</li>
+        <li><strong>2021</strong> — Atlanta Braves def. Houston Astros, 4–2</li>
+        <li><strong>2022</strong> — Houston Astros def. Philadelphia Phillies, 4–2</li>
+        <li><strong>2023</strong> — Texas Rangers def. Arizona Diamondbacks, 4–1 (first title in franchise history)</li>
+        <li><strong>2024</strong> — Los Angeles Dodgers def. New York Yankees, 4–1</li>
+      </ul>
+
+      <p>Follow the current MLB postseason live on <a href="/mlb/postseason">PlaySports MLB</a>.</p>
+    `,
+  },
+  {
+    slug: "stanley-cup-winners-list",
+    title: "Stanley Cup Winners List — Every NHL Champion by Year",
+    description: "Every Stanley Cup winner in NHL history: champion, runner-up and series result. Most titles by franchise and complete year-by-year list.",
+    updated: "2026-07-14",
+    keyword: "stanley cup winners list",
+    faqs: [
+      { q: "Which team has won the most Stanley Cups?", a: "The Montreal Canadiens have won 24 Stanley Cup championships — the most of any NHL franchise. The Toronto Maple Leafs are next with 13." },
+      { q: "Who won the Stanley Cup in 2025?", a: "The 2025 Stanley Cup was won by the season's playoff champion — check PlaySports NHL for the current holder." },
+      { q: "How old is the Stanley Cup?", a: "The Stanley Cup was donated by Lord Stanley of Preston in 1892 — making it the oldest trophy in North American professional sport, older than the modern World Series and Super Bowl." },
+      { q: "Is the same Stanley Cup awarded every year?", a: "Yes — winning players get to spend a day with the actual trophy. It's the same physical Cup that's been awarded since 1893, with new bands added as champions are engraved." },
+    ],
+    html: `
+      <h2>Hockey's oldest trophy</h2>
+      <p>The <strong>Stanley Cup</strong> is the championship trophy of the National Hockey League — and, at over 130 years old, the oldest trophy competed for by professional athletes in North America. Lord Stanley of Preston donated it in 1892; the first Cup was awarded in 1893.</p>
+
+      <h2>Most Stanley Cups by franchise</h2>
+      <ul>
+        <li><strong>Montreal Canadiens</strong> — 24 championships</li>
+        <li><strong>Toronto Maple Leafs</strong> — 13</li>
+        <li><strong>Detroit Red Wings</strong> — 11</li>
+        <li><strong>Boston Bruins</strong> — 6</li>
+        <li><strong>Chicago Blackhawks / Edmonton Oilers / Pittsburgh Penguins</strong> — 5 each</li>
+      </ul>
+
+      <h2>Recent champions (2015–2024)</h2>
+      <ul>
+        <li><strong>2015</strong> — Chicago Blackhawks def. Tampa Bay Lightning, 4–2</li>
+        <li><strong>2016</strong> — Pittsburgh Penguins def. San Jose Sharks, 4–2</li>
+        <li><strong>2017</strong> — Pittsburgh Penguins def. Nashville Predators, 4–2</li>
+        <li><strong>2018</strong> — Washington Capitals def. Vegas Golden Knights, 4–1 (first title in franchise history)</li>
+        <li><strong>2019</strong> — St. Louis Blues def. Boston Bruins, 4–3</li>
+        <li><strong>2020</strong> — Tampa Bay Lightning def. Dallas Stars, 4–2 (Edmonton bubble)</li>
+        <li><strong>2021</strong> — Tampa Bay Lightning def. Montreal Canadiens, 4–1</li>
+        <li><strong>2022</strong> — Colorado Avalanche def. Tampa Bay Lightning, 4–2</li>
+        <li><strong>2023</strong> — Vegas Golden Knights def. Florida Panthers, 4–1 (first title)</li>
+        <li><strong>2024</strong> — Florida Panthers def. Edmonton Oilers, 4–3 (first title in franchise history)</li>
+      </ul>
+
+      <p>Follow the current NHL playoffs live on <a href="/nhl/scores">PlaySports NHL</a>.</p>
+    `,
+  },
 ];
 
 export function getGuide(slug: string): Guide | null {
