@@ -77,6 +77,14 @@ export const Route = createFileRoute("/football/match/$id")({
           status,
         })),
         ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "Football", path: "/football" }, { name: matchup, path: `/football/match/${params.id}` }])),
+        ldScript(faqPage(buildMatchFaqs({
+          sport: "Soccer", leagueName: "FIFA World Cup 2026",
+          home: fx?.home.name, away: fx?.away.name,
+          venue: fx?.venue ?? undefined,
+          startDate: fx?.startTs ? new Date(fx.startTs).toISOString() : undefined,
+          status,
+          homeScore: fx?.home.score ?? null, awayScore: fx?.away.score ?? null,
+        }))),
       ],
     };
   },
