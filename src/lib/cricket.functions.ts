@@ -195,38 +195,25 @@ export function parseScoreSummary(input: string | null | undefined): ParsedScore
   return { innings, totalRuns, didNotBat: innings.length === 0, raw };
 }
 
-/** Merge linescore innings with parsed summary — parsed summary wins for allOut/wickets. */
+/** Merge linescore innings with parsed summary — parsed summary always wins. */
 function mergeInnings(fromLinescore: CricketInnings[], parsed: ParsedScore): CricketInnings[] {
-  // Drop empty (0/0, no overs) entries — ESPN often pads with placeholder innings.
   const nonEmpty = fromLinescore.filter((l) => l.runs > 0 || l.wickets > 0 || l.overs > 0);
-  if (nonEmpty.length === 0 && parsed.innings.length > 0) {
-    return parsed.innings.map((p, i) => ({
-      period: i + 1,
-      runs: p.runs,
-      wickets: p.wickets,
-      overs: p.overs ?? 0,
-      isBatting: false,
-      description: p.declared ? "declared" : p.allOut ? "all out" : "",
-    }));
+  if (parsed.innings.length > 0) {
+    return parsed.innings.map((p, i) => {
+      const match = nonEmpty.find((ls) => ls.runs === p.runs) ?? nonEmpty[i] ?? null;
+      return {
+        period: match?.period ?? i + 1,
+        runs: p.runs,
+        wickets: p.wickets,
+        overs: p.overs ?? match?.overs ?? 0,
+        isBatting: match?.isBatting ?? false,
+        description: p.declared ? "declared" : p.allOut ? "all out" : "",
+      };
+    });
   }
-  // If summary reports fewer innings than linescore (padding), cap at summary length when we have one.
-  const capped = parsed.innings.length > 0 && nonEmpty.length > parsed.innings.length
-    ? nonEmpty.slice(0, parsed.innings.length)
-    : nonEmpty;
-  // When parsed summary exists, it wins for runs/wickets/description — linescore only contributes overs/isBatting.
-  return capped.map((ls, idx) => {
-    const p = parsed.innings[idx];
-    if (!p) return ls;
-    return {
-      ...ls,
-      runs: p.runs,
-      wickets: p.wickets,
-      description: p.declared ? "declared" : p.allOut ? "all out" : "",
-    };
-  });
-
-
+  return nonEmpty;
 }
+
 
 
 function mapInnings(linescores: any[] | undefined): CricketInnings[] {
