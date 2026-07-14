@@ -213,7 +213,7 @@ function mergeInnings(fromLinescore: CricketInnings[], parsed: ParsedScore): Cri
   const capped = parsed.innings.length > 0 && nonEmpty.length > parsed.innings.length
     ? nonEmpty.slice(0, parsed.innings.length)
     : nonEmpty;
-  // When parsed summary exists, it wins for runs/wickets — linescore only contributes overs.
+  // When parsed summary exists, it wins for runs/wickets/description — linescore only contributes overs/isBatting.
   return capped.map((ls, idx) => {
     const p = parsed.innings[idx];
     if (!p) return ls;
@@ -221,9 +221,10 @@ function mergeInnings(fromLinescore: CricketInnings[], parsed: ParsedScore): Cri
       ...ls,
       runs: p.runs,
       wickets: p.wickets,
-      description: p.declared ? "declared" : p.allOut ? "all out" : ls.description,
+      description: p.declared ? "declared" : p.allOut ? "all out" : "",
     };
   });
+
 
 }
 
