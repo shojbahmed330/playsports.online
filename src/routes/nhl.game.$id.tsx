@@ -176,6 +176,16 @@ function NhlGame() {
 
       {tab === "box" && <div className="tab-slide"><NhlBoxScore groups={s.boxscore} /></div>}
       {tab === "pbp" && <div className="tab-slide"><NhlPlayByPlay plays={s.plays} /></div>}
+
+      <MatchFaqBlock
+        sport="NHL" leagueName="National Hockey League"
+        home={s.home?.shortName || s.home?.name}
+        away={s.away?.shortName || s.away?.name}
+        venue={s.venue?.name ?? undefined}
+        startDate={s.startTs ? new Date(s.startTs).toISOString() : undefined}
+        status={s.status === "in" ? "live" : s.status === "post" ? "ended" : "scheduled"}
+        homeScore={s.home?.score ?? null} awayScore={s.away?.score ?? null}
+      />
     </div>
   );
 }
