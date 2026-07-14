@@ -59,6 +59,14 @@ export const Route = createFileRoute("/mlb/game/$id")({
         ldScript(breadcrumbList([
           { name: "Home", path: "/" }, { name: "MLB", path: "/mlb" }, { name: "Scores", path: "/mlb/scores" }, { name: matchup, path: `/mlb/game/${params.id}` },
         ])),
+        ldScript(faqPage(buildMatchFaqs({
+          sport: "MLB", leagueName: "Major League Baseball",
+          home: home ?? undefined, away: away ?? undefined,
+          venue: s?.venue?.name ?? undefined,
+          startDate: s?.startTs ? new Date(s.startTs).toISOString() : undefined,
+          status: s?.status === "in" ? "live" : s?.status === "post" ? "ended" : "scheduled",
+          homeScore: s?.home?.score ?? null, awayScore: s?.away?.score ?? null,
+        }))),
       ],
     };
   },
