@@ -170,7 +170,7 @@ function MatchPage() {
             if (active === "scorecard") return <ScorecardTab match={match} innings={innings} onPlayer={setPlayerId} />;
             if (active === "commentary") return <CommentaryTab commentary={commentary} />;
             if (active === "info") return <InfoTab match={match} />;
-            if (active === "faqs") return <MatchFaqBlock faqs={faqs} />;
+            if (active === "faqs") return <MatchFaqBlock {...faqProps} />;
             return null;
           }}
         />
