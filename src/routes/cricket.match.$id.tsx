@@ -17,7 +17,7 @@ import { ScorecardTab } from "@/components/cricket/match/ScorecardTab";
 import { CommentaryTab } from "@/components/cricket/match/CommentaryTab";
 import { InfoTab } from "@/components/cricket/match/InfoTab";
 import { MatchFaqBlock } from "@/components/seo/MatchFaqBlock";
-import { buildMatchFaqs } from "@/lib/seo/match-faqs";
+
 
 const searchSchema = z.object({
   leagueId: z.string().default("8048"),
