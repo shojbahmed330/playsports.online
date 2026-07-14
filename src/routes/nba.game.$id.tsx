@@ -7,7 +7,9 @@ import { getNbaGame } from "@/lib/nba.functions";
 import { NbaLinescore } from "@/components/nba/NbaLinescore";
 import { NbaBoxScore } from "@/components/nba/NbaBoxScore";
 import { NbaPlayByPlay } from "@/components/nba/NbaPlayByPlay";
-import { breadcrumbList, ldScript, sportsEvent } from "@/lib/seo/jsonld";
+import { breadcrumbList, faqPage, ldScript, sportsEvent } from "@/lib/seo/jsonld";
+import { buildMatchFaqs } from "@/lib/seo/match-faqs";
+import { MatchFaqBlock } from "@/components/seo/MatchFaqBlock";
 
 export const Route = createFileRoute("/nba/game/$id")({
   loader: async ({ context, params }) => {
