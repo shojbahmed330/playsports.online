@@ -177,6 +177,16 @@ function NbaGame() {
 
       {tab === "box" && <div className="tab-slide"><NbaBoxScore groups={s.boxscore} /></div>}
       {tab === "pbp" && <div className="tab-slide"><NbaPlayByPlay plays={s.plays} /></div>}
+
+      <MatchFaqBlock
+        sport="NBA" leagueName="National Basketball Association"
+        home={s.home?.shortName || s.home?.name}
+        away={s.away?.shortName || s.away?.name}
+        venue={s.venue?.name ?? undefined}
+        startDate={s.startTs ? new Date(s.startTs).toISOString() : undefined}
+        status={s.status === "in" ? "live" : s.status === "post" ? "ended" : "scheduled"}
+        homeScore={s.home?.score ?? null} awayScore={s.away?.score ?? null}
+      />
     </div>
   );
 }
