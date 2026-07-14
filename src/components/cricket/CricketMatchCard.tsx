@@ -5,6 +5,7 @@ import type { CricketMatch } from "@/lib/cricket.functions";
 import { ScoreFlip } from "@/components/sports/ScoreFlip";
 import { Countdown } from "@/components/sports/Countdown";
 import { formatLocalTime, relativeDay } from "@/lib/time";
+import { displayScore, scoreLine, type ScoreDisplay } from "@/lib/cricket-score-display";
 
 function formatChipClass(fmt: string): string {
   const f = fmt?.toUpperCase() || "";
@@ -15,14 +16,6 @@ function formatChipClass(fmt: string): string {
   return "fmt-fc";
 }
 
-function inningsLine(team: CricketMatch["home"]): string | null {
-  if (team.scoreSummary) return team.scoreSummary;
-  if (!team.innings.length) return null;
-  return team.innings
-    .map((i) => `${i.runs}/${i.wickets}${i.overs ? ` (${i.overs})` : ""}`)
-    .join(" & ");
-}
-
 export function CricketMatchCard({ match, leagueSlug }: { match: CricketMatch; leagueSlug?: string }) {
   const isLive = match.status === "in";
   const isFinal = match.status === "post";
@@ -30,7 +23,8 @@ export function CricketMatchCard({ match, leagueSlug }: { match: CricketMatch; l
   const winnerHome = match.home.winner === true;
   const winnerAway = match.away.winner === true;
   const fmtClass = formatChipClass(match.format);
-  const seriesHref = leagueSlug ? `/cricket/series/${match.leagueId}` : null;
+  const homeScore = displayScore(match, "home");
+  const awayScore = displayScore(match, "away");
 
   return (
     <Link
@@ -75,15 +69,22 @@ export function CricketMatchCard({ match, leagueSlug }: { match: CricketMatch; l
 
       {/* Teams + scores */}
       <div className="divide-y divide-gray-800/60">
-        <TeamRow t={match.home} winner={winnerHome} dim={isFinal && winnerAway} showScore={!isPre} />
-        <TeamRow t={match.away} winner={winnerAway} dim={isFinal && winnerHome} showScore={!isPre} />
+        <TeamRow t={match.home} winner={winnerHome} dim={isFinal && winnerAway} showScore={!isPre} score={homeScore} />
+        <TeamRow t={match.away} winner={winnerAway} dim={isFinal && winnerHome} showScore={!isPre} score={awayScore} />
       </div>
 
+      {/* Data-incomplete banner (rare — completed match with no numeric scores). */}
+      {match.dataIncomplete && (
+        <div className="px-3 py-2 text-[11px] text-amber-200/90 bg-amber-500/[0.07] border-t border-amber-500/20">
+          Score data unavailable — refreshing shortly.
+        </div>
+      )}
+
       {/* Result / toss note */}
-      {(isLive || isFinal) && match.note && (
+      {(isLive || isFinal) && (match.result?.marginText || match.note) && (
         <div className="px-3 py-2 text-[11px] text-emerald-300/90 bg-emerald-500/[0.06] border-t border-emerald-500/20 leading-snug">
           {isFinal && <Trophy className="inline size-3 mr-1 -mt-0.5" />}
-          {match.note}
+          {match.result?.marginText || match.note}
         </div>
       )}
 
@@ -112,34 +113,51 @@ function TeamRow({
   winner,
   dim,
   showScore,
+  score,
 }: {
   t: CricketMatch["home"];
   winner: boolean;
   dim: boolean;
   showScore: boolean;
+  score: ScoreDisplay;
 }) {
-  const score = inningsLine(t);
   return (
-    <div className={`flex items-center gap-3 px-3 py-2.5 ${winner ? "bg-emerald-500/[0.07]" : ""}`}>
+    <div
+      className={`grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-3 py-2.5 ${winner ? "bg-emerald-500/[0.07]" : ""}`}
+    >
       <TeamCrest src={t.logo} abbr={t.abbr} name={t.name} className="size-8 shrink-0" />
-      <div className="min-w-0 flex-1">
+      <div className="min-w-0">
         <div className={`text-sm truncate ${dim ? "text-gray-500" : winner ? "text-white font-semibold" : "text-gray-200"}`}>
           {t.shortName || t.name}
         </div>
-        {showScore && score && (
-          <div className={`text-[10px] tabular-nums leading-tight ${dim ? "text-gray-600" : "text-gray-400"}`}>
-            {score}
+        {showScore && score.kind === "innings" && score.multi && (
+          <div className={`text-[10px] tabular-nums leading-tight ${dim ? "text-gray-600" : "text-gray-400"} truncate`}>
+            {score.multi}
           </div>
         )}
       </div>
-      {showScore && t.innings.length > 0 ? (
+      {showScore ? (
         <div className={`shrink-0 text-right ${dim ? "text-gray-600" : winner ? "text-emerald-300" : "text-gray-100"}`}>
-          <div className="text-xl font-extrabold tabular-nums leading-none">
-            <ScoreFlip value={t.totalRuns} />
-            <span className="text-sm font-bold text-gray-500">/{t.innings[t.innings.length - 1].wickets}</span>
-          </div>
-          {t.innings[t.innings.length - 1].overs > 0 && (
-            <div className="text-[9px] text-gray-500 mt-0.5 tabular-nums">{t.innings[t.innings.length - 1].overs} ov</div>
+          {score.kind === "innings" ? (
+            <>
+              <div className="text-xl font-extrabold tabular-nums leading-none">
+                <ScoreFlip value={score.runs} />
+                {!score.allOut && (
+                  <span className="text-sm font-bold text-gray-500">/{score.wickets}</span>
+                )}
+                {score.declared && <span className="text-xs text-amber-400 ml-0.5">d</span>}
+              </div>
+              <div className="mt-0.5 flex items-center justify-end gap-1 text-[9px] tabular-nums text-gray-500">
+                {score.allOut && <span className="uppercase tracking-wider text-amber-400/80 font-bold">all out</span>}
+                {score.overs != null && score.overs > 0 && <span>{score.overs} ov</span>}
+              </div>
+            </>
+          ) : score.kind === "yet-to-bat" ? (
+            <div className="text-[10px] uppercase tracking-wider text-gray-500 font-bold">Yet to bat</div>
+          ) : score.kind === "did-not-bat" ? (
+            <div className="text-[10px] uppercase tracking-wider text-gray-500 font-bold">DNB</div>
+          ) : (
+            <div className="text-gray-600 text-lg">—</div>
           )}
         </div>
       ) : (
@@ -148,3 +166,4 @@ function TeamRow({
     </div>
   );
 }
+
