@@ -7,7 +7,9 @@ import { getNhlGame } from "@/lib/nhl.functions";
 import { NhlLinescore } from "@/components/nhl/NhlLinescore";
 import { NhlBoxScore } from "@/components/nhl/NhlBoxScore";
 import { NhlPlayByPlay } from "@/components/nhl/NhlPlayByPlay";
-import { breadcrumbList, ldScript, sportsEvent } from "@/lib/seo/jsonld";
+import { breadcrumbList, faqPage, ldScript, sportsEvent } from "@/lib/seo/jsonld";
+import { buildMatchFaqs } from "@/lib/seo/match-faqs";
+import { MatchFaqBlock } from "@/components/seo/MatchFaqBlock";
 
 export const Route = createFileRoute("/nhl/game/$id")({
   loader: async ({ context, params }) => {
@@ -53,6 +55,14 @@ export const Route = createFileRoute("/nhl/game/$id")({
           location: s?.venue?.name ?? undefined,
           status: s?.status === "in" ? "live" : s?.status === "post" ? "ended" : "scheduled",
         })),
+        ldScript(faqPage(buildMatchFaqs({
+          sport: "NHL", leagueName: "National Hockey League",
+          home: home ?? undefined, away: away ?? undefined,
+          venue: s?.venue?.name ?? undefined,
+          startDate: s?.startTs ? new Date(s.startTs).toISOString() : undefined,
+          status: s?.status === "in" ? "live" : s?.status === "post" ? "ended" : "scheduled",
+          homeScore: s?.home?.score ?? null, awayScore: s?.away?.score ?? null,
+        }))),
       ],
     };
   },
@@ -166,6 +176,16 @@ function NhlGame() {
 
       {tab === "box" && <div className="tab-slide"><NhlBoxScore groups={s.boxscore} /></div>}
       {tab === "pbp" && <div className="tab-slide"><NhlPlayByPlay plays={s.plays} /></div>}
+
+      <MatchFaqBlock
+        sport="NHL" leagueName="National Hockey League"
+        home={s.home?.shortName || s.home?.name}
+        away={s.away?.shortName || s.away?.name}
+        venue={s.venue?.name ?? undefined}
+        startDate={s.startTs ? new Date(s.startTs).toISOString() : undefined}
+        status={s.status === "in" ? "live" : s.status === "post" ? "ended" : "scheduled"}
+        homeScore={s.home?.score ?? null} awayScore={s.away?.score ?? null}
+      />
     </div>
   );
 }

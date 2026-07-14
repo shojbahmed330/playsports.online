@@ -10,7 +10,9 @@ import { MlbScoringPlays } from "@/components/mlb/MlbScoringPlays";
 import { MlbWinProbabilityChart } from "@/components/mlb/MlbWinProbabilityChart";
 import { MlbPlayByPlay } from "@/components/mlb/MlbPlayByPlay";
 import { formatLocalTime, relativeDay } from "@/lib/time";
-import { breadcrumbList, ldScript, sportsEvent } from "@/lib/seo/jsonld";
+import { breadcrumbList, faqPage, ldScript, sportsEvent } from "@/lib/seo/jsonld";
+import { buildMatchFaqs } from "@/lib/seo/match-faqs";
+import { MatchFaqBlock } from "@/components/seo/MatchFaqBlock";
 
 export const Route = createFileRoute("/mlb/game/$id")({
   loader: async ({ context, params }) => {
@@ -57,6 +59,14 @@ export const Route = createFileRoute("/mlb/game/$id")({
         ldScript(breadcrumbList([
           { name: "Home", path: "/" }, { name: "MLB", path: "/mlb" }, { name: "Scores", path: "/mlb/scores" }, { name: matchup, path: `/mlb/game/${params.id}` },
         ])),
+        ldScript(faqPage(buildMatchFaqs({
+          sport: "MLB", leagueName: "Major League Baseball",
+          home: home ?? undefined, away: away ?? undefined,
+          venue: s?.venue?.name ?? undefined,
+          startDate: s?.startTs ? new Date(s.startTs).toISOString() : undefined,
+          status: s?.status === "in" ? "live" : s?.status === "post" ? "ended" : "scheduled",
+          homeScore: s?.home?.score ?? null, awayScore: s?.away?.score ?? null,
+        }))),
       ],
     };
   },
@@ -166,6 +176,16 @@ function GamePage() {
       {!isPre && tab === "pbp" && <MlbPlayByPlay plays={s.plays} />}
       {!isPre && tab === "wp" && <MlbWinProbabilityChart data={s.winProbability} home={s.home} away={s.away} />}
       {(!isPre && tab === "info") || isPre ? <GameInfo s={s} /> : null}
+
+      <MatchFaqBlock
+        sport="MLB" leagueName="Major League Baseball"
+        home={s.home?.shortName || s.home?.name}
+        away={s.away?.shortName || s.away?.name}
+        venue={s.venue?.name ?? undefined}
+        startDate={s.startTs ? new Date(s.startTs).toISOString() : undefined}
+        status={s.status === "in" ? "live" : s.status === "post" ? "ended" : "scheduled"}
+        homeScore={s.home?.score ?? null} awayScore={s.away?.score ?? null}
+      />
     </div>
   );
 }

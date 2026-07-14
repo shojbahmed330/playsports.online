@@ -6,7 +6,9 @@ import { ChevronLeft, Loader2, ChevronDown, Tv, Flame } from "lucide-react";
 import { getWc2026Match, getWc2026Fixtures, type Wc2026Fixture } from "@/lib/wc2026.functions";
 import { LiveMatchCenter } from "@/components/wc/LiveMatchCenter";
 import { WatchLivePanel } from "@/components/wc/WatchLivePanel";
-import { breadcrumbList, ldScript, sportsEvent } from "@/lib/seo/jsonld";
+import { breadcrumbList, faqPage, ldScript, sportsEvent } from "@/lib/seo/jsonld";
+import { buildMatchFaqs } from "@/lib/seo/match-faqs";
+import { MatchFaqBlock } from "@/components/seo/MatchFaqBlock";
 import { AffiliateStrip } from "@/components/affiliates/AffiliateStrip";
 import { AdSlot } from "@/components/ads/AdSlot";
 import { flagOf } from "@/lib/flags";
@@ -75,6 +77,14 @@ export const Route = createFileRoute("/football/match/$id")({
           status,
         })),
         ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "Football", path: "/football" }, { name: matchup, path: `/football/match/${params.id}` }])),
+        ldScript(faqPage(buildMatchFaqs({
+          sport: "Soccer", leagueName: "FIFA World Cup 2026",
+          home: fx?.home.name, away: fx?.away.name,
+          venue: fx?.venue ?? undefined,
+          startDate: fx?.startTs ? new Date(fx.startTs).toISOString() : undefined,
+          status,
+          homeScore: fx?.home.goals ?? null, awayScore: fx?.away.goals ?? null,
+        }))),
       ],
     };
   },
@@ -187,6 +197,15 @@ function MatchPage() {
 
             <AffiliateStrip placement="match_footer" sport="football" heading="Shop the matchup" />
             <AdSlot slot="in_content" layout="in-article" />
+
+            <MatchFaqBlock
+              sport="Soccer" leagueName="FIFA World Cup 2026"
+              home={fx.home.name} away={fx.away.name}
+              venue={fx.venue ?? undefined}
+              startDate={fx.startTs ? new Date(fx.startTs).toISOString() : undefined}
+              status={fx.status === "inprogress" ? "live" : fx.status === "finished" ? "ended" : "scheduled"}
+              homeScore={fx.home.goals ?? null} awayScore={fx.away.goals ?? null}
+            />
           </>
         )}
       </main>
