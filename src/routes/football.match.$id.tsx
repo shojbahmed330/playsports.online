@@ -197,6 +197,15 @@ function MatchPage() {
 
             <AffiliateStrip placement="match_footer" sport="football" heading="Shop the matchup" />
             <AdSlot slot="in_content" layout="in-article" />
+
+            <MatchFaqBlock
+              sport="Soccer" leagueName="FIFA World Cup 2026"
+              home={fx.home.name} away={fx.away.name}
+              venue={fx.venue ?? undefined}
+              startDate={fx.startTs ? new Date(fx.startTs).toISOString() : undefined}
+              status={fx.status === "inprogress" ? "live" : fx.status === "finished" ? "ended" : "scheduled"}
+              homeScore={fx.home.goals ?? null} awayScore={fx.away.goals ?? null}
+            />
           </>
         )}
       </main>
