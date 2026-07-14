@@ -197,7 +197,9 @@ export function parseScoreSummary(input: string | null | undefined): ParsedScore
 
 /** Merge linescore innings with parsed summary — parsed summary wins for allOut/wickets. */
 function mergeInnings(fromLinescore: CricketInnings[], parsed: ParsedScore): CricketInnings[] {
-  if (fromLinescore.length === 0 && parsed.innings.length > 0) {
+  // Drop empty (0/0, no overs) entries — ESPN often pads with placeholder innings.
+  const nonEmpty = fromLinescore.filter((l) => l.runs > 0 || l.wickets > 0 || l.overs > 0);
+  if (nonEmpty.length === 0 && parsed.innings.length > 0) {
     return parsed.innings.map((p, i) => ({
       period: i + 1,
       runs: p.runs,
@@ -207,8 +209,12 @@ function mergeInnings(fromLinescore: CricketInnings[], parsed: ParsedScore): Cri
       description: p.declared ? "declared" : p.allOut ? "all out" : "",
     }));
   }
+  // If summary reports fewer innings than linescore (padding), cap at summary length when we have one.
+  const capped = parsed.innings.length > 0 && nonEmpty.length > parsed.innings.length
+    ? nonEmpty.slice(0, parsed.innings.length)
+    : nonEmpty;
   // Fold parsed wickets/allOut back into linescore when linescore reports 0 but summary knows.
-  return fromLinescore.map((ls, idx) => {
+  return capped.map((ls, idx) => {
     const p = parsed.innings[idx];
     if (!p) return ls;
     const shouldTrustSummary = p.allOut && ls.wickets === 0;
@@ -217,6 +223,7 @@ function mergeInnings(fromLinescore: CricketInnings[], parsed: ParsedScore): Cri
       : ls;
   });
 }
+
 
 function mapInnings(linescores: any[] | undefined): CricketInnings[] {
   if (!Array.isArray(linescores)) return [];
