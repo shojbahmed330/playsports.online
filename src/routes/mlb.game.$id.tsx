@@ -176,6 +176,16 @@ function GamePage() {
       {!isPre && tab === "pbp" && <MlbPlayByPlay plays={s.plays} />}
       {!isPre && tab === "wp" && <MlbWinProbabilityChart data={s.winProbability} home={s.home} away={s.away} />}
       {(!isPre && tab === "info") || isPre ? <GameInfo s={s} /> : null}
+
+      <MatchFaqBlock
+        sport="MLB" leagueName="Major League Baseball"
+        home={s.home?.shortName || s.home?.name}
+        away={s.away?.shortName || s.away?.name}
+        venue={s.venue?.name ?? undefined}
+        startDate={s.startTs ? new Date(s.startTs).toISOString() : undefined}
+        status={s.status === "in" ? "live" : s.status === "post" ? "ended" : "scheduled"}
+        homeScore={s.home?.score ?? null} awayScore={s.away?.score ?? null}
+      />
     </div>
   );
 }
