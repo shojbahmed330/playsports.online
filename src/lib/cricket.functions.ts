@@ -50,6 +50,21 @@ export type CricketInnings = {
   description: string;  // "complete" / "live" / "declared"
 };
 
+/** Parsed representation of ESPN's compact score string. */
+export type ParsedScoreInnings = {
+  runs: number;
+  wickets: number;       // 0..10 (10 = all out)
+  overs: number | null;  // may not be present in the summary string
+  declared: boolean;
+  allOut: boolean;       // wickets===10 OR "all out" in the string
+};
+export type ParsedScore = {
+  innings: ParsedScoreInnings[];
+  totalRuns: number;
+  didNotBat: boolean;    // "DNB", "Yet to bat"
+  raw: string | null;
+};
+
 export type CricketTeam = {
   id: string;
   name: string;
@@ -64,6 +79,15 @@ export type CricketTeam = {
   innings: CricketInnings[];
   /** Sum of runs across innings — handy for sort/display fallback */
   totalRuns: number;
+  /** Parsed from `scoreSummary` — trustworthy top-line (never fabricates /0). */
+  parsedScore: ParsedScore;
+};
+
+/** Human-readable result derived from ESPN status/note fields (post matches only). */
+export type CricketResult = {
+  kind: "runs" | "wickets" | "innings" | "dls" | "tie" | "no-result" | "abandoned" | "draw" | "unknown";
+  winnerAbbr: string | null;
+  marginText: string; // "England won by 10 wickets" / "No result" / ...
 };
 
 export type CricketMatch = {
@@ -88,7 +112,12 @@ export type CricketMatch = {
   away: CricketTeam;
   /** Toss / result blurb */
   note: string | null;
+  /** Derived result summary (post matches only). */
+  result: CricketResult | null;
+  /** True when the feed reports a completed match but has no numeric scores at all. */
+  dataIncomplete: boolean;
 };
+
 
 
 export type CricketNewsItem = {
@@ -101,6 +130,93 @@ export type CricketNewsItem = {
 };
 
 // ───────── mappers ─────────
+
+/**
+ * Parse ESPN's compact score string into structured innings.
+ * Examples:
+ *  "172"              → 1 innings, allOut unknown → treated as allOut when no /w
+ *  "172/8"            → 1 innings, 172 for 8
+ *  "172/8d"           → 1 innings, declared
+ *  "45/0"             → 1 innings, 45 for 0
+ *  "172 all out"      → 1 innings, allOut=true, wickets=10
+ *  "172 & 210/4d"     → 2 innings (Tests)
+ *  "DNB" / ""         → didNotBat=true
+ */
+export function parseScoreSummary(input: string | null | undefined): ParsedScore {
+  const raw = (input ?? "").trim();
+  if (!raw || /^(dnb|yet to bat|—|-)$/i.test(raw)) {
+    return { innings: [], totalRuns: 0, didNotBat: true, raw: raw || null };
+  }
+  const parts = raw.split(/\s*&\s*/);
+  const innings: ParsedScoreInnings[] = [];
+  for (const part of parts) {
+    // Strip trailing overs like "(48.3 ov)" or "(18/20 ov, target 156)"
+    const core = part.replace(/\s*\(.*$/, "").trim();
+    // "172 all out" / "172 a.o."
+    const allOutMatch = /^(\d+)\s*(?:all\s*out|a\.?o\.?)$/i.exec(core);
+    if (allOutMatch) {
+      innings.push({
+        runs: Number(allOutMatch[1]),
+        wickets: 10,
+        overs: null,
+        declared: false,
+        allOut: true,
+      });
+      continue;
+    }
+    // "172/8" or "172/8d"
+    const rw = /^(\d+)\s*\/\s*(\d+)(d)?/i.exec(core);
+    if (rw) {
+      const wickets = Number(rw[2]);
+      innings.push({
+        runs: Number(rw[1]),
+        wickets,
+        overs: null,
+        declared: Boolean(rw[3]),
+        allOut: wickets >= 10,
+      });
+      continue;
+    }
+    // Bare "172" → in cricket a bare number in a completed match means all out.
+    const bare = /^(\d+)$/.exec(core);
+    if (bare) {
+      innings.push({
+        runs: Number(bare[1]),
+        wickets: 10,
+        overs: null,
+        declared: false,
+        allOut: true,
+      });
+      continue;
+    }
+    // Unparseable → keep going but don't invent numbers
+  }
+  const totalRuns = innings.reduce((s, i) => s + i.runs, 0);
+  return { innings, totalRuns, didNotBat: innings.length === 0, raw };
+}
+
+/** Merge linescore innings with parsed summary — parsed summary wins for allOut/wickets. */
+function mergeInnings(fromLinescore: CricketInnings[], parsed: ParsedScore): CricketInnings[] {
+  if (fromLinescore.length === 0 && parsed.innings.length > 0) {
+    return parsed.innings.map((p, i) => ({
+      period: i + 1,
+      runs: p.runs,
+      wickets: p.wickets,
+      overs: p.overs ?? 0,
+      isBatting: false,
+      description: p.declared ? "declared" : p.allOut ? "all out" : "",
+    }));
+  }
+  // Fold parsed wickets/allOut back into linescore when linescore reports 0 but summary knows.
+  return fromLinescore.map((ls, idx) => {
+    const p = parsed.innings[idx];
+    if (!p) return ls;
+    const shouldTrustSummary = p.allOut && ls.wickets === 0;
+    return shouldTrustSummary
+      ? { ...ls, wickets: p.wickets, description: p.declared ? "declared" : "all out" }
+      : ls;
+  });
+}
 
 function mapInnings(linescores: any[] | undefined): CricketInnings[] {
   if (!Array.isArray(linescores)) return [];
@@ -118,7 +234,10 @@ function mapInnings(linescores: any[] | undefined): CricketInnings[] {
 
 function mapTeam(c: any): CricketTeam {
   const t = c?.team ?? {};
-  const innings = mapInnings(c?.linescores);
+  const rawInnings = mapInnings(c?.linescores);
+  const scoreSummary = typeof c?.score === "string" ? c.score : null;
+  const parsedScore = parseScoreSummary(scoreSummary);
+  const innings = mergeInnings(rawInnings, parsedScore);
   return {
     id: String(t.id ?? ""),
     name: t.displayName ?? t.name ?? "",
@@ -127,11 +246,63 @@ function mapTeam(c: any): CricketTeam {
     logo: t.logo ?? t.logos?.[0]?.href ?? null,
     color: t.color ? (String(t.color).startsWith("#") ? t.color : `#${t.color}`) : null,
     countryCode: t.countryCode ?? null,
-    scoreSummary: typeof c?.score === "string" ? c.score : null,
+    scoreSummary,
     winner: c?.winner === "true" || c?.winner === true ? true : c?.winner === false ? false : null,
     innings,
-    totalRuns: innings.reduce((s, i) => s + (i.runs || 0), 0),
+    totalRuns: innings.length > 0 ? innings.reduce((s, i) => s + (i.runs || 0), 0) : parsedScore.totalRuns,
+    parsedScore,
   };
+}
+
+/**
+ * Extract a human-readable result summary from ESPN's status description / notes.
+ * Returns null for non-completed matches.
+ */
+export function deriveResult(args: {
+  status: CricketMatch["status"];
+  home: { abbr: string; name: string; winner: boolean | null };
+  away: { abbr: string; name: string; winner: boolean | null };
+  note: string | null;
+  statusDescription: string | null;
+}): CricketResult | null {
+  if (args.status !== "post") return null;
+  const text = [args.note, args.statusDescription].filter(Boolean).join(" · ").trim();
+  const winnerTeam = args.home.winner === true ? args.home : args.away.winner === true ? args.away : null;
+  const winnerAbbr = winnerTeam?.abbr || null;
+  const lower = text.toLowerCase();
+
+  if (!text) {
+    return { kind: "unknown", winnerAbbr, marginText: winnerTeam ? `${winnerTeam.name} won` : "Result" };
+  }
+  if (/no\s*result/i.test(text)) return { kind: "no-result", winnerAbbr: null, marginText: "No result" };
+  if (/abandon/i.test(text)) return { kind: "abandoned", winnerAbbr: null, marginText: "Match abandoned" };
+  if (/^match\s+tied|tied$/i.test(text) || /\btied\b/i.test(text)) {
+    return { kind: "tie", winnerAbbr: null, marginText: "Match tied" };
+  }
+  if (/\bdraw(n)?\b/i.test(text)) return { kind: "draw", winnerAbbr: null, marginText: "Match drawn" };
+
+  const wkts = /won by (\d+)\s*wicket/i.exec(text);
+  if (wkts) {
+    return { kind: "wickets", winnerAbbr, marginText: text };
+  }
+  const runs = /won by (\d+)\s*run/i.exec(text);
+  if (runs) {
+    return { kind: "runs", winnerAbbr, marginText: text };
+  }
+  const innings = /won by an? innings/i.exec(text);
+  if (innings) {
+    return { kind: "innings", winnerAbbr, marginText: text };
+  }
+  if (/dls|duckworth/i.test(lower)) {
+    return { kind: "dls", winnerAbbr, marginText: text };
+  }
+  return { kind: "unknown", winnerAbbr, marginText: text };
+}
+
+function computeDataIncomplete(status: CricketMatch["status"], home: CricketTeam, away: CricketTeam): boolean {
+  if (status !== "post") return false;
+  const empty = (t: CricketTeam) => t.innings.length === 0 && t.parsedScore.innings.length === 0;
+  return empty(home) && empty(away);
 }
 
 function mapMatch(e: any, league: { id: string; name: string; abbr: string }): CricketMatch {
@@ -160,6 +331,16 @@ function mapMatch(e: any, league: { id: string; name: string; abbr: string }): C
     e?.status?.type?.description ??
     null;
 
+  const homeTeam = mapTeam(home);
+  const awayTeam = mapTeam(away);
+  const result = deriveResult({
+    status,
+    home: { abbr: homeTeam.abbr, name: homeTeam.name, winner: homeTeam.winner },
+    away: { abbr: awayTeam.abbr, name: awayTeam.name, winner: awayTeam.winner },
+    note,
+    statusDescription: e?.status?.type?.description ?? null,
+  });
+
   return {
     id: String(e.id ?? comp.id ?? ""),
     leagueId: league.id,
@@ -178,11 +359,14 @@ function mapMatch(e: any, league: { id: string; name: string; abbr: string }): C
     country,
     broadcast,
     isNeutralSite: Boolean(comp?.neutralSite),
-    home: mapTeam(home),
-    away: mapTeam(away),
+    home: homeTeam,
+    away: awayTeam,
     note,
+    result,
+    dataIncomplete: computeDataIncomplete(status, homeTeam, awayTeam),
   };
 }
+
 
 // ───────── server functions ─────────
 
@@ -394,6 +578,15 @@ export const getCricketMatchDetail = createServerFn({ method: "GET" })
         evt?.status?.type?.description ??
         null;
 
+      const homeTeamMapped = mapTeam(home);
+      const awayTeamMapped = mapTeam(away);
+      const detailResult = deriveResult({
+        status,
+        home: { abbr: homeTeamMapped.abbr, name: homeTeamMapped.name, winner: homeTeamMapped.winner },
+        away: { abbr: awayTeamMapped.abbr, name: awayTeamMapped.name, winner: awayTeamMapped.winner },
+        note,
+        statusDescription: evt?.status?.type?.description ?? null,
+      });
       const baseMatch: CricketMatch = {
         id: String(evt.id ?? data.eventId),
         leagueId: league.id,
@@ -412,10 +605,13 @@ export const getCricketMatchDetail = createServerFn({ method: "GET" })
         country: raw?.gameInfo?.venue?.address?.country ?? null,
         broadcast: comp?.broadcasts?.[0]?.names?.join(", ") ?? null,
         isNeutralSite: Boolean(comp?.neutralSite),
-        home: mapTeam(home),
-        away: mapTeam(away),
+        home: homeTeamMapped,
+        away: awayTeamMapped,
         note,
+        result: detailResult,
+        dataIncomplete: computeDataIncomplete(status, homeTeamMapped, awayTeamMapped),
       };
+
 
       // Innings detail — ESPN nests per-player stats inside
       //   roster[i].linescores[periodIdx].linescores[*].statistics.categories[*].stats[*]
