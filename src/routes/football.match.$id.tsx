@@ -83,7 +83,7 @@ export const Route = createFileRoute("/football/match/$id")({
           venue: fx?.venue ?? undefined,
           startDate: fx?.startTs ? new Date(fx.startTs).toISOString() : undefined,
           status,
-          homeScore: fx?.home.score ?? null, awayScore: fx?.away.score ?? null,
+          homeScore: fx?.home.goals ?? null, awayScore: fx?.away.goals ?? null,
         }))),
       ],
     };
