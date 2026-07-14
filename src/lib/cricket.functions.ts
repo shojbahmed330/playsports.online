@@ -213,15 +213,18 @@ function mergeInnings(fromLinescore: CricketInnings[], parsed: ParsedScore): Cri
   const capped = parsed.innings.length > 0 && nonEmpty.length > parsed.innings.length
     ? nonEmpty.slice(0, parsed.innings.length)
     : nonEmpty;
-  // Fold parsed wickets/allOut back into linescore when linescore reports 0 but summary knows.
+  // When parsed summary exists, it wins for runs/wickets — linescore only contributes overs.
   return capped.map((ls, idx) => {
     const p = parsed.innings[idx];
     if (!p) return ls;
-    const shouldTrustSummary = p.allOut && ls.wickets === 0;
-    return shouldTrustSummary
-      ? { ...ls, wickets: p.wickets, description: p.declared ? "declared" : "all out" }
-      : ls;
+    return {
+      ...ls,
+      runs: p.runs,
+      wickets: p.wickets,
+      description: p.declared ? "declared" : p.allOut ? "all out" : ls.description,
+    };
   });
+
 }
 
 
