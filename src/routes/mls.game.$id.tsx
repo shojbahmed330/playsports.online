@@ -7,7 +7,9 @@ import { getMlsGame } from "@/lib/mls.functions";
 import { MlsLinescore } from "@/components/mls/MlsLinescore";
 import { MlsBoxScore } from "@/components/mls/MlsBoxScore";
 import { MlsPlayByPlay } from "@/components/mls/MlsPlayByPlay";
-import { breadcrumbList, ldScript, sportsEvent } from "@/lib/seo/jsonld";
+import { breadcrumbList, faqPage, ldScript, sportsEvent } from "@/lib/seo/jsonld";
+import { buildMatchFaqs } from "@/lib/seo/match-faqs";
+import { MatchFaqBlock } from "@/components/seo/MatchFaqBlock";
 
 export const Route = createFileRoute("/mls/game/$id")({
   loader: async ({ context, params }) => {
