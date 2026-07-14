@@ -55,6 +55,14 @@ export const Route = createFileRoute("/mls/game/$id")({
           location: s?.venue?.name ?? undefined,
           status: s?.status === "in" ? "live" : s?.status === "post" ? "ended" : "scheduled",
         })),
+        ldScript(faqPage(buildMatchFaqs({
+          sport: "MLS", leagueName: "Major League Soccer",
+          home: home ?? undefined, away: away ?? undefined,
+          venue: s?.venue?.name ?? undefined,
+          startDate: s?.startTs ? new Date(s.startTs).toISOString() : undefined,
+          status: s?.status === "in" ? "live" : s?.status === "post" ? "ended" : "scheduled",
+          homeScore: s?.home?.score ?? null, awayScore: s?.away?.score ?? null,
+        }))),
       ],
     };
   },
