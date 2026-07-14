@@ -144,16 +144,17 @@ function MatchPage() {
     { id: "faqs", label: "FAQs" },
   ];
 
-  const faqs = buildMatchFaqs({
-    sport: "Cricket",
+  const faqProps = {
+    sport: "Cricket" as const,
     leagueName: match.leagueName,
     home: match.home.name,
     away: match.away.name,
     venue: match.venue ?? undefined,
     startDate: match.startTs ? new Date(match.startTs).toISOString() : undefined,
-    status: match.status === "in" ? "live" : match.status === "post" ? "ended" : "scheduled",
+    status: (match.status === "in" ? "live" : match.status === "post" ? "ended" : "scheduled") as "live" | "ended" | "scheduled",
     broadcast: match.broadcast ?? undefined,
-  });
+  };
+
 
   return (
     <div className="min-h-screen pb-16 sm:pb-0">
