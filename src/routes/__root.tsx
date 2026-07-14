@@ -168,6 +168,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "dns-prefetch", href: "https://sports.core.api.espn.com" },
       { rel: "dns-prefetch", href: "https://pagead2.googlesyndication.com" },
       { rel: "dns-prefetch", href: "https://vagqeperdsumxwukwbes.supabase.co" },
+      // hreflang — declare English as the site language and set an x-default
+      // fallback. Traffic is spread across UK/IN/CA/AU so a single English
+      // canonical is correct; per-locale variants can be added later.
+      { rel: "alternate", hrefLang: "en", href: "https://www.playsports.online/" },
+      { rel: "alternate", hrefLang: "x-default", href: "https://www.playsports.online/" },
     ],
   }),
   shellComponent: RootShell,
