@@ -7,7 +7,9 @@ import { getNhlGame } from "@/lib/nhl.functions";
 import { NhlLinescore } from "@/components/nhl/NhlLinescore";
 import { NhlBoxScore } from "@/components/nhl/NhlBoxScore";
 import { NhlPlayByPlay } from "@/components/nhl/NhlPlayByPlay";
-import { breadcrumbList, ldScript, sportsEvent } from "@/lib/seo/jsonld";
+import { breadcrumbList, faqPage, ldScript, sportsEvent } from "@/lib/seo/jsonld";
+import { buildMatchFaqs } from "@/lib/seo/match-faqs";
+import { MatchFaqBlock } from "@/components/seo/MatchFaqBlock";
 
 export const Route = createFileRoute("/nhl/game/$id")({
   loader: async ({ context, params }) => {
