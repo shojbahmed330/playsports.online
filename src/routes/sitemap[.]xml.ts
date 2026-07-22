@@ -18,11 +18,8 @@ import { listGuides } from "@/content/guides";
 import { KEYWORD_TARGETS, priorityFromVolume } from "@/lib/seo/keyword-map";
 import {
   wc2026MatchUrls,
-  mlbTeamUrls,
-  nbaTeamUrls,
-  nhlTeamUrls,
-  mlsTeamUrls,
   iplTeamUrls,
+
   cricketSeriesUrls,
   cricketSeoTeamUrls,
   cricketSeoPlayerUrls,
