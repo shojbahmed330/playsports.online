@@ -43,11 +43,12 @@ import {
 
 const BASE_URL = "https://www.playsports.online";
 const BASE_SITEMAP_PARTS = ["core", "cricket", "us-sports", "hockey-soccer", "legacy"] as const;
-// Keep football chunks available for direct/manual submission, but the root
-// sitemap index points at one canonical /sitemap-football.xml URL set. This
-// keeps Search Console from drilling into 100+ child files and reporting only
-// the first child sitemap.
-const FOOTBALL_CHUNK_SIZE = 50;
+// Split football into a handful of path-based chunks and list each chunk
+// directly in the root sitemap index. A single 5000+ URL file sometimes
+// times out on GSC's initial fetch ("Couldn't fetch"), and Google does
+// NOT support nested sitemap indexes — so chunks must be siblings of the
+// other parts in the root index, not children of a football index.
+const FOOTBALL_CHUNK_SIZE = 1200;
 
 type BaseSitemapPart = (typeof BASE_SITEMAP_PARTS)[number];
 type FootballChunkPart = `football-${number}`;
