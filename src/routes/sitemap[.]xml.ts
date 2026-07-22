@@ -46,7 +46,7 @@ const BASE_SITEMAP_PARTS = ["core", "cricket", "us-sports", "hockey-soccer", "le
 // Keep football split into small, readable category files. Large football
 // categories are further split into numbered continuations, while the base
 // category URL remains valid as page 1 for older Search Console submissions.
-const FOOTBALL_CHUNK_SIZE = 250;
+const FOOTBALL_CHUNK_SIZE = 100;
 const FOOTBALL_SITEMAP_CATEGORIES = [
   "matches",
   "teams",
