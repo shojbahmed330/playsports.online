@@ -321,7 +321,7 @@ function footballChunkParts(): FootballChunkPart[] {
 }
 
 function rootSitemapParts(): string[] {
-  return ["core", "football", "cricket", "us-sports", "hockey-soccer", "legacy"];
+  return ["core", ...footballChunkParts(), "cricket", "us-sports", "hockey-soccer", "legacy"];
 }
 
 function isFootballChunkPart(part: string): part is FootballChunkPart {
