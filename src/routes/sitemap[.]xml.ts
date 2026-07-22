@@ -43,9 +43,10 @@ import {
 
 const BASE_URL = "https://www.playsports.online";
 const BASE_SITEMAP_PARTS = ["core", "cricket", "us-sports", "hockey-soccer", "legacy"] as const;
-// Keep football sitemap chunks intentionally small. Google Search Console was
-// fetching 1–2 but failing 3–6 when chunks had ~900 URLs each, so split into
-// safer 250-URL files.
+// Keep football chunks available for direct/manual submission, but the root
+// sitemap index points at one canonical /sitemap-football.xml URL set. This
+// keeps Search Console from drilling into 100+ child files and reporting only
+// the first child sitemap.
 const FOOTBALL_CHUNK_SIZE = 50;
 
 type BaseSitemapPart = (typeof BASE_SITEMAP_PARTS)[number];
@@ -319,7 +320,7 @@ function footballChunkParts(): FootballChunkPart[] {
 }
 
 function rootSitemapParts(): string[] {
-  return ["core", ...footballChunkParts(), "cricket", "us-sports", "hockey-soccer", "legacy"];
+  return ["core", "football", "cricket", "us-sports", "hockey-soccer", "legacy"];
 }
 
 function isFootballChunkPart(part: string): part is FootballChunkPart {
@@ -473,17 +474,6 @@ export const Route = createFileRoute("/sitemap.xml")({
 
         if (!isValidSitemapPart(part)) {
           return new Response("Sitemap part not found", { status: 404 });
-        }
-
-        if (part === "football") {
-          return new Response(renderSitemapIndex(today, footballChunkParts()), {
-            headers: {
-              "Content-Type": "application/xml; charset=utf-8",
-              "Cache-Control": "public, max-age=3600, s-maxage=3600, stale-while-revalidate=21600",
-              "X-Sitemap-Type": "index",
-              "X-Sitemap-Part": part,
-            },
-          });
         }
 
         const entries = await entriesForPart(part as SitemapPart);
