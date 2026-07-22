@@ -220,7 +220,7 @@ function renderUrlset(entries: SitemapEntry[], today: string): string {
 
 function renderSitemapIndex(today: string, parts: string[] = rootSitemapParts()): string {
   const sitemaps = parts.map((part) =>
-    [`  <sitemap>`, `    <loc>${xmlEscape(`${BASE_URL}/sitemap.xml?part=${part}`)}</loc>`, `    <lastmod>${today}</lastmod>`, `  </sitemap>`].join("\n"),
+    [`  <sitemap>`, `    <loc>${xmlEscape(`${BASE_URL}/sitemap-${part}.xml`)}</loc>`, `    <lastmod>${today}</lastmod>`, `  </sitemap>`].join("\n"),
   );
 
   return [
@@ -230,6 +230,7 @@ function renderSitemapIndex(today: string, parts: string[] = rootSitemapParts())
     `</sitemapindex>`,
   ].join("\n");
 }
+
 
 function competitionSitemapEntries(): SitemapEntry[] {
   const out: SitemapEntry[] = [];
