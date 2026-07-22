@@ -43,20 +43,22 @@ import {
 
 const BASE_URL = "https://www.playsports.online";
 const BASE_SITEMAP_PARTS = ["core", "cricket", "us-sports", "hockey-soccer", "legacy"] as const;
-// Keep football split into readable, category-based URL sitemaps. These show
-// in Search Console just like cricket / legacy / US sports, avoid one large
-// football file, and avoid numeric chunk URLs being treated as "Unknown".
-const FOOTBALL_SITEMAP_PARTS = [
-  "football-matches",
-  "football-teams",
-  "football-players",
-  "football-countries",
-  "football-records",
-  "football-competitions",
+// Keep football split into small, readable category files. Large football
+// categories are further split into numbered continuations, while the base
+// category URL remains valid as page 1 for older Search Console submissions.
+const FOOTBALL_CHUNK_SIZE = 250;
+const FOOTBALL_SITEMAP_CATEGORIES = [
+  "matches",
+  "teams",
+  "players",
+  "countries",
+  "records",
+  "competitions",
 ] as const;
 
 type BaseSitemapPart = (typeof BASE_SITEMAP_PARTS)[number];
-type FootballSitemapPart = (typeof FOOTBALL_SITEMAP_PARTS)[number];
+type FootballSitemapCategory = (typeof FOOTBALL_SITEMAP_CATEGORIES)[number];
+type FootballSitemapPart = `football-${FootballSitemapCategory}` | `football-${FootballSitemapCategory}-${number}`;
 type SitemapPart = BaseSitemapPart | "football" | FootballSitemapPart;
 
 interface SitemapEntry {
@@ -345,12 +347,58 @@ function footballSitemapEntries(): SitemapEntry[] {
   ];
 }
 
+function chunkEntries(entries: SitemapEntry[], size: number): SitemapEntry[][] {
+  const unique = dedupe(entries);
+  const chunks: SitemapEntry[][] = [];
+  for (let i = 0; i < unique.length; i += size) chunks.push(unique.slice(i, i + size));
+  return chunks.length ? chunks : [[]];
+}
+
+function footballCategoryEntries(category: FootballSitemapCategory): SitemapEntry[] {
+  switch (category) {
+    case "matches":
+      return footballMatchSitemapEntries();
+    case "teams":
+      return footballTeamSitemapEntries();
+    case "players":
+      return footballPlayerSitemapEntries();
+    case "countries":
+      return footballCountrySitemapEntries();
+    case "records":
+      return footballRecordSitemapEntries();
+    case "competitions":
+      return competitionSitemapEntries();
+  }
+}
+
+function footballPartName(category: FootballSitemapCategory, page: number): FootballSitemapPart {
+  return page === 1 ? `football-${category}` : `football-${category}-${page}`;
+}
+
+function footballSitemapParts(): FootballSitemapPart[] {
+  return FOOTBALL_SITEMAP_CATEGORIES.flatMap((category) => {
+    const chunks = chunkEntries(footballCategoryEntries(category), FOOTBALL_CHUNK_SIZE);
+    return chunks.map((_, index) => footballPartName(category, index + 1));
+  });
+}
+
+function parseFootballSitemapPart(part: string): { category: FootballSitemapCategory; page: number } | null {
+  if (!part.startsWith("football-")) return null;
+  const suffix = part.slice("football-".length);
+  const numbered = suffix.match(/^(.*)-(\d+)$/);
+  const category = (numbered ? numbered[1] : suffix) as FootballSitemapCategory;
+  if (!(FOOTBALL_SITEMAP_CATEGORIES as readonly string[]).includes(category)) return null;
+  const page = numbered ? Number(numbered[2]) : 1;
+  if (!Number.isInteger(page) || page < 1) return null;
+  return { category, page };
+}
+
 function rootSitemapParts(): string[] {
-  return ["core", ...FOOTBALL_SITEMAP_PARTS, "cricket", "us-sports", "hockey-soccer", "legacy"];
+  return ["core", ...footballSitemapParts(), "cricket", "us-sports", "hockey-soccer", "legacy"];
 }
 
 function isFootballSitemapPart(part: string): part is FootballSitemapPart {
-  return (FOOTBALL_SITEMAP_PARTS as readonly string[]).includes(part);
+  return footballSitemapParts().includes(part as FootballSitemapPart);
 }
 
 function isValidSitemapPart(part: string): part is SitemapPart {
@@ -360,6 +408,12 @@ function isValidSitemapPart(part: string): part is SitemapPart {
 }
 
 async function entriesForPart(part: SitemapPart): Promise<SitemapEntry[]> {
+  const footballPart = parseFootballSitemapPart(part);
+  if (footballPart) {
+    const chunks = chunkEntries(footballCategoryEntries(footballPart.category), FOOTBALL_CHUNK_SIZE);
+    return chunks[footballPart.page - 1] ?? [];
+  }
+
   switch (part) {
     case "core":
       return [
@@ -389,18 +443,6 @@ async function entriesForPart(part: SitemapPart): Promise<SitemapEntry[]> {
       ];
     case "football":
       return footballSitemapEntries();
-    case "football-matches":
-      return footballMatchSitemapEntries();
-    case "football-teams":
-      return footballTeamSitemapEntries();
-    case "football-players":
-      return footballPlayerSitemapEntries();
-    case "football-countries":
-      return footballCountrySitemapEntries();
-    case "football-records":
-      return footballRecordSitemapEntries();
-    case "football-competitions":
-      return competitionSitemapEntries();
     case "cricket": {
       const [iplTeams, cricketSeries] = await Promise.all([iplTeamUrls(), cricketSeriesUrls()]);
       return [
@@ -457,6 +499,8 @@ async function entriesForPart(part: SitemapPart): Promise<SitemapEntry[]> {
         })),
       ];
   }
+
+  return [];
 }
 
 // Re-exported so the path-based `/sitemap-{part}.xml` route can share the
@@ -468,6 +512,7 @@ export {
   renderSitemapIndex,
   isValidSitemapPart,
   isFootballSitemapPart,
+  footballSitemapParts,
   rootSitemapParts,
 };
 export type { SitemapPart };
