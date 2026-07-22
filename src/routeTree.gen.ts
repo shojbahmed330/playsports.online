@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as UnsubscribeRouteImport } from './routes/unsubscribe'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as SitemapPartDotxmlRouteImport } from './routes/sitemap-$part[.]xml'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as PremiumRouteImport } from './routes/premium'
@@ -191,6 +192,11 @@ const TermsRoute = TermsRouteImport.update({
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapPartDotxmlRoute = SitemapPartDotxmlRouteImport.update({
+  id: '/sitemap-$part.xml',
+  path: '/sitemap-$part.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SearchRoute = SearchRouteImport.update({
@@ -1052,6 +1058,7 @@ export interface FileRoutesByFullPath {
   '/premium': typeof PremiumRoute
   '/privacy': typeof PrivacyRoute
   '/search': typeof SearchRoute
+  '/sitemap-$part.xml': typeof SitemapPartDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/unsubscribe': typeof UnsubscribeRoute
@@ -1216,6 +1223,7 @@ export interface FileRoutesByTo {
   '/premium': typeof PremiumRoute
   '/privacy': typeof PrivacyRoute
   '/search': typeof SearchRoute
+  '/sitemap-$part.xml': typeof SitemapPartDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/unsubscribe': typeof UnsubscribeRoute
@@ -1386,6 +1394,7 @@ export interface FileRoutesById {
   '/premium': typeof PremiumRoute
   '/privacy': typeof PrivacyRoute
   '/search': typeof SearchRoute
+  '/sitemap-$part.xml': typeof SitemapPartDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/unsubscribe': typeof UnsubscribeRoute
@@ -1558,6 +1567,7 @@ export interface FileRouteTypes {
     | '/premium'
     | '/privacy'
     | '/search'
+    | '/sitemap-$part.xml'
     | '/sitemap.xml'
     | '/terms'
     | '/unsubscribe'
@@ -1722,6 +1732,7 @@ export interface FileRouteTypes {
     | '/premium'
     | '/privacy'
     | '/search'
+    | '/sitemap-$part.xml'
     | '/sitemap.xml'
     | '/terms'
     | '/unsubscribe'
@@ -1891,6 +1902,7 @@ export interface FileRouteTypes {
     | '/premium'
     | '/privacy'
     | '/search'
+    | '/sitemap-$part.xml'
     | '/sitemap.xml'
     | '/terms'
     | '/unsubscribe'
@@ -2062,6 +2074,7 @@ export interface RootRouteChildren {
   PremiumRoute: typeof PremiumRoute
   PrivacyRoute: typeof PrivacyRoute
   SearchRoute: typeof SearchRoute
+  SitemapPartDotxmlRoute: typeof SitemapPartDotxmlRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TermsRoute: typeof TermsRoute
   UnsubscribeRoute: typeof UnsubscribeRoute
@@ -2109,6 +2122,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap-$part.xml': {
+      id: '/sitemap-$part.xml'
+      path: '/sitemap-$part.xml'
+      fullPath: '/sitemap-$part.xml'
+      preLoaderRoute: typeof SitemapPartDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/search': {
@@ -3708,6 +3728,7 @@ const rootRouteChildren: RootRouteChildren = {
   PremiumRoute: PremiumRoute,
   PrivacyRoute: PrivacyRoute,
   SearchRoute: SearchRoute,
+  SitemapPartDotxmlRoute: SitemapPartDotxmlRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TermsRoute: TermsRoute,
   UnsubscribeRoute: UnsubscribeRoute,
