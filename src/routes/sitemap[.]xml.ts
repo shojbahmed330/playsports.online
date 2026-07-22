@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
-import { listH2H, listArchives, listCountryYears, listPlayerYears } from "@/lib/seo/programmatic";
+import { listTeams, listPlayers, listH2H, listArchives, listCountryYears, listPlayerYears } from "@/lib/seo/programmatic";
 import { COMPETITIONS } from "@/lib/competitions";
 import { COMPETITION_EDITIONS } from "@/data/competition-editions";
 import { WC_TOURNAMENTS } from "@/data/wc_tournaments";
