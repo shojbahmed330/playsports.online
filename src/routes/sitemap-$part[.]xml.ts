@@ -31,7 +31,7 @@ export const Route = createFileRoute("/sitemap-$part.xml")({
       },
       GET: async ({ params }) => {
         const today = new Date().toISOString().slice(0, 10);
-        const part = params.part;
+        const part = (params as Record<string, string>).part ?? (params as Record<string, string>)["part.xml"];
 
         if (!isValidSitemapPart(part)) {
           return new Response("Sitemap part not found", { status: 404 });
