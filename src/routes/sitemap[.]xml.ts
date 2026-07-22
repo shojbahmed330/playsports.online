@@ -389,7 +389,6 @@ async function entriesForPart(part: SitemapPart): Promise<SitemapEntry[]> {
       ];
     }
     case "us-sports": {
-      const [mlbTeams, nbaTeams] = await Promise.all([mlbTeamUrls(), nbaTeamUrls()]);
       return [
         ...mlbSeoTeamUrls(),
         ...mlbSeoPlayerUrls(),
@@ -400,12 +399,9 @@ async function entriesForPart(part: SitemapPart): Promise<SitemapEntry[]> {
         ...nbaSeoFinalsUrls(),
         ...mlbProgrammaticUrls(),
         ...nbaProgrammaticUrls(),
-        ...mlbTeams,
-        ...nbaTeams,
       ];
     }
     case "hockey-soccer": {
-      const [nhlTeams, mlsTeams] = await Promise.all([nhlTeamUrls(), mlsTeamUrls()]);
       return [
         ...nhlSeoTeamUrls(),
         ...nhlSeoPlayerUrls(),
@@ -415,22 +411,13 @@ async function entriesForPart(part: SitemapPart): Promise<SitemapEntry[]> {
         ...mlsSeoCupUrls(),
         ...nhlProgrammaticUrls(),
         ...mlsProgrammaticUrls(),
-        ...nhlTeams,
-        ...mlsTeams,
       ];
     }
     case "legacy":
       return [
-        ...listTeams().map((t) => ({
-          path: `/team/${t.sport}/${t.slug}`,
-          changefreq: "weekly" as const,
-          priority: "0.5",
-        })),
-        ...listPlayers().map((p) => ({
-          path: `/player/${p.sport}/${p.slug}`,
-          changefreq: "monthly" as const,
-          priority: "0.4",
-        })),
+        // Legacy /team/$sport/$slug and /player/$sport/$slug 301 to canonical
+        // /football/teams/$slug and /football/players/$slug — excluded from
+        // sitemap to avoid "Page with redirect" in GSC.
         ...listH2H().map((h) => ({
           path: `/vs/${h.sport}/${h.slug}`,
           changefreq: "monthly" as const,
@@ -444,6 +431,21 @@ async function entriesForPart(part: SitemapPart): Promise<SitemapEntry[]> {
       ];
   }
 }
+
+// Re-exported so the path-based `/sitemap-{part}.xml` route can share the
+// exact same logic — Google Search Console reliably fetches path-based
+// sitemap URLs but often skips `?query=` variants in a sitemap index.
+export {
+  entriesForPart,
+  renderUrlset,
+  renderSitemapIndex,
+  isValidSitemapPart,
+  isFootballChunkPart,
+  footballChunkParts,
+  rootSitemapParts,
+};
+export type { SitemapPart };
+
 
 export const Route = createFileRoute("/sitemap.xml")({
   server: {
