@@ -17,7 +17,7 @@ import {
   type SitemapPart,
 } from "./sitemap[.]xml";
 
-export const Route = createFileRoute("/sitemap-$part.xml")({
+export const Route = createFileRoute("/sitemap-{$part}.xml")({
   server: {
     handlers: {
       HEAD: async () => {
