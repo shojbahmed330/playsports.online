@@ -43,16 +43,21 @@ import {
 
 const BASE_URL = "https://www.playsports.online";
 const BASE_SITEMAP_PARTS = ["core", "cricket", "us-sports", "hockey-soccer", "legacy"] as const;
-// Split football into a handful of path-based chunks and list each chunk
-// directly in the root sitemap index. A single 5000+ URL file sometimes
-// times out on GSC's initial fetch ("Couldn't fetch"), and Google does
-// NOT support nested sitemap indexes — so chunks must be siblings of the
-// other parts in the root index, not children of a football index.
-const FOOTBALL_CHUNK_SIZE = 1200;
+// Keep football split into readable, category-based URL sitemaps. These show
+// in Search Console just like cricket / legacy / US sports, avoid one large
+// football file, and avoid numeric chunk URLs being treated as "Unknown".
+const FOOTBALL_SITEMAP_PARTS = [
+  "football-matches",
+  "football-teams",
+  "football-players",
+  "football-countries",
+  "football-records",
+  "football-competitions",
+] as const;
 
 type BaseSitemapPart = (typeof BASE_SITEMAP_PARTS)[number];
-type FootballChunkPart = `football-${number}`;
-type SitemapPart = BaseSitemapPart | "football" | FootballChunkPart;
+type FootballSitemapPart = (typeof FOOTBALL_SITEMAP_PARTS)[number];
+type SitemapPart = BaseSitemapPart | "football" | FootballSitemapPart;
 
 interface SitemapEntry {
   path: string;
@@ -254,7 +259,7 @@ function competitionSitemapEntries(): SitemapEntry[] {
   return out;
 }
 
-function footballSitemapEntries(): SitemapEntry[] {
+function footballMatchSitemapEntries(): SitemapEntry[] {
   return [
     ...wc2026MatchUrls(),
     ...listMatchSlugs().map((m) => {
@@ -271,16 +276,34 @@ function footballSitemapEntries(): SitemapEntry[] {
         priority: "0.6",
       };
     }),
-    ...listTeams().map((t) => ({
-      path: `/football/teams/${t.slug}`,
-      changefreq: "weekly" as const,
-      priority: "0.7",
-    })),
+  ];
+}
+
+function footballTeamSitemapEntries(): SitemapEntry[] {
+  return listTeams().map((t) => ({
+    path: `/football/teams/${t.slug}`,
+    changefreq: "weekly" as const,
+    priority: "0.7",
+  }));
+}
+
+function footballPlayerSitemapEntries(): SitemapEntry[] {
+  return [
     ...listPlayers().map((p) => ({
       path: `/football/players/${p.slug}`,
       changefreq: "monthly" as const,
       priority: "0.6",
     })),
+    ...listPlayerYears().map((py) => ({
+      path: `/football/players/${py.playerSlug}/world-cup-${py.year}`,
+      changefreq: "yearly" as const,
+      priority: "0.55",
+    })),
+  ];
+}
+
+function footballCountrySitemapEntries(): SitemapEntry[] {
+  return [
     ...WC_TOURNAMENTS.map((t) => ({
       path: `/football/tournaments/${t.year}`,
       changefreq: "monthly" as const,
@@ -291,11 +314,11 @@ function footballSitemapEntries(): SitemapEntry[] {
       changefreq: "yearly" as const,
       priority: "0.65",
     })),
-    ...listPlayerYears().map((py) => ({
-      path: `/football/players/${py.playerSlug}/world-cup-${py.year}`,
-      changefreq: "yearly" as const,
-      priority: "0.55",
-    })),
+  ];
+}
+
+function footballRecordSitemapEntries(): SitemapEntry[] {
+  return [
     ...listHighlights().map((h) => ({
       path: `/highlights/${h.slug}`,
       changefreq: "monthly" as const,
@@ -308,42 +331,35 @@ function footballSitemapEntries(): SitemapEntry[] {
       changefreq: "weekly" as const,
       priority: "0.7",
     })),
+  ];
+}
+
+function footballSitemapEntries(): SitemapEntry[] {
+  return [
+    ...footballMatchSitemapEntries(),
+    ...footballTeamSitemapEntries(),
+    ...footballPlayerSitemapEntries(),
+    ...footballCountrySitemapEntries(),
+    ...footballRecordSitemapEntries(),
     ...competitionSitemapEntries(),
   ];
 }
 
-function footballChunkCount(): number {
-  return Math.max(1, Math.ceil(dedupe(footballSitemapEntries()).length / FOOTBALL_CHUNK_SIZE));
-}
-
-function footballChunkParts(): FootballChunkPart[] {
-  return Array.from({ length: footballChunkCount() }, (_, i) => `football-${i + 1}` as FootballChunkPart);
-}
-
 function rootSitemapParts(): string[] {
-  return ["core", ...footballChunkParts(), "cricket", "us-sports", "hockey-soccer", "legacy"];
+  return ["core", ...FOOTBALL_SITEMAP_PARTS, "cricket", "us-sports", "hockey-soccer", "legacy"];
 }
 
-function isFootballChunkPart(part: string): part is FootballChunkPart {
-  return /^football-[1-9]\d*$/.test(part);
+function isFootballSitemapPart(part: string): part is FootballSitemapPart {
+  return (FOOTBALL_SITEMAP_PARTS as readonly string[]).includes(part);
 }
 
 function isValidSitemapPart(part: string): part is SitemapPart {
   if (part === "football") return true;
   if ((BASE_SITEMAP_PARTS as readonly string[]).includes(part)) return true;
-  if (!isFootballChunkPart(part)) return false;
-  const chunkNumber = Number(part.replace("football-", ""));
-  return chunkNumber >= 1 && chunkNumber <= footballChunkCount();
+  return isFootballSitemapPart(part);
 }
 
 async function entriesForPart(part: SitemapPart): Promise<SitemapEntry[]> {
-  if (isFootballChunkPart(part)) {
-    const entries = dedupe(footballSitemapEntries());
-    const chunkNumber = Number(part.replace("football-", ""));
-    const start = (chunkNumber - 1) * FOOTBALL_CHUNK_SIZE;
-    return entries.slice(start, start + FOOTBALL_CHUNK_SIZE);
-  }
-
   switch (part) {
     case "core":
       return [
@@ -373,6 +389,18 @@ async function entriesForPart(part: SitemapPart): Promise<SitemapEntry[]> {
       ];
     case "football":
       return footballSitemapEntries();
+    case "football-matches":
+      return footballMatchSitemapEntries();
+    case "football-teams":
+      return footballTeamSitemapEntries();
+    case "football-players":
+      return footballPlayerSitemapEntries();
+    case "football-countries":
+      return footballCountrySitemapEntries();
+    case "football-records":
+      return footballRecordSitemapEntries();
+    case "football-competitions":
+      return competitionSitemapEntries();
     case "cricket": {
       const [iplTeams, cricketSeries] = await Promise.all([iplTeamUrls(), cricketSeriesUrls()]);
       return [
@@ -439,8 +467,7 @@ export {
   renderUrlset,
   renderSitemapIndex,
   isValidSitemapPart,
-  isFootballChunkPart,
-  footballChunkParts,
+  isFootballSitemapPart,
   rootSitemapParts,
 };
 export type { SitemapPart };
