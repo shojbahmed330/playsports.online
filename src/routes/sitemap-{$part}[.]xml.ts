@@ -11,7 +11,9 @@ import type {} from "@tanstack/react-start";
 import {
   entriesForPart,
   renderUrlset,
+  renderSitemapIndex,
   isValidSitemapPart,
+  footballCategoryIndexChildParts,
   type SitemapPart,
 } from "./sitemap[.]xml";
 
@@ -35,6 +37,20 @@ export const Route = createFileRoute("/sitemap-{$part}.xml")({
 
         if (!isValidSitemapPart(part)) {
           return new Response("Sitemap part not found", { status: 404 });
+        }
+
+        const categoryIndexParts = footballCategoryIndexChildParts(part);
+        if (categoryIndexParts) {
+          const xml = renderSitemapIndex(today, categoryIndexParts);
+          return new Response(xml, {
+            headers: {
+              "Content-Type": "application/xml; charset=utf-8",
+              "Cache-Control": SITEMAP_CACHE_CONTROL,
+              "X-Sitemap-Type": "index",
+              "X-Sitemap-Part": part,
+              "X-Sitemap-Child-Count": String(categoryIndexParts.length),
+            },
+          });
         }
 
         const entries = await entriesForPart(part as SitemapPart);

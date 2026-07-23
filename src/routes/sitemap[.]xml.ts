@@ -373,32 +373,61 @@ function footballCategoryEntries(category: FootballSitemapCategory): SitemapEntr
 }
 
 function footballPartName(category: FootballSitemapCategory, page: number): FootballSitemapPart {
-  return page === 1 ? `football-${category}` : `football-${category}-${page}`;
+  return `football-${category}-${page}`;
+}
+
+function footballCategoryIndexParts(): FootballSitemapPart[] {
+  return FOOTBALL_SITEMAP_CATEGORIES.map((category) => `football-${category}` as FootballSitemapPart);
+}
+
+function footballCategoryChunkParts(category: FootballSitemapCategory): FootballSitemapPart[] {
+    const chunks = chunkEntries(footballCategoryEntries(category), FOOTBALL_CHUNK_SIZE);
+    return chunks.map((_, index) => footballPartName(category, index + 1));
 }
 
 function footballSitemapParts(): FootballSitemapPart[] {
-  return FOOTBALL_SITEMAP_CATEGORIES.flatMap((category) => {
-    const chunks = chunkEntries(footballCategoryEntries(category), FOOTBALL_CHUNK_SIZE);
-    return chunks.map((_, index) => footballPartName(category, index + 1));
-  });
+  return FOOTBALL_SITEMAP_CATEGORIES.flatMap((category) => footballCategoryChunkParts(category));
 }
 
 function parseFootballSitemapPart(part: string): { category: FootballSitemapCategory; page: number } | null {
   if (!part.startsWith("football-")) return null;
   const suffix = part.slice("football-".length);
   const numbered = suffix.match(/^(.*)-(\d+)$/);
-  const category = (numbered ? numbered[1] : suffix) as FootballSitemapCategory;
+  if (!numbered) return null;
+  const category = numbered[1] as FootballSitemapCategory;
   if (!(FOOTBALL_SITEMAP_CATEGORIES as readonly string[]).includes(category)) return null;
-  const page = numbered ? Number(numbered[2]) : 1;
+  const page = Number(numbered[2]);
   if (!Number.isInteger(page) || page < 1) return null;
   return { category, page };
 }
 
 function rootSitemapParts(): string[] {
-  return ["core", ...footballSitemapParts(), "cricket", "us-sports", "hockey-soccer", "legacy"];
+  return [
+    "core",
+    ...footballCategoryIndexParts(),
+    ...footballSitemapParts(),
+    "cricket",
+    "us-sports",
+    "hockey-soccer",
+    "legacy",
+  ];
+}
+
+function isFootballCategoryIndexPart(part: string): part is FootballSitemapPart {
+  if (!part.startsWith("football-")) return false;
+  const suffix = part.slice("football-".length);
+  if (/^(.*)-(\d+)$/.test(suffix)) return false;
+  return (FOOTBALL_SITEMAP_CATEGORIES as readonly string[]).includes(suffix);
+}
+
+function footballCategoryIndexChildParts(part: string): string[] | null {
+  if (!isFootballCategoryIndexPart(part)) return null;
+  const category = part.slice("football-".length) as FootballSitemapCategory;
+  return footballCategoryChunkParts(category);
 }
 
 function isFootballSitemapPart(part: string): part is FootballSitemapPart {
+  if (isFootballCategoryIndexPart(part)) return true;
   return footballSitemapParts().includes(part as FootballSitemapPart);
 }
 
@@ -514,6 +543,7 @@ export {
   isValidSitemapPart,
   isFootballSitemapPart,
   footballSitemapParts,
+  footballCategoryIndexChildParts,
   rootSitemapParts,
 };
 export type { SitemapPart };
