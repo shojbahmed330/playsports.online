@@ -15,6 +15,8 @@ import {
   type SitemapPart,
 } from "./sitemap[.]xml";
 
+const SITEMAP_CACHE_CONTROL = "no-cache, no-store, must-revalidate";
+
 export const Route = createFileRoute("/sitemap-{$part}.xml")({
   server: {
     handlers: {
@@ -23,7 +25,7 @@ export const Route = createFileRoute("/sitemap-{$part}.xml")({
           status: 200,
           headers: {
             "Content-Type": "application/xml; charset=utf-8",
-            "Cache-Control": "public, max-age=3600, s-maxage=3600, stale-while-revalidate=21600",
+            "Cache-Control": SITEMAP_CACHE_CONTROL,
           },
         });
       },
@@ -41,7 +43,7 @@ export const Route = createFileRoute("/sitemap-{$part}.xml")({
         return new Response(xml, {
           headers: {
             "Content-Type": "application/xml; charset=utf-8",
-            "Cache-Control": "public, max-age=3600, s-maxage=3600, stale-while-revalidate=21600",
+            "Cache-Control": SITEMAP_CACHE_CONTROL,
             "X-Sitemap-Type": "urlset",
             "X-Sitemap-Part": part,
           },

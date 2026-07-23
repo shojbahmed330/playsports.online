@@ -43,10 +43,11 @@ import {
 
 const BASE_URL = "https://www.playsports.online";
 const BASE_SITEMAP_PARTS = ["core", "cricket", "us-sports", "hockey-soccer", "legacy"] as const;
-// Keep football split into small, readable category files. Large football
-// categories are further split into numbered continuations, while the base
-// category URL remains valid as page 1 for older Search Console submissions.
-const FOOTBALL_CHUNK_SIZE = 100;
+const SITEMAP_CACHE_CONTROL = "no-cache, no-store, must-revalidate";
+// Keep football split into very small category files so Google Search Console
+// does not intermittently mark large generated football sitemaps as Unknown.
+// The base category URL remains valid as page 1 for older submissions.
+const FOOTBALL_CHUNK_SIZE = 25;
 const FOOTBALL_SITEMAP_CATEGORIES = [
   "matches",
   "teams",
@@ -188,33 +189,33 @@ function dedupe(entries: SitemapEntry[]): SitemapEntry[] {
 }
 
 /**
- * Validate a lastmod value. Google Search Console rejects anything that is
- * not W3C datetime (YYYY-MM-DD or full ISO 8601) with "Invalid date".
- * Falls back to `today` when the value is missing, malformed, or not a real
- * date (e.g. "1930", "2026-13-40", or a non-ISO string).
+ * Validate an authoritative page-level lastmod value. Omit missing or malformed
+ * dates instead of substituting build/request time, which Google treats as a
+ * weak freshness signal and can make generated sitemaps noisier in GSC.
  */
-function safeLastmod(value: string | undefined, today: string): string {
-  if (!value) return today;
+function safeLastmod(value: string | undefined): string | null {
+  if (!value) return null;
   const iso = value.slice(0, 10);
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(iso)) return today;
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(iso)) return null;
   const d = new Date(iso);
-  if (Number.isNaN(d.getTime()) || d.toISOString().slice(0, 10) !== iso) return today;
+  if (Number.isNaN(d.getTime()) || d.toISOString().slice(0, 10) !== iso) return null;
   return iso;
 }
 
-function renderUrlset(entries: SitemapEntry[], today: string): string {
-  const urls = dedupe(entries).map((e) =>
-    [
+function renderUrlset(entries: SitemapEntry[], _today?: string): string {
+  const urls = dedupe(entries).map((e) => {
+    const lastmod = safeLastmod(e.lastmod);
+    return [
       `  <url>`,
       `    <loc>${absoluteLoc(e.path)}</loc>`,
-      `    <lastmod>${safeLastmod(e.lastmod, today)}</lastmod>`,
+      lastmod ? `    <lastmod>${lastmod}</lastmod>` : null,
       e.changefreq ? `    <changefreq>${e.changefreq}</changefreq>` : null,
       e.priority ? `    <priority>${e.priority}</priority>` : null,
       `  </url>`,
     ]
       .filter(Boolean)
-      .join("\n"),
-  );
+      .join("\n");
+  });
 
   return [
     `<?xml version="1.0" encoding="UTF-8"?>`,
@@ -224,9 +225,9 @@ function renderUrlset(entries: SitemapEntry[], today: string): string {
   ].join("\n");
 }
 
-function renderSitemapIndex(today: string, parts: string[] = rootSitemapParts()): string {
+function renderSitemapIndex(_today?: string, parts: string[] = rootSitemapParts()): string {
   const sitemaps = parts.map((part) =>
-    [`  <sitemap>`, `    <loc>${xmlEscape(`${BASE_URL}/sitemap-${part}.xml`)}</loc>`, `    <lastmod>${today}</lastmod>`, `  </sitemap>`].join("\n"),
+    [`  <sitemap>`, `    <loc>${xmlEscape(`${BASE_URL}/sitemap-${part}.xml`)}</loc>`, `  </sitemap>`].join("\n"),
   );
 
   return [
@@ -526,7 +527,7 @@ export const Route = createFileRoute("/sitemap.xml")({
           status: 200,
           headers: {
             "Content-Type": "application/xml; charset=utf-8",
-            "Cache-Control": "public, max-age=3600, s-maxage=3600, stale-while-revalidate=21600",
+            "Cache-Control": SITEMAP_CACHE_CONTROL,
           },
         });
       },
@@ -539,7 +540,7 @@ export const Route = createFileRoute("/sitemap.xml")({
           return new Response(renderSitemapIndex(today), {
             headers: {
               "Content-Type": "application/xml; charset=utf-8",
-              "Cache-Control": "public, max-age=3600, s-maxage=3600, stale-while-revalidate=21600",
+              "Cache-Control": SITEMAP_CACHE_CONTROL,
               "X-Sitemap-Type": "index",
             },
           });
@@ -555,8 +556,7 @@ export const Route = createFileRoute("/sitemap.xml")({
         return new Response(xml, {
           headers: {
             "Content-Type": "application/xml; charset=utf-8",
-            // Fresh for 1h at the edge, stale-while-revalidate for 6h.
-            "Cache-Control": "public, max-age=3600, s-maxage=3600, stale-while-revalidate=21600",
+            "Cache-Control": SITEMAP_CACHE_CONTROL,
             "X-Sitemap-Type": "urlset",
             "X-Sitemap-Part": part,
             "X-Sitemap-Url-Count": String(dedupe(entries).length),
