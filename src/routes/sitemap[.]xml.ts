@@ -43,6 +43,7 @@ import {
 
 const BASE_URL = "https://www.playsports.online";
 const BASE_SITEMAP_PARTS = ["core", "cricket", "us-sports", "hockey-soccer", "legacy"] as const;
+const SITEMAP_CACHE_CONTROL = "no-cache, no-store, must-revalidate";
 // Keep football split into very small category files so Google Search Console
 // does not intermittently mark large generated football sitemaps as Unknown.
 // The base category URL remains valid as page 1 for older submissions.
@@ -526,7 +527,7 @@ export const Route = createFileRoute("/sitemap.xml")({
           status: 200,
           headers: {
             "Content-Type": "application/xml; charset=utf-8",
-            "Cache-Control": "public, max-age=3600, s-maxage=3600, stale-while-revalidate=21600",
+            "Cache-Control": SITEMAP_CACHE_CONTROL,
           },
         });
       },
@@ -539,7 +540,7 @@ export const Route = createFileRoute("/sitemap.xml")({
           return new Response(renderSitemapIndex(today), {
             headers: {
               "Content-Type": "application/xml; charset=utf-8",
-              "Cache-Control": "public, max-age=3600, s-maxage=3600, stale-while-revalidate=21600",
+              "Cache-Control": SITEMAP_CACHE_CONTROL,
               "X-Sitemap-Type": "index",
             },
           });
@@ -555,8 +556,7 @@ export const Route = createFileRoute("/sitemap.xml")({
         return new Response(xml, {
           headers: {
             "Content-Type": "application/xml; charset=utf-8",
-            // Fresh for 1h at the edge, stale-while-revalidate for 6h.
-            "Cache-Control": "public, max-age=3600, s-maxage=3600, stale-while-revalidate=21600",
+            "Cache-Control": SITEMAP_CACHE_CONTROL,
             "X-Sitemap-Type": "urlset",
             "X-Sitemap-Part": part,
             "X-Sitemap-Url-Count": String(dedupe(entries).length),
