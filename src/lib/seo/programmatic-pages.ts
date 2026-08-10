@@ -196,10 +196,12 @@ export function programmaticTopScorerUrls() {
 export function programmaticCampaignUrls() {
   return [
     { path: "/football/campaigns", changefreq: "monthly" as const, priority: "0.7" },
-    ...listCampaignSlugs().map((c) => ({
-      path: `/football/campaigns/${c.slug}`,
-      changefreq: "yearly" as const,
-      priority: "0.65",
-    })),
+    ...listCampaignSlugs()
+      .filter((c) => c.year > 2022) // Temporary exclusion of legacy 2022 campaigns causing 404s
+      .map((c) => ({
+        path: `/football/campaigns/${c.slug}`,
+        changefreq: "yearly" as const,
+        priority: "0.65",
+      })),
   ];
 }

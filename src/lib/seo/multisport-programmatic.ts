@@ -212,14 +212,11 @@ export const aggregateCricketChampions = () => aggregate(CRICKET_ALL);
 type Url = { path: string; changefreq: "monthly" | "yearly"; priority: string };
 
 function urlsFor(sport: string, slugs: string[]): Url[] {
-  return [
-    { path: `/${sport}/champions`, changefreq: "monthly", priority: "0.75" },
-    ...slugs.map((s) => ({
-      path: `/${sport}/team-history/${s}`,
-      changefreq: "yearly" as const,
-      priority: "0.65",
-    })),
-  ];
+  return slugs.map((s) => ({
+    path: `/${sport}/team-history/${s}`,
+    changefreq: "yearly" as const,
+    priority: "0.65",
+  }));
 }
 
 export const mlbProgrammaticUrls = () => urlsFor("mlb", mlbTeamHistorySlugs());
