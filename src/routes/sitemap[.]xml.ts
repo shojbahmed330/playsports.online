@@ -514,15 +514,15 @@ async function entriesForPart(part: SitemapPart): Promise<SitemapEntry[]> {
     }
     case "legacy":
       return [
-        // Legacy /team/$sport/$slug and /player/$sport/$slug 301 to canonical
-        // /football/teams/$slug and /football/players/$slug — excluded from
-        // sitemap to avoid "Page with redirect" in GSC.
-        ...listH2H().map((h) => ({
+        // Legacy vs, highlights, and archive pages are included here.
+        // Redirection routes (/player/football_wc/...) are EXCLUDED 
+        // to prevent Google Search Console "Page with redirect" errors.
+        ...listH2H().filter(h => h.sport !== "football_wc").map((h) => ({
           path: `/vs/${h.sport}/${h.slug}`,
           changefreq: "monthly" as const,
           priority: "0.5",
         })),
-        ...listArchives().map((a) => ({
+        ...listArchives().filter(a => a.sport !== "football_wc").map((a) => ({
           path: `/archive/${a.sport}/${a.year}`,
           changefreq: "yearly" as const,
           priority: "0.6",

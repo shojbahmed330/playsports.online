@@ -138,7 +138,7 @@ function EmptyState() {
       </p>
       <Link
         to="/football"
-        search={(p: Record<string, unknown>) => ({ ...p, tab: "groups" })}
+        search={(p: any) => ({ ...p, tab: "groups" })}
         className="inline-flex items-center gap-1.5 rounded-full bg-amber-500 text-black font-bold text-xs px-4 py-2 hover:bg-amber-400"
       >
         Browse teams

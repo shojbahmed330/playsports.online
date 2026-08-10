@@ -15,7 +15,7 @@ import { activeFilterCount } from "@/lib/players-filters";
 export function FilterSheet({ countries }: { countries: string[] }) {
   const [open, setOpen] = useState(false);
   const search = useSearch({ from: "/players" });
-  const count = activeFilterCount(search);
+  const count = activeFilterCount(search as any);
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
