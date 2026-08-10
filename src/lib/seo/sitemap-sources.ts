@@ -114,12 +114,8 @@ export async function mlsTeamUrls(): Promise<DynamicUrl[]> {
 }
 
 export async function iplTeamUrls(): Promise<DynamicUrl[]> {
-  const res = await safeCall(() => getIplTeams(), { teams: [] }, "getIplTeams");
-  return pluckIds(res.teams).map((id) => ({
-    path: `/cricket/ipl/teams/${id}`,
-    changefreq: "weekly" as const,
-    priority: "0.7",
-  }));
+  // Redirecting routes (/cricket/ipl/teams/:id) are excluded to avoid GSC "Page with redirect" errors.
+  return [];
 }
 
 export async function cricketSeriesUrls(): Promise<DynamicUrl[]> {
@@ -136,11 +132,7 @@ export async function cricketSeriesUrls(): Promise<DynamicUrl[]> {
   const ids = new Set<string>();
   for (const t of bilateral.tours) if (t?.id) ids.add(String(t.id));
   for (const s of generic.series) if (s?.id != null) ids.add(String(s.id));
-  return Array.from(ids).map((id) => ({
-    path: `/cricket/series/${id}`,
-    changefreq: "daily" as const,
-    priority: "0.6",
-  }));
+  return [];
 }
 
 // Phase 2.1 (cricket) — SSR SEO landing pages.
