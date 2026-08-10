@@ -522,7 +522,7 @@ async function entriesForPart(part: SitemapPart): Promise<SitemapEntry[]> {
           changefreq: "monthly" as const,
           priority: "0.5",
         })),
-        ...listArchives().filter(a => a.sport !== "football_wc").map((a) => ({
+        ...listArchives().filter(a => a.sport !== "football_wc" && a.sport !== "mls" && a.sport !== "nhl").map((a) => ({
           path: `/archive/${a.sport}/${a.year}`,
           changefreq: "yearly" as const,
           priority: "0.6",

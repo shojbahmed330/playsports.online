@@ -95,7 +95,8 @@ export async function mlbTeamUrls(): Promise<DynamicUrl[]> {
   const res = await safeCall(() => getMlbTeams(), { teams: [], error: null }, "getMlbTeams");
   // Only include if no canonical slug mapping exists or if we want to explicitly support IDs.
   // GSC currently flags these as "Page with redirect" if they 301.
-  return []; 
+  // Redirecting or missing routes are excluded to avoid GSC "Not found (404)" and "Page with redirect" errors.
+  return [];
 }
 
 export async function nbaTeamUrls(): Promise<DynamicUrl[]> {
