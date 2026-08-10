@@ -115,7 +115,7 @@ function MatchPage() {
         <div className="max-w-3xl mx-auto px-3 py-2.5 flex items-center gap-2">
           <Link
             to="/football"
-            search={(prev: Record<string, unknown>) => ({ ...prev, year: prev.year ?? 2026, tab: prev.tab ?? "today" })}
+            search={(prev: any) => ({ ...prev, year: prev.year ?? 2026, tab: prev.tab ?? "today" })}
             className="inline-flex items-center gap-1 text-xs text-gray-400 hover:text-white shrink-0"
             aria-label="Back to Football"
           >

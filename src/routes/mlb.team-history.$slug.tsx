@@ -116,7 +116,7 @@ function MlbTeamHistoryPage() {
         <Link to="/mlb/champions" className="text-[#f7e6c4] font-semibold hover:underline">← All MLB champions</Link>
       </div>
 
-      <RelatedLinks title="Explore more MLB history" links={relatedForLeagueTeam("mlb", h.team.slug)} />
+      <RelatedLinks title="Explore more MLB history" links={relatedForLeagueTeam("mlb", h.slug)} />
     </div>
   );
 }
