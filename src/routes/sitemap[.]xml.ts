@@ -465,6 +465,11 @@ async function entriesForPart(part: SitemapPart): Promise<SitemapEntry[]> {
           changefreq: "always" as const,
           priority: "0.7",
         })),
+        ...mlbProgrammaticUrls(),
+        ...nbaProgrammaticUrls(),
+        ...nhlProgrammaticUrls(),
+        ...mlsProgrammaticUrls(),
+        ...cricketProgrammaticUrls(),
         ...KEYWORD_TARGETS.map((k) => ({
           path: k.url,
           changefreq: "weekly" as const,
