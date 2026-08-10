@@ -197,7 +197,7 @@ export function programmaticCampaignUrls() {
   return [
     { path: "/football/campaigns", changefreq: "monthly" as const, priority: "0.7" },
     ...listCampaignSlugs()
-      .filter((c) => c.year > 2022) // Temporary exclusion of legacy 2022 campaigns causing 404s
+      .filter((c) => c.year >= 1930) // Include all valid years including historical ones
       .map((c) => ({
         path: `/football/campaigns/${c.slug}`,
         changefreq: "yearly" as const,
