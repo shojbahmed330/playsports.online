@@ -93,22 +93,24 @@ function pluckIds(list: readonly { id?: string | number | null }[]): string[] {
 
 export async function mlbTeamUrls(): Promise<DynamicUrl[]> {
   const res = await safeCall(() => getMlbTeams(), { teams: [], error: null }, "getMlbTeams");
-  return pluckIds(res.teams).map((id) => ({ path: `/mlb/team/${id}`, changefreq: "weekly" as const, priority: "0.7" }));
+  // Only include if no canonical slug mapping exists or if we want to explicitly support IDs.
+  // GSC currently flags these as "Page with redirect" if they 301.
+  return []; 
 }
 
 export async function nbaTeamUrls(): Promise<DynamicUrl[]> {
   const res = await safeCall(() => getNbaTeams(), { teams: [], error: null }, "getNbaTeams");
-  return pluckIds(res.teams).map((id) => ({ path: `/nba/team/${id}`, changefreq: "weekly" as const, priority: "0.7" }));
+  return [];
 }
 
 export async function nhlTeamUrls(): Promise<DynamicUrl[]> {
   const res = await safeCall(() => getNhlTeams(), { teams: [], error: null }, "getNhlTeams");
-  return pluckIds(res.teams).map((id) => ({ path: `/nhl/team/${id}`, changefreq: "weekly" as const, priority: "0.7" }));
+  return [];
 }
 
 export async function mlsTeamUrls(): Promise<DynamicUrl[]> {
   const res = await safeCall(() => getMlsTeams(), { teams: [], error: null }, "getMlsTeams");
-  return pluckIds(res.teams).map((id) => ({ path: `/mls/team/${id}`, changefreq: "weekly" as const, priority: "0.7" }));
+  return [];
 }
 
 export async function iplTeamUrls(): Promise<DynamicUrl[]> {
