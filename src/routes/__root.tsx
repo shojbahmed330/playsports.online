@@ -99,7 +99,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       // Bing Webmaster Tools — replace `content` with the value from
       // https://www.bing.com/webmasters (Site → Ownership → Meta tag).
       // Leaving the placeholder is harmless — Bing simply won't verify.
-      { name: "msvalidate.01", content: "REPLACE_WITH_BING_WEBMASTER_VERIFICATION_CODE" },
+      { name: "msvalidate.01", content: "7665E479090623A25F88358485292850" },
       // Yandex Webmaster — optional; replace with the value from
       // https://webmaster.yandex.com/ (Settings → Verification → Meta tag).
       { name: "yandex-verification", content: "REPLACE_WITH_YANDEX_VERIFICATION_CODE" },
