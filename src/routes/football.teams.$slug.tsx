@@ -387,6 +387,13 @@ function FootballTeamPage() {
             aiFaqs && aiFaqs.length
               ? aiFaqs
               : [
+                  { q: `How many World Cup matches has ${team.name} played?`, a: `${team.name} has played ${stats.matchesPlayed} FIFA World Cup matches across ${stats.years.length} tournament appearances, with a record of ${stats.w} wins, ${stats.d} draws, and ${stats.l} losses.` },
+                  { q: `Who is ${team.name}'s all-time top World Cup scorer?`, a: stats.topScorers[0] ? `${stats.topScorers[0].name} is the leading World Cup scorer for ${team.name} with ${stats.topScorers[0].goals} goals.` : `${team.name} does not have a recorded leading World Cup scorer yet.` },
+                  { q: `How many World Cup goals has ${team.name} scored in total?`, a: `${team.name} has scored ${stats.gf} goals and conceded ${stats.ga} in their World Cup history, resulting in a goal difference of ${stats.gf - stats.ga}.` },
+                  { q: `When was ${team.name}'s last World Cup appearance?`, a: stats.years.length ? `${team.name} last appeared in the FIFA World Cup in ${stats.years[stats.years.length - 1]}.` : `No World Cup appearances on record for ${team.name}.` },
+                ]
+          }
+        />
                   { q: `How many World Cup matches has ${team.name} played?`, a: `${team.name} has played ${stats.matchesPlayed} FIFA World Cup matches across ${stats.years.length} tournaments (${stats.w}W-${stats.d}D-${stats.l}L).` },
                   { q: `Who is ${team.name}'s all-time top World Cup scorer?`, a: stats.topScorers[0] ? `${stats.topScorers[0].name} leads with ${stats.topScorers[0].goals} goals.` : `Not on record.` },
                   { q: `How many World Cup goals has ${team.name} scored?`, a: `${stats.gf} goals scored, ${stats.ga} conceded.` },

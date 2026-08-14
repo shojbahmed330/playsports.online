@@ -153,8 +153,16 @@ function CricketPlayerProfile() {
         </section>
 
         <FaqSection
-          title="Frequently asked"
-          items={aiFaqs && aiFaqs.length ? aiFaqs : player.faqs}
+          title={`Frequently asked about ${player.name}`}
+          items={
+            aiFaqs && aiFaqs.length
+              ? aiFaqs
+              : [
+                  ...player.faqs,
+                  { q: `What are ${player.name}'s best cricket records?`, a: player.records.length ? `${player.name}'s top records include ${player.records.slice(0, 2).map(r => `${r.category} with ${r.value}`).join(" and ")}.` : "Records are currently being updated." },
+                  { q: `Which country does ${player.name} play for?`, a: `${player.name} represents ${player.country} in international cricket.` },
+                ]
+          }
         />
 
         {related.length > 0 && (

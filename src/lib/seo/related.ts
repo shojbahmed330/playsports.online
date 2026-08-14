@@ -203,6 +203,8 @@ export function relatedForFootballTeam(teamName: string, cap = DEFAULT_CAP): Rel
     .sort((a, b) => b.year - a.year)[0];
   const links: RelatedLink[] = [
     { label: `${teamName} — squad & profile`, href: `/football/teams/${slug}` },
+    { label: `${teamName} — H2H History`, href: `/football/h2h` }, // Generic hub for now, would be better to link to specific H2H if we had a finder
+    { label: `${teamName} — Tournament Archives`, href: `/football/archives` },
     { label: "All top scorers by tournament", href: "/football/top-scorers" },
     { label: "All-time World Cup top scorers", href: "/football/top-scorers/all-time" },
     { label: "Football hub", href: "/football" },
@@ -233,7 +235,8 @@ export function relatedForFootballPlayer(
     { label: "Career profile", href: `/football/players/${playerSlug}` },
     { label: "World Cup goals breakdown", href: `/football/players/${playerSlug}/world-cup-goals` },
     { label: "World Cup cards breakdown", href: `/football/players/${playerSlug}/world-cup-cards` },
-    { label: "FIFA World Cup players hub", href: "/players" },
+    { label: "FIFA World Cup players hub", href: "/football/players" }, // Fixed from /players
+    { label: "Browse all countries", href: "/football/countries" },
   ];
   if (countryTeam) {
     const t = slugify(countryTeam);
