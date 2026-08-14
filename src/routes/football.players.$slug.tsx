@@ -267,9 +267,10 @@ function FootballPlayerPage() {
             aiFaqs && aiFaqs.length
               ? aiFaqs
               : [
-                  { q: `How many World Cup goals has ${player.name} scored?`, a: `${stats.goalsTotal} goal${stats.goalsTotal === 1 ? "" : "s"}${stats.pen > 0 ? `, including ${stats.pen} penalties` : ""}.` },
-                  { q: `Which country does ${player.name} play for?`, a: `${player.team}.` },
-                  { q: `In which World Cups has ${player.name} played?`, a: stats.years.length ? stats.years.join(", ") : `Not on record.` },
+                  { q: `How many World Cup goals has ${player.name} scored?`, a: `${player.name} has scored ${stats.goalsTotal} FIFA World Cup goals for ${player.team}${stats.pen > 0 ? `, including ${stats.pen} from the penalty spot` : ""}.` },
+                  { q: `Which country does ${player.name} play for?`, a: `${player.name} represents ${player.team} in international football.` },
+                  { q: `In which World Cups has ${player.name} played?`, a: stats.years.length ? `${player.name} appeared in the ${stats.years.join(", ")} FIFA World Cup tournament${stats.years.length === 1 ? "" : "s"}.` : `Not on record.` },
+                  { q: `When was ${player.name}'s last World Cup goal?`, a: stats.byYear.length ? `${player.name} last scored in the ${stats.byYear[stats.byYear.length - 1].year} World Cup.` : "No goals on record." },
                 ]
           }
         />

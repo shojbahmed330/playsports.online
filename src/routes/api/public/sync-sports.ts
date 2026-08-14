@@ -89,6 +89,19 @@ async function handleSync(request: Request): Promise<Response> {
     summary.push(await warmSport(entry));
   }
 
+  // Ping search engines via IndexNow
+  try {
+    const { pingIndexNow } = await import("@/lib/seo/indexnow.server");
+    const paths = targets.flatMap(t => t.warmup.map(url => {
+        // Simple mapping: if it's a match list, ping the sport hub
+        return `/${t.id}`;
+    }));
+    // Also ping the root
+    await pingIndexNow(["/", ...new Set(paths)]);
+  } catch (err) {
+    console.error("[sync] IndexNow ping failed:", err);
+  }
+
   return Response.json({
     ok: true,
     durationMs: Date.now() - startedAt,

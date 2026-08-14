@@ -159,8 +159,16 @@ function CricketTeamProfile() {
         ) : null}
 
         <FaqSection
-          title="Frequently asked"
-          items={aiFaqs && aiFaqs.length ? aiFaqs : team.faqs}
+          title={`Frequently asked about ${team.name}`}
+          items={
+            aiFaqs && aiFaqs.length
+              ? aiFaqs
+              : [
+                  ...team.faqs,
+                  { q: `What is ${team.name}'s home ground?`, a: team.isFranchise ? `${team.name} plays their home matches at ${team.franchise?.homeGround} in ${team.franchise?.city}.` : `${team.name} represents ${team.name} in international cricket venues.` },
+                  { q: `Who is the current captain of ${team.name}?`, a: team.isFranchise ? `The ${team.name} are currently captained by ${team.franchise?.captain}.` : `The ${team.name} national team squad is led by their designated format captains.` },
+                ]
+          }
         />
 
         {related.length > 0 && (
