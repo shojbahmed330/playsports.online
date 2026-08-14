@@ -42,6 +42,7 @@ import { Route as HighlightsIndexRouteImport } from './routes/highlights.index'
 import { Route as GuidesIndexRouteImport } from './routes/guides.index'
 import { Route as FootballIndexRouteImport } from './routes/football.index'
 import { Route as CricketIndexRouteImport } from './routes/cricket.index'
+import { Route as RobotsTxtRouteImport } from './routes/robots.txt'
 import { Route as NhlTeamsRouteImport } from './routes/nhl.teams'
 import { Route as NhlStandingsRouteImport } from './routes/nhl.standings'
 import { Route as NhlScoresRouteImport } from './routes/nhl.scores'
@@ -344,6 +345,11 @@ const CricketIndexRoute = CricketIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => CricketRoute,
+} as any)
+const RobotsTxtRoute = RobotsTxtRouteImport.update({
+  id: '/robots/txt',
+  path: '/robots/txt',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const NhlTeamsRoute = NhlTeamsRouteImport.update({
   id: '/teams',
@@ -1102,6 +1108,7 @@ export interface FileRoutesByFullPath {
   '/nhl/scores': typeof NhlScoresRoute
   '/nhl/standings': typeof NhlStandingsRoute
   '/nhl/teams': typeof NhlTeamsRouteWithChildren
+  '/robots/txt': typeof RobotsTxtRoute
   '/cricket/': typeof CricketIndexRoute
   '/football/': typeof FootballIndexRoute
   '/guides/': typeof GuidesIndexRoute
@@ -1266,6 +1273,7 @@ export interface FileRoutesByTo {
   '/nhl/scores': typeof NhlScoresRoute
   '/nhl/standings': typeof NhlStandingsRoute
   '/nhl/teams': typeof NhlTeamsRouteWithChildren
+  '/robots/txt': typeof RobotsTxtRoute
   '/cricket': typeof CricketIndexRoute
   '/football': typeof FootballIndexRoute
   '/guides': typeof GuidesIndexRoute
@@ -1438,6 +1446,7 @@ export interface FileRoutesById {
   '/nhl/scores': typeof NhlScoresRoute
   '/nhl/standings': typeof NhlStandingsRoute
   '/nhl/teams': typeof NhlTeamsRouteWithChildren
+  '/robots/txt': typeof RobotsTxtRoute
   '/cricket/': typeof CricketIndexRoute
   '/football/': typeof FootballIndexRoute
   '/guides/': typeof GuidesIndexRoute
@@ -1611,6 +1620,7 @@ export interface FileRouteTypes {
     | '/nhl/scores'
     | '/nhl/standings'
     | '/nhl/teams'
+    | '/robots/txt'
     | '/cricket/'
     | '/football/'
     | '/guides/'
@@ -1775,6 +1785,7 @@ export interface FileRouteTypes {
     | '/nhl/scores'
     | '/nhl/standings'
     | '/nhl/teams'
+    | '/robots/txt'
     | '/cricket'
     | '/football'
     | '/guides'
@@ -1946,6 +1957,7 @@ export interface FileRouteTypes {
     | '/nhl/scores'
     | '/nhl/standings'
     | '/nhl/teams'
+    | '/robots/txt'
     | '/cricket/'
     | '/football/'
     | '/guides/'
@@ -2083,6 +2095,7 @@ export interface RootRouteChildren {
   HighlightsSlugRoute: typeof HighlightsSlugRoute
   LiveSportRoute: typeof LiveSportRoute
   LiveTodayRoute: typeof LiveTodayRoute
+  RobotsTxtRoute: typeof RobotsTxtRoute
   GuidesIndexRoute: typeof GuidesIndexRoute
   HighlightsIndexRoute: typeof HighlightsIndexRoute
   ApiPublicIndexnowAutoRoute: typeof ApiPublicIndexnowAutoRoute
@@ -2334,6 +2347,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/cricket/'
       preLoaderRoute: typeof CricketIndexRouteImport
       parentRoute: typeof CricketRoute
+    }
+    '/robots/txt': {
+      id: '/robots/txt'
+      path: '/robots/txt'
+      fullPath: '/robots/txt'
+      preLoaderRoute: typeof RobotsTxtRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/nhl/teams': {
       id: '/nhl/teams'
@@ -3737,6 +3757,7 @@ const rootRouteChildren: RootRouteChildren = {
   HighlightsSlugRoute: HighlightsSlugRoute,
   LiveSportRoute: LiveSportRoute,
   LiveTodayRoute: LiveTodayRoute,
+  RobotsTxtRoute: RobotsTxtRoute,
   GuidesIndexRoute: GuidesIndexRoute,
   HighlightsIndexRoute: HighlightsIndexRoute,
   ApiPublicIndexnowAutoRoute: ApiPublicIndexnowAutoRoute,
