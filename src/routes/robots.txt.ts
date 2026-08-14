@@ -30,7 +30,7 @@ Disallow: /*?gclid=
 Sitemap: https://www.playsports.online/sitemap.xml
 `;
 
-export const Route = createFileRoute("/robots.txt")({
+export const Route = createFileRoute("/robots/txt")({
   server: {
     handlers: {
       GET: async () => {
