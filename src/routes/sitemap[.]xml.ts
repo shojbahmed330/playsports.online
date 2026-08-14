@@ -347,6 +347,16 @@ function footballSitemapEntries(): SitemapEntry[] {
     ...footballCountrySitemapEntries(),
     ...footballRecordSitemapEntries(),
     ...competitionSitemapEntries(),
+    ...listH2H().map((h) => ({
+      path: `/football/h2h/${h.slug}`,
+      changefreq: "monthly" as const,
+      priority: "0.6",
+    })),
+    ...listArchives().map((a) => ({
+      path: `/football/archives/${a.year}`,
+      changefreq: "monthly" as const,
+      priority: "0.6",
+    })),
   ];
 }
 
