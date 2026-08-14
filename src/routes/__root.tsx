@@ -95,7 +95,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "PlaySports" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "google-site-verification", content: "JITBIisVBAG_2B3RjQPjxct01RQuY1JwETp-8FvpTCk" },
+      { name: "google-site-verification", content: "google57d393e7853831a6" },
       // Bing Webmaster Tools — replace `content` with the value from
       // https://www.bing.com/webmasters (Site → Ownership → Meta tag).
       // Leaving the placeholder is harmless — Bing simply won't verify.
