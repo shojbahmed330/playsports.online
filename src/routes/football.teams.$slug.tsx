@@ -394,12 +394,6 @@ function FootballTeamPage() {
                 ]
           }
         />
-                  { q: `How many World Cup matches has ${team.name} played?`, a: `${team.name} has played ${stats.matchesPlayed} FIFA World Cup matches across ${stats.years.length} tournaments (${stats.w}W-${stats.d}D-${stats.l}L).` },
-                  { q: `Who is ${team.name}'s all-time top World Cup scorer?`, a: stats.topScorers[0] ? `${stats.topScorers[0].name} leads with ${stats.topScorers[0].goals} goals.` : `Not on record.` },
-                  { q: `How many World Cup goals has ${team.name} scored?`, a: `${stats.gf} goals scored, ${stats.ga} conceded.` },
-                ]
-          }
-        />
 
         {/* EXPLORE OTHER TEAMS */}
         <Section eyebrow="Discover" title="Explore more teams" accent={gradient}>
