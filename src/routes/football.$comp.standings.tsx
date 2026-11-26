@@ -12,11 +12,12 @@ import { buildCompetitionHead } from "@/lib/competition-head";
 import { Loader2 } from "lucide-react";
 
 export const Route = createFileRoute("/football/$comp/standings")({
-  loader: ({ params, context }) => {
+  loader: async ({ params, context }) => {
     const comp = getCompetition(params.comp);
     if (!comp) throw notFound();
-    void context.queryClient
-      .prefetchQuery({
+    // Wait for the table on the server so the first client render matches.
+    await context.queryClient
+      .ensureQueryData({
         queryKey: ["comp-standings", comp.slug],
         queryFn: () => getStandings({ data: { sportPath: `soccer/${comp.espnLeague}` } }),
         staleTime: 5 * 60_000,
@@ -69,7 +70,7 @@ function StandingsPage() {
             <Loader2 className="size-4 animate-spin" /> Loading standings…
           </div>
         ) : hasLive ? (
-          <CompetitionStandingsTable groups={groups} />
+          <CompetitionStandingsTable groups={groups} compSlug={comp.slug} />
         ) : (
           <>
             <Copa2024GroupsSnapshot />
@@ -100,7 +101,7 @@ function StandingsPage() {
           <LastEditionRecap comp={comp} />
         </div>
       ) : (
-        <CompetitionStandingsTable groups={groups} />
+        <CompetitionStandingsTable groups={groups} compSlug={comp.slug} />
       )}
     </CompetitionPageShell>
   );

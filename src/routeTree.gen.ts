@@ -172,16 +172,21 @@ import { Route as ApiPublicHooksWeeklyDigestRouteImport } from './routes/api/pub
 import { Route as CricketIplTeamsIndexRouteImport } from './routes/cricket.ipl.teams.index'
 import { Route as CricketIplTeamsTeamIdRouteImport } from './routes/cricket.ipl.teams.$teamId'
 import { Route as FootballCompH2hMatchupRouteImport } from './routes/football.$comp.h2h.$matchup'
+import { Route as FootballCompHistoryIndexRouteImport } from './routes/football.$comp.history.index'
 import { Route as FootballCompHistoryYearRouteImport } from './routes/football.$comp.history.$year'
 import { Route as FootballCompMatchesMatchIdRouteImport } from './routes/football.$comp.matches.$matchId'
+import { Route as FootballCompPlayersIndexRouteImport } from './routes/football.$comp.players.index'
 import { Route as FootballCompPlayersPlayerIdRouteImport } from './routes/football.$comp.players.$playerId'
+import { Route as FootballCompRecordsIndexRouteImport } from './routes/football.$comp.records.index'
 import { Route as FootballCompRecordsCategoryRouteImport } from './routes/football.$comp.records.$category'
 import { Route as FootballCompRecordsDecadesRouteImport } from './routes/football.$comp.records.decades'
 import { Route as FootballCompSeasonsYearRouteImport } from './routes/football.$comp.seasons.$year'
+import { Route as FootballCompTeamsIndexRouteImport } from './routes/football.$comp.teams.index'
 import { Route as FootballCompTeamsTeamIdRouteImport } from './routes/football.$comp.teams.$teamId'
 import { Route as FootballCountriesSlugWorldCupChar123yearChar125RouteImport } from './routes/football.countries.$slug.world-cup-{$year}'
 import { Route as FootballPlayersSlugIndexRouteImport } from './routes/football.players.$slug.index'
 import { Route as FootballPlayersSlugWorldCupChar123yearChar125RouteImport } from './routes/football.players.$slug.world-cup-{$year}'
+import { Route as FootballCompTeamsTeamIdIndexRouteImport } from './routes/football.$comp.teams.$teamId.index'
 import { Route as FootballCompTeamsTeamIdSeasonChar123yearChar125RouteImport } from './routes/football.$comp.teams.$teamId.season-{$year}'
 
 const IndexRoute = IndexRouteImport.update({
@@ -1004,6 +1009,12 @@ const FootballCompH2hMatchupRoute = FootballCompH2hMatchupRouteImport.update({
   path: '/h2h/$matchup',
   getParentRoute: () => FootballCompRoute,
 } as any)
+const FootballCompHistoryIndexRoute =
+  FootballCompHistoryIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => FootballCompHistoryRoute,
+  } as any)
 const FootballCompHistoryYearRoute = FootballCompHistoryYearRouteImport.update({
   id: '/$year',
   path: '/$year',
@@ -1015,11 +1026,23 @@ const FootballCompMatchesMatchIdRoute =
     path: '/matches/$matchId',
     getParentRoute: () => FootballCompRoute,
   } as any)
+const FootballCompPlayersIndexRoute =
+  FootballCompPlayersIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => FootballCompPlayersRoute,
+  } as any)
 const FootballCompPlayersPlayerIdRoute =
   FootballCompPlayersPlayerIdRouteImport.update({
     id: '/$playerId',
     path: '/$playerId',
     getParentRoute: () => FootballCompPlayersRoute,
+  } as any)
+const FootballCompRecordsIndexRoute =
+  FootballCompRecordsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => FootballCompRecordsRoute,
   } as any)
 const FootballCompRecordsCategoryRoute =
   FootballCompRecordsCategoryRouteImport.update({
@@ -1037,6 +1060,11 @@ const FootballCompSeasonsYearRoute = FootballCompSeasonsYearRouteImport.update({
   id: '/seasons/$year',
   path: '/seasons/$year',
   getParentRoute: () => FootballCompRoute,
+} as any)
+const FootballCompTeamsIndexRoute = FootballCompTeamsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => FootballCompTeamsRoute,
 } as any)
 const FootballCompTeamsTeamIdRoute = FootballCompTeamsTeamIdRouteImport.update({
   id: '/$teamId',
@@ -1060,6 +1088,12 @@ const FootballPlayersSlugWorldCupChar123yearChar125Route =
     id: '/world-cup-{$year}',
     path: '/world-cup-{$year}',
     getParentRoute: () => FootballPlayersSlugRoute,
+  } as any)
+const FootballCompTeamsTeamIdIndexRoute =
+  FootballCompTeamsTeamIdIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => FootballCompTeamsTeamIdRoute,
   } as any)
 const FootballCompTeamsTeamIdSeasonChar123yearChar125Route =
   FootballCompTeamsTeamIdSeasonChar123yearChar125RouteImport.update({
@@ -1241,8 +1275,13 @@ export interface FileRoutesByFullPath {
   '/football/countries/$slug/world-cup-{$year}': typeof FootballCountriesSlugWorldCupChar123yearChar125Route
   '/football/players/$slug/world-cup-{$year}': typeof FootballPlayersSlugWorldCupChar123yearChar125Route
   '/cricket/ipl/teams/': typeof CricketIplTeamsIndexRoute
+  '/football/$comp/history/': typeof FootballCompHistoryIndexRoute
+  '/football/$comp/players/': typeof FootballCompPlayersIndexRoute
+  '/football/$comp/records/': typeof FootballCompRecordsIndexRoute
+  '/football/$comp/teams/': typeof FootballCompTeamsIndexRoute
   '/football/players/$slug/': typeof FootballPlayersSlugIndexRoute
   '/football/$comp/teams/$teamId/season-{$year}': typeof FootballCompTeamsTeamIdSeasonChar123yearChar125Route
+  '/football/$comp/teams/$teamId/': typeof FootballCompTeamsTeamIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -1335,12 +1374,8 @@ export interface FileRoutesByTo {
   '/cricket/teams/$slug': typeof CricketTeamsSlugRoute
   '/cricket/tournaments/$slug': typeof CricketTournamentsSlugRoute
   '/football/$comp/fixtures': typeof FootballCompFixturesRoute
-  '/football/$comp/history': typeof FootballCompHistoryRouteWithChildren
-  '/football/$comp/players': typeof FootballCompPlayersRouteWithChildren
-  '/football/$comp/records': typeof FootballCompRecordsRouteWithChildren
   '/football/$comp/scores': typeof FootballCompScoresRoute
   '/football/$comp/standings': typeof FootballCompStandingsRoute
-  '/football/$comp/teams': typeof FootballCompTeamsRouteWithChildren
   '/football/campaigns/$slug': typeof FootballCampaignsSlugRoute
   '/football/match/$id': typeof FootballMatchIdRoute
   '/football/matches/$slug': typeof FootballMatchesSlugRoute
@@ -1405,12 +1440,16 @@ export interface FileRoutesByTo {
   '/football/$comp/records/$category': typeof FootballCompRecordsCategoryRoute
   '/football/$comp/records/decades': typeof FootballCompRecordsDecadesRoute
   '/football/$comp/seasons/$year': typeof FootballCompSeasonsYearRoute
-  '/football/$comp/teams/$teamId': typeof FootballCompTeamsTeamIdRouteWithChildren
   '/football/countries/$slug/world-cup-{$year}': typeof FootballCountriesSlugWorldCupChar123yearChar125Route
   '/football/players/$slug/world-cup-{$year}': typeof FootballPlayersSlugWorldCupChar123yearChar125Route
   '/cricket/ipl/teams': typeof CricketIplTeamsIndexRoute
+  '/football/$comp/history': typeof FootballCompHistoryIndexRoute
+  '/football/$comp/players': typeof FootballCompPlayersIndexRoute
+  '/football/$comp/records': typeof FootballCompRecordsIndexRoute
+  '/football/$comp/teams': typeof FootballCompTeamsIndexRoute
   '/football/players/$slug': typeof FootballPlayersSlugIndexRoute
   '/football/$comp/teams/$teamId/season-{$year}': typeof FootballCompTeamsTeamIdSeasonChar123yearChar125Route
+  '/football/$comp/teams/$teamId': typeof FootballCompTeamsTeamIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -1586,8 +1625,13 @@ export interface FileRoutesById {
   '/football/countries/$slug/world-cup-{$year}': typeof FootballCountriesSlugWorldCupChar123yearChar125Route
   '/football/players/$slug/world-cup-{$year}': typeof FootballPlayersSlugWorldCupChar123yearChar125Route
   '/cricket/ipl/teams/': typeof CricketIplTeamsIndexRoute
+  '/football/$comp/history/': typeof FootballCompHistoryIndexRoute
+  '/football/$comp/players/': typeof FootballCompPlayersIndexRoute
+  '/football/$comp/records/': typeof FootballCompRecordsIndexRoute
+  '/football/$comp/teams/': typeof FootballCompTeamsIndexRoute
   '/football/players/$slug/': typeof FootballPlayersSlugIndexRoute
   '/football/$comp/teams/$teamId/season-{$year}': typeof FootballCompTeamsTeamIdSeasonChar123yearChar125Route
+  '/football/$comp/teams/$teamId/': typeof FootballCompTeamsTeamIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -1764,8 +1808,13 @@ export interface FileRouteTypes {
     | '/football/countries/$slug/world-cup-{$year}'
     | '/football/players/$slug/world-cup-{$year}'
     | '/cricket/ipl/teams/'
+    | '/football/$comp/history/'
+    | '/football/$comp/players/'
+    | '/football/$comp/records/'
+    | '/football/$comp/teams/'
     | '/football/players/$slug/'
     | '/football/$comp/teams/$teamId/season-{$year}'
+    | '/football/$comp/teams/$teamId/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -1858,12 +1907,8 @@ export interface FileRouteTypes {
     | '/cricket/teams/$slug'
     | '/cricket/tournaments/$slug'
     | '/football/$comp/fixtures'
-    | '/football/$comp/history'
-    | '/football/$comp/players'
-    | '/football/$comp/records'
     | '/football/$comp/scores'
     | '/football/$comp/standings'
-    | '/football/$comp/teams'
     | '/football/campaigns/$slug'
     | '/football/match/$id'
     | '/football/matches/$slug'
@@ -1928,12 +1973,16 @@ export interface FileRouteTypes {
     | '/football/$comp/records/$category'
     | '/football/$comp/records/decades'
     | '/football/$comp/seasons/$year'
-    | '/football/$comp/teams/$teamId'
     | '/football/countries/$slug/world-cup-{$year}'
     | '/football/players/$slug/world-cup-{$year}'
     | '/cricket/ipl/teams'
+    | '/football/$comp/history'
+    | '/football/$comp/players'
+    | '/football/$comp/records'
+    | '/football/$comp/teams'
     | '/football/players/$slug'
     | '/football/$comp/teams/$teamId/season-{$year}'
+    | '/football/$comp/teams/$teamId'
   id:
     | '__root__'
     | '/'
@@ -2108,8 +2157,13 @@ export interface FileRouteTypes {
     | '/football/countries/$slug/world-cup-{$year}'
     | '/football/players/$slug/world-cup-{$year}'
     | '/cricket/ipl/teams/'
+    | '/football/$comp/history/'
+    | '/football/$comp/players/'
+    | '/football/$comp/records/'
+    | '/football/$comp/teams/'
     | '/football/players/$slug/'
     | '/football/$comp/teams/$teamId/season-{$year}'
+    | '/football/$comp/teams/$teamId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -3308,6 +3362,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FootballCompH2hMatchupRouteImport
       parentRoute: typeof FootballCompRoute
     }
+    '/football/$comp/history/': {
+      id: '/football/$comp/history/'
+      path: '/'
+      fullPath: '/football/$comp/history/'
+      preLoaderRoute: typeof FootballCompHistoryIndexRouteImport
+      parentRoute: typeof FootballCompHistoryRoute
+    }
     '/football/$comp/history/$year': {
       id: '/football/$comp/history/$year'
       path: '/$year'
@@ -3322,12 +3383,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FootballCompMatchesMatchIdRouteImport
       parentRoute: typeof FootballCompRoute
     }
+    '/football/$comp/players/': {
+      id: '/football/$comp/players/'
+      path: '/'
+      fullPath: '/football/$comp/players/'
+      preLoaderRoute: typeof FootballCompPlayersIndexRouteImport
+      parentRoute: typeof FootballCompPlayersRoute
+    }
     '/football/$comp/players/$playerId': {
       id: '/football/$comp/players/$playerId'
       path: '/$playerId'
       fullPath: '/football/$comp/players/$playerId'
       preLoaderRoute: typeof FootballCompPlayersPlayerIdRouteImport
       parentRoute: typeof FootballCompPlayersRoute
+    }
+    '/football/$comp/records/': {
+      id: '/football/$comp/records/'
+      path: '/'
+      fullPath: '/football/$comp/records/'
+      preLoaderRoute: typeof FootballCompRecordsIndexRouteImport
+      parentRoute: typeof FootballCompRecordsRoute
     }
     '/football/$comp/records/$category': {
       id: '/football/$comp/records/$category'
@@ -3349,6 +3424,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/football/$comp/seasons/$year'
       preLoaderRoute: typeof FootballCompSeasonsYearRouteImport
       parentRoute: typeof FootballCompRoute
+    }
+    '/football/$comp/teams/': {
+      id: '/football/$comp/teams/'
+      path: '/'
+      fullPath: '/football/$comp/teams/'
+      preLoaderRoute: typeof FootballCompTeamsIndexRouteImport
+      parentRoute: typeof FootballCompTeamsRoute
     }
     '/football/$comp/teams/$teamId': {
       id: '/football/$comp/teams/$teamId'
@@ -3377,6 +3459,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/football/players/$slug/world-cup-{$year}'
       preLoaderRoute: typeof FootballPlayersSlugWorldCupChar123yearChar125RouteImport
       parentRoute: typeof FootballPlayersSlugRoute
+    }
+    '/football/$comp/teams/$teamId/': {
+      id: '/football/$comp/teams/$teamId/'
+      path: '/'
+      fullPath: '/football/$comp/teams/$teamId/'
+      preLoaderRoute: typeof FootballCompTeamsTeamIdIndexRouteImport
+      parentRoute: typeof FootballCompTeamsTeamIdRoute
     }
     '/football/$comp/teams/$teamId/season-{$year}': {
       id: '/football/$comp/teams/$teamId/season-{$year}'
@@ -3451,10 +3540,12 @@ const CricketRouteWithChildren =
 
 interface FootballCompHistoryRouteChildren {
   FootballCompHistoryYearRoute: typeof FootballCompHistoryYearRoute
+  FootballCompHistoryIndexRoute: typeof FootballCompHistoryIndexRoute
 }
 
 const FootballCompHistoryRouteChildren: FootballCompHistoryRouteChildren = {
   FootballCompHistoryYearRoute: FootballCompHistoryYearRoute,
+  FootballCompHistoryIndexRoute: FootballCompHistoryIndexRoute,
 }
 
 const FootballCompHistoryRouteWithChildren =
@@ -3462,10 +3553,12 @@ const FootballCompHistoryRouteWithChildren =
 
 interface FootballCompPlayersRouteChildren {
   FootballCompPlayersPlayerIdRoute: typeof FootballCompPlayersPlayerIdRoute
+  FootballCompPlayersIndexRoute: typeof FootballCompPlayersIndexRoute
 }
 
 const FootballCompPlayersRouteChildren: FootballCompPlayersRouteChildren = {
   FootballCompPlayersPlayerIdRoute: FootballCompPlayersPlayerIdRoute,
+  FootballCompPlayersIndexRoute: FootballCompPlayersIndexRoute,
 }
 
 const FootballCompPlayersRouteWithChildren =
@@ -3474,11 +3567,13 @@ const FootballCompPlayersRouteWithChildren =
 interface FootballCompRecordsRouteChildren {
   FootballCompRecordsCategoryRoute: typeof FootballCompRecordsCategoryRoute
   FootballCompRecordsDecadesRoute: typeof FootballCompRecordsDecadesRoute
+  FootballCompRecordsIndexRoute: typeof FootballCompRecordsIndexRoute
 }
 
 const FootballCompRecordsRouteChildren: FootballCompRecordsRouteChildren = {
   FootballCompRecordsCategoryRoute: FootballCompRecordsCategoryRoute,
   FootballCompRecordsDecadesRoute: FootballCompRecordsDecadesRoute,
+  FootballCompRecordsIndexRoute: FootballCompRecordsIndexRoute,
 }
 
 const FootballCompRecordsRouteWithChildren =
@@ -3486,12 +3581,14 @@ const FootballCompRecordsRouteWithChildren =
 
 interface FootballCompTeamsTeamIdRouteChildren {
   FootballCompTeamsTeamIdSeasonChar123yearChar125Route: typeof FootballCompTeamsTeamIdSeasonChar123yearChar125Route
+  FootballCompTeamsTeamIdIndexRoute: typeof FootballCompTeamsTeamIdIndexRoute
 }
 
 const FootballCompTeamsTeamIdRouteChildren: FootballCompTeamsTeamIdRouteChildren =
   {
     FootballCompTeamsTeamIdSeasonChar123yearChar125Route:
       FootballCompTeamsTeamIdSeasonChar123yearChar125Route,
+    FootballCompTeamsTeamIdIndexRoute: FootballCompTeamsTeamIdIndexRoute,
   }
 
 const FootballCompTeamsTeamIdRouteWithChildren =
@@ -3501,10 +3598,12 @@ const FootballCompTeamsTeamIdRouteWithChildren =
 
 interface FootballCompTeamsRouteChildren {
   FootballCompTeamsTeamIdRoute: typeof FootballCompTeamsTeamIdRouteWithChildren
+  FootballCompTeamsIndexRoute: typeof FootballCompTeamsIndexRoute
 }
 
 const FootballCompTeamsRouteChildren: FootballCompTeamsRouteChildren = {
   FootballCompTeamsTeamIdRoute: FootballCompTeamsTeamIdRouteWithChildren,
+  FootballCompTeamsIndexRoute: FootballCompTeamsIndexRoute,
 }
 
 const FootballCompTeamsRouteWithChildren =

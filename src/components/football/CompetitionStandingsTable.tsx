@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import type { StandingRow } from "@/lib/espn.functions";
 
 /**
@@ -12,9 +13,12 @@ import type { StandingRow } from "@/lib/espn.functions";
 export function CompetitionStandingsTable({
   groups,
   compact = false,
+  compSlug,
 }: {
   groups: { name: string; rows: StandingRow[] }[];
   compact?: boolean;
+  /** When set, team names link to their competition team page. */
+  compSlug?: string;
 }) {
   if (!groups.length) {
     return (
@@ -56,6 +60,7 @@ export function CompetitionStandingsTable({
                   const ga = r.pointsAgainst;
                   const gd = r.goalDiff ?? (gf != null && ga != null ? gf - ga : null);
                   const pts = r.points ?? w * 3 + d;
+                  const label = compact ? r.abbr || r.team : r.team;
                   return (
                     <tr
                       key={r.teamId || `${g.name}-${i}`}
@@ -80,9 +85,17 @@ export function CompetitionStandingsTable({
                           ) : (
                             <span className="size-4 rounded-full bg-white/10 shrink-0" />
                           )}
-                          <span className="truncate font-medium">
-                            {compact ? (r.abbr || r.team) : r.team}
-                          </span>
+                          {compSlug && r.teamId ? (
+                            <Link
+                              to="/football/$comp/teams/$teamId"
+                              params={{ comp: compSlug, teamId: r.teamId }}
+                              className="truncate font-medium hover:text-emerald-300 hover:underline"
+                            >
+                              {label}
+                            </Link>
+                          ) : (
+                            <span className="truncate font-medium">{label}</span>
+                          )}
                         </div>
                       </td>
                       <td className="px-1 py-1.5 text-right tabular-nums text-muted-foreground">{gp ?? "—"}</td>
