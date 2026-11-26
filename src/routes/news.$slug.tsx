@@ -3,7 +3,7 @@ import { CalendarDays, ChevronRight, Clock3 } from "lucide-react";
 import { SportNav } from "@/components/sports/SportNav";
 import { Breadcrumbs } from "@/components/nav/Breadcrumbs";
 import { getNewsRecap, listNewsRecaps } from "@/lib/news.server";
-import { pickRelatedNews } from "@/lib/news-feed";
+import { pickRelatedNews, recapMatchPath } from "@/lib/news-feed";
 import { formatNewsDate } from "@/lib/news-date";
 import { markdownToHtml } from "@/lib/markdown-lite";
 import { articlePage, breadcrumbList, ldScript } from "@/lib/seo/jsonld";
@@ -96,6 +96,7 @@ export const Route = createFileRoute("/news/$slug")({
 function NewsArticlePage() {
   const { article, related } = Route.useLoaderData();
   const html = markdownToHtml(article.fullArticle);
+  const matchPath = recapMatchPath(article.sport, article.matchKey);
 
   return (
     <div className="min-h-screen">
@@ -124,12 +125,22 @@ function NewsArticlePage() {
               {article.headline}
             </h1>
             <p className="text-base text-muted-foreground leading-relaxed">{article.summary}</p>
-            <div className="text-xs text-muted-foreground">
-              {article.homeTeam}
-              {article.homeScore != null && article.awayScore != null
-                ? ` ${article.homeScore}–${article.awayScore} `
-                : " v "}
-              {article.awayTeam}
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
+              <span>
+                {article.homeTeam}
+                {article.homeScore != null && article.awayScore != null
+                  ? ` ${article.homeScore}–${article.awayScore} `
+                  : " v "}
+                {article.awayTeam}
+              </span>
+              {matchPath && (
+                <a
+                  href={matchPath}
+                  className="inline-flex items-center gap-0.5 font-bold text-sky-300 hover:text-sky-200"
+                >
+                  Match page <ChevronRight className="size-3" />
+                </a>
+              )}
             </div>
           </header>
 

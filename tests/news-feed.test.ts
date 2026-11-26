@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildNewsRss, pickRelatedNews, type NewsFeedItem } from "@/lib/news-feed";
+import { buildNewsRss, pickRelatedNews, recapMatchPath, type NewsFeedItem } from "@/lib/news-feed";
 
 const base: NewsFeedItem = {
   slug: "brazil-2-1-argentina",
@@ -41,6 +41,22 @@ describe("news RSS feed", () => {
     const xml = buildNewsRss([]);
     expect(xml).toContain("<channel>");
     expect(xml).not.toContain("<item>");
+  });
+});
+
+describe("recap match links", () => {
+  it("maps football and cricket recaps back to their match page", () => {
+    expect(recapMatchPath("football", "brazil-vs-argentina-1982-07-02")).toBe(
+      "/football/matches/brazil-vs-argentina-1982-07-02",
+    );
+    expect(recapMatchPath("cricket", "india-vs-pakistan-2025-02-23")).toBe(
+      "/cricket/highlights/india-vs-pakistan-2025-02-23",
+    );
+  });
+
+  it("returns null when there is no match page for the sport", () => {
+    expect(recapMatchPath("mlb", "world-series-2004")).toBeNull();
+    expect(recapMatchPath("football", null)).toBeNull();
   });
 });
 

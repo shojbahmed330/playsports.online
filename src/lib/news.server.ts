@@ -23,6 +23,15 @@ export type NewsArticle = NewsSummary & {
   fullArticle: string;
   metaDescription: string | null;
   keyMoments: KeyMoment[];
+  matchKey: string | null;
+};
+
+export type RecapLink = {
+  slug: string;
+  headline: string;
+  summary: string;
+  metaDescription: string | null;
+  updatedAt: string;
 };
 
 let client: ReturnType<typeof createClient<Database>> | null = null;
@@ -94,7 +103,7 @@ export async function getNewsRecap(slug: string): Promise<NewsArticle | null> {
   try {
     const { data, error } = await supabase
       .from("match_recaps")
-      .select(`${SUMMARY_FIELDS},full_article,meta_description,key_moments`)
+      .select(`${SUMMARY_FIELDS},full_article,meta_description,key_moments,match_key`)
       .eq("slug", slug)
       .maybeSingle();
     if (error || !data) return null;
@@ -106,6 +115,34 @@ export async function getNewsRecap(slug: string): Promise<NewsArticle | null> {
       fullArticle: data.full_article,
       metaDescription: data.meta_description,
       keyMoments,
+      matchKey: data.match_key,
+    };
+  } catch {
+    return null;
+  }
+}
+
+/** Compact recap lookup for match/highlight pages (no full article body). */
+export async function getRecapLinkForMatch(
+  sport: string,
+  matchKey: string,
+): Promise<RecapLink | null> {
+  const supabase = getClient();
+  if (!supabase || !matchKey) return null;
+  try {
+    const { data, error } = await supabase
+      .from("match_recaps")
+      .select("slug,headline,summary,meta_description,updated_at")
+      .eq("sport", sport)
+      .eq("match_key", matchKey)
+      .maybeSingle();
+    if (error || !data) return null;
+    return {
+      slug: data.slug,
+      headline: data.headline,
+      summary: data.summary,
+      metaDescription: data.meta_description,
+      updatedAt: data.updated_at,
     };
   } catch {
     return null;
