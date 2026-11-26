@@ -75,6 +75,7 @@ import { Route as NbaStandingsRouteImport } from './routes/nba.standings'
 import { Route as NbaTeamsRouteImport } from './routes/nba.teams'
 import { Route as NewsIndexRouteImport } from './routes/news.index'
 import { Route as NewsSlugRouteImport } from './routes/news.$slug'
+import { Route as NewsRssDotxmlRouteImport } from './routes/news.rss[.]xml'
 import { Route as NhlIndexRouteImport } from './routes/nhl.index'
 import { Route as NhlChampionsRouteImport } from './routes/nhl.champions'
 import { Route as NhlHistoryRouteImport } from './routes/nhl.history'
@@ -512,6 +513,11 @@ const NewsIndexRoute = NewsIndexRouteImport.update({
 const NewsSlugRoute = NewsSlugRouteImport.update({
   id: '/news/$slug',
   path: '/news/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NewsRssDotxmlRoute = NewsRssDotxmlRouteImport.update({
+  id: '/news/rss.xml',
+  path: '/news/rss.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const NhlIndexRoute = NhlIndexRouteImport.update({
@@ -1121,6 +1127,7 @@ export interface FileRoutesByFullPath {
   '/nba/standings': typeof NbaStandingsRoute
   '/nba/teams': typeof NbaTeamsRoute
   '/news/$slug': typeof NewsSlugRoute
+  '/news/rss.xml': typeof NewsRssDotxmlRoute
   '/nhl/champions': typeof NhlChampionsRoute
   '/nhl/history': typeof NhlHistoryRoute
   '/nhl/leaders': typeof NhlLeadersRoute
@@ -1289,6 +1296,7 @@ export interface FileRoutesByTo {
   '/nba/standings': typeof NbaStandingsRoute
   '/nba/teams': typeof NbaTeamsRoute
   '/news/$slug': typeof NewsSlugRoute
+  '/news/rss.xml': typeof NewsRssDotxmlRoute
   '/nhl/champions': typeof NhlChampionsRoute
   '/nhl/history': typeof NhlHistoryRoute
   '/nhl/leaders': typeof NhlLeadersRoute
@@ -1464,6 +1472,7 @@ export interface FileRoutesById {
   '/nba/standings': typeof NbaStandingsRoute
   '/nba/teams': typeof NbaTeamsRoute
   '/news/$slug': typeof NewsSlugRoute
+  '/news/rss.xml': typeof NewsRssDotxmlRoute
   '/nhl/champions': typeof NhlChampionsRoute
   '/nhl/history': typeof NhlHistoryRoute
   '/nhl/leaders': typeof NhlLeadersRoute
@@ -1641,6 +1650,7 @@ export interface FileRouteTypes {
     | '/nba/standings'
     | '/nba/teams'
     | '/news/$slug'
+    | '/news/rss.xml'
     | '/nhl/champions'
     | '/nhl/history'
     | '/nhl/leaders'
@@ -1809,6 +1819,7 @@ export interface FileRouteTypes {
     | '/nba/standings'
     | '/nba/teams'
     | '/news/$slug'
+    | '/news/rss.xml'
     | '/nhl/champions'
     | '/nhl/history'
     | '/nhl/leaders'
@@ -1983,6 +1994,7 @@ export interface FileRouteTypes {
     | '/nba/standings'
     | '/nba/teams'
     | '/news/$slug'
+    | '/news/rss.xml'
     | '/nhl/champions'
     | '/nhl/history'
     | '/nhl/leaders'
@@ -2131,6 +2143,7 @@ export interface RootRouteChildren {
   LiveSportRoute: typeof LiveSportRoute
   LiveTodayRoute: typeof LiveTodayRoute
   NewsSlugRoute: typeof NewsSlugRoute
+  NewsRssDotxmlRoute: typeof NewsRssDotxmlRoute
   RobotsTxtRoute: typeof RobotsTxtRoute
   GuidesIndexRoute: typeof GuidesIndexRoute
   HighlightsIndexRoute: typeof HighlightsIndexRoute
@@ -2614,6 +2627,13 @@ declare module '@tanstack/react-router' {
       path: '/news/$slug'
       fullPath: '/news/$slug'
       preLoaderRoute: typeof NewsSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/news/rss.xml': {
+      id: '/news/rss.xml'
+      path: '/news/rss.xml'
+      fullPath: '/news/rss.xml'
+      preLoaderRoute: typeof NewsRssDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/nhl/': {
@@ -3778,6 +3798,7 @@ const rootRouteChildren: RootRouteChildren = {
   LiveSportRoute: LiveSportRoute,
   LiveTodayRoute: LiveTodayRoute,
   NewsSlugRoute: NewsSlugRoute,
+  NewsRssDotxmlRoute: NewsRssDotxmlRoute,
   RobotsTxtRoute: RobotsTxtRoute,
   GuidesIndexRoute: GuidesIndexRoute,
   HighlightsIndexRoute: HighlightsIndexRoute,
