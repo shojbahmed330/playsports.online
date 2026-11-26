@@ -42,6 +42,12 @@ const memoryFallback = new Map<
 >();
 
 async function getSupabaseAdmin() {
+  // The generated client throws on first property access when the service
+  // role key is missing. Check first so local/dev and preview environments
+  // fall back to the in-memory cache instead of failing every ESPN request.
+  if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    return null;
+  }
   try {
     const mod = await import("@/integrations/supabase/client.server");
     return mod.supabaseAdmin;

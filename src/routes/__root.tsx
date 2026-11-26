@@ -90,11 +90,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
       { name: "apple-mobile-web-app-title", content: "PlaySports" },
       { name: "mobile-web-app-capable", content: "yes" },
-      { title: "PlaySports — Live Scores, Stats & FIFA World Cup Archive" },
-      { name: "description", content: "Live scores, standings and stats across MLB, NBA, NHL, MLS, Cricket & IPL — plus the complete FIFA World Cup archive 1930–2026." },
+      { title: "PlaySports — Live Cricket & Football Scores, Stats & History" },
+      { name: "description", content: "Live cricket and football scores, fixtures, tables, stats and match history — internationals, IPL, Premier League, Champions League and more." },
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "PlaySports" },
+      { property: "og:image", content: "https://www.playsports.online/og-default.png" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:image", content: "https://www.playsports.online/og-default.png" },
       { name: "google-site-verification", content: "google57d393e7853831a6" },
       // Bing Webmaster Tools — replace `content` with the value from
       // https://www.bing.com/webmasters (Site → Ownership → Meta tag).
@@ -130,7 +132,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           name: "PlaySports",
           url: "https://www.playsports.online",
           logo: "https://www.playsports.online/icon-512.png",
-          description: "Live scores, stats and historical archives across football, cricket, baseball, basketball, hockey and soccer.",
+          description: "Live cricket and football scores, tables, stats and historical archives.",
         }),
       },
       {
@@ -138,10 +140,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "SiteNavigationElement",
-          name: ["Football", "Cricket", "MLB", "NBA", "NHL", "MLS"],
+          name: ["Cricket", "Football", "Live", "News", "MLB", "NBA", "NHL", "MLS"],
           url: [
-            "https://www.playsports.online/football",
             "https://www.playsports.online/cricket",
+            "https://www.playsports.online/football",
+            "https://www.playsports.online/live/today",
+            "https://www.playsports.online/news",
             "https://www.playsports.online/mlb",
             "https://www.playsports.online/nba",
             "https://www.playsports.online/nhl",

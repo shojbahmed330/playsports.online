@@ -16,7 +16,7 @@ indexes, foreign keys, and GRANTs.
 
 ## 2. Grant yourself admin
 
-The signup trigger auto-promotes `rajshahi.jibon@gmail.com` to admin. If you
+The signup trigger auto-promotes the project owner's account to admin. If you
 sign up with a different email, run once in SQL Editor:
 
 ```sql

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Trophy, BarChart3, ChevronDown, Check } from "lucide-react";
+import { Trophy, BarChart3, ChevronDown, Check, Search } from "lucide-react";
 import { SPORT_LIST } from "@/lib/sports-config";
 import {
   DropdownMenu,
@@ -62,26 +62,63 @@ export function SportNav({ liveCount = 0 }: { liveCount?: number }) {
             <Trophy className="size-5 text-black" />
           </div>
           <div className="leading-tight hidden xs:block sm:block">
-            <div className="text-sm font-bold tracking-wide flex items-center gap-1.5">
-              PlaySports
-              <span className="inline-flex items-center gap-1 rounded-full bg-red-500/15 ring-1 ring-red-500/40 px-1.5 py-[1px] text-[9px] font-extrabold tracking-widest text-red-300 uppercase">
-                <span className="size-1 rounded-full bg-red-500 animate-pulse" /> Live
-              </span>
-            </div>
+            <div className="text-sm font-bold tracking-wide">PlaySports</div>
             <div className="text-[10px] uppercase tracking-[0.18em] text-amber-400">
-              Live · Stats · Archive
+              Cricket · Football
             </div>
           </div>
         </Link>
 
-        {/* Sport dropdown — replaces the tab row */}
+        <nav aria-label="Primary" className="hidden md:flex items-center gap-0.5 ml-4">
+          <HeaderLink to="/live/today" label="Live" pathname={pathname} />
+          <HeaderLink to="/cricket" label="Cricket" pathname={pathname} />
+          <HeaderLink to="/football" label="Football" pathname={pathname} />
+          <HeaderLink to="/news" label="News" pathname={pathname} />
+          <HeaderLink to="/football/world-cup" label="World Cup" pathname={pathname} />
+        </nav>
+
         <div className="ml-auto flex items-center gap-2">
+          <Link
+            to="/search"
+            aria-label="Search PlaySports"
+            className="grid size-9 place-items-center rounded-full border border-border bg-card/60 text-muted-foreground transition-colors hover:text-foreground hover:bg-card"
+          >
+            <Search className="size-4" />
+          </Link>
           <SportDropdown current={current} tabs={allTabs} pathname={pathname} />
           {mounted && liveCount > 0 && <LiveChip count={liveCount} />}
           {showStatsChip && <StatsChip pathname={pathname} />}
         </div>
       </div>
     </header>
+  );
+}
+
+function HeaderLink({
+  to,
+  label,
+  pathname,
+}: {
+  to: string;
+  label: string;
+  pathname: string;
+}) {
+  const active =
+    pathname === to ||
+    pathname.startsWith(to + "/") ||
+    (to === "/live/today" && pathname.startsWith("/live"));
+  return (
+    <Link
+      to={to}
+      className={[
+        "rounded-full px-3 py-1.5 text-xs font-semibold transition-colors",
+        active
+          ? "bg-white/[0.08] text-foreground"
+          : "text-muted-foreground hover:bg-white/[0.05] hover:text-foreground",
+      ].join(" ")}
+    >
+      {label}
+    </Link>
   );
 }
 

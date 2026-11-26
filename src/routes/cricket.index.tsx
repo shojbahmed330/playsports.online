@@ -288,10 +288,6 @@ function CricketIndex() {
 
         <AffiliateStrip placement="homepage" sport="cricket" heading="Cricket gear & partners" />
       </main>
-
-      <footer className="border-t border-border mt-10 py-8 text-center text-xs text-muted-foreground">
-        Cricket data from ESPN's public feed · Auto-refreshes every 20s while play is live
-      </footer>
     </div>
   );
 }

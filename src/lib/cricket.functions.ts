@@ -1,6 +1,11 @@
 import { createServerFn } from "@tanstack/react-start";
 import { setResponseHeader } from "@tanstack/react-start/server";
 import { isCuratedLeague, BILATERAL_SERIES_IDS } from "./cricket-leagues";
+import {
+  getCatalogueSeriesLabel,
+  getRelevantSeriesIds,
+  getSeriesHubIds,
+} from "./cricket-catalogue";
 
 function setEdgeCache(hasLive: boolean) {
   try {
@@ -402,31 +407,16 @@ export const getMultiCricketToday = createServerFn({ method: "GET" })
     const seenIds = new Set<string>();
     const all: CricketMatch[] = [];
 
-    // Fan out global scoreboard + curated/bilateral series in parallel.
-    // Cloudflare Workers cap outbound subrequests (~50/invocation); 491 in
-    // parallel hangs the hub, so we fan out in bounded batches.
-    const MAX_BILATERAL = 30;
+    // Fan out curated leagues + only the bilateral series that are live or
+    // near a match (from the generated catalogue). Fetching the first 30 IDs
+    // in file order missed every current tour once those old England tours
+    // finished; the catalogue keeps this list date-aware.
+    const catalogueIds = getRelevantSeriesIds();
+    const fallbackIds =
+      catalogueIds.length > 0 ? catalogueIds : BILATERAL_SERIES_IDS.slice(0, 30);
     const seriesToFetch = Array.from(
-      new Set([...data.leagueIds, ...BILATERAL_SERIES_IDS.slice(0, MAX_BILATERAL)]),
+      new Set([...data.leagueIds, ...fallbackIds]),
     );
-
-    const globalTask = (async () => {
-      try {
-        const raw = (await apiGet(`/scoreboard`, 30_000)) as any;
-        const events: any[] = raw?.events ?? [];
-        return events.map((e) => {
-          const lm = e?.league ?? e?.leagues?.[0] ?? raw?.leagues?.[0] ?? {};
-          const league = {
-            id: String(lm.id ?? "global"),
-            name: lm.name ?? "Cricket",
-            abbr: lm.abbreviation ?? "",
-          };
-          return mapMatch(e, league);
-        });
-      } catch {
-        return [] as CricketMatch[];
-      }
-    })();
 
     const CONCURRENCY = 16;
     const seriesTask = (async () => {
@@ -455,13 +445,8 @@ export const getMultiCricketToday = createServerFn({ method: "GET" })
       return out;
     })();
 
-    const [globalList, seriesLists] = await Promise.all([globalTask, seriesTask]);
+    const seriesLists = await seriesTask;
 
-    for (const m of globalList) {
-      if (!m.id || seenIds.has(m.id)) continue;
-      seenIds.add(m.id);
-      all.push(m);
-    }
     for (const list of seriesLists) {
       for (const m of list) {
         if (!m.id || seenIds.has(m.id)) continue;
@@ -1352,27 +1337,56 @@ function deriveTourName(matches: CricketMatch[]): string {
 export const getBilateralSeriesList = createServerFn({ method: "GET" })
   .handler(async () => {
     try {
-      const raw = (await apiGet(`/scoreboard`, 5 * 60_000)) as any;
-      const events: any[] = raw?.events ?? [];
+      // ESPN has no working global cricket scoreboard (it returns 404), so
+      // build the hub from the date-aware catalogue instead of a dead call.
+      const ids = getSeriesHubIds();
+      const CONCURRENCY = 8;
       const tours = new Map<string, CricketMatch[]>();
-      for (const e of events) {
-        const lm = e?.league ?? e?.leagues?.[0] ?? raw?.leagues?.[0] ?? {};
-        const league = {
-          id: String(lm.id ?? "global"),
-          name: lm.name ?? "Cricket",
-          abbr: lm.abbreviation ?? "",
-        };
-        if (isCuratedLeague(league.id)) continue;
-        const m = mapMatch(e, league);
-        const arr = tours.get(league.id) ?? [];
-        arr.push(m);
-        tours.set(league.id, arr);
+
+      for (let i = 0; i < ids.length; i += CONCURRENCY) {
+        const batch = ids.slice(i, i + CONCURRENCY);
+        const payloads = await Promise.all(
+          batch.map(async (id) => {
+            try {
+              return { id, raw: (await apiGet(`/${id}/scoreboard`, 5 * 60_000)) as any };
+            } catch {
+              return { id, raw: null as any };
+            }
+          }),
+        );
+        for (const { id, raw } of payloads) {
+          if (!raw || isCuratedLeague(id)) continue;
+          const lm = raw?.leagues?.[0] ?? {};
+          const league = {
+            id,
+            name: getCatalogueSeriesLabel(id) ?? lm.name ?? "Cricket",
+            abbr: lm.abbreviation ?? "",
+          };
+          for (const e of raw?.events ?? []) {
+            const m = mapMatch(e, league);
+            const arr = tours.get(id) ?? [];
+            arr.push(m);
+            tours.set(id, arr);
+          }
+        }
       }
 
       const now = Date.now();
       const result: BilateralTour[] = [];
+      const seenTourKeys = new Set<string>();
       for (const [id, ms] of tours) {
         ms.sort((a, b) => a.startTs - b.startTs);
+        // ESPN exposes both a parent tour and its sub-series with the same
+        // next event. Dedupe by the next match so the hub shows one card.
+        const nextMatch =
+          ms.find((m) => m.status === "in") ??
+          ms.find((m) => m.status === "pre" && m.startTs > now) ??
+          ms[ms.length - 1];
+        const tourKey = nextMatch
+          ? `${nextMatch.home.id}-${nextMatch.away.id}-${nextMatch.startTs}`
+          : id;
+        if (seenTourKeys.has(tourKey)) continue;
+        seenTourKeys.add(tourKey);
         const teamMap = new Map<string, BilateralTour["teams"][number]>();
         for (const m of ms) {
           for (const t of [m.home, m.away]) {
@@ -1395,7 +1409,7 @@ export const getBilateralSeriesList = createServerFn({ method: "GET" })
         const finished = ms.filter((m) => m.status === "post");
         result.push({
           id,
-          name: deriveTourName(ms),
+          name: getCatalogueSeriesLabel(id) ?? deriveTourName(ms),
           abbr: ms[0]?.leagueAbbr ?? "",
           format: fmt,
           teams: Array.from(teamMap.values()),

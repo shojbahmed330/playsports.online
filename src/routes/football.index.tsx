@@ -4,7 +4,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Trophy, Loader2, ChevronDown, Users, Swords, Goal, Calendar } from "lucide-react";
 import { SportNav } from "@/components/sports/SportNav";
 import { supabase, WC_YEARS, type WCTournament, type WCMatch, type WCGroup } from "@/lib/supabase";
-import { pickCurrentWcYear, liveWcYear, FOOTBALL_WC } from "@/lib/tournament-config";
+import { liveWcYear, FOOTBALL_WC } from "@/lib/tournament-config";
 import { TournamentInfoCard } from "@/components/wc/TournamentInfoCard";
 import { GroupStage } from "@/components/wc/GroupStage";
 import { MatchCard, type RoundKey } from "@/components/wc/MatchCard";
@@ -26,9 +26,9 @@ import { FootballFilterBar } from "@/components/football/FootballFilterBar";
 import { FootballCoachmark, ReplayTourButton } from "@/components/football/FootballCoachmark";
 import { BackToTopFab } from "@/components/football/BackToTopFab";
 import { FootballHubSwitcher } from "@/components/football/FootballHubSwitcher";
+import { CurrentLeaguesStrip } from "@/components/football/CurrentLeaguesStrip";
 import { useWc2026Pulse } from "@/lib/use-wc2026-pulse";
 import { applyFilter, uniqueTeams, useMyTeams, type FootballFilter } from "@/lib/football-filters";
-import { SiteFooter } from "@/components/home/SiteFooter";
 import { Breadcrumbs } from "@/components/nav/Breadcrumbs";
 import { breadcrumbList, collectionPage, sportsOrganization, faqPage, ldScript } from "@/lib/seo/jsonld";
 import { getWc2026Fixtures, getWc2026Standings } from "@/lib/wc2026.functions";
@@ -66,27 +66,34 @@ export const Route = createFileRoute("/football/")({
   },
 
   head: () => {
-    const cur = pickCurrentWcYear();
+    const title =
+      "Live Football Scores, Tables & Fixtures — Premier League, Champions League & More | PlaySports";
+    const description =
+      "Live football scores, fixtures and tables for the Premier League, Champions League, La Liga and more — plus the complete FIFA World Cup archive.";
     return {
       meta: [
-        { title: `FIFA World Cup ${cur} — Scores, Bracket & Archive` },
-        { name: "description", content: `Live FIFA World Cup ${cur} fixtures, group standings, knockout bracket and complete tournament history from 1930 to ${cur}.` },
-        { property: "og:title", content: `FIFA World Cup ${cur} — Live Scores & Complete Archive` },
-        { property: "og:description", content: `Live ${cur} fixtures with kickoff countdowns, full bracket, top scorers and historical tournaments.` },
+        { title },
+        { name: "description", content: description },
+        { property: "og:title", content: title },
+        { property: "og:description", content: description },
         { property: "og:url", content: "https://www.playsports.online/football" },
+        { property: "og:image", content: "https://www.playsports.online/og-default.png" },
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: description },
+        { name: "twitter:image", content: "https://www.playsports.online/og-default.png" },
       ],
       links: [{ rel: "canonical", href: "https://www.playsports.online/football" }],
       scripts: [
-        ldScript(collectionPage({ name: `FIFA World Cup ${cur} — Live & Archive`, description: `FIFA World Cup ${cur} live scores, bracket and historical archive 1930–${cur}.`, path: "/football" })),
-        ldScript(sportsOrganization({ name: "FIFA World Cup", path: "/football", sport: "Football" })),
+        ldScript(collectionPage({ name: "Live Football Scores, Tables & Fixtures", description, path: "/football" })),
+        ldScript(sportsOrganization({ name: "Football", path: "/football", sport: "Football" })),
         ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "Football", path: "/football" }])),
         ldScript(faqPage([
-          { q: `When is the ${cur} FIFA World Cup?`, a: `The ${cur} FIFA World Cup fixtures, kickoff times and knockout bracket are live on PlaySports with real-time score updates.` },
-          { q: "Where can I watch live World Cup scores?", a: "PlaySports shows live FIFA World Cup scores, group standings, the full knockout bracket and top scorers, refreshed in real time." },
-          { q: "Does PlaySports cover previous World Cups?", a: "Yes — every FIFA World Cup from 1930 onward has a full archive of results, top scorers and champions on PlaySports." },
+          { q: "Which football competitions does PlaySports cover?", a: "PlaySports covers the Premier League, Champions League, La Liga, World Cup archive and more, with live scores, fixtures and tables." },
+          { q: "How often do football scores update?", a: "Live football scores refresh automatically while matches are in progress." },
+          { q: "Does PlaySports cover the FIFA World Cup?", a: "Yes — the complete FIFA World Cup archive from 1930 onwards, including the 2026 tournament." },
         ])),
       ],
-
     };
   },
   loader: async ({ context }) => {
@@ -406,6 +413,7 @@ function Index() {
 
       {/* CONTENT */}
       <main id="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6 space-y-6">
+        <CurrentLeaguesStrip />
         {year === LIVE_YEAR ? (
           <>
 
@@ -530,9 +538,6 @@ function Index() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 -mt-4 mb-6 flex justify-center">
         <ReplayTourButton onReplay={() => setReplayTour((n) => n + 1)} />
       </div>
-
-      <SiteFooter />
-
 
       <MatchModal match={activeMatch} onClose={() => setActiveMatch(null)} />
 

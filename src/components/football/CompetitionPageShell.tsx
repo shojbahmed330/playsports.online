@@ -1,6 +1,5 @@
 import type { ReactNode } from "react";
 import { SportNav } from "@/components/sports/SportNav";
-import { SiteFooter } from "@/components/home/SiteFooter";
 import { Breadcrumbs } from "@/components/nav/Breadcrumbs";
 import { FootballHubSwitcher } from "@/components/football/FootballHubSwitcher";
 import { CompetitionHero } from "@/components/football/CompetitionHero";
@@ -39,7 +38,6 @@ export function CompetitionPageShell({
       <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
         {children}
       </main>
-      <SiteFooter />
     </div>
   );
 }

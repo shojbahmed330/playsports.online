@@ -35,6 +35,7 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as KeyDottxtRouteImport } from './routes/$key[.]txt'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as NhlIndexRouteImport } from './routes/nhl.index'
+import { Route as NewsIndexRouteImport } from './routes/news.index'
 import { Route as NbaIndexRouteImport } from './routes/nba.index'
 import { Route as MlsIndexRouteImport } from './routes/mls.index'
 import { Route as MlbIndexRouteImport } from './routes/mlb.index'
@@ -50,6 +51,7 @@ import { Route as NhlNewsRouteImport } from './routes/nhl.news'
 import { Route as NhlLeadersRouteImport } from './routes/nhl.leaders'
 import { Route as NhlHistoryRouteImport } from './routes/nhl.history'
 import { Route as NhlChampionsRouteImport } from './routes/nhl.champions'
+import { Route as NewsSlugRouteImport } from './routes/news.$slug'
 import { Route as NbaTeamsRouteImport } from './routes/nba.teams'
 import { Route as NbaStandingsRouteImport } from './routes/nba.standings'
 import { Route as NbaScoresRouteImport } from './routes/nba.scores'
@@ -100,21 +102,21 @@ import { Route as TournamentsTournamentLeaderboardRouteImport } from './routes/t
 import { Route as TeamSportSlugRouteImport } from './routes/team.$sport.$slug'
 import { Route as PlayerSportSlugRouteImport } from './routes/player.$sport.$slug'
 import { Route as OgTypeSlugDotsvgRouteImport } from './routes/og.$type.$slug[.]svg'
-import { Route as NhlTeamsSlugRouteImport } from './routes/nhl.teams.$slug'
+import { Route as NhlTeamsSlugRouteImport } from './routes/nhl.teams_.$slug'
 import { Route as NhlTeamIdRouteImport } from './routes/nhl.team.$id'
 import { Route as NhlTeamHistorySlugRouteImport } from './routes/nhl.team-history.$slug'
 import { Route as NhlStanleyCupYearRouteImport } from './routes/nhl.stanley-cup.$year'
 import { Route as NhlPlayersSlugRouteImport } from './routes/nhl.players.$slug'
 import { Route as NhlPlayerIdRouteImport } from './routes/nhl.player.$id'
 import { Route as NhlGameIdRouteImport } from './routes/nhl.game.$id'
-import { Route as NbaTeamsSlugRouteImport } from './routes/nba.teams.$slug'
+import { Route as NbaTeamsSlugRouteImport } from './routes/nba.teams_.$slug'
 import { Route as NbaTeamIdRouteImport } from './routes/nba.team.$id'
 import { Route as NbaTeamHistorySlugRouteImport } from './routes/nba.team-history.$slug'
 import { Route as NbaPlayersSlugRouteImport } from './routes/nba.players.$slug'
 import { Route as NbaPlayerIdRouteImport } from './routes/nba.player.$id'
 import { Route as NbaGameIdRouteImport } from './routes/nba.game.$id'
 import { Route as NbaFinalsYearRouteImport } from './routes/nba.finals.$year'
-import { Route as MlsTeamsSlugRouteImport } from './routes/mls.teams.$slug'
+import { Route as MlsTeamsSlugRouteImport } from './routes/mls.teams_.$slug'
 import { Route as MlsTeamIdRouteImport } from './routes/mls.team.$id'
 import { Route as MlsTeamHistorySlugRouteImport } from './routes/mls.team-history.$slug'
 import { Route as MlsPlayersSlugRouteImport } from './routes/mls.players.$slug'
@@ -122,7 +124,7 @@ import { Route as MlsPlayerIdRouteImport } from './routes/mls.player.$id'
 import { Route as MlsGameIdRouteImport } from './routes/mls.game.$id'
 import { Route as MlsCupYearRouteImport } from './routes/mls.cup.$year'
 import { Route as MlbWorldSeriesYearRouteImport } from './routes/mlb.world-series.$year'
-import { Route as MlbTeamsSlugRouteImport } from './routes/mlb.teams.$slug'
+import { Route as MlbTeamsSlugRouteImport } from './routes/mlb.teams_.$slug'
 import { Route as MlbTeamIdRouteImport } from './routes/mlb.team.$id'
 import { Route as MlbTeamHistorySlugRouteImport } from './routes/mlb.team-history.$slug'
 import { Route as MlbRecordsCategoryRouteImport } from './routes/mlb.records.$category'
@@ -311,6 +313,11 @@ const NhlIndexRoute = NhlIndexRouteImport.update({
   path: '/',
   getParentRoute: () => NhlRoute,
 } as any)
+const NewsIndexRoute = NewsIndexRouteImport.update({
+  id: '/news/',
+  path: '/news/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const NbaIndexRoute = NbaIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -385,6 +392,11 @@ const NhlChampionsRoute = NhlChampionsRouteImport.update({
   id: '/champions',
   path: '/champions',
   getParentRoute: () => NhlRoute,
+} as any)
+const NewsSlugRoute = NewsSlugRouteImport.update({
+  id: '/news/$slug',
+  path: '/news/$slug',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const NbaTeamsRoute = NbaTeamsRouteImport.update({
   id: '/teams',
@@ -639,9 +651,9 @@ const OgTypeSlugDotsvgRoute = OgTypeSlugDotsvgRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const NhlTeamsSlugRoute = NhlTeamsSlugRouteImport.update({
-  id: '/$slug',
-  path: '/$slug',
-  getParentRoute: () => NhlTeamsRoute,
+  id: '/teams_/$slug',
+  path: '/teams/$slug',
+  getParentRoute: () => NhlRoute,
 } as any)
 const NhlTeamIdRoute = NhlTeamIdRouteImport.update({
   id: '/team/$id',
@@ -674,9 +686,9 @@ const NhlGameIdRoute = NhlGameIdRouteImport.update({
   getParentRoute: () => NhlRoute,
 } as any)
 const NbaTeamsSlugRoute = NbaTeamsSlugRouteImport.update({
-  id: '/$slug',
-  path: '/$slug',
-  getParentRoute: () => NbaTeamsRoute,
+  id: '/teams_/$slug',
+  path: '/teams/$slug',
+  getParentRoute: () => NbaRoute,
 } as any)
 const NbaTeamIdRoute = NbaTeamIdRouteImport.update({
   id: '/team/$id',
@@ -709,9 +721,9 @@ const NbaFinalsYearRoute = NbaFinalsYearRouteImport.update({
   getParentRoute: () => NbaRoute,
 } as any)
 const MlsTeamsSlugRoute = MlsTeamsSlugRouteImport.update({
-  id: '/$slug',
-  path: '/$slug',
-  getParentRoute: () => MlsTeamsRoute,
+  id: '/teams_/$slug',
+  path: '/teams/$slug',
+  getParentRoute: () => MlsRoute,
 } as any)
 const MlsTeamIdRoute = MlsTeamIdRouteImport.update({
   id: '/team/$id',
@@ -749,9 +761,9 @@ const MlbWorldSeriesYearRoute = MlbWorldSeriesYearRouteImport.update({
   getParentRoute: () => MlbRoute,
 } as any)
 const MlbTeamsSlugRoute = MlbTeamsSlugRouteImport.update({
-  id: '/$slug',
-  path: '/$slug',
-  getParentRoute: () => MlbTeamsRoute,
+  id: '/teams_/$slug',
+  path: '/teams/$slug',
+  getParentRoute: () => MlbRoute,
 } as any)
 const MlbTeamIdRoute = MlbTeamIdRouteImport.update({
   id: '/team/$id',
@@ -1086,28 +1098,29 @@ export interface FileRoutesByFullPath {
   '/mlb/postseason': typeof MlbPostseasonRoute
   '/mlb/scores': typeof MlbScoresRoute
   '/mlb/standings': typeof MlbStandingsRoute
-  '/mlb/teams': typeof MlbTeamsRouteWithChildren
+  '/mlb/teams': typeof MlbTeamsRoute
   '/mls/champions': typeof MlsChampionsRoute
   '/mls/history': typeof MlsHistoryRoute
   '/mls/leaders': typeof MlsLeadersRoute
   '/mls/news': typeof MlsNewsRoute
   '/mls/scores': typeof MlsScoresRoute
   '/mls/standings': typeof MlsStandingsRoute
-  '/mls/teams': typeof MlsTeamsRouteWithChildren
+  '/mls/teams': typeof MlsTeamsRoute
   '/nba/champions': typeof NbaChampionsRoute
   '/nba/history': typeof NbaHistoryRoute
   '/nba/leaders': typeof NbaLeadersRoute
   '/nba/news': typeof NbaNewsRoute
   '/nba/scores': typeof NbaScoresRoute
   '/nba/standings': typeof NbaStandingsRoute
-  '/nba/teams': typeof NbaTeamsRouteWithChildren
+  '/nba/teams': typeof NbaTeamsRoute
+  '/news/$slug': typeof NewsSlugRoute
   '/nhl/champions': typeof NhlChampionsRoute
   '/nhl/history': typeof NhlHistoryRoute
   '/nhl/leaders': typeof NhlLeadersRoute
   '/nhl/news': typeof NhlNewsRoute
   '/nhl/scores': typeof NhlScoresRoute
   '/nhl/standings': typeof NhlStandingsRoute
-  '/nhl/teams': typeof NhlTeamsRouteWithChildren
+  '/nhl/teams': typeof NhlTeamsRoute
   '/robots/txt': typeof RobotsTxtRoute
   '/cricket/': typeof CricketIndexRoute
   '/football/': typeof FootballIndexRoute
@@ -1116,6 +1129,7 @@ export interface FileRoutesByFullPath {
   '/mlb/': typeof MlbIndexRoute
   '/mls/': typeof MlsIndexRoute
   '/nba/': typeof NbaIndexRoute
+  '/news/': typeof NewsIndexRoute
   '/nhl/': typeof NhlIndexRoute
   '/api/public/indexnow-auto': typeof ApiPublicIndexnowAutoRoute
   '/api/public/indexnow-key.txt': typeof ApiPublicIndexnowKeyDottxtRoute
@@ -1251,28 +1265,29 @@ export interface FileRoutesByTo {
   '/mlb/postseason': typeof MlbPostseasonRoute
   '/mlb/scores': typeof MlbScoresRoute
   '/mlb/standings': typeof MlbStandingsRoute
-  '/mlb/teams': typeof MlbTeamsRouteWithChildren
+  '/mlb/teams': typeof MlbTeamsRoute
   '/mls/champions': typeof MlsChampionsRoute
   '/mls/history': typeof MlsHistoryRoute
   '/mls/leaders': typeof MlsLeadersRoute
   '/mls/news': typeof MlsNewsRoute
   '/mls/scores': typeof MlsScoresRoute
   '/mls/standings': typeof MlsStandingsRoute
-  '/mls/teams': typeof MlsTeamsRouteWithChildren
+  '/mls/teams': typeof MlsTeamsRoute
   '/nba/champions': typeof NbaChampionsRoute
   '/nba/history': typeof NbaHistoryRoute
   '/nba/leaders': typeof NbaLeadersRoute
   '/nba/news': typeof NbaNewsRoute
   '/nba/scores': typeof NbaScoresRoute
   '/nba/standings': typeof NbaStandingsRoute
-  '/nba/teams': typeof NbaTeamsRouteWithChildren
+  '/nba/teams': typeof NbaTeamsRoute
+  '/news/$slug': typeof NewsSlugRoute
   '/nhl/champions': typeof NhlChampionsRoute
   '/nhl/history': typeof NhlHistoryRoute
   '/nhl/leaders': typeof NhlLeadersRoute
   '/nhl/news': typeof NhlNewsRoute
   '/nhl/scores': typeof NhlScoresRoute
   '/nhl/standings': typeof NhlStandingsRoute
-  '/nhl/teams': typeof NhlTeamsRouteWithChildren
+  '/nhl/teams': typeof NhlTeamsRoute
   '/robots/txt': typeof RobotsTxtRoute
   '/cricket': typeof CricketIndexRoute
   '/football': typeof FootballIndexRoute
@@ -1281,6 +1296,7 @@ export interface FileRoutesByTo {
   '/mlb': typeof MlbIndexRoute
   '/mls': typeof MlsIndexRoute
   '/nba': typeof NbaIndexRoute
+  '/news': typeof NewsIndexRoute
   '/nhl': typeof NhlIndexRoute
   '/api/public/indexnow-auto': typeof ApiPublicIndexnowAutoRoute
   '/api/public/indexnow-key.txt': typeof ApiPublicIndexnowKeyDottxtRoute
@@ -1424,28 +1440,29 @@ export interface FileRoutesById {
   '/mlb/postseason': typeof MlbPostseasonRoute
   '/mlb/scores': typeof MlbScoresRoute
   '/mlb/standings': typeof MlbStandingsRoute
-  '/mlb/teams': typeof MlbTeamsRouteWithChildren
+  '/mlb/teams': typeof MlbTeamsRoute
   '/mls/champions': typeof MlsChampionsRoute
   '/mls/history': typeof MlsHistoryRoute
   '/mls/leaders': typeof MlsLeadersRoute
   '/mls/news': typeof MlsNewsRoute
   '/mls/scores': typeof MlsScoresRoute
   '/mls/standings': typeof MlsStandingsRoute
-  '/mls/teams': typeof MlsTeamsRouteWithChildren
+  '/mls/teams': typeof MlsTeamsRoute
   '/nba/champions': typeof NbaChampionsRoute
   '/nba/history': typeof NbaHistoryRoute
   '/nba/leaders': typeof NbaLeadersRoute
   '/nba/news': typeof NbaNewsRoute
   '/nba/scores': typeof NbaScoresRoute
   '/nba/standings': typeof NbaStandingsRoute
-  '/nba/teams': typeof NbaTeamsRouteWithChildren
+  '/nba/teams': typeof NbaTeamsRoute
+  '/news/$slug': typeof NewsSlugRoute
   '/nhl/champions': typeof NhlChampionsRoute
   '/nhl/history': typeof NhlHistoryRoute
   '/nhl/leaders': typeof NhlLeadersRoute
   '/nhl/news': typeof NhlNewsRoute
   '/nhl/scores': typeof NhlScoresRoute
   '/nhl/standings': typeof NhlStandingsRoute
-  '/nhl/teams': typeof NhlTeamsRouteWithChildren
+  '/nhl/teams': typeof NhlTeamsRoute
   '/robots/txt': typeof RobotsTxtRoute
   '/cricket/': typeof CricketIndexRoute
   '/football/': typeof FootballIndexRoute
@@ -1454,6 +1471,7 @@ export interface FileRoutesById {
   '/mlb/': typeof MlbIndexRoute
   '/mls/': typeof MlsIndexRoute
   '/nba/': typeof NbaIndexRoute
+  '/news/': typeof NewsIndexRoute
   '/nhl/': typeof NhlIndexRoute
   '/api/public/indexnow-auto': typeof ApiPublicIndexnowAutoRoute
   '/api/public/indexnow-key.txt': typeof ApiPublicIndexnowKeyDottxtRoute
@@ -1496,7 +1514,7 @@ export interface FileRoutesById {
   '/mlb/records/$category': typeof MlbRecordsCategoryRoute
   '/mlb/team-history/$slug': typeof MlbTeamHistorySlugRoute
   '/mlb/team/$id': typeof MlbTeamIdRoute
-  '/mlb/teams/$slug': typeof MlbTeamsSlugRoute
+  '/mlb/teams_/$slug': typeof MlbTeamsSlugRoute
   '/mlb/world-series/$year': typeof MlbWorldSeriesYearRoute
   '/mls/cup/$year': typeof MlsCupYearRoute
   '/mls/game/$id': typeof MlsGameIdRoute
@@ -1504,21 +1522,21 @@ export interface FileRoutesById {
   '/mls/players/$slug': typeof MlsPlayersSlugRoute
   '/mls/team-history/$slug': typeof MlsTeamHistorySlugRoute
   '/mls/team/$id': typeof MlsTeamIdRoute
-  '/mls/teams/$slug': typeof MlsTeamsSlugRoute
+  '/mls/teams_/$slug': typeof MlsTeamsSlugRoute
   '/nba/finals/$year': typeof NbaFinalsYearRoute
   '/nba/game/$id': typeof NbaGameIdRoute
   '/nba/player/$id': typeof NbaPlayerIdRoute
   '/nba/players/$slug': typeof NbaPlayersSlugRoute
   '/nba/team-history/$slug': typeof NbaTeamHistorySlugRoute
   '/nba/team/$id': typeof NbaTeamIdRoute
-  '/nba/teams/$slug': typeof NbaTeamsSlugRoute
+  '/nba/teams_/$slug': typeof NbaTeamsSlugRoute
   '/nhl/game/$id': typeof NhlGameIdRoute
   '/nhl/player/$id': typeof NhlPlayerIdRoute
   '/nhl/players/$slug': typeof NhlPlayersSlugRoute
   '/nhl/stanley-cup/$year': typeof NhlStanleyCupYearRoute
   '/nhl/team-history/$slug': typeof NhlTeamHistorySlugRoute
   '/nhl/team/$id': typeof NhlTeamIdRoute
-  '/nhl/teams/$slug': typeof NhlTeamsSlugRoute
+  '/nhl/teams_/$slug': typeof NhlTeamsSlugRoute
   '/og/$type/$slug.svg': typeof OgTypeSlugDotsvgRoute
   '/player/$sport/$slug': typeof PlayerSportSlugRoute
   '/team/$sport/$slug': typeof TeamSportSlugRoute
@@ -1613,6 +1631,7 @@ export interface FileRouteTypes {
     | '/nba/scores'
     | '/nba/standings'
     | '/nba/teams'
+    | '/news/$slug'
     | '/nhl/champions'
     | '/nhl/history'
     | '/nhl/leaders'
@@ -1628,6 +1647,7 @@ export interface FileRouteTypes {
     | '/mlb/'
     | '/mls/'
     | '/nba/'
+    | '/news/'
     | '/nhl/'
     | '/api/public/indexnow-auto'
     | '/api/public/indexnow-key.txt'
@@ -1778,6 +1798,7 @@ export interface FileRouteTypes {
     | '/nba/scores'
     | '/nba/standings'
     | '/nba/teams'
+    | '/news/$slug'
     | '/nhl/champions'
     | '/nhl/history'
     | '/nhl/leaders'
@@ -1793,6 +1814,7 @@ export interface FileRouteTypes {
     | '/mlb'
     | '/mls'
     | '/nba'
+    | '/news'
     | '/nhl'
     | '/api/public/indexnow-auto'
     | '/api/public/indexnow-key.txt'
@@ -1950,6 +1972,7 @@ export interface FileRouteTypes {
     | '/nba/scores'
     | '/nba/standings'
     | '/nba/teams'
+    | '/news/$slug'
     | '/nhl/champions'
     | '/nhl/history'
     | '/nhl/leaders'
@@ -1965,6 +1988,7 @@ export interface FileRouteTypes {
     | '/mlb/'
     | '/mls/'
     | '/nba/'
+    | '/news/'
     | '/nhl/'
     | '/api/public/indexnow-auto'
     | '/api/public/indexnow-key.txt'
@@ -2007,7 +2031,7 @@ export interface FileRouteTypes {
     | '/mlb/records/$category'
     | '/mlb/team-history/$slug'
     | '/mlb/team/$id'
-    | '/mlb/teams/$slug'
+    | '/mlb/teams_/$slug'
     | '/mlb/world-series/$year'
     | '/mls/cup/$year'
     | '/mls/game/$id'
@@ -2015,21 +2039,21 @@ export interface FileRouteTypes {
     | '/mls/players/$slug'
     | '/mls/team-history/$slug'
     | '/mls/team/$id'
-    | '/mls/teams/$slug'
+    | '/mls/teams_/$slug'
     | '/nba/finals/$year'
     | '/nba/game/$id'
     | '/nba/player/$id'
     | '/nba/players/$slug'
     | '/nba/team-history/$slug'
     | '/nba/team/$id'
-    | '/nba/teams/$slug'
+    | '/nba/teams_/$slug'
     | '/nhl/game/$id'
     | '/nhl/player/$id'
     | '/nhl/players/$slug'
     | '/nhl/stanley-cup/$year'
     | '/nhl/team-history/$slug'
     | '/nhl/team/$id'
-    | '/nhl/teams/$slug'
+    | '/nhl/teams_/$slug'
     | '/og/$type/$slug.svg'
     | '/player/$sport/$slug'
     | '/team/$sport/$slug'
@@ -2095,9 +2119,11 @@ export interface RootRouteChildren {
   HighlightsSlugRoute: typeof HighlightsSlugRoute
   LiveSportRoute: typeof LiveSportRoute
   LiveTodayRoute: typeof LiveTodayRoute
+  NewsSlugRoute: typeof NewsSlugRoute
   RobotsTxtRoute: typeof RobotsTxtRoute
   GuidesIndexRoute: typeof GuidesIndexRoute
   HighlightsIndexRoute: typeof HighlightsIndexRoute
+  NewsIndexRoute: typeof NewsIndexRoute
   ApiPublicIndexnowAutoRoute: typeof ApiPublicIndexnowAutoRoute
   ApiPublicIndexnowKeyDottxtRoute: typeof ApiPublicIndexnowKeyDottxtRoute
   ApiPublicIndexnowPingRoute: typeof ApiPublicIndexnowPingRoute
@@ -2299,6 +2325,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NhlIndexRouteImport
       parentRoute: typeof NhlRoute
     }
+    '/news/': {
+      id: '/news/'
+      path: '/news'
+      fullPath: '/news/'
+      preLoaderRoute: typeof NewsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/nba/': {
       id: '/nba/'
       path: '/'
@@ -2403,6 +2436,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/nhl/champions'
       preLoaderRoute: typeof NhlChampionsRouteImport
       parentRoute: typeof NhlRoute
+    }
+    '/news/$slug': {
+      id: '/news/$slug'
+      path: '/news/$slug'
+      fullPath: '/news/$slug'
+      preLoaderRoute: typeof NewsSlugRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/nba/teams': {
       id: '/nba/teams'
@@ -2754,12 +2794,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OgTypeSlugDotsvgRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/nhl/teams/$slug': {
-      id: '/nhl/teams/$slug'
-      path: '/$slug'
+    '/nhl/teams_/$slug': {
+      id: '/nhl/teams_/$slug'
+      path: '/teams/$slug'
       fullPath: '/nhl/teams/$slug'
       preLoaderRoute: typeof NhlTeamsSlugRouteImport
-      parentRoute: typeof NhlTeamsRoute
+      parentRoute: typeof NhlRoute
     }
     '/nhl/team/$id': {
       id: '/nhl/team/$id'
@@ -2803,12 +2843,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NhlGameIdRouteImport
       parentRoute: typeof NhlRoute
     }
-    '/nba/teams/$slug': {
-      id: '/nba/teams/$slug'
-      path: '/$slug'
+    '/nba/teams_/$slug': {
+      id: '/nba/teams_/$slug'
+      path: '/teams/$slug'
       fullPath: '/nba/teams/$slug'
       preLoaderRoute: typeof NbaTeamsSlugRouteImport
-      parentRoute: typeof NbaTeamsRoute
+      parentRoute: typeof NbaRoute
     }
     '/nba/team/$id': {
       id: '/nba/team/$id'
@@ -2852,12 +2892,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NbaFinalsYearRouteImport
       parentRoute: typeof NbaRoute
     }
-    '/mls/teams/$slug': {
-      id: '/mls/teams/$slug'
-      path: '/$slug'
+    '/mls/teams_/$slug': {
+      id: '/mls/teams_/$slug'
+      path: '/teams/$slug'
       fullPath: '/mls/teams/$slug'
       preLoaderRoute: typeof MlsTeamsSlugRouteImport
-      parentRoute: typeof MlsTeamsRoute
+      parentRoute: typeof MlsRoute
     }
     '/mls/team/$id': {
       id: '/mls/team/$id'
@@ -2908,12 +2948,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MlbWorldSeriesYearRouteImport
       parentRoute: typeof MlbRoute
     }
-    '/mlb/teams/$slug': {
-      id: '/mlb/teams/$slug'
-      path: '/$slug'
+    '/mlb/teams_/$slug': {
+      id: '/mlb/teams_/$slug'
+      path: '/teams/$slug'
       fullPath: '/mlb/teams/$slug'
       preLoaderRoute: typeof MlbTeamsSlugRouteImport
-      parentRoute: typeof MlbTeamsRoute
+      parentRoute: typeof MlbRoute
     }
     '/mlb/team/$id': {
       id: '/mlb/team/$id'
@@ -3533,18 +3573,6 @@ const MlbPlayersRouteWithChildren = MlbPlayersRoute._addFileChildren(
   MlbPlayersRouteChildren,
 )
 
-interface MlbTeamsRouteChildren {
-  MlbTeamsSlugRoute: typeof MlbTeamsSlugRoute
-}
-
-const MlbTeamsRouteChildren: MlbTeamsRouteChildren = {
-  MlbTeamsSlugRoute: MlbTeamsSlugRoute,
-}
-
-const MlbTeamsRouteWithChildren = MlbTeamsRoute._addFileChildren(
-  MlbTeamsRouteChildren,
-)
-
 interface MlbRouteChildren {
   MlbChampionsRoute: typeof MlbChampionsRoute
   MlbHistoryRoute: typeof MlbHistoryRoute
@@ -3553,13 +3581,14 @@ interface MlbRouteChildren {
   MlbPostseasonRoute: typeof MlbPostseasonRoute
   MlbScoresRoute: typeof MlbScoresRoute
   MlbStandingsRoute: typeof MlbStandingsRoute
-  MlbTeamsRoute: typeof MlbTeamsRouteWithChildren
+  MlbTeamsRoute: typeof MlbTeamsRoute
   MlbIndexRoute: typeof MlbIndexRoute
   MlbGameIdRoute: typeof MlbGameIdRoute
   MlbPlayerIdRoute: typeof MlbPlayerIdRoute
   MlbRecordsCategoryRoute: typeof MlbRecordsCategoryRoute
   MlbTeamHistorySlugRoute: typeof MlbTeamHistorySlugRoute
   MlbTeamIdRoute: typeof MlbTeamIdRoute
+  MlbTeamsSlugRoute: typeof MlbTeamsSlugRoute
   MlbWorldSeriesYearRoute: typeof MlbWorldSeriesYearRoute
 }
 
@@ -3571,29 +3600,18 @@ const MlbRouteChildren: MlbRouteChildren = {
   MlbPostseasonRoute: MlbPostseasonRoute,
   MlbScoresRoute: MlbScoresRoute,
   MlbStandingsRoute: MlbStandingsRoute,
-  MlbTeamsRoute: MlbTeamsRouteWithChildren,
+  MlbTeamsRoute: MlbTeamsRoute,
   MlbIndexRoute: MlbIndexRoute,
   MlbGameIdRoute: MlbGameIdRoute,
   MlbPlayerIdRoute: MlbPlayerIdRoute,
   MlbRecordsCategoryRoute: MlbRecordsCategoryRoute,
   MlbTeamHistorySlugRoute: MlbTeamHistorySlugRoute,
   MlbTeamIdRoute: MlbTeamIdRoute,
+  MlbTeamsSlugRoute: MlbTeamsSlugRoute,
   MlbWorldSeriesYearRoute: MlbWorldSeriesYearRoute,
 }
 
 const MlbRouteWithChildren = MlbRoute._addFileChildren(MlbRouteChildren)
-
-interface MlsTeamsRouteChildren {
-  MlsTeamsSlugRoute: typeof MlsTeamsSlugRoute
-}
-
-const MlsTeamsRouteChildren: MlsTeamsRouteChildren = {
-  MlsTeamsSlugRoute: MlsTeamsSlugRoute,
-}
-
-const MlsTeamsRouteWithChildren = MlsTeamsRoute._addFileChildren(
-  MlsTeamsRouteChildren,
-)
 
 interface MlsRouteChildren {
   MlsChampionsRoute: typeof MlsChampionsRoute
@@ -3602,7 +3620,7 @@ interface MlsRouteChildren {
   MlsNewsRoute: typeof MlsNewsRoute
   MlsScoresRoute: typeof MlsScoresRoute
   MlsStandingsRoute: typeof MlsStandingsRoute
-  MlsTeamsRoute: typeof MlsTeamsRouteWithChildren
+  MlsTeamsRoute: typeof MlsTeamsRoute
   MlsIndexRoute: typeof MlsIndexRoute
   MlsCupYearRoute: typeof MlsCupYearRoute
   MlsGameIdRoute: typeof MlsGameIdRoute
@@ -3610,6 +3628,7 @@ interface MlsRouteChildren {
   MlsPlayersSlugRoute: typeof MlsPlayersSlugRoute
   MlsTeamHistorySlugRoute: typeof MlsTeamHistorySlugRoute
   MlsTeamIdRoute: typeof MlsTeamIdRoute
+  MlsTeamsSlugRoute: typeof MlsTeamsSlugRoute
 }
 
 const MlsRouteChildren: MlsRouteChildren = {
@@ -3619,7 +3638,7 @@ const MlsRouteChildren: MlsRouteChildren = {
   MlsNewsRoute: MlsNewsRoute,
   MlsScoresRoute: MlsScoresRoute,
   MlsStandingsRoute: MlsStandingsRoute,
-  MlsTeamsRoute: MlsTeamsRouteWithChildren,
+  MlsTeamsRoute: MlsTeamsRoute,
   MlsIndexRoute: MlsIndexRoute,
   MlsCupYearRoute: MlsCupYearRoute,
   MlsGameIdRoute: MlsGameIdRoute,
@@ -3627,21 +3646,10 @@ const MlsRouteChildren: MlsRouteChildren = {
   MlsPlayersSlugRoute: MlsPlayersSlugRoute,
   MlsTeamHistorySlugRoute: MlsTeamHistorySlugRoute,
   MlsTeamIdRoute: MlsTeamIdRoute,
+  MlsTeamsSlugRoute: MlsTeamsSlugRoute,
 }
 
 const MlsRouteWithChildren = MlsRoute._addFileChildren(MlsRouteChildren)
-
-interface NbaTeamsRouteChildren {
-  NbaTeamsSlugRoute: typeof NbaTeamsSlugRoute
-}
-
-const NbaTeamsRouteChildren: NbaTeamsRouteChildren = {
-  NbaTeamsSlugRoute: NbaTeamsSlugRoute,
-}
-
-const NbaTeamsRouteWithChildren = NbaTeamsRoute._addFileChildren(
-  NbaTeamsRouteChildren,
-)
 
 interface NbaRouteChildren {
   NbaChampionsRoute: typeof NbaChampionsRoute
@@ -3650,7 +3658,7 @@ interface NbaRouteChildren {
   NbaNewsRoute: typeof NbaNewsRoute
   NbaScoresRoute: typeof NbaScoresRoute
   NbaStandingsRoute: typeof NbaStandingsRoute
-  NbaTeamsRoute: typeof NbaTeamsRouteWithChildren
+  NbaTeamsRoute: typeof NbaTeamsRoute
   NbaIndexRoute: typeof NbaIndexRoute
   NbaFinalsYearRoute: typeof NbaFinalsYearRoute
   NbaGameIdRoute: typeof NbaGameIdRoute
@@ -3658,6 +3666,7 @@ interface NbaRouteChildren {
   NbaPlayersSlugRoute: typeof NbaPlayersSlugRoute
   NbaTeamHistorySlugRoute: typeof NbaTeamHistorySlugRoute
   NbaTeamIdRoute: typeof NbaTeamIdRoute
+  NbaTeamsSlugRoute: typeof NbaTeamsSlugRoute
 }
 
 const NbaRouteChildren: NbaRouteChildren = {
@@ -3667,7 +3676,7 @@ const NbaRouteChildren: NbaRouteChildren = {
   NbaNewsRoute: NbaNewsRoute,
   NbaScoresRoute: NbaScoresRoute,
   NbaStandingsRoute: NbaStandingsRoute,
-  NbaTeamsRoute: NbaTeamsRouteWithChildren,
+  NbaTeamsRoute: NbaTeamsRoute,
   NbaIndexRoute: NbaIndexRoute,
   NbaFinalsYearRoute: NbaFinalsYearRoute,
   NbaGameIdRoute: NbaGameIdRoute,
@@ -3675,21 +3684,10 @@ const NbaRouteChildren: NbaRouteChildren = {
   NbaPlayersSlugRoute: NbaPlayersSlugRoute,
   NbaTeamHistorySlugRoute: NbaTeamHistorySlugRoute,
   NbaTeamIdRoute: NbaTeamIdRoute,
+  NbaTeamsSlugRoute: NbaTeamsSlugRoute,
 }
 
 const NbaRouteWithChildren = NbaRoute._addFileChildren(NbaRouteChildren)
-
-interface NhlTeamsRouteChildren {
-  NhlTeamsSlugRoute: typeof NhlTeamsSlugRoute
-}
-
-const NhlTeamsRouteChildren: NhlTeamsRouteChildren = {
-  NhlTeamsSlugRoute: NhlTeamsSlugRoute,
-}
-
-const NhlTeamsRouteWithChildren = NhlTeamsRoute._addFileChildren(
-  NhlTeamsRouteChildren,
-)
 
 interface NhlRouteChildren {
   NhlChampionsRoute: typeof NhlChampionsRoute
@@ -3698,7 +3696,7 @@ interface NhlRouteChildren {
   NhlNewsRoute: typeof NhlNewsRoute
   NhlScoresRoute: typeof NhlScoresRoute
   NhlStandingsRoute: typeof NhlStandingsRoute
-  NhlTeamsRoute: typeof NhlTeamsRouteWithChildren
+  NhlTeamsRoute: typeof NhlTeamsRoute
   NhlIndexRoute: typeof NhlIndexRoute
   NhlGameIdRoute: typeof NhlGameIdRoute
   NhlPlayerIdRoute: typeof NhlPlayerIdRoute
@@ -3706,6 +3704,7 @@ interface NhlRouteChildren {
   NhlStanleyCupYearRoute: typeof NhlStanleyCupYearRoute
   NhlTeamHistorySlugRoute: typeof NhlTeamHistorySlugRoute
   NhlTeamIdRoute: typeof NhlTeamIdRoute
+  NhlTeamsSlugRoute: typeof NhlTeamsSlugRoute
 }
 
 const NhlRouteChildren: NhlRouteChildren = {
@@ -3715,7 +3714,7 @@ const NhlRouteChildren: NhlRouteChildren = {
   NhlNewsRoute: NhlNewsRoute,
   NhlScoresRoute: NhlScoresRoute,
   NhlStandingsRoute: NhlStandingsRoute,
-  NhlTeamsRoute: NhlTeamsRouteWithChildren,
+  NhlTeamsRoute: NhlTeamsRoute,
   NhlIndexRoute: NhlIndexRoute,
   NhlGameIdRoute: NhlGameIdRoute,
   NhlPlayerIdRoute: NhlPlayerIdRoute,
@@ -3723,6 +3722,7 @@ const NhlRouteChildren: NhlRouteChildren = {
   NhlStanleyCupYearRoute: NhlStanleyCupYearRoute,
   NhlTeamHistorySlugRoute: NhlTeamHistorySlugRoute,
   NhlTeamIdRoute: NhlTeamIdRoute,
+  NhlTeamsSlugRoute: NhlTeamsSlugRoute,
 }
 
 const NhlRouteWithChildren = NhlRoute._addFileChildren(NhlRouteChildren)
@@ -3757,9 +3757,11 @@ const rootRouteChildren: RootRouteChildren = {
   HighlightsSlugRoute: HighlightsSlugRoute,
   LiveSportRoute: LiveSportRoute,
   LiveTodayRoute: LiveTodayRoute,
+  NewsSlugRoute: NewsSlugRoute,
   RobotsTxtRoute: RobotsTxtRoute,
   GuidesIndexRoute: GuidesIndexRoute,
   HighlightsIndexRoute: HighlightsIndexRoute,
+  NewsIndexRoute: NewsIndexRoute,
   ApiPublicIndexnowAutoRoute: ApiPublicIndexnowAutoRoute,
   ApiPublicIndexnowKeyDottxtRoute: ApiPublicIndexnowKeyDottxtRoute,
   ApiPublicIndexnowPingRoute: ApiPublicIndexnowPingRoute,

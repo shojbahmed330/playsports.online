@@ -1,3 +1,12 @@
+# Local environment / secrets
+.env
+.env.*
+!.env.example
+
+# Local agent scratch (ledger, briefs) and verification snapshots
+.superpowers/
+*.local.html
+
 # Logs
 logs
 *.log

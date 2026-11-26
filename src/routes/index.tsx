@@ -25,34 +25,31 @@ import { AffiliateStrip } from "@/components/affiliates/AffiliateStrip";
 import { CricketSlate } from "@/components/cricket/CricketSlate";
 import { getMultiCricketToday, type CricketMatch } from "@/lib/cricket.functions";
 import { CRICKET_LEAGUES } from "@/lib/cricket-leagues";
-import { HeroSpotlight } from "@/components/home/HeroSpotlight";
 import { PulseStrip } from "@/components/home/PulseStrip";
 import { SportCard, FifaCard, CricketCard } from "@/components/home/SportCard";
-import { SiteFooter } from "@/components/home/SiteFooter";
+import { LeagueCard } from "@/components/home/LeagueCard";
 import { PopularSearches } from "@/components/seo/PopularSearches";
-import { WatchLivePanel } from "@/components/wc/WatchLivePanel";
 import { TodayInZoneStrip } from "@/components/home/TodayInZoneStrip";
 import { HallOfChampionsStrip } from "@/components/home/HallOfChampionsStrip";
 import { NewsletterCard } from "@/components/site/NewsletterCard";
 
-const HOME_OG_IMAGE = "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/110e40cc-d990-48af-a996-8f46b9fd0f97/id-preview-f9e73043--3e33a21e-e132-4b69-83ee-be28f3bc4583.lovable.app-1782037338724.png";
+const SITE_TITLE = "PlaySports — Live Cricket & Football Scores, Stats & History";
+const HOME_DESCRIPTION =
+  "Live cricket and football scores, fixtures, tables and stats — internationals, IPL, Premier League, Champions League and more.";
+const HOME_OG_IMAGE = "https://www.playsports.online/og-default.png";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "PlaySports — Live Scores & FIFA World Cup Archive" },
-      {
-        name: "description",
-        content:
-          "Live MLB, NBA, NHL, MLS, Cricket & IPL scores, standings and stats — plus the complete FIFA World Cup archive 1930–2026.",
-      },
-      { property: "og:title", content: "PlaySports — Live Scores & FIFA World Cup Archive" },
-      { property: "og:description", content: "Live scores across MLB, NBA, NHL, MLS, Cricket, IPL + FIFA World Cup 1930–2026." },
+      { title: SITE_TITLE },
+      { name: "description", content: HOME_DESCRIPTION },
+      { property: "og:title", content: SITE_TITLE },
+      { property: "og:description", content: HOME_DESCRIPTION },
       { property: "og:url", content: "https://www.playsports.online/" },
       { property: "og:image", content: HOME_OG_IMAGE },
       { name: "twitter:image", content: HOME_OG_IMAGE },
-      { name: "twitter:title", content: "PlaySports — Live Scores & FIFA World Cup Archive" },
-      { name: "twitter:description", content: "Live MLB, NBA, NHL, MLS, Cricket & IPL scores plus FIFA World Cup 1930–2026." },
+      { name: "twitter:title", content: SITE_TITLE },
+      { name: "twitter:description", content: HOME_DESCRIPTION },
     ],
     links: [{ rel: "canonical", href: "https://www.playsports.online/" }],
   }),
@@ -189,10 +186,13 @@ function HubPage() {
   const showFootball = filter === "all" || filter === "football";
   const showCricket = filter === "all" || filter === "cricket";
   const showEspn = filter === "all" || espnSlugs.includes(filter);
+  const hasWcMatches = (wcQ.data?.fixtures ?? []).some(
+    (f) => f.status === "inprogress" || f.status === "notstarted",
+  );
 
   return (
     <div className="min-h-screen">
-      <SportNav liveCount={totalLive} />
+      <SportNav liveCount={totalLive + wcLiveCount + cricketLiveCount} />
       {mounted && <LiveTicker items={liveGames} />}
 
       {/* 1. COMPACT HERO — single most important match */}
@@ -252,15 +252,15 @@ function HubPage() {
           />
         )}
 
-        {/* FIFA SLATE */}
-        {showFootball && <FootballSlate />}
+        {/* FIFA SLATE — only when there are real upcoming/live matches */}
+        {showFootball && hasWcMatches && <FootballSlate />}
 
         {/* CRICKET SLATE */}
         {showCricket && <CricketSlate />}
 
         {/* UPCOMING TODAY (ESPN) — progressive disclosure */}
         {showEspn && (
-          liveQ.isLoading ? (
+          (!mounted && !liveQ.data) || liveQ.isLoading ? (
             <Section icon={<Clock className="size-5 text-amber-400" />} title="Loading today's slate…">
               <GameGridSkeleton />
             </Section>
@@ -310,6 +310,20 @@ function HubPage() {
               </div>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+              <LeagueCard
+                slug="premier-league"
+                name="Premier League"
+                emoji="🦁"
+                season="2026/27"
+                gradient="linear-gradient(135deg, #3b0764 0%, #0f172a 65%, #082f49 100%)"
+              />
+              <LeagueCard
+                slug="champions-league"
+                name="Champions League"
+                emoji="⭐"
+                season="2026/27"
+                gradient="linear-gradient(135deg, #172554 0%, #0f172a 65%, #1e1b4b 100%)"
+              />
               <FifaCard />
               <CricketCard />
               {SPORT_LIST.map((s) => {
@@ -342,12 +356,6 @@ function HubPage() {
         <NewsletterCard source="homepage" />
       </main>
 
-      {/* Floating Watch Live — lifted above the mobile tab bar */}
-      <div className="fixed bottom-[calc(env(safe-area-inset-bottom,0px)+5rem)] sm:bottom-4 right-3 sm:right-4 z-40 max-w-[15rem]">
-        <WatchLivePanel compact />
-      </div>
-
-      <SiteFooter />
     </div>
   );
 }

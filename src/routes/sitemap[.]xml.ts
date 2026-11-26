@@ -15,9 +15,9 @@ import {
 import { listMatchSlugs, listHighlights, WC2026_STAGES } from "@/lib/seo/entities";
 import { listLeaderboardUrls } from "@/lib/seo/leaderboards";
 import { listGuides } from "@/content/guides";
+import { listNewsRecaps } from "@/lib/news.server";
 import { KEYWORD_TARGETS, priorityFromVolume } from "@/lib/seo/keyword-map";
 import {
-  wc2026MatchUrls,
   iplTeamUrls,
 
   cricketSeriesUrls,
@@ -42,7 +42,7 @@ import {
 } from "@/lib/seo/sitemap-sources";
 
 const BASE_URL = "https://www.playsports.online";
-const BASE_SITEMAP_PARTS = ["core", "cricket", "us-sports", "hockey-soccer", "legacy"] as const;
+const BASE_SITEMAP_PARTS = ["core", "cricket", "us-sports", "hockey-soccer", "news", "legacy"] as const;
 const SITEMAP_CACHE_CONTROL = "no-cache, no-store, must-revalidate";
 // Keep football split into very small category files so Google Search Console
 // does not intermittently mark large generated football sitemaps as Unknown.
@@ -74,6 +74,7 @@ interface SitemapEntry {
 // their real data sources.
 const STATIC_ROUTES: SitemapEntry[] = [
   { path: "/", changefreq: "hourly", priority: "1.0" },
+  { path: "/news", changefreq: "daily", priority: "0.8" },
   { path: "/players", changefreq: "daily", priority: "0.8" },
 
   // Trust / info
@@ -89,13 +90,10 @@ const STATIC_ROUTES: SitemapEntry[] = [
   { path: "/football/players", changefreq: "weekly", priority: "0.8" },
   { path: "/football/countries", changefreq: "weekly", priority: "0.8" },
   { path: "/football/venues", changefreq: "monthly", priority: "0.7" },
-  { path: "/football/archives", changefreq: "monthly", priority: "0.6" },
-  { path: "/football/h2h", changefreq: "monthly", priority: "0.6" },
   { path: "/football/records/top-scorers-all-time", changefreq: "weekly", priority: "0.7" },
   { path: "/football/records/iconic-records", changefreq: "monthly", priority: "0.6" },
   { path: "/football/records/2026-tournament", changefreq: "daily", priority: "0.7" },
   { path: "/football/records/tournament-totals", changefreq: "monthly", priority: "0.6" },
-  { path: "/search", changefreq: "monthly", priority: "0.5" },
 
 
   // Cricket
@@ -266,7 +264,8 @@ function competitionSitemapEntries(): SitemapEntry[] {
 
 function footballMatchSitemapEntries(): SitemapEntry[] {
   return [
-    ...wc2026MatchUrls(),
+    // WC 2026 numeric match pages are retired from the sitemap until real
+    // ESPN event IDs and live data are available (see Phase 1).
     ...listMatchSlugs().map((m) => {
       // lastmod = page-modified date, NOT the match/event date.
       // Historical dates (e.g. 1930) are flagged "Invalid date" by Google.
@@ -421,6 +420,7 @@ function rootSitemapParts(): string[] {
     "cricket",
     "us-sports",
     "hockey-soccer",
+    "news",
     "legacy",
   ];
 }
@@ -539,6 +539,13 @@ async function entriesForPart(part: SitemapPart): Promise<SitemapEntry[]> {
         ...mlsProgrammaticUrls(),
       ];
     }
+    case "news":
+      return (await listNewsRecaps(1000)).map((article) => ({
+        path: `/news/${article.slug}`,
+        lastmod: article.updatedAt.slice(0, 10),
+        changefreq: "monthly" as const,
+        priority: "0.7",
+      }));
     case "legacy":
       return [
         // Legacy vs, highlights, and archive pages are included here.

@@ -19,6 +19,26 @@ const search = z.object({
 
 export const Route = createFileRoute("/cricket/series/")({
   validateSearch: zodValidator(search),
+  loader: async ({ context }) => {
+    // SSR the series hub so crawlers see the current tours, not an empty shell.
+    await Promise.all([
+      context.queryClient
+        .prefetchQuery({
+          queryKey: ["cricket", "series-list"],
+          queryFn: () => getCricketSeriesList(),
+          staleTime: 5 * 60_000,
+        })
+        .catch(() => null),
+      context.queryClient
+        .prefetchQuery({
+          queryKey: ["cricket", "bilateral-tours"],
+          queryFn: () => getBilateralSeriesList(),
+          staleTime: 5 * 60_000,
+        })
+        .catch(() => null),
+    ]);
+    return null;
+  },
   head: () => ({
     meta: [
       { title: "Cricket Series — IPL, BBL, World Cups & more" },
