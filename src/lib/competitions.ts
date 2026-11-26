@@ -36,6 +36,13 @@ export type Competition = {
   years: readonly number[];
   /** Which year to feature as "current" on the landing page. */
   currentSeason: number;
+  /**
+   * ESPN's season label for the current season (e.g. "2026/27"). ESPN's
+   * `season.year` for a European league is the start year, while older
+   * seasons in the registry are stored by end year. This override keeps the
+   * current page correct without relabelling history.
+   */
+  seasonLabel?: string;
   /** Governing body. */
   confederation: string;
   /** Optional one-liner shown under the hero title. */
@@ -128,6 +135,7 @@ export const COMPETITIONS: Competition[] = [
     ],
 
     currentSeason: 2026,
+    seasonLabel: "2026/27",
     confederation: "RFEF (Spain)",
     tagline: "Spanish top flight — El Clásico, Pichichi, and 90+ years of champions.",
     hero: {
@@ -136,6 +144,44 @@ export const COMPETITIONS: Competition[] = [
       titleAccent: "from-red-400 via-orange-300 to-amber-300",
       chipAccent: "bg-red-600 text-white",
       emoji: "🇪🇸",
+    },
+  },
+  {
+    slug: "premier-league",
+    name: "Premier League",
+    shortName: "Premier League",
+    espnLeague: "eng.1",
+    kind: "league",
+    years: [2026],
+    currentSeason: 2026,
+    seasonLabel: "2026/27",
+    confederation: "FA (England)",
+    tagline: "England's top flight — 20 clubs, 38 matchweeks, one title race.",
+    hero: {
+      gradient:
+        "radial-gradient(60% 80% at 50% 0%, oklch(0.62 0.22 300 / 0.30), transparent 60%), radial-gradient(45% 70% at 85% 100%, oklch(0.72 0.18 190 / 0.22), transparent 60%), radial-gradient(50% 80% at 15% 100%, oklch(0.55 0.20 260 / 0.18), transparent 60%)",
+      titleAccent: "from-fuchsia-300 via-purple-300 to-sky-300",
+      chipAccent: "bg-purple-600 text-white",
+      emoji: "🦁",
+    },
+  },
+  {
+    slug: "champions-league",
+    name: "UEFA Champions League",
+    shortName: "Champions League",
+    espnLeague: "uefa.champions",
+    kind: "league",
+    years: [2026],
+    currentSeason: 2026,
+    seasonLabel: "2026/27",
+    confederation: "UEFA",
+    tagline: "Europe's elite club competition — league phase to the final.",
+    hero: {
+      gradient:
+        "radial-gradient(60% 80% at 50% 0%, oklch(0.55 0.22 260 / 0.32), transparent 60%), radial-gradient(45% 70% at 85% 100%, oklch(0.75 0.12 240 / 0.22), transparent 60%), radial-gradient(50% 80% at 15% 100%, oklch(0.60 0.20 280 / 0.18), transparent 60%)",
+      titleAccent: "from-sky-300 via-blue-300 to-indigo-300",
+      chipAccent: "bg-blue-600 text-white",
+      emoji: "⭐",
     },
   },
 ];
@@ -154,6 +200,7 @@ export function requireCompetition(slug: string): Competition {
 
 /** Human-readable season label — "2024" for tournaments, "2024/25" for leagues. */
 export function formatSeasonLabel(comp: Competition, year: number): string {
+  if (comp.seasonLabel && year === comp.currentSeason) return comp.seasonLabel;
   if (comp.kind === "league") {
     const short = String(year).slice(-2);
     const prev = String(year - 1);

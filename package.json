@@ -12,7 +12,8 @@
     "format": "prettier --write .",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
-    "audit:static": "node scripts/audit-static.mjs"
+    "audit:static": "node scripts/audit-static.mjs",
+    "catalogue:cricket": "node scripts/generate-cricket-catalogue.mjs"
   },
   "dependencies": {
     "@fontsource-variable/sora": "^5.2.8",

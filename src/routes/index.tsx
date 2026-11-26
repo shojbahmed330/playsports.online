@@ -27,6 +27,7 @@ import { getMultiCricketToday, type CricketMatch } from "@/lib/cricket.functions
 import { CRICKET_LEAGUES } from "@/lib/cricket-leagues";
 import { PulseStrip } from "@/components/home/PulseStrip";
 import { SportCard, FifaCard, CricketCard } from "@/components/home/SportCard";
+import { LeagueCard } from "@/components/home/LeagueCard";
 import { PopularSearches } from "@/components/seo/PopularSearches";
 import { TodayInZoneStrip } from "@/components/home/TodayInZoneStrip";
 import { HallOfChampionsStrip } from "@/components/home/HallOfChampionsStrip";
@@ -309,6 +310,20 @@ function HubPage() {
               </div>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+              <LeagueCard
+                slug="premier-league"
+                name="Premier League"
+                emoji="🦁"
+                season="2026/27"
+                gradient="linear-gradient(135deg, #3b0764 0%, #0f172a 65%, #082f49 100%)"
+              />
+              <LeagueCard
+                slug="champions-league"
+                name="Champions League"
+                emoji="⭐"
+                season="2026/27"
+                gradient="linear-gradient(135deg, #172554 0%, #0f172a 65%, #1e1b4b 100%)"
+              />
               <FifaCard />
               <CricketCard />
               {SPORT_LIST.map((s) => {
