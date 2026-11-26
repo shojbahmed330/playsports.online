@@ -15,17 +15,22 @@ export function Countdown({
   className?: string;
   compact?: boolean;
 }) {
-  const [, setTick] = useState(0);
+  const [now, setNow] = useState<number | null>(null);
 
   useEffect(() => {
+    const tick = () => setNow(Date.now());
+    tick();
     const remaining = msUntil(ts);
     if (remaining <= 0) return;
     const interval = remaining < 60 * 60_000 ? 1000 : 30_000;
-    const id = window.setInterval(() => setTick((n) => n + 1), interval);
+    const id = window.setInterval(tick, interval);
     return () => window.clearInterval(id);
   }, [ts]);
 
-  const remaining = msUntil(ts);
+  // SSR and the first client render both show nothing; the countdown starts
+  // after mount so the server/client minute never disagrees.
+  if (now == null) return null;
+  const remaining = ts - now;
   if (remaining <= 0) return null;
   const urgent = remaining < 60 * 60_000;
 
