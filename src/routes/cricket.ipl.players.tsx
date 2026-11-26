@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, stripSearchParams } from "@tanstack/react-router";
 import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
 import { zodValidator } from "@tanstack/zod-adapter";
 import { z } from "zod";
@@ -39,6 +39,9 @@ const historyQO = queryOptions({
 });
 
 export const Route = createFileRoute("/cricket/ipl/players")({
+  search: {
+    middlewares: [stripSearchParams({ year: "current" })],
+  },
   head: () => ({
     meta: [
       { title: "IPL Players — Orange Cap, Purple Cap & Six-hitters" },

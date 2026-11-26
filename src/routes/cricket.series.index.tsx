@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, stripSearchParams } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useMemo } from "react";
@@ -19,6 +19,9 @@ const search = z.object({
 
 export const Route = createFileRoute("/cricket/series/")({
   validateSearch: zodValidator(search),
+  search: {
+    middlewares: [stripSearchParams({ fmt: "any", group: "any" })],
+  },
   loader: async ({ context }) => {
     // SSR the series hub so crawlers see the current tours, not an empty shell.
     await Promise.all([

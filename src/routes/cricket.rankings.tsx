@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, stripSearchParams } from "@tanstack/react-router";
 import { useState } from "react";
 import { zodValidator, fallback } from "@tanstack/zod-adapter";
 import { z } from "zod";
@@ -18,6 +18,9 @@ const search = z.object({
 
 export const Route = createFileRoute("/cricket/rankings")({
   validateSearch: zodValidator(search),
+  search: {
+    middlewares: [stripSearchParams({ cat: "teams", fmt: "t20i" })],
+  },
   head: () => ({
     meta: [
       { title: "ICC Cricket Rankings — Player & Team Rankings" },

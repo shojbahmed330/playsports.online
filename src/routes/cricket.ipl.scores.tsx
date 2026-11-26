@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, stripSearchParams } from "@tanstack/react-router";
 import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
 import { zodValidator } from "@tanstack/zod-adapter";
 import { z } from "zod";
@@ -41,6 +41,9 @@ export const Route = createFileRoute("/cricket/ipl/scores")({
     scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "Cricket", path: "/cricket" }, { name: "IPL", path: "/cricket/ipl" }, { name: "Scores", path: "/cricket/ipl/scores" }]))],
   }),
   validateSearch: zodValidator(searchSchema),
+  search: {
+    middlewares: [stripSearchParams({ year: "current", status: "all" })],
+  },
   loaderDeps: ({ search }) => ({ year: search.year }),
   loader: ({ context, deps }) => context.queryClient.ensureQueryData(qo(deps.year)),
   component: withHubLinks(ScoresPage, { sport: "ipl", currentPath: "/cricket/ipl/scores" }),
