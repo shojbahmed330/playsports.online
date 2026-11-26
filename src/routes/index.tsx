@@ -260,7 +260,7 @@ function HubPage() {
 
         {/* UPCOMING TODAY (ESPN) — progressive disclosure */}
         {showEspn && (
-          liveQ.isLoading ? (
+          (!mounted && !liveQ.data) || liveQ.isLoading ? (
             <Section icon={<Clock className="size-5 text-amber-400" />} title="Loading today's slate…">
               <GameGridSkeleton />
             </Section>

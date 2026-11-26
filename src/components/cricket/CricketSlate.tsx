@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { Link } from "@tanstack/react-router";
@@ -7,6 +8,8 @@ import { CRICKET_LEAGUES } from "@/lib/cricket-leagues";
 import { CricketMatchCard } from "@/components/cricket/CricketMatchCard";
 
 export function CricketSlate() {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
   const fn = useServerFn(getMultiCricketToday);
   const leagueIds = CRICKET_LEAGUES.map((l) => l.id);
   const q = useQuery({
@@ -24,6 +27,10 @@ export function CricketSlate() {
   const upcoming = matches.filter((m) => m.status === "pre").sort((a, b) => a.startTs - b.startTs).slice(0, 3);
   const recent = matches.filter((m) => m.status === "post").sort((a, b) => b.startTs - a.startTs).slice(0, 3);
   const pick = [...live, ...upcoming, ...recent].slice(0, 6);
+
+  // Keep the first client render identical to the server render. If the
+  // server had no prefetched slate, render nothing until mount, then fetch.
+  if (!mounted && !q.data) return null;
 
   if (q.isLoading) {
     return (
