@@ -18,7 +18,7 @@ export function LastUpdated({
       data-testid="last-updated"
     >
       {label}{" "}
-      <time dateTime={iso} itemProp="dateModified">
+      <time dateTime={iso} itemProp="dateModified" suppressHydrationWarning>
         {pretty}
       </time>
     </p>
