@@ -88,8 +88,6 @@ const STATIC_ROUTES: SitemapEntry[] = [
   { path: "/football/players", changefreq: "weekly", priority: "0.8" },
   { path: "/football/countries", changefreq: "weekly", priority: "0.8" },
   { path: "/football/venues", changefreq: "monthly", priority: "0.7" },
-  { path: "/football/archives", changefreq: "monthly", priority: "0.6" },
-  { path: "/football/h2h", changefreq: "monthly", priority: "0.6" },
   { path: "/football/records/top-scorers-all-time", changefreq: "weekly", priority: "0.7" },
   { path: "/football/records/iconic-records", changefreq: "monthly", priority: "0.6" },
   { path: "/football/records/2026-tournament", changefreq: "daily", priority: "0.7" },
