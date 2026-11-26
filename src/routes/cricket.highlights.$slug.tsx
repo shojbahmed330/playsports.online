@@ -10,12 +10,15 @@ import { canonical } from "@/lib/seo/canonical";
 import { breadcrumbList, videoObject, faqPage, ldScript, itemList } from "@/lib/seo/jsonld";
 import { SportNav } from "@/components/sports/SportNav";
 import { CricketSubNav } from "@/components/cricket/CricketSubNav";
+import { getRecapLinkForMatch } from "@/lib/news.server";
+import { MatchRecapCard } from "@/components/news/MatchRecapCard";
 
 export const Route = createFileRoute("/cricket/highlights/$slug")({
-  loader: ({ params }) => {
+  loader: async ({ params }) => {
     const h = getCricketHighlightBySlug(params.slug);
     if (!h) throw notFound();
-    return { highlight: h };
+    const recap = await getRecapLinkForMatch("cricket", params.slug);
+    return { highlight: h, recap };
   },
   head: ({ params, loaderData }) => {
     if (!loaderData) {
@@ -88,7 +91,7 @@ export const Route = createFileRoute("/cricket/highlights/$slug")({
 });
 
 function CricketHighlightPage() {
-  const { highlight: h } = Route.useLoaderData();
+  const { highlight: h, recap } = Route.useLoaderData();
   const related = listCricketHighlights()
     .filter(
       (x) =>
@@ -138,6 +141,8 @@ function CricketHighlightPage() {
             Search on YouTube
           </a>
         )}
+
+        {recap && <MatchRecapCard recap={recap} />}
 
         <section className="mt-6 grid sm:grid-cols-2 gap-3">
           {teamAHasProfile && (

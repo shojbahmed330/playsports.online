@@ -62,6 +62,20 @@ export function buildNewsRss(
   ].join("\n");
 }
 
+/**
+ * The entity page a recap belongs to. Only sports with a real match/highlight
+ * page get a link; other recaps stay on /news to avoid dead ends.
+ */
+export function recapMatchPath(
+  sport: string,
+  matchKey: string | null | undefined,
+): string | null {
+  if (!matchKey) return null;
+  if (sport === "football") return `/football/matches/${encodeURIComponent(matchKey)}`;
+  if (sport === "cricket") return `/cricket/highlights/${encodeURIComponent(matchKey)}`;
+  return null;
+}
+
 /** Other recaps for the article footer: same sport first, then newest. */
 export function pickRelatedNews(
   currentSlug: string,

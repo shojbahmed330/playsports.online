@@ -2,10 +2,10 @@ import { createFileRoute, notFound, Link } from "@tanstack/react-router";
 import { getMatchBySlug, findHighlightUrl } from "@/lib/seo/entities";
 import { slugify } from "@/lib/seo/programmatic";
 import { canonical } from "@/lib/seo/canonical";
-import { breadcrumbList, sportsEvent, faqPage, articlePage, ldScript } from "@/lib/seo/jsonld";
+import { breadcrumbList, sportsEvent, faqPage, ldScript } from "@/lib/seo/jsonld";
 import { AdSlot } from "@/components/ads/AdSlot";
-import { readMatchRecap } from "@/lib/match-recaps.server";
-import { MatchRecapArticle } from "@/components/seo/MatchRecapArticle";
+import { getRecapLinkForMatch } from "@/lib/news.server";
+import { MatchRecapCard } from "@/components/news/MatchRecapCard";
 import { relatedMatches } from "@/lib/seo/related";
 
 export const Route = createFileRoute("/football/matches/$slug")({
@@ -13,23 +13,19 @@ export const Route = createFileRoute("/football/matches/$slug")({
     const m = getMatchBySlug(params.slug);
     if (!m) throw notFound();
     const highlight = findHighlightUrl(m.home_team, m.away_team);
-    const recap = await readMatchRecap("football", params.slug);
+    const recap = await getRecapLinkForMatch("football", params.slug);
     return { match: m, highlight, recap };
   },
   head: ({ params, loaderData }) => {
     if (!loaderData) {
       return { meta: [{ title: "Match not found" }, { name: "robots", content: "noindex" }] };
     }
-    const { match: m, recap } = loaderData;
+    const { match: m } = loaderData;
     const path = `/football/matches/${params.slug}`;
     const winner =
       m.home_score > m.away_score ? m.home_team : m.away_score > m.home_score ? m.away_team : "Draw";
-    const title = recap?.headline
-      ? `${recap.headline} | PlaySports`
-      : `${m.home_team} ${m.home_score}–${m.away_score} ${m.away_team} — FIFA World Cup ${m.tournament_year} Match Result | PlaySports`;
-    const desc =
-      recap?.meta_description ??
-      `${m.home_team} vs ${m.away_team} at the ${m.tournament_year} FIFA World Cup${m.round ? ` (${m.round})` : ""}. Final score ${m.home_score}–${m.away_score}${m.stadium ? `, played at ${m.stadium}${m.city ? ", " + m.city : ""}` : ""}. ${winner === "Draw" ? "Match ended in a draw." : `${winner} won.`}`;
+    const title = `${m.home_team} ${m.home_score}–${m.away_score} ${m.away_team} — FIFA World Cup ${m.tournament_year} Match Result | PlaySports`;
+    const desc = `${m.home_team} vs ${m.away_team} at the ${m.tournament_year} FIFA World Cup${m.round ? ` (${m.round})` : ""}. Final score ${m.home_score}–${m.away_score}${m.stadium ? `, played at ${m.stadium}${m.city ? ", " + m.city : ""}` : ""}. ${winner === "Draw" ? "Match ended in a draw." : `${winner} won.`}`;
     return {
       meta: [
         { title },
@@ -68,22 +64,6 @@ export const Route = createFileRoute("/football/matches/$slug")({
             { q: `Where was ${m.home_team} vs ${m.away_team} played?`, a: m.stadium ? `The match was played at ${m.stadium}${m.city ? " in " + m.city : ""}.` : `Venue details for this match are not on record.` },
           ]),
         ),
-        ...(recap
-          ? [
-              ldScript(
-                articlePage({
-                  headline: recap.headline ?? `${m.home_team} ${m.home_score}–${m.away_score} ${m.away_team} — Match Report`,
-                  description: recap.meta_description ?? desc,
-                  path,
-                  datePublished: recap.updated_at ?? undefined,
-                  dateModified: recap.updated_at ?? undefined,
-                  articleSection: `FIFA World Cup ${m.tournament_year}`,
-                  keywords: [m.home_team, m.away_team, `World Cup ${m.tournament_year}`, "Match Report", "Football"],
-                  speakableSelectors: ["h1", "[data-speakable]"],
-                }),
-              ),
-            ]
-          : []),
       ],
 
     };
@@ -135,7 +115,7 @@ function MatchSlugPage() {
         </section>
       )}
 
-      {recap && <MatchRecapArticle recap={recap} />}
+      {recap && <MatchRecapCard recap={recap} />}
 
       <AdSlot slot="in_content" />
 
