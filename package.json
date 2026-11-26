@@ -13,6 +13,7 @@
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "audit:static": "node scripts/audit-static.mjs",
+    "audit:sitemap": "node scripts/audit-sitemap.mjs",
     "catalogue:cricket": "node scripts/generate-cricket-catalogue.mjs"
   },
   "dependencies": {

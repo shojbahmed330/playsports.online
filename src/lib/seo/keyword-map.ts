@@ -44,7 +44,6 @@ export const KEYWORD_TARGETS: KeywordTarget[] = [
   { keyword: "fifa world cup all time top scorers", url: "/tournaments/fifa-world-cup-all-time/top-scorers", volume: 30, kdi: 0, pattern: "tournament-leaderboard", intent: "informational", sport: "football" },
   { keyword: "fifa world cup 2022 top scorers", url: "/tournaments/fifa-world-cup-2022/top-scorers", volume: 200, kdi: 15, pattern: "tournament-leaderboard", intent: "informational", sport: "football" },
   { keyword: "fifa world cup 2018 top scorers", url: "/tournaments/fifa-world-cup-2018/top-scorers", volume: 150, kdi: 15, pattern: "tournament-leaderboard", intent: "informational", sport: "football" },
-  { keyword: "fifa world cup 2026 top scorers", url: "/tournaments/fifa-world-cup-2026/top-scorers", volume: 100, kdi: 30, pattern: "tournament-leaderboard", intent: "informational", sport: "football" },
   { keyword: "world cup 2022 yellow cards", url: "/tournaments/fifa-world-cup-2022/yellow-cards", volume: 90, kdi: 10, pattern: "tournament-leaderboard", intent: "informational", sport: "football" },
   { keyword: "world cup 2022 red cards", url: "/tournaments/fifa-world-cup-2022/red-cards", volume: 90, kdi: 10, pattern: "tournament-leaderboard", intent: "informational", sport: "football" },
   { keyword: "world cup 2018 red cards", url: "/tournaments/fifa-world-cup-2018/red-cards", volume: 50, kdi: 10, pattern: "tournament-leaderboard", intent: "informational", sport: "football" },
@@ -52,11 +51,6 @@ export const KEYWORD_TARGETS: KeywordTarget[] = [
   { keyword: "world cup all time red cards", url: "/tournaments/fifa-world-cup-all-time/red-cards", volume: 40, kdi: 10, pattern: "tournament-leaderboard", intent: "informational", sport: "football" },
 
   { keyword: "top scorers 2022 season", url: "/football/top-scorers/2022", volume: 320, kdi: 25, pattern: "season-landing", intent: "informational", sport: "football" },
-  { keyword: "top scorers 2023 season", url: "/football/top-scorers/2023", volume: 480, kdi: 25, pattern: "season-landing", intent: "informational", sport: "football" },
-  { keyword: "top scorers 2024 season", url: "/football/top-scorers/2024", volume: 720, kdi: 30, pattern: "season-landing", intent: "informational", sport: "football" },
-  { keyword: "top scorers 2025 season", url: "/football/top-scorers/2025", volume: 880, kdi: 30, pattern: "season-landing", intent: "informational", sport: "football" },
-  { keyword: "football tournaments 2024", url: "/football/tournaments/2024", volume: 260, kdi: 20, pattern: "season-landing", intent: "informational", sport: "football" },
-  { keyword: "football tournaments 2025", url: "/football/tournaments/2025", volume: 340, kdi: 20, pattern: "season-landing", intent: "informational", sport: "football" },
   { keyword: "football tournaments 2026", url: "/football/tournaments/2026", volume: 590, kdi: 30, pattern: "season-landing", intent: "informational", sport: "football" },
 
   { keyword: "today live football matches", url: "/live/football", volume: 60, kdi: 20, pattern: "live-hub", intent: "transactional", sport: "football" },
