@@ -44,6 +44,7 @@ const HUB_TABS: MobileTab[] = [
       p.startsWith("/search") ||
       p === "/mine",
     items: [
+      { to: "/news", label: "News", emoji: "📰" },
       { to: "/search", label: "Search", emoji: "🔎" },
       { to: "/mine", label: "My Feed", emoji: "⭐" },
       { to: "/football/world-cup", label: "World Cup", emoji: "🏆" },

@@ -73,6 +73,7 @@ export function SportNav({ liveCount = 0 }: { liveCount?: number }) {
           <HeaderLink to="/live/today" label="Live" pathname={pathname} />
           <HeaderLink to="/cricket" label="Cricket" pathname={pathname} />
           <HeaderLink to="/football" label="Football" pathname={pathname} />
+          <HeaderLink to="/news" label="News" pathname={pathname} />
           <HeaderLink to="/football/world-cup" label="World Cup" pathname={pathname} />
         </nav>
 

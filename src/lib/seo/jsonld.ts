@@ -214,6 +214,7 @@ export function articlePage(opts: {
   headline: string;
   description: string;
   path: string;
+  type?: "Article" | "NewsArticle";
   datePublished?: string;
   dateModified?: string;
   image?: string;
@@ -225,7 +226,7 @@ export function articlePage(opts: {
 }) {
   const node: Record<string, unknown> = {
     "@context": "https://schema.org",
-    "@type": "Article",
+    "@type": opts.type ?? "Article",
     headline: opts.headline.slice(0, 110),
     description: opts.description,
     mainEntityOfPage: { "@type": "WebPage", "@id": canonical(opts.path) },

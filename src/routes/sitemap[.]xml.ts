@@ -15,6 +15,7 @@ import {
 import { listMatchSlugs, listHighlights, WC2026_STAGES } from "@/lib/seo/entities";
 import { listLeaderboardUrls } from "@/lib/seo/leaderboards";
 import { listGuides } from "@/content/guides";
+import { listNewsRecaps } from "@/lib/news.server";
 import { KEYWORD_TARGETS, priorityFromVolume } from "@/lib/seo/keyword-map";
 import {
   iplTeamUrls,
@@ -41,7 +42,7 @@ import {
 } from "@/lib/seo/sitemap-sources";
 
 const BASE_URL = "https://www.playsports.online";
-const BASE_SITEMAP_PARTS = ["core", "cricket", "us-sports", "hockey-soccer", "legacy"] as const;
+const BASE_SITEMAP_PARTS = ["core", "cricket", "us-sports", "hockey-soccer", "news", "legacy"] as const;
 const SITEMAP_CACHE_CONTROL = "no-cache, no-store, must-revalidate";
 // Keep football split into very small category files so Google Search Console
 // does not intermittently mark large generated football sitemaps as Unknown.
@@ -73,6 +74,7 @@ interface SitemapEntry {
 // their real data sources.
 const STATIC_ROUTES: SitemapEntry[] = [
   { path: "/", changefreq: "hourly", priority: "1.0" },
+  { path: "/news", changefreq: "daily", priority: "0.8" },
   { path: "/players", changefreq: "daily", priority: "0.8" },
 
   // Trust / info
@@ -418,6 +420,7 @@ function rootSitemapParts(): string[] {
     "cricket",
     "us-sports",
     "hockey-soccer",
+    "news",
     "legacy",
   ];
 }
@@ -536,6 +539,13 @@ async function entriesForPart(part: SitemapPart): Promise<SitemapEntry[]> {
         ...mlsProgrammaticUrls(),
       ];
     }
+    case "news":
+      return (await listNewsRecaps(1000)).map((article) => ({
+        path: `/news/${article.slug}`,
+        lastmod: article.updatedAt.slice(0, 10),
+        changefreq: "monthly" as const,
+        priority: "0.7",
+      }));
     case "legacy":
       return [
         // Legacy vs, highlights, and archive pages are included here.

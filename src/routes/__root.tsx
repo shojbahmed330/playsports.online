@@ -140,11 +140,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "SiteNavigationElement",
-          name: ["Cricket", "Football", "Live", "MLB", "NBA", "NHL", "MLS"],
+          name: ["Cricket", "Football", "Live", "News", "MLB", "NBA", "NHL", "MLS"],
           url: [
             "https://www.playsports.online/cricket",
             "https://www.playsports.online/football",
             "https://www.playsports.online/live/today",
+            "https://www.playsports.online/news",
             "https://www.playsports.online/mlb",
             "https://www.playsports.online/nba",
             "https://www.playsports.online/nhl",

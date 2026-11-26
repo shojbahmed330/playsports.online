@@ -18,6 +18,7 @@ const SPORTS = [
 ] as const;
 
 const INFO = [
+  { to: "/news", label: "News & Recaps" },
   { to: "/about", label: "About Us" },
   { to: "/contact", label: "Contact" },
   { to: "/privacy", label: "Privacy Policy" },

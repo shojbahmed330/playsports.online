@@ -35,6 +35,7 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as KeyDottxtRouteImport } from './routes/$key[.]txt'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as NhlIndexRouteImport } from './routes/nhl.index'
+import { Route as NewsIndexRouteImport } from './routes/news.index'
 import { Route as NbaIndexRouteImport } from './routes/nba.index'
 import { Route as MlsIndexRouteImport } from './routes/mls.index'
 import { Route as MlbIndexRouteImport } from './routes/mlb.index'
@@ -50,6 +51,7 @@ import { Route as NhlNewsRouteImport } from './routes/nhl.news'
 import { Route as NhlLeadersRouteImport } from './routes/nhl.leaders'
 import { Route as NhlHistoryRouteImport } from './routes/nhl.history'
 import { Route as NhlChampionsRouteImport } from './routes/nhl.champions'
+import { Route as NewsSlugRouteImport } from './routes/news.$slug'
 import { Route as NbaTeamsRouteImport } from './routes/nba.teams'
 import { Route as NbaStandingsRouteImport } from './routes/nba.standings'
 import { Route as NbaScoresRouteImport } from './routes/nba.scores'
@@ -311,6 +313,11 @@ const NhlIndexRoute = NhlIndexRouteImport.update({
   path: '/',
   getParentRoute: () => NhlRoute,
 } as any)
+const NewsIndexRoute = NewsIndexRouteImport.update({
+  id: '/news/',
+  path: '/news/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const NbaIndexRoute = NbaIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -385,6 +392,11 @@ const NhlChampionsRoute = NhlChampionsRouteImport.update({
   id: '/champions',
   path: '/champions',
   getParentRoute: () => NhlRoute,
+} as any)
+const NewsSlugRoute = NewsSlugRouteImport.update({
+  id: '/news/$slug',
+  path: '/news/$slug',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const NbaTeamsRoute = NbaTeamsRouteImport.update({
   id: '/teams',
@@ -1101,6 +1113,7 @@ export interface FileRoutesByFullPath {
   '/nba/scores': typeof NbaScoresRoute
   '/nba/standings': typeof NbaStandingsRoute
   '/nba/teams': typeof NbaTeamsRoute
+  '/news/$slug': typeof NewsSlugRoute
   '/nhl/champions': typeof NhlChampionsRoute
   '/nhl/history': typeof NhlHistoryRoute
   '/nhl/leaders': typeof NhlLeadersRoute
@@ -1116,6 +1129,7 @@ export interface FileRoutesByFullPath {
   '/mlb/': typeof MlbIndexRoute
   '/mls/': typeof MlsIndexRoute
   '/nba/': typeof NbaIndexRoute
+  '/news/': typeof NewsIndexRoute
   '/nhl/': typeof NhlIndexRoute
   '/api/public/indexnow-auto': typeof ApiPublicIndexnowAutoRoute
   '/api/public/indexnow-key.txt': typeof ApiPublicIndexnowKeyDottxtRoute
@@ -1266,6 +1280,7 @@ export interface FileRoutesByTo {
   '/nba/scores': typeof NbaScoresRoute
   '/nba/standings': typeof NbaStandingsRoute
   '/nba/teams': typeof NbaTeamsRoute
+  '/news/$slug': typeof NewsSlugRoute
   '/nhl/champions': typeof NhlChampionsRoute
   '/nhl/history': typeof NhlHistoryRoute
   '/nhl/leaders': typeof NhlLeadersRoute
@@ -1281,6 +1296,7 @@ export interface FileRoutesByTo {
   '/mlb': typeof MlbIndexRoute
   '/mls': typeof MlsIndexRoute
   '/nba': typeof NbaIndexRoute
+  '/news': typeof NewsIndexRoute
   '/nhl': typeof NhlIndexRoute
   '/api/public/indexnow-auto': typeof ApiPublicIndexnowAutoRoute
   '/api/public/indexnow-key.txt': typeof ApiPublicIndexnowKeyDottxtRoute
@@ -1439,6 +1455,7 @@ export interface FileRoutesById {
   '/nba/scores': typeof NbaScoresRoute
   '/nba/standings': typeof NbaStandingsRoute
   '/nba/teams': typeof NbaTeamsRoute
+  '/news/$slug': typeof NewsSlugRoute
   '/nhl/champions': typeof NhlChampionsRoute
   '/nhl/history': typeof NhlHistoryRoute
   '/nhl/leaders': typeof NhlLeadersRoute
@@ -1454,6 +1471,7 @@ export interface FileRoutesById {
   '/mlb/': typeof MlbIndexRoute
   '/mls/': typeof MlsIndexRoute
   '/nba/': typeof NbaIndexRoute
+  '/news/': typeof NewsIndexRoute
   '/nhl/': typeof NhlIndexRoute
   '/api/public/indexnow-auto': typeof ApiPublicIndexnowAutoRoute
   '/api/public/indexnow-key.txt': typeof ApiPublicIndexnowKeyDottxtRoute
@@ -1613,6 +1631,7 @@ export interface FileRouteTypes {
     | '/nba/scores'
     | '/nba/standings'
     | '/nba/teams'
+    | '/news/$slug'
     | '/nhl/champions'
     | '/nhl/history'
     | '/nhl/leaders'
@@ -1628,6 +1647,7 @@ export interface FileRouteTypes {
     | '/mlb/'
     | '/mls/'
     | '/nba/'
+    | '/news/'
     | '/nhl/'
     | '/api/public/indexnow-auto'
     | '/api/public/indexnow-key.txt'
@@ -1778,6 +1798,7 @@ export interface FileRouteTypes {
     | '/nba/scores'
     | '/nba/standings'
     | '/nba/teams'
+    | '/news/$slug'
     | '/nhl/champions'
     | '/nhl/history'
     | '/nhl/leaders'
@@ -1793,6 +1814,7 @@ export interface FileRouteTypes {
     | '/mlb'
     | '/mls'
     | '/nba'
+    | '/news'
     | '/nhl'
     | '/api/public/indexnow-auto'
     | '/api/public/indexnow-key.txt'
@@ -1950,6 +1972,7 @@ export interface FileRouteTypes {
     | '/nba/scores'
     | '/nba/standings'
     | '/nba/teams'
+    | '/news/$slug'
     | '/nhl/champions'
     | '/nhl/history'
     | '/nhl/leaders'
@@ -1965,6 +1988,7 @@ export interface FileRouteTypes {
     | '/mlb/'
     | '/mls/'
     | '/nba/'
+    | '/news/'
     | '/nhl/'
     | '/api/public/indexnow-auto'
     | '/api/public/indexnow-key.txt'
@@ -2095,9 +2119,11 @@ export interface RootRouteChildren {
   HighlightsSlugRoute: typeof HighlightsSlugRoute
   LiveSportRoute: typeof LiveSportRoute
   LiveTodayRoute: typeof LiveTodayRoute
+  NewsSlugRoute: typeof NewsSlugRoute
   RobotsTxtRoute: typeof RobotsTxtRoute
   GuidesIndexRoute: typeof GuidesIndexRoute
   HighlightsIndexRoute: typeof HighlightsIndexRoute
+  NewsIndexRoute: typeof NewsIndexRoute
   ApiPublicIndexnowAutoRoute: typeof ApiPublicIndexnowAutoRoute
   ApiPublicIndexnowKeyDottxtRoute: typeof ApiPublicIndexnowKeyDottxtRoute
   ApiPublicIndexnowPingRoute: typeof ApiPublicIndexnowPingRoute
@@ -2299,6 +2325,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NhlIndexRouteImport
       parentRoute: typeof NhlRoute
     }
+    '/news/': {
+      id: '/news/'
+      path: '/news'
+      fullPath: '/news/'
+      preLoaderRoute: typeof NewsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/nba/': {
       id: '/nba/'
       path: '/'
@@ -2403,6 +2436,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/nhl/champions'
       preLoaderRoute: typeof NhlChampionsRouteImport
       parentRoute: typeof NhlRoute
+    }
+    '/news/$slug': {
+      id: '/news/$slug'
+      path: '/news/$slug'
+      fullPath: '/news/$slug'
+      preLoaderRoute: typeof NewsSlugRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/nba/teams': {
       id: '/nba/teams'
@@ -3717,9 +3757,11 @@ const rootRouteChildren: RootRouteChildren = {
   HighlightsSlugRoute: HighlightsSlugRoute,
   LiveSportRoute: LiveSportRoute,
   LiveTodayRoute: LiveTodayRoute,
+  NewsSlugRoute: NewsSlugRoute,
   RobotsTxtRoute: RobotsTxtRoute,
   GuidesIndexRoute: GuidesIndexRoute,
   HighlightsIndexRoute: HighlightsIndexRoute,
+  NewsIndexRoute: NewsIndexRoute,
   ApiPublicIndexnowAutoRoute: ApiPublicIndexnowAutoRoute,
   ApiPublicIndexnowKeyDottxtRoute: ApiPublicIndexnowKeyDottxtRoute,
   ApiPublicIndexnowPingRoute: ApiPublicIndexnowPingRoute,
