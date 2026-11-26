@@ -62,6 +62,17 @@ describe("site shell invariants", () => {
     expect(layout).toContain("return { meta: [] }");
   });
 
+  it("does not publish retired WC match numbers or the noindex search page in sitemaps", () => {
+    const sitemap = read("src/routes/sitemap[.]xml.ts");
+    expect(sitemap).not.toContain("wc2026MatchUrls()");
+    expect(sitemap).not.toContain('{ path: "/search"');
+  });
+
+  it("noindexes unavailable match pages instead of publishing a generic title", () => {
+    const matchPage = read("src/routes/football.match.$id.tsx");
+    expect(matchPage).toContain('name: "robots", content: "noindex, follow"');
+  });
+
   it("uses the PlaySports brand everywhere", () => {
     const offenders = walk("src")
       .filter((file) => /\.(tsx?|css)$/.test(file))

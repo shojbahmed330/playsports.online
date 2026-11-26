@@ -17,7 +17,6 @@ import { listLeaderboardUrls } from "@/lib/seo/leaderboards";
 import { listGuides } from "@/content/guides";
 import { KEYWORD_TARGETS, priorityFromVolume } from "@/lib/seo/keyword-map";
 import {
-  wc2026MatchUrls,
   iplTeamUrls,
 
   cricketSeriesUrls,
@@ -95,7 +94,6 @@ const STATIC_ROUTES: SitemapEntry[] = [
   { path: "/football/records/iconic-records", changefreq: "monthly", priority: "0.6" },
   { path: "/football/records/2026-tournament", changefreq: "daily", priority: "0.7" },
   { path: "/football/records/tournament-totals", changefreq: "monthly", priority: "0.6" },
-  { path: "/search", changefreq: "monthly", priority: "0.5" },
 
 
   // Cricket
@@ -266,7 +264,8 @@ function competitionSitemapEntries(): SitemapEntry[] {
 
 function footballMatchSitemapEntries(): SitemapEntry[] {
   return [
-    ...wc2026MatchUrls(),
+    // WC 2026 numeric match pages are retired from the sitemap until real
+    // ESPN event IDs and live data are available (see Phase 1).
     ...listMatchSlugs().map((m) => {
       // lastmod = page-modified date, NOT the match/event date.
       // Historical dates (e.g. 1930) are flagged "Invalid date" by Google.

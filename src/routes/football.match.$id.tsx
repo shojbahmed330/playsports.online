@@ -41,7 +41,21 @@ export const Route = createFileRoute("/football/match/$id")({
   head: ({ params, loaderData }) => {
     const fx = loaderData?.fixture;
     const url = `https://www.playsports.online/football/match/${params.id}`;
-    const matchup = fx ? `${fx.home.name} vs ${fx.away.name}` : "FIFA World Cup 2026 Match";
+    if (!fx) {
+      return {
+        meta: [
+          { title: "Match unavailable — PlaySports" },
+          {
+            name: "description",
+            content:
+              "This match page is unavailable. Browse the World Cup 2026 archive or today's football fixtures.",
+          },
+          { name: "robots", content: "noindex, follow" },
+        ],
+        links: [{ rel: "canonical", href: url }],
+      };
+    }
+    const matchup = `${fx.home.name} vs ${fx.away.name}`;
     const title = fx
       ? `${matchup} — FIFA World Cup 2026 Live Score & Lineups`
       : "FIFA World Cup 2026 Match — Live Score & Lineups";
@@ -147,8 +161,26 @@ function MatchPage() {
           </div>
         )}
         {q.data?.error && !q.data.fixture && (
-          <div className="rounded-xl border border-red-500/40 bg-red-500/10 p-4 text-sm text-red-200">
-            Match unavailable: {q.data.error}
+          <div className="rounded-xl border border-white/10 bg-gray-900/60 p-5 text-center">
+            <h2 className="text-base font-bold text-white">Match unavailable</h2>
+            <p className="mt-1.5 text-sm text-gray-400">
+              We couldn&apos;t load this match from the feed. It may have been removed or the
+              tournament archive may not include it yet.
+            </p>
+            <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
+              <Link
+                to="/football/world-cup"
+                className="rounded-full bg-amber-500 px-3 py-1.5 text-xs font-bold text-gray-950 hover:bg-amber-400"
+              >
+                World Cup archive
+              </Link>
+              <Link
+                to="/live/football"
+                className="rounded-full border border-white/15 px-3 py-1.5 text-xs font-semibold text-gray-200 hover:bg-white/10"
+              >
+                Today&apos;s football
+              </Link>
+            </div>
           </div>
         )}
         {fx && (

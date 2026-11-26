@@ -71,6 +71,20 @@ const RANKINGS = rankingsData as { teams: Record<"t20i" | "odi" | "test", RankRo
 // --------------- Records ---------------
 const RECORDS = recordsData as { updatedAt: string; categories: CricketRecordCategory[] };
 
+// Some record rows use a team name or "Multiple" in the player column. Those
+// are not player entities and must never become /cricket/players/* pages.
+const NON_PLAYER_NAMES = new Set<string>(["multiple"]);
+for (const rows of Object.values(RANKINGS.teams)) {
+  for (const row of rows) NON_PLAYER_NAMES.add(row.team.trim().toLowerCase());
+}
+for (const franchise of iplFranchisesData) {
+  NON_PLAYER_NAMES.add(franchise.name.trim().toLowerCase());
+}
+function isNonPlayerName(name: string): boolean {
+  const normalized = name.trim().toLowerCase();
+  return !normalized || NON_PLAYER_NAMES.has(normalized);
+}
+
 // --------------- IPL franchises ---------------
 type Franchise = {
   id: string;
@@ -218,6 +232,7 @@ function buildPlayers(): CricketPlayerEntity[] {
   // From cricket records (international)
   for (const cat of RECORDS.categories) {
     for (const row of cat.rows) {
+      if (isNonPlayerName(row.player)) continue;
       const slug = slugify(row.player);
       const existing = map.get(slug) ?? {
         slug,
@@ -242,6 +257,7 @@ function buildPlayers(): CricketPlayerEntity[] {
     if (!block) continue;
     const tName = block.label;
     for (const r of block.topRuns ?? []) {
+      if (isNonPlayerName(r.player)) continue;
       const slug = slugify(r.player);
       const existing = map.get(slug) ?? {
         slug,
@@ -260,6 +276,7 @@ function buildPlayers(): CricketPlayerEntity[] {
       void tournamentSlug;
     }
     for (const w of block.topWickets ?? []) {
+      if (isNonPlayerName(w.player)) continue;
       const slug = slugify(w.player);
       const existing = map.get(slug) ?? {
         slug,
@@ -283,6 +300,7 @@ function buildPlayers(): CricketPlayerEntity[] {
     if (group === "team") continue;
     for (const r of rows) {
       if (!r.player || r.player.includes(",") || r.player.includes("&")) continue; // skip partnership pairs
+      if (isNonPlayerName(r.player)) continue;
       const slug = slugify(r.player);
       const existing = map.get(slug) ?? {
         slug,
