@@ -10,7 +10,7 @@ import { MobileTabBar, type MobileTab } from "./MobileTabBar";
  *
  * To add a new section:
  *   1. Add a case to `pickTabs(pathname)` below.
- *   2. Return `{ tabs, accent }` — `tabs` is exactly 4 MobileTab entries.
+ *   2. Return `{ tabs, accent }` — 4–5 MobileTab entries.
  *   3. Pick an accent: "amber" | "emerald" | "sky" | "fuchsia".
  * The fixed bottom bar will appear on every matching route automatically.
  *
@@ -23,14 +23,30 @@ type Picked = { tabs: MobileTab[]; accent: Accent } | null;
 
 // ---------- HUB / ROOT ----------
 const HUB_TABS: MobileTab[] = [
-  { to: "/",         label: "Home",     Icon: Home,    match: (p) => p === "/" },
-  { to: "/football", label: "Football", Icon: Goal,    match: (p) => p.startsWith("/football") || p.startsWith("/players") },
-  { to: "/cricket",  label: "Cricket",  Icon: Activity,match: (p) => p.startsWith("/cricket") },
+  { to: "/", label: "Home", Icon: Home, match: (p) => p === "/" },
+  { to: "/live/today", label: "Live", Icon: Activity, match: (p) => p.startsWith("/live") },
+  { to: "/cricket", label: "Cricket", Icon: Activity, match: (p) => p.startsWith("/cricket") },
   {
-    to: "/mlb", label: "Other Sports", Icon: Flame,
-    match: (p) => p.startsWith("/mlb") || p.startsWith("/nba") || p.startsWith("/nhl") || p.startsWith("/mls") || p === "/mine",
+    to: "/football",
+    label: "Football",
+    Icon: Goal,
+    match: (p) => p.startsWith("/football") || p.startsWith("/players"),
+  },
+  {
+    to: "/search",
+    label: "More",
+    Icon: Flame,
+    match: (p) =>
+      p.startsWith("/mlb") ||
+      p.startsWith("/nba") ||
+      p.startsWith("/nhl") ||
+      p.startsWith("/mls") ||
+      p.startsWith("/search") ||
+      p === "/mine",
     items: [
+      { to: "/search", label: "Search", emoji: "🔎" },
       { to: "/mine", label: "My Feed", emoji: "⭐" },
+      { to: "/football/world-cup", label: "World Cup", emoji: "🏆" },
       { to: "/mlb", label: "MLB", emoji: "⚾" },
       { to: "/nba", label: "NBA", emoji: "🏀" },
       { to: "/nhl", label: "NHL", emoji: "🏒" },
@@ -52,11 +68,8 @@ const FOOTBALL_TABS: MobileTab[] = [
     match: (p, s) => p === "/football" && (s.filter as string) === "today",
   },
   {
-    to: "/football", label: "Bracket", Icon: Swords,
-    search: { tab: "knockout" },
-    match: (p, s) =>
-      p.startsWith("/football/match") ||
-      (p === "/football" && (!s.tab || s.tab === "knockout") && (s.filter ?? "all") !== "live" && (s.filter ?? "all") !== "today"),
+    to: "/football/world-cup", label: "Archive", Icon: Swords,
+    match: (p) => p.startsWith("/football/world-cup") || p.startsWith("/football/match"),
   },
   {
     to: "/players", label: "Scorers", Icon: Trophy,

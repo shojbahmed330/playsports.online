@@ -404,10 +404,6 @@ function PlayersPage() {
         <AdSlot slot="in_content" layout="in-article" />
       </main>
 
-      <footer className="border-t border-border mt-10 py-8 text-center text-xs text-muted-foreground">
-        Player data: jfjelstul/worldcup (1930–2022) · Live 2026 goals/cards from ESPN match events
-      </footer>
-
       <PlayerProfileSheet />
     </div>
   );

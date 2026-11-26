@@ -23,7 +23,7 @@ export function SportChipTabs({
   counts?: Partial<Record<SportFilter, number>>;
 }) {
   return (
-    <div className="sticky top-0 z-30 border-b border-white/5 bg-gray-950/90 backdrop-blur supports-[backdrop-filter]:bg-gray-950/70">
+    <div className="sticky top-14 sm:top-16 z-20 border-b border-white/5 bg-gray-950/90 backdrop-blur supports-[backdrop-filter]:bg-gray-950/70">
       <div className="max-w-6xl mx-auto px-2 sm:px-4">
         <div
           role="tablist"

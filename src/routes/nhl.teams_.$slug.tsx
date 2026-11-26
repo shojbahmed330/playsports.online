@@ -5,7 +5,7 @@ import { getNhlTeamBySlug, listNhlTeams } from "@/lib/seo/nhl-entities";
 import { breadcrumbList, faqPage, ldScript, sportsTeam } from "@/lib/seo/jsonld";
 import { canonical } from "@/lib/seo/canonical";
 
-export const Route = createFileRoute("/nhl/teams/$slug")({
+export const Route = createFileRoute("/nhl/teams_/$slug")({
   loader: ({ params }) => {
     const team = getNhlTeamBySlug(params.slug);
     if (!team) throw notFound();

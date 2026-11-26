@@ -5,7 +5,7 @@ import { getMlsTeamBySlug, listMlsTeams } from "@/lib/seo/mls-entities";
 import { breadcrumbList, faqPage, ldScript, sportsTeam } from "@/lib/seo/jsonld";
 import { canonical } from "@/lib/seo/canonical";
 
-export const Route = createFileRoute("/mls/teams/$slug")({
+export const Route = createFileRoute("/mls/teams_/$slug")({
   loader: ({ params }) => {
     const team = getMlsTeamBySlug(params.slug);
     if (!team) throw notFound();

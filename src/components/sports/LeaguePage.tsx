@@ -206,10 +206,6 @@ export function LeaguePage({ sport }: { sport: SportConfig }) {
 
         <AffiliateStrip placement="homepage" sport={sport.slug} heading={`${sport.label} fan shop & partners`} />
       </main>
-
-      <footer className="border-t border-border mt-10 py-8 text-center text-xs text-muted-foreground">
-        Data from ESPN's public sports feed · Auto-refreshes while games are live
-      </footer>
     </div>
   );
 }

@@ -45,7 +45,7 @@ const teamVariants = (t: string) => TEAM_ALIASES[t] ?? [t];
 export const Route = createFileRoute("/admin")({
   head: () => ({
     meta: [
-      { title: "Admin — FIFA World Cup Archive" },
+      { title: "Admin — PlaySports" },
       { name: "robots", content: "noindex" },
     ],
   }),

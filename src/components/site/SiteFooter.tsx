@@ -5,7 +5,6 @@ import { Loader2, Check } from "lucide-react";
 import { toast } from "sonner";
 import { useIdentitySettings, useNewsletterSettings } from "@/lib/site-settings";
 import { subscribeNewsletter } from "@/lib/subscribe.functions";
-import { FooterInternalLinks } from "@/components/seo/FooterInternalLinks";
 
 const SPORTS = [
   { to: "/football", label: "Football", search: undefined as Record<string, unknown> | undefined },
@@ -48,8 +47,6 @@ export function SiteFooter() {
           </button>
         </form>
       </div>
-      <FooterInternalLinks />
-
       <div className="mx-auto w-full max-w-7xl bg-card/40 text-muted-foreground rounded-2xl overflow-hidden border border-border shadow-2xl">
 
         {/* Affiliate strip */}
@@ -67,11 +64,11 @@ export function SiteFooter() {
             <div className="space-y-6">
               <div>
                 <h2 className="text-2xl font-black italic text-foreground tracking-tighter uppercase">
-                  AllSports<span className="text-indigo-500">Live</span>
+                  Play<span className="text-indigo-500">Sports</span>
                 </h2>
                 <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                   {id?.tagline ??
-                    "Your 24/7 stadium companion. Real-time scores, deep analytics, and global coverage for every major league."}
+                    "Live cricket and football scores, tables, stats and match history — fast, accurate, no clutter."}
                 </p>
               </div>
               <NewsletterInline />

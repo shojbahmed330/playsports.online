@@ -5,7 +5,7 @@ import { getNbaTeamBySlug, listNbaTeams } from "@/lib/seo/nba-entities";
 import { breadcrumbList, faqPage, ldScript, sportsTeam } from "@/lib/seo/jsonld";
 import { canonical } from "@/lib/seo/canonical";
 
-export const Route = createFileRoute("/nba/teams/$slug")({
+export const Route = createFileRoute("/nba/teams_/$slug")({
   loader: ({ params }) => {
     const team = getNbaTeamBySlug(params.slug);
     if (!team) throw notFound();

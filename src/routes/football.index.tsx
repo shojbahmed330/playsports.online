@@ -28,7 +28,6 @@ import { BackToTopFab } from "@/components/football/BackToTopFab";
 import { FootballHubSwitcher } from "@/components/football/FootballHubSwitcher";
 import { useWc2026Pulse } from "@/lib/use-wc2026-pulse";
 import { applyFilter, uniqueTeams, useMyTeams, type FootballFilter } from "@/lib/football-filters";
-import { SiteFooter } from "@/components/home/SiteFooter";
 import { Breadcrumbs } from "@/components/nav/Breadcrumbs";
 import { breadcrumbList, collectionPage, sportsOrganization, faqPage, ldScript } from "@/lib/seo/jsonld";
 import { getWc2026Fixtures, getWc2026Standings } from "@/lib/wc2026.functions";
@@ -530,9 +529,6 @@ function Index() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 -mt-4 mb-6 flex justify-center">
         <ReplayTourButton onReplay={() => setReplayTour((n) => n + 1)} />
       </div>
-
-      <SiteFooter />
-
 
       <MatchModal match={activeMatch} onClose={() => setActiveMatch(null)} />
 

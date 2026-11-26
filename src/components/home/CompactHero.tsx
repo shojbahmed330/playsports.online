@@ -11,7 +11,8 @@ type Tagged = { sport: SportConfig; game: SportGame };
 
 /**
  * Compact, single-feature hero: picks the most important match right now.
- * Priority: WC2026 live → ESPN live → WC2026 upcoming → ESPN upcoming.
+ * Priority: live ESPN match → live World Cup match → upcoming ESPN → upcoming World Cup.
+ * The site is now-first: never lead with an empty/archived tournament.
  */
 export function CompactHero({
   liveGames,
@@ -22,19 +23,16 @@ export function CompactHero({
   upcomingGames: Tagged[];
   wcFeatured: Wc2026Fixture | null;
 }) {
-  // Prefer a LIVE WC2026 match
+  const live = liveGames[0];
+  if (live) return <EspnHero t={live} live />;
   if (wcFeatured && wcFeatured.status === "inprogress") {
     return <WcHero f={wcFeatured} live />;
   }
-  // Then ESPN live (first one)
-  const live = liveGames[0];
-  if (live) return <EspnHero t={live} live />;
-  // Then WC2026 upcoming
-  if (wcFeatured) return <WcHero f={wcFeatured} live={false} />;
-  // Then ESPN upcoming
   const next = upcomingGames[0];
   if (next) return <EspnHero t={next} live={false} />;
-  // Empty state
+  if (wcFeatured && wcFeatured.status === "notstarted") {
+    return <WcHero f={wcFeatured} live={false} />;
+  }
   return <EmptyHero />;
 }
 
@@ -203,9 +201,24 @@ function EmptyHero() {
     <section className="relative overflow-hidden border-b border-white/10 bg-gradient-to-br from-gray-900 via-gray-950 to-gray-900">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12 text-center">
         <Flame className="size-8 mx-auto text-gray-600 mb-3" />
-        <h1 className="text-xl sm:text-2xl font-extrabold">PlaySports — Live Scores & Sports Hub</h1>
-        <p className="text-sm text-gray-400 mt-1">No live matches right now — browse today's full slate below</p>
-
+        <h1 className="text-xl sm:text-2xl font-extrabold">Live Cricket &amp; Football Scores</h1>
+        <p className="text-sm text-gray-400 mt-1">
+          No live matches right now — today&apos;s fixtures are below.
+        </p>
+        <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
+          <Link
+            to="/cricket"
+            className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/15 px-3 py-1.5 text-xs font-bold text-emerald-200 ring-1 ring-emerald-500/30 hover:bg-emerald-500/25"
+          >
+            Cricket scores <ArrowRight className="size-3" />
+          </Link>
+          <Link
+            to="/football"
+            className="inline-flex items-center gap-1.5 rounded-full bg-sky-500/15 px-3 py-1.5 text-xs font-bold text-sky-200 ring-1 ring-sky-500/30 hover:bg-sky-500/25"
+          >
+            Football scores <ArrowRight className="size-3" />
+          </Link>
+        </div>
       </div>
     </section>
   );
