@@ -9,192 +9,282 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as UnsubscribeRouteImport } from './routes/unsubscribe'
-import { Route as TermsRouteImport } from './routes/terms'
-import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
-import { Route as SitemapChar123partChar125DotxmlRouteImport } from './routes/sitemap-{$part}[.]xml'
-import { Route as SearchRouteImport } from './routes/search'
-import { Route as PrivacyRouteImport } from './routes/privacy'
-import { Route as PremiumRouteImport } from './routes/premium'
-import { Route as PlayersRouteImport } from './routes/players'
-import { Route as NhlRouteImport } from './routes/nhl'
-import { Route as NbaRouteImport } from './routes/nba'
-import { Route as MlsRouteImport } from './routes/mls'
-import { Route as MlbRouteImport } from './routes/mlb'
-import { Route as MineRouteImport } from './routes/mine'
-import { Route as FootballRouteImport } from './routes/football'
-import { Route as FeedDotxmlRouteImport } from './routes/feed[.]xml'
-import { Route as DisclaimerRouteImport } from './routes/disclaimer'
-import { Route as CricketRouteImport } from './routes/cricket'
-import { Route as CookiesRouteImport } from './routes/cookies'
-import { Route as ContactRouteImport } from './routes/contact'
-import { Route as AuthRouteImport } from './routes/auth'
-import { Route as AdsDottxtRouteImport } from './routes/ads[.]txt'
-import { Route as AdminRouteImport } from './routes/admin'
-import { Route as AboutRouteImport } from './routes/about'
-import { Route as KeyDottxtRouteImport } from './routes/$key[.]txt'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as NhlIndexRouteImport } from './routes/nhl.index'
-import { Route as NewsIndexRouteImport } from './routes/news.index'
-import { Route as NbaIndexRouteImport } from './routes/nba.index'
-import { Route as MlsIndexRouteImport } from './routes/mls.index'
-import { Route as MlbIndexRouteImport } from './routes/mlb.index'
-import { Route as HighlightsIndexRouteImport } from './routes/highlights.index'
-import { Route as GuidesIndexRouteImport } from './routes/guides.index'
-import { Route as FootballIndexRouteImport } from './routes/football.index'
+import { Route as KeyDottxtRouteImport } from './routes/$key[.]txt'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AdsDottxtRouteImport } from './routes/ads[.]txt'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as CookiesRouteImport } from './routes/cookies'
+import { Route as CricketRouteImport } from './routes/cricket'
+import { Route as DisclaimerRouteImport } from './routes/disclaimer'
+import { Route as FeedDotxmlRouteImport } from './routes/feed[.]xml'
+import { Route as FootballRouteImport } from './routes/football'
+import { Route as MineRouteImport } from './routes/mine'
+import { Route as MlbRouteImport } from './routes/mlb'
+import { Route as MlsRouteImport } from './routes/mls'
+import { Route as NbaRouteImport } from './routes/nba'
+import { Route as NhlRouteImport } from './routes/nhl'
+import { Route as PlayersRouteImport } from './routes/players'
+import { Route as PremiumRouteImport } from './routes/premium'
+import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as SearchRouteImport } from './routes/search'
+import { Route as SitemapChar123partChar125DotxmlRouteImport } from './routes/sitemap-{$part}[.]xml'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as TermsRouteImport } from './routes/terms'
+import { Route as UnsubscribeRouteImport } from './routes/unsubscribe'
 import { Route as CricketIndexRouteImport } from './routes/cricket.index'
-import { Route as RobotsTxtRouteImport } from './routes/robots.txt'
-import { Route as NhlTeamsRouteImport } from './routes/nhl.teams'
-import { Route as NhlStandingsRouteImport } from './routes/nhl.standings'
-import { Route as NhlScoresRouteImport } from './routes/nhl.scores'
-import { Route as NhlNewsRouteImport } from './routes/nhl.news'
-import { Route as NhlLeadersRouteImport } from './routes/nhl.leaders'
-import { Route as NhlHistoryRouteImport } from './routes/nhl.history'
-import { Route as NhlChampionsRouteImport } from './routes/nhl.champions'
-import { Route as NewsSlugRouteImport } from './routes/news.$slug'
-import { Route as NbaTeamsRouteImport } from './routes/nba.teams'
-import { Route as NbaStandingsRouteImport } from './routes/nba.standings'
-import { Route as NbaScoresRouteImport } from './routes/nba.scores'
-import { Route as NbaNewsRouteImport } from './routes/nba.news'
-import { Route as NbaLeadersRouteImport } from './routes/nba.leaders'
-import { Route as NbaHistoryRouteImport } from './routes/nba.history'
-import { Route as NbaChampionsRouteImport } from './routes/nba.champions'
-import { Route as MlsTeamsRouteImport } from './routes/mls.teams'
-import { Route as MlsStandingsRouteImport } from './routes/mls.standings'
-import { Route as MlsScoresRouteImport } from './routes/mls.scores'
-import { Route as MlsNewsRouteImport } from './routes/mls.news'
-import { Route as MlsLeadersRouteImport } from './routes/mls.leaders'
-import { Route as MlsHistoryRouteImport } from './routes/mls.history'
-import { Route as MlsChampionsRouteImport } from './routes/mls.champions'
-import { Route as MlbTeamsRouteImport } from './routes/mlb.teams'
-import { Route as MlbStandingsRouteImport } from './routes/mlb.standings'
-import { Route as MlbScoresRouteImport } from './routes/mlb.scores'
-import { Route as MlbPostseasonRouteImport } from './routes/mlb.postseason'
-import { Route as MlbPlayersRouteImport } from './routes/mlb.players'
-import { Route as MlbNewsRouteImport } from './routes/mlb.news'
-import { Route as MlbHistoryRouteImport } from './routes/mlb.history'
-import { Route as MlbChampionsRouteImport } from './routes/mlb.champions'
-import { Route as LiveTodayRouteImport } from './routes/live.today'
-import { Route as LiveSportRouteImport } from './routes/live.$sport'
-import { Route as HighlightsSlugRouteImport } from './routes/highlights.$slug'
-import { Route as GuidesSlugRouteImport } from './routes/guides.$slug'
-import { Route as FootballVenuesRouteImport } from './routes/football.venues'
-import { Route as FootballMineRouteImport } from './routes/football.mine'
-import { Route as FootballCompRouteImport } from './routes/football.$comp'
-import { Route as CricketScoresRouteImport } from './routes/cricket.scores'
-import { Route as CricketRankingsRouteImport } from './routes/cricket.rankings'
 import { Route as CricketHistoryRouteImport } from './routes/cricket.history'
-import { Route as FootballTopScorersIndexRouteImport } from './routes/football.top-scorers.index'
-import { Route as FootballPlayersIndexRouteImport } from './routes/football.players.index'
-import { Route as FootballCountriesIndexRouteImport } from './routes/football.countries.index'
-import { Route as FootballCampaignsIndexRouteImport } from './routes/football.campaigns.index'
-import { Route as FootballCompIndexRouteImport } from './routes/football.$comp.index'
-import { Route as CricketTournamentsIndexRouteImport } from './routes/cricket.tournaments.index'
-import { Route as CricketTeamsIndexRouteImport } from './routes/cricket.teams.index'
-import { Route as CricketSeriesIndexRouteImport } from './routes/cricket.series.index'
-import { Route as CricketRecordsIndexRouteImport } from './routes/cricket.records.index'
-import { Route as CricketPlayersIndexRouteImport } from './routes/cricket.players.index'
-import { Route as CricketIplIndexRouteImport } from './routes/cricket.ipl.index'
-import { Route as CricketHighlightsIndexRouteImport } from './routes/cricket.highlights.index'
-import { Route as VsSportMatchupRouteImport } from './routes/vs.$sport.$matchup'
-import { Route as TournamentsFifaWorldCup2026StageRouteImport } from './routes/tournaments.fifa-world-cup-2026.$stage'
-import { Route as TournamentsTournamentLeaderboardRouteImport } from './routes/tournaments.$tournament.$leaderboard'
-import { Route as TeamSportSlugRouteImport } from './routes/team.$sport.$slug'
-import { Route as PlayerSportSlugRouteImport } from './routes/player.$sport.$slug'
-import { Route as OgTypeSlugDotsvgRouteImport } from './routes/og.$type.$slug[.]svg'
-import { Route as NhlTeamsSlugRouteImport } from './routes/nhl.teams_.$slug'
-import { Route as NhlTeamIdRouteImport } from './routes/nhl.team.$id'
-import { Route as NhlTeamHistorySlugRouteImport } from './routes/nhl.team-history.$slug'
-import { Route as NhlStanleyCupYearRouteImport } from './routes/nhl.stanley-cup.$year'
-import { Route as NhlPlayersSlugRouteImport } from './routes/nhl.players.$slug'
-import { Route as NhlPlayerIdRouteImport } from './routes/nhl.player.$id'
-import { Route as NhlGameIdRouteImport } from './routes/nhl.game.$id'
-import { Route as NbaTeamsSlugRouteImport } from './routes/nba.teams_.$slug'
-import { Route as NbaTeamIdRouteImport } from './routes/nba.team.$id'
-import { Route as NbaTeamHistorySlugRouteImport } from './routes/nba.team-history.$slug'
-import { Route as NbaPlayersSlugRouteImport } from './routes/nba.players.$slug'
-import { Route as NbaPlayerIdRouteImport } from './routes/nba.player.$id'
-import { Route as NbaGameIdRouteImport } from './routes/nba.game.$id'
-import { Route as NbaFinalsYearRouteImport } from './routes/nba.finals.$year'
-import { Route as MlsTeamsSlugRouteImport } from './routes/mls.teams_.$slug'
-import { Route as MlsTeamIdRouteImport } from './routes/mls.team.$id'
-import { Route as MlsTeamHistorySlugRouteImport } from './routes/mls.team-history.$slug'
-import { Route as MlsPlayersSlugRouteImport } from './routes/mls.players.$slug'
-import { Route as MlsPlayerIdRouteImport } from './routes/mls.player.$id'
-import { Route as MlsGameIdRouteImport } from './routes/mls.game.$id'
-import { Route as MlsCupYearRouteImport } from './routes/mls.cup.$year'
-import { Route as MlbWorldSeriesYearRouteImport } from './routes/mlb.world-series.$year'
-import { Route as MlbTeamsSlugRouteImport } from './routes/mlb.teams_.$slug'
-import { Route as MlbTeamIdRouteImport } from './routes/mlb.team.$id'
-import { Route as MlbTeamHistorySlugRouteImport } from './routes/mlb.team-history.$slug'
-import { Route as MlbRecordsCategoryRouteImport } from './routes/mlb.records.$category'
-import { Route as MlbPlayersSlugRouteImport } from './routes/mlb.players.$slug'
-import { Route as MlbPlayerIdRouteImport } from './routes/mlb.player.$id'
-import { Route as MlbGameIdRouteImport } from './routes/mlb.game.$id'
-import { Route as FootballTournamentsYearRouteImport } from './routes/football.tournaments.$year'
-import { Route as FootballTopScorersYearRouteImport } from './routes/football.top-scorers.$year'
-import { Route as FootballTeamsSlugRouteImport } from './routes/football.teams.$slug'
-import { Route as FootballRecordsCategoryRouteImport } from './routes/football.records.$category'
-import { Route as FootballPlayersSlugRouteImport } from './routes/football.players.$slug'
-import { Route as FootballMatchesSlugRouteImport } from './routes/football.matches.$slug'
-import { Route as FootballMatchIdRouteImport } from './routes/football.match.$id'
-import { Route as FootballCampaignsSlugRouteImport } from './routes/football.campaigns.$slug'
-import { Route as FootballCompTeamsRouteImport } from './routes/football.$comp.teams'
-import { Route as FootballCompStandingsRouteImport } from './routes/football.$comp.standings'
-import { Route as FootballCompScoresRouteImport } from './routes/football.$comp.scores'
-import { Route as FootballCompRecordsRouteImport } from './routes/football.$comp.records'
-import { Route as FootballCompPlayersRouteImport } from './routes/football.$comp.players'
-import { Route as FootballCompHistoryRouteImport } from './routes/football.$comp.history'
-import { Route as FootballCompFixturesRouteImport } from './routes/football.$comp.fixtures'
-import { Route as CricketTournamentsSlugRouteImport } from './routes/cricket.tournaments.$slug'
-import { Route as CricketTeamsSlugRouteImport } from './routes/cricket.teams.$slug'
-import { Route as CricketTeamHistorySlugRouteImport } from './routes/cricket.team-history.$slug'
-import { Route as CricketSeriesIdRouteImport } from './routes/cricket.series.$id'
-import { Route as CricketRecordsCategoryRouteImport } from './routes/cricket.records.$category'
-import { Route as CricketPlayersSlugRouteImport } from './routes/cricket.players.$slug'
-import { Route as CricketMatchIdRouteImport } from './routes/cricket.match.$id'
-import { Route as CricketIplStandingsRouteImport } from './routes/cricket.ipl.standings'
-import { Route as CricketIplScoresRouteImport } from './routes/cricket.ipl.scores'
-import { Route as CricketIplRecordsRouteImport } from './routes/cricket.ipl.records'
-import { Route as CricketIplPlayersRouteImport } from './routes/cricket.ipl.players'
-import { Route as CricketIplHistoryRouteImport } from './routes/cricket.ipl.history'
-import { Route as CricketHighlightsSlugRouteImport } from './routes/cricket.highlights.$slug'
-import { Route as ArchiveSportYearRouteImport } from './routes/archive.$sport.$year'
-import { Route as ApiPublicTrackClickRouteImport } from './routes/api/public/track-click'
-import { Route as ApiPublicSyncSportsRouteImport } from './routes/api/public/sync-sports'
-import { Route as ApiPublicSeoHealthRouteImport } from './routes/api/public/seo-health'
-import { Route as ApiPublicIndexnowPingRouteImport } from './routes/api/public/indexnow-ping'
-import { Route as ApiPublicIndexnowKeyDottxtRouteImport } from './routes/api/public/indexnow-key[.]txt'
+import { Route as CricketRankingsRouteImport } from './routes/cricket.rankings'
+import { Route as CricketScoresRouteImport } from './routes/cricket.scores'
+import { Route as FootballIndexRouteImport } from './routes/football.index'
+import { Route as FootballCompRouteImport } from './routes/football.$comp'
+import { Route as FootballMineRouteImport } from './routes/football.mine'
+import { Route as FootballVenuesRouteImport } from './routes/football.venues'
+import { Route as GuidesIndexRouteImport } from './routes/guides.index'
+import { Route as GuidesSlugRouteImport } from './routes/guides.$slug'
+import { Route as HighlightsIndexRouteImport } from './routes/highlights.index'
+import { Route as HighlightsSlugRouteImport } from './routes/highlights.$slug'
+import { Route as LiveSportRouteImport } from './routes/live.$sport'
+import { Route as LiveTodayRouteImport } from './routes/live.today'
+import { Route as MlbIndexRouteImport } from './routes/mlb.index'
+import { Route as MlbChampionsRouteImport } from './routes/mlb.champions'
+import { Route as MlbHistoryRouteImport } from './routes/mlb.history'
+import { Route as MlbNewsRouteImport } from './routes/mlb.news'
+import { Route as MlbPlayersRouteImport } from './routes/mlb.players'
+import { Route as MlbPostseasonRouteImport } from './routes/mlb.postseason'
+import { Route as MlbScoresRouteImport } from './routes/mlb.scores'
+import { Route as MlbStandingsRouteImport } from './routes/mlb.standings'
+import { Route as MlbTeamsRouteImport } from './routes/mlb.teams'
+import { Route as MlsIndexRouteImport } from './routes/mls.index'
+import { Route as MlsChampionsRouteImport } from './routes/mls.champions'
+import { Route as MlsHistoryRouteImport } from './routes/mls.history'
+import { Route as MlsLeadersRouteImport } from './routes/mls.leaders'
+import { Route as MlsNewsRouteImport } from './routes/mls.news'
+import { Route as MlsScoresRouteImport } from './routes/mls.scores'
+import { Route as MlsStandingsRouteImport } from './routes/mls.standings'
+import { Route as MlsTeamsRouteImport } from './routes/mls.teams'
+import { Route as NbaIndexRouteImport } from './routes/nba.index'
+import { Route as NbaChampionsRouteImport } from './routes/nba.champions'
+import { Route as NbaHistoryRouteImport } from './routes/nba.history'
+import { Route as NbaLeadersRouteImport } from './routes/nba.leaders'
+import { Route as NbaNewsRouteImport } from './routes/nba.news'
+import { Route as NbaScoresRouteImport } from './routes/nba.scores'
+import { Route as NbaStandingsRouteImport } from './routes/nba.standings'
+import { Route as NbaTeamsRouteImport } from './routes/nba.teams'
+import { Route as NewsIndexRouteImport } from './routes/news.index'
+import { Route as NewsSlugRouteImport } from './routes/news.$slug'
+import { Route as NhlIndexRouteImport } from './routes/nhl.index'
+import { Route as NhlChampionsRouteImport } from './routes/nhl.champions'
+import { Route as NhlHistoryRouteImport } from './routes/nhl.history'
+import { Route as NhlLeadersRouteImport } from './routes/nhl.leaders'
+import { Route as NhlNewsRouteImport } from './routes/nhl.news'
+import { Route as NhlScoresRouteImport } from './routes/nhl.scores'
+import { Route as NhlStandingsRouteImport } from './routes/nhl.standings'
+import { Route as NhlTeamsRouteImport } from './routes/nhl.teams'
+import { Route as RobotsTxtRouteImport } from './routes/robots.txt'
 import { Route as ApiPublicIndexnowAutoRouteImport } from './routes/api/public/indexnow-auto'
-import { Route as CricketIplTeamsIndexRouteImport } from './routes/cricket.ipl.teams.index'
-import { Route as FootballPlayersSlugWorldCupChar123yearChar125RouteImport } from './routes/football.players.$slug.world-cup-{$year}'
-import { Route as FootballCountriesSlugWorldCupChar123yearChar125RouteImport } from './routes/football.countries.$slug.world-cup-{$year}'
-import { Route as FootballCompTeamsTeamIdRouteImport } from './routes/football.$comp.teams.$teamId'
-import { Route as FootballCompSeasonsYearRouteImport } from './routes/football.$comp.seasons.$year'
-import { Route as FootballCompRecordsDecadesRouteImport } from './routes/football.$comp.records.decades'
-import { Route as FootballCompRecordsCategoryRouteImport } from './routes/football.$comp.records.$category'
-import { Route as FootballCompPlayersPlayerIdRouteImport } from './routes/football.$comp.players.$playerId'
-import { Route as FootballCompMatchesMatchIdRouteImport } from './routes/football.$comp.matches.$matchId'
-import { Route as FootballCompHistoryYearRouteImport } from './routes/football.$comp.history.$year'
-import { Route as FootballCompH2hMatchupRouteImport } from './routes/football.$comp.h2h.$matchup'
-import { Route as CricketIplTeamsTeamIdRouteImport } from './routes/cricket.ipl.teams.$teamId'
-import { Route as ApiPublicHooksWeeklyDigestRouteImport } from './routes/api/public/hooks/weekly-digest'
+import { Route as ApiPublicIndexnowKeyDottxtRouteImport } from './routes/api/public/indexnow-key[.]txt'
+import { Route as ApiPublicIndexnowPingRouteImport } from './routes/api/public/indexnow-ping'
+import { Route as ApiPublicSeoHealthRouteImport } from './routes/api/public/seo-health'
+import { Route as ApiPublicSyncSportsRouteImport } from './routes/api/public/sync-sports'
+import { Route as ApiPublicTrackClickRouteImport } from './routes/api/public/track-click'
+import { Route as ArchiveSportYearRouteImport } from './routes/archive.$sport.$year'
+import { Route as CricketHighlightsIndexRouteImport } from './routes/cricket.highlights.index'
+import { Route as CricketHighlightsSlugRouteImport } from './routes/cricket.highlights.$slug'
+import { Route as CricketIplIndexRouteImport } from './routes/cricket.ipl.index'
+import { Route as CricketIplHistoryRouteImport } from './routes/cricket.ipl.history'
+import { Route as CricketIplPlayersRouteImport } from './routes/cricket.ipl.players'
+import { Route as CricketIplRecordsRouteImport } from './routes/cricket.ipl.records'
+import { Route as CricketIplScoresRouteImport } from './routes/cricket.ipl.scores'
+import { Route as CricketIplStandingsRouteImport } from './routes/cricket.ipl.standings'
+import { Route as CricketMatchIdRouteImport } from './routes/cricket.match.$id'
+import { Route as CricketPlayersIndexRouteImport } from './routes/cricket.players.index'
+import { Route as CricketPlayersSlugRouteImport } from './routes/cricket.players.$slug'
+import { Route as CricketRecordsIndexRouteImport } from './routes/cricket.records.index'
+import { Route as CricketRecordsCategoryRouteImport } from './routes/cricket.records.$category'
+import { Route as CricketSeriesIndexRouteImport } from './routes/cricket.series.index'
+import { Route as CricketSeriesIdRouteImport } from './routes/cricket.series.$id'
+import { Route as CricketTeamHistorySlugRouteImport } from './routes/cricket.team-history.$slug'
+import { Route as CricketTeamsIndexRouteImport } from './routes/cricket.teams.index'
+import { Route as CricketTeamsSlugRouteImport } from './routes/cricket.teams.$slug'
+import { Route as CricketTournamentsIndexRouteImport } from './routes/cricket.tournaments.index'
+import { Route as CricketTournamentsSlugRouteImport } from './routes/cricket.tournaments.$slug'
+import { Route as FootballCompIndexRouteImport } from './routes/football.$comp.index'
+import { Route as FootballCompFixturesRouteImport } from './routes/football.$comp.fixtures'
+import { Route as FootballCompHistoryRouteImport } from './routes/football.$comp.history'
+import { Route as FootballCompPlayersRouteImport } from './routes/football.$comp.players'
+import { Route as FootballCompRecordsRouteImport } from './routes/football.$comp.records'
+import { Route as FootballCompScoresRouteImport } from './routes/football.$comp.scores'
+import { Route as FootballCompStandingsRouteImport } from './routes/football.$comp.standings'
+import { Route as FootballCompTeamsRouteImport } from './routes/football.$comp.teams'
+import { Route as FootballCampaignsIndexRouteImport } from './routes/football.campaigns.index'
+import { Route as FootballCampaignsSlugRouteImport } from './routes/football.campaigns.$slug'
+import { Route as FootballCountriesIndexRouteImport } from './routes/football.countries.index'
+import { Route as FootballMatchIdRouteImport } from './routes/football.match.$id'
+import { Route as FootballMatchesSlugRouteImport } from './routes/football.matches.$slug'
+import { Route as FootballPlayersIndexRouteImport } from './routes/football.players.index'
+import { Route as FootballPlayersSlugRouteImport } from './routes/football.players.$slug'
+import { Route as FootballRecordsCategoryRouteImport } from './routes/football.records.$category'
+import { Route as FootballTeamsSlugRouteImport } from './routes/football.teams.$slug'
+import { Route as FootballTopScorersIndexRouteImport } from './routes/football.top-scorers.index'
+import { Route as FootballTopScorersYearRouteImport } from './routes/football.top-scorers.$year'
+import { Route as FootballTournamentsYearRouteImport } from './routes/football.tournaments.$year'
+import { Route as MlbGameIdRouteImport } from './routes/mlb.game.$id'
+import { Route as MlbPlayerIdRouteImport } from './routes/mlb.player.$id'
+import { Route as MlbPlayersSlugRouteImport } from './routes/mlb.players.$slug'
+import { Route as MlbRecordsCategoryRouteImport } from './routes/mlb.records.$category'
+import { Route as MlbTeamHistorySlugRouteImport } from './routes/mlb.team-history.$slug'
+import { Route as MlbTeamIdRouteImport } from './routes/mlb.team.$id'
+import { Route as MlbTeamsSlugRouteImport } from './routes/mlb.teams_.$slug'
+import { Route as MlbWorldSeriesYearRouteImport } from './routes/mlb.world-series.$year'
+import { Route as MlsCupYearRouteImport } from './routes/mls.cup.$year'
+import { Route as MlsGameIdRouteImport } from './routes/mls.game.$id'
+import { Route as MlsPlayerIdRouteImport } from './routes/mls.player.$id'
+import { Route as MlsPlayersSlugRouteImport } from './routes/mls.players.$slug'
+import { Route as MlsTeamHistorySlugRouteImport } from './routes/mls.team-history.$slug'
+import { Route as MlsTeamIdRouteImport } from './routes/mls.team.$id'
+import { Route as MlsTeamsSlugRouteImport } from './routes/mls.teams_.$slug'
+import { Route as NbaFinalsYearRouteImport } from './routes/nba.finals.$year'
+import { Route as NbaGameIdRouteImport } from './routes/nba.game.$id'
+import { Route as NbaPlayerIdRouteImport } from './routes/nba.player.$id'
+import { Route as NbaPlayersSlugRouteImport } from './routes/nba.players.$slug'
+import { Route as NbaTeamHistorySlugRouteImport } from './routes/nba.team-history.$slug'
+import { Route as NbaTeamIdRouteImport } from './routes/nba.team.$id'
+import { Route as NbaTeamsSlugRouteImport } from './routes/nba.teams_.$slug'
+import { Route as NhlGameIdRouteImport } from './routes/nhl.game.$id'
+import { Route as NhlPlayerIdRouteImport } from './routes/nhl.player.$id'
+import { Route as NhlPlayersSlugRouteImport } from './routes/nhl.players.$slug'
+import { Route as NhlStanleyCupYearRouteImport } from './routes/nhl.stanley-cup.$year'
+import { Route as NhlTeamHistorySlugRouteImport } from './routes/nhl.team-history.$slug'
+import { Route as NhlTeamIdRouteImport } from './routes/nhl.team.$id'
+import { Route as NhlTeamsSlugRouteImport } from './routes/nhl.teams_.$slug'
+import { Route as OgTypeSlugDotsvgRouteImport } from './routes/og.$type.$slug[.]svg'
+import { Route as PlayerSportSlugRouteImport } from './routes/player.$sport.$slug'
+import { Route as TeamSportSlugRouteImport } from './routes/team.$sport.$slug'
+import { Route as TournamentsTournamentLeaderboardRouteImport } from './routes/tournaments.$tournament.$leaderboard'
+import { Route as TournamentsFifaWorldCup2026StageRouteImport } from './routes/tournaments.fifa-world-cup-2026.$stage'
+import { Route as VsSportMatchupRouteImport } from './routes/vs.$sport.$matchup'
 import { Route as ApiPublicHooksGscSyncRouteImport } from './routes/api/public/hooks/gsc-sync'
+import { Route as ApiPublicHooksWeeklyDigestRouteImport } from './routes/api/public/hooks/weekly-digest'
+import { Route as CricketIplTeamsIndexRouteImport } from './routes/cricket.ipl.teams.index'
+import { Route as CricketIplTeamsTeamIdRouteImport } from './routes/cricket.ipl.teams.$teamId'
+import { Route as FootballCompH2hMatchupRouteImport } from './routes/football.$comp.h2h.$matchup'
+import { Route as FootballCompHistoryYearRouteImport } from './routes/football.$comp.history.$year'
+import { Route as FootballCompMatchesMatchIdRouteImport } from './routes/football.$comp.matches.$matchId'
+import { Route as FootballCompPlayersPlayerIdRouteImport } from './routes/football.$comp.players.$playerId'
+import { Route as FootballCompRecordsCategoryRouteImport } from './routes/football.$comp.records.$category'
+import { Route as FootballCompRecordsDecadesRouteImport } from './routes/football.$comp.records.decades'
+import { Route as FootballCompSeasonsYearRouteImport } from './routes/football.$comp.seasons.$year'
+import { Route as FootballCompTeamsTeamIdRouteImport } from './routes/football.$comp.teams.$teamId'
+import { Route as FootballCountriesSlugWorldCupChar123yearChar125RouteImport } from './routes/football.countries.$slug.world-cup-{$year}'
+import { Route as FootballPlayersSlugWorldCupChar123yearChar125RouteImport } from './routes/football.players.$slug.world-cup-{$year}'
 import { Route as FootballCompTeamsTeamIdSeasonChar123yearChar125RouteImport } from './routes/football.$comp.teams.$teamId.season-{$year}'
 
-const UnsubscribeRoute = UnsubscribeRouteImport.update({
-  id: '/unsubscribe',
-  path: '/unsubscribe',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const TermsRoute = TermsRouteImport.update({
-  id: '/terms',
-  path: '/terms',
+const KeyDottxtRoute = KeyDottxtRouteImport.update({
+  id: '/$key.txt',
+  path: '/$key.txt',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
-  id: '/sitemap.xml',
-  path: '/sitemap.xml',
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdsDottxtRoute = AdsDottxtRouteImport.update({
+  id: '/ads.txt',
+  path: '/ads.txt',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CookiesRoute = CookiesRouteImport.update({
+  id: '/cookies',
+  path: '/cookies',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CricketRoute = CricketRouteImport.update({
+  id: '/cricket',
+  path: '/cricket',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DisclaimerRoute = DisclaimerRouteImport.update({
+  id: '/disclaimer',
+  path: '/disclaimer',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FeedDotxmlRoute = FeedDotxmlRouteImport.update({
+  id: '/feed.xml',
+  path: '/feed.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FootballRoute = FootballRouteImport.update({
+  id: '/football',
+  path: '/football',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MineRoute = MineRouteImport.update({
+  id: '/mine',
+  path: '/mine',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MlbRoute = MlbRouteImport.update({
+  id: '/mlb',
+  path: '/mlb',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MlsRoute = MlsRouteImport.update({
+  id: '/mls',
+  path: '/mls',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NbaRoute = NbaRouteImport.update({
+  id: '/nba',
+  path: '/nba',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NhlRoute = NhlRouteImport.update({
+  id: '/nhl',
+  path: '/nhl',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PlayersRoute = PlayersRouteImport.update({
+  id: '/players',
+  path: '/players',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PremiumRoute = PremiumRouteImport.update({
+  id: '/premium',
+  path: '/premium',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SearchRoute = SearchRouteImport.update({
+  id: '/search',
+  path: '/search',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SitemapChar123partChar125DotxmlRoute =
@@ -203,354 +293,24 @@ const SitemapChar123partChar125DotxmlRoute =
     path: '/sitemap-{$part}.xml',
     getParentRoute: () => rootRouteImport,
   } as any)
-const SearchRoute = SearchRouteImport.update({
-  id: '/search',
-  path: '/search',
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PrivacyRoute = PrivacyRouteImport.update({
-  id: '/privacy',
-  path: '/privacy',
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PremiumRoute = PremiumRouteImport.update({
-  id: '/premium',
-  path: '/premium',
+const UnsubscribeRoute = UnsubscribeRouteImport.update({
+  id: '/unsubscribe',
+  path: '/unsubscribe',
   getParentRoute: () => rootRouteImport,
-} as any)
-const PlayersRoute = PlayersRouteImport.update({
-  id: '/players',
-  path: '/players',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const NhlRoute = NhlRouteImport.update({
-  id: '/nhl',
-  path: '/nhl',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const NbaRoute = NbaRouteImport.update({
-  id: '/nba',
-  path: '/nba',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MlsRoute = MlsRouteImport.update({
-  id: '/mls',
-  path: '/mls',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MlbRoute = MlbRouteImport.update({
-  id: '/mlb',
-  path: '/mlb',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MineRoute = MineRouteImport.update({
-  id: '/mine',
-  path: '/mine',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FootballRoute = FootballRouteImport.update({
-  id: '/football',
-  path: '/football',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FeedDotxmlRoute = FeedDotxmlRouteImport.update({
-  id: '/feed.xml',
-  path: '/feed.xml',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DisclaimerRoute = DisclaimerRouteImport.update({
-  id: '/disclaimer',
-  path: '/disclaimer',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CricketRoute = CricketRouteImport.update({
-  id: '/cricket',
-  path: '/cricket',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CookiesRoute = CookiesRouteImport.update({
-  id: '/cookies',
-  path: '/cookies',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ContactRoute = ContactRouteImport.update({
-  id: '/contact',
-  path: '/contact',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthRoute = AuthRouteImport.update({
-  id: '/auth',
-  path: '/auth',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdsDottxtRoute = AdsDottxtRouteImport.update({
-  id: '/ads.txt',
-  path: '/ads.txt',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminRoute = AdminRouteImport.update({
-  id: '/admin',
-  path: '/admin',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AboutRoute = AboutRouteImport.update({
-  id: '/about',
-  path: '/about',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const KeyDottxtRoute = KeyDottxtRouteImport.update({
-  id: '/$key.txt',
-  path: '/$key.txt',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const NhlIndexRoute = NhlIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => NhlRoute,
-} as any)
-const NewsIndexRoute = NewsIndexRouteImport.update({
-  id: '/news/',
-  path: '/news/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const NbaIndexRoute = NbaIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => NbaRoute,
-} as any)
-const MlsIndexRoute = MlsIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => MlsRoute,
-} as any)
-const MlbIndexRoute = MlbIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => MlbRoute,
-} as any)
-const HighlightsIndexRoute = HighlightsIndexRouteImport.update({
-  id: '/highlights/',
-  path: '/highlights/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const GuidesIndexRoute = GuidesIndexRouteImport.update({
-  id: '/guides/',
-  path: '/guides/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FootballIndexRoute = FootballIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => FootballRoute,
 } as any)
 const CricketIndexRoute = CricketIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => CricketRoute,
-} as any)
-const RobotsTxtRoute = RobotsTxtRouteImport.update({
-  id: '/robots/txt',
-  path: '/robots/txt',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const NhlTeamsRoute = NhlTeamsRouteImport.update({
-  id: '/teams',
-  path: '/teams',
-  getParentRoute: () => NhlRoute,
-} as any)
-const NhlStandingsRoute = NhlStandingsRouteImport.update({
-  id: '/standings',
-  path: '/standings',
-  getParentRoute: () => NhlRoute,
-} as any)
-const NhlScoresRoute = NhlScoresRouteImport.update({
-  id: '/scores',
-  path: '/scores',
-  getParentRoute: () => NhlRoute,
-} as any)
-const NhlNewsRoute = NhlNewsRouteImport.update({
-  id: '/news',
-  path: '/news',
-  getParentRoute: () => NhlRoute,
-} as any)
-const NhlLeadersRoute = NhlLeadersRouteImport.update({
-  id: '/leaders',
-  path: '/leaders',
-  getParentRoute: () => NhlRoute,
-} as any)
-const NhlHistoryRoute = NhlHistoryRouteImport.update({
-  id: '/history',
-  path: '/history',
-  getParentRoute: () => NhlRoute,
-} as any)
-const NhlChampionsRoute = NhlChampionsRouteImport.update({
-  id: '/champions',
-  path: '/champions',
-  getParentRoute: () => NhlRoute,
-} as any)
-const NewsSlugRoute = NewsSlugRouteImport.update({
-  id: '/news/$slug',
-  path: '/news/$slug',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const NbaTeamsRoute = NbaTeamsRouteImport.update({
-  id: '/teams',
-  path: '/teams',
-  getParentRoute: () => NbaRoute,
-} as any)
-const NbaStandingsRoute = NbaStandingsRouteImport.update({
-  id: '/standings',
-  path: '/standings',
-  getParentRoute: () => NbaRoute,
-} as any)
-const NbaScoresRoute = NbaScoresRouteImport.update({
-  id: '/scores',
-  path: '/scores',
-  getParentRoute: () => NbaRoute,
-} as any)
-const NbaNewsRoute = NbaNewsRouteImport.update({
-  id: '/news',
-  path: '/news',
-  getParentRoute: () => NbaRoute,
-} as any)
-const NbaLeadersRoute = NbaLeadersRouteImport.update({
-  id: '/leaders',
-  path: '/leaders',
-  getParentRoute: () => NbaRoute,
-} as any)
-const NbaHistoryRoute = NbaHistoryRouteImport.update({
-  id: '/history',
-  path: '/history',
-  getParentRoute: () => NbaRoute,
-} as any)
-const NbaChampionsRoute = NbaChampionsRouteImport.update({
-  id: '/champions',
-  path: '/champions',
-  getParentRoute: () => NbaRoute,
-} as any)
-const MlsTeamsRoute = MlsTeamsRouteImport.update({
-  id: '/teams',
-  path: '/teams',
-  getParentRoute: () => MlsRoute,
-} as any)
-const MlsStandingsRoute = MlsStandingsRouteImport.update({
-  id: '/standings',
-  path: '/standings',
-  getParentRoute: () => MlsRoute,
-} as any)
-const MlsScoresRoute = MlsScoresRouteImport.update({
-  id: '/scores',
-  path: '/scores',
-  getParentRoute: () => MlsRoute,
-} as any)
-const MlsNewsRoute = MlsNewsRouteImport.update({
-  id: '/news',
-  path: '/news',
-  getParentRoute: () => MlsRoute,
-} as any)
-const MlsLeadersRoute = MlsLeadersRouteImport.update({
-  id: '/leaders',
-  path: '/leaders',
-  getParentRoute: () => MlsRoute,
-} as any)
-const MlsHistoryRoute = MlsHistoryRouteImport.update({
-  id: '/history',
-  path: '/history',
-  getParentRoute: () => MlsRoute,
-} as any)
-const MlsChampionsRoute = MlsChampionsRouteImport.update({
-  id: '/champions',
-  path: '/champions',
-  getParentRoute: () => MlsRoute,
-} as any)
-const MlbTeamsRoute = MlbTeamsRouteImport.update({
-  id: '/teams',
-  path: '/teams',
-  getParentRoute: () => MlbRoute,
-} as any)
-const MlbStandingsRoute = MlbStandingsRouteImport.update({
-  id: '/standings',
-  path: '/standings',
-  getParentRoute: () => MlbRoute,
-} as any)
-const MlbScoresRoute = MlbScoresRouteImport.update({
-  id: '/scores',
-  path: '/scores',
-  getParentRoute: () => MlbRoute,
-} as any)
-const MlbPostseasonRoute = MlbPostseasonRouteImport.update({
-  id: '/postseason',
-  path: '/postseason',
-  getParentRoute: () => MlbRoute,
-} as any)
-const MlbPlayersRoute = MlbPlayersRouteImport.update({
-  id: '/players',
-  path: '/players',
-  getParentRoute: () => MlbRoute,
-} as any)
-const MlbNewsRoute = MlbNewsRouteImport.update({
-  id: '/news',
-  path: '/news',
-  getParentRoute: () => MlbRoute,
-} as any)
-const MlbHistoryRoute = MlbHistoryRouteImport.update({
-  id: '/history',
-  path: '/history',
-  getParentRoute: () => MlbRoute,
-} as any)
-const MlbChampionsRoute = MlbChampionsRouteImport.update({
-  id: '/champions',
-  path: '/champions',
-  getParentRoute: () => MlbRoute,
-} as any)
-const LiveTodayRoute = LiveTodayRouteImport.update({
-  id: '/live/today',
-  path: '/live/today',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LiveSportRoute = LiveSportRouteImport.update({
-  id: '/live/$sport',
-  path: '/live/$sport',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const HighlightsSlugRoute = HighlightsSlugRouteImport.update({
-  id: '/highlights/$slug',
-  path: '/highlights/$slug',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const GuidesSlugRoute = GuidesSlugRouteImport.update({
-  id: '/guides/$slug',
-  path: '/guides/$slug',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FootballVenuesRoute = FootballVenuesRouteImport.update({
-  id: '/venues',
-  path: '/venues',
-  getParentRoute: () => FootballRoute,
-} as any)
-const FootballMineRoute = FootballMineRouteImport.update({
-  id: '/mine',
-  path: '/mine',
-  getParentRoute: () => FootballRoute,
-} as any)
-const FootballCompRoute = FootballCompRouteImport.update({
-  id: '/$comp',
-  path: '/$comp',
-  getParentRoute: () => FootballRoute,
-} as any)
-const CricketScoresRoute = CricketScoresRouteImport.update({
-  id: '/scores',
-  path: '/scores',
-  getParentRoute: () => CricketRoute,
-} as any)
-const CricketRankingsRoute = CricketRankingsRouteImport.update({
-  id: '/rankings',
-  path: '/rankings',
   getParentRoute: () => CricketRoute,
 } as any)
 const CricketHistoryRoute = CricketHistoryRouteImport.update({
@@ -558,406 +318,249 @@ const CricketHistoryRoute = CricketHistoryRouteImport.update({
   path: '/history',
   getParentRoute: () => CricketRoute,
 } as any)
-const FootballTopScorersIndexRoute = FootballTopScorersIndexRouteImport.update({
-  id: '/top-scorers/',
-  path: '/top-scorers/',
-  getParentRoute: () => FootballRoute,
-} as any)
-const FootballPlayersIndexRoute = FootballPlayersIndexRouteImport.update({
-  id: '/players/',
-  path: '/players/',
-  getParentRoute: () => FootballRoute,
-} as any)
-const FootballCountriesIndexRoute = FootballCountriesIndexRouteImport.update({
-  id: '/countries/',
-  path: '/countries/',
-  getParentRoute: () => FootballRoute,
-} as any)
-const FootballCampaignsIndexRoute = FootballCampaignsIndexRouteImport.update({
-  id: '/campaigns/',
-  path: '/campaigns/',
-  getParentRoute: () => FootballRoute,
-} as any)
-const FootballCompIndexRoute = FootballCompIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => FootballCompRoute,
-} as any)
-const CricketTournamentsIndexRoute = CricketTournamentsIndexRouteImport.update({
-  id: '/tournaments/',
-  path: '/tournaments/',
+const CricketRankingsRoute = CricketRankingsRouteImport.update({
+  id: '/rankings',
+  path: '/rankings',
   getParentRoute: () => CricketRoute,
 } as any)
-const CricketTeamsIndexRoute = CricketTeamsIndexRouteImport.update({
-  id: '/teams/',
-  path: '/teams/',
-  getParentRoute: () => CricketRoute,
-} as any)
-const CricketSeriesIndexRoute = CricketSeriesIndexRouteImport.update({
-  id: '/series/',
-  path: '/series/',
-  getParentRoute: () => CricketRoute,
-} as any)
-const CricketRecordsIndexRoute = CricketRecordsIndexRouteImport.update({
-  id: '/records/',
-  path: '/records/',
-  getParentRoute: () => CricketRoute,
-} as any)
-const CricketPlayersIndexRoute = CricketPlayersIndexRouteImport.update({
-  id: '/players/',
-  path: '/players/',
-  getParentRoute: () => CricketRoute,
-} as any)
-const CricketIplIndexRoute = CricketIplIndexRouteImport.update({
-  id: '/ipl/',
-  path: '/ipl/',
-  getParentRoute: () => CricketRoute,
-} as any)
-const CricketHighlightsIndexRoute = CricketHighlightsIndexRouteImport.update({
-  id: '/highlights/',
-  path: '/highlights/',
-  getParentRoute: () => CricketRoute,
-} as any)
-const VsSportMatchupRoute = VsSportMatchupRouteImport.update({
-  id: '/vs/$sport/$matchup',
-  path: '/vs/$sport/$matchup',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TournamentsFifaWorldCup2026StageRoute =
-  TournamentsFifaWorldCup2026StageRouteImport.update({
-    id: '/tournaments/fifa-world-cup-2026/$stage',
-    path: '/tournaments/fifa-world-cup-2026/$stage',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const TournamentsTournamentLeaderboardRoute =
-  TournamentsTournamentLeaderboardRouteImport.update({
-    id: '/tournaments/$tournament/$leaderboard',
-    path: '/tournaments/$tournament/$leaderboard',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const TeamSportSlugRoute = TeamSportSlugRouteImport.update({
-  id: '/team/$sport/$slug',
-  path: '/team/$sport/$slug',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PlayerSportSlugRoute = PlayerSportSlugRouteImport.update({
-  id: '/player/$sport/$slug',
-  path: '/player/$sport/$slug',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const OgTypeSlugDotsvgRoute = OgTypeSlugDotsvgRouteImport.update({
-  id: '/og/$type/$slug.svg',
-  path: '/og/$type/$slug.svg',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const NhlTeamsSlugRoute = NhlTeamsSlugRouteImport.update({
-  id: '/teams_/$slug',
-  path: '/teams/$slug',
-  getParentRoute: () => NhlRoute,
-} as any)
-const NhlTeamIdRoute = NhlTeamIdRouteImport.update({
-  id: '/team/$id',
-  path: '/team/$id',
-  getParentRoute: () => NhlRoute,
-} as any)
-const NhlTeamHistorySlugRoute = NhlTeamHistorySlugRouteImport.update({
-  id: '/team-history/$slug',
-  path: '/team-history/$slug',
-  getParentRoute: () => NhlRoute,
-} as any)
-const NhlStanleyCupYearRoute = NhlStanleyCupYearRouteImport.update({
-  id: '/stanley-cup/$year',
-  path: '/stanley-cup/$year',
-  getParentRoute: () => NhlRoute,
-} as any)
-const NhlPlayersSlugRoute = NhlPlayersSlugRouteImport.update({
-  id: '/players/$slug',
-  path: '/players/$slug',
-  getParentRoute: () => NhlRoute,
-} as any)
-const NhlPlayerIdRoute = NhlPlayerIdRouteImport.update({
-  id: '/player/$id',
-  path: '/player/$id',
-  getParentRoute: () => NhlRoute,
-} as any)
-const NhlGameIdRoute = NhlGameIdRouteImport.update({
-  id: '/game/$id',
-  path: '/game/$id',
-  getParentRoute: () => NhlRoute,
-} as any)
-const NbaTeamsSlugRoute = NbaTeamsSlugRouteImport.update({
-  id: '/teams_/$slug',
-  path: '/teams/$slug',
-  getParentRoute: () => NbaRoute,
-} as any)
-const NbaTeamIdRoute = NbaTeamIdRouteImport.update({
-  id: '/team/$id',
-  path: '/team/$id',
-  getParentRoute: () => NbaRoute,
-} as any)
-const NbaTeamHistorySlugRoute = NbaTeamHistorySlugRouteImport.update({
-  id: '/team-history/$slug',
-  path: '/team-history/$slug',
-  getParentRoute: () => NbaRoute,
-} as any)
-const NbaPlayersSlugRoute = NbaPlayersSlugRouteImport.update({
-  id: '/players/$slug',
-  path: '/players/$slug',
-  getParentRoute: () => NbaRoute,
-} as any)
-const NbaPlayerIdRoute = NbaPlayerIdRouteImport.update({
-  id: '/player/$id',
-  path: '/player/$id',
-  getParentRoute: () => NbaRoute,
-} as any)
-const NbaGameIdRoute = NbaGameIdRouteImport.update({
-  id: '/game/$id',
-  path: '/game/$id',
-  getParentRoute: () => NbaRoute,
-} as any)
-const NbaFinalsYearRoute = NbaFinalsYearRouteImport.update({
-  id: '/finals/$year',
-  path: '/finals/$year',
-  getParentRoute: () => NbaRoute,
-} as any)
-const MlsTeamsSlugRoute = MlsTeamsSlugRouteImport.update({
-  id: '/teams_/$slug',
-  path: '/teams/$slug',
-  getParentRoute: () => MlsRoute,
-} as any)
-const MlsTeamIdRoute = MlsTeamIdRouteImport.update({
-  id: '/team/$id',
-  path: '/team/$id',
-  getParentRoute: () => MlsRoute,
-} as any)
-const MlsTeamHistorySlugRoute = MlsTeamHistorySlugRouteImport.update({
-  id: '/team-history/$slug',
-  path: '/team-history/$slug',
-  getParentRoute: () => MlsRoute,
-} as any)
-const MlsPlayersSlugRoute = MlsPlayersSlugRouteImport.update({
-  id: '/players/$slug',
-  path: '/players/$slug',
-  getParentRoute: () => MlsRoute,
-} as any)
-const MlsPlayerIdRoute = MlsPlayerIdRouteImport.update({
-  id: '/player/$id',
-  path: '/player/$id',
-  getParentRoute: () => MlsRoute,
-} as any)
-const MlsGameIdRoute = MlsGameIdRouteImport.update({
-  id: '/game/$id',
-  path: '/game/$id',
-  getParentRoute: () => MlsRoute,
-} as any)
-const MlsCupYearRoute = MlsCupYearRouteImport.update({
-  id: '/cup/$year',
-  path: '/cup/$year',
-  getParentRoute: () => MlsRoute,
-} as any)
-const MlbWorldSeriesYearRoute = MlbWorldSeriesYearRouteImport.update({
-  id: '/world-series/$year',
-  path: '/world-series/$year',
-  getParentRoute: () => MlbRoute,
-} as any)
-const MlbTeamsSlugRoute = MlbTeamsSlugRouteImport.update({
-  id: '/teams_/$slug',
-  path: '/teams/$slug',
-  getParentRoute: () => MlbRoute,
-} as any)
-const MlbTeamIdRoute = MlbTeamIdRouteImport.update({
-  id: '/team/$id',
-  path: '/team/$id',
-  getParentRoute: () => MlbRoute,
-} as any)
-const MlbTeamHistorySlugRoute = MlbTeamHistorySlugRouteImport.update({
-  id: '/team-history/$slug',
-  path: '/team-history/$slug',
-  getParentRoute: () => MlbRoute,
-} as any)
-const MlbRecordsCategoryRoute = MlbRecordsCategoryRouteImport.update({
-  id: '/records/$category',
-  path: '/records/$category',
-  getParentRoute: () => MlbRoute,
-} as any)
-const MlbPlayersSlugRoute = MlbPlayersSlugRouteImport.update({
-  id: '/$slug',
-  path: '/$slug',
-  getParentRoute: () => MlbPlayersRoute,
-} as any)
-const MlbPlayerIdRoute = MlbPlayerIdRouteImport.update({
-  id: '/player/$id',
-  path: '/player/$id',
-  getParentRoute: () => MlbRoute,
-} as any)
-const MlbGameIdRoute = MlbGameIdRouteImport.update({
-  id: '/game/$id',
-  path: '/game/$id',
-  getParentRoute: () => MlbRoute,
-} as any)
-const FootballTournamentsYearRoute = FootballTournamentsYearRouteImport.update({
-  id: '/tournaments/$year',
-  path: '/tournaments/$year',
-  getParentRoute: () => FootballRoute,
-} as any)
-const FootballTopScorersYearRoute = FootballTopScorersYearRouteImport.update({
-  id: '/top-scorers/$year',
-  path: '/top-scorers/$year',
-  getParentRoute: () => FootballRoute,
-} as any)
-const FootballTeamsSlugRoute = FootballTeamsSlugRouteImport.update({
-  id: '/teams/$slug',
-  path: '/teams/$slug',
-  getParentRoute: () => FootballRoute,
-} as any)
-const FootballRecordsCategoryRoute = FootballRecordsCategoryRouteImport.update({
-  id: '/records/$category',
-  path: '/records/$category',
-  getParentRoute: () => FootballRoute,
-} as any)
-const FootballPlayersSlugRoute = FootballPlayersSlugRouteImport.update({
-  id: '/players/$slug',
-  path: '/players/$slug',
-  getParentRoute: () => FootballRoute,
-} as any)
-const FootballMatchesSlugRoute = FootballMatchesSlugRouteImport.update({
-  id: '/matches/$slug',
-  path: '/matches/$slug',
-  getParentRoute: () => FootballRoute,
-} as any)
-const FootballMatchIdRoute = FootballMatchIdRouteImport.update({
-  id: '/match/$id',
-  path: '/match/$id',
-  getParentRoute: () => FootballRoute,
-} as any)
-const FootballCampaignsSlugRoute = FootballCampaignsSlugRouteImport.update({
-  id: '/campaigns/$slug',
-  path: '/campaigns/$slug',
-  getParentRoute: () => FootballRoute,
-} as any)
-const FootballCompTeamsRoute = FootballCompTeamsRouteImport.update({
-  id: '/teams',
-  path: '/teams',
-  getParentRoute: () => FootballCompRoute,
-} as any)
-const FootballCompStandingsRoute = FootballCompStandingsRouteImport.update({
-  id: '/standings',
-  path: '/standings',
-  getParentRoute: () => FootballCompRoute,
-} as any)
-const FootballCompScoresRoute = FootballCompScoresRouteImport.update({
+const CricketScoresRoute = CricketScoresRouteImport.update({
   id: '/scores',
   path: '/scores',
-  getParentRoute: () => FootballCompRoute,
-} as any)
-const FootballCompRecordsRoute = FootballCompRecordsRouteImport.update({
-  id: '/records',
-  path: '/records',
-  getParentRoute: () => FootballCompRoute,
-} as any)
-const FootballCompPlayersRoute = FootballCompPlayersRouteImport.update({
-  id: '/players',
-  path: '/players',
-  getParentRoute: () => FootballCompRoute,
-} as any)
-const FootballCompHistoryRoute = FootballCompHistoryRouteImport.update({
-  id: '/history',
-  path: '/history',
-  getParentRoute: () => FootballCompRoute,
-} as any)
-const FootballCompFixturesRoute = FootballCompFixturesRouteImport.update({
-  id: '/fixtures',
-  path: '/fixtures',
-  getParentRoute: () => FootballCompRoute,
-} as any)
-const CricketTournamentsSlugRoute = CricketTournamentsSlugRouteImport.update({
-  id: '/tournaments/$slug',
-  path: '/tournaments/$slug',
   getParentRoute: () => CricketRoute,
 } as any)
-const CricketTeamsSlugRoute = CricketTeamsSlugRouteImport.update({
-  id: '/teams/$slug',
-  path: '/teams/$slug',
-  getParentRoute: () => CricketRoute,
+const FootballIndexRoute = FootballIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => FootballRoute,
 } as any)
-const CricketTeamHistorySlugRoute = CricketTeamHistorySlugRouteImport.update({
-  id: '/team-history/$slug',
-  path: '/team-history/$slug',
-  getParentRoute: () => CricketRoute,
+const FootballCompRoute = FootballCompRouteImport.update({
+  id: '/$comp',
+  path: '/$comp',
+  getParentRoute: () => FootballRoute,
 } as any)
-const CricketSeriesIdRoute = CricketSeriesIdRouteImport.update({
-  id: '/series/$id',
-  path: '/series/$id',
-  getParentRoute: () => CricketRoute,
+const FootballMineRoute = FootballMineRouteImport.update({
+  id: '/mine',
+  path: '/mine',
+  getParentRoute: () => FootballRoute,
 } as any)
-const CricketRecordsCategoryRoute = CricketRecordsCategoryRouteImport.update({
-  id: '/records/$category',
-  path: '/records/$category',
-  getParentRoute: () => CricketRoute,
+const FootballVenuesRoute = FootballVenuesRouteImport.update({
+  id: '/venues',
+  path: '/venues',
+  getParentRoute: () => FootballRoute,
 } as any)
-const CricketPlayersSlugRoute = CricketPlayersSlugRouteImport.update({
-  id: '/players/$slug',
-  path: '/players/$slug',
-  getParentRoute: () => CricketRoute,
+const GuidesIndexRoute = GuidesIndexRouteImport.update({
+  id: '/guides/',
+  path: '/guides/',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const CricketMatchIdRoute = CricketMatchIdRouteImport.update({
-  id: '/match/$id',
-  path: '/match/$id',
-  getParentRoute: () => CricketRoute,
+const GuidesSlugRoute = GuidesSlugRouteImport.update({
+  id: '/guides/$slug',
+  path: '/guides/$slug',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const CricketIplStandingsRoute = CricketIplStandingsRouteImport.update({
-  id: '/ipl/standings',
-  path: '/ipl/standings',
-  getParentRoute: () => CricketRoute,
+const HighlightsIndexRoute = HighlightsIndexRouteImport.update({
+  id: '/highlights/',
+  path: '/highlights/',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const CricketIplScoresRoute = CricketIplScoresRouteImport.update({
-  id: '/ipl/scores',
-  path: '/ipl/scores',
-  getParentRoute: () => CricketRoute,
-} as any)
-const CricketIplRecordsRoute = CricketIplRecordsRouteImport.update({
-  id: '/ipl/records',
-  path: '/ipl/records',
-  getParentRoute: () => CricketRoute,
-} as any)
-const CricketIplPlayersRoute = CricketIplPlayersRouteImport.update({
-  id: '/ipl/players',
-  path: '/ipl/players',
-  getParentRoute: () => CricketRoute,
-} as any)
-const CricketIplHistoryRoute = CricketIplHistoryRouteImport.update({
-  id: '/ipl/history',
-  path: '/ipl/history',
-  getParentRoute: () => CricketRoute,
-} as any)
-const CricketHighlightsSlugRoute = CricketHighlightsSlugRouteImport.update({
+const HighlightsSlugRoute = HighlightsSlugRouteImport.update({
   id: '/highlights/$slug',
   path: '/highlights/$slug',
-  getParentRoute: () => CricketRoute,
-} as any)
-const ArchiveSportYearRoute = ArchiveSportYearRouteImport.update({
-  id: '/archive/$sport/$year',
-  path: '/archive/$sport/$year',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPublicTrackClickRoute = ApiPublicTrackClickRouteImport.update({
-  id: '/api/public/track-click',
-  path: '/api/public/track-click',
+const LiveSportRoute = LiveSportRouteImport.update({
+  id: '/live/$sport',
+  path: '/live/$sport',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPublicSyncSportsRoute = ApiPublicSyncSportsRouteImport.update({
-  id: '/api/public/sync-sports',
-  path: '/api/public/sync-sports',
+const LiveTodayRoute = LiveTodayRouteImport.update({
+  id: '/live/today',
+  path: '/live/today',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPublicSeoHealthRoute = ApiPublicSeoHealthRouteImport.update({
-  id: '/api/public/seo-health',
-  path: '/api/public/seo-health',
+const MlbIndexRoute = MlbIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => MlbRoute,
+} as any)
+const MlbChampionsRoute = MlbChampionsRouteImport.update({
+  id: '/champions',
+  path: '/champions',
+  getParentRoute: () => MlbRoute,
+} as any)
+const MlbHistoryRoute = MlbHistoryRouteImport.update({
+  id: '/history',
+  path: '/history',
+  getParentRoute: () => MlbRoute,
+} as any)
+const MlbNewsRoute = MlbNewsRouteImport.update({
+  id: '/news',
+  path: '/news',
+  getParentRoute: () => MlbRoute,
+} as any)
+const MlbPlayersRoute = MlbPlayersRouteImport.update({
+  id: '/players',
+  path: '/players',
+  getParentRoute: () => MlbRoute,
+} as any)
+const MlbPostseasonRoute = MlbPostseasonRouteImport.update({
+  id: '/postseason',
+  path: '/postseason',
+  getParentRoute: () => MlbRoute,
+} as any)
+const MlbScoresRoute = MlbScoresRouteImport.update({
+  id: '/scores',
+  path: '/scores',
+  getParentRoute: () => MlbRoute,
+} as any)
+const MlbStandingsRoute = MlbStandingsRouteImport.update({
+  id: '/standings',
+  path: '/standings',
+  getParentRoute: () => MlbRoute,
+} as any)
+const MlbTeamsRoute = MlbTeamsRouteImport.update({
+  id: '/teams',
+  path: '/teams',
+  getParentRoute: () => MlbRoute,
+} as any)
+const MlsIndexRoute = MlsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => MlsRoute,
+} as any)
+const MlsChampionsRoute = MlsChampionsRouteImport.update({
+  id: '/champions',
+  path: '/champions',
+  getParentRoute: () => MlsRoute,
+} as any)
+const MlsHistoryRoute = MlsHistoryRouteImport.update({
+  id: '/history',
+  path: '/history',
+  getParentRoute: () => MlsRoute,
+} as any)
+const MlsLeadersRoute = MlsLeadersRouteImport.update({
+  id: '/leaders',
+  path: '/leaders',
+  getParentRoute: () => MlsRoute,
+} as any)
+const MlsNewsRoute = MlsNewsRouteImport.update({
+  id: '/news',
+  path: '/news',
+  getParentRoute: () => MlsRoute,
+} as any)
+const MlsScoresRoute = MlsScoresRouteImport.update({
+  id: '/scores',
+  path: '/scores',
+  getParentRoute: () => MlsRoute,
+} as any)
+const MlsStandingsRoute = MlsStandingsRouteImport.update({
+  id: '/standings',
+  path: '/standings',
+  getParentRoute: () => MlsRoute,
+} as any)
+const MlsTeamsRoute = MlsTeamsRouteImport.update({
+  id: '/teams',
+  path: '/teams',
+  getParentRoute: () => MlsRoute,
+} as any)
+const NbaIndexRoute = NbaIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => NbaRoute,
+} as any)
+const NbaChampionsRoute = NbaChampionsRouteImport.update({
+  id: '/champions',
+  path: '/champions',
+  getParentRoute: () => NbaRoute,
+} as any)
+const NbaHistoryRoute = NbaHistoryRouteImport.update({
+  id: '/history',
+  path: '/history',
+  getParentRoute: () => NbaRoute,
+} as any)
+const NbaLeadersRoute = NbaLeadersRouteImport.update({
+  id: '/leaders',
+  path: '/leaders',
+  getParentRoute: () => NbaRoute,
+} as any)
+const NbaNewsRoute = NbaNewsRouteImport.update({
+  id: '/news',
+  path: '/news',
+  getParentRoute: () => NbaRoute,
+} as any)
+const NbaScoresRoute = NbaScoresRouteImport.update({
+  id: '/scores',
+  path: '/scores',
+  getParentRoute: () => NbaRoute,
+} as any)
+const NbaStandingsRoute = NbaStandingsRouteImport.update({
+  id: '/standings',
+  path: '/standings',
+  getParentRoute: () => NbaRoute,
+} as any)
+const NbaTeamsRoute = NbaTeamsRouteImport.update({
+  id: '/teams',
+  path: '/teams',
+  getParentRoute: () => NbaRoute,
+} as any)
+const NewsIndexRoute = NewsIndexRouteImport.update({
+  id: '/news/',
+  path: '/news/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPublicIndexnowPingRoute = ApiPublicIndexnowPingRouteImport.update({
-  id: '/api/public/indexnow-ping',
-  path: '/api/public/indexnow-ping',
+const NewsSlugRoute = NewsSlugRouteImport.update({
+  id: '/news/$slug',
+  path: '/news/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NhlIndexRoute = NhlIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => NhlRoute,
+} as any)
+const NhlChampionsRoute = NhlChampionsRouteImport.update({
+  id: '/champions',
+  path: '/champions',
+  getParentRoute: () => NhlRoute,
+} as any)
+const NhlHistoryRoute = NhlHistoryRouteImport.update({
+  id: '/history',
+  path: '/history',
+  getParentRoute: () => NhlRoute,
+} as any)
+const NhlLeadersRoute = NhlLeadersRouteImport.update({
+  id: '/leaders',
+  path: '/leaders',
+  getParentRoute: () => NhlRoute,
+} as any)
+const NhlNewsRoute = NhlNewsRouteImport.update({
+  id: '/news',
+  path: '/news',
+  getParentRoute: () => NhlRoute,
+} as any)
+const NhlScoresRoute = NhlScoresRouteImport.update({
+  id: '/scores',
+  path: '/scores',
+  getParentRoute: () => NhlRoute,
+} as any)
+const NhlStandingsRoute = NhlStandingsRouteImport.update({
+  id: '/standings',
+  path: '/standings',
+  getParentRoute: () => NhlRoute,
+} as any)
+const NhlTeamsRoute = NhlTeamsRouteImport.update({
+  id: '/teams',
+  path: '/teams',
+  getParentRoute: () => NhlRoute,
+} as any)
+const RobotsTxtRoute = RobotsTxtRouteImport.update({
+  id: '/robots/txt',
+  path: '/robots/txt',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicIndexnowAutoRoute = ApiPublicIndexnowAutoRouteImport.update({
+  id: '/api/public/indexnow-auto',
+  path: '/api/public/indexnow-auto',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPublicIndexnowKeyDottxtRoute =
@@ -966,76 +569,412 @@ const ApiPublicIndexnowKeyDottxtRoute =
     path: '/api/public/indexnow-key.txt',
     getParentRoute: () => rootRouteImport,
   } as any)
-const ApiPublicIndexnowAutoRoute = ApiPublicIndexnowAutoRouteImport.update({
-  id: '/api/public/indexnow-auto',
-  path: '/api/public/indexnow-auto',
+const ApiPublicIndexnowPingRoute = ApiPublicIndexnowPingRouteImport.update({
+  id: '/api/public/indexnow-ping',
+  path: '/api/public/indexnow-ping',
   getParentRoute: () => rootRouteImport,
 } as any)
-const CricketIplTeamsIndexRoute = CricketIplTeamsIndexRouteImport.update({
-  id: '/ipl/teams/',
-  path: '/ipl/teams/',
+const ApiPublicSeoHealthRoute = ApiPublicSeoHealthRouteImport.update({
+  id: '/api/public/seo-health',
+  path: '/api/public/seo-health',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicSyncSportsRoute = ApiPublicSyncSportsRouteImport.update({
+  id: '/api/public/sync-sports',
+  path: '/api/public/sync-sports',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicTrackClickRoute = ApiPublicTrackClickRouteImport.update({
+  id: '/api/public/track-click',
+  path: '/api/public/track-click',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ArchiveSportYearRoute = ArchiveSportYearRouteImport.update({
+  id: '/archive/$sport/$year',
+  path: '/archive/$sport/$year',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CricketHighlightsIndexRoute = CricketHighlightsIndexRouteImport.update({
+  id: '/highlights/',
+  path: '/highlights/',
   getParentRoute: () => CricketRoute,
 } as any)
-const FootballPlayersSlugWorldCupChar123yearChar125Route =
-  FootballPlayersSlugWorldCupChar123yearChar125RouteImport.update({
-    id: '/world-cup-{$year}',
-    path: '/world-cup-{$year}',
-    getParentRoute: () => FootballPlayersSlugRoute,
-  } as any)
-const FootballCountriesSlugWorldCupChar123yearChar125Route =
-  FootballCountriesSlugWorldCupChar123yearChar125RouteImport.update({
-    id: '/countries/$slug/world-cup-{$year}',
-    path: '/countries/$slug/world-cup-{$year}',
-    getParentRoute: () => FootballRoute,
-  } as any)
-const FootballCompTeamsTeamIdRoute = FootballCompTeamsTeamIdRouteImport.update({
-  id: '/$teamId',
-  path: '/$teamId',
-  getParentRoute: () => FootballCompTeamsRoute,
-} as any)
-const FootballCompSeasonsYearRoute = FootballCompSeasonsYearRouteImport.update({
-  id: '/seasons/$year',
-  path: '/seasons/$year',
-  getParentRoute: () => FootballCompRoute,
-} as any)
-const FootballCompRecordsDecadesRoute =
-  FootballCompRecordsDecadesRouteImport.update({
-    id: '/decades',
-    path: '/decades',
-    getParentRoute: () => FootballCompRecordsRoute,
-  } as any)
-const FootballCompRecordsCategoryRoute =
-  FootballCompRecordsCategoryRouteImport.update({
-    id: '/$category',
-    path: '/$category',
-    getParentRoute: () => FootballCompRecordsRoute,
-  } as any)
-const FootballCompPlayersPlayerIdRoute =
-  FootballCompPlayersPlayerIdRouteImport.update({
-    id: '/$playerId',
-    path: '/$playerId',
-    getParentRoute: () => FootballCompPlayersRoute,
-  } as any)
-const FootballCompMatchesMatchIdRoute =
-  FootballCompMatchesMatchIdRouteImport.update({
-    id: '/matches/$matchId',
-    path: '/matches/$matchId',
-    getParentRoute: () => FootballCompRoute,
-  } as any)
-const FootballCompHistoryYearRoute = FootballCompHistoryYearRouteImport.update({
-  id: '/$year',
-  path: '/$year',
-  getParentRoute: () => FootballCompHistoryRoute,
-} as any)
-const FootballCompH2hMatchupRoute = FootballCompH2hMatchupRouteImport.update({
-  id: '/h2h/$matchup',
-  path: '/h2h/$matchup',
-  getParentRoute: () => FootballCompRoute,
-} as any)
-const CricketIplTeamsTeamIdRoute = CricketIplTeamsTeamIdRouteImport.update({
-  id: '/ipl/teams/$teamId',
-  path: '/ipl/teams/$teamId',
+const CricketHighlightsSlugRoute = CricketHighlightsSlugRouteImport.update({
+  id: '/highlights/$slug',
+  path: '/highlights/$slug',
   getParentRoute: () => CricketRoute,
+} as any)
+const CricketIplIndexRoute = CricketIplIndexRouteImport.update({
+  id: '/ipl/',
+  path: '/ipl/',
+  getParentRoute: () => CricketRoute,
+} as any)
+const CricketIplHistoryRoute = CricketIplHistoryRouteImport.update({
+  id: '/ipl/history',
+  path: '/ipl/history',
+  getParentRoute: () => CricketRoute,
+} as any)
+const CricketIplPlayersRoute = CricketIplPlayersRouteImport.update({
+  id: '/ipl/players',
+  path: '/ipl/players',
+  getParentRoute: () => CricketRoute,
+} as any)
+const CricketIplRecordsRoute = CricketIplRecordsRouteImport.update({
+  id: '/ipl/records',
+  path: '/ipl/records',
+  getParentRoute: () => CricketRoute,
+} as any)
+const CricketIplScoresRoute = CricketIplScoresRouteImport.update({
+  id: '/ipl/scores',
+  path: '/ipl/scores',
+  getParentRoute: () => CricketRoute,
+} as any)
+const CricketIplStandingsRoute = CricketIplStandingsRouteImport.update({
+  id: '/ipl/standings',
+  path: '/ipl/standings',
+  getParentRoute: () => CricketRoute,
+} as any)
+const CricketMatchIdRoute = CricketMatchIdRouteImport.update({
+  id: '/match/$id',
+  path: '/match/$id',
+  getParentRoute: () => CricketRoute,
+} as any)
+const CricketPlayersIndexRoute = CricketPlayersIndexRouteImport.update({
+  id: '/players/',
+  path: '/players/',
+  getParentRoute: () => CricketRoute,
+} as any)
+const CricketPlayersSlugRoute = CricketPlayersSlugRouteImport.update({
+  id: '/players/$slug',
+  path: '/players/$slug',
+  getParentRoute: () => CricketRoute,
+} as any)
+const CricketRecordsIndexRoute = CricketRecordsIndexRouteImport.update({
+  id: '/records/',
+  path: '/records/',
+  getParentRoute: () => CricketRoute,
+} as any)
+const CricketRecordsCategoryRoute = CricketRecordsCategoryRouteImport.update({
+  id: '/records/$category',
+  path: '/records/$category',
+  getParentRoute: () => CricketRoute,
+} as any)
+const CricketSeriesIndexRoute = CricketSeriesIndexRouteImport.update({
+  id: '/series/',
+  path: '/series/',
+  getParentRoute: () => CricketRoute,
+} as any)
+const CricketSeriesIdRoute = CricketSeriesIdRouteImport.update({
+  id: '/series/$id',
+  path: '/series/$id',
+  getParentRoute: () => CricketRoute,
+} as any)
+const CricketTeamHistorySlugRoute = CricketTeamHistorySlugRouteImport.update({
+  id: '/team-history/$slug',
+  path: '/team-history/$slug',
+  getParentRoute: () => CricketRoute,
+} as any)
+const CricketTeamsIndexRoute = CricketTeamsIndexRouteImport.update({
+  id: '/teams/',
+  path: '/teams/',
+  getParentRoute: () => CricketRoute,
+} as any)
+const CricketTeamsSlugRoute = CricketTeamsSlugRouteImport.update({
+  id: '/teams/$slug',
+  path: '/teams/$slug',
+  getParentRoute: () => CricketRoute,
+} as any)
+const CricketTournamentsIndexRoute = CricketTournamentsIndexRouteImport.update({
+  id: '/tournaments/',
+  path: '/tournaments/',
+  getParentRoute: () => CricketRoute,
+} as any)
+const CricketTournamentsSlugRoute = CricketTournamentsSlugRouteImport.update({
+  id: '/tournaments/$slug',
+  path: '/tournaments/$slug',
+  getParentRoute: () => CricketRoute,
+} as any)
+const FootballCompIndexRoute = FootballCompIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => FootballCompRoute,
+} as any)
+const FootballCompFixturesRoute = FootballCompFixturesRouteImport.update({
+  id: '/fixtures',
+  path: '/fixtures',
+  getParentRoute: () => FootballCompRoute,
+} as any)
+const FootballCompHistoryRoute = FootballCompHistoryRouteImport.update({
+  id: '/history',
+  path: '/history',
+  getParentRoute: () => FootballCompRoute,
+} as any)
+const FootballCompPlayersRoute = FootballCompPlayersRouteImport.update({
+  id: '/players',
+  path: '/players',
+  getParentRoute: () => FootballCompRoute,
+} as any)
+const FootballCompRecordsRoute = FootballCompRecordsRouteImport.update({
+  id: '/records',
+  path: '/records',
+  getParentRoute: () => FootballCompRoute,
+} as any)
+const FootballCompScoresRoute = FootballCompScoresRouteImport.update({
+  id: '/scores',
+  path: '/scores',
+  getParentRoute: () => FootballCompRoute,
+} as any)
+const FootballCompStandingsRoute = FootballCompStandingsRouteImport.update({
+  id: '/standings',
+  path: '/standings',
+  getParentRoute: () => FootballCompRoute,
+} as any)
+const FootballCompTeamsRoute = FootballCompTeamsRouteImport.update({
+  id: '/teams',
+  path: '/teams',
+  getParentRoute: () => FootballCompRoute,
+} as any)
+const FootballCampaignsIndexRoute = FootballCampaignsIndexRouteImport.update({
+  id: '/campaigns/',
+  path: '/campaigns/',
+  getParentRoute: () => FootballRoute,
+} as any)
+const FootballCampaignsSlugRoute = FootballCampaignsSlugRouteImport.update({
+  id: '/campaigns/$slug',
+  path: '/campaigns/$slug',
+  getParentRoute: () => FootballRoute,
+} as any)
+const FootballCountriesIndexRoute = FootballCountriesIndexRouteImport.update({
+  id: '/countries/',
+  path: '/countries/',
+  getParentRoute: () => FootballRoute,
+} as any)
+const FootballMatchIdRoute = FootballMatchIdRouteImport.update({
+  id: '/match/$id',
+  path: '/match/$id',
+  getParentRoute: () => FootballRoute,
+} as any)
+const FootballMatchesSlugRoute = FootballMatchesSlugRouteImport.update({
+  id: '/matches/$slug',
+  path: '/matches/$slug',
+  getParentRoute: () => FootballRoute,
+} as any)
+const FootballPlayersIndexRoute = FootballPlayersIndexRouteImport.update({
+  id: '/players/',
+  path: '/players/',
+  getParentRoute: () => FootballRoute,
+} as any)
+const FootballPlayersSlugRoute = FootballPlayersSlugRouteImport.update({
+  id: '/players/$slug',
+  path: '/players/$slug',
+  getParentRoute: () => FootballRoute,
+} as any)
+const FootballRecordsCategoryRoute = FootballRecordsCategoryRouteImport.update({
+  id: '/records/$category',
+  path: '/records/$category',
+  getParentRoute: () => FootballRoute,
+} as any)
+const FootballTeamsSlugRoute = FootballTeamsSlugRouteImport.update({
+  id: '/teams/$slug',
+  path: '/teams/$slug',
+  getParentRoute: () => FootballRoute,
+} as any)
+const FootballTopScorersIndexRoute = FootballTopScorersIndexRouteImport.update({
+  id: '/top-scorers/',
+  path: '/top-scorers/',
+  getParentRoute: () => FootballRoute,
+} as any)
+const FootballTopScorersYearRoute = FootballTopScorersYearRouteImport.update({
+  id: '/top-scorers/$year',
+  path: '/top-scorers/$year',
+  getParentRoute: () => FootballRoute,
+} as any)
+const FootballTournamentsYearRoute = FootballTournamentsYearRouteImport.update({
+  id: '/tournaments/$year',
+  path: '/tournaments/$year',
+  getParentRoute: () => FootballRoute,
+} as any)
+const MlbGameIdRoute = MlbGameIdRouteImport.update({
+  id: '/game/$id',
+  path: '/game/$id',
+  getParentRoute: () => MlbRoute,
+} as any)
+const MlbPlayerIdRoute = MlbPlayerIdRouteImport.update({
+  id: '/player/$id',
+  path: '/player/$id',
+  getParentRoute: () => MlbRoute,
+} as any)
+const MlbPlayersSlugRoute = MlbPlayersSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => MlbPlayersRoute,
+} as any)
+const MlbRecordsCategoryRoute = MlbRecordsCategoryRouteImport.update({
+  id: '/records/$category',
+  path: '/records/$category',
+  getParentRoute: () => MlbRoute,
+} as any)
+const MlbTeamHistorySlugRoute = MlbTeamHistorySlugRouteImport.update({
+  id: '/team-history/$slug',
+  path: '/team-history/$slug',
+  getParentRoute: () => MlbRoute,
+} as any)
+const MlbTeamIdRoute = MlbTeamIdRouteImport.update({
+  id: '/team/$id',
+  path: '/team/$id',
+  getParentRoute: () => MlbRoute,
+} as any)
+const MlbTeamsSlugRoute = MlbTeamsSlugRouteImport.update({
+  id: '/teams_/$slug',
+  path: '/teams/$slug',
+  getParentRoute: () => MlbRoute,
+} as any)
+const MlbWorldSeriesYearRoute = MlbWorldSeriesYearRouteImport.update({
+  id: '/world-series/$year',
+  path: '/world-series/$year',
+  getParentRoute: () => MlbRoute,
+} as any)
+const MlsCupYearRoute = MlsCupYearRouteImport.update({
+  id: '/cup/$year',
+  path: '/cup/$year',
+  getParentRoute: () => MlsRoute,
+} as any)
+const MlsGameIdRoute = MlsGameIdRouteImport.update({
+  id: '/game/$id',
+  path: '/game/$id',
+  getParentRoute: () => MlsRoute,
+} as any)
+const MlsPlayerIdRoute = MlsPlayerIdRouteImport.update({
+  id: '/player/$id',
+  path: '/player/$id',
+  getParentRoute: () => MlsRoute,
+} as any)
+const MlsPlayersSlugRoute = MlsPlayersSlugRouteImport.update({
+  id: '/players/$slug',
+  path: '/players/$slug',
+  getParentRoute: () => MlsRoute,
+} as any)
+const MlsTeamHistorySlugRoute = MlsTeamHistorySlugRouteImport.update({
+  id: '/team-history/$slug',
+  path: '/team-history/$slug',
+  getParentRoute: () => MlsRoute,
+} as any)
+const MlsTeamIdRoute = MlsTeamIdRouteImport.update({
+  id: '/team/$id',
+  path: '/team/$id',
+  getParentRoute: () => MlsRoute,
+} as any)
+const MlsTeamsSlugRoute = MlsTeamsSlugRouteImport.update({
+  id: '/teams_/$slug',
+  path: '/teams/$slug',
+  getParentRoute: () => MlsRoute,
+} as any)
+const NbaFinalsYearRoute = NbaFinalsYearRouteImport.update({
+  id: '/finals/$year',
+  path: '/finals/$year',
+  getParentRoute: () => NbaRoute,
+} as any)
+const NbaGameIdRoute = NbaGameIdRouteImport.update({
+  id: '/game/$id',
+  path: '/game/$id',
+  getParentRoute: () => NbaRoute,
+} as any)
+const NbaPlayerIdRoute = NbaPlayerIdRouteImport.update({
+  id: '/player/$id',
+  path: '/player/$id',
+  getParentRoute: () => NbaRoute,
+} as any)
+const NbaPlayersSlugRoute = NbaPlayersSlugRouteImport.update({
+  id: '/players/$slug',
+  path: '/players/$slug',
+  getParentRoute: () => NbaRoute,
+} as any)
+const NbaTeamHistorySlugRoute = NbaTeamHistorySlugRouteImport.update({
+  id: '/team-history/$slug',
+  path: '/team-history/$slug',
+  getParentRoute: () => NbaRoute,
+} as any)
+const NbaTeamIdRoute = NbaTeamIdRouteImport.update({
+  id: '/team/$id',
+  path: '/team/$id',
+  getParentRoute: () => NbaRoute,
+} as any)
+const NbaTeamsSlugRoute = NbaTeamsSlugRouteImport.update({
+  id: '/teams_/$slug',
+  path: '/teams/$slug',
+  getParentRoute: () => NbaRoute,
+} as any)
+const NhlGameIdRoute = NhlGameIdRouteImport.update({
+  id: '/game/$id',
+  path: '/game/$id',
+  getParentRoute: () => NhlRoute,
+} as any)
+const NhlPlayerIdRoute = NhlPlayerIdRouteImport.update({
+  id: '/player/$id',
+  path: '/player/$id',
+  getParentRoute: () => NhlRoute,
+} as any)
+const NhlPlayersSlugRoute = NhlPlayersSlugRouteImport.update({
+  id: '/players/$slug',
+  path: '/players/$slug',
+  getParentRoute: () => NhlRoute,
+} as any)
+const NhlStanleyCupYearRoute = NhlStanleyCupYearRouteImport.update({
+  id: '/stanley-cup/$year',
+  path: '/stanley-cup/$year',
+  getParentRoute: () => NhlRoute,
+} as any)
+const NhlTeamHistorySlugRoute = NhlTeamHistorySlugRouteImport.update({
+  id: '/team-history/$slug',
+  path: '/team-history/$slug',
+  getParentRoute: () => NhlRoute,
+} as any)
+const NhlTeamIdRoute = NhlTeamIdRouteImport.update({
+  id: '/team/$id',
+  path: '/team/$id',
+  getParentRoute: () => NhlRoute,
+} as any)
+const NhlTeamsSlugRoute = NhlTeamsSlugRouteImport.update({
+  id: '/teams_/$slug',
+  path: '/teams/$slug',
+  getParentRoute: () => NhlRoute,
+} as any)
+const OgTypeSlugDotsvgRoute = OgTypeSlugDotsvgRouteImport.update({
+  id: '/og/$type/$slug.svg',
+  path: '/og/$type/$slug.svg',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PlayerSportSlugRoute = PlayerSportSlugRouteImport.update({
+  id: '/player/$sport/$slug',
+  path: '/player/$sport/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TeamSportSlugRoute = TeamSportSlugRouteImport.update({
+  id: '/team/$sport/$slug',
+  path: '/team/$sport/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TournamentsTournamentLeaderboardRoute =
+  TournamentsTournamentLeaderboardRouteImport.update({
+    id: '/tournaments/$tournament/$leaderboard',
+    path: '/tournaments/$tournament/$leaderboard',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const TournamentsFifaWorldCup2026StageRoute =
+  TournamentsFifaWorldCup2026StageRouteImport.update({
+    id: '/tournaments/fifa-world-cup-2026/$stage',
+    path: '/tournaments/fifa-world-cup-2026/$stage',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const VsSportMatchupRoute = VsSportMatchupRouteImport.update({
+  id: '/vs/$sport/$matchup',
+  path: '/vs/$sport/$matchup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicHooksGscSyncRoute = ApiPublicHooksGscSyncRouteImport.update({
+  id: '/api/public/hooks/gsc-sync',
+  path: '/api/public/hooks/gsc-sync',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPublicHooksWeeklyDigestRoute =
   ApiPublicHooksWeeklyDigestRouteImport.update({
@@ -1043,11 +982,72 @@ const ApiPublicHooksWeeklyDigestRoute =
     path: '/api/public/hooks/weekly-digest',
     getParentRoute: () => rootRouteImport,
   } as any)
-const ApiPublicHooksGscSyncRoute = ApiPublicHooksGscSyncRouteImport.update({
-  id: '/api/public/hooks/gsc-sync',
-  path: '/api/public/hooks/gsc-sync',
-  getParentRoute: () => rootRouteImport,
+const CricketIplTeamsIndexRoute = CricketIplTeamsIndexRouteImport.update({
+  id: '/ipl/teams/',
+  path: '/ipl/teams/',
+  getParentRoute: () => CricketRoute,
 } as any)
+const CricketIplTeamsTeamIdRoute = CricketIplTeamsTeamIdRouteImport.update({
+  id: '/ipl/teams/$teamId',
+  path: '/ipl/teams/$teamId',
+  getParentRoute: () => CricketRoute,
+} as any)
+const FootballCompH2hMatchupRoute = FootballCompH2hMatchupRouteImport.update({
+  id: '/h2h/$matchup',
+  path: '/h2h/$matchup',
+  getParentRoute: () => FootballCompRoute,
+} as any)
+const FootballCompHistoryYearRoute = FootballCompHistoryYearRouteImport.update({
+  id: '/$year',
+  path: '/$year',
+  getParentRoute: () => FootballCompHistoryRoute,
+} as any)
+const FootballCompMatchesMatchIdRoute =
+  FootballCompMatchesMatchIdRouteImport.update({
+    id: '/matches/$matchId',
+    path: '/matches/$matchId',
+    getParentRoute: () => FootballCompRoute,
+  } as any)
+const FootballCompPlayersPlayerIdRoute =
+  FootballCompPlayersPlayerIdRouteImport.update({
+    id: '/$playerId',
+    path: '/$playerId',
+    getParentRoute: () => FootballCompPlayersRoute,
+  } as any)
+const FootballCompRecordsCategoryRoute =
+  FootballCompRecordsCategoryRouteImport.update({
+    id: '/$category',
+    path: '/$category',
+    getParentRoute: () => FootballCompRecordsRoute,
+  } as any)
+const FootballCompRecordsDecadesRoute =
+  FootballCompRecordsDecadesRouteImport.update({
+    id: '/decades',
+    path: '/decades',
+    getParentRoute: () => FootballCompRecordsRoute,
+  } as any)
+const FootballCompSeasonsYearRoute = FootballCompSeasonsYearRouteImport.update({
+  id: '/seasons/$year',
+  path: '/seasons/$year',
+  getParentRoute: () => FootballCompRoute,
+} as any)
+const FootballCompTeamsTeamIdRoute = FootballCompTeamsTeamIdRouteImport.update({
+  id: '/$teamId',
+  path: '/$teamId',
+  getParentRoute: () => FootballCompTeamsRoute,
+} as any)
+const FootballCountriesSlugWorldCupChar123yearChar125Route =
+  FootballCountriesSlugWorldCupChar123yearChar125RouteImport.update({
+    id: '/countries/$slug/world-cup-{$year}',
+    path: '/countries/$slug/world-cup-{$year}',
+    getParentRoute: () => FootballRoute,
+  } as any)
+const FootballPlayersSlugWorldCupChar123yearChar125Route =
+  FootballPlayersSlugWorldCupChar123yearChar125RouteImport.update({
+    id: '/world-cup-{$year}',
+    path: '/world-cup-{$year}',
+    getParentRoute: () => FootballPlayersSlugRoute,
+  } as any)
 const FootballCompTeamsTeamIdSeasonChar123yearChar125Route =
   FootballCompTeamsTeamIdSeasonChar123yearChar125RouteImport.update({
     id: '/season-{$year}',
@@ -2143,165 +2143,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/unsubscribe': {
-      id: '/unsubscribe'
-      path: '/unsubscribe'
-      fullPath: '/unsubscribe'
-      preLoaderRoute: typeof UnsubscribeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/terms': {
-      id: '/terms'
-      path: '/terms'
-      fullPath: '/terms'
-      preLoaderRoute: typeof TermsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/sitemap.xml': {
-      id: '/sitemap.xml'
-      path: '/sitemap.xml'
-      fullPath: '/sitemap.xml'
-      preLoaderRoute: typeof SitemapDotxmlRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/sitemap-{$part}.xml': {
-      id: '/sitemap-{$part}.xml'
-      path: '/sitemap-{$part}.xml'
-      fullPath: '/sitemap-{$part}.xml'
-      preLoaderRoute: typeof SitemapChar123partChar125DotxmlRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/search': {
-      id: '/search'
-      path: '/search'
-      fullPath: '/search'
-      preLoaderRoute: typeof SearchRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/privacy': {
-      id: '/privacy'
-      path: '/privacy'
-      fullPath: '/privacy'
-      preLoaderRoute: typeof PrivacyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/premium': {
-      id: '/premium'
-      path: '/premium'
-      fullPath: '/premium'
-      preLoaderRoute: typeof PremiumRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/players': {
-      id: '/players'
-      path: '/players'
-      fullPath: '/players'
-      preLoaderRoute: typeof PlayersRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/nhl': {
-      id: '/nhl'
-      path: '/nhl'
-      fullPath: '/nhl'
-      preLoaderRoute: typeof NhlRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/nba': {
-      id: '/nba'
-      path: '/nba'
-      fullPath: '/nba'
-      preLoaderRoute: typeof NbaRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/mls': {
-      id: '/mls'
-      path: '/mls'
-      fullPath: '/mls'
-      preLoaderRoute: typeof MlsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/mlb': {
-      id: '/mlb'
-      path: '/mlb'
-      fullPath: '/mlb'
-      preLoaderRoute: typeof MlbRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/mine': {
-      id: '/mine'
-      path: '/mine'
-      fullPath: '/mine'
-      preLoaderRoute: typeof MineRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/football': {
-      id: '/football'
-      path: '/football'
-      fullPath: '/football'
-      preLoaderRoute: typeof FootballRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/feed.xml': {
-      id: '/feed.xml'
-      path: '/feed.xml'
-      fullPath: '/feed.xml'
-      preLoaderRoute: typeof FeedDotxmlRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/disclaimer': {
-      id: '/disclaimer'
-      path: '/disclaimer'
-      fullPath: '/disclaimer'
-      preLoaderRoute: typeof DisclaimerRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/cricket': {
-      id: '/cricket'
-      path: '/cricket'
-      fullPath: '/cricket'
-      preLoaderRoute: typeof CricketRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/cookies': {
-      id: '/cookies'
-      path: '/cookies'
-      fullPath: '/cookies'
-      preLoaderRoute: typeof CookiesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/contact': {
-      id: '/contact'
-      path: '/contact'
-      fullPath: '/contact'
-      preLoaderRoute: typeof ContactRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/auth': {
-      id: '/auth'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AuthRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/ads.txt': {
-      id: '/ads.txt'
-      path: '/ads.txt'
-      fullPath: '/ads.txt'
-      preLoaderRoute: typeof AdsDottxtRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin': {
-      id: '/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AdminRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/about': {
-      id: '/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof AboutRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/$key.txt': {
@@ -2311,354 +2157,172 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof KeyDottxtRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/nhl/': {
-      id: '/nhl/'
-      path: '/'
-      fullPath: '/nhl/'
-      preLoaderRoute: typeof NhlIndexRouteImport
-      parentRoute: typeof NhlRoute
-    }
-    '/news/': {
-      id: '/news/'
-      path: '/news'
-      fullPath: '/news/'
-      preLoaderRoute: typeof NewsIndexRouteImport
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/nba/': {
-      id: '/nba/'
-      path: '/'
-      fullPath: '/nba/'
-      preLoaderRoute: typeof NbaIndexRouteImport
-      parentRoute: typeof NbaRoute
-    }
-    '/mls/': {
-      id: '/mls/'
-      path: '/'
-      fullPath: '/mls/'
-      preLoaderRoute: typeof MlsIndexRouteImport
-      parentRoute: typeof MlsRoute
-    }
-    '/mlb/': {
-      id: '/mlb/'
-      path: '/'
-      fullPath: '/mlb/'
-      preLoaderRoute: typeof MlbIndexRouteImport
-      parentRoute: typeof MlbRoute
-    }
-    '/highlights/': {
-      id: '/highlights/'
-      path: '/highlights'
-      fullPath: '/highlights/'
-      preLoaderRoute: typeof HighlightsIndexRouteImport
+    '/ads.txt': {
+      id: '/ads.txt'
+      path: '/ads.txt'
+      fullPath: '/ads.txt'
+      preLoaderRoute: typeof AdsDottxtRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/guides/': {
-      id: '/guides/'
-      path: '/guides'
-      fullPath: '/guides/'
-      preLoaderRoute: typeof GuidesIndexRouteImport
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/football/': {
-      id: '/football/'
-      path: '/'
-      fullPath: '/football/'
-      preLoaderRoute: typeof FootballIndexRouteImport
-      parentRoute: typeof FootballRoute
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cookies': {
+      id: '/cookies'
+      path: '/cookies'
+      fullPath: '/cookies'
+      preLoaderRoute: typeof CookiesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cricket': {
+      id: '/cricket'
+      path: '/cricket'
+      fullPath: '/cricket'
+      preLoaderRoute: typeof CricketRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/disclaimer': {
+      id: '/disclaimer'
+      path: '/disclaimer'
+      fullPath: '/disclaimer'
+      preLoaderRoute: typeof DisclaimerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/feed.xml': {
+      id: '/feed.xml'
+      path: '/feed.xml'
+      fullPath: '/feed.xml'
+      preLoaderRoute: typeof FeedDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/football': {
+      id: '/football'
+      path: '/football'
+      fullPath: '/football'
+      preLoaderRoute: typeof FootballRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mine': {
+      id: '/mine'
+      path: '/mine'
+      fullPath: '/mine'
+      preLoaderRoute: typeof MineRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mlb': {
+      id: '/mlb'
+      path: '/mlb'
+      fullPath: '/mlb'
+      preLoaderRoute: typeof MlbRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mls': {
+      id: '/mls'
+      path: '/mls'
+      fullPath: '/mls'
+      preLoaderRoute: typeof MlsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/nba': {
+      id: '/nba'
+      path: '/nba'
+      fullPath: '/nba'
+      preLoaderRoute: typeof NbaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/nhl': {
+      id: '/nhl'
+      path: '/nhl'
+      fullPath: '/nhl'
+      preLoaderRoute: typeof NhlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/players': {
+      id: '/players'
+      path: '/players'
+      fullPath: '/players'
+      preLoaderRoute: typeof PlayersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/premium': {
+      id: '/premium'
+      path: '/premium'
+      fullPath: '/premium'
+      preLoaderRoute: typeof PremiumRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/search': {
+      id: '/search'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof SearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap-{$part}.xml': {
+      id: '/sitemap-{$part}.xml'
+      path: '/sitemap-{$part}.xml'
+      fullPath: '/sitemap-{$part}.xml'
+      preLoaderRoute: typeof SitemapChar123partChar125DotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/unsubscribe': {
+      id: '/unsubscribe'
+      path: '/unsubscribe'
+      fullPath: '/unsubscribe'
+      preLoaderRoute: typeof UnsubscribeRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/cricket/': {
       id: '/cricket/'
       path: '/'
       fullPath: '/cricket/'
       preLoaderRoute: typeof CricketIndexRouteImport
-      parentRoute: typeof CricketRoute
-    }
-    '/robots/txt': {
-      id: '/robots/txt'
-      path: '/robots/txt'
-      fullPath: '/robots/txt'
-      preLoaderRoute: typeof RobotsTxtRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/nhl/teams': {
-      id: '/nhl/teams'
-      path: '/teams'
-      fullPath: '/nhl/teams'
-      preLoaderRoute: typeof NhlTeamsRouteImport
-      parentRoute: typeof NhlRoute
-    }
-    '/nhl/standings': {
-      id: '/nhl/standings'
-      path: '/standings'
-      fullPath: '/nhl/standings'
-      preLoaderRoute: typeof NhlStandingsRouteImport
-      parentRoute: typeof NhlRoute
-    }
-    '/nhl/scores': {
-      id: '/nhl/scores'
-      path: '/scores'
-      fullPath: '/nhl/scores'
-      preLoaderRoute: typeof NhlScoresRouteImport
-      parentRoute: typeof NhlRoute
-    }
-    '/nhl/news': {
-      id: '/nhl/news'
-      path: '/news'
-      fullPath: '/nhl/news'
-      preLoaderRoute: typeof NhlNewsRouteImport
-      parentRoute: typeof NhlRoute
-    }
-    '/nhl/leaders': {
-      id: '/nhl/leaders'
-      path: '/leaders'
-      fullPath: '/nhl/leaders'
-      preLoaderRoute: typeof NhlLeadersRouteImport
-      parentRoute: typeof NhlRoute
-    }
-    '/nhl/history': {
-      id: '/nhl/history'
-      path: '/history'
-      fullPath: '/nhl/history'
-      preLoaderRoute: typeof NhlHistoryRouteImport
-      parentRoute: typeof NhlRoute
-    }
-    '/nhl/champions': {
-      id: '/nhl/champions'
-      path: '/champions'
-      fullPath: '/nhl/champions'
-      preLoaderRoute: typeof NhlChampionsRouteImport
-      parentRoute: typeof NhlRoute
-    }
-    '/news/$slug': {
-      id: '/news/$slug'
-      path: '/news/$slug'
-      fullPath: '/news/$slug'
-      preLoaderRoute: typeof NewsSlugRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/nba/teams': {
-      id: '/nba/teams'
-      path: '/teams'
-      fullPath: '/nba/teams'
-      preLoaderRoute: typeof NbaTeamsRouteImport
-      parentRoute: typeof NbaRoute
-    }
-    '/nba/standings': {
-      id: '/nba/standings'
-      path: '/standings'
-      fullPath: '/nba/standings'
-      preLoaderRoute: typeof NbaStandingsRouteImport
-      parentRoute: typeof NbaRoute
-    }
-    '/nba/scores': {
-      id: '/nba/scores'
-      path: '/scores'
-      fullPath: '/nba/scores'
-      preLoaderRoute: typeof NbaScoresRouteImport
-      parentRoute: typeof NbaRoute
-    }
-    '/nba/news': {
-      id: '/nba/news'
-      path: '/news'
-      fullPath: '/nba/news'
-      preLoaderRoute: typeof NbaNewsRouteImport
-      parentRoute: typeof NbaRoute
-    }
-    '/nba/leaders': {
-      id: '/nba/leaders'
-      path: '/leaders'
-      fullPath: '/nba/leaders'
-      preLoaderRoute: typeof NbaLeadersRouteImport
-      parentRoute: typeof NbaRoute
-    }
-    '/nba/history': {
-      id: '/nba/history'
-      path: '/history'
-      fullPath: '/nba/history'
-      preLoaderRoute: typeof NbaHistoryRouteImport
-      parentRoute: typeof NbaRoute
-    }
-    '/nba/champions': {
-      id: '/nba/champions'
-      path: '/champions'
-      fullPath: '/nba/champions'
-      preLoaderRoute: typeof NbaChampionsRouteImport
-      parentRoute: typeof NbaRoute
-    }
-    '/mls/teams': {
-      id: '/mls/teams'
-      path: '/teams'
-      fullPath: '/mls/teams'
-      preLoaderRoute: typeof MlsTeamsRouteImport
-      parentRoute: typeof MlsRoute
-    }
-    '/mls/standings': {
-      id: '/mls/standings'
-      path: '/standings'
-      fullPath: '/mls/standings'
-      preLoaderRoute: typeof MlsStandingsRouteImport
-      parentRoute: typeof MlsRoute
-    }
-    '/mls/scores': {
-      id: '/mls/scores'
-      path: '/scores'
-      fullPath: '/mls/scores'
-      preLoaderRoute: typeof MlsScoresRouteImport
-      parentRoute: typeof MlsRoute
-    }
-    '/mls/news': {
-      id: '/mls/news'
-      path: '/news'
-      fullPath: '/mls/news'
-      preLoaderRoute: typeof MlsNewsRouteImport
-      parentRoute: typeof MlsRoute
-    }
-    '/mls/leaders': {
-      id: '/mls/leaders'
-      path: '/leaders'
-      fullPath: '/mls/leaders'
-      preLoaderRoute: typeof MlsLeadersRouteImport
-      parentRoute: typeof MlsRoute
-    }
-    '/mls/history': {
-      id: '/mls/history'
-      path: '/history'
-      fullPath: '/mls/history'
-      preLoaderRoute: typeof MlsHistoryRouteImport
-      parentRoute: typeof MlsRoute
-    }
-    '/mls/champions': {
-      id: '/mls/champions'
-      path: '/champions'
-      fullPath: '/mls/champions'
-      preLoaderRoute: typeof MlsChampionsRouteImport
-      parentRoute: typeof MlsRoute
-    }
-    '/mlb/teams': {
-      id: '/mlb/teams'
-      path: '/teams'
-      fullPath: '/mlb/teams'
-      preLoaderRoute: typeof MlbTeamsRouteImport
-      parentRoute: typeof MlbRoute
-    }
-    '/mlb/standings': {
-      id: '/mlb/standings'
-      path: '/standings'
-      fullPath: '/mlb/standings'
-      preLoaderRoute: typeof MlbStandingsRouteImport
-      parentRoute: typeof MlbRoute
-    }
-    '/mlb/scores': {
-      id: '/mlb/scores'
-      path: '/scores'
-      fullPath: '/mlb/scores'
-      preLoaderRoute: typeof MlbScoresRouteImport
-      parentRoute: typeof MlbRoute
-    }
-    '/mlb/postseason': {
-      id: '/mlb/postseason'
-      path: '/postseason'
-      fullPath: '/mlb/postseason'
-      preLoaderRoute: typeof MlbPostseasonRouteImport
-      parentRoute: typeof MlbRoute
-    }
-    '/mlb/players': {
-      id: '/mlb/players'
-      path: '/players'
-      fullPath: '/mlb/players'
-      preLoaderRoute: typeof MlbPlayersRouteImport
-      parentRoute: typeof MlbRoute
-    }
-    '/mlb/news': {
-      id: '/mlb/news'
-      path: '/news'
-      fullPath: '/mlb/news'
-      preLoaderRoute: typeof MlbNewsRouteImport
-      parentRoute: typeof MlbRoute
-    }
-    '/mlb/history': {
-      id: '/mlb/history'
-      path: '/history'
-      fullPath: '/mlb/history'
-      preLoaderRoute: typeof MlbHistoryRouteImport
-      parentRoute: typeof MlbRoute
-    }
-    '/mlb/champions': {
-      id: '/mlb/champions'
-      path: '/champions'
-      fullPath: '/mlb/champions'
-      preLoaderRoute: typeof MlbChampionsRouteImport
-      parentRoute: typeof MlbRoute
-    }
-    '/live/today': {
-      id: '/live/today'
-      path: '/live/today'
-      fullPath: '/live/today'
-      preLoaderRoute: typeof LiveTodayRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/live/$sport': {
-      id: '/live/$sport'
-      path: '/live/$sport'
-      fullPath: '/live/$sport'
-      preLoaderRoute: typeof LiveSportRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/highlights/$slug': {
-      id: '/highlights/$slug'
-      path: '/highlights/$slug'
-      fullPath: '/highlights/$slug'
-      preLoaderRoute: typeof HighlightsSlugRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/guides/$slug': {
-      id: '/guides/$slug'
-      path: '/guides/$slug'
-      fullPath: '/guides/$slug'
-      preLoaderRoute: typeof GuidesSlugRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/football/venues': {
-      id: '/football/venues'
-      path: '/venues'
-      fullPath: '/football/venues'
-      preLoaderRoute: typeof FootballVenuesRouteImport
-      parentRoute: typeof FootballRoute
-    }
-    '/football/mine': {
-      id: '/football/mine'
-      path: '/mine'
-      fullPath: '/football/mine'
-      preLoaderRoute: typeof FootballMineRouteImport
-      parentRoute: typeof FootballRoute
-    }
-    '/football/$comp': {
-      id: '/football/$comp'
-      path: '/$comp'
-      fullPath: '/football/$comp'
-      preLoaderRoute: typeof FootballCompRouteImport
-      parentRoute: typeof FootballRoute
-    }
-    '/cricket/scores': {
-      id: '/cricket/scores'
-      path: '/scores'
-      fullPath: '/cricket/scores'
-      preLoaderRoute: typeof CricketScoresRouteImport
-      parentRoute: typeof CricketRoute
-    }
-    '/cricket/rankings': {
-      id: '/cricket/rankings'
-      path: '/rankings'
-      fullPath: '/cricket/rankings'
-      preLoaderRoute: typeof CricketRankingsRouteImport
       parentRoute: typeof CricketRoute
     }
     '/cricket/history': {
@@ -2668,571 +2332,340 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CricketHistoryRouteImport
       parentRoute: typeof CricketRoute
     }
-    '/football/top-scorers/': {
-      id: '/football/top-scorers/'
-      path: '/top-scorers'
-      fullPath: '/football/top-scorers/'
-      preLoaderRoute: typeof FootballTopScorersIndexRouteImport
-      parentRoute: typeof FootballRoute
-    }
-    '/football/players/': {
-      id: '/football/players/'
-      path: '/players'
-      fullPath: '/football/players/'
-      preLoaderRoute: typeof FootballPlayersIndexRouteImport
-      parentRoute: typeof FootballRoute
-    }
-    '/football/countries/': {
-      id: '/football/countries/'
-      path: '/countries'
-      fullPath: '/football/countries/'
-      preLoaderRoute: typeof FootballCountriesIndexRouteImport
-      parentRoute: typeof FootballRoute
-    }
-    '/football/campaigns/': {
-      id: '/football/campaigns/'
-      path: '/campaigns'
-      fullPath: '/football/campaigns/'
-      preLoaderRoute: typeof FootballCampaignsIndexRouteImport
-      parentRoute: typeof FootballRoute
-    }
-    '/football/$comp/': {
-      id: '/football/$comp/'
-      path: '/'
-      fullPath: '/football/$comp/'
-      preLoaderRoute: typeof FootballCompIndexRouteImport
-      parentRoute: typeof FootballCompRoute
-    }
-    '/cricket/tournaments/': {
-      id: '/cricket/tournaments/'
-      path: '/tournaments'
-      fullPath: '/cricket/tournaments/'
-      preLoaderRoute: typeof CricketTournamentsIndexRouteImport
+    '/cricket/rankings': {
+      id: '/cricket/rankings'
+      path: '/rankings'
+      fullPath: '/cricket/rankings'
+      preLoaderRoute: typeof CricketRankingsRouteImport
       parentRoute: typeof CricketRoute
     }
-    '/cricket/teams/': {
-      id: '/cricket/teams/'
-      path: '/teams'
-      fullPath: '/cricket/teams/'
-      preLoaderRoute: typeof CricketTeamsIndexRouteImport
-      parentRoute: typeof CricketRoute
-    }
-    '/cricket/series/': {
-      id: '/cricket/series/'
-      path: '/series'
-      fullPath: '/cricket/series/'
-      preLoaderRoute: typeof CricketSeriesIndexRouteImport
-      parentRoute: typeof CricketRoute
-    }
-    '/cricket/records/': {
-      id: '/cricket/records/'
-      path: '/records'
-      fullPath: '/cricket/records/'
-      preLoaderRoute: typeof CricketRecordsIndexRouteImport
-      parentRoute: typeof CricketRoute
-    }
-    '/cricket/players/': {
-      id: '/cricket/players/'
-      path: '/players'
-      fullPath: '/cricket/players/'
-      preLoaderRoute: typeof CricketPlayersIndexRouteImport
-      parentRoute: typeof CricketRoute
-    }
-    '/cricket/ipl/': {
-      id: '/cricket/ipl/'
-      path: '/ipl'
-      fullPath: '/cricket/ipl/'
-      preLoaderRoute: typeof CricketIplIndexRouteImport
-      parentRoute: typeof CricketRoute
-    }
-    '/cricket/highlights/': {
-      id: '/cricket/highlights/'
-      path: '/highlights'
-      fullPath: '/cricket/highlights/'
-      preLoaderRoute: typeof CricketHighlightsIndexRouteImport
-      parentRoute: typeof CricketRoute
-    }
-    '/vs/$sport/$matchup': {
-      id: '/vs/$sport/$matchup'
-      path: '/vs/$sport/$matchup'
-      fullPath: '/vs/$sport/$matchup'
-      preLoaderRoute: typeof VsSportMatchupRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/tournaments/fifa-world-cup-2026/$stage': {
-      id: '/tournaments/fifa-world-cup-2026/$stage'
-      path: '/tournaments/fifa-world-cup-2026/$stage'
-      fullPath: '/tournaments/fifa-world-cup-2026/$stage'
-      preLoaderRoute: typeof TournamentsFifaWorldCup2026StageRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/tournaments/$tournament/$leaderboard': {
-      id: '/tournaments/$tournament/$leaderboard'
-      path: '/tournaments/$tournament/$leaderboard'
-      fullPath: '/tournaments/$tournament/$leaderboard'
-      preLoaderRoute: typeof TournamentsTournamentLeaderboardRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/team/$sport/$slug': {
-      id: '/team/$sport/$slug'
-      path: '/team/$sport/$slug'
-      fullPath: '/team/$sport/$slug'
-      preLoaderRoute: typeof TeamSportSlugRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/player/$sport/$slug': {
-      id: '/player/$sport/$slug'
-      path: '/player/$sport/$slug'
-      fullPath: '/player/$sport/$slug'
-      preLoaderRoute: typeof PlayerSportSlugRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/og/$type/$slug.svg': {
-      id: '/og/$type/$slug.svg'
-      path: '/og/$type/$slug.svg'
-      fullPath: '/og/$type/$slug.svg'
-      preLoaderRoute: typeof OgTypeSlugDotsvgRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/nhl/teams_/$slug': {
-      id: '/nhl/teams_/$slug'
-      path: '/teams/$slug'
-      fullPath: '/nhl/teams/$slug'
-      preLoaderRoute: typeof NhlTeamsSlugRouteImport
-      parentRoute: typeof NhlRoute
-    }
-    '/nhl/team/$id': {
-      id: '/nhl/team/$id'
-      path: '/team/$id'
-      fullPath: '/nhl/team/$id'
-      preLoaderRoute: typeof NhlTeamIdRouteImport
-      parentRoute: typeof NhlRoute
-    }
-    '/nhl/team-history/$slug': {
-      id: '/nhl/team-history/$slug'
-      path: '/team-history/$slug'
-      fullPath: '/nhl/team-history/$slug'
-      preLoaderRoute: typeof NhlTeamHistorySlugRouteImport
-      parentRoute: typeof NhlRoute
-    }
-    '/nhl/stanley-cup/$year': {
-      id: '/nhl/stanley-cup/$year'
-      path: '/stanley-cup/$year'
-      fullPath: '/nhl/stanley-cup/$year'
-      preLoaderRoute: typeof NhlStanleyCupYearRouteImport
-      parentRoute: typeof NhlRoute
-    }
-    '/nhl/players/$slug': {
-      id: '/nhl/players/$slug'
-      path: '/players/$slug'
-      fullPath: '/nhl/players/$slug'
-      preLoaderRoute: typeof NhlPlayersSlugRouteImport
-      parentRoute: typeof NhlRoute
-    }
-    '/nhl/player/$id': {
-      id: '/nhl/player/$id'
-      path: '/player/$id'
-      fullPath: '/nhl/player/$id'
-      preLoaderRoute: typeof NhlPlayerIdRouteImport
-      parentRoute: typeof NhlRoute
-    }
-    '/nhl/game/$id': {
-      id: '/nhl/game/$id'
-      path: '/game/$id'
-      fullPath: '/nhl/game/$id'
-      preLoaderRoute: typeof NhlGameIdRouteImport
-      parentRoute: typeof NhlRoute
-    }
-    '/nba/teams_/$slug': {
-      id: '/nba/teams_/$slug'
-      path: '/teams/$slug'
-      fullPath: '/nba/teams/$slug'
-      preLoaderRoute: typeof NbaTeamsSlugRouteImport
-      parentRoute: typeof NbaRoute
-    }
-    '/nba/team/$id': {
-      id: '/nba/team/$id'
-      path: '/team/$id'
-      fullPath: '/nba/team/$id'
-      preLoaderRoute: typeof NbaTeamIdRouteImport
-      parentRoute: typeof NbaRoute
-    }
-    '/nba/team-history/$slug': {
-      id: '/nba/team-history/$slug'
-      path: '/team-history/$slug'
-      fullPath: '/nba/team-history/$slug'
-      preLoaderRoute: typeof NbaTeamHistorySlugRouteImport
-      parentRoute: typeof NbaRoute
-    }
-    '/nba/players/$slug': {
-      id: '/nba/players/$slug'
-      path: '/players/$slug'
-      fullPath: '/nba/players/$slug'
-      preLoaderRoute: typeof NbaPlayersSlugRouteImport
-      parentRoute: typeof NbaRoute
-    }
-    '/nba/player/$id': {
-      id: '/nba/player/$id'
-      path: '/player/$id'
-      fullPath: '/nba/player/$id'
-      preLoaderRoute: typeof NbaPlayerIdRouteImport
-      parentRoute: typeof NbaRoute
-    }
-    '/nba/game/$id': {
-      id: '/nba/game/$id'
-      path: '/game/$id'
-      fullPath: '/nba/game/$id'
-      preLoaderRoute: typeof NbaGameIdRouteImport
-      parentRoute: typeof NbaRoute
-    }
-    '/nba/finals/$year': {
-      id: '/nba/finals/$year'
-      path: '/finals/$year'
-      fullPath: '/nba/finals/$year'
-      preLoaderRoute: typeof NbaFinalsYearRouteImport
-      parentRoute: typeof NbaRoute
-    }
-    '/mls/teams_/$slug': {
-      id: '/mls/teams_/$slug'
-      path: '/teams/$slug'
-      fullPath: '/mls/teams/$slug'
-      preLoaderRoute: typeof MlsTeamsSlugRouteImport
-      parentRoute: typeof MlsRoute
-    }
-    '/mls/team/$id': {
-      id: '/mls/team/$id'
-      path: '/team/$id'
-      fullPath: '/mls/team/$id'
-      preLoaderRoute: typeof MlsTeamIdRouteImport
-      parentRoute: typeof MlsRoute
-    }
-    '/mls/team-history/$slug': {
-      id: '/mls/team-history/$slug'
-      path: '/team-history/$slug'
-      fullPath: '/mls/team-history/$slug'
-      preLoaderRoute: typeof MlsTeamHistorySlugRouteImport
-      parentRoute: typeof MlsRoute
-    }
-    '/mls/players/$slug': {
-      id: '/mls/players/$slug'
-      path: '/players/$slug'
-      fullPath: '/mls/players/$slug'
-      preLoaderRoute: typeof MlsPlayersSlugRouteImport
-      parentRoute: typeof MlsRoute
-    }
-    '/mls/player/$id': {
-      id: '/mls/player/$id'
-      path: '/player/$id'
-      fullPath: '/mls/player/$id'
-      preLoaderRoute: typeof MlsPlayerIdRouteImport
-      parentRoute: typeof MlsRoute
-    }
-    '/mls/game/$id': {
-      id: '/mls/game/$id'
-      path: '/game/$id'
-      fullPath: '/mls/game/$id'
-      preLoaderRoute: typeof MlsGameIdRouteImport
-      parentRoute: typeof MlsRoute
-    }
-    '/mls/cup/$year': {
-      id: '/mls/cup/$year'
-      path: '/cup/$year'
-      fullPath: '/mls/cup/$year'
-      preLoaderRoute: typeof MlsCupYearRouteImport
-      parentRoute: typeof MlsRoute
-    }
-    '/mlb/world-series/$year': {
-      id: '/mlb/world-series/$year'
-      path: '/world-series/$year'
-      fullPath: '/mlb/world-series/$year'
-      preLoaderRoute: typeof MlbWorldSeriesYearRouteImport
-      parentRoute: typeof MlbRoute
-    }
-    '/mlb/teams_/$slug': {
-      id: '/mlb/teams_/$slug'
-      path: '/teams/$slug'
-      fullPath: '/mlb/teams/$slug'
-      preLoaderRoute: typeof MlbTeamsSlugRouteImport
-      parentRoute: typeof MlbRoute
-    }
-    '/mlb/team/$id': {
-      id: '/mlb/team/$id'
-      path: '/team/$id'
-      fullPath: '/mlb/team/$id'
-      preLoaderRoute: typeof MlbTeamIdRouteImport
-      parentRoute: typeof MlbRoute
-    }
-    '/mlb/team-history/$slug': {
-      id: '/mlb/team-history/$slug'
-      path: '/team-history/$slug'
-      fullPath: '/mlb/team-history/$slug'
-      preLoaderRoute: typeof MlbTeamHistorySlugRouteImport
-      parentRoute: typeof MlbRoute
-    }
-    '/mlb/records/$category': {
-      id: '/mlb/records/$category'
-      path: '/records/$category'
-      fullPath: '/mlb/records/$category'
-      preLoaderRoute: typeof MlbRecordsCategoryRouteImport
-      parentRoute: typeof MlbRoute
-    }
-    '/mlb/players/$slug': {
-      id: '/mlb/players/$slug'
-      path: '/$slug'
-      fullPath: '/mlb/players/$slug'
-      preLoaderRoute: typeof MlbPlayersSlugRouteImport
-      parentRoute: typeof MlbPlayersRoute
-    }
-    '/mlb/player/$id': {
-      id: '/mlb/player/$id'
-      path: '/player/$id'
-      fullPath: '/mlb/player/$id'
-      preLoaderRoute: typeof MlbPlayerIdRouteImport
-      parentRoute: typeof MlbRoute
-    }
-    '/mlb/game/$id': {
-      id: '/mlb/game/$id'
-      path: '/game/$id'
-      fullPath: '/mlb/game/$id'
-      preLoaderRoute: typeof MlbGameIdRouteImport
-      parentRoute: typeof MlbRoute
-    }
-    '/football/tournaments/$year': {
-      id: '/football/tournaments/$year'
-      path: '/tournaments/$year'
-      fullPath: '/football/tournaments/$year'
-      preLoaderRoute: typeof FootballTournamentsYearRouteImport
-      parentRoute: typeof FootballRoute
-    }
-    '/football/top-scorers/$year': {
-      id: '/football/top-scorers/$year'
-      path: '/top-scorers/$year'
-      fullPath: '/football/top-scorers/$year'
-      preLoaderRoute: typeof FootballTopScorersYearRouteImport
-      parentRoute: typeof FootballRoute
-    }
-    '/football/teams/$slug': {
-      id: '/football/teams/$slug'
-      path: '/teams/$slug'
-      fullPath: '/football/teams/$slug'
-      preLoaderRoute: typeof FootballTeamsSlugRouteImport
-      parentRoute: typeof FootballRoute
-    }
-    '/football/records/$category': {
-      id: '/football/records/$category'
-      path: '/records/$category'
-      fullPath: '/football/records/$category'
-      preLoaderRoute: typeof FootballRecordsCategoryRouteImport
-      parentRoute: typeof FootballRoute
-    }
-    '/football/players/$slug': {
-      id: '/football/players/$slug'
-      path: '/players/$slug'
-      fullPath: '/football/players/$slug'
-      preLoaderRoute: typeof FootballPlayersSlugRouteImport
-      parentRoute: typeof FootballRoute
-    }
-    '/football/matches/$slug': {
-      id: '/football/matches/$slug'
-      path: '/matches/$slug'
-      fullPath: '/football/matches/$slug'
-      preLoaderRoute: typeof FootballMatchesSlugRouteImport
-      parentRoute: typeof FootballRoute
-    }
-    '/football/match/$id': {
-      id: '/football/match/$id'
-      path: '/match/$id'
-      fullPath: '/football/match/$id'
-      preLoaderRoute: typeof FootballMatchIdRouteImport
-      parentRoute: typeof FootballRoute
-    }
-    '/football/campaigns/$slug': {
-      id: '/football/campaigns/$slug'
-      path: '/campaigns/$slug'
-      fullPath: '/football/campaigns/$slug'
-      preLoaderRoute: typeof FootballCampaignsSlugRouteImport
-      parentRoute: typeof FootballRoute
-    }
-    '/football/$comp/teams': {
-      id: '/football/$comp/teams'
-      path: '/teams'
-      fullPath: '/football/$comp/teams'
-      preLoaderRoute: typeof FootballCompTeamsRouteImport
-      parentRoute: typeof FootballCompRoute
-    }
-    '/football/$comp/standings': {
-      id: '/football/$comp/standings'
-      path: '/standings'
-      fullPath: '/football/$comp/standings'
-      preLoaderRoute: typeof FootballCompStandingsRouteImport
-      parentRoute: typeof FootballCompRoute
-    }
-    '/football/$comp/scores': {
-      id: '/football/$comp/scores'
+    '/cricket/scores': {
+      id: '/cricket/scores'
       path: '/scores'
-      fullPath: '/football/$comp/scores'
-      preLoaderRoute: typeof FootballCompScoresRouteImport
-      parentRoute: typeof FootballCompRoute
-    }
-    '/football/$comp/records': {
-      id: '/football/$comp/records'
-      path: '/records'
-      fullPath: '/football/$comp/records'
-      preLoaderRoute: typeof FootballCompRecordsRouteImport
-      parentRoute: typeof FootballCompRoute
-    }
-    '/football/$comp/players': {
-      id: '/football/$comp/players'
-      path: '/players'
-      fullPath: '/football/$comp/players'
-      preLoaderRoute: typeof FootballCompPlayersRouteImport
-      parentRoute: typeof FootballCompRoute
-    }
-    '/football/$comp/history': {
-      id: '/football/$comp/history'
-      path: '/history'
-      fullPath: '/football/$comp/history'
-      preLoaderRoute: typeof FootballCompHistoryRouteImport
-      parentRoute: typeof FootballCompRoute
-    }
-    '/football/$comp/fixtures': {
-      id: '/football/$comp/fixtures'
-      path: '/fixtures'
-      fullPath: '/football/$comp/fixtures'
-      preLoaderRoute: typeof FootballCompFixturesRouteImport
-      parentRoute: typeof FootballCompRoute
-    }
-    '/cricket/tournaments/$slug': {
-      id: '/cricket/tournaments/$slug'
-      path: '/tournaments/$slug'
-      fullPath: '/cricket/tournaments/$slug'
-      preLoaderRoute: typeof CricketTournamentsSlugRouteImport
+      fullPath: '/cricket/scores'
+      preLoaderRoute: typeof CricketScoresRouteImport
       parentRoute: typeof CricketRoute
     }
-    '/cricket/teams/$slug': {
-      id: '/cricket/teams/$slug'
-      path: '/teams/$slug'
-      fullPath: '/cricket/teams/$slug'
-      preLoaderRoute: typeof CricketTeamsSlugRouteImport
-      parentRoute: typeof CricketRoute
+    '/football/': {
+      id: '/football/'
+      path: '/'
+      fullPath: '/football/'
+      preLoaderRoute: typeof FootballIndexRouteImport
+      parentRoute: typeof FootballRoute
     }
-    '/cricket/team-history/$slug': {
-      id: '/cricket/team-history/$slug'
-      path: '/team-history/$slug'
-      fullPath: '/cricket/team-history/$slug'
-      preLoaderRoute: typeof CricketTeamHistorySlugRouteImport
-      parentRoute: typeof CricketRoute
+    '/football/$comp': {
+      id: '/football/$comp'
+      path: '/$comp'
+      fullPath: '/football/$comp'
+      preLoaderRoute: typeof FootballCompRouteImport
+      parentRoute: typeof FootballRoute
     }
-    '/cricket/series/$id': {
-      id: '/cricket/series/$id'
-      path: '/series/$id'
-      fullPath: '/cricket/series/$id'
-      preLoaderRoute: typeof CricketSeriesIdRouteImport
-      parentRoute: typeof CricketRoute
+    '/football/mine': {
+      id: '/football/mine'
+      path: '/mine'
+      fullPath: '/football/mine'
+      preLoaderRoute: typeof FootballMineRouteImport
+      parentRoute: typeof FootballRoute
     }
-    '/cricket/records/$category': {
-      id: '/cricket/records/$category'
-      path: '/records/$category'
-      fullPath: '/cricket/records/$category'
-      preLoaderRoute: typeof CricketRecordsCategoryRouteImport
-      parentRoute: typeof CricketRoute
+    '/football/venues': {
+      id: '/football/venues'
+      path: '/venues'
+      fullPath: '/football/venues'
+      preLoaderRoute: typeof FootballVenuesRouteImport
+      parentRoute: typeof FootballRoute
     }
-    '/cricket/players/$slug': {
-      id: '/cricket/players/$slug'
-      path: '/players/$slug'
-      fullPath: '/cricket/players/$slug'
-      preLoaderRoute: typeof CricketPlayersSlugRouteImport
-      parentRoute: typeof CricketRoute
+    '/guides/': {
+      id: '/guides/'
+      path: '/guides'
+      fullPath: '/guides/'
+      preLoaderRoute: typeof GuidesIndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/cricket/match/$id': {
-      id: '/cricket/match/$id'
-      path: '/match/$id'
-      fullPath: '/cricket/match/$id'
-      preLoaderRoute: typeof CricketMatchIdRouteImport
-      parentRoute: typeof CricketRoute
+    '/guides/$slug': {
+      id: '/guides/$slug'
+      path: '/guides/$slug'
+      fullPath: '/guides/$slug'
+      preLoaderRoute: typeof GuidesSlugRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/cricket/ipl/standings': {
-      id: '/cricket/ipl/standings'
-      path: '/ipl/standings'
-      fullPath: '/cricket/ipl/standings'
-      preLoaderRoute: typeof CricketIplStandingsRouteImport
-      parentRoute: typeof CricketRoute
+    '/highlights/': {
+      id: '/highlights/'
+      path: '/highlights'
+      fullPath: '/highlights/'
+      preLoaderRoute: typeof HighlightsIndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/cricket/ipl/scores': {
-      id: '/cricket/ipl/scores'
-      path: '/ipl/scores'
-      fullPath: '/cricket/ipl/scores'
-      preLoaderRoute: typeof CricketIplScoresRouteImport
-      parentRoute: typeof CricketRoute
-    }
-    '/cricket/ipl/records': {
-      id: '/cricket/ipl/records'
-      path: '/ipl/records'
-      fullPath: '/cricket/ipl/records'
-      preLoaderRoute: typeof CricketIplRecordsRouteImport
-      parentRoute: typeof CricketRoute
-    }
-    '/cricket/ipl/players': {
-      id: '/cricket/ipl/players'
-      path: '/ipl/players'
-      fullPath: '/cricket/ipl/players'
-      preLoaderRoute: typeof CricketIplPlayersRouteImport
-      parentRoute: typeof CricketRoute
-    }
-    '/cricket/ipl/history': {
-      id: '/cricket/ipl/history'
-      path: '/ipl/history'
-      fullPath: '/cricket/ipl/history'
-      preLoaderRoute: typeof CricketIplHistoryRouteImport
-      parentRoute: typeof CricketRoute
-    }
-    '/cricket/highlights/$slug': {
-      id: '/cricket/highlights/$slug'
+    '/highlights/$slug': {
+      id: '/highlights/$slug'
       path: '/highlights/$slug'
-      fullPath: '/cricket/highlights/$slug'
-      preLoaderRoute: typeof CricketHighlightsSlugRouteImport
-      parentRoute: typeof CricketRoute
-    }
-    '/archive/$sport/$year': {
-      id: '/archive/$sport/$year'
-      path: '/archive/$sport/$year'
-      fullPath: '/archive/$sport/$year'
-      preLoaderRoute: typeof ArchiveSportYearRouteImport
+      fullPath: '/highlights/$slug'
+      preLoaderRoute: typeof HighlightsSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/track-click': {
-      id: '/api/public/track-click'
-      path: '/api/public/track-click'
-      fullPath: '/api/public/track-click'
-      preLoaderRoute: typeof ApiPublicTrackClickRouteImport
+    '/live/$sport': {
+      id: '/live/$sport'
+      path: '/live/$sport'
+      fullPath: '/live/$sport'
+      preLoaderRoute: typeof LiveSportRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/sync-sports': {
-      id: '/api/public/sync-sports'
-      path: '/api/public/sync-sports'
-      fullPath: '/api/public/sync-sports'
-      preLoaderRoute: typeof ApiPublicSyncSportsRouteImport
+    '/live/today': {
+      id: '/live/today'
+      path: '/live/today'
+      fullPath: '/live/today'
+      preLoaderRoute: typeof LiveTodayRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/seo-health': {
-      id: '/api/public/seo-health'
-      path: '/api/public/seo-health'
-      fullPath: '/api/public/seo-health'
-      preLoaderRoute: typeof ApiPublicSeoHealthRouteImport
+    '/mlb/': {
+      id: '/mlb/'
+      path: '/'
+      fullPath: '/mlb/'
+      preLoaderRoute: typeof MlbIndexRouteImport
+      parentRoute: typeof MlbRoute
+    }
+    '/mlb/champions': {
+      id: '/mlb/champions'
+      path: '/champions'
+      fullPath: '/mlb/champions'
+      preLoaderRoute: typeof MlbChampionsRouteImport
+      parentRoute: typeof MlbRoute
+    }
+    '/mlb/history': {
+      id: '/mlb/history'
+      path: '/history'
+      fullPath: '/mlb/history'
+      preLoaderRoute: typeof MlbHistoryRouteImport
+      parentRoute: typeof MlbRoute
+    }
+    '/mlb/news': {
+      id: '/mlb/news'
+      path: '/news'
+      fullPath: '/mlb/news'
+      preLoaderRoute: typeof MlbNewsRouteImport
+      parentRoute: typeof MlbRoute
+    }
+    '/mlb/players': {
+      id: '/mlb/players'
+      path: '/players'
+      fullPath: '/mlb/players'
+      preLoaderRoute: typeof MlbPlayersRouteImport
+      parentRoute: typeof MlbRoute
+    }
+    '/mlb/postseason': {
+      id: '/mlb/postseason'
+      path: '/postseason'
+      fullPath: '/mlb/postseason'
+      preLoaderRoute: typeof MlbPostseasonRouteImport
+      parentRoute: typeof MlbRoute
+    }
+    '/mlb/scores': {
+      id: '/mlb/scores'
+      path: '/scores'
+      fullPath: '/mlb/scores'
+      preLoaderRoute: typeof MlbScoresRouteImport
+      parentRoute: typeof MlbRoute
+    }
+    '/mlb/standings': {
+      id: '/mlb/standings'
+      path: '/standings'
+      fullPath: '/mlb/standings'
+      preLoaderRoute: typeof MlbStandingsRouteImport
+      parentRoute: typeof MlbRoute
+    }
+    '/mlb/teams': {
+      id: '/mlb/teams'
+      path: '/teams'
+      fullPath: '/mlb/teams'
+      preLoaderRoute: typeof MlbTeamsRouteImport
+      parentRoute: typeof MlbRoute
+    }
+    '/mls/': {
+      id: '/mls/'
+      path: '/'
+      fullPath: '/mls/'
+      preLoaderRoute: typeof MlsIndexRouteImport
+      parentRoute: typeof MlsRoute
+    }
+    '/mls/champions': {
+      id: '/mls/champions'
+      path: '/champions'
+      fullPath: '/mls/champions'
+      preLoaderRoute: typeof MlsChampionsRouteImport
+      parentRoute: typeof MlsRoute
+    }
+    '/mls/history': {
+      id: '/mls/history'
+      path: '/history'
+      fullPath: '/mls/history'
+      preLoaderRoute: typeof MlsHistoryRouteImport
+      parentRoute: typeof MlsRoute
+    }
+    '/mls/leaders': {
+      id: '/mls/leaders'
+      path: '/leaders'
+      fullPath: '/mls/leaders'
+      preLoaderRoute: typeof MlsLeadersRouteImport
+      parentRoute: typeof MlsRoute
+    }
+    '/mls/news': {
+      id: '/mls/news'
+      path: '/news'
+      fullPath: '/mls/news'
+      preLoaderRoute: typeof MlsNewsRouteImport
+      parentRoute: typeof MlsRoute
+    }
+    '/mls/scores': {
+      id: '/mls/scores'
+      path: '/scores'
+      fullPath: '/mls/scores'
+      preLoaderRoute: typeof MlsScoresRouteImport
+      parentRoute: typeof MlsRoute
+    }
+    '/mls/standings': {
+      id: '/mls/standings'
+      path: '/standings'
+      fullPath: '/mls/standings'
+      preLoaderRoute: typeof MlsStandingsRouteImport
+      parentRoute: typeof MlsRoute
+    }
+    '/mls/teams': {
+      id: '/mls/teams'
+      path: '/teams'
+      fullPath: '/mls/teams'
+      preLoaderRoute: typeof MlsTeamsRouteImport
+      parentRoute: typeof MlsRoute
+    }
+    '/nba/': {
+      id: '/nba/'
+      path: '/'
+      fullPath: '/nba/'
+      preLoaderRoute: typeof NbaIndexRouteImport
+      parentRoute: typeof NbaRoute
+    }
+    '/nba/champions': {
+      id: '/nba/champions'
+      path: '/champions'
+      fullPath: '/nba/champions'
+      preLoaderRoute: typeof NbaChampionsRouteImport
+      parentRoute: typeof NbaRoute
+    }
+    '/nba/history': {
+      id: '/nba/history'
+      path: '/history'
+      fullPath: '/nba/history'
+      preLoaderRoute: typeof NbaHistoryRouteImport
+      parentRoute: typeof NbaRoute
+    }
+    '/nba/leaders': {
+      id: '/nba/leaders'
+      path: '/leaders'
+      fullPath: '/nba/leaders'
+      preLoaderRoute: typeof NbaLeadersRouteImport
+      parentRoute: typeof NbaRoute
+    }
+    '/nba/news': {
+      id: '/nba/news'
+      path: '/news'
+      fullPath: '/nba/news'
+      preLoaderRoute: typeof NbaNewsRouteImport
+      parentRoute: typeof NbaRoute
+    }
+    '/nba/scores': {
+      id: '/nba/scores'
+      path: '/scores'
+      fullPath: '/nba/scores'
+      preLoaderRoute: typeof NbaScoresRouteImport
+      parentRoute: typeof NbaRoute
+    }
+    '/nba/standings': {
+      id: '/nba/standings'
+      path: '/standings'
+      fullPath: '/nba/standings'
+      preLoaderRoute: typeof NbaStandingsRouteImport
+      parentRoute: typeof NbaRoute
+    }
+    '/nba/teams': {
+      id: '/nba/teams'
+      path: '/teams'
+      fullPath: '/nba/teams'
+      preLoaderRoute: typeof NbaTeamsRouteImport
+      parentRoute: typeof NbaRoute
+    }
+    '/news/': {
+      id: '/news/'
+      path: '/news'
+      fullPath: '/news/'
+      preLoaderRoute: typeof NewsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/indexnow-ping': {
-      id: '/api/public/indexnow-ping'
-      path: '/api/public/indexnow-ping'
-      fullPath: '/api/public/indexnow-ping'
-      preLoaderRoute: typeof ApiPublicIndexnowPingRouteImport
+    '/news/$slug': {
+      id: '/news/$slug'
+      path: '/news/$slug'
+      fullPath: '/news/$slug'
+      preLoaderRoute: typeof NewsSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/indexnow-key.txt': {
-      id: '/api/public/indexnow-key.txt'
-      path: '/api/public/indexnow-key.txt'
-      fullPath: '/api/public/indexnow-key.txt'
-      preLoaderRoute: typeof ApiPublicIndexnowKeyDottxtRouteImport
+    '/nhl/': {
+      id: '/nhl/'
+      path: '/'
+      fullPath: '/nhl/'
+      preLoaderRoute: typeof NhlIndexRouteImport
+      parentRoute: typeof NhlRoute
+    }
+    '/nhl/champions': {
+      id: '/nhl/champions'
+      path: '/champions'
+      fullPath: '/nhl/champions'
+      preLoaderRoute: typeof NhlChampionsRouteImport
+      parentRoute: typeof NhlRoute
+    }
+    '/nhl/history': {
+      id: '/nhl/history'
+      path: '/history'
+      fullPath: '/nhl/history'
+      preLoaderRoute: typeof NhlHistoryRouteImport
+      parentRoute: typeof NhlRoute
+    }
+    '/nhl/leaders': {
+      id: '/nhl/leaders'
+      path: '/leaders'
+      fullPath: '/nhl/leaders'
+      preLoaderRoute: typeof NhlLeadersRouteImport
+      parentRoute: typeof NhlRoute
+    }
+    '/nhl/news': {
+      id: '/nhl/news'
+      path: '/news'
+      fullPath: '/nhl/news'
+      preLoaderRoute: typeof NhlNewsRouteImport
+      parentRoute: typeof NhlRoute
+    }
+    '/nhl/scores': {
+      id: '/nhl/scores'
+      path: '/scores'
+      fullPath: '/nhl/scores'
+      preLoaderRoute: typeof NhlScoresRouteImport
+      parentRoute: typeof NhlRoute
+    }
+    '/nhl/standings': {
+      id: '/nhl/standings'
+      path: '/standings'
+      fullPath: '/nhl/standings'
+      preLoaderRoute: typeof NhlStandingsRouteImport
+      parentRoute: typeof NhlRoute
+    }
+    '/nhl/teams': {
+      id: '/nhl/teams'
+      path: '/teams'
+      fullPath: '/nhl/teams'
+      preLoaderRoute: typeof NhlTeamsRouteImport
+      parentRoute: typeof NhlRoute
+    }
+    '/robots/txt': {
+      id: '/robots/txt'
+      path: '/robots/txt'
+      fullPath: '/robots/txt'
+      preLoaderRoute: typeof RobotsTxtRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/indexnow-auto': {
@@ -3242,6 +2675,587 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicIndexnowAutoRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/indexnow-key.txt': {
+      id: '/api/public/indexnow-key.txt'
+      path: '/api/public/indexnow-key.txt'
+      fullPath: '/api/public/indexnow-key.txt'
+      preLoaderRoute: typeof ApiPublicIndexnowKeyDottxtRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/indexnow-ping': {
+      id: '/api/public/indexnow-ping'
+      path: '/api/public/indexnow-ping'
+      fullPath: '/api/public/indexnow-ping'
+      preLoaderRoute: typeof ApiPublicIndexnowPingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/seo-health': {
+      id: '/api/public/seo-health'
+      path: '/api/public/seo-health'
+      fullPath: '/api/public/seo-health'
+      preLoaderRoute: typeof ApiPublicSeoHealthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/sync-sports': {
+      id: '/api/public/sync-sports'
+      path: '/api/public/sync-sports'
+      fullPath: '/api/public/sync-sports'
+      preLoaderRoute: typeof ApiPublicSyncSportsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/track-click': {
+      id: '/api/public/track-click'
+      path: '/api/public/track-click'
+      fullPath: '/api/public/track-click'
+      preLoaderRoute: typeof ApiPublicTrackClickRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/archive/$sport/$year': {
+      id: '/archive/$sport/$year'
+      path: '/archive/$sport/$year'
+      fullPath: '/archive/$sport/$year'
+      preLoaderRoute: typeof ArchiveSportYearRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cricket/highlights/': {
+      id: '/cricket/highlights/'
+      path: '/highlights'
+      fullPath: '/cricket/highlights/'
+      preLoaderRoute: typeof CricketHighlightsIndexRouteImport
+      parentRoute: typeof CricketRoute
+    }
+    '/cricket/highlights/$slug': {
+      id: '/cricket/highlights/$slug'
+      path: '/highlights/$slug'
+      fullPath: '/cricket/highlights/$slug'
+      preLoaderRoute: typeof CricketHighlightsSlugRouteImport
+      parentRoute: typeof CricketRoute
+    }
+    '/cricket/ipl/': {
+      id: '/cricket/ipl/'
+      path: '/ipl'
+      fullPath: '/cricket/ipl/'
+      preLoaderRoute: typeof CricketIplIndexRouteImport
+      parentRoute: typeof CricketRoute
+    }
+    '/cricket/ipl/history': {
+      id: '/cricket/ipl/history'
+      path: '/ipl/history'
+      fullPath: '/cricket/ipl/history'
+      preLoaderRoute: typeof CricketIplHistoryRouteImport
+      parentRoute: typeof CricketRoute
+    }
+    '/cricket/ipl/players': {
+      id: '/cricket/ipl/players'
+      path: '/ipl/players'
+      fullPath: '/cricket/ipl/players'
+      preLoaderRoute: typeof CricketIplPlayersRouteImport
+      parentRoute: typeof CricketRoute
+    }
+    '/cricket/ipl/records': {
+      id: '/cricket/ipl/records'
+      path: '/ipl/records'
+      fullPath: '/cricket/ipl/records'
+      preLoaderRoute: typeof CricketIplRecordsRouteImport
+      parentRoute: typeof CricketRoute
+    }
+    '/cricket/ipl/scores': {
+      id: '/cricket/ipl/scores'
+      path: '/ipl/scores'
+      fullPath: '/cricket/ipl/scores'
+      preLoaderRoute: typeof CricketIplScoresRouteImport
+      parentRoute: typeof CricketRoute
+    }
+    '/cricket/ipl/standings': {
+      id: '/cricket/ipl/standings'
+      path: '/ipl/standings'
+      fullPath: '/cricket/ipl/standings'
+      preLoaderRoute: typeof CricketIplStandingsRouteImport
+      parentRoute: typeof CricketRoute
+    }
+    '/cricket/match/$id': {
+      id: '/cricket/match/$id'
+      path: '/match/$id'
+      fullPath: '/cricket/match/$id'
+      preLoaderRoute: typeof CricketMatchIdRouteImport
+      parentRoute: typeof CricketRoute
+    }
+    '/cricket/players/': {
+      id: '/cricket/players/'
+      path: '/players'
+      fullPath: '/cricket/players/'
+      preLoaderRoute: typeof CricketPlayersIndexRouteImport
+      parentRoute: typeof CricketRoute
+    }
+    '/cricket/players/$slug': {
+      id: '/cricket/players/$slug'
+      path: '/players/$slug'
+      fullPath: '/cricket/players/$slug'
+      preLoaderRoute: typeof CricketPlayersSlugRouteImport
+      parentRoute: typeof CricketRoute
+    }
+    '/cricket/records/': {
+      id: '/cricket/records/'
+      path: '/records'
+      fullPath: '/cricket/records/'
+      preLoaderRoute: typeof CricketRecordsIndexRouteImport
+      parentRoute: typeof CricketRoute
+    }
+    '/cricket/records/$category': {
+      id: '/cricket/records/$category'
+      path: '/records/$category'
+      fullPath: '/cricket/records/$category'
+      preLoaderRoute: typeof CricketRecordsCategoryRouteImport
+      parentRoute: typeof CricketRoute
+    }
+    '/cricket/series/': {
+      id: '/cricket/series/'
+      path: '/series'
+      fullPath: '/cricket/series/'
+      preLoaderRoute: typeof CricketSeriesIndexRouteImport
+      parentRoute: typeof CricketRoute
+    }
+    '/cricket/series/$id': {
+      id: '/cricket/series/$id'
+      path: '/series/$id'
+      fullPath: '/cricket/series/$id'
+      preLoaderRoute: typeof CricketSeriesIdRouteImport
+      parentRoute: typeof CricketRoute
+    }
+    '/cricket/team-history/$slug': {
+      id: '/cricket/team-history/$slug'
+      path: '/team-history/$slug'
+      fullPath: '/cricket/team-history/$slug'
+      preLoaderRoute: typeof CricketTeamHistorySlugRouteImport
+      parentRoute: typeof CricketRoute
+    }
+    '/cricket/teams/': {
+      id: '/cricket/teams/'
+      path: '/teams'
+      fullPath: '/cricket/teams/'
+      preLoaderRoute: typeof CricketTeamsIndexRouteImport
+      parentRoute: typeof CricketRoute
+    }
+    '/cricket/teams/$slug': {
+      id: '/cricket/teams/$slug'
+      path: '/teams/$slug'
+      fullPath: '/cricket/teams/$slug'
+      preLoaderRoute: typeof CricketTeamsSlugRouteImport
+      parentRoute: typeof CricketRoute
+    }
+    '/cricket/tournaments/': {
+      id: '/cricket/tournaments/'
+      path: '/tournaments'
+      fullPath: '/cricket/tournaments/'
+      preLoaderRoute: typeof CricketTournamentsIndexRouteImport
+      parentRoute: typeof CricketRoute
+    }
+    '/cricket/tournaments/$slug': {
+      id: '/cricket/tournaments/$slug'
+      path: '/tournaments/$slug'
+      fullPath: '/cricket/tournaments/$slug'
+      preLoaderRoute: typeof CricketTournamentsSlugRouteImport
+      parentRoute: typeof CricketRoute
+    }
+    '/football/$comp/': {
+      id: '/football/$comp/'
+      path: '/'
+      fullPath: '/football/$comp/'
+      preLoaderRoute: typeof FootballCompIndexRouteImport
+      parentRoute: typeof FootballCompRoute
+    }
+    '/football/$comp/fixtures': {
+      id: '/football/$comp/fixtures'
+      path: '/fixtures'
+      fullPath: '/football/$comp/fixtures'
+      preLoaderRoute: typeof FootballCompFixturesRouteImport
+      parentRoute: typeof FootballCompRoute
+    }
+    '/football/$comp/history': {
+      id: '/football/$comp/history'
+      path: '/history'
+      fullPath: '/football/$comp/history'
+      preLoaderRoute: typeof FootballCompHistoryRouteImport
+      parentRoute: typeof FootballCompRoute
+    }
+    '/football/$comp/players': {
+      id: '/football/$comp/players'
+      path: '/players'
+      fullPath: '/football/$comp/players'
+      preLoaderRoute: typeof FootballCompPlayersRouteImport
+      parentRoute: typeof FootballCompRoute
+    }
+    '/football/$comp/records': {
+      id: '/football/$comp/records'
+      path: '/records'
+      fullPath: '/football/$comp/records'
+      preLoaderRoute: typeof FootballCompRecordsRouteImport
+      parentRoute: typeof FootballCompRoute
+    }
+    '/football/$comp/scores': {
+      id: '/football/$comp/scores'
+      path: '/scores'
+      fullPath: '/football/$comp/scores'
+      preLoaderRoute: typeof FootballCompScoresRouteImport
+      parentRoute: typeof FootballCompRoute
+    }
+    '/football/$comp/standings': {
+      id: '/football/$comp/standings'
+      path: '/standings'
+      fullPath: '/football/$comp/standings'
+      preLoaderRoute: typeof FootballCompStandingsRouteImport
+      parentRoute: typeof FootballCompRoute
+    }
+    '/football/$comp/teams': {
+      id: '/football/$comp/teams'
+      path: '/teams'
+      fullPath: '/football/$comp/teams'
+      preLoaderRoute: typeof FootballCompTeamsRouteImport
+      parentRoute: typeof FootballCompRoute
+    }
+    '/football/campaigns/': {
+      id: '/football/campaigns/'
+      path: '/campaigns'
+      fullPath: '/football/campaigns/'
+      preLoaderRoute: typeof FootballCampaignsIndexRouteImport
+      parentRoute: typeof FootballRoute
+    }
+    '/football/campaigns/$slug': {
+      id: '/football/campaigns/$slug'
+      path: '/campaigns/$slug'
+      fullPath: '/football/campaigns/$slug'
+      preLoaderRoute: typeof FootballCampaignsSlugRouteImport
+      parentRoute: typeof FootballRoute
+    }
+    '/football/countries/': {
+      id: '/football/countries/'
+      path: '/countries'
+      fullPath: '/football/countries/'
+      preLoaderRoute: typeof FootballCountriesIndexRouteImport
+      parentRoute: typeof FootballRoute
+    }
+    '/football/match/$id': {
+      id: '/football/match/$id'
+      path: '/match/$id'
+      fullPath: '/football/match/$id'
+      preLoaderRoute: typeof FootballMatchIdRouteImport
+      parentRoute: typeof FootballRoute
+    }
+    '/football/matches/$slug': {
+      id: '/football/matches/$slug'
+      path: '/matches/$slug'
+      fullPath: '/football/matches/$slug'
+      preLoaderRoute: typeof FootballMatchesSlugRouteImport
+      parentRoute: typeof FootballRoute
+    }
+    '/football/players/': {
+      id: '/football/players/'
+      path: '/players'
+      fullPath: '/football/players/'
+      preLoaderRoute: typeof FootballPlayersIndexRouteImport
+      parentRoute: typeof FootballRoute
+    }
+    '/football/players/$slug': {
+      id: '/football/players/$slug'
+      path: '/players/$slug'
+      fullPath: '/football/players/$slug'
+      preLoaderRoute: typeof FootballPlayersSlugRouteImport
+      parentRoute: typeof FootballRoute
+    }
+    '/football/records/$category': {
+      id: '/football/records/$category'
+      path: '/records/$category'
+      fullPath: '/football/records/$category'
+      preLoaderRoute: typeof FootballRecordsCategoryRouteImport
+      parentRoute: typeof FootballRoute
+    }
+    '/football/teams/$slug': {
+      id: '/football/teams/$slug'
+      path: '/teams/$slug'
+      fullPath: '/football/teams/$slug'
+      preLoaderRoute: typeof FootballTeamsSlugRouteImport
+      parentRoute: typeof FootballRoute
+    }
+    '/football/top-scorers/': {
+      id: '/football/top-scorers/'
+      path: '/top-scorers'
+      fullPath: '/football/top-scorers/'
+      preLoaderRoute: typeof FootballTopScorersIndexRouteImport
+      parentRoute: typeof FootballRoute
+    }
+    '/football/top-scorers/$year': {
+      id: '/football/top-scorers/$year'
+      path: '/top-scorers/$year'
+      fullPath: '/football/top-scorers/$year'
+      preLoaderRoute: typeof FootballTopScorersYearRouteImport
+      parentRoute: typeof FootballRoute
+    }
+    '/football/tournaments/$year': {
+      id: '/football/tournaments/$year'
+      path: '/tournaments/$year'
+      fullPath: '/football/tournaments/$year'
+      preLoaderRoute: typeof FootballTournamentsYearRouteImport
+      parentRoute: typeof FootballRoute
+    }
+    '/mlb/game/$id': {
+      id: '/mlb/game/$id'
+      path: '/game/$id'
+      fullPath: '/mlb/game/$id'
+      preLoaderRoute: typeof MlbGameIdRouteImport
+      parentRoute: typeof MlbRoute
+    }
+    '/mlb/player/$id': {
+      id: '/mlb/player/$id'
+      path: '/player/$id'
+      fullPath: '/mlb/player/$id'
+      preLoaderRoute: typeof MlbPlayerIdRouteImport
+      parentRoute: typeof MlbRoute
+    }
+    '/mlb/players/$slug': {
+      id: '/mlb/players/$slug'
+      path: '/$slug'
+      fullPath: '/mlb/players/$slug'
+      preLoaderRoute: typeof MlbPlayersSlugRouteImport
+      parentRoute: typeof MlbPlayersRoute
+    }
+    '/mlb/records/$category': {
+      id: '/mlb/records/$category'
+      path: '/records/$category'
+      fullPath: '/mlb/records/$category'
+      preLoaderRoute: typeof MlbRecordsCategoryRouteImport
+      parentRoute: typeof MlbRoute
+    }
+    '/mlb/team-history/$slug': {
+      id: '/mlb/team-history/$slug'
+      path: '/team-history/$slug'
+      fullPath: '/mlb/team-history/$slug'
+      preLoaderRoute: typeof MlbTeamHistorySlugRouteImport
+      parentRoute: typeof MlbRoute
+    }
+    '/mlb/team/$id': {
+      id: '/mlb/team/$id'
+      path: '/team/$id'
+      fullPath: '/mlb/team/$id'
+      preLoaderRoute: typeof MlbTeamIdRouteImport
+      parentRoute: typeof MlbRoute
+    }
+    '/mlb/teams_/$slug': {
+      id: '/mlb/teams_/$slug'
+      path: '/teams/$slug'
+      fullPath: '/mlb/teams/$slug'
+      preLoaderRoute: typeof MlbTeamsSlugRouteImport
+      parentRoute: typeof MlbRoute
+    }
+    '/mlb/world-series/$year': {
+      id: '/mlb/world-series/$year'
+      path: '/world-series/$year'
+      fullPath: '/mlb/world-series/$year'
+      preLoaderRoute: typeof MlbWorldSeriesYearRouteImport
+      parentRoute: typeof MlbRoute
+    }
+    '/mls/cup/$year': {
+      id: '/mls/cup/$year'
+      path: '/cup/$year'
+      fullPath: '/mls/cup/$year'
+      preLoaderRoute: typeof MlsCupYearRouteImport
+      parentRoute: typeof MlsRoute
+    }
+    '/mls/game/$id': {
+      id: '/mls/game/$id'
+      path: '/game/$id'
+      fullPath: '/mls/game/$id'
+      preLoaderRoute: typeof MlsGameIdRouteImport
+      parentRoute: typeof MlsRoute
+    }
+    '/mls/player/$id': {
+      id: '/mls/player/$id'
+      path: '/player/$id'
+      fullPath: '/mls/player/$id'
+      preLoaderRoute: typeof MlsPlayerIdRouteImport
+      parentRoute: typeof MlsRoute
+    }
+    '/mls/players/$slug': {
+      id: '/mls/players/$slug'
+      path: '/players/$slug'
+      fullPath: '/mls/players/$slug'
+      preLoaderRoute: typeof MlsPlayersSlugRouteImport
+      parentRoute: typeof MlsRoute
+    }
+    '/mls/team-history/$slug': {
+      id: '/mls/team-history/$slug'
+      path: '/team-history/$slug'
+      fullPath: '/mls/team-history/$slug'
+      preLoaderRoute: typeof MlsTeamHistorySlugRouteImport
+      parentRoute: typeof MlsRoute
+    }
+    '/mls/team/$id': {
+      id: '/mls/team/$id'
+      path: '/team/$id'
+      fullPath: '/mls/team/$id'
+      preLoaderRoute: typeof MlsTeamIdRouteImport
+      parentRoute: typeof MlsRoute
+    }
+    '/mls/teams_/$slug': {
+      id: '/mls/teams_/$slug'
+      path: '/teams/$slug'
+      fullPath: '/mls/teams/$slug'
+      preLoaderRoute: typeof MlsTeamsSlugRouteImport
+      parentRoute: typeof MlsRoute
+    }
+    '/nba/finals/$year': {
+      id: '/nba/finals/$year'
+      path: '/finals/$year'
+      fullPath: '/nba/finals/$year'
+      preLoaderRoute: typeof NbaFinalsYearRouteImport
+      parentRoute: typeof NbaRoute
+    }
+    '/nba/game/$id': {
+      id: '/nba/game/$id'
+      path: '/game/$id'
+      fullPath: '/nba/game/$id'
+      preLoaderRoute: typeof NbaGameIdRouteImport
+      parentRoute: typeof NbaRoute
+    }
+    '/nba/player/$id': {
+      id: '/nba/player/$id'
+      path: '/player/$id'
+      fullPath: '/nba/player/$id'
+      preLoaderRoute: typeof NbaPlayerIdRouteImport
+      parentRoute: typeof NbaRoute
+    }
+    '/nba/players/$slug': {
+      id: '/nba/players/$slug'
+      path: '/players/$slug'
+      fullPath: '/nba/players/$slug'
+      preLoaderRoute: typeof NbaPlayersSlugRouteImport
+      parentRoute: typeof NbaRoute
+    }
+    '/nba/team-history/$slug': {
+      id: '/nba/team-history/$slug'
+      path: '/team-history/$slug'
+      fullPath: '/nba/team-history/$slug'
+      preLoaderRoute: typeof NbaTeamHistorySlugRouteImport
+      parentRoute: typeof NbaRoute
+    }
+    '/nba/team/$id': {
+      id: '/nba/team/$id'
+      path: '/team/$id'
+      fullPath: '/nba/team/$id'
+      preLoaderRoute: typeof NbaTeamIdRouteImport
+      parentRoute: typeof NbaRoute
+    }
+    '/nba/teams_/$slug': {
+      id: '/nba/teams_/$slug'
+      path: '/teams/$slug'
+      fullPath: '/nba/teams/$slug'
+      preLoaderRoute: typeof NbaTeamsSlugRouteImport
+      parentRoute: typeof NbaRoute
+    }
+    '/nhl/game/$id': {
+      id: '/nhl/game/$id'
+      path: '/game/$id'
+      fullPath: '/nhl/game/$id'
+      preLoaderRoute: typeof NhlGameIdRouteImport
+      parentRoute: typeof NhlRoute
+    }
+    '/nhl/player/$id': {
+      id: '/nhl/player/$id'
+      path: '/player/$id'
+      fullPath: '/nhl/player/$id'
+      preLoaderRoute: typeof NhlPlayerIdRouteImport
+      parentRoute: typeof NhlRoute
+    }
+    '/nhl/players/$slug': {
+      id: '/nhl/players/$slug'
+      path: '/players/$slug'
+      fullPath: '/nhl/players/$slug'
+      preLoaderRoute: typeof NhlPlayersSlugRouteImport
+      parentRoute: typeof NhlRoute
+    }
+    '/nhl/stanley-cup/$year': {
+      id: '/nhl/stanley-cup/$year'
+      path: '/stanley-cup/$year'
+      fullPath: '/nhl/stanley-cup/$year'
+      preLoaderRoute: typeof NhlStanleyCupYearRouteImport
+      parentRoute: typeof NhlRoute
+    }
+    '/nhl/team-history/$slug': {
+      id: '/nhl/team-history/$slug'
+      path: '/team-history/$slug'
+      fullPath: '/nhl/team-history/$slug'
+      preLoaderRoute: typeof NhlTeamHistorySlugRouteImport
+      parentRoute: typeof NhlRoute
+    }
+    '/nhl/team/$id': {
+      id: '/nhl/team/$id'
+      path: '/team/$id'
+      fullPath: '/nhl/team/$id'
+      preLoaderRoute: typeof NhlTeamIdRouteImport
+      parentRoute: typeof NhlRoute
+    }
+    '/nhl/teams_/$slug': {
+      id: '/nhl/teams_/$slug'
+      path: '/teams/$slug'
+      fullPath: '/nhl/teams/$slug'
+      preLoaderRoute: typeof NhlTeamsSlugRouteImport
+      parentRoute: typeof NhlRoute
+    }
+    '/og/$type/$slug.svg': {
+      id: '/og/$type/$slug.svg'
+      path: '/og/$type/$slug.svg'
+      fullPath: '/og/$type/$slug.svg'
+      preLoaderRoute: typeof OgTypeSlugDotsvgRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/player/$sport/$slug': {
+      id: '/player/$sport/$slug'
+      path: '/player/$sport/$slug'
+      fullPath: '/player/$sport/$slug'
+      preLoaderRoute: typeof PlayerSportSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/team/$sport/$slug': {
+      id: '/team/$sport/$slug'
+      path: '/team/$sport/$slug'
+      fullPath: '/team/$sport/$slug'
+      preLoaderRoute: typeof TeamSportSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tournaments/$tournament/$leaderboard': {
+      id: '/tournaments/$tournament/$leaderboard'
+      path: '/tournaments/$tournament/$leaderboard'
+      fullPath: '/tournaments/$tournament/$leaderboard'
+      preLoaderRoute: typeof TournamentsTournamentLeaderboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tournaments/fifa-world-cup-2026/$stage': {
+      id: '/tournaments/fifa-world-cup-2026/$stage'
+      path: '/tournaments/fifa-world-cup-2026/$stage'
+      fullPath: '/tournaments/fifa-world-cup-2026/$stage'
+      preLoaderRoute: typeof TournamentsFifaWorldCup2026StageRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/vs/$sport/$matchup': {
+      id: '/vs/$sport/$matchup'
+      path: '/vs/$sport/$matchup'
+      fullPath: '/vs/$sport/$matchup'
+      preLoaderRoute: typeof VsSportMatchupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/hooks/gsc-sync': {
+      id: '/api/public/hooks/gsc-sync'
+      path: '/api/public/hooks/gsc-sync'
+      fullPath: '/api/public/hooks/gsc-sync'
+      preLoaderRoute: typeof ApiPublicHooksGscSyncRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/hooks/weekly-digest': {
+      id: '/api/public/hooks/weekly-digest'
+      path: '/api/public/hooks/weekly-digest'
+      fullPath: '/api/public/hooks/weekly-digest'
+      preLoaderRoute: typeof ApiPublicHooksWeeklyDigestRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/cricket/ipl/teams/': {
       id: '/cricket/ipl/teams/'
       path: '/ipl/teams'
@@ -3249,60 +3263,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CricketIplTeamsIndexRouteImport
       parentRoute: typeof CricketRoute
     }
-    '/football/players/$slug/world-cup-{$year}': {
-      id: '/football/players/$slug/world-cup-{$year}'
-      path: '/world-cup-{$year}'
-      fullPath: '/football/players/$slug/world-cup-{$year}'
-      preLoaderRoute: typeof FootballPlayersSlugWorldCupChar123yearChar125RouteImport
-      parentRoute: typeof FootballPlayersSlugRoute
+    '/cricket/ipl/teams/$teamId': {
+      id: '/cricket/ipl/teams/$teamId'
+      path: '/ipl/teams/$teamId'
+      fullPath: '/cricket/ipl/teams/$teamId'
+      preLoaderRoute: typeof CricketIplTeamsTeamIdRouteImport
+      parentRoute: typeof CricketRoute
     }
-    '/football/countries/$slug/world-cup-{$year}': {
-      id: '/football/countries/$slug/world-cup-{$year}'
-      path: '/countries/$slug/world-cup-{$year}'
-      fullPath: '/football/countries/$slug/world-cup-{$year}'
-      preLoaderRoute: typeof FootballCountriesSlugWorldCupChar123yearChar125RouteImport
-      parentRoute: typeof FootballRoute
-    }
-    '/football/$comp/teams/$teamId': {
-      id: '/football/$comp/teams/$teamId'
-      path: '/$teamId'
-      fullPath: '/football/$comp/teams/$teamId'
-      preLoaderRoute: typeof FootballCompTeamsTeamIdRouteImport
-      parentRoute: typeof FootballCompTeamsRoute
-    }
-    '/football/$comp/seasons/$year': {
-      id: '/football/$comp/seasons/$year'
-      path: '/seasons/$year'
-      fullPath: '/football/$comp/seasons/$year'
-      preLoaderRoute: typeof FootballCompSeasonsYearRouteImport
-      parentRoute: typeof FootballCompRoute
-    }
-    '/football/$comp/records/decades': {
-      id: '/football/$comp/records/decades'
-      path: '/decades'
-      fullPath: '/football/$comp/records/decades'
-      preLoaderRoute: typeof FootballCompRecordsDecadesRouteImport
-      parentRoute: typeof FootballCompRecordsRoute
-    }
-    '/football/$comp/records/$category': {
-      id: '/football/$comp/records/$category'
-      path: '/$category'
-      fullPath: '/football/$comp/records/$category'
-      preLoaderRoute: typeof FootballCompRecordsCategoryRouteImport
-      parentRoute: typeof FootballCompRecordsRoute
-    }
-    '/football/$comp/players/$playerId': {
-      id: '/football/$comp/players/$playerId'
-      path: '/$playerId'
-      fullPath: '/football/$comp/players/$playerId'
-      preLoaderRoute: typeof FootballCompPlayersPlayerIdRouteImport
-      parentRoute: typeof FootballCompPlayersRoute
-    }
-    '/football/$comp/matches/$matchId': {
-      id: '/football/$comp/matches/$matchId'
-      path: '/matches/$matchId'
-      fullPath: '/football/$comp/matches/$matchId'
-      preLoaderRoute: typeof FootballCompMatchesMatchIdRouteImport
+    '/football/$comp/h2h/$matchup': {
+      id: '/football/$comp/h2h/$matchup'
+      path: '/h2h/$matchup'
+      fullPath: '/football/$comp/h2h/$matchup'
+      preLoaderRoute: typeof FootballCompH2hMatchupRouteImport
       parentRoute: typeof FootballCompRoute
     }
     '/football/$comp/history/$year': {
@@ -3312,33 +3284,61 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FootballCompHistoryYearRouteImport
       parentRoute: typeof FootballCompHistoryRoute
     }
-    '/football/$comp/h2h/$matchup': {
-      id: '/football/$comp/h2h/$matchup'
-      path: '/h2h/$matchup'
-      fullPath: '/football/$comp/h2h/$matchup'
-      preLoaderRoute: typeof FootballCompH2hMatchupRouteImport
+    '/football/$comp/matches/$matchId': {
+      id: '/football/$comp/matches/$matchId'
+      path: '/matches/$matchId'
+      fullPath: '/football/$comp/matches/$matchId'
+      preLoaderRoute: typeof FootballCompMatchesMatchIdRouteImport
       parentRoute: typeof FootballCompRoute
     }
-    '/cricket/ipl/teams/$teamId': {
-      id: '/cricket/ipl/teams/$teamId'
-      path: '/ipl/teams/$teamId'
-      fullPath: '/cricket/ipl/teams/$teamId'
-      preLoaderRoute: typeof CricketIplTeamsTeamIdRouteImport
-      parentRoute: typeof CricketRoute
+    '/football/$comp/players/$playerId': {
+      id: '/football/$comp/players/$playerId'
+      path: '/$playerId'
+      fullPath: '/football/$comp/players/$playerId'
+      preLoaderRoute: typeof FootballCompPlayersPlayerIdRouteImport
+      parentRoute: typeof FootballCompPlayersRoute
     }
-    '/api/public/hooks/weekly-digest': {
-      id: '/api/public/hooks/weekly-digest'
-      path: '/api/public/hooks/weekly-digest'
-      fullPath: '/api/public/hooks/weekly-digest'
-      preLoaderRoute: typeof ApiPublicHooksWeeklyDigestRouteImport
-      parentRoute: typeof rootRouteImport
+    '/football/$comp/records/$category': {
+      id: '/football/$comp/records/$category'
+      path: '/$category'
+      fullPath: '/football/$comp/records/$category'
+      preLoaderRoute: typeof FootballCompRecordsCategoryRouteImport
+      parentRoute: typeof FootballCompRecordsRoute
     }
-    '/api/public/hooks/gsc-sync': {
-      id: '/api/public/hooks/gsc-sync'
-      path: '/api/public/hooks/gsc-sync'
-      fullPath: '/api/public/hooks/gsc-sync'
-      preLoaderRoute: typeof ApiPublicHooksGscSyncRouteImport
-      parentRoute: typeof rootRouteImport
+    '/football/$comp/records/decades': {
+      id: '/football/$comp/records/decades'
+      path: '/decades'
+      fullPath: '/football/$comp/records/decades'
+      preLoaderRoute: typeof FootballCompRecordsDecadesRouteImport
+      parentRoute: typeof FootballCompRecordsRoute
+    }
+    '/football/$comp/seasons/$year': {
+      id: '/football/$comp/seasons/$year'
+      path: '/seasons/$year'
+      fullPath: '/football/$comp/seasons/$year'
+      preLoaderRoute: typeof FootballCompSeasonsYearRouteImport
+      parentRoute: typeof FootballCompRoute
+    }
+    '/football/$comp/teams/$teamId': {
+      id: '/football/$comp/teams/$teamId'
+      path: '/$teamId'
+      fullPath: '/football/$comp/teams/$teamId'
+      preLoaderRoute: typeof FootballCompTeamsTeamIdRouteImport
+      parentRoute: typeof FootballCompTeamsRoute
+    }
+    '/football/countries/$slug/world-cup-{$year}': {
+      id: '/football/countries/$slug/world-cup-{$year}'
+      path: '/countries/$slug/world-cup-{$year}'
+      fullPath: '/football/countries/$slug/world-cup-{$year}'
+      preLoaderRoute: typeof FootballCountriesSlugWorldCupChar123yearChar125RouteImport
+      parentRoute: typeof FootballRoute
+    }
+    '/football/players/$slug/world-cup-{$year}': {
+      id: '/football/players/$slug/world-cup-{$year}'
+      path: '/world-cup-{$year}'
+      fullPath: '/football/players/$slug/world-cup-{$year}'
+      preLoaderRoute: typeof FootballPlayersSlugWorldCupChar123yearChar125RouteImport
+      parentRoute: typeof FootballPlayersSlugRoute
     }
     '/football/$comp/teams/$teamId/season-{$year}': {
       id: '/football/$comp/teams/$teamId/season-{$year}'
