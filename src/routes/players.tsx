@@ -1,5 +1,5 @@
 import { useMemo, lazy, Suspense } from "react";
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate, stripSearchParams } from "@tanstack/react-router";
 import { zodValidator } from "@tanstack/zod-adapter";
 import { useQuery } from "@tanstack/react-query";
 
@@ -39,6 +39,9 @@ const RecordsPanel = lazy(() =>
 
 export const Route = createFileRoute("/players")({
   validateSearch: zodValidator(playersSearchSchema),
+  search: {
+    middlewares: [stripSearchParams(playersDefaults)],
+  },
   head: () => ({
     meta: [
       { title: "Player Statistics — FIFA World Cup Archive (1930–2026)" },

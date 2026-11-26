@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, stripSearchParams } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { zodValidator, fallback } from "@tanstack/zod-adapter";
@@ -25,6 +25,11 @@ const searchSchema = z.object({
 
 export const Route = createFileRoute("/cricket/scores")({
   validateSearch: zodValidator(searchSchema),
+  search: {
+    middlewares: [
+      stripSearchParams({ tab: "live", date: "", league: "all", fmt: "any" }),
+    ],
+  },
   head: () => ({
     meta: [
       { title: "Cricket Scores — Live, Today, Upcoming & Results" },

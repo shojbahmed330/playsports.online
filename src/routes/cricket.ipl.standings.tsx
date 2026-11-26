@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, stripSearchParams } from "@tanstack/react-router";
 import { TeamCrest } from "@/components/cricket/TeamCrest";
 import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
 import { zodValidator } from "@tanstack/zod-adapter";
@@ -21,6 +21,9 @@ const qo = (year: "current" | number) =>
   });
 
 export const Route = createFileRoute("/cricket/ipl/standings")({
+  search: {
+    middlewares: [stripSearchParams({ year: "current" })],
+  },
   head: () => ({
     meta: [
       { title: "IPL Standings — Points Table & Form Guide" },
