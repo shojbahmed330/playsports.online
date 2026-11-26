@@ -2,7 +2,8 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { CalendarDays, ChevronRight, Clock3 } from "lucide-react";
 import { SportNav } from "@/components/sports/SportNav";
 import { Breadcrumbs } from "@/components/nav/Breadcrumbs";
-import { getNewsRecap } from "@/lib/news.server";
+import { getNewsRecap, listNewsRecaps } from "@/lib/news.server";
+import { pickRelatedNews } from "@/lib/news-feed";
 import { formatNewsDate } from "@/lib/news-date";
 import { markdownToHtml } from "@/lib/markdown-lite";
 import { articlePage, breadcrumbList, ldScript } from "@/lib/seo/jsonld";
@@ -11,7 +12,13 @@ export const Route = createFileRoute("/news/$slug")({
   loader: async ({ params }) => {
     const article = await getNewsRecap(params.slug);
     if (!article) throw notFound();
-    return { article };
+    const related = pickRelatedNews(
+      article.slug,
+      article.sport,
+      await listNewsRecaps(12),
+      3,
+    );
+    return { article, related };
   },
   head: ({ params, loaderData }) => {
     const article = loaderData?.article;
@@ -40,7 +47,15 @@ export const Route = createFileRoute("/news/$slug")({
         { name: "twitter:description", content: article.metaDescription ?? article.summary },
         { name: "twitter:image", content: image },
       ],
-      links: [{ rel: "canonical", href: `https://www.playsports.online${path}` }],
+      links: [
+        { rel: "canonical", href: `https://www.playsports.online${path}` },
+        {
+          rel: "alternate",
+          type: "application/rss+xml",
+          title: "PlaySports match recaps RSS",
+          href: "https://www.playsports.online/news/rss.xml",
+        },
+      ],
       scripts: [
         ldScript(
           articlePage({
@@ -79,7 +94,7 @@ export const Route = createFileRoute("/news/$slug")({
 });
 
 function NewsArticlePage() {
-  const { article } = Route.useLoaderData();
+  const { article, related } = Route.useLoaderData();
   const html = markdownToHtml(article.fullArticle);
 
   return (
@@ -163,6 +178,34 @@ function NewsArticlePage() {
             </Link>
           </div>
         </article>
+
+        {related.length > 0 && (
+          <section className="mt-10 border-t border-border pt-6">
+            <h2 className="text-sm font-bold uppercase tracking-wider text-sky-300">
+              More match recaps
+            </h2>
+            <div className="mt-4 grid gap-3 sm:grid-cols-3">
+              {related.map((item) => (
+                <Link
+                  key={item.slug}
+                  to="/news/$slug"
+                  params={{ slug: item.slug }}
+                  className="group rounded-xl border border-border bg-card p-3 transition-colors hover:border-sky-500/40"
+                >
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-sky-300">
+                    {item.sport}
+                  </span>
+                  <h3 className="mt-1.5 text-sm font-bold leading-snug line-clamp-3 group-hover:text-sky-200">
+                    {item.headline}
+                  </h3>
+                  <span className="mt-2 block text-[11px] text-muted-foreground">
+                    {formatNewsDate(item.updatedAt)}
+                  </span>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
       </main>
     </div>
   );

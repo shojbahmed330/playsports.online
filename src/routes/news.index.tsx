@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { CalendarDays, ChevronRight, Newspaper } from "lucide-react";
+import { CalendarDays, ChevronRight, Newspaper, Rss } from "lucide-react";
 import { SportNav } from "@/components/sports/SportNav";
 import { Breadcrumbs } from "@/components/nav/Breadcrumbs";
 import { listNewsRecaps } from "@/lib/news.server";
@@ -26,7 +26,15 @@ export const Route = createFileRoute("/news/")({
         { name: "twitter:description", content: description },
         { name: "twitter:image", content: "https://www.playsports.online/og-default.png" },
       ],
-      links: [{ rel: "canonical", href: "https://www.playsports.online/news" }],
+      links: [
+        { rel: "canonical", href: "https://www.playsports.online/news" },
+        {
+          rel: "alternate",
+          type: "application/rss+xml",
+          title: "PlaySports match recaps RSS",
+          href: "https://www.playsports.online/news/rss.xml",
+        },
+      ],
       scripts: [
         ldScript(collectionPage({ name: "Match recaps & analysis", description, path: "/news" })),
         ldScript(
@@ -50,8 +58,17 @@ function NewsIndex() {
       <Breadcrumbs />
       <main id="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-8">
         <header className="rounded-2xl border border-border bg-gradient-to-br from-sky-950/40 via-background to-emerald-950/20 p-6 sm:p-8">
-          <div className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] font-bold text-sky-300">
-            <Newspaper className="size-4" /> PlaySports news
+          <div className="flex items-start justify-between gap-3">
+            <div className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] font-bold text-sky-300">
+              <Newspaper className="size-4" /> PlaySports news
+            </div>
+            <a
+              href="/news/rss.xml"
+              className="inline-flex items-center gap-1 rounded-full border border-border px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-muted-foreground transition-colors hover:border-sky-500/40 hover:text-sky-300"
+              aria-label="Subscribe to the PlaySports news RSS feed"
+            >
+              <Rss className="size-3" /> RSS
+            </a>
           </div>
           <h1 className="mt-3 text-3xl sm:text-4xl font-extrabold">Match recaps &amp; analysis</h1>
           <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
