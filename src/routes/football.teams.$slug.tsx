@@ -1,3 +1,4 @@
+import { errorMessage } from "@/lib/error-message";
 import { createFileRoute, notFound, Link } from "@tanstack/react-router";
 import { findTeam, teamStats, listTeams, slugify } from "@/lib/seo/programmatic";
 import { canonical } from "@/lib/seo/canonical";
@@ -35,7 +36,9 @@ export const Route = createFileRoute("/football/teams/$slug")({
       ],
       links: [{ rel: "canonical", href: canonical(path) }],
       scripts: [
-        ldScript(sportsTeam({ name: team.name, path, sport: "Football", league: "FIFA World Cup" })),
+        ldScript(
+          sportsTeam({ name: team.name, path, sport: "Football", league: "FIFA World Cup" }),
+        ),
         ldScript(
           breadcrumbList([
             { name: "Home", path: "/" },
@@ -59,10 +62,26 @@ export const Route = createFileRoute("/football/teams/$slug")({
             aiFaqs && aiFaqs.length
               ? aiFaqs
               : [
-                  { q: `How many World Cup matches has ${team.name} played?`, a: `${team.name} has played ${stats.matchesPlayed} FIFA World Cup matches across ${stats.years.length} tournament appearances (${stats.w}W-${stats.d}D-${stats.l}L).` },
-                  { q: `Who is ${team.name}'s all-time top World Cup scorer?`, a: stats.topScorers[0] ? `${stats.topScorers[0].name} leads with ${stats.topScorers[0].goals} World Cup goals for ${team.name}.` : `${team.name} does not have a recorded leading World Cup scorer yet.` },
-                  { q: `How many World Cup goals has ${team.name} scored?`, a: `${team.name} has scored ${stats.gf} goals and conceded ${stats.ga}.` },
-                  { q: `When did ${team.name} appear at the World Cup?`, a: stats.years.length ? `${team.name} appeared in ${stats.years.join(", ")}.` : `No World Cup appearances on record.` },
+                  {
+                    q: `How many World Cup matches has ${team.name} played?`,
+                    a: `${team.name} has played ${stats.matchesPlayed} FIFA World Cup matches across ${stats.years.length} tournament appearances (${stats.w}W-${stats.d}D-${stats.l}L).`,
+                  },
+                  {
+                    q: `Who is ${team.name}'s all-time top World Cup scorer?`,
+                    a: stats.topScorers[0]
+                      ? `${stats.topScorers[0].name} leads with ${stats.topScorers[0].goals} World Cup goals for ${team.name}.`
+                      : `${team.name} does not have a recorded leading World Cup scorer yet.`,
+                  },
+                  {
+                    q: `How many World Cup goals has ${team.name} scored?`,
+                    a: `${team.name} has scored ${stats.gf} goals and conceded ${stats.ga}.`,
+                  },
+                  {
+                    q: `When did ${team.name} appear at the World Cup?`,
+                    a: stats.years.length
+                      ? `${team.name} appeared in ${stats.years.join(", ")}.`
+                      : `No World Cup appearances on record.`,
+                  },
                 ],
           ),
         ),
@@ -70,7 +89,7 @@ export const Route = createFileRoute("/football/teams/$slug")({
     };
   },
   component: FootballTeamPage,
-  errorComponent: ({ error }) => <div className="p-6">Error: {error.message}</div>,
+  errorComponent: ({ error }) => <div className="p-6">Error: {errorMessage(error)}</div>,
   notFoundComponent: () => <div className="p-6">Team not found.</div>,
 });
 
@@ -153,9 +172,7 @@ function FootballTeamPage() {
 
   const flag = flagOf(team.name);
   const gradient = gradientFor(team.name);
-  const winPct = stats.matchesPlayed
-    ? Math.round((stats.w / stats.matchesPlayed) * 100)
-    : 0;
+  const winPct = stats.matchesPlayed ? Math.round((stats.w / stats.matchesPlayed) * 100) : 0;
   const gd = stats.gf - stats.ga;
 
   return (
@@ -168,9 +185,13 @@ function FootballTeamPage() {
 
         <div className="relative container mx-auto px-4 pt-6 pb-8 max-w-5xl">
           <nav className="text-[11px] uppercase tracking-widest font-semibold text-white/85 mb-5 flex items-center gap-1.5">
-            <Link to="/" className="hover:text-white">Home</Link>
+            <Link to="/" className="hover:text-white">
+              Home
+            </Link>
             <span className="opacity-60">/</span>
-            <Link to="/football" className="hover:text-white">Football</Link>
+            <Link to="/football" className="hover:text-white">
+              Football
+            </Link>
             <span className="opacity-60">/</span>
             <span className="text-white">Teams</span>
           </nav>
@@ -216,51 +237,43 @@ function FootballTeamPage() {
 
       <main className="container mx-auto px-4 max-w-5xl space-y-8 mt-8">
         {/* TOP SCORERS */}
-        <Section
-          eyebrow="Legends"
-          title={`Top Scorers for ${team.name}`}
-          accent={gradient}
-        >
+        <Section eyebrow="Legends" title={`Top Scorers for ${team.name}`} accent={gradient}>
           {stats.topScorers.length === 0 ? (
             <p className="text-sm text-muted-foreground">No scorers on record.</p>
           ) : (
             <ol className="grid gap-2">
-              {stats.topScorers.map(
-                (p: { name: string; goals: number }, i: number) => (
-                  <li key={p.name}>
-                    <Link
-                      to="/football/players/$slug"
-                      params={{ slug: slugify(p.name) }}
-                      className="group flex items-center gap-3 rounded-xl border border-border bg-card px-3 py-2.5 hover:border-primary/60 hover:bg-accent/50 transition-all"
+              {stats.topScorers.map((p: { name: string; goals: number }, i: number) => (
+                <li key={p.name}>
+                  <Link
+                    to="/football/players/$slug"
+                    params={{ slug: slugify(p.name) }}
+                    className="group flex items-center gap-3 rounded-xl border border-border bg-card px-3 py-2.5 hover:border-primary/60 hover:bg-accent/50 transition-all"
+                  >
+                    <span
+                      className={`grid place-items-center h-9 w-9 shrink-0 rounded-full font-black text-sm ${
+                        i === 0
+                          ? "bg-amber-400 text-black"
+                          : i === 1
+                            ? "bg-slate-300 text-black"
+                            : i === 2
+                              ? "bg-orange-400 text-black"
+                              : "bg-muted text-muted-foreground"
+                      }`}
                     >
-                      <span
-                        className={`grid place-items-center h-9 w-9 shrink-0 rounded-full font-black text-sm ${
-                          i === 0
-                            ? "bg-amber-400 text-black"
-                            : i === 1
-                              ? "bg-slate-300 text-black"
-                              : i === 2
-                                ? "bg-orange-400 text-black"
-                                : "bg-muted text-muted-foreground"
-                        }`}
-                      >
-                        {i + 1}
+                      {i + 1}
+                    </span>
+                    <span className="flex-1 min-w-0 font-semibold truncate group-hover:text-primary">
+                      {p.name}
+                    </span>
+                    <span className="shrink-0 flex items-baseline gap-1">
+                      <span className="text-2xl font-black tabular-nums">{p.goals}</span>
+                      <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold">
+                        goals
                       </span>
-                      <span className="flex-1 min-w-0 font-semibold truncate group-hover:text-primary">
-                        {p.name}
-                      </span>
-                      <span className="shrink-0 flex items-baseline gap-1">
-                        <span className="text-2xl font-black tabular-nums">
-                          {p.goals}
-                        </span>
-                        <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold">
-                          goals
-                        </span>
-                      </span>
-                    </Link>
-                  </li>
-                ),
-              )}
+                    </span>
+                  </Link>
+                </li>
+              ))}
             </ol>
           )}
         </Section>
@@ -268,11 +281,7 @@ function FootballTeamPage() {
         <AdSlot slot="in_content" />
 
         {/* RECENT MATCHES */}
-        <Section
-          eyebrow="Form"
-          title="Recent World Cup Matches"
-          accent={gradient}
-        >
+        <Section eyebrow="Form" title="Recent World Cup Matches" accent={gradient}>
           <ul className="space-y-2">
             {stats.recentMatches.map(
               (
@@ -290,12 +299,7 @@ function FootballTeamPage() {
                 const teamScore = isHome ? m.home_score : m.away_score;
                 const oppScore = isHome ? m.away_score : m.home_score;
                 const opp = isHome ? m.away_team : m.home_team;
-                const result =
-                  teamScore > oppScore
-                    ? "W"
-                    : teamScore < oppScore
-                      ? "L"
-                      : "D";
+                const result = teamScore > oppScore ? "W" : teamScore < oppScore ? "L" : "D";
                 const resultColor =
                   result === "W"
                     ? "bg-emerald-500/20 text-emerald-400 ring-emerald-500/40"
@@ -317,8 +321,7 @@ function FootballTeamPage() {
                         {m.match_date} · {m.round}
                       </div>
                       <div className="text-sm font-semibold truncate">
-                        {isHome ? "vs" : "@"}{" "}
-                        <span className="mr-1">{flagOf(opp)}</span>
+                        {isHome ? "vs" : "@"} <span className="mr-1">{flagOf(opp)}</span>
                         {opp}
                       </div>
                     </div>
@@ -335,11 +338,7 @@ function FootballTeamPage() {
         </Section>
 
         {/* APPEARANCES */}
-        <Section
-          eyebrow="History"
-          title="Tournament Appearances"
-          accent={gradient}
-        >
+        <Section eyebrow="History" title="Tournament Appearances" accent={gradient}>
           <div className="flex flex-wrap gap-2">
             {stats.years.map((y: number) => (
               <Link
@@ -352,34 +351,30 @@ function FootballTeamPage() {
               </Link>
             ))}
           </div>
-
         </Section>
 
         {/* ALL SCORERS */}
-        {stats.allScorers &&
-          stats.allScorers.length > stats.topScorers.length && (
-            <Section
-              eyebrow="Complete list"
-              title={`All ${team.name} World Cup Scorers`}
-              accent={gradient}
-            >
-              <div className="flex flex-wrap gap-1.5">
-                {stats.allScorers.map((p: { name: string; goals: number }) => (
-                  <Link
-                    key={p.name}
-                    to="/football/players/$slug"
-                    params={{ slug: slugify(p.name) }}
-                    className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-card border border-border text-xs hover:border-primary hover:bg-accent transition-colors"
-                  >
-                    <span className="font-medium">{p.name}</span>
-                    <span className="tabular-nums font-black text-primary">
-                      {p.goals}
-                    </span>
-                  </Link>
-                ))}
-              </div>
-            </Section>
-          )}
+        {stats.allScorers && stats.allScorers.length > stats.topScorers.length && (
+          <Section
+            eyebrow="Complete list"
+            title={`All ${team.name} World Cup Scorers`}
+            accent={gradient}
+          >
+            <div className="flex flex-wrap gap-1.5">
+              {stats.allScorers.map((p: { name: string; goals: number }) => (
+                <Link
+                  key={p.name}
+                  to="/football/players/$slug"
+                  params={{ slug: slugify(p.name) }}
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-card border border-border text-xs hover:border-primary hover:bg-accent transition-colors"
+                >
+                  <span className="font-medium">{p.name}</span>
+                  <span className="tabular-nums font-black text-primary">{p.goals}</span>
+                </Link>
+              ))}
+            </div>
+          </Section>
+        )}
 
         <FaqSection
           title={`Frequently asked about ${team.name}`}
@@ -387,10 +382,26 @@ function FootballTeamPage() {
             aiFaqs && aiFaqs.length
               ? aiFaqs
               : [
-                  { q: `How many World Cup matches has ${team.name} played?`, a: `${team.name} has played ${stats.matchesPlayed} FIFA World Cup matches across ${stats.years.length} tournament appearances, with a record of ${stats.w} wins, ${stats.d} draws, and ${stats.l} losses.` },
-                  { q: `Who is ${team.name}'s all-time top World Cup scorer?`, a: stats.topScorers[0] ? `${stats.topScorers[0].name} is the leading World Cup scorer for ${team.name} with ${stats.topScorers[0].goals} goals.` : `${team.name} does not have a recorded leading World Cup scorer yet.` },
-                  { q: `How many World Cup goals has ${team.name} scored in total?`, a: `${team.name} has scored ${stats.gf} goals and conceded ${stats.ga} in their World Cup history, resulting in a goal difference of ${stats.gf - stats.ga}.` },
-                  { q: `When was ${team.name}'s last World Cup appearance?`, a: stats.years.length ? `${team.name} last appeared in the FIFA World Cup in ${stats.years[stats.years.length - 1]}.` : `No World Cup appearances on record for ${team.name}.` },
+                  {
+                    q: `How many World Cup matches has ${team.name} played?`,
+                    a: `${team.name} has played ${stats.matchesPlayed} FIFA World Cup matches across ${stats.years.length} tournament appearances, with a record of ${stats.w} wins, ${stats.d} draws, and ${stats.l} losses.`,
+                  },
+                  {
+                    q: `Who is ${team.name}'s all-time top World Cup scorer?`,
+                    a: stats.topScorers[0]
+                      ? `${stats.topScorers[0].name} is the leading World Cup scorer for ${team.name} with ${stats.topScorers[0].goals} goals.`
+                      : `${team.name} does not have a recorded leading World Cup scorer yet.`,
+                  },
+                  {
+                    q: `How many World Cup goals has ${team.name} scored in total?`,
+                    a: `${team.name} has scored ${stats.gf} goals and conceded ${stats.ga} in their World Cup history, resulting in a goal difference of ${stats.gf - stats.ga}.`,
+                  },
+                  {
+                    q: `When was ${team.name}'s last World Cup appearance?`,
+                    a: stats.years.length
+                      ? `${team.name} last appeared in the FIFA World Cup in ${stats.years[stats.years.length - 1]}.`
+                      : `No World Cup appearances on record for ${team.name}.`,
+                  },
                 ]
           }
         />
@@ -411,9 +422,7 @@ function FootballTeamPage() {
                   <span className="text-xl shrink-0" aria-hidden>
                     {flagOf(t.name)}
                   </span>
-                  <span className="text-sm font-semibold truncate">
-                    {t.name}
-                  </span>
+                  <span className="text-sm font-semibold truncate">{t.name}</span>
                 </Link>
               ))}
           </div>
@@ -447,9 +456,7 @@ function Section({
           <div className="text-[10px] uppercase tracking-[0.2em] font-bold text-muted-foreground">
             {eyebrow}
           </div>
-          <h2 className="text-lg sm:text-xl font-black leading-tight truncate">
-            {title}
-          </h2>
+          <h2 className="text-lg sm:text-xl font-black leading-tight truncate">{title}</h2>
         </div>
       </div>
       {children}
@@ -487,9 +494,7 @@ function StatCard({
       <div className="mt-0.5 text-2xl sm:text-3xl font-black tabular-nums leading-tight">
         {value}
       </div>
-      {sub && (
-        <div className="text-[10px] font-mono opacity-70 mt-0.5">{sub}</div>
-      )}
+      {sub && <div className="text-[10px] font-mono opacity-70 mt-0.5">{sub}</div>}
     </div>
   );
 }

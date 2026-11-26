@@ -1,3 +1,4 @@
+import { errorMessage } from "@/lib/error-message";
 // Phase 2.1 (cricket) — /cricket/highlights/:slug SSR landing.
 import { createFileRoute, notFound, Link } from "@tanstack/react-router";
 import {
@@ -86,7 +87,7 @@ export const Route = createFileRoute("/cricket/highlights/$slug")({
     };
   },
   component: CricketHighlightPage,
-  errorComponent: ({ error }) => <div className="p-6">Error: {error.message}</div>,
+  errorComponent: ({ error }) => <div className="p-6">Error: {errorMessage(error)}</div>,
   notFoundComponent: () => <div className="p-6">Highlight not found.</div>,
 });
 
@@ -96,7 +97,11 @@ function CricketHighlightPage() {
     .filter(
       (x) =>
         x.slug !== h.slug &&
-        (x.tournament === h.tournament || x.teamA === h.teamA || x.teamB === h.teamA || x.teamA === h.teamB || x.teamB === h.teamB),
+        (x.tournament === h.tournament ||
+          x.teamA === h.teamA ||
+          x.teamB === h.teamA ||
+          x.teamA === h.teamB ||
+          x.teamB === h.teamB),
     )
     .slice(0, 8);
   const teamAHasProfile = !!getCricketTeamBySlug(slugify(h.teamA));
@@ -108,9 +113,14 @@ function CricketHighlightPage() {
       <CricketSubNav />
       <main className="container mx-auto px-4 py-6 pb-20 max-w-4xl">
         <nav className="text-xs text-muted-foreground mb-3" aria-label="Breadcrumb">
-          <Link to="/" className="hover:underline">Home</Link> /{" "}
-          <Link to="/cricket" className="hover:underline">Cricket</Link> /{" "}
-          <span>Highlights</span>
+          <Link to="/" className="hover:underline">
+            Home
+          </Link>{" "}
+          /{" "}
+          <Link to="/cricket" className="hover:underline">
+            Cricket
+          </Link>{" "}
+          / <span>Highlights</span>
         </nav>
 
         <h1 className="text-2xl md:text-3xl font-bold mb-2">

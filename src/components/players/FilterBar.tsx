@@ -1,20 +1,10 @@
 import { useMemo, useState } from "react";
 import { useNavigate, useSearch } from "@tanstack/react-router";
-import {
-  Search,
-  X,
-  Check,
-  ChevronsUpDown,
-  RotateCcw,
-} from "lucide-react";
+import { Search, X, Check, ChevronsUpDown, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
-import {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-} from "@/components/ui/popover";
+import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import {
   Command,
   CommandInput,
@@ -73,7 +63,7 @@ export function FilterBar({
   countries: string[];
   inSheet?: boolean;
 }) {
-  const search = useSearch({ from: "/players" });
+  const search = useSearch({ from: "/players" }) as PlayersSearch;
   const navigate = useNavigate({ from: "/players" });
 
   const update = (patch: Partial<typeof playersDefaults>) =>
@@ -146,10 +136,7 @@ export function FilterBar({
 
       {/* Year chips */}
       <FilterRow label="Tournament">
-        <Chip
-          active={selectedYears.length === 0}
-          onClick={() => update({ years: "", era: "ALL" })}
-        >
+        <Chip active={selectedYears.length === 0} onClick={() => update({ years: "", era: "ALL" })}>
           All
         </Chip>
         {ALL_YEARS.map((y) => (
@@ -188,9 +175,7 @@ export function FilterBar({
           <Chip
             key={c}
             active={selectedConfeds.includes(c)}
-            onClick={() =>
-              update({ confeds: joinList(toggle(selectedConfeds, c)) })
-            }
+            onClick={() => update({ confeds: joinList(toggle(selectedConfeds, c)) })}
           >
             {c}
           </Chip>
@@ -229,9 +214,7 @@ export function FilterBar({
           <label className="text-[11px] uppercase tracking-wider text-muted-foreground">
             Minimum goals
           </label>
-          <span className="text-xs font-semibold text-gold tabular-nums">
-            ≥ {search.minGoals}
-          </span>
+          <span className="text-xs font-semibold text-gold tabular-nums">≥ {search.minGoals}</span>
         </div>
         <Slider
           value={[search.minGoals]}
@@ -256,18 +239,10 @@ export function FilterBar({
   );
 }
 
-function FilterRow({
-  label,
-  children,
-}: {
-  label: string;
-  children: React.ReactNode;
-}) {
+function FilterRow({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="space-y-1.5">
-      <div className="text-[11px] uppercase tracking-wider text-muted-foreground">
-        {label}
-      </div>
+      <div className="text-[11px] uppercase tracking-wider text-muted-foreground">{label}</div>
       <div className="flex flex-wrap gap-1.5">{children}</div>
     </div>
   );
@@ -317,11 +292,12 @@ function CountryCombobox({
   const toggle = (c: string) =>
     onChange(selected.includes(c) ? selected.filter((x) => x !== c) : [...selected, c]);
 
-  const label = selected.length === 0
-    ? "All countries"
-    : selected.length === 1
-      ? `${flagOf(selected[0])} ${selected[0]}`
-      : `${selected.length} countries`;
+  const label =
+    selected.length === 0
+      ? "All countries"
+      : selected.length === 1
+        ? `${flagOf(selected[0])} ${selected[0]}`
+        : `${selected.length} countries`;
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -342,10 +318,7 @@ function CountryCombobox({
             <CommandEmpty>No country found.</CommandEmpty>
             <CommandGroup>
               {selected.length > 0 && (
-                <CommandItem
-                  onSelect={() => onChange([])}
-                  className="text-muted-foreground"
-                >
+                <CommandItem onSelect={() => onChange([])} className="text-muted-foreground">
                   <X className="size-3.5 mr-2" /> Clear selection
                 </CommandItem>
               )}
@@ -368,7 +341,7 @@ function CountryCombobox({
 }
 
 export function ActiveFilterChips() {
-  const search = useSearch({ from: "/players" });
+  const search = useSearch({ from: "/players" }) as PlayersSearch;
   const navigate = useNavigate({ from: "/players" });
   const update = (patch: Partial<typeof playersDefaults>) =>
     navigate({ search: (prev: PlayersSearch) => ({ ...prev, ...patch }), replace: true });
@@ -382,8 +355,7 @@ export function ActiveFilterChips() {
   for (const y of years)
     chips.push({
       label: y,
-      clear: () =>
-        update({ years: joinList(years.filter((x) => x !== y)) }),
+      clear: () => update({ years: joinList(years.filter((x) => x !== y)) }),
     });
   for (const c of cs)
     chips.push({
@@ -397,8 +369,7 @@ export function ActiveFilterChips() {
     });
   if (search.era !== "ALL")
     chips.push({ label: ERA_LABELS[search.era as Era], clear: () => update({ era: "ALL" }) });
-  if (search.pos !== "ALL")
-    chips.push({ label: search.pos, clear: () => update({ pos: "ALL" }) });
+  if (search.pos !== "ALL") chips.push({ label: search.pos, clear: () => update({ pos: "ALL" }) });
   if (search.goalType !== "ALL")
     chips.push({
       label: GOAL_LABELS[search.goalType as GoalType],

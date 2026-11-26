@@ -1,18 +1,11 @@
+import { errorMessage } from "@/lib/error-message";
 // Phase 2.1 (cricket) — SSR record leaderboard page (long-tail SEO target).
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { SportNav } from "@/components/sports/SportNav";
 import { CricketSubNav } from "@/components/cricket/CricketSubNav";
-import {
-  breadcrumbList,
-  faqPage,
-  itemList,
-  ldScript,
-} from "@/lib/seo/jsonld";
+import { breadcrumbList, faqPage, itemList, ldScript } from "@/lib/seo/jsonld";
 import { canonical } from "@/lib/seo/canonical";
-import {
-  getCricketRecordCategory,
-  listCricketRecordCategories,
-} from "@/lib/seo/cricket-entities";
+import { getCricketRecordCategory, listCricketRecordCategories } from "@/lib/seo/cricket-entities";
 
 export const Route = createFileRoute("/cricket/records/$category")({
   loader: ({ params }) => {
@@ -23,10 +16,7 @@ export const Route = createFileRoute("/cricket/records/$category")({
   head: ({ params, loaderData }) => {
     if (!loaderData) {
       return {
-        meta: [
-          { title: "Record not found — Cricket" },
-          { name: "robots", content: "noindex" },
-        ],
+        meta: [{ title: "Record not found — Cricket" }, { name: "robots", content: "noindex" }],
       };
     }
     const { cat } = loaderData;
@@ -73,14 +63,17 @@ export const Route = createFileRoute("/cricket/records/$category")({
   errorComponent: ({ error }) => (
     <div className="min-h-screen grid place-items-center p-6 text-center">
       <p className="text-lg font-semibold">Couldn't load record</p>
-      <p className="text-xs text-muted-foreground mt-1">{error.message}</p>
+      <p className="text-xs text-muted-foreground mt-1">{errorMessage(error)}</p>
     </div>
   ),
   notFoundComponent: () => (
     <div className="min-h-screen grid place-items-center p-6 text-center">
       <div>
         <p className="text-lg font-semibold">Record not found</p>
-        <Link to="/cricket/records" className="mt-4 inline-block text-emerald-400 hover:underline text-sm">
+        <Link
+          to="/cricket/records"
+          className="mt-4 inline-block text-emerald-400 hover:underline text-sm"
+        >
           ← Browse cricket records
         </Link>
       </div>
@@ -88,7 +81,9 @@ export const Route = createFileRoute("/cricket/records/$category")({
   ),
 });
 
-function buildFaqs(cat: ReturnType<typeof getCricketRecordCategory>): Array<{ q: string; a: string }> {
+function buildFaqs(
+  cat: ReturnType<typeof getCricketRecordCategory>,
+): Array<{ q: string; a: string }> {
   if (!cat) return [];
   const faqs: Array<{ q: string; a: string }> = [];
   const [first, second] = cat.rows;
@@ -112,7 +107,11 @@ function buildFaqs(cat: ReturnType<typeof getCricketRecordCategory>): Array<{ q:
 }
 
 function RecordCategoryPage() {
-  const { cat } = Route.useLoaderData() as { cat: NonNullable<ReturnType<typeof import("@/lib/seo/cricket-entities").getCricketRecordCategory>> };
+  const { cat } = Route.useLoaderData() as {
+    cat: NonNullable<
+      ReturnType<typeof import("@/lib/seo/cricket-entities").getCricketRecordCategory>
+    >;
+  };
   const others = listCricketRecordCategories().filter((c) => c.id !== cat.id);
 
   return (
@@ -122,11 +121,17 @@ function RecordCategoryPage() {
 
       <main className="max-w-4xl mx-auto px-4 py-6 sm:py-10">
         <nav className="text-xs text-muted-foreground mb-4" aria-label="Breadcrumb">
-          <Link to="/" className="hover:underline">Home</Link>
+          <Link to="/" className="hover:underline">
+            Home
+          </Link>
           <span className="mx-1">/</span>
-          <Link to="/cricket" className="hover:underline">Cricket</Link>
+          <Link to="/cricket" className="hover:underline">
+            Cricket
+          </Link>
           <span className="mx-1">/</span>
-          <Link to="/cricket/records" className="hover:underline">Records</Link>
+          <Link to="/cricket/records" className="hover:underline">
+            Records
+          </Link>
           <span className="mx-1">/</span>
           <span className="text-foreground">{cat.title}</span>
         </nav>
@@ -147,7 +152,9 @@ function RecordCategoryPage() {
               >
                 <div className="flex items-center gap-3">
                   <span className="text-lg font-mono text-muted-foreground w-6">{i + 1}</span>
-                  <span className="text-xl" aria-hidden>{r.flag}</span>
+                  <span className="text-xl" aria-hidden>
+                    {r.flag}
+                  </span>
                   <Link
                     to="/cricket/players/$slug"
                     params={{ slug: r.player.toLowerCase().replace(/\s+/g, "-") }}

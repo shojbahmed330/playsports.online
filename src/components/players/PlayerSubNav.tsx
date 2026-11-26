@@ -1,9 +1,5 @@
 import { Link, useNavigate, useSearch } from "@tanstack/react-router";
-import {
-  PLAYER_TABS,
-  type PlayerTab,
-  type PlayersSearch,
-} from "@/lib/players-filters";
+import { PLAYER_TABS, type PlayerTab, type PlayersSearch } from "@/lib/players-filters";
 import {
   BarChart3,
   Trophy,
@@ -25,7 +21,7 @@ const META: Record<PlayerTab, { label: string; icon: typeof Trophy }> = {
 };
 
 export function PlayerSubNav() {
-  const search = useSearch({ from: "/players" });
+  const search = useSearch({ from: "/players" }) as PlayersSearch;
   const navigate = useNavigate({ from: "/players" });
   const active = search.tab;
 

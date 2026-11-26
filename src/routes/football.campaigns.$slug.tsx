@@ -1,12 +1,16 @@
+import { errorMessage } from "@/lib/error-message";
 import { createFileRoute, notFound, Link } from "@tanstack/react-router";
-import { getCampaignSummary, listCampaignSlugs, type CampaignSummary } from "@/lib/seo/programmatic-pages";
+import {
+  getCampaignSummary,
+  listCampaignSlugs,
+  type CampaignSummary,
+} from "@/lib/seo/programmatic-pages";
 import { slugify } from "@/lib/seo/programmatic";
 import { canonical } from "@/lib/seo/canonical";
 import { breadcrumbList, faqPage, articlePage, ldScript } from "@/lib/seo/jsonld";
 import { AdSlot } from "@/components/ads/AdSlot";
 import { RelatedLinks } from "@/components/seo/RelatedLinks";
 import { relatedCampaigns } from "@/lib/seo/related";
-
 
 export const Route = createFileRoute("/football/campaigns/$slug")({
   loader: ({ params }) => {
@@ -15,7 +19,8 @@ export const Route = createFileRoute("/football/campaigns/$slug")({
     return c;
   },
   head: ({ params, loaderData }) => {
-    if (!loaderData) return { meta: [{ title: "Not found" }, { name: "robots", content: "noindex" }] };
+    if (!loaderData)
+      return { meta: [{ title: "Not found" }, { name: "robots", content: "noindex" }] };
     const c = loaderData;
     const path = `/football/campaigns/${params.slug}`;
     const title = `${c.team} at the ${c.year} FIFA World Cup — Campaign, Results & Top Scorers | PlaySports`;
@@ -73,11 +78,10 @@ export const Route = createFileRoute("/football/campaigns/$slug")({
           }),
         ),
       ],
-
     };
   },
   component: CampaignPage,
-  errorComponent: ({ error }) => <div className="p-6">Error: {error.message}</div>,
+  errorComponent: ({ error }) => <div className="p-6">Error: {errorMessage(error)}</div>,
   notFoundComponent: () => <div className="p-6">Campaign not found.</div>,
 });
 
@@ -90,17 +94,25 @@ function CampaignPage() {
   return (
     <div className="container mx-auto max-w-4xl px-4 py-6 pb-20">
       <nav className="mb-3 text-xs text-muted-foreground">
-        <Link to="/" className="hover:underline">Home</Link> /{" "}
-        <Link to="/football" className="hover:underline">Football</Link> /{" "}
-        <Link to="/football/campaigns" className="hover:underline">Campaigns</Link>
+        <Link to="/" className="hover:underline">
+          Home
+        </Link>{" "}
+        /{" "}
+        <Link to="/football" className="hover:underline">
+          Football
+        </Link>{" "}
+        /{" "}
+        <Link to="/football/campaigns" className="hover:underline">
+          Campaigns
+        </Link>
       </nav>
       <h1 className="mb-2 text-2xl font-bold md:text-3xl">
         {c.team} at the {c.year} FIFA World Cup
       </h1>
       <p className="mb-6 text-muted-foreground" data-speakable>
-        {c.finalPosition ? `Finished as ${c.finalPosition}. ` : ""}Record {c.wins}W–{c.draws}D–{c.losses}L across {c.matches.length} matches ({c.goalsFor} for, {c.goalsAgainst} against).
+        {c.finalPosition ? `Finished as ${c.finalPosition}. ` : ""}Record {c.wins}W–{c.draws}D–
+        {c.losses}L across {c.matches.length} matches ({c.goalsFor} for, {c.goalsAgainst} against).
       </p>
-
 
       <div className="mb-6 grid grid-cols-3 gap-3">
         <StatCard label="Wins" value={c.wins} />
@@ -121,11 +133,17 @@ function CampaignPage() {
             const opp = isHome ? m.away_team : m.home_team;
             const result = my > op ? "W" : my < op ? "L" : "D";
             const resultColor =
-              result === "W" ? "bg-emerald-500/15 text-emerald-400" : result === "L" ? "bg-red-500/15 text-red-400" : "bg-yellow-500/15 text-yellow-400";
+              result === "W"
+                ? "bg-emerald-500/15 text-emerald-400"
+                : result === "L"
+                  ? "bg-red-500/15 text-red-400"
+                  : "bg-yellow-500/15 text-yellow-400";
             return (
               <div key={i} className="flex items-center justify-between gap-3 px-4 py-3 text-sm">
                 <div className="flex items-center gap-3">
-                  <span className={`grid size-6 place-items-center rounded-full text-[11px] font-bold ${resultColor}`}>
+                  <span
+                    className={`grid size-6 place-items-center rounded-full text-[11px] font-bold ${resultColor}`}
+                  >
                     {result}
                   </span>
                   <div>
@@ -156,7 +174,9 @@ function CampaignPage() {
 
       {c.topScorers.length > 0 && (
         <section className="mb-8">
-          <h2 className="mb-3 text-lg font-semibold">Top scorers for {c.team} in {c.year}</h2>
+          <h2 className="mb-3 text-lg font-semibold">
+            Top scorers for {c.team} in {c.year}
+          </h2>
           <ul className="divide-y divide-border rounded-2xl border border-border bg-card/40">
             {c.topScorers.map((s: CampaignSummary["topScorers"][number]) => (
               <li key={s.name} className="flex items-center justify-between px-4 py-3 text-sm">
@@ -167,7 +187,9 @@ function CampaignPage() {
                 >
                   {s.name}
                 </Link>
-                <span className="font-bold tabular-nums">{s.goals} goal{s.goals === 1 ? "" : "s"}</span>
+                <span className="font-bold tabular-nums">
+                  {s.goals} goal{s.goals === 1 ? "" : "s"}
+                </span>
               </li>
             ))}
           </ul>
@@ -211,7 +233,6 @@ function CampaignPage() {
     </div>
   );
 }
-
 
 function StatCard({ label, value }: { label: string; value: number }) {
   return (

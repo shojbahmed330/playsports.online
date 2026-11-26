@@ -31,11 +31,13 @@ export const Route = createFileRoute("/football/match/$id")({
   loader: async ({ context, params }) => {
     const matchId = Number(params.id);
     if (!Number.isFinite(matchId)) return { fixture: null };
-    const data = await context.queryClient.ensureQueryData({
-      queryKey: ["wc2026", "match", matchId],
-      queryFn: () => getWc2026Match({ data: { matchId } }),
-      staleTime: 30_000,
-    }).catch(() => null);
+    const data = await context.queryClient
+      .ensureQueryData({
+        queryKey: ["wc2026", "match", matchId],
+        queryFn: () => getWc2026Match({ data: { matchId } }),
+        staleTime: 30_000,
+      })
+      .catch(() => null);
     return { fixture: data?.fixture ?? null };
   },
   head: ({ params, loaderData }) => {
@@ -63,7 +65,8 @@ export const Route = createFileRoute("/football/match/$id")({
       ? `${matchup}${fx.venue ? ` at ${fx.venue}` : ""} — live World Cup 2026 score, lineups, key events and where to watch on PlaySports.`
       : "Live FIFA World Cup 2026 match: score, lineups, key events, broadcast info and where to watch.";
     const ogImage = `https://www.playsports.online/og/match/match-${params.id}--FIFA%20World%20Cup%202026%20%C2%B7%20Live%20score%20%26%20lineups.svg`;
-    const status = fx?.status === "inprogress" ? "live" : fx?.status === "finished" ? "ended" : "scheduled";
+    const status =
+      fx?.status === "inprogress" ? "live" : fx?.status === "finished" ? "ended" : "scheduled";
     return {
       meta: [
         { title },
@@ -80,25 +83,40 @@ export const Route = createFileRoute("/football/match/$id")({
       ],
       links: [{ rel: "canonical", href: url }],
       scripts: [
-        ldScript(sportsEvent({
-          name: matchup,
-          path: `/football/match/${params.id}`,
-          sport: "Soccer",
-          startDate: fx?.startTs ? new Date(fx.startTs).toISOString() : undefined,
-          homeTeam: fx?.home.name,
-          awayTeam: fx?.away.name,
-          location: fx?.venue ?? undefined,
-          status,
-        })),
-        ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "Football", path: "/football" }, { name: matchup, path: `/football/match/${params.id}` }])),
-        ldScript(faqPage(buildMatchFaqs({
-          sport: "Soccer", leagueName: "FIFA World Cup 2026",
-          home: fx?.home.name, away: fx?.away.name,
-          venue: fx?.venue ?? undefined,
-          startDate: fx?.startTs ? new Date(fx.startTs).toISOString() : undefined,
-          status,
-          homeScore: fx?.home.goals ?? null, awayScore: fx?.away.goals ?? null,
-        }))),
+        ldScript(
+          sportsEvent({
+            name: matchup,
+            path: `/football/match/${params.id}`,
+            sport: "Soccer",
+            startDate: fx?.startTs ? new Date(fx.startTs).toISOString() : undefined,
+            homeTeam: fx?.home.name,
+            awayTeam: fx?.away.name,
+            location: fx?.venue ?? undefined,
+            status,
+          }),
+        ),
+        ldScript(
+          breadcrumbList([
+            { name: "Home", path: "/" },
+            { name: "Football", path: "/football" },
+            { name: matchup, path: `/football/match/${params.id}` },
+          ]),
+        ),
+        ldScript(
+          faqPage(
+            buildMatchFaqs({
+              sport: "Soccer",
+              leagueName: "FIFA World Cup 2026",
+              home: fx?.home.name,
+              away: fx?.away.name,
+              venue: fx?.venue ?? undefined,
+              startDate: fx?.startTs ? new Date(fx.startTs).toISOString() : undefined,
+              status,
+              homeScore: fx?.home.goals ?? null,
+              awayScore: fx?.away.goals ?? null,
+            }),
+          ),
+        ),
       ],
     };
   },
@@ -149,7 +167,9 @@ function MatchPage() {
               <AddToCalendarButton fx={fx} compact />
             </div>
           ) : (
-            <span className="shrink-0 text-[10px] uppercase tracking-widest text-gray-600">2026</span>
+            <span className="shrink-0 text-[10px] uppercase tracking-widest text-gray-600">
+              2026
+            </span>
           )}
         </div>
       </header>
@@ -169,13 +189,15 @@ function MatchPage() {
             </p>
             <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
               <Link
-                to="/football/world-cup"
+                to="/football/$comp"
+                params={{ comp: "world-cup" }}
                 className="rounded-full bg-amber-500 px-3 py-1.5 text-xs font-bold text-gray-950 hover:bg-amber-400"
               >
                 World Cup archive
               </Link>
               <Link
-                to="/live/football"
+                to="/live/$sport"
+                params={{ sport: "football" }}
                 className="rounded-full border border-white/15 px-3 py-1.5 text-xs font-semibold text-gray-200 hover:bg-white/10"
               >
                 Today&apos;s football
@@ -188,7 +210,6 @@ function MatchPage() {
             <LiveMatchCenter fixture={fx} />
 
             <MatchHighlightCard home={fx.home.name} away={fx.away.name} />
-
 
             <WinProbabilityChart fx={fx} />
             <MomentumChart fx={fx} />
@@ -212,7 +233,9 @@ function MatchPage() {
                 <span className="ml-auto text-[10px] uppercase tracking-widest text-amber-200/60">
                   {watchOpen ? "Hide" : "Show"}
                 </span>
-                <ChevronDown className={`size-4 transition-transform ${watchOpen ? "rotate-180" : ""}`} />
+                <ChevronDown
+                  className={`size-4 transition-transform ${watchOpen ? "rotate-180" : ""}`}
+                />
               </button>
               {watchOpen && (
                 <div className="border-t border-amber-500/15 px-3 py-3">
@@ -231,12 +254,21 @@ function MatchPage() {
             <AdSlot slot="in_content" layout="in-article" />
 
             <MatchFaqBlock
-              sport="Soccer" leagueName="FIFA World Cup 2026"
-              home={fx.home.name} away={fx.away.name}
+              sport="Soccer"
+              leagueName="FIFA World Cup 2026"
+              home={fx.home.name}
+              away={fx.away.name}
               venue={fx.venue ?? undefined}
               startDate={fx.startTs ? new Date(fx.startTs).toISOString() : undefined}
-              status={fx.status === "inprogress" ? "live" : fx.status === "finished" ? "ended" : "scheduled"}
-              homeScore={fx.home.goals ?? null} awayScore={fx.away.goals ?? null}
+              status={
+                fx.status === "inprogress"
+                  ? "live"
+                  : fx.status === "finished"
+                    ? "ended"
+                    : "scheduled"
+              }
+              homeScore={fx.home.goals ?? null}
+              awayScore={fx.away.goals ?? null}
             />
           </>
         )}
@@ -278,7 +310,9 @@ function OtherMatchesToday({ currentId }: { currentId: number }) {
         <span className="text-[10px] text-gray-500 tabular-nums">{list.length}</span>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-        {list.map((f) => <OtherCard key={f.id} f={f} />)}
+        {list.map((f) => (
+          <OtherCard key={f.id} f={f} />
+        ))}
       </div>
     </section>
   );
@@ -298,9 +332,19 @@ function OtherCard({ f }: { f: Wc2026Fixture }) {
       }`}
     >
       <div className="flex items-center justify-between mb-1.5 gap-2">
-        <span className="text-[9px] uppercase tracking-widest font-bold text-amber-300/80 truncate min-w-0">{f.group}</span>
-        <span className={`text-[10px] font-bold shrink-0 ${live ? "text-red-300" : final ? "text-gray-400" : "text-sky-300"}`}>
-          {live ? (f.minute ? `${f.minute}'` : "LIVE") : final ? "FT" : formatLocalTime(f.startTs * 1000)}
+        <span className="text-[9px] uppercase tracking-widest font-bold text-amber-300/80 truncate min-w-0">
+          {f.group}
+        </span>
+        <span
+          className={`text-[10px] font-bold shrink-0 ${live ? "text-red-300" : final ? "text-gray-400" : "text-sky-300"}`}
+        >
+          {live
+            ? f.minute
+              ? `${f.minute}'`
+              : "LIVE"
+            : final
+              ? "FT"
+              : formatLocalTime(f.startTs * 1000)}
         </span>
       </div>
       <MiniRow name={f.home.name} score={live || final ? f.home.goals : null} />
@@ -320,6 +364,11 @@ function MiniRow({ name, score }: { name: string; score: number | null }) {
 }
 
 function isSameDay(a: number, b: number): boolean {
-  const da = new Date(a), db = new Date(b);
-  return da.getFullYear() === db.getFullYear() && da.getMonth() === db.getMonth() && da.getDate() === db.getDate();
+  const da = new Date(a),
+    db = new Date(b);
+  return (
+    da.getFullYear() === db.getFullYear() &&
+    da.getMonth() === db.getMonth() &&
+    da.getDate() === db.getDate()
+  );
 }

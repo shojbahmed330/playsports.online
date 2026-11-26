@@ -1,3 +1,4 @@
+import { errorMessage } from "@/lib/error-message";
 import { createFileRoute, notFound, Link } from "@tanstack/react-router";
 import { useMemo } from "react";
 import { findPlayer, playerStats, listPlayers, slugify } from "@/lib/seo/programmatic";
@@ -59,9 +60,20 @@ export const Route = createFileRoute("/football/players/$slug/")({
             aiFaqs && aiFaqs.length
               ? aiFaqs
               : [
-                  { q: `How many World Cup goals has ${player.name} scored?`, a: `${player.name} has scored ${stats.goalsTotal} World Cup goal${stats.goalsTotal === 1 ? "" : "s"}${stats.pen > 0 ? `, including ${stats.pen} from the penalty spot` : ""}.` },
-                  { q: `Which country does ${player.name} play for?`, a: `${player.name} represents ${player.team}.` },
-                  { q: `In which World Cups has ${player.name} played?`, a: stats.years.length ? `${player.name} appeared in ${stats.years.join(", ")}.` : `Not on record.` },
+                  {
+                    q: `How many World Cup goals has ${player.name} scored?`,
+                    a: `${player.name} has scored ${stats.goalsTotal} World Cup goal${stats.goalsTotal === 1 ? "" : "s"}${stats.pen > 0 ? `, including ${stats.pen} from the penalty spot` : ""}.`,
+                  },
+                  {
+                    q: `Which country does ${player.name} play for?`,
+                    a: `${player.name} represents ${player.team}.`,
+                  },
+                  {
+                    q: `In which World Cups has ${player.name} played?`,
+                    a: stats.years.length
+                      ? `${player.name} appeared in ${stats.years.join(", ")}.`
+                      : `Not on record.`,
+                  },
                 ],
           ),
         ),
@@ -69,7 +81,7 @@ export const Route = createFileRoute("/football/players/$slug/")({
     };
   },
   component: FootballPlayerPage,
-  errorComponent: ({ error }) => <div className="p-6">Error: {error.message}</div>,
+  errorComponent: ({ error }) => <div className="p-6">Error: {errorMessage(error)}</div>,
   notFoundComponent: () => <div className="p-6">Player not found.</div>,
 });
 
@@ -83,25 +95,30 @@ function FootballPlayerPage() {
     if (goals.length === 0 && cards.length === 0) return { stats: loaderStats, hist: loaderHist };
     const goalYears = Array.from(new Set(goals.map((g) => g.year))).sort((a, b) => a - b);
     const years = new Set<number>([...goalYears, ...cards.map((c) => c.year)]);
-    const rows = Array.from(years).sort((a, b) => a - b).map((year) => {
-      const yg = goals.filter((g) => g.year === year);
-      const yc = cards.filter((c) => c.year === year);
-      return {
-        year,
-        goals: yg.filter((g) => !g.og).length,
-        penalties: yg.filter((g) => g.pen).length,
-        ownGoals: yg.filter((g) => g.og).length,
-        yellows: yc.filter((c) => c.type === "yellow").length,
-        reds: yc.filter((c) => c.type === "red").length,
-        team: player.team,
-      };
-    });
+    const rows = Array.from(years)
+      .sort((a, b) => a - b)
+      .map((year) => {
+        const yg = goals.filter((g) => g.year === year);
+        const yc = cards.filter((c) => c.year === year);
+        return {
+          year,
+          goals: yg.filter((g) => !g.og).length,
+          penalties: yg.filter((g) => g.pen).length,
+          ownGoals: yg.filter((g) => g.og).length,
+          yellows: yc.filter((c) => c.type === "yellow").length,
+          reds: yc.filter((c) => c.type === "red").length,
+          team: player.team,
+        };
+      });
     const nextStats = {
       ...loaderStats,
       goalsTotal: goals.filter((g) => !g.og).length,
       cardsTotal: cards.length,
       years: goalYears,
-      byYear: goalYears.map((year) => ({ year, goals: goals.filter((g) => g.year === year && !g.og).length })),
+      byYear: goalYears.map((year) => ({
+        year,
+        goals: goals.filter((g) => g.year === year && !g.og).length,
+      })),
       pen: goals.filter((g) => g.pen).length,
       og: goals.filter((g) => g.og).length,
     };
@@ -135,15 +152,30 @@ function FootballPlayerPage() {
     <div className="min-h-dvh bg-background pb-20">
       {/* Hero */}
       <header className="relative overflow-hidden border-b border-border">
-        <div className="absolute inset-0 bg-gradient-to-br from-amber-500/15 via-rose-500/10 to-transparent" aria-hidden />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(251,191,36,0.18),transparent_60%)]" aria-hidden />
+        <div
+          className="absolute inset-0 bg-gradient-to-br from-amber-500/15 via-rose-500/10 to-transparent"
+          aria-hidden
+        />
+        <div
+          className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(251,191,36,0.18),transparent_60%)]"
+          aria-hidden
+        />
         <div className="relative container mx-auto max-w-5xl px-4 pt-6 pb-8 sm:pt-10 sm:pb-12">
-          <nav aria-label="Breadcrumb" className="text-[11px] sm:text-xs uppercase tracking-widest text-muted-foreground mb-4 sm:mb-6 truncate">
-            <Link to="/" className="hover:text-foreground">Home</Link>
+          <nav
+            aria-label="Breadcrumb"
+            className="text-[11px] sm:text-xs uppercase tracking-widest text-muted-foreground mb-4 sm:mb-6 truncate"
+          >
+            <Link to="/" className="hover:text-foreground">
+              Home
+            </Link>
             <span className="mx-1.5 opacity-50">/</span>
-            <Link to="/football" className="hover:text-foreground">Football</Link>
+            <Link to="/football" className="hover:text-foreground">
+              Football
+            </Link>
             <span className="mx-1.5 opacity-50">/</span>
-            <Link to="/players" className="hover:text-foreground">Players</Link>
+            <Link to="/players" className="hover:text-foreground">
+              Players
+            </Link>
             <span className="mx-1.5 opacity-50">/</span>
             <span className="text-foreground">{player.name}</span>
           </nav>
@@ -160,7 +192,9 @@ function FootballPlayerPage() {
                 {player.name}
               </h1>
               <div className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm sm:text-base text-muted-foreground">
-                <span className="text-lg leading-none" aria-hidden>{flagOf(player.team)}</span>
+                <span className="text-lg leading-none" aria-hidden>
+                  {flagOf(player.team)}
+                </span>
                 <Link
                   to="/football/teams/$slug"
                   params={{ slug: teamSlug }}
@@ -181,10 +215,30 @@ function FootballPlayerPage() {
 
           {/* Stat strip */}
           <div className="mt-6 sm:mt-8 grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
-            <HeroStat icon={<Target className="size-4" />} label="Goals" value={stats.goalsTotal} accent="amber" />
-            <HeroStat icon={<Trophy className="size-4" />} label="Tournaments" value={stats.years.length} accent="rose" />
-            <HeroStat icon={<Flag className="size-4" />} label="Penalties" value={stats.pen} accent="sky" />
-            <HeroStat icon={<ShieldAlert className="size-4" />} label={reds ? "Cards (Y/R)" : "Yellow cards"} value={reds ? `${yellows}/${reds}` : yellows} accent="orange" />
+            <HeroStat
+              icon={<Target className="size-4" />}
+              label="Goals"
+              value={stats.goalsTotal}
+              accent="amber"
+            />
+            <HeroStat
+              icon={<Trophy className="size-4" />}
+              label="Tournaments"
+              value={stats.years.length}
+              accent="rose"
+            />
+            <HeroStat
+              icon={<Flag className="size-4" />}
+              label="Penalties"
+              value={stats.pen}
+              accent="sky"
+            />
+            <HeroStat
+              icon={<ShieldAlert className="size-4" />}
+              label={reds ? "Cards (Y/R)" : "Yellow cards"}
+              value={reds ? `${yellows}/${reds}` : yellows}
+              accent="orange"
+            />
           </div>
         </div>
       </header>
@@ -197,7 +251,9 @@ function FootballPlayerPage() {
               <GoalIcon className="size-4 text-amber-500" />
               Tournament breakdown
             </h2>
-            <span className="text-xs text-muted-foreground tabular-nums">{stats.byYear.length} appearances</span>
+            <span className="text-xs text-muted-foreground tabular-nums">
+              {stats.byYear.length} appearances
+            </span>
           </div>
           <div className="rounded-2xl border border-border bg-card overflow-hidden">
             {stats.byYear.length === 0 ? (
@@ -216,7 +272,9 @@ function FootballPlayerPage() {
                       >
                         <div className="min-w-0">
                           <div className="flex items-center gap-2">
-                            <span className="font-bold text-base sm:text-lg">World Cup {y.year}</span>
+                            <span className="font-bold text-base sm:text-lg">
+                              World Cup {y.year}
+                            </span>
                             {isLive && (
                               <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-300 text-[9px] font-bold uppercase tracking-wider ring-1 ring-inset ring-emerald-500/30">
                                 Live
@@ -226,13 +284,17 @@ function FootballPlayerPage() {
                           {row && (row.penalties > 0 || row.yellows > 0 || row.reds > 0) && (
                             <div className="mt-0.5 flex flex-wrap gap-x-3 gap-y-0.5 text-[11px] text-muted-foreground">
                               {row.penalties > 0 && <span>{row.penalties} pen</span>}
-                              {row.yellows > 0 && <span className="text-yellow-500">🟨 {row.yellows}</span>}
+                              {row.yellows > 0 && (
+                                <span className="text-yellow-500">🟨 {row.yellows}</span>
+                              )}
                               {row.reds > 0 && <span className="text-red-500">🟥 {row.reds}</span>}
                             </div>
                           )}
                         </div>
                         <div className="shrink-0 text-right">
-                          <span className="tabular-nums font-black text-lg sm:text-xl">{y.goals}</span>
+                          <span className="tabular-nums font-black text-lg sm:text-xl">
+                            {y.goals}
+                          </span>
                           <span className="ml-1 text-xs text-muted-foreground">
                             goal{y.goals === 1 ? "" : "s"}
                           </span>
@@ -248,10 +310,15 @@ function FootballPlayerPage() {
 
         {/* About */}
         <section className="rounded-2xl border border-border bg-card p-5 sm:p-6">
-          <h2 className="text-lg sm:text-xl font-bold mb-2">About {player.name} at the World Cup</h2>
+          <h2 className="text-lg sm:text-xl font-bold mb-2">
+            About {player.name} at the World Cup
+          </h2>
           <p className="text-sm sm:text-base leading-relaxed text-muted-foreground">
-            {player.name} has represented <strong className="text-foreground">{player.team}</strong> at the FIFA World Cup, scoring{" "}
-            <strong className="text-foreground">{stats.goalsTotal} goal{stats.goalsTotal === 1 ? "" : "s"}</strong>{" "}
+            {player.name} has represented <strong className="text-foreground">{player.team}</strong>{" "}
+            at the FIFA World Cup, scoring{" "}
+            <strong className="text-foreground">
+              {stats.goalsTotal} goal{stats.goalsTotal === 1 ? "" : "s"}
+            </strong>{" "}
             across {stats.years.length} tournament{stats.years.length === 1 ? "" : "s"}
             {stats.years.length ? ` (${stats.years.join(", ")})` : ""}.
             {stats.pen > 0 ? ` ${stats.pen} came from the penalty spot.` : ""}
@@ -267,10 +334,26 @@ function FootballPlayerPage() {
             aiFaqs && aiFaqs.length
               ? aiFaqs
               : [
-                  { q: `How many World Cup goals has ${player.name} scored?`, a: `${player.name} has scored ${stats.goalsTotal} FIFA World Cup goals for ${player.team}${stats.pen > 0 ? `, including ${stats.pen} from the penalty spot` : ""}.` },
-                  { q: `Which country does ${player.name} play for?`, a: `${player.name} represents ${player.team} in international football.` },
-                  { q: `In which World Cups has ${player.name} played?`, a: stats.years.length ? `${player.name} appeared in the ${stats.years.join(", ")} FIFA World Cup tournament${stats.years.length === 1 ? "" : "s"}.` : `Not on record.` },
-                  { q: `When was ${player.name}'s last World Cup goal?`, a: stats.byYear.length ? `${player.name} last scored in the ${stats.byYear[stats.byYear.length - 1].year} World Cup.` : "No goals on record." },
+                  {
+                    q: `How many World Cup goals has ${player.name} scored?`,
+                    a: `${player.name} has scored ${stats.goalsTotal} FIFA World Cup goals for ${player.team}${stats.pen > 0 ? `, including ${stats.pen} from the penalty spot` : ""}.`,
+                  },
+                  {
+                    q: `Which country does ${player.name} play for?`,
+                    a: `${player.name} represents ${player.team} in international football.`,
+                  },
+                  {
+                    q: `In which World Cups has ${player.name} played?`,
+                    a: stats.years.length
+                      ? `${player.name} appeared in the ${stats.years.join(", ")} FIFA World Cup tournament${stats.years.length === 1 ? "" : "s"}.`
+                      : `Not on record.`,
+                  },
+                  {
+                    q: `When was ${player.name}'s last World Cup goal?`,
+                    a: stats.byYear.length
+                      ? `${player.name} last scored in the ${stats.byYear[stats.byYear.length - 1].year} World Cup.`
+                      : "No goals on record.",
+                  },
                 ]
           }
         />
@@ -320,12 +403,16 @@ function HeroStat({
     orange: "ring-orange-500/25 text-orange-400",
   };
   return (
-    <div className={`rounded-xl bg-card/70 backdrop-blur border border-border p-3 sm:p-4 ring-1 ring-inset ${ring[accent]}`}>
+    <div
+      className={`rounded-xl bg-card/70 backdrop-blur border border-border p-3 sm:p-4 ring-1 ring-inset ${ring[accent]}`}
+    >
       <div className="flex items-center gap-1.5 text-[10px] sm:text-xs uppercase tracking-wider text-muted-foreground font-semibold">
         {icon}
         <span className="truncate">{label}</span>
       </div>
-      <div className="mt-1 text-2xl sm:text-3xl font-black tabular-nums text-foreground">{value}</div>
+      <div className="mt-1 text-2xl sm:text-3xl font-black tabular-nums text-foreground">
+        {value}
+      </div>
     </div>
   );
 }

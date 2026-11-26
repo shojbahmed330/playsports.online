@@ -1,18 +1,11 @@
+import { errorMessage } from "@/lib/error-message";
 // Phase 2.1 (cricket) — SSR-friendly team profile.
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { SportNav } from "@/components/sports/SportNav";
 import { CricketSubNav } from "@/components/cricket/CricketSubNav";
-import {
-  breadcrumbList,
-  faqPage,
-  ldScript,
-  sportsTeam,
-} from "@/lib/seo/jsonld";
+import { breadcrumbList, faqPage, ldScript, sportsTeam } from "@/lib/seo/jsonld";
 import { canonical } from "@/lib/seo/canonical";
-import {
-  getCricketTeamBySlug,
-  listCricketTeams,
-} from "@/lib/seo/cricket-entities";
+import { getCricketTeamBySlug, listCricketTeams } from "@/lib/seo/cricket-entities";
 import { readCachedFaqs } from "@/lib/ai-faqs.server";
 import { FaqSection } from "@/components/seo/FaqSection";
 
@@ -26,10 +19,7 @@ export const Route = createFileRoute("/cricket/teams/$slug")({
   head: ({ params, loaderData }) => {
     if (!loaderData) {
       return {
-        meta: [
-          { title: "Team not found — Cricket" },
-          { name: "robots", content: "noindex" },
-        ],
+        meta: [{ title: "Team not found — Cricket" }, { name: "robots", content: "noindex" }],
       };
     }
     const { team } = loaderData;
@@ -37,9 +27,10 @@ export const Route = createFileRoute("/cricket/teams/$slug")({
     const title = team.isFranchise
       ? `${team.name} — IPL squad, captains, titles & home ground`
       : `${team.name} Cricket — ICC rankings, squad & recent form`;
-    const desc = team.isFranchise && team.franchise
-      ? `${team.name}: ${team.franchise.titles} IPL title${team.franchise.titles === 1 ? "" : "s"}, captained by ${team.franchise.captain}, home ground ${team.franchise.homeGround}.`
-      : `${team.name} — current ICC rankings across T20I, ODI and Test formats plus recent form.`;
+    const desc =
+      team.isFranchise && team.franchise
+        ? `${team.name}: ${team.franchise.titles} IPL title${team.franchise.titles === 1 ? "" : "s"}, captained by ${team.franchise.captain}, home ground ${team.franchise.homeGround}.`
+        : `${team.name} — current ICC rankings across T20I, ODI and Test formats plus recent form.`;
     return {
       meta: [
         { title },
@@ -68,7 +59,13 @@ export const Route = createFileRoute("/cricket/teams/$slug")({
             { name: team.name, path: `/cricket/teams/${params.slug}` },
           ]),
         ),
-        ldScript(faqPage(loaderData.aiFaqs && loaderData.aiFaqs.length ? loaderData.aiFaqs : loaderData.team.faqs)),
+        ldScript(
+          faqPage(
+            loaderData.aiFaqs && loaderData.aiFaqs.length
+              ? loaderData.aiFaqs
+              : loaderData.team.faqs,
+          ),
+        ),
       ],
     };
   },
@@ -76,14 +73,17 @@ export const Route = createFileRoute("/cricket/teams/$slug")({
   errorComponent: ({ error }) => (
     <div className="min-h-screen grid place-items-center p-6 text-center">
       <p className="text-lg font-semibold">Couldn't load team</p>
-      <p className="text-xs text-muted-foreground mt-1">{error.message}</p>
+      <p className="text-xs text-muted-foreground mt-1">{errorMessage(error)}</p>
     </div>
   ),
   notFoundComponent: () => (
     <div className="min-h-screen grid place-items-center p-6 text-center">
       <div>
         <p className="text-lg font-semibold">Team not found</p>
-        <Link to="/cricket/teams" className="mt-4 inline-block text-emerald-400 hover:underline text-sm">
+        <Link
+          to="/cricket/teams"
+          className="mt-4 inline-block text-emerald-400 hover:underline text-sm"
+        >
           ← Browse all cricket teams
         </Link>
       </div>
@@ -92,7 +92,10 @@ export const Route = createFileRoute("/cricket/teams/$slug")({
 });
 
 function CricketTeamProfile() {
-  const { team, aiFaqs } = Route.useLoaderData() as { team: import("@/lib/seo/cricket-entities").CricketTeamEntity; aiFaqs: Array<{ q: string; a: string }> | null };
+  const { team, aiFaqs } = Route.useLoaderData() as {
+    team: import("@/lib/seo/cricket-entities").CricketTeamEntity;
+    aiFaqs: Array<{ q: string; a: string }> | null;
+  };
   const related = listCricketTeams()
     .filter((t) => t.slug !== team.slug && t.isFranchise === team.isFranchise)
     .slice(0, 8);
@@ -104,20 +107,34 @@ function CricketTeamProfile() {
 
       <main className="max-w-6xl mx-auto px-4 py-6 sm:py-10">
         <nav className="text-xs text-muted-foreground mb-4" aria-label="Breadcrumb">
-          <Link to="/" className="hover:underline">Home</Link>
+          <Link to="/" className="hover:underline">
+            Home
+          </Link>
           <span className="mx-1">/</span>
-          <Link to="/cricket" className="hover:underline">Cricket</Link>
+          <Link to="/cricket" className="hover:underline">
+            Cricket
+          </Link>
           <span className="mx-1">/</span>
-          <Link to="/cricket/teams" className="hover:underline">Teams</Link>
+          <Link to="/cricket/teams" className="hover:underline">
+            Teams
+          </Link>
           <span className="mx-1">/</span>
           <span className="text-foreground">{team.name}</span>
         </nav>
 
         <header className="flex items-center gap-4 mb-8">
           {team.logo ? (
-            <img src={team.logo} alt="" className="w-16 h-16 rounded-lg" loading="eager"  decoding="async" />
+            <img
+              src={team.logo}
+              alt=""
+              className="w-16 h-16 rounded-lg"
+              loading="eager"
+              decoding="async"
+            />
           ) : team.flag ? (
-            <span className="text-5xl" aria-hidden>{team.flag}</span>
+            <span className="text-5xl" aria-hidden>
+              {team.flag}
+            </span>
           ) : null}
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold">{team.name}</h1>
@@ -149,7 +166,9 @@ function CricketTeamProfile() {
                 .sort((a, b) => a.rank - b.rank)
                 .map((f) => (
                   <div key={f.format} className="rounded-lg border border-border bg-card p-4">
-                    <p className="text-xs uppercase tracking-wide text-muted-foreground">{f.format}</p>
+                    <p className="text-xs uppercase tracking-wide text-muted-foreground">
+                      {f.format}
+                    </p>
                     <p className="text-2xl font-bold mt-1">#{f.rank}</p>
                     <p className="text-xs text-muted-foreground mt-1">Rating {f.rating}</p>
                   </div>
@@ -165,8 +184,18 @@ function CricketTeamProfile() {
               ? aiFaqs
               : [
                   ...team.faqs,
-                  { q: `What is ${team.name}'s home ground?`, a: team.isFranchise ? `${team.name} plays their home matches at ${team.franchise?.homeGround} in ${team.franchise?.city}.` : `${team.name} represents ${team.name} in international cricket venues.` },
-                  { q: `Who is the current captain of ${team.name}?`, a: team.isFranchise ? `The ${team.name} are currently captained by ${team.franchise?.captain}.` : `The ${team.name} national team squad is led by their designated format captains.` },
+                  {
+                    q: `What is ${team.name}'s home ground?`,
+                    a: team.isFranchise
+                      ? `${team.name} plays their home matches at ${team.franchise?.homeGround} in ${team.franchise?.city}.`
+                      : `${team.name} represents ${team.name} in international cricket venues.`,
+                  },
+                  {
+                    q: `Who is the current captain of ${team.name}?`,
+                    a: team.isFranchise
+                      ? `The ${team.name} are currently captained by ${team.franchise?.captain}.`
+                      : `The ${team.name} national team squad is led by their designated format captains.`,
+                  },
                 ]
           }
         />

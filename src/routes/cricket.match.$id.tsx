@@ -1,3 +1,4 @@
+import { errorMessage } from "@/lib/error-message";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -18,7 +19,6 @@ import { CommentaryTab } from "@/components/cricket/match/CommentaryTab";
 import { InfoTab } from "@/components/cricket/match/InfoTab";
 import { MatchFaqBlock } from "@/components/seo/MatchFaqBlock";
 
-
 const searchSchema = z.object({
   leagueId: z.string().default("8048"),
 });
@@ -37,7 +37,9 @@ export const Route = createFileRoute("/cricket/match/$id")({
     try {
       return await context.queryClient.ensureQueryData(detailOpts(deps.leagueId, params.id));
     } catch {
-      return { match: null, innings: [], commentary: [], error: null } as unknown as Awaited<ReturnType<typeof getCricketMatchDetail>>;
+      return { match: null, innings: [], commentary: [], error: null } as unknown as Awaited<
+        ReturnType<typeof getCricketMatchDetail>
+      >;
     }
   },
   head: ({ params, loaderData }) => {
@@ -52,27 +54,45 @@ export const Route = createFileRoute("/cricket/match/$id")({
       const statusTag = m.status === "in" ? "Live" : m.status === "post" ? "Result" : "Preview";
       const rawTitle = `${vs} — ${ctx} ${statusTag} Scorecard`;
       title = rawTitle.length > 60 ? rawTitle.slice(0, 57) + "…" : rawTitle;
-      const resultPart = m.status === "post" && m.result?.marginText ? `${m.result.marginText}. ` : m.status === "post" && m.note ? `${m.note}. ` : "";
+      const resultPart =
+        m.status === "post" && m.result?.marginText
+          ? `${m.result.marginText}. `
+          : m.status === "post" && m.note
+            ? `${m.note}. `
+            : "";
       desc = `${m.away.name} vs ${m.home.name} in ${m.leagueName || ctx}${m.venue ? ` at ${m.venue}${m.city ? `, ${m.city}` : ""}` : ""}. ${resultPart}Live scorecard, batting/bowling figures, commentary and lineups.`;
-      jsonld.push(sportsEvent({
-        name: `${vs} — ${ctx}`,
-        path: `/cricket/match/${params.id}`,
-        sport: "Cricket",
-        startDate: m.startTs ? new Date(m.startTs).toISOString() : undefined,
-        homeTeam: m.home.name,
-        awayTeam: m.away.name,
-        location: m.venue ? `${m.venue}${m.city ? `, ${m.city}` : ""}` : undefined,
-        status: m.status === "in" ? "live" : m.status === "post" ? "ended" : "scheduled",
-      }));
+      jsonld.push(
+        sportsEvent({
+          name: `${vs} — ${ctx}`,
+          path: `/cricket/match/${params.id}`,
+          sport: "Cricket",
+          startDate: m.startTs ? new Date(m.startTs).toISOString() : undefined,
+          homeTeam: m.home.name,
+          awayTeam: m.away.name,
+          location: m.venue ? `${m.venue}${m.city ? `, ${m.city}` : ""}` : undefined,
+          status: m.status === "in" ? "live" : m.status === "post" ? "ended" : "scheduled",
+        }),
+      );
     } else {
-      jsonld.push(sportsEvent({ name: `Cricket Match ${params.id}`, path: `/cricket/match/${params.id}`, sport: "Cricket" }));
+      jsonld.push(
+        sportsEvent({
+          name: `Cricket Match ${params.id}`,
+          path: `/cricket/match/${params.id}`,
+          sport: "Cricket",
+        }),
+      );
     }
-    jsonld.push(breadcrumbList([
-      { name: "Home", path: "/" },
-      { name: "Cricket", path: "/cricket" },
-      { name: "Scores", path: "/cricket/scores" },
-      { name: m ? `${m.away.abbr} vs ${m.home.abbr}` : "Match", path: `/cricket/match/${params.id}` },
-    ]));
+    jsonld.push(
+      breadcrumbList([
+        { name: "Home", path: "/" },
+        { name: "Cricket", path: "/cricket" },
+        { name: "Scores", path: "/cricket/scores" },
+        {
+          name: m ? `${m.away.abbr} vs ${m.home.abbr}` : "Match",
+          path: `/cricket/match/${params.id}`,
+        },
+      ]),
+    );
     return {
       meta: [
         { title },
@@ -93,8 +113,10 @@ export const Route = createFileRoute("/cricket/match/$id")({
     <div className="min-h-screen grid place-items-center p-6 text-center">
       <div>
         <p className="text-lg font-semibold">Couldn't load match</p>
-        <p className="text-xs text-muted-foreground mt-1">{error.message}</p>
-        <Link to="/cricket" className="mt-4 inline-block text-emerald-400 hover:underline text-sm">← Back to cricket</Link>
+        <p className="text-xs text-muted-foreground mt-1">{errorMessage(error)}</p>
+        <Link to="/cricket" className="mt-4 inline-block text-emerald-400 hover:underline text-sm">
+          ← Back to cricket
+        </Link>
       </div>
     </div>
   ),
@@ -129,7 +151,12 @@ function MatchPage() {
         <div className="max-w-5xl mx-auto px-4 py-12 text-center">
           <p className="text-sm">Match data unavailable.</p>
           <p className="text-xs text-muted-foreground mt-1">{q.data?.error}</p>
-          <Link to="/cricket" className="mt-4 inline-block text-emerald-400 hover:underline text-sm">← Back to cricket</Link>
+          <Link
+            to="/cricket"
+            className="mt-4 inline-block text-emerald-400 hover:underline text-sm"
+          >
+            ← Back to cricket
+          </Link>
         </div>
       </div>
     );
@@ -151,10 +178,12 @@ function MatchPage() {
     away: match.away.name,
     venue: match.venue ?? undefined,
     startDate: match.startTs ? new Date(match.startTs).toISOString() : undefined,
-    status: (match.status === "in" ? "live" : match.status === "post" ? "ended" : "scheduled") as "live" | "ended" | "scheduled",
+    status: (match.status === "in" ? "live" : match.status === "post" ? "ended" : "scheduled") as
+      | "live"
+      | "ended"
+      | "scheduled",
     broadcast: match.broadcast ?? undefined,
   };
-
 
   return (
     <div className="min-h-screen pb-16 sm:pb-0">
@@ -166,8 +195,10 @@ function MatchPage() {
         <MatchTabs
           tabs={tabs}
           render={(active) => {
-            if (active === "summary") return <SummaryTab match={match} innings={innings} onPlayer={setPlayerId} />;
-            if (active === "scorecard") return <ScorecardTab match={match} innings={innings} onPlayer={setPlayerId} />;
+            if (active === "summary")
+              return <SummaryTab match={match} innings={innings} onPlayer={setPlayerId} />;
+            if (active === "scorecard")
+              return <ScorecardTab match={match} innings={innings} onPlayer={setPlayerId} />;
             if (active === "commentary") return <CommentaryTab commentary={commentary} />;
             if (active === "info") return <InfoTab match={match} />;
             if (active === "faqs") return <MatchFaqBlock {...faqProps} />;
@@ -175,10 +206,18 @@ function MatchPage() {
           }}
         />
 
-        <CricketPlayerSheet athleteId={playerId} leagueId={leagueId} onClose={() => setPlayerId(null)} />
+        <CricketPlayerSheet
+          athleteId={playerId}
+          leagueId={leagueId}
+          onClose={() => setPlayerId(null)}
+        />
 
         <div className="mt-10 space-y-6">
-          <AffiliateStrip placement="match_footer" sport="cricket" heading="Cricket gear & partners" />
+          <AffiliateStrip
+            placement="match_footer"
+            sport="cricket"
+            heading="Cricket gear & partners"
+          />
           <AdSlot slot="in_content" layout="in-article" />
         </div>
       </main>

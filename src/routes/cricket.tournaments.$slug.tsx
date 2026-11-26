@@ -1,19 +1,11 @@
+import { errorMessage } from "@/lib/error-message";
 // Phase 2.1 (cricket) — SSR tournament landing page.
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { SportNav } from "@/components/sports/SportNav";
 import { CricketSubNav } from "@/components/cricket/CricketSubNav";
-import {
-  breadcrumbList,
-  faqPage,
-  itemList,
-  ldScript,
-  sportsOrganization,
-} from "@/lib/seo/jsonld";
+import { breadcrumbList, faqPage, itemList, ldScript, sportsOrganization } from "@/lib/seo/jsonld";
 import { canonical } from "@/lib/seo/canonical";
-import {
-  getCricketTournamentBySlug,
-  listCricketTournaments,
-} from "@/lib/seo/cricket-entities";
+import { getCricketTournamentBySlug, listCricketTournaments } from "@/lib/seo/cricket-entities";
 
 export const Route = createFileRoute("/cricket/tournaments/$slug")({
   loader: ({ params }) => {
@@ -24,10 +16,7 @@ export const Route = createFileRoute("/cricket/tournaments/$slug")({
   head: ({ params, loaderData }) => {
     if (!loaderData) {
       return {
-        meta: [
-          { title: "Tournament not found — Cricket" },
-          { name: "robots", content: "noindex" },
-        ],
+        meta: [{ title: "Tournament not found — Cricket" }, { name: "robots", content: "noindex" }],
       };
     }
     const { t } = loaderData;
@@ -85,7 +74,7 @@ export const Route = createFileRoute("/cricket/tournaments/$slug")({
   errorComponent: ({ error }) => (
     <div className="min-h-screen grid place-items-center p-6 text-center">
       <p className="text-lg font-semibold">Couldn't load tournament</p>
-      <p className="text-xs text-muted-foreground mt-1">{error.message}</p>
+      <p className="text-xs text-muted-foreground mt-1">{errorMessage(error)}</p>
     </div>
   ),
   notFoundComponent: () => (
@@ -95,7 +84,9 @@ export const Route = createFileRoute("/cricket/tournaments/$slug")({
   ),
 });
 
-function buildFaqs(t: ReturnType<typeof getCricketTournamentBySlug>): Array<{ q: string; a: string }> {
+function buildFaqs(
+  t: ReturnType<typeof getCricketTournamentBySlug>,
+): Array<{ q: string; a: string }> {
   if (!t) return [];
   const faqs: Array<{ q: string; a: string }> = [];
   if (t.history?.champions?.length) {
@@ -134,8 +125,14 @@ function buildFaqs(t: ReturnType<typeof getCricketTournamentBySlug>): Array<{ q:
 }
 
 function TournamentPage() {
-  const { t } = Route.useLoaderData() as { t: NonNullable<ReturnType<typeof import("@/lib/seo/cricket-entities").getCricketTournamentBySlug>> };
-  const others = listCricketTournaments().filter((x) => x.slug !== t.slug).slice(0, 8);
+  const { t } = Route.useLoaderData() as {
+    t: NonNullable<
+      ReturnType<typeof import("@/lib/seo/cricket-entities").getCricketTournamentBySlug>
+    >;
+  };
+  const others = listCricketTournaments()
+    .filter((x) => x.slug !== t.slug)
+    .slice(0, 8);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -144,16 +141,22 @@ function TournamentPage() {
 
       <main className="max-w-5xl mx-auto px-4 py-6 sm:py-10">
         <nav className="text-xs text-muted-foreground mb-4" aria-label="Breadcrumb">
-          <Link to="/" className="hover:underline">Home</Link>
+          <Link to="/" className="hover:underline">
+            Home
+          </Link>
           <span className="mx-1">/</span>
-          <Link to="/cricket" className="hover:underline">Cricket</Link>
+          <Link to="/cricket" className="hover:underline">
+            Cricket
+          </Link>
           <span className="mx-1">/</span>
           <span className="text-foreground">{t.longName}</span>
         </nav>
 
         <header className="mb-8">
           <div className="flex items-center gap-3">
-            <span className="text-4xl" aria-hidden>{t.emoji}</span>
+            <span className="text-4xl" aria-hidden>
+              {t.emoji}
+            </span>
             <div>
               <h1 className="text-2xl sm:text-3xl font-bold">{t.longName}</h1>
               <p className="text-sm text-muted-foreground mt-1">

@@ -1,3 +1,4 @@
+import { errorMessage } from "@/lib/error-message";
 import { createFileRoute, notFound, Link } from "@tanstack/react-router";
 import { getMatchBySlug, findHighlightUrl } from "@/lib/seo/entities";
 import { slugify } from "@/lib/seo/programmatic";
@@ -23,7 +24,11 @@ export const Route = createFileRoute("/football/matches/$slug")({
     const { match: m } = loaderData;
     const path = `/football/matches/${params.slug}`;
     const winner =
-      m.home_score > m.away_score ? m.home_team : m.away_score > m.home_score ? m.away_team : "Draw";
+      m.home_score > m.away_score
+        ? m.home_team
+        : m.away_score > m.home_score
+          ? m.away_team
+          : "Draw";
     const title = `${m.home_team} ${m.home_score}–${m.away_score} ${m.away_team} — FIFA World Cup ${m.tournament_year} Match Result | PlaySports`;
     const desc = `${m.home_team} vs ${m.away_team} at the ${m.tournament_year} FIFA World Cup${m.round ? ` (${m.round})` : ""}. Final score ${m.home_score}–${m.away_score}${m.stadium ? `, played at ${m.stadium}${m.city ? ", " + m.city : ""}` : ""}. ${winner === "Draw" ? "Match ended in a draw." : `${winner} won.`}`;
     return {
@@ -53,23 +58,36 @@ export const Route = createFileRoute("/football/matches/$slug")({
           breadcrumbList([
             { name: "Home", path: "/" },
             { name: "Football", path: "/football" },
-            { name: `World Cup ${m.tournament_year}`, path: `/archive/football_wc/${m.tournament_year}` },
+            {
+              name: `World Cup ${m.tournament_year}`,
+              path: `/archive/football_wc/${m.tournament_year}`,
+            },
             { name: `${m.home_team} vs ${m.away_team}`, path },
           ]),
         ),
         ldScript(
           faqPage([
-            { q: `Who won ${m.home_team} vs ${m.away_team}?`, a: `${winner === "Draw" ? `The match ended ${m.home_score}–${m.away_score} — a draw.` : `${winner} won ${m.home_score}–${m.away_score}.`}` },
-            { q: `When was ${m.home_team} vs ${m.away_team} played?`, a: `The match was played on ${m.match_date ?? `during the ${m.tournament_year} FIFA World Cup`}${m.round ? ` in the ${m.round}` : ""}.` },
-            { q: `Where was ${m.home_team} vs ${m.away_team} played?`, a: m.stadium ? `The match was played at ${m.stadium}${m.city ? " in " + m.city : ""}.` : `Venue details for this match are not on record.` },
+            {
+              q: `Who won ${m.home_team} vs ${m.away_team}?`,
+              a: `${winner === "Draw" ? `The match ended ${m.home_score}–${m.away_score} — a draw.` : `${winner} won ${m.home_score}–${m.away_score}.`}`,
+            },
+            {
+              q: `When was ${m.home_team} vs ${m.away_team} played?`,
+              a: `The match was played on ${m.match_date ?? `during the ${m.tournament_year} FIFA World Cup`}${m.round ? ` in the ${m.round}` : ""}.`,
+            },
+            {
+              q: `Where was ${m.home_team} vs ${m.away_team} played?`,
+              a: m.stadium
+                ? `The match was played at ${m.stadium}${m.city ? " in " + m.city : ""}.`
+                : `Venue details for this match are not on record.`,
+            },
           ]),
         ),
       ],
-
     };
   },
   component: MatchSlugPage,
-  errorComponent: ({ error }) => <div className="p-6">Error: {error.message}</div>,
+  errorComponent: ({ error }) => <div className="p-6">Error: {errorMessage(error)}</div>,
   notFoundComponent: () => <div className="p-6">Match not found.</div>,
 });
 
@@ -79,20 +97,32 @@ function MatchSlugPage() {
   return (
     <div className="container mx-auto px-4 py-6 pb-20 max-w-4xl">
       <nav className="text-xs text-muted-foreground mb-3">
-        <Link to="/" className="hover:underline">Home</Link> /{" "}
-        <Link to="/football" className="hover:underline">Football</Link> /{" "}
-        <Link to="/archive/$sport/$year" params={{ sport: "football_wc", year: String(m.tournament_year) }} className="hover:underline">World Cup {m.tournament_year}</Link>
+        <Link to="/" className="hover:underline">
+          Home
+        </Link>{" "}
+        /{" "}
+        <Link to="/football" className="hover:underline">
+          Football
+        </Link>{" "}
+        /{" "}
+        <Link
+          to="/archive/$sport/$year"
+          params={{ sport: "football_wc", year: String(m.tournament_year) }}
+          className="hover:underline"
+        >
+          World Cup {m.tournament_year}
+        </Link>
       </nav>
 
       <h1 className="text-2xl md:text-3xl font-bold mb-2">
         {m.home_team} {m.home_score}–{m.away_score} {m.away_team}
       </h1>
       <p className="text-muted-foreground mb-6" data-speakable>
-        FIFA World Cup {m.tournament_year}{m.round ? ` · ${m.round}` : ""}
+        FIFA World Cup {m.tournament_year}
+        {m.round ? ` · ${m.round}` : ""}
         {m.match_date ? ` · ${m.match_date}` : ""}
         {m.stadium ? ` · ${m.stadium}${m.city ? ", " + m.city : ""}` : ""}
       </p>
-
 
       <div className="grid grid-cols-2 gap-3 mb-6">
         <TeamCard team={m.home_team} score={m.home_score} />
@@ -123,9 +153,23 @@ function MatchSlugPage() {
         <h2 className="text-xl font-semibold mb-3">Frequently asked</h2>
         <div className="space-y-3">
           {[
-            { q: `Who won ${m.home_team} vs ${m.away_team}?`, a: m.home_score === m.away_score ? `The match ended ${m.home_score}–${m.away_score} — a draw.` : `${m.home_score > m.away_score ? m.home_team : m.away_team} won ${m.home_score}–${m.away_score}.` },
-            { q: `When was the match played?`, a: `${m.match_date ?? `During the ${m.tournament_year} FIFA World Cup`}${m.round ? ` in the ${m.round}` : ""}.` },
-            { q: `Where was it played?`, a: m.stadium ? `${m.stadium}${m.city ? " in " + m.city : ""}.` : `Venue not on record.` },
+            {
+              q: `Who won ${m.home_team} vs ${m.away_team}?`,
+              a:
+                m.home_score === m.away_score
+                  ? `The match ended ${m.home_score}–${m.away_score} — a draw.`
+                  : `${m.home_score > m.away_score ? m.home_team : m.away_team} won ${m.home_score}–${m.away_score}.`,
+            },
+            {
+              q: `When was the match played?`,
+              a: `${m.match_date ?? `During the ${m.tournament_year} FIFA World Cup`}${m.round ? ` in the ${m.round}` : ""}.`,
+            },
+            {
+              q: `Where was it played?`,
+              a: m.stadium
+                ? `${m.stadium}${m.city ? " in " + m.city : ""}.`
+                : `Venue not on record.`,
+            },
           ].map((f) => (
             <details key={f.q} className="rounded-lg border px-4 py-3">
               <summary className="font-medium cursor-pointer">{f.q}</summary>
@@ -136,18 +180,19 @@ function MatchSlugPage() {
       </section>
 
       <section className="mt-8">
-        <h2 className="text-xl font-semibold mb-3">Related matches from World Cup {m.tournament_year}</h2>
+        <h2 className="text-xl font-semibold mb-3">
+          Related matches from World Cup {m.tournament_year}
+        </h2>
         <div className="flex flex-wrap gap-2">
-          {relatedMatches(m, 12)
-            .map((x) => (
-              <a
-                key={x.href}
-                href={x.href}
-                className="px-3 py-1 rounded-full bg-muted text-xs hover:bg-accent"
-              >
-                {x.label.replace(" — ", " · ")}
-              </a>
-            ))}
+          {relatedMatches(m, 12).map((x) => (
+            <a
+              key={x.href}
+              href={x.href}
+              className="px-3 py-1 rounded-full bg-muted text-xs hover:bg-accent"
+            >
+              {x.label.replace(" — ", " · ")}
+            </a>
+          ))}
         </div>
       </section>
     </div>

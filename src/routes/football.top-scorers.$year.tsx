@@ -1,3 +1,4 @@
+import { errorMessage } from "@/lib/error-message";
 import { createFileRoute, notFound, Link } from "@tanstack/react-router";
 import {
   listTopScorerYears,
@@ -21,7 +22,8 @@ export const Route = createFileRoute("/football/top-scorers/$year")({
     return { mode: "year" as const, year, scorers: topScorersForYear(year, 25) };
   },
   head: ({ loaderData, params }) => {
-    if (!loaderData) return { meta: [{ title: "Not found" }, { name: "robots", content: "noindex" }] };
+    if (!loaderData)
+      return { meta: [{ title: "Not found" }, { name: "robots", content: "noindex" }] };
     const path = `/football/top-scorers/${params.year}`;
     const top = loaderData.scorers[0];
     let title: string;
@@ -60,9 +62,10 @@ export const Route = createFileRoute("/football/top-scorers/$year")({
           ? ldScript(
               faqPage([
                 {
-                  q: loaderData.mode === "all-time"
-                    ? "Who has scored the most World Cup goals ever?"
-                    : `Who was the top scorer at the ${loaderData.year} World Cup?`,
+                  q:
+                    loaderData.mode === "all-time"
+                      ? "Who has scored the most World Cup goals ever?"
+                      : `Who was the top scorer at the ${loaderData.year} World Cup?`,
                   a: `${top.name} of ${top.team} finished ${loaderData.mode === "all-time" ? "top" : `top of the ${loaderData.year} scoring chart`} with ${top.goals} goals.`,
                 },
                 {
@@ -75,8 +78,13 @@ export const Route = createFileRoute("/football/top-scorers/$year")({
       ].filter(Boolean) as ReturnType<typeof ldScript>[],
     };
   },
-  component: withYearNav(TopScorersPage, { basePath: "/football/top-scorers", minYear: 1930, maxYear: 2026, label: "Top scorers" }),
-  errorComponent: ({ error }) => <div className="p-6">Error: {error.message}</div>,
+  component: withYearNav(TopScorersPage, {
+    basePath: "/football/top-scorers",
+    minYear: 1930,
+    maxYear: 2026,
+    label: "Top scorers",
+  }),
+  errorComponent: ({ error }) => <div className="p-6">Error: {errorMessage(error)}</div>,
   notFoundComponent: () => <div className="p-6">No data for this tournament.</div>,
 });
 
@@ -95,9 +103,17 @@ function TopScorersPage() {
   return (
     <div className="container mx-auto max-w-3xl px-4 py-6 pb-20">
       <nav className="mb-3 text-xs text-muted-foreground">
-        <Link to="/" className="hover:underline">Home</Link> /{" "}
-        <Link to="/football" className="hover:underline">Football</Link> /{" "}
-        <Link to="/football/top-scorers" className="hover:underline">Top Scorers</Link>
+        <Link to="/" className="hover:underline">
+          Home
+        </Link>{" "}
+        /{" "}
+        <Link to="/football" className="hover:underline">
+          Football
+        </Link>{" "}
+        /{" "}
+        <Link to="/football/top-scorers" className="hover:underline">
+          Top Scorers
+        </Link>
       </nav>
       <h1 className="mb-2 text-2xl font-bold md:text-3xl">{heading}</h1>
       <p className="mb-6 text-muted-foreground">{subhead}</p>
@@ -136,7 +152,9 @@ function TopScorersPage() {
                   </Link>
                 </td>
                 <td className="px-3 py-2 text-right font-bold tabular-nums">{s.goals}</td>
-                <td className="px-3 py-2 text-right tabular-nums text-muted-foreground">{s.penalties || "—"}</td>
+                <td className="px-3 py-2 text-right tabular-nums text-muted-foreground">
+                  {s.penalties || "—"}
+                </td>
               </tr>
             ))}
           </tbody>

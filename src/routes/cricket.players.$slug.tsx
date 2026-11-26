@@ -1,18 +1,11 @@
+import { errorMessage } from "@/lib/error-message";
 // Phase 2.1 (cricket) — SSR-friendly player profile.
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { SportNav } from "@/components/sports/SportNav";
 import { CricketSubNav } from "@/components/cricket/CricketSubNav";
-import {
-  athlete,
-  breadcrumbList,
-  faqPage,
-  ldScript,
-} from "@/lib/seo/jsonld";
+import { athlete, breadcrumbList, faqPage, ldScript } from "@/lib/seo/jsonld";
 import { canonical } from "@/lib/seo/canonical";
-import {
-  getCricketPlayerBySlug,
-  listCricketPlayers,
-} from "@/lib/seo/cricket-entities";
+import { getCricketPlayerBySlug, listCricketPlayers } from "@/lib/seo/cricket-entities";
 import { readCachedFaqs } from "@/lib/ai-faqs.server";
 import { FaqSection } from "@/components/seo/FaqSection";
 import { RelatedLinks } from "@/components/seo/RelatedLinks";
@@ -28,16 +21,16 @@ export const Route = createFileRoute("/cricket/players/$slug")({
   head: ({ params, loaderData }) => {
     if (!loaderData) {
       return {
-        meta: [
-          { title: "Player not found — Cricket" },
-          { name: "robots", content: "noindex" },
-        ],
+        meta: [{ title: "Player not found — Cricket" }, { name: "robots", content: "noindex" }],
       };
     }
     const p = loaderData.player;
     const url = canonical(`/cricket/players/${params.slug}`);
     const title = `${p.name} — cricket career records, stats & history`;
-    const summary = p.records.slice(0, 2).map((r) => `${r.category} (${r.value})`).join("; ");
+    const summary = p.records
+      .slice(0, 2)
+      .map((r) => `${r.category} (${r.value})`)
+      .join("; ");
     const desc = `${p.name}${p.country ? ` (${p.country})` : ""} — records: ${summary || "career cricket profile"}.`;
     return {
       meta: [
@@ -66,7 +59,9 @@ export const Route = createFileRoute("/cricket/players/$slug")({
             { name: p.name, path: `/cricket/players/${params.slug}` },
           ]),
         ),
-        ldScript(faqPage(loaderData.aiFaqs && loaderData.aiFaqs.length ? loaderData.aiFaqs : p.faqs)),
+        ldScript(
+          faqPage(loaderData.aiFaqs && loaderData.aiFaqs.length ? loaderData.aiFaqs : p.faqs),
+        ),
       ],
     };
   },
@@ -74,14 +69,17 @@ export const Route = createFileRoute("/cricket/players/$slug")({
   errorComponent: ({ error }) => (
     <div className="min-h-screen grid place-items-center p-6 text-center">
       <p className="text-lg font-semibold">Couldn't load player</p>
-      <p className="text-xs text-muted-foreground mt-1">{error.message}</p>
+      <p className="text-xs text-muted-foreground mt-1">{errorMessage(error)}</p>
     </div>
   ),
   notFoundComponent: () => (
     <div className="min-h-screen grid place-items-center p-6 text-center">
       <div>
         <p className="text-lg font-semibold">Player not found</p>
-        <Link to="/cricket/players" className="mt-4 inline-block text-emerald-400 hover:underline text-sm">
+        <Link
+          to="/cricket/players"
+          className="mt-4 inline-block text-emerald-400 hover:underline text-sm"
+        >
           ← Browse cricket players
         </Link>
       </div>
@@ -90,7 +88,10 @@ export const Route = createFileRoute("/cricket/players/$slug")({
 });
 
 function CricketPlayerProfile() {
-  const { player, aiFaqs } = Route.useLoaderData() as { player: import("@/lib/seo/cricket-entities").CricketPlayerEntity; aiFaqs: Array<{ q: string; a: string }> | null };
+  const { player, aiFaqs } = Route.useLoaderData() as {
+    player: import("@/lib/seo/cricket-entities").CricketPlayerEntity;
+    aiFaqs: Array<{ q: string; a: string }> | null;
+  };
   const related = listCricketPlayers()
     .filter((p) => p.slug !== player.slug && (!player.country || p.country === player.country))
     .slice(0, 8);
@@ -102,11 +103,17 @@ function CricketPlayerProfile() {
 
       <main className="max-w-4xl mx-auto px-4 py-6 sm:py-10">
         <nav className="text-xs text-muted-foreground mb-4" aria-label="Breadcrumb">
-          <Link to="/" className="hover:underline">Home</Link>
+          <Link to="/" className="hover:underline">
+            Home
+          </Link>
           <span className="mx-1">/</span>
-          <Link to="/cricket" className="hover:underline">Cricket</Link>
+          <Link to="/cricket" className="hover:underline">
+            Cricket
+          </Link>
           <span className="mx-1">/</span>
-          <Link to="/cricket/players" className="hover:underline">Players</Link>
+          <Link to="/cricket/players" className="hover:underline">
+            Players
+          </Link>
           <span className="mx-1">/</span>
           <span className="text-foreground">{player.name}</span>
         </nav>
@@ -116,7 +123,11 @@ function CricketPlayerProfile() {
             className="w-16 h-16 rounded-full bg-gradient-to-br from-emerald-600 to-blue-600 grid place-items-center text-2xl font-bold"
             aria-hidden
           >
-            {player.name.split(" ").map((s) => s[0]).slice(0, 2).join("")}
+            {player.name
+              .split(" ")
+              .map((s) => s[0])
+              .slice(0, 2)
+              .join("")}
           </div>
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold">{player.name}</h1>
@@ -159,8 +170,19 @@ function CricketPlayerProfile() {
               ? aiFaqs
               : [
                   ...player.faqs,
-                  { q: `What are ${player.name}'s best cricket records?`, a: player.records.length ? `${player.name}'s top records include ${player.records.slice(0, 2).map(r => `${r.category} with ${r.value}`).join(" and ")}.` : "Records are currently being updated." },
-                  { q: `Which country does ${player.name} play for?`, a: `${player.name} represents ${player.country} in international cricket.` },
+                  {
+                    q: `What are ${player.name}'s best cricket records?`,
+                    a: player.records.length
+                      ? `${player.name}'s top records include ${player.records
+                          .slice(0, 2)
+                          .map((r) => `${r.category} with ${r.value}`)
+                          .join(" and ")}.`
+                      : "Records are currently being updated.",
+                  },
+                  {
+                    q: `Which country does ${player.name} play for?`,
+                    a: `${player.name} represents ${player.country} in international cricket.`,
+                  },
                 ]
           }
         />
@@ -184,7 +206,10 @@ function CricketPlayerProfile() {
           </section>
         )}
 
-        <RelatedLinks title={`More cricket player pages`} links={relatedForCricketPlayer(player.slug, 12)} />
+        <RelatedLinks
+          title={`More cricket player pages`}
+          links={relatedForCricketPlayer(player.slug, 12)}
+        />
       </main>
     </div>
   );

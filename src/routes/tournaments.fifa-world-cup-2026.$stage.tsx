@@ -1,16 +1,19 @@
+import { errorMessage } from "@/lib/error-message";
 import { createFileRoute, notFound, Link } from "@tanstack/react-router";
 import { getStageBySlug, WC2026_STAGES } from "@/lib/seo/entities";
 import { canonical } from "@/lib/seo/canonical";
 import { breadcrumbList, sportsEvent, itemList, faqPage, ldScript } from "@/lib/seo/jsonld";
 
 const STAGE_DESCRIPTIONS: Record<string, string> = {
-  "group-stage": "12 groups of 4 teams play a round-robin. The top two from each group plus the eight best third-placed teams advance to the Round of 32.",
-  "round-of-32": "32 teams enter a single-elimination knockout. Winners progress to the Round of 16.",
+  "group-stage":
+    "12 groups of 4 teams play a round-robin. The top two from each group plus the eight best third-placed teams advance to the Round of 32.",
+  "round-of-32":
+    "32 teams enter a single-elimination knockout. Winners progress to the Round of 16.",
   "round-of-16": "16 teams play knockout matches. Winners advance to the Quarter-finals.",
   "quarter-finals": "The final eight play knockout matches for a place in the Semi-finals.",
   "semi-finals": "The final four battle for a spot in the FIFA World Cup Final.",
   "third-place": "The two Semi-final losers meet in a play-off for third place.",
-  "final": "The FIFA World Cup 2026 Final decides the world champion.",
+  final: "The FIFA World Cup 2026 Final decides the world champion.",
 };
 
 export const Route = createFileRoute("/tournaments/fifa-world-cup-2026/$stage")({
@@ -67,8 +70,14 @@ export const Route = createFileRoute("/tournaments/fifa-world-cup-2026/$stage")(
         ),
         ldScript(
           faqPage([
-            { q: `When does the ${stage.name} take place?`, a: `${stage.name} runs from ${stage.startDate} to ${stage.endDate}.` },
-            { q: `How many matches are in the ${stage.name}?`, a: `${stage.matches.length} match${stage.matches.length === 1 ? "" : "es"}.` },
+            {
+              q: `When does the ${stage.name} take place?`,
+              a: `${stage.name} runs from ${stage.startDate} to ${stage.endDate}.`,
+            },
+            {
+              q: `How many matches are in the ${stage.name}?`,
+              a: `${stage.matches.length} match${stage.matches.length === 1 ? "" : "es"}.`,
+            },
             { q: `How does the ${stage.name} work?`, a: STAGE_DESCRIPTIONS[stage.slug] },
           ]),
         ),
@@ -76,7 +85,7 @@ export const Route = createFileRoute("/tournaments/fifa-world-cup-2026/$stage")(
     };
   },
   component: StagePage,
-  errorComponent: ({ error }) => <div className="p-6">Error: {error.message}</div>,
+  errorComponent: ({ error }) => <div className="p-6">Error: {errorMessage(error)}</div>,
   notFoundComponent: () => <div className="p-6">Stage not found.</div>,
 });
 
@@ -88,14 +97,20 @@ function StagePage() {
   return (
     <div className="container mx-auto px-4 py-6 pb-20 max-w-4xl">
       <nav className="text-xs text-muted-foreground mb-3">
-        <Link to="/" className="hover:underline">Home</Link> /{" "}
-        <Link to="/football" className="hover:underline">Football</Link> /{" "}
-        <span>FIFA World Cup 2026</span> / <span>{stage.name}</span>
+        <Link to="/" className="hover:underline">
+          Home
+        </Link>{" "}
+        /{" "}
+        <Link to="/football" className="hover:underline">
+          Football
+        </Link>{" "}
+        / <span>FIFA World Cup 2026</span> / <span>{stage.name}</span>
       </nav>
 
       <h1 className="text-3xl font-bold mb-2">FIFA World Cup 2026 — {stage.name}</h1>
       <p className="text-muted-foreground mb-6">
-        {stage.matches.length} match{stage.matches.length === 1 ? "" : "es"} · {stage.startDate} – {stage.endDate}
+        {stage.matches.length} match{stage.matches.length === 1 ? "" : "es"} · {stage.startDate} –{" "}
+        {stage.endDate}
       </p>
 
       <section className="mb-6 prose dark:prose-invert max-w-none">
@@ -105,21 +120,23 @@ function StagePage() {
       <section className="mt-4">
         <h2 className="text-xl font-semibold mb-3">Matches in this stage</h2>
         <ul className="divide-y rounded-lg border">
-          {stage.matches.map((m: { matchNo: number; dateISO?: string; stadium?: string; city?: string }) => (
-            <li key={m.matchNo} className="flex justify-between items-center px-4 py-2">
-              <Link
-                to="/football/match/$id"
-                params={{ id: String(m.matchNo) }}
-                className="hover:underline text-sm"
-              >
-                Match {m.matchNo}
-                {m.stadium ? ` · ${m.stadium}${m.city ? ", " + m.city : ""}` : ""}
-              </Link>
-              <span className="text-xs text-muted-foreground font-mono">
-                {m.dateISO ? m.dateISO.slice(0, 10) : "TBD"}
-              </span>
-            </li>
-          ))}
+          {stage.matches.map(
+            (m: { matchNo: number; dateISO?: string; stadium?: string; city?: string }) => (
+              <li key={m.matchNo} className="flex justify-between items-center px-4 py-2">
+                <Link
+                  to="/football/match/$id"
+                  params={{ id: String(m.matchNo) }}
+                  className="hover:underline text-sm"
+                >
+                  Match {m.matchNo}
+                  {m.stadium ? ` · ${m.stadium}${m.city ? ", " + m.city : ""}` : ""}
+                </Link>
+                <span className="text-xs text-muted-foreground font-mono">
+                  {m.dateISO ? m.dateISO.slice(0, 10) : "TBD"}
+                </span>
+              </li>
+            ),
+          )}
         </ul>
       </section>
 
@@ -127,7 +144,10 @@ function StagePage() {
         <h2 className="text-xl font-semibold mb-3">Frequently asked</h2>
         <div className="space-y-3">
           {[
-            { q: `When does the ${stage.name} take place?`, a: `${stage.startDate} to ${stage.endDate}.` },
+            {
+              q: `When does the ${stage.name} take place?`,
+              a: `${stage.startDate} to ${stage.endDate}.`,
+            },
             { q: `How many matches are in the ${stage.name}?`, a: `${stage.matches.length}.` },
             { q: `How does the ${stage.name} work?`, a: STAGE_DESCRIPTIONS[stage.slug] },
           ].map((f) => (
@@ -148,7 +168,9 @@ function StagePage() {
           >
             ← {prev.name}
           </Link>
-        ) : <span />}
+        ) : (
+          <span />
+        )}
         {next ? (
           <Link
             to="/tournaments/fifa-world-cup-2026/$stage"
@@ -157,7 +179,9 @@ function StagePage() {
           >
             {next.name} →
           </Link>
-        ) : <span />}
+        ) : (
+          <span />
+        )}
       </nav>
 
       <section className="mt-8">

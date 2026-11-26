@@ -21,7 +21,8 @@ export function CurrentLeaguesStrip() {
           </p>
         </div>
         <Link
-          to="/live/football"
+          to="/live/$sport"
+          params={{ sport: "football" }}
           className="hidden sm:inline-flex items-center gap-1 text-xs font-bold text-sky-300 hover:text-sky-200"
         >
           All live football <ArrowRight className="size-3.5" />
@@ -45,9 +46,7 @@ export function CurrentLeaguesStrip() {
               </span>
             </div>
             <div className="mt-3 text-base font-extrabold text-white">{comp.name}</div>
-            <div className="mt-1 text-[11px] text-white/70">
-              Live scores · Fixtures · Table
-            </div>
+            <div className="mt-1 text-[11px] text-white/70">Live scores · Fixtures · Table</div>
             <div className="mt-3 inline-flex items-center gap-1 text-[11px] font-bold text-white group-hover:gap-2 transition-all">
               Open <ArrowRight className="size-3" />
             </div>

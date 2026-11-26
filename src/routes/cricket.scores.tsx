@@ -22,30 +22,47 @@ const searchSchema = z.object({
   league: fallback(z.string(), "all").default("all"),
   fmt: fallback(z.enum(["any", "t20", "odi", "test"]), "any").default("any"),
 });
+type ScoresSearch = z.infer<typeof searchSchema>;
 
 export const Route = createFileRoute("/cricket/scores")({
   validateSearch: zodValidator(searchSchema),
   search: {
-    middlewares: [
-      stripSearchParams({ tab: "live", date: "", league: "all", fmt: "any" }),
-    ],
+    middlewares: [stripSearchParams({ tab: "live", date: "", league: "all", fmt: "any" })],
   },
   head: () => ({
     meta: [
       { title: "Cricket Scores — Live, Today, Upcoming & Results" },
-      { name: "description", content: "Live cricket scores plus today's fixtures, upcoming matches and recent results across IPL, ICC events, BBL, PSL and more." },
+      {
+        name: "description",
+        content:
+          "Live cricket scores plus today's fixtures, upcoming matches and recent results across IPL, ICC events, BBL, PSL and more.",
+      },
       { property: "og:title", content: "Cricket Scores — Live & Fixtures" },
-      { property: "og:description", content: "Auto-refreshing cricket scores and fixtures by date, format and series." },
+      {
+        property: "og:description",
+        content: "Auto-refreshing cricket scores and fixtures by date, format and series.",
+      },
       { property: "og:url", content: "https://www.playsports.online/cricket/scores" },
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "PlaySports" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "Cricket Scores — Live, Today, Upcoming & Results" },
-      { name: "twitter:description", content: "Live cricket scores plus today's fixtures, upcoming matches and recent results across IPL, ICC events, BBL, PSL and more." },
-    
+      {
+        name: "twitter:description",
+        content:
+          "Live cricket scores plus today's fixtures, upcoming matches and recent results across IPL, ICC events, BBL, PSL and more.",
+      },
     ],
     links: [{ rel: "canonical", href: "https://www.playsports.online/cricket/scores" }],
-    scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "Cricket", path: "/cricket" }, { name: "Scores", path: "/cricket/scores" }]))],
+    scripts: [
+      ldScript(
+        breadcrumbList([
+          { name: "Home", path: "/" },
+          { name: "Cricket", path: "/cricket" },
+          { name: "Scores", path: "/cricket/scores" },
+        ]),
+      ),
+    ],
   }),
   component: withHubLinks(CricketScoresPage, { sport: "cricket", currentPath: "/cricket/scores" }),
 });
@@ -63,10 +80,12 @@ function sameDay(ts: number, isoYmd: string) {
 }
 
 function buildDateStrip() {
-  const today = new Date(); today.setHours(0, 0, 0, 0);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
   const days: { iso: string; label: string; sub: string; isToday: boolean; ts: number }[] = [];
   for (let i = -3; i <= 4; i++) {
-    const d = new Date(today); d.setDate(today.getDate() + i);
+    const d = new Date(today);
+    d.setDate(today.getDate() + i);
     days.push({
       iso: isoDate(d),
       label: d.toLocaleDateString(undefined, { weekday: "short" }),
@@ -79,7 +98,7 @@ function buildDateStrip() {
 }
 
 function CricketScoresPage() {
-  const search = Route.useSearch();
+  const search = Route.useSearch() as ScoresSearch;
   const navigate = Route.useNavigate();
   const { tab, date, league, fmt } = search;
 
@@ -118,24 +137,36 @@ function CricketScoresPage() {
     return m;
   }, [allMatches, league, fmt]);
 
-
   const visible = useMemo(() => {
     if (tab === "live") return filtered.filter((m) => m.status === "in");
-    if (tab === "results") return filtered.filter((m) => m.status === "post").sort((a, b) => b.startTs - a.startTs);
+    if (tab === "results")
+      return filtered.filter((m) => m.status === "post").sort((a, b) => b.startTs - a.startTs);
     if (effectiveDate) {
-      return filtered.filter((m) => sameDay(m.startTs, effectiveDate)).sort((a, b) => a.startTs - b.startTs);
+      return filtered
+        .filter((m) => sameDay(m.startTs, effectiveDate))
+        .sort((a, b) => a.startTs - b.startTs);
     }
     // upcoming without explicit date — soonest first, future only
     const now = Date.now();
-    return filtered.filter((m) => m.status === "pre" && m.startTs > now).sort((a, b) => a.startTs - b.startTs);
+    return filtered
+      .filter((m) => m.status === "pre" && m.startTs > now)
+      .sort((a, b) => a.startTs - b.startTs);
   }, [filtered, tab, effectiveDate]);
 
   // group by series for cleaner display
   const groups = useMemo(() => {
-    const map = new Map<string, { leagueId: string; leagueName: string; leagueAbbr: string; items: CricketMatch[] }>();
+    const map = new Map<
+      string,
+      { leagueId: string; leagueName: string; leagueAbbr: string; items: CricketMatch[] }
+    >();
     for (const m of visible) {
       const key = m.leagueId || "_";
-      const g = map.get(key) ?? { leagueId: m.leagueId, leagueName: m.leagueName, leagueAbbr: m.leagueAbbr, items: [] };
+      const g = map.get(key) ?? {
+        leagueId: m.leagueId,
+        leagueName: m.leagueName,
+        leagueAbbr: m.leagueAbbr,
+        items: [],
+      };
       g.items.push(m);
       map.set(key, g);
     }
@@ -143,10 +174,34 @@ function CricketScoresPage() {
   }, [visible]);
 
   const TABS: { id: Tab; label: string; icon: React.ReactNode; count: number; tone: string }[] = [
-    { id: "live",     label: "Live",     icon: <Flame className="size-3.5" />,        count: allMatches.filter((m) => m.status === "in").length,          tone: "from-rose-500 to-red-500" },
-    { id: "today",    label: "Today",    icon: <Calendar className="size-3.5" />,     count: allMatches.filter((m) => sameDay(m.startTs, isoDate(new Date()))).length, tone: "from-emerald-500 to-teal-500" },
-    { id: "upcoming", label: "Upcoming", icon: <Clock className="size-3.5" />,        count: allMatches.filter((m) => m.status === "pre").length,         tone: "from-amber-500 to-orange-500" },
-    { id: "results",  label: "Results",  icon: <CheckCircle2 className="size-3.5" />, count: allMatches.filter((m) => m.status === "post").length,        tone: "from-indigo-500 to-violet-500" },
+    {
+      id: "live",
+      label: "Live",
+      icon: <Flame className="size-3.5" />,
+      count: allMatches.filter((m) => m.status === "in").length,
+      tone: "from-rose-500 to-red-500",
+    },
+    {
+      id: "today",
+      label: "Today",
+      icon: <Calendar className="size-3.5" />,
+      count: allMatches.filter((m) => sameDay(m.startTs, isoDate(new Date()))).length,
+      tone: "from-emerald-500 to-teal-500",
+    },
+    {
+      id: "upcoming",
+      label: "Upcoming",
+      icon: <Clock className="size-3.5" />,
+      count: allMatches.filter((m) => m.status === "pre").length,
+      tone: "from-amber-500 to-orange-500",
+    },
+    {
+      id: "results",
+      label: "Results",
+      icon: <CheckCircle2 className="size-3.5" />,
+      count: allMatches.filter((m) => m.status === "post").length,
+      tone: "from-indigo-500 to-violet-500",
+    },
   ];
 
   return (
@@ -158,8 +213,12 @@ function CricketScoresPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
           <div className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-3">
             <div className="min-w-0">
-              <div className="text-[10px] uppercase tracking-[0.2em] font-bold text-emerald-300/80 mb-1">Cricket scores</div>
-              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight truncate">Cricket — Live, today, upcoming & results</h1>
+              <div className="text-[10px] uppercase tracking-[0.2em] font-bold text-emerald-300/80 mb-1">
+                Cricket scores
+              </div>
+              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight truncate">
+                Cricket — Live, today, upcoming & results
+              </h1>
             </div>
             {q.isFetching && !q.isLoading && (
               <span className="shrink-0 text-[10px] text-emerald-200/70 inline-flex items-center gap-1.5">
@@ -175,7 +234,20 @@ function CricketScoresPage() {
               return (
                 <button
                   key={t.id}
-                  onClick={() => navigate({ search: (prev: { tab: "live" | "today" | "upcoming" | "results"; date: string; league: string; fmt: "any" | "t20" | "odi" | "test" }) => ({ ...prev, tab: t.id, date: t.id === "today" ? isoDate(new Date()) : "" }) })}
+                  onClick={() =>
+                    navigate({
+                      search: (prev: {
+                        tab: "live" | "today" | "upcoming" | "results";
+                        date: string;
+                        league: string;
+                        fmt: "any" | "t20" | "odi" | "test";
+                      }) => ({
+                        ...prev,
+                        tab: t.id,
+                        date: t.id === "today" ? isoDate(new Date()) : "",
+                      }),
+                    })
+                  }
                   className={[
                     "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold ring-1 transition-all",
                     active
@@ -183,8 +255,11 @@ function CricketScoresPage() {
                       : "bg-white/[0.04] hover:bg-white/[0.09] text-gray-300 ring-white/10",
                   ].join(" ")}
                 >
-                  {t.icon}<span>{t.label}</span>
-                  <span className={`tabular-nums text-[10px] px-1.5 py-0.5 rounded-full ${active ? "bg-black/20" : "bg-white/10 text-gray-400"}`}>
+                  {t.icon}
+                  <span>{t.label}</span>
+                  <span
+                    className={`tabular-nums text-[10px] px-1.5 py-0.5 rounded-full ${active ? "bg-black/20" : "bg-white/10 text-gray-400"}`}
+                  >
                     {t.count}
                   </span>
                 </button>
@@ -201,7 +276,14 @@ function CricketScoresPage() {
                   onClick={() => {
                     const cur = effectiveDate ? new Date(effectiveDate) : new Date();
                     cur.setDate(cur.getDate() - 1);
-                    navigate({ search: (prev: { tab: "live" | "today" | "upcoming" | "results"; date: string; league: string; fmt: "any" | "t20" | "odi" | "test" }) => ({ ...prev, date: isoDate(cur), tab: "upcoming" }) });
+                    navigate({
+                      search: (prev: {
+                        tab: "live" | "today" | "upcoming" | "results";
+                        date: string;
+                        league: string;
+                        fmt: "any" | "t20" | "odi" | "test";
+                      }) => ({ ...prev, date: isoDate(cur), tab: "upcoming" }),
+                    });
                   }}
                   className="shrink-0 size-8 rounded-full grid place-items-center bg-white/[0.06] hover:bg-white/[0.12] ring-1 ring-white/10"
                 >
@@ -214,17 +296,28 @@ function CricketScoresPage() {
                       return (
                         <button
                           key={d.iso}
-                          onClick={() => navigate({ search: (prev: { tab: "live" | "today" | "upcoming" | "results"; date: string; league: string; fmt: "any" | "t20" | "odi" | "test" }) => ({ ...prev, date: d.iso, tab: "upcoming" }) })}
+                          onClick={() =>
+                            navigate({
+                              search: (prev: {
+                                tab: "live" | "today" | "upcoming" | "results";
+                                date: string;
+                                league: string;
+                                fmt: "any" | "t20" | "odi" | "test";
+                              }) => ({ ...prev, date: d.iso, tab: "upcoming" }),
+                            })
+                          }
                           className={[
                             "flex flex-col items-center min-w-[56px] px-2.5 py-1.5 rounded-xl ring-1 transition-all",
                             active
                               ? "bg-gradient-to-b from-emerald-500 to-emerald-700 ring-emerald-300/40 text-white shadow-[0_6px_18px_-6px_rgba(16,185,129,0.55)]"
                               : d.isToday
-                              ? "bg-amber-500/15 ring-amber-500/30 text-amber-200 hover:bg-amber-500/25"
-                              : "bg-white/[0.04] ring-white/10 text-gray-300 hover:bg-white/[0.09]",
+                                ? "bg-amber-500/15 ring-amber-500/30 text-amber-200 hover:bg-amber-500/25"
+                                : "bg-white/[0.04] ring-white/10 text-gray-300 hover:bg-white/[0.09]",
                           ].join(" ")}
                         >
-                          <span className="text-[10px] uppercase tracking-wider font-bold opacity-80">{d.label}</span>
+                          <span className="text-[10px] uppercase tracking-wider font-bold opacity-80">
+                            {d.label}
+                          </span>
                           <span className="text-xs font-extrabold tabular-nums">{d.sub}</span>
                         </button>
                       );
@@ -236,7 +329,14 @@ function CricketScoresPage() {
                   onClick={() => {
                     const cur = effectiveDate ? new Date(effectiveDate) : new Date();
                     cur.setDate(cur.getDate() + 1);
-                    navigate({ search: (prev: { tab: "live" | "today" | "upcoming" | "results"; date: string; league: string; fmt: "any" | "t20" | "odi" | "test" }) => ({ ...prev, date: isoDate(cur), tab: "upcoming" }) });
+                    navigate({
+                      search: (prev: {
+                        tab: "live" | "today" | "upcoming" | "results";
+                        date: string;
+                        league: string;
+                        fmt: "any" | "t20" | "odi" | "test";
+                      }) => ({ ...prev, date: isoDate(cur), tab: "upcoming" }),
+                    });
                   }}
                   className="shrink-0 size-8 rounded-full grid place-items-center bg-white/[0.06] hover:bg-white/[0.12] ring-1 ring-white/10"
                 >
@@ -252,13 +352,31 @@ function CricketScoresPage() {
               label="All series"
               emoji="🏏"
               active={league === "all"}
-              onClick={() => navigate({ search: (prev: { tab: "live" | "today" | "upcoming" | "results"; date: string; league: string; fmt: "any" | "t20" | "odi" | "test" }) => ({ ...prev, league: "all" }) })}
+              onClick={() =>
+                navigate({
+                  search: (prev: {
+                    tab: "live" | "today" | "upcoming" | "results";
+                    date: string;
+                    league: string;
+                    fmt: "any" | "t20" | "odi" | "test";
+                  }) => ({ ...prev, league: "all" }),
+                })
+              }
             />
             <FilterButton
               label="Internationals"
               emoji="🌍"
               active={league === "internationals"}
-              onClick={() => navigate({ search: (prev: { tab: "live" | "today" | "upcoming" | "results"; date: string; league: string; fmt: "any" | "t20" | "odi" | "test" }) => ({ ...prev, league: "internationals" }) })}
+              onClick={() =>
+                navigate({
+                  search: (prev: {
+                    tab: "live" | "today" | "upcoming" | "results";
+                    date: string;
+                    league: string;
+                    fmt: "any" | "t20" | "odi" | "test";
+                  }) => ({ ...prev, league: "internationals" }),
+                })
+              }
               accent="text-sky-300"
             />
             {CRICKET_LEAGUES.map((l) => (
@@ -267,7 +385,16 @@ function CricketScoresPage() {
                 label={l.label}
                 emoji={l.emoji}
                 active={league === l.id}
-                onClick={() => navigate({ search: (prev: { tab: "live" | "today" | "upcoming" | "results"; date: string; league: string; fmt: "any" | "t20" | "odi" | "test" }) => ({ ...prev, league: l.id }) })}
+                onClick={() =>
+                  navigate({
+                    search: (prev: {
+                      tab: "live" | "today" | "upcoming" | "results";
+                      date: string;
+                      league: string;
+                      fmt: "any" | "t20" | "odi" | "test";
+                    }) => ({ ...prev, league: l.id }),
+                  })
+                }
                 accent={l.accent}
               />
             ))}
@@ -279,10 +406,21 @@ function CricketScoresPage() {
               return (
                 <button
                   key={f}
-                  onClick={() => navigate({ search: (prev: { tab: "live" | "today" | "upcoming" | "results"; date: string; league: string; fmt: "any" | "t20" | "odi" | "test" }) => ({ ...prev, fmt: f }) })}
+                  onClick={() =>
+                    navigate({
+                      search: (prev: {
+                        tab: "live" | "today" | "upcoming" | "results";
+                        date: string;
+                        league: string;
+                        fmt: "any" | "t20" | "odi" | "test";
+                      }) => ({ ...prev, fmt: f }),
+                    })
+                  }
                   className={[
                     "inline-flex items-center px-2.5 py-1.5 rounded-full text-[11px] font-bold ring-1 transition-all",
-                    active ? `${meta.color} ring-1` : "bg-white/[0.04] hover:bg-white/[0.09] text-gray-300 ring-white/10",
+                    active
+                      ? `${meta.color} ring-1`
+                      : "bg-white/[0.04] hover:bg-white/[0.09] text-gray-300 ring-white/10",
                   ].join(" ")}
                 >
                   {meta.label}
@@ -300,8 +438,13 @@ function CricketScoresPage() {
           <div className="rounded-2xl border border-dashed border-gray-800 p-12 text-center bg-gray-900/40">
             <Calendar className="mx-auto size-10 opacity-30 mb-3" />
             <p className="text-sm font-medium">No matches in this slice</p>
-            <p className="text-xs text-muted-foreground mt-1">Try a different tab, date or filter.</p>
-            <Link to="/cricket" className="mt-4 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/15 ring-1 ring-emerald-500/30 text-emerald-200 text-xs font-bold">
+            <p className="text-xs text-muted-foreground mt-1">
+              Try a different tab, date or filter.
+            </p>
+            <Link
+              to="/cricket"
+              className="mt-4 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/15 ring-1 ring-emerald-500/30 text-emerald-200 text-xs font-bold"
+            >
               Back to Cricket Hub
             </Link>
           </div>
@@ -310,7 +453,8 @@ function CricketScoresPage() {
             <section key={g.leagueId} className="space-y-3">
               <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
                 <h2 className="text-sm sm:text-base font-bold text-white truncate">
-                  <span className="text-amber-300">●</span> {g.leagueName || g.leagueAbbr || "Cricket"}
+                  <span className="text-amber-300">●</span>{" "}
+                  {g.leagueName || g.leagueAbbr || "Cricket"}
                   <span className="ml-2 text-xs text-gray-500 font-normal">({g.items.length})</span>
                 </h2>
                 <Link
@@ -322,7 +466,9 @@ function CricketScoresPage() {
                 </Link>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                {g.items.map((m) => <CricketMatchCard key={m.id} match={m} />)}
+                {g.items.map((m) => (
+                  <CricketMatchCard key={m.id} match={m} />
+                ))}
               </div>
             </section>
           ))
@@ -333,8 +479,18 @@ function CricketScoresPage() {
 }
 
 function FilterButton({
-  label, emoji, active, onClick, accent,
-}: { label: string; emoji: string; active: boolean; onClick: () => void; accent?: string }) {
+  label,
+  emoji,
+  active,
+  onClick,
+  accent,
+}: {
+  label: string;
+  emoji: string;
+  active: boolean;
+  onClick: () => void;
+  accent?: string;
+}) {
   return (
     <button
       onClick={onClick}

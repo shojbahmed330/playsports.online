@@ -2,11 +2,7 @@ import { useMemo, useState } from "react";
 import { useNavigate, useSearch } from "@tanstack/react-router";
 import { Plus, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-} from "@/components/ui/popover";
+import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import {
   Command,
   CommandInput,
@@ -42,7 +38,7 @@ function buildPlayerIndex(goals: GoalRow[]) {
 export function CompareView() {
   const { goals: GOALS } = useMergedGoals();
   const { cards: CARDS } = useMergedCards();
-  const search = useSearch({ from: "/players" });
+  const search = useSearch({ from: "/players" }) as PlayersSearch;
   const navigate = useNavigate({ from: "/players" });
   const selected = parseComparePlayers(search.compare);
 
@@ -90,9 +86,7 @@ export function CompareView() {
             >
               {flagOf(p.country)} {p.name}
               <button
-                onClick={() =>
-                  setSelected(selected.filter((_, j) => j !== i))
-                }
+                onClick={() => setSelected(selected.filter((_, j) => j !== i))}
                 className="hover:text-amber-200"
                 aria-label={`Remove ${p.name}`}
               >
@@ -108,12 +102,7 @@ export function CompareView() {
             />
           )}
           {selected.length > 0 && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setSelected([])}
-              className="ml-auto"
-            >
+            <Button variant="ghost" size="sm" onClick={() => setSelected([])} className="ml-auto">
               Clear
             </Button>
           )}
@@ -147,14 +136,12 @@ export function CompareView() {
                     {s.name}
                     {s.live2026 > 0 && (
                       <span className="inline-flex items-center gap-0.5 text-[9px] uppercase tracking-wider text-emerald-400 font-bold shrink-0">
-                        <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                        +{s.live2026} '26
+                        <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />+
+                        {s.live2026} '26
                       </span>
                     )}
                   </div>
-                  <div className="text-xs text-muted-foreground truncate">
-                    {s.country}
-                  </div>
+                  <div className="text-xs text-muted-foreground truncate">{s.country}</div>
                 </div>
               </div>
               <div className="grid grid-cols-3 gap-2 text-center">
@@ -187,9 +174,7 @@ function Cell({ label, value, accent }: { label: string; value: number; accent?:
       <div className={`text-lg font-extrabold tabular-nums ${accent ? "text-gold" : ""}`}>
         {value}
       </div>
-      <div className="text-[10px] uppercase tracking-wider text-muted-foreground">
-        {label}
-      </div>
+      <div className="text-[10px] uppercase tracking-wider text-muted-foreground">{label}</div>
     </div>
   );
 }
@@ -206,9 +191,7 @@ function AddPicker({
   const [open, setOpen] = useState(false);
   const index = useMemo(() => buildPlayerIndex(goals), [goals]);
   const excludeKeys = new Set(exclude.map((p) => playerKey(p.name, p.country)));
-  const options = index
-    .filter((p) => !excludeKeys.has(playerKey(p.name, p.country)))
-    .slice(0, 200);
+  const options = index.filter((p) => !excludeKeys.has(playerKey(p.name, p.country))).slice(0, 200);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>

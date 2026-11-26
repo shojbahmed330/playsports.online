@@ -1,3 +1,4 @@
+import { errorMessage } from "@/lib/error-message";
 import { createFileRoute, notFound, Link } from "@tanstack/react-router";
 import { getHighlightBySlug } from "@/lib/seo/entities";
 import { slugify } from "@/lib/seo/programmatic";
@@ -19,7 +20,9 @@ export const Route = createFileRoute("/highlights/$slug")({
     const path = `/highlights/${params.slug}`;
     const title = `${h.teamA} vs ${h.teamB} — Match Highlights Video | PlaySports`;
     const desc = `Watch full highlights from ${h.teamA} vs ${h.teamB}. Goals, key moments and match recap embedded from YouTube.`;
-    const thumb = h.youtubeId ? `https://i.ytimg.com/vi/${h.youtubeId}/hqdefault.jpg` : canonical("/og-image.png");
+    const thumb = h.youtubeId
+      ? `https://i.ytimg.com/vi/${h.youtubeId}/hqdefault.jpg`
+      : canonical("/og-image.png");
     const embed = h.youtubeId ? `https://www.youtube.com/embed/${h.youtubeId}` : undefined;
     return {
       meta: [
@@ -54,7 +57,10 @@ export const Route = createFileRoute("/highlights/$slug")({
         ),
         ldScript(
           faqPage([
-            { q: `Where can I watch ${h.teamA} vs ${h.teamB} highlights?`, a: `Watch the full highlights of ${h.teamA} vs ${h.teamB} embedded on this page.` },
+            {
+              q: `Where can I watch ${h.teamA} vs ${h.teamB} highlights?`,
+              a: `Watch the full highlights of ${h.teamA} vs ${h.teamB} embedded on this page.`,
+            },
             { q: `Who played in this match?`, a: `${h.teamA} played against ${h.teamB}.` },
           ]),
         ),
@@ -62,7 +68,7 @@ export const Route = createFileRoute("/highlights/$slug")({
     };
   },
   component: HighlightPage,
-  errorComponent: ({ error }) => <div className="p-6">Error: {error.message}</div>,
+  errorComponent: ({ error }) => <div className="p-6">Error: {errorMessage(error)}</div>,
   notFoundComponent: () => <div className="p-6">Highlight not found.</div>,
 });
 
@@ -72,9 +78,17 @@ function HighlightPage() {
   return (
     <div className="container mx-auto px-4 py-6 pb-20 max-w-4xl">
       <nav className="text-xs text-muted-foreground mb-3">
-        <Link to="/" className="hover:underline">Home</Link> /{" "}
-        <Link to="/football" className="hover:underline">Football</Link> /{" "}
-        <Link to="/highlights" className="hover:underline">Highlights</Link>
+        <Link to="/" className="hover:underline">
+          Home
+        </Link>{" "}
+        /{" "}
+        <Link to="/football" className="hover:underline">
+          Football
+        </Link>{" "}
+        /{" "}
+        <Link to="/highlights" className="hover:underline">
+          Highlights
+        </Link>
       </nav>
 
       <h1 className="text-2xl md:text-3xl font-bold mb-2">
@@ -82,11 +96,19 @@ function HighlightPage() {
       </h1>
       <p className="text-muted-foreground mb-4">
         Full highlights featuring{" "}
-        <Link to="/football/teams/$slug" params={{ slug: slugify(h.teamA) }} className="hover:underline">
+        <Link
+          to="/football/teams/$slug"
+          params={{ slug: slugify(h.teamA) }}
+          className="hover:underline"
+        >
           {h.teamA}
         </Link>{" "}
         and{" "}
-        <Link to="/football/teams/$slug" params={{ slug: slugify(h.teamB) }} className="hover:underline">
+        <Link
+          to="/football/teams/$slug"
+          params={{ slug: slugify(h.teamB) }}
+          className="hover:underline"
+        >
           {h.teamB}
         </Link>
         .

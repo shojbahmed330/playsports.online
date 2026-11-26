@@ -42,11 +42,13 @@ function NotFoundComponent() {
   );
 }
 
-function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
+function ErrorComponent({ error, reset }: { error: unknown; reset: () => void }) {
   console.error(error);
   const router = useRouter();
   useEffect(() => {
-    reportLovableError(error, { boundary: "tanstack_root_error_component" });
+    reportLovableError(error instanceof Error ? error : new Error(String(error)), {
+      boundary: "tanstack_root_error_component",
+    });
   }, [error]);
 
   return (
@@ -91,7 +93,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "apple-mobile-web-app-title", content: "PlaySports" },
       { name: "mobile-web-app-capable", content: "yes" },
       { title: "PlaySports — Live Cricket & Football Scores, Stats & History" },
-      { name: "description", content: "Live cricket and football scores, fixtures, tables, stats and match history — internationals, IPL, Premier League, Champions League and more." },
+      {
+        name: "description",
+        content:
+          "Live cricket and football scores, fixtures, tables, stats and match history — internationals, IPL, Premier League, Champions League and more.",
+      },
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "PlaySports" },
       { property: "og:image", content: "https://www.playsports.online/og-default.png" },
@@ -161,7 +167,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       // back to the two-letter regional-indicator codes like "CA" / "MA").
       { rel: "preconnect", href: "https://fonts.googleapis.com", crossOrigin: "anonymous" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Noto+Color+Emoji&display=swap" },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Noto+Color+Emoji&display=swap",
+      },
       { rel: "manifest", href: "/manifest.webmanifest" },
       { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
       { rel: "icon", type: "image/png", sizes: "192x192", href: "/icon-192.png" },
@@ -208,7 +217,6 @@ function RootComponent() {
     void import("../lib/pwa-register").then((m) => m.registerPwa());
   }, []);
 
-
   return (
     <QueryClientProvider client={queryClient}>
       <a
@@ -236,5 +244,4 @@ function RootComponent() {
       <Toaster position="bottom-right" theme="dark" richColors />
     </QueryClientProvider>
   );
-
 }

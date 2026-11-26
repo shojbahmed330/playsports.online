@@ -1,12 +1,7 @@
 import { useMemo } from "react";
 import { useNavigate, useSearch } from "@tanstack/react-router";
 import { Share2, ExternalLink, Plus, Check, Trophy, Flame, Target, Zap, Award } from "lucide-react";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { flagOf } from "@/lib/flags";
 import {
@@ -21,7 +16,7 @@ import { useMergedCards } from "@/lib/use-merged-cards";
 import { CareerSparkline } from "@/components/players/CareerSparkline";
 
 export function PlayerProfileSheet() {
-  const search = useSearch({ from: "/players" });
+  const search = useSearch({ from: "/players" }) as PlayersSearch;
   const navigate = useNavigate({ from: "/players" });
   const player = parsePlayerKey(search.player);
 
@@ -47,7 +42,7 @@ export function PlayerProfileSheet() {
 function ProfileBody({ player }: { player: { name: string; country: string } }) {
   const { goals: ALL_GOALS } = useMergedGoals();
   const { cards: ALL_CARDS } = useMergedCards();
-  const search = useSearch({ from: "/players" });
+  const search = useSearch({ from: "/players" }) as PlayersSearch;
   const navigate = useNavigate({ from: "/players" });
 
   const goals = useMemo(
@@ -60,15 +55,17 @@ function ProfileBody({ player }: { player: { name: string; country: string } }) 
   );
 
   const compareList = parseComparePlayers(search.compare);
-  const inCompare = compareList.some(
-    (p) => p.name === player.name && p.country === player.country,
-  );
+  const inCompare = compareList.some((p) => p.name === player.name && p.country === player.country);
   const toggleCompare = () => {
     const next = inCompare
       ? compareList.filter((p) => !(p.name === player.name && p.country === player.country))
       : [...compareList, { name: player.name, country: player.country }].slice(0, 4);
     navigate({
-      search: (prev: PlayersSearch) => ({ ...prev, compare: joinComparePlayers(next), tab: "compare" }),
+      search: (prev: PlayersSearch) => ({
+        ...prev,
+        compare: joinComparePlayers(next),
+        tab: "compare",
+      }),
       replace: true,
     });
   };
@@ -106,10 +103,17 @@ function ProfileBody({ player }: { player: { name: string; country: string } }) 
     url.searchParams.set("player", playerKey(player.name, player.country));
     try {
       await navigator.clipboard.writeText(url.toString());
-    } catch { /* noop */ }
+    } catch {
+      /* noop */
+    }
   };
 
-  const initials = player.name.split(" ").map((w) => w[0]).slice(0, 2).join("").toUpperCase();
+  const initials = player.name
+    .split(" ")
+    .map((w) => w[0])
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
 
   return (
     <div className="pb-8">
@@ -126,8 +130,7 @@ function ProfileBody({ player }: { player: { name: string; country: string } }) 
         <div
           className="absolute inset-0 opacity-[0.07]"
           style={{
-            backgroundImage:
-              "repeating-linear-gradient(45deg, #fff 0 1px, transparent 1px 12px)",
+            backgroundImage: "repeating-linear-gradient(45deg, #fff 0 1px, transparent 1px 12px)",
           }}
         />
         {live2026 > 0 && (
@@ -161,7 +164,9 @@ function ProfileBody({ player }: { player: { name: string; country: string } }) 
                 {tournaments > 0 && (
                   <>
                     <span className="text-white/30">·</span>
-                    <span className="text-amber-300/90">{tournaments} WC{tournaments === 1 ? "" : "s"}</span>
+                    <span className="text-amber-300/90">
+                      {tournaments} WC{tournaments === 1 ? "" : "s"}
+                    </span>
                   </>
                 )}
               </div>
@@ -182,12 +187,7 @@ function ProfileBody({ player }: { player: { name: string; country: string } }) 
               label="World Cups"
               tone="violet"
             />
-            <HeroKpi
-              icon={<Zap className="size-3.5" />}
-              value={gpt}
-              label="G / WC"
-              tone="rose"
-            />
+            <HeroKpi icon={<Zap className="size-3.5" />} value={gpt} label="G / WC" tone="rose" />
           </div>
         </div>
       </div>
@@ -196,10 +196,21 @@ function ProfileBody({ player }: { player: { name: string; country: string } }) 
       <div className="px-6 space-y-5 mt-5">
         {/* Secondary stat grid */}
         <div className="grid grid-cols-4 gap-2">
-          <MiniStat label="Penalty" value={penalties} tint="text-orange-300" bg="from-orange-500/15" />
+          <MiniStat
+            label="Penalty"
+            value={penalties}
+            tint="text-orange-300"
+            bg="from-orange-500/15"
+          />
           <MiniStat label="🟨" value={yellow} tint="text-yellow-300" bg="from-yellow-500/15" />
           <MiniStat label="🟥" value={red} tint="text-red-400" bg="from-red-500/15" />
-          <MiniStat label="Best yr" value={bestYear?.goals ?? 0} sub={bestYear ? String(bestYear.year) : ""} tint="text-emerald-300" bg="from-emerald-500/15" />
+          <MiniStat
+            label="Best yr"
+            value={bestYear?.goals ?? 0}
+            sub={bestYear ? String(bestYear.year) : ""}
+            tint="text-emerald-300"
+            bg="from-emerald-500/15"
+          />
         </div>
 
         {byYear.length > 0 && (
@@ -241,7 +252,10 @@ function ProfileBody({ player }: { player: { name: string; country: string } }) 
                     <div className="font-black flex items-center gap-1.5 text-white">
                       {y}
                       {isLive && (
-                        <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" title="Live" />
+                        <span
+                          className="size-1.5 rounded-full bg-emerald-400 animate-pulse"
+                          title="Live"
+                        />
                       )}
                     </div>
                     <div className="flex items-center gap-2">
@@ -255,7 +269,9 @@ function ProfileBody({ player }: { player: { name: string; country: string } }) 
                           style={{ width: r.goals ? `${Math.max(6, pct)}%` : "0%" }}
                         />
                       </div>
-                      <span className={`w-6 text-right font-black ${isLive ? "text-emerald-300" : "text-amber-300"}`}>
+                      <span
+                        className={`w-6 text-right font-black ${isLive ? "text-emerald-300" : "text-amber-300"}`}
+                      >
                         {r.goals || "·"}
                       </span>
                     </div>
@@ -326,9 +342,7 @@ function HeroKpi({
       <div className="flex items-center gap-1 text-[9px] uppercase tracking-widest opacity-80">
         {icon} {label}
       </div>
-      <div className="text-2xl font-black tabular-nums text-white mt-0.5 leading-none">
-        {value}
-      </div>
+      <div className="text-2xl font-black tabular-nums text-white mt-0.5 leading-none">{value}</div>
     </div>
   );
 }
@@ -347,7 +361,9 @@ function MiniStat({
   bg: string;
 }) {
   return (
-    <div className={`rounded-lg bg-gradient-to-b ${bg} to-transparent border border-white/5 py-2 text-center`}>
+    <div
+      className={`rounded-lg bg-gradient-to-b ${bg} to-transparent border border-white/5 py-2 text-center`}
+    >
       <div className={`text-lg font-extrabold tabular-nums leading-none ${tint}`}>{value}</div>
       <div className="text-[9px] uppercase tracking-wider text-white/50 mt-1">{label}</div>
       {sub && <div className="text-[9px] text-white/40 mt-0.5">{sub}</div>}
