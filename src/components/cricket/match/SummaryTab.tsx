@@ -37,7 +37,9 @@ export function SummaryTab({
               key={side}
               className={`rounded-xl border p-3 ${won ? "border-emerald-500/40 bg-emerald-500/[0.06]" : "border-gray-800 bg-gray-900/40"}`}
             >
-              <div className="text-[11px] uppercase tracking-wider text-gray-400 truncate">{t.name}</div>
+              <div className="text-[11px] uppercase tracking-wider text-gray-400 truncate">
+                {t.name}
+              </div>
               <div className="mt-1 text-2xl font-black tabular-nums">
                 {d.kind === "innings" ? (
                   <>
@@ -53,7 +55,9 @@ export function SummaryTab({
                 )}
               </div>
               {d.kind === "innings" && d.overs != null && d.overs > 0 && (
-                <div className="text-[10px] text-gray-500 tabular-nums mt-0.5">{d.overs} ov{d.allOut ? " · all out" : ""}</div>
+                <div className="text-[10px] text-gray-500 tabular-nums mt-0.5">
+                  {d.overs} ov{d.allOut ? " · all out" : ""}
+                </div>
               )}
             </div>
           );

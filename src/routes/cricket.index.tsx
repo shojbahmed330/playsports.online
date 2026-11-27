@@ -13,42 +13,82 @@ import { AffiliateStrip } from "@/components/affiliates/AffiliateStrip";
 import { CricketMatchCard } from "@/components/cricket/CricketMatchCard";
 import { getMultiCricketToday, type CricketMatch } from "@/lib/cricket.functions";
 import { CRICKET_LEAGUES, CRICKET_LEAGUE_BY_ID, type CricketLeague } from "@/lib/cricket-leagues";
-import { breadcrumbList, collectionPage, sportsOrganization, faqPage, ldScript } from "@/lib/seo/jsonld";
-
+import {
+  breadcrumbList,
+  collectionPage,
+  sportsOrganization,
+  faqPage,
+  ldScript,
+} from "@/lib/seo/jsonld";
+import { EmptyState, ErrorState, SectionHeader } from "@/components/ui/state";
 
 import { withHubLinks } from "@/components/seo/withHubLinks";
 export const Route = createFileRoute("/cricket/")({
   head: () => ({
     meta: [
       { title: "Live Cricket Scores, Fixtures & Stats — PlaySports" },
-      { name: "description", content: "Live cricket scoreboards, fixtures, series, players, rankings and records across IPL, ICC World Cup, Big Bash, PSL and more." },
+      {
+        name: "description",
+        content:
+          "Live cricket scoreboards, fixtures, series, players, rankings and records across IPL, ICC World Cup, Big Bash, PSL and more.",
+      },
       { property: "og:title", content: "Cricket — Live Scores, Series & Players" },
-      { property: "og:description", content: "Live scores, fixtures, results, players and records from every major cricket competition." },
+      {
+        property: "og:description",
+        content:
+          "Live scores, fixtures, results, players and records from every major cricket competition.",
+      },
       { property: "og:url", content: "https://www.playsports.online/cricket" },
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "PlaySports" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "Live Cricket Scores, Fixtures & Stats — PlaySports" },
-      { name: "twitter:description", content: "Live cricket scoreboards, fixtures, series, players, rankings and records across IPL, ICC World Cup, Big Bash, PSL and more." },
-    
+      {
+        name: "twitter:description",
+        content:
+          "Live cricket scoreboards, fixtures, series, players, rankings and records across IPL, ICC World Cup, Big Bash, PSL and more.",
+      },
     ],
     links: [{ rel: "canonical", href: "https://www.playsports.online/cricket" }],
     scripts: [
-      ldScript(collectionPage({ name: "Cricket — Live Scores, Series & Players", description: "Cricket hub: live scores, series, players, rankings and records.", path: "/cricket" })),
-      ldScript(sportsOrganization({ name: "International Cricket", path: "/cricket", sport: "Cricket" })),
-      ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "Cricket", path: "/cricket" }])),
-      ldScript(faqPage([
-        { q: "Which cricket competitions does PlaySports cover?", a: "PlaySports covers international cricket (ICC World Cup, Champions Trophy, bilateral series), T20 leagues (IPL, PSL, BBL, CPL, The Hundred) and domestic first-class competitions with live scores and full scorecards." },
-        { q: "How often do cricket scores update?", a: "Live cricket scorecards on PlaySports refresh every 10–15 seconds while play is in progress, with ball-by-ball commentary when available." },
-        { q: "Can I see player career stats?", a: "Yes — batting and bowling career records from ESPNcricinfo Statsguru are shown on every player profile linked from live scorecards." },
-      ])),
+      ldScript(
+        collectionPage({
+          name: "Cricket — Live Scores, Series & Players",
+          description: "Cricket hub: live scores, series, players, rankings and records.",
+          path: "/cricket",
+        }),
+      ),
+      ldScript(
+        sportsOrganization({ name: "International Cricket", path: "/cricket", sport: "Cricket" }),
+      ),
+      ldScript(
+        breadcrumbList([
+          { name: "Home", path: "/" },
+          { name: "Cricket", path: "/cricket" },
+        ]),
+      ),
+      ldScript(
+        faqPage([
+          {
+            q: "Which cricket competitions does PlaySports cover?",
+            a: "PlaySports covers international cricket (ICC World Cup, Champions Trophy, bilateral series), T20 leagues (IPL, PSL, BBL, CPL, The Hundred) and domestic first-class competitions with live scores and full scorecards.",
+          },
+          {
+            q: "How often do cricket scores update?",
+            a: "Live cricket scorecards on PlaySports refresh every 10–15 seconds while play is in progress, with ball-by-ball commentary when available.",
+          },
+          {
+            q: "Can I see player career stats?",
+            a: "Yes — batting and bowling career records from ESPNcricinfo Statsguru are shown on every player profile linked from live scorecards.",
+          },
+        ]),
+      ),
     ],
-
   }),
   loader: async ({ context }) => {
     const leagueIds = CRICKET_LEAGUES.map((l) => l.id);
     await context.queryClient
-      .prefetchQuery({
+      .ensureQueryData({
         queryKey: ["cricket", "today", leagueIds.join(",")],
         queryFn: () => getMultiCricketToday({ data: { leagueIds } }),
         staleTime: 20_000,
@@ -58,7 +98,6 @@ export const Route = createFileRoute("/cricket/")({
   },
   component: withHubLinks(CricketIndex, { sport: "cricket", currentPath: "/cricket" }),
 });
-
 
 function CricketIndex() {
   const multiFn = useServerFn(getMultiCricketToday);
@@ -80,11 +119,18 @@ function CricketIndex() {
 
   const buckets = useMemo(() => {
     const now = Date.now();
-    const todayStart = new Date(); todayStart.setHours(0, 0, 0, 0);
-    const todayEnd = new Date(); todayEnd.setHours(23, 59, 59, 999);
+    const todayStart = new Date();
+    todayStart.setHours(0, 0, 0, 0);
+    const todayEnd = new Date();
+    todayEnd.setHours(23, 59, 59, 999);
     const live = allMatches.filter((m) => m.status === "in");
     const today = allMatches
-      .filter((m) => m.status === "pre" && m.startTs >= todayStart.getTime() && m.startTs <= todayEnd.getTime())
+      .filter(
+        (m) =>
+          m.status === "pre" &&
+          m.startTs >= todayStart.getTime() &&
+          m.startTs <= todayEnd.getTime(),
+      )
       .sort((a, b) => a.startTs - b.startTs);
     const upcoming = allMatches
       .filter((m) => m.status === "pre" && m.startTs > todayEnd.getTime())
@@ -110,20 +156,30 @@ function CricketIndex() {
   // isn't in our curated CRICKET_LEAGUES list. Keeps the hub current
   // when ESPN launches a new tour/franchise season without a code update.
   const discovered = useMemo(() => {
-    const map = new Map<string, { id: string; name: string; abbr: string; live: number; total: number }>();
+    const map = new Map<
+      string,
+      { id: string; name: string; abbr: string; live: number; total: number }
+    >();
     for (const m of allMatches) {
       if (!m.leagueId || m.leagueId === "global") continue;
       if (CRICKET_LEAGUE_BY_ID[m.leagueId]) continue;
       const key = m.leagueId;
-      const existing = map.get(key) ?? { id: key, name: m.leagueName || "International series", abbr: m.leagueAbbr || "", live: 0, total: 0 };
+      const existing = map.get(key) ?? {
+        id: key,
+        name: m.leagueName || "International series",
+        abbr: m.leagueAbbr || "",
+        live: 0,
+        total: 0,
+      };
       existing.total += 1;
       if (m.status === "in") existing.live += 1;
       if (!existing.name && m.leagueName) existing.name = m.leagueName;
       map.set(key, existing);
     }
-    return Array.from(map.values()).sort((a, b) => (b.live - a.live) || (b.total - a.total)).slice(0, 8);
+    return Array.from(map.values())
+      .sort((a, b) => b.live - a.live || b.total - a.total)
+      .slice(0, 8);
   }, [allMatches]);
-
 
   return (
     <div className="min-h-screen">
@@ -134,6 +190,14 @@ function CricketIndex() {
       <LivePulseStrip matches={allMatches} />
 
       <main id="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-10">
+        {q.isError && allMatches.length === 0 && (
+          <ErrorState
+            title="Cricket scores are temporarily unavailable"
+            message="The cricket feed did not respond. You can still browse series, teams and player profiles."
+            onRetry={() => void q.refetch()}
+          />
+        )}
+
         {/* International Cricket — bilateral tours */}
         {(internationals.live.length > 0 || internationals.next.length > 0) && (
           <section className="relative overflow-hidden rounded-2xl border border-sky-500/20 bg-gradient-to-br from-sky-950/40 via-background to-emerald-950/30 p-4 sm:p-5">
@@ -144,15 +208,22 @@ function CricketIndex() {
                 International Cricket
                 {internationals.live.length > 0 && (
                   <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-500/20 ring-1 ring-red-500/40 text-[10px] font-bold text-red-300">
-                    <span className="size-1 rounded-full bg-red-500 animate-pulse" /> {internationals.live.length} live
+                    <span className="size-1 rounded-full bg-red-500 animate-pulse motion-reduce:animate-none" />{" "}
+                    {internationals.live.length} live
                   </span>
                 )}
               </h2>
-              <Link to="/cricket/scores" search={{ tab: "live", date: "", league: "internationals", fmt: "any" }} className="text-xs font-bold text-sky-300 hover:text-sky-200 inline-flex items-center gap-1 shrink-0">
+              <Link
+                to="/cricket/scores"
+                search={{ tab: "live", date: "", league: "internationals", fmt: "any" }}
+                className="text-xs font-bold text-sky-300 hover:text-sky-200 inline-flex items-center gap-1 shrink-0"
+              >
                 All internationals <ChevronRight className="size-3.5" />
               </Link>
             </div>
-            <p className="relative text-xs text-muted-foreground mb-4">Country vs country tours — NZ v ENG, IND v AUS, and every bilateral series.</p>
+            <p className="relative text-xs text-muted-foreground mb-4">
+              Country vs country tours — NZ v ENG, IND v AUS, and every bilateral series.
+            </p>
             <div className="relative grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
               {[...internationals.live, ...internationals.next].slice(0, 3).map((m) => (
                 <CricketMatchCard key={m.id} match={m} />
@@ -161,12 +232,16 @@ function CricketIndex() {
           </section>
         )}
 
-
         {/* Quick-jump series tiles */}
         <section>
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-lg font-bold flex items-center gap-2"><Trophy className="size-5 text-amber-400" /> Featured series</h2>
-            <Link to="/cricket/series" className="text-xs font-bold text-emerald-300 hover:text-emerald-200 inline-flex items-center gap-1">
+            <h2 className="text-lg font-bold flex items-center gap-2">
+              <Trophy className="size-5 text-amber-400" /> Featured series
+            </h2>
+            <Link
+              to="/cricket/series"
+              className="text-xs font-bold text-emerald-300 hover:text-emerald-200 inline-flex items-center gap-1"
+            >
               All series <ChevronRight className="size-3.5" />
             </Link>
           </div>
@@ -175,7 +250,9 @@ function CricketIndex() {
               <SeriesTile
                 key={l.id}
                 league={l}
-                liveCount={allMatches.filter((m) => m.leagueId === l.id && m.status === "in").length}
+                liveCount={
+                  allMatches.filter((m) => m.leagueId === l.id && m.status === "in").length
+                }
                 totalCount={allMatches.filter((m) => m.leagueId === l.id).length}
               />
             ))}
@@ -188,9 +265,14 @@ function CricketIndex() {
             <div className="flex items-center justify-between mb-3">
               <h2 className="text-lg font-bold flex items-center gap-2">
                 <Globe2 className="size-5 text-sky-300" /> Also active now
-                <span className="text-[10px] uppercase tracking-wider font-bold text-sky-300/80 px-1.5 py-0.5 rounded bg-sky-500/10 ring-1 ring-sky-500/30">auto</span>
+                <span className="text-[10px] uppercase tracking-wider font-bold text-sky-300/80 px-1.5 py-0.5 rounded bg-sky-500/10 ring-1 ring-sky-500/30">
+                  auto
+                </span>
               </h2>
-              <Link to="/cricket/series" className="text-xs font-bold text-sky-300 hover:text-sky-200 inline-flex items-center gap-1">
+              <Link
+                to="/cricket/series"
+                className="text-xs font-bold text-sky-300 hover:text-sky-200 inline-flex items-center gap-1"
+              >
                 All series <ChevronRight className="size-3.5" />
               </Link>
             </div>
@@ -204,10 +286,13 @@ function CricketIndex() {
                 >
                   {d.live > 0 && (
                     <span className="absolute top-2.5 right-2.5 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-500/20 ring-1 ring-red-500/40 text-[10px] font-bold text-red-300">
-                      <span className="size-1 rounded-full bg-red-500 animate-pulse" /> {d.live} live
+                      <span className="size-1 rounded-full bg-red-500 animate-pulse motion-reduce:animate-none" />{" "}
+                      {d.live} live
                     </span>
                   )}
-                  <div className="text-[10px] uppercase tracking-wider font-bold text-sky-300 mb-1">{d.abbr || "Series"}</div>
+                  <div className="text-[10px] uppercase tracking-wider font-bold text-sky-300 mb-1">
+                    {d.abbr || "Series"}
+                  </div>
                   <div className="text-sm font-extrabold leading-tight line-clamp-2">{d.name}</div>
                   <div className="mt-2 inline-flex items-center gap-1 text-[10px] font-bold text-sky-300 group-hover:gap-2 transition-all">
                     {d.total} match{d.total === 1 ? "" : "es"} <ChevronRight className="size-3" />
@@ -218,10 +303,11 @@ function CricketIndex() {
           </section>
         )}
 
-
-
         {q.isLoading ? (
-          <Section icon={<Clock className="size-5 text-amber-400" />} title="Loading cricket slate…">
+          <Section
+            icon={<Clock className="size-5 text-amber-400" />}
+            title="Loading cricket slate…"
+          >
             <GameGridSkeleton />
           </Section>
         ) : (
@@ -276,13 +362,32 @@ function CricketIndex() {
               </Section>
             )}
 
-            {buckets.live.length === 0 && buckets.today.length === 0 && buckets.upcoming.length === 0 && buckets.finished.length === 0 && (
-              <div className="rounded-2xl border border-dashed border-gray-800 p-12 text-center bg-gray-900/40">
-                <Calendar className="mx-auto size-10 opacity-30 mb-3" />
-                <p className="text-sm font-medium">No matches in the current window</p>
-                <p className="text-xs text-muted-foreground mt-1">Browse <Link to="/cricket/series" className="text-emerald-300 underline">series</Link> or <Link to="/cricket/players" className="text-emerald-300 underline">players</Link>.</p>
-              </div>
-            )}
+            {buckets.live.length === 0 &&
+              buckets.today.length === 0 &&
+              buckets.upcoming.length === 0 &&
+              buckets.finished.length === 0 && (
+                <EmptyState
+                  icon={<Calendar className="size-5" aria-hidden="true" />}
+                  title="No matches in the current window"
+                  description="Check the full schedule, browse series, or explore player profiles."
+                  action={
+                    <>
+                      <Link
+                        to="/cricket/scores"
+                        className="inline-flex min-h-11 items-center rounded-full bg-emerald-500/15 px-4 text-sm font-bold text-emerald-200 ring-1 ring-emerald-500/30 hover:bg-emerald-500/25"
+                      >
+                        Cricket scores
+                      </Link>
+                      <Link
+                        to="/cricket/series"
+                        className="inline-flex min-h-11 items-center rounded-full border border-border px-4 text-sm font-semibold text-foreground hover:bg-white/5"
+                      >
+                        Browse series
+                      </Link>
+                    </>
+                  }
+                />
+              )}
           </>
         )}
 
@@ -292,33 +397,54 @@ function CricketIndex() {
   );
 }
 
-function SeriesTile({ league, liveCount, totalCount }: { league: CricketLeague; liveCount: number; totalCount: number }) {
-  const isIpl = league.slug === "ipl" || league.id === "8048" || /indian premier league/i.test(league.longName);
+function SeriesTile({
+  league,
+  liveCount,
+  totalCount,
+}: {
+  league: CricketLeague;
+  liveCount: number;
+  totalCount: number;
+}) {
+  const isIpl =
+    league.slug === "ipl" || league.id === "8048" || /indian premier league/i.test(league.longName);
   const className = `group relative overflow-hidden rounded-2xl p-4 bg-gradient-to-br ${league.bgGrad} border border-gray-800 hover:border-emerald-500/40 transition-all hover:-translate-y-0.5`;
   const inner = (
     <>
       {liveCount > 0 && (
         <span className="absolute top-2.5 right-2.5 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-500/20 ring-1 ring-red-500/40 text-[10px] font-bold text-red-300">
-          <span className="size-1 rounded-full bg-red-500 animate-pulse" /> {liveCount} live
+          <span className="size-1 rounded-full bg-red-500 animate-pulse motion-reduce:animate-none" />{" "}
+          {liveCount} live
         </span>
       )}
       <div className="grid grid-cols-[auto_minmax(0,1fr)] items-start gap-3 mb-2">
-        <div className={`size-10 rounded-xl ${league.chipBg} ring-1 ${league.ring} grid place-items-center text-xl shrink-0`}>
+        <div
+          className={`size-10 rounded-xl ${league.chipBg} ring-1 ${league.ring} grid place-items-center text-xl shrink-0`}
+        >
           {league.emoji}
         </div>
         <div className="min-w-0">
-          <div className={`text-[10px] uppercase tracking-wider font-bold ${league.accent}`}>{league.format.toUpperCase()}</div>
+          <div className={`text-[10px] uppercase tracking-wider font-bold ${league.accent}`}>
+            {league.format.toUpperCase()}
+          </div>
           <div className="text-sm font-extrabold leading-tight truncate">{league.label}</div>
         </div>
       </div>
       <div className="text-[11px] text-gray-400 leading-snug line-clamp-2">{league.tagline}</div>
-      <div className={`mt-2 inline-flex items-center gap-1 text-[10px] font-bold ${league.accent} group-hover:gap-2 transition-all`}>
-        {totalCount > 0 ? `${totalCount} match${totalCount === 1 ? "" : "es"}` : "View series"} <ChevronRight className="size-3" />
+      <div
+        className={`mt-2 inline-flex items-center gap-1 text-[10px] font-bold ${league.accent} group-hover:gap-2 transition-all`}
+      >
+        {totalCount > 0 ? `${totalCount} match${totalCount === 1 ? "" : "es"}` : "View series"}{" "}
+        <ChevronRight className="size-3" />
       </div>
     </>
   );
   if (isIpl) {
-    return <Link to="/cricket/ipl" className={className}>{inner}</Link>;
+    return (
+      <Link to="/cricket/ipl" className={className}>
+        {inner}
+      </Link>
+    );
   }
   return (
     <Link to="/cricket/series/$id" params={{ id: league.id }} className={className}>
@@ -327,37 +453,58 @@ function SeriesTile({ league, liveCount, totalCount }: { league: CricketLeague; 
   );
 }
 
-
 function Section({
-  icon, title, badge, badgeTone, children, seeAll,
+  icon,
+  title,
+  badge,
+  badgeTone,
+  children,
+  seeAll,
 }: {
-  icon: React.ReactNode; title: string; badge?: string;
+  icon: React.ReactNode;
+  title: string;
+  badge?: string;
   badgeTone?: "red" | "amber" | "emerald" | "muted";
-  children: React.ReactNode; seeAll?: string;
+  children: React.ReactNode;
+  seeAll?: string;
 }) {
   const tone =
-    badgeTone === "red" ? "text-red-300 bg-red-500/15 ring-red-500/30" :
-    badgeTone === "amber" ? "text-amber-300 bg-amber-500/15 ring-amber-500/30" :
-    badgeTone === "emerald" ? "text-emerald-300 bg-emerald-500/15 ring-emerald-500/30" :
-    "text-gray-400 bg-gray-800/60 ring-gray-700/60";
+    badgeTone === "red"
+      ? "text-red-300 bg-red-500/15 ring-red-500/30"
+      : badgeTone === "amber"
+        ? "text-amber-300 bg-amber-500/15 ring-amber-500/30"
+        : badgeTone === "emerald"
+          ? "text-emerald-300 bg-emerald-500/15 ring-emerald-500/30"
+          : "text-muted-foreground bg-white/[0.04] ring-border";
   return (
     <section className="space-y-4">
-      <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
-        <h2 className="text-base sm:text-lg font-bold flex items-center gap-2 min-w-0 truncate">{icon}<span className="truncate">{title}</span></h2>
-        <div className="shrink-0 flex items-center gap-2">
-          {badge && (
-            <span className={`inline-flex items-center gap-1.5 text-xs font-bold px-2 py-1 rounded-full ring-1 ${tone}`}>
-              {badgeTone === "red" && <span className="size-1.5 rounded-full bg-red-500 animate-pulse" />}
-              {badge}
-            </span>
-          )}
-          {seeAll && (
-            <Link to={seeAll} className="text-[11px] font-bold text-emerald-300 hover:text-emerald-200 inline-flex items-center gap-0.5">
-              See all <ChevronRight className="size-3" />
-            </Link>
-          )}
-        </div>
-      </div>
+      <SectionHeader
+        icon={icon}
+        title={title}
+        className="mb-0"
+        action={
+          <div className="flex items-center gap-2">
+            {badge && (
+              <span
+                className={`inline-flex items-center gap-1.5 rounded-full px-2 py-1 text-xs font-bold ring-1 ${tone}`}
+              >
+                {badgeTone === "red" && (
+                  <span className="size-1.5 rounded-full bg-live animate-pulse motion-reduce:animate-none" />
+                )}
+                {badge}
+              </span>
+            )}
+            {seeAll && (
+              <Link
+                to={seeAll}
+                className="inline-flex min-h-11 items-center gap-0.5 text-xs font-bold text-emerald-300 hover:text-emerald-200"
+              >
+                See all <ChevronRight className="size-3" />
+              </Link>
+            )}
+          </div>
+        }
+      />
       {children}
     </section>
   );
@@ -366,7 +513,9 @@ function Section({
 function Grid({ matches }: { matches: CricketMatch[] }) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-      {matches.map((m) => <CricketMatchCard key={m.id} match={m} />)}
+      {matches.map((m) => (
+        <CricketMatchCard key={m.id} match={m} />
+      ))}
     </div>
   );
 }

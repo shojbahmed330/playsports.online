@@ -16,7 +16,13 @@ function formatChipClass(fmt: string): string {
   return "fmt-fc";
 }
 
-export function CricketMatchCard({ match, leagueSlug }: { match: CricketMatch; leagueSlug?: string }) {
+export function CricketMatchCard({
+  match,
+  leagueSlug,
+}: {
+  match: CricketMatch;
+  leagueSlug?: string;
+}) {
   const isLive = match.status === "in";
   const isFinal = match.status === "post";
   const isPre = match.status === "pre";
@@ -41,17 +47,21 @@ export function CricketMatchCard({ match, leagueSlug }: { match: CricketMatch; l
       <div className="flex items-center justify-between gap-2 px-3 py-2 text-[10px] uppercase tracking-wider border-b border-gray-800/80 bg-gray-950/40">
         <div className="flex items-center gap-2 min-w-0">
           {match.format && (
-            <span className={`shrink-0 px-1.5 py-0.5 rounded text-[9px] font-bold tracking-wide ${fmtClass}`}>
+            <span
+              className={`shrink-0 px-1.5 py-0.5 rounded text-[9px] font-bold tracking-wide ${fmtClass}`}
+            >
               {match.format.toUpperCase()}
             </span>
           )}
           {isLive ? (
             <span className="flex items-center gap-1.5 text-red-300 font-bold truncate">
-              <span className="size-1.5 rounded-full bg-red-500 animate-pulse cricket-live-ring" />
+              <span className="size-1.5 rounded-full bg-red-500 animate-pulse motion-reduce:animate-none cricket-live-ring" />
               <span className="truncate">Live · {match.statusDetail || "In progress"}</span>
             </span>
           ) : isFinal ? (
-            <span className="text-gray-400 font-semibold truncate">{match.shortDetail || "Result"}</span>
+            <span className="text-gray-400 font-semibold truncate">
+              {match.shortDetail || "Result"}
+            </span>
           ) : (
             <span className="text-gray-300 font-semibold flex items-center gap-1.5 truncate">
               <span className="text-amber-400">{relativeDay(match.startTs)}</span>
@@ -60,8 +70,13 @@ export function CricketMatchCard({ match, leagueSlug }: { match: CricketMatch; l
             </span>
           )}
         </div>
-        {isPre ? <Countdown ts={match.startTs} /> : match.broadcast ? (
-          <span className="text-gray-500 truncate inline-flex items-center gap-1" title={match.broadcast}>
+        {isPre ? (
+          <Countdown ts={match.startTs} />
+        ) : match.broadcast ? (
+          <span
+            className="text-gray-500 truncate inline-flex items-center gap-1"
+            title={match.broadcast}
+          >
             <Tv className="size-3" /> {match.broadcast}
           </span>
         ) : null}
@@ -69,8 +84,20 @@ export function CricketMatchCard({ match, leagueSlug }: { match: CricketMatch; l
 
       {/* Teams + scores */}
       <div className="divide-y divide-gray-800/60">
-        <TeamRow t={match.home} winner={winnerHome} dim={isFinal && winnerAway} showScore={!isPre} score={homeScore} />
-        <TeamRow t={match.away} winner={winnerAway} dim={isFinal && winnerHome} showScore={!isPre} score={awayScore} />
+        <TeamRow
+          t={match.home}
+          winner={winnerHome}
+          dim={isFinal && winnerAway}
+          showScore={!isPre}
+          score={homeScore}
+        />
+        <TeamRow
+          t={match.away}
+          winner={winnerAway}
+          dim={isFinal && winnerHome}
+          showScore={!isPre}
+          score={awayScore}
+        />
       </div>
 
       {/* Data-incomplete banner (rare — completed match with no numeric scores). */}
@@ -92,18 +119,24 @@ export function CricketMatchCard({ match, leagueSlug }: { match: CricketMatch; l
         {match.venue ? (
           <span className="truncate inline-flex items-center gap-1 min-w-0">
             <MapPin className="size-3 shrink-0" />
-            <span className="truncate">{match.venue}{match.city ? `, ${match.city}` : ""}</span>
+            <span className="truncate">
+              {match.venue}
+              {match.city ? `, ${match.city}` : ""}
+            </span>
           </span>
-        ) : <span />}
+        ) : (
+          <span />
+        )}
         {match.kind === "bilateral" ? (
           <span className="shrink-0 inline-flex items-center gap-1 px-1.5 py-0.5 rounded font-bold tracking-wider bg-sky-500/15 text-sky-300 ring-1 ring-sky-500/30 text-[9px]">
             BILATERAL{match.format ? ` · ${match.format.toUpperCase()}` : ""}
           </span>
         ) : (
-          <span className="text-emerald-400/70 font-semibold shrink-0">{match.leagueAbbr || match.leagueName}</span>
+          <span className="text-emerald-400/70 font-semibold shrink-0">
+            {match.leagueAbbr || match.leagueName}
+          </span>
         )}
       </div>
-
     </Link>
   );
 }
@@ -127,17 +160,23 @@ function TeamRow({
     >
       <TeamCrest src={t.logo} abbr={t.abbr} name={t.name} className="size-8 shrink-0" />
       <div className="min-w-0">
-        <div className={`text-sm truncate ${dim ? "text-gray-500" : winner ? "text-white font-semibold" : "text-gray-200"}`}>
+        <div
+          className={`text-sm truncate ${dim ? "text-gray-500" : winner ? "text-white font-semibold" : "text-gray-200"}`}
+        >
           {t.shortName || t.name}
         </div>
         {showScore && score.kind === "innings" && score.multi && (
-          <div className={`text-[10px] tabular-nums leading-tight ${dim ? "text-gray-600" : "text-gray-400"} truncate`}>
+          <div
+            className={`text-[10px] tabular-nums leading-tight ${dim ? "text-gray-600" : "text-gray-400"} truncate`}
+          >
             {score.multi}
           </div>
         )}
       </div>
       {showScore ? (
-        <div className={`shrink-0 text-right ${dim ? "text-gray-600" : winner ? "text-emerald-300" : "text-gray-100"}`}>
+        <div
+          className={`shrink-0 text-right ${dim ? "text-gray-600" : winner ? "text-emerald-300" : "text-gray-100"}`}
+        >
           {score.kind === "innings" ? (
             <>
               <div className="text-xl font-extrabold tabular-nums leading-none">
@@ -148,12 +187,18 @@ function TeamRow({
                 {score.declared && <span className="text-xs text-amber-400 ml-0.5">d</span>}
               </div>
               <div className="mt-0.5 flex items-center justify-end gap-1 text-[9px] tabular-nums text-gray-500">
-                {score.allOut && <span className="uppercase tracking-wider text-amber-400/80 font-bold">all out</span>}
+                {score.allOut && (
+                  <span className="uppercase tracking-wider text-amber-400/80 font-bold">
+                    all out
+                  </span>
+                )}
                 {score.overs != null && score.overs > 0 && <span>{score.overs} ov</span>}
               </div>
             </>
           ) : score.kind === "yet-to-bat" ? (
-            <div className="text-[10px] uppercase tracking-wider text-gray-500 font-bold">Yet to bat</div>
+            <div className="text-[10px] uppercase tracking-wider text-gray-500 font-bold">
+              Yet to bat
+            </div>
           ) : score.kind === "did-not-bat" ? (
             <div className="text-[10px] uppercase tracking-wider text-gray-500 font-bold">DNB</div>
           ) : (
@@ -166,4 +211,3 @@ function TeamRow({
     </div>
   );
 }
-

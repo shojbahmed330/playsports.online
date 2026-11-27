@@ -38,13 +38,16 @@ export function InningsCard({
         style={headerStyle}
       >
         <h3 className="text-sm font-bold truncate">
-          {inn.battingTeamName} <span className="text-gray-500 font-normal">— Innings {inn.period}</span>
+          {inn.battingTeamName}{" "}
+          <span className="text-gray-500 font-normal">— Innings {inn.period}</span>
         </h3>
         <span className="text-base font-extrabold tabular-nums shrink-0">
           {inn.runs}
           <span className="text-gray-500 font-bold">/{inn.wickets}</span>
           {inn.overs > 0 && (
-            <span className="text-xs text-gray-500 font-normal ml-2 tabular-nums">({inn.overs} ov)</span>
+            <span className="text-xs text-gray-500 font-normal ml-2 tabular-nums">
+              ({inn.overs} ov)
+            </span>
           )}
         </span>
       </header>
@@ -75,11 +78,19 @@ export function InningsCard({
                       </div>
                     </div>
                   </td>
-                  <td className="px-3 py-2 text-right tabular-nums font-bold whitespace-nowrap">{b.runs}</td>
+                  <td className="px-3 py-2 text-right tabular-nums font-bold whitespace-nowrap">
+                    {b.runs}
+                  </td>
                   <td className="px-3 py-2 text-right tabular-nums whitespace-nowrap">{b.balls}</td>
-                  <td className="px-3 py-2 text-right tabular-nums hidden xs:table-cell whitespace-nowrap">{b.fours}</td>
-                  <td className="px-3 py-2 text-right tabular-nums hidden xs:table-cell whitespace-nowrap">{b.sixes}</td>
-                  <td className="px-3 py-2 text-right tabular-nums text-gray-400 whitespace-nowrap">{b.strikeRate || "—"}</td>
+                  <td className="px-3 py-2 text-right tabular-nums hidden xs:table-cell whitespace-nowrap">
+                    {b.fours}
+                  </td>
+                  <td className="px-3 py-2 text-right tabular-nums hidden xs:table-cell whitespace-nowrap">
+                    {b.sixes}
+                  </td>
+                  <td className="px-3 py-2 text-right tabular-nums text-gray-400 whitespace-nowrap">
+                    {b.strikeRate || "—"}
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -99,7 +110,11 @@ export function InningsCard({
           <div className="flex flex-wrap gap-x-3 gap-y-1 tabular-nums">
             {inn.fallOfWickets.map((f) => (
               <span key={`${f.wicket}-${f.player}`} className="whitespace-nowrap">
-                {f.score}/{f.wicket} <span className="text-gray-500">({f.player}{f.over != null ? `, ${f.over}` : ""})</span>
+                {f.score}/{f.wicket}{" "}
+                <span className="text-gray-500">
+                  ({f.player}
+                  {f.over != null ? `, ${f.over}` : ""})
+                </span>
               </span>
             ))}
           </div>
@@ -126,10 +141,16 @@ export function InningsCard({
                     <PlayerBtn id={b.id} name={b.name} />
                   </td>
                   <td className="px-3 py-2 text-right tabular-nums whitespace-nowrap">{b.overs}</td>
-                  <td className="px-3 py-2 text-right tabular-nums hidden xs:table-cell whitespace-nowrap">{b.maidens}</td>
+                  <td className="px-3 py-2 text-right tabular-nums hidden xs:table-cell whitespace-nowrap">
+                    {b.maidens}
+                  </td>
                   <td className="px-3 py-2 text-right tabular-nums whitespace-nowrap">{b.runs}</td>
-                  <td className="px-3 py-2 text-right tabular-nums font-bold text-emerald-300 whitespace-nowrap">{b.wickets}</td>
-                  <td className="px-3 py-2 text-right tabular-nums text-gray-400 whitespace-nowrap">{b.economy || "—"}</td>
+                  <td className="px-3 py-2 text-right tabular-nums font-bold text-emerald-300 whitespace-nowrap">
+                    {b.wickets}
+                  </td>
+                  <td className="px-3 py-2 text-right tabular-nums text-gray-400 whitespace-nowrap">
+                    {b.economy || "—"}
+                  </td>
                 </tr>
               ))}
             </tbody>

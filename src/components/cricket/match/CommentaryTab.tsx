@@ -9,7 +9,8 @@ function classify(c: Comment): Filter[] {
   const t = c.text.toLowerCase();
   const kinds: Filter[] = ["all"];
   if (/wicket|\bout\b|caught|bowled|lbw|stumped|run out/.test(t)) kinds.push("wickets");
-  if (c.scoreValue === 4 || c.scoreValue === 6 || /\bfour\b|\bsix\b|boundary/.test(t)) kinds.push("boundaries");
+  if (c.scoreValue === 4 || c.scoreValue === 6 || /\bfour\b|\bsix\b|boundary/.test(t))
+    kinds.push("boundaries");
   if (/end of over|over\s+\d/i.test(t)) kinds.push("overs");
   return kinds;
 }
@@ -62,14 +63,16 @@ export function CommentaryTab({ commentary }: { commentary: Comment[] }) {
                   isWicket
                     ? "border-red-500/30 bg-red-500/[0.06]"
                     : isBoundary
-                    ? "border-amber-500/25 bg-amber-500/[0.05]"
-                    : "border-gray-800 bg-gray-900/40"
+                      ? "border-amber-500/25 bg-amber-500/[0.05]"
+                      : "border-gray-800 bg-gray-900/40"
                 }`}
               >
                 <div className="flex items-center gap-2 text-[10px] uppercase tracking-wider text-gray-400 mb-1">
                   {isWicket && <span className="text-red-300 font-bold">Wicket</span>}
                   {!isWicket && isBoundary && (
-                    <span className="text-amber-300 font-bold">{c.scoreValue === 6 ? "SIX" : "FOUR"}</span>
+                    <span className="text-amber-300 font-bold">
+                      {c.scoreValue === 6 ? "SIX" : "FOUR"}
+                    </span>
                   )}
                   {c.time && <span className="tabular-nums">{c.time}</span>}
                   {c.period > 0 && <span>· Innings {c.period}</span>}

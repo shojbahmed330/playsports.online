@@ -23,17 +23,26 @@ export function MatchStickyBar({ match }: { match: CricketMatch }) {
     >
       <div className="max-w-5xl mx-auto px-3 py-2 flex items-center gap-3 text-xs">
         {isLive && (
-          <span className="size-1.5 rounded-full bg-red-500 animate-pulse shrink-0" aria-hidden />
+          <span
+            className="size-1.5 rounded-full bg-red-500 animate-pulse motion-reduce:animate-none shrink-0"
+            aria-hidden
+          />
         )}
         <div className="min-w-0 flex-1 flex items-center gap-2 tabular-nums truncate">
-          <span className="font-bold text-white truncate">{match.home.abbr || match.home.shortName}</span>
+          <span className="font-bold text-white truncate">
+            {match.home.abbr || match.home.shortName}
+          </span>
           <span className="text-emerald-200 truncate">{scoreLine(home)}</span>
           <span className="text-gray-500 shrink-0">vs</span>
-          <span className="font-bold text-white truncate">{match.away.abbr || match.away.shortName}</span>
+          <span className="font-bold text-white truncate">
+            {match.away.abbr || match.away.shortName}
+          </span>
           <span className="text-emerald-200 truncate">{scoreLine(away)}</span>
         </div>
         {match.result?.marginText && (
-          <span className="hidden sm:inline text-emerald-300 truncate">· {match.result.marginText}</span>
+          <span className="hidden sm:inline text-emerald-300 truncate">
+            · {match.result.marginText}
+          </span>
         )}
       </div>
     </div>

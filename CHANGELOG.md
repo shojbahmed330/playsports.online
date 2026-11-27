@@ -1,5 +1,19 @@
 # Changelog
 
+## HOME-01 Home dashboard
+
+- Kept: compact now-first hero, live ticker, sport chips, cricket/football slates, sport doors, newsletter.
+- Removed: mounted hero gate, unused effect, duplicate loading condition.
+- Fixed: SSR now awaits hero feeds (`ensureQueryData`) so the hero/ticker/counts are in the HTML; feed failure shows `ErrorState` with Retry; live dot no longer causes a hydration attribute mismatch.
+- Added: shared `SectionHeader`, token-based live colour, reduced-motion support.
+- Deferred: JS chunk splitting and merging ForYou/Pulse/Live.
+
+## CRK-04 Cricket hub
+
+- Kept: hero, live pulse, international block, featured series, auto-discovered series, live/today/upcoming/results.
+- Removed: local `Section` markup, hardcoded empty box, unused `now` field.
+- Fixed: SSR slate (`ensureQueryData`), feed error + Retry, shared empty state, 44 px “See all” links, reduced-motion live dots.
+
 ## Foundation
 
 - Added overhaul documentation: `PROJECT_NOTES.md`, `HEALTH_BASELINE.md`, `SCREEN_INVENTORY.md`, `DESIGN_SYSTEM.md`, `PROGRESS.md`, `DECISIONS.md`, `BLOCKERS.md`, `SECURITY_FINDINGS.md`.

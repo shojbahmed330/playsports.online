@@ -17,7 +17,9 @@ export function CricketPlayerSheet({ athleteId, leagueId, onClose }: Props) {
 
   useEffect(() => {
     if (!open) return;
-    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
     window.addEventListener("keydown", onKey);
     document.documentElement.style.overflow = "hidden";
     return () => {
@@ -77,7 +79,8 @@ export function CricketPlayerSheet({ athleteId, leagueId, onClose }: Props) {
             <AlertCircle className="size-10 mx-auto text-amber-400/80" />
             <div className="text-sm text-amber-200/90 font-semibold">Profile unavailable</div>
             <p className="text-xs text-muted-foreground max-w-xs mx-auto">
-              ESPN didn't return data for this player. Try another match — bilateral &amp; older series sometimes ship without athlete records.
+              ESPN didn't return data for this player. Try another match — bilateral &amp; older
+              series sometimes ship without athlete records.
             </p>
           </div>
         )}
@@ -94,7 +97,7 @@ export function CricketPlayerSheet({ athleteId, leagueId, onClose }: Props) {
                       src={p.headshot}
                       alt={p.name}
                       className="size-24 rounded-2xl object-cover bg-emerald-900/60 ring-2 ring-emerald-400/30 shadow-lg"
-                      onError={(e) => ((e.currentTarget.style.display = "none"))}
+                      onError={(e) => (e.currentTarget.style.display = "none")}
                     />
                   ) : (
                     <div className="size-24 rounded-2xl bg-emerald-900/60 ring-2 ring-emerald-400/30 grid place-items-center text-3xl">
@@ -111,13 +114,25 @@ export function CricketPlayerSheet({ athleteId, leagueId, onClose }: Props) {
                   )}
                   <div className="mt-2 flex flex-wrap gap-1.5">
                     {p.team && (
-                      <Pill icon={<img loading="lazy" decoding="async" src={p.teamLogo ?? ""} alt="" className="size-3 inline" />}>
+                      <Pill
+                        icon={
+                          <img
+                            loading="lazy"
+                            decoding="async"
+                            src={p.teamLogo ?? ""}
+                            alt=""
+                            className="size-3 inline"
+                          />
+                        }
+                      >
                         {p.team}
                       </Pill>
                     )}
                     {p.country && <Pill icon={<MapPin className="size-3" />}>{p.country}</Pill>}
                     {p.jersey && <Pill icon={<Shirt className="size-3" />}>#{p.jersey}</Pill>}
-                    {p.age != null && <Pill icon={<Calendar className="size-3" />}>{p.age} yrs</Pill>}
+                    {p.age != null && (
+                      <Pill icon={<Calendar className="size-3" />}>{p.age} yrs</Pill>
+                    )}
                   </div>
                 </div>
               </div>
@@ -143,25 +158,31 @@ export function CricketPlayerSheet({ athleteId, leagueId, onClose }: Props) {
                   Career stats unavailable for this player.
                 </div>
               ) : (
-
                 <div className="space-y-2">
                   {p.career.map((row, i) => (
                     <CareerRow key={`${row.format}-${i}`} row={row} />
                   ))}
                 </div>
               )}
-
             </section>
 
             {p.description && (
               <section className="px-5 pb-4">
-                <div className="text-[10px] uppercase tracking-[0.18em] font-bold text-emerald-300 mb-1">About</div>
-                <p className="text-xs text-muted-foreground leading-relaxed line-clamp-6">{p.description}</p>
+                <div className="text-[10px] uppercase tracking-[0.18em] font-bold text-emerald-300 mb-1">
+                  About
+                </div>
+                <p className="text-xs text-muted-foreground leading-relaxed line-clamp-6">
+                  {p.description}
+                </p>
               </section>
             )}
 
             <div className="px-5 pb-6">
-              <AffiliateStrip placement="player_footer" sport="cricket" heading="Cricket gear & partners" />
+              <AffiliateStrip
+                placement="player_footer"
+                sport="cricket"
+                heading="Cricket gear & partners"
+              />
             </div>
           </>
         )}
@@ -190,11 +211,13 @@ function MetaCell({ label, value }: { label: string; value: string }) {
 
 function CareerRow({ row }: { row: CricketCareerStat }) {
   const fmt = row.format.toUpperCase();
-  const accent =
-    fmt.includes("TEST") ? "from-amber-500/15 to-amber-500/5 ring-amber-500/20 text-amber-300"
-    : fmt.includes("T20") ? "from-fuchsia-500/15 to-fuchsia-500/5 ring-fuchsia-500/20 text-fuchsia-300"
-    : fmt.includes("ODI") ? "from-sky-500/15 to-sky-500/5 ring-sky-500/20 text-sky-300"
-    : "from-slate-500/15 to-slate-500/5 ring-slate-500/20 text-slate-300";
+  const accent = fmt.includes("TEST")
+    ? "from-amber-500/15 to-amber-500/5 ring-amber-500/20 text-amber-300"
+    : fmt.includes("T20")
+      ? "from-fuchsia-500/15 to-fuchsia-500/5 ring-fuchsia-500/20 text-fuchsia-300"
+      : fmt.includes("ODI")
+        ? "from-sky-500/15 to-sky-500/5 ring-sky-500/20 text-sky-300"
+        : "from-slate-500/15 to-slate-500/5 ring-slate-500/20 text-slate-300";
 
   return (
     <div className={`rounded-xl bg-gradient-to-br ring-1 ${accent} p-3`}>
@@ -210,7 +233,10 @@ function CareerRow({ row }: { row: CricketCareerStat }) {
         <Stat label="SR" value={row.strikeRate} fmt={(v) => v.toFixed(1)} />
         <Stat label="HS" value={row.highScore ?? "—"} />
       </div>
-      {(row.wickets != null || row.bowlingAvg != null || row.economy != null || row.bestBowling) && (
+      {(row.wickets != null ||
+        row.bowlingAvg != null ||
+        row.economy != null ||
+        row.bestBowling) && (
         <div className="grid grid-cols-4 gap-2 text-center mt-2 pt-2 border-t border-white/5">
           <Stat label="Wkts" value={row.wickets} />
           <Stat label="Avg" value={row.bowlingAvg} fmt={(v) => v.toFixed(2)} />
@@ -222,7 +248,15 @@ function CareerRow({ row }: { row: CricketCareerStat }) {
   );
 }
 
-function Stat({ label, value, fmt }: { label: string; value: number | string | null; fmt?: (v: number) => string }) {
+function Stat({
+  label,
+  value,
+  fmt,
+}: {
+  label: string;
+  value: number | string | null;
+  fmt?: (v: number) => string;
+}) {
   let display: string = "—";
   if (value != null && value !== "") {
     display = typeof value === "number" ? (fmt ? fmt(value) : String(value)) : value;

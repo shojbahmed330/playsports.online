@@ -24,8 +24,14 @@ export function CricketSlate() {
 
   const matches = q.data?.matches ?? [];
   const live = matches.filter((m) => m.status === "in");
-  const upcoming = matches.filter((m) => m.status === "pre").sort((a, b) => a.startTs - b.startTs).slice(0, 3);
-  const recent = matches.filter((m) => m.status === "post").sort((a, b) => b.startTs - a.startTs).slice(0, 3);
+  const upcoming = matches
+    .filter((m) => m.status === "pre")
+    .sort((a, b) => a.startTs - b.startTs)
+    .slice(0, 3);
+  const recent = matches
+    .filter((m) => m.status === "post")
+    .sort((a, b) => b.startTs - a.startTs)
+    .slice(0, 3);
   const pick = [...live, ...upcoming, ...recent].slice(0, 6);
 
   // Keep the first client render identical to the server render. If the
@@ -36,7 +42,9 @@ export function CricketSlate() {
     return (
       <section className="space-y-3">
         <div className="text-lg font-bold text-emerald-300 flex items-center gap-2">🏏 Cricket</div>
-        <div className="rounded-xl border border-dashed border-gray-800 p-6 text-center text-xs text-gray-500 bg-gray-900/40">Loading cricket slate…</div>
+        <div className="rounded-xl border border-dashed border-gray-800 p-6 text-center text-xs text-gray-500 bg-gray-900/40">
+          Loading cricket slate…
+        </div>
       </section>
     );
   }
@@ -45,21 +53,29 @@ export function CricketSlate() {
   return (
     <section className="space-y-4">
       <div className="flex items-center justify-between flex-wrap gap-2">
-        <Link to="/cricket" className="group inline-flex items-center gap-2 text-lg font-bold text-emerald-300 hover:underline">
+        <Link
+          to="/cricket"
+          className="group inline-flex items-center gap-2 text-lg font-bold text-emerald-300 hover:underline"
+        >
           <span className="text-base">🏏</span> Cricket — live & upcoming
           <ArrowRight className="size-3.5 group-hover:translate-x-0.5 transition-transform" />
         </Link>
         <div className="flex items-center gap-2 text-[11px]">
           {live.length > 0 && (
             <span className="inline-flex items-center gap-1 text-red-300 bg-red-500/15 ring-1 ring-red-500/30 rounded-full px-2 py-0.5 font-bold">
-              <span className="size-1.5 rounded-full bg-red-500 animate-pulse" /> {live.length} live
+              <span className="size-1.5 rounded-full bg-red-500 animate-pulse motion-reduce:animate-none" />{" "}
+              {live.length} live
             </span>
           )}
-          <span className="text-gray-500">{matches.length} total · {CRICKET_LEAGUES.length} series</span>
+          <span className="text-gray-500">
+            {matches.length} total · {CRICKET_LEAGUES.length} series
+          </span>
         </div>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-        {pick.map((m) => <CricketMatchCard key={m.id} match={m} />)}
+        {pick.map((m) => (
+          <CricketMatchCard key={m.id} match={m} />
+        ))}
       </div>
     </section>
   );

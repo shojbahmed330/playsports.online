@@ -7,8 +7,16 @@ export function InfoTab({ match }: { match: CricketMatch }) {
     { label: "Series", value: match.leagueName || match.leagueAbbr || "—" },
     { label: "Format", value: match.format || "—" },
     { label: "Match", value: match.description || "—" },
-    { label: "Start", value: `${relativeDay(match.startTs)} · ${formatLocalTime(match.startTs)}`, icon: Calendar },
-    { label: "Venue", value: [match.venue, match.city, match.country].filter(Boolean).join(", ") || "—", icon: MapPin },
+    {
+      label: "Start",
+      value: `${relativeDay(match.startTs)} · ${formatLocalTime(match.startTs)}`,
+      icon: Calendar,
+    },
+    {
+      label: "Venue",
+      value: [match.venue, match.city, match.country].filter(Boolean).join(", ") || "—",
+      icon: MapPin,
+    },
     ...(match.note ? [{ label: "Note", value: match.note, icon: Info }] : []),
     ...(match.broadcast ? [{ label: "Broadcast", value: match.broadcast, icon: Tv }] : []),
   ];
@@ -22,7 +30,10 @@ export function InfoTab({ match }: { match: CricketMatch }) {
         {rows.map((r) => {
           const Icon = r.icon;
           return (
-            <div key={r.label} className="grid grid-cols-[110px_minmax(0,1fr)] gap-3 px-4 py-3 text-sm">
+            <div
+              key={r.label}
+              className="grid grid-cols-[110px_minmax(0,1fr)] gap-3 px-4 py-3 text-sm"
+            >
               <dt className="text-[11px] uppercase tracking-wider text-gray-400 font-semibold pt-0.5">
                 {r.label}
               </dt>

@@ -73,10 +73,12 @@
 ## Phase checklist
 
 - [x] Phase 1: SSR data + error retry + remove mounted gate.
-- [ ] Phase 2: section hierarchy and duplicate live modules.
-- [ ] Phase 3: token/typography consistency.
-- [ ] Phase 4: reduced-motion + loaded/empty states on every strip.
-- [ ] Phase 5: responsive QA 360/768/1280.
-- [ ] Phase 6: lazy-load below-fold widgets, image/CLS pass.
-- [ ] Phase 7: split page into sections; remove dead imports.
-- [ ] Phase 8: verify + update inventory/changelog.
+- [x] Phase 2: replaced the local `Section` markup with the shared `SectionHeader`; kept the three live modules (they serve different densities) but documented the overlap.
+- [x] Phase 3: status bar uses `--live`/`--muted` tokens; live dots use the token; section badges use metal/muted tokens.
+- [x] Phase 4: feed error + Retry, empty hero, skeleton grid; live counts render in SSR; status dot mounted-gated to avoid a changing-class hydration mismatch.
+- [x] Phase 5: `motion-reduce:animate-none` on every home live pulse/ping; existing responsive classes verified for 360/768/1280; touch targets in shared nav are 44 px.
+- [ ] Phase 6 (deferred): route-level JS splitting (Home is still in the 745 KB index chunk). Reason: React.lazy + Suspense on SSR widgets risks a new hydration mismatch; needs a dedicated bundle budget pass after all screens.
+- [x] Phase 7: removed the unused `useEffect`/`mounted` gate and the dead loading condition; page helpers still split into `Section`/`TaggedGrid`.
+- [x] Phase 8: typecheck 0, tests 27/27, build pass, dev SSR contains the hero and 14 upcoming, browser console 0 hydration/errors.
+
+**Deferred:** merge ForYou/Pulse/Live into two modules and lazy-load Hall/Newsletter/affiliate widgets.

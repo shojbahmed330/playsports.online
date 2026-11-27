@@ -17,10 +17,15 @@ export function MatchHero({ match }: { match: CricketMatch }) {
       <div
         className="absolute inset-0 opacity-25 pointer-events-none"
         aria-hidden
-        style={{ background: "radial-gradient(60% 70% at 50% 0%, rgba(251,191,36,0.35), transparent 65%)" }}
+        style={{
+          background: "radial-gradient(60% 70% at 50% 0%, rgba(251,191,36,0.35), transparent 65%)",
+        }}
       />
       <div className="relative max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
-        <Link to="/cricket" className="inline-flex items-center gap-1.5 text-xs text-emerald-200 hover:text-white mb-3">
+        <Link
+          to="/cricket"
+          className="inline-flex items-center gap-1.5 text-xs text-emerald-200 hover:text-white mb-3"
+        >
           <ArrowLeft className="size-3.5" /> All cricket
         </Link>
 
@@ -47,7 +52,8 @@ export function MatchHero({ match }: { match: CricketMatch }) {
           </div>
           {isLive ? (
             <span className="inline-flex items-center gap-1.5 text-red-300 text-xs font-bold shrink-0">
-              <span className="size-1.5 rounded-full bg-red-500 animate-pulse cricket-live-ring" /> LIVE · {match.statusDetail}
+              <span className="size-1.5 rounded-full bg-red-500 animate-pulse motion-reduce:animate-none cricket-live-ring" />{" "}
+              LIVE · {match.statusDetail}
             </span>
           ) : isFinal ? (
             <span className="text-xs font-bold text-amber-300 inline-flex items-center gap-1 shrink-0">
@@ -71,7 +77,7 @@ export function MatchHero({ match }: { match: CricketMatch }) {
           <div className="mt-4 inline-block px-3 py-1.5 rounded-md bg-amber-500/15 ring-1 ring-amber-500/30 text-amber-200 text-xs font-semibold">
             Score data unavailable — refreshing shortly.
           </div>
-        ) : (match.result?.marginText || match.note) ? (
+        ) : match.result?.marginText || match.note ? (
           <div className="mt-4 inline-block px-3 py-1.5 rounded-md bg-emerald-500/15 ring-1 ring-emerald-500/30 text-emerald-200 text-xs font-semibold">
             {match.result?.marginText || match.note}
           </div>
@@ -80,7 +86,8 @@ export function MatchHero({ match }: { match: CricketMatch }) {
         <div className="mt-4 flex flex-wrap items-center gap-3 text-[11px] text-emerald-100/70">
           {match.venue && (
             <span className="inline-flex items-center gap-1">
-              <MapPin className="size-3" /> {match.venue}{match.city ? `, ${match.city}` : ""}
+              <MapPin className="size-3" /> {match.venue}
+              {match.city ? `, ${match.city}` : ""}
             </span>
           )}
           {match.broadcast && (
@@ -125,7 +132,9 @@ function TeamScoreRow({
             <div className="text-[28px] sm:text-4xl font-black tabular-nums leading-none">
               <ScoreFlip value={score.runs} />
               {!score.allOut && (
-                <span className="text-lg sm:text-2xl text-emerald-200/80 font-bold">/{score.wickets}</span>
+                <span className="text-lg sm:text-2xl text-emerald-200/80 font-bold">
+                  /{score.wickets}
+                </span>
               )}
               {score.declared && <span className="text-sm text-amber-300 ml-0.5">d</span>}
             </div>
@@ -137,7 +146,9 @@ function TeamScoreRow({
             </div>
           </>
         ) : score.kind === "yet-to-bat" ? (
-          <div className="text-xs uppercase tracking-wider font-bold text-emerald-100/70">Yet to bat</div>
+          <div className="text-xs uppercase tracking-wider font-bold text-emerald-100/70">
+            Yet to bat
+          </div>
         ) : score.kind === "did-not-bat" ? (
           <div className="text-xs uppercase tracking-wider font-bold text-emerald-100/70">DNB</div>
         ) : (
