@@ -241,6 +241,11 @@
 - Fixed: next-fixture local date mount-gated; query/payload errors retryable; shared not-found/empty/error states; 44 px nav/related links, focus rings, reduced-motion spinner.
 - Kept: record/standing/venue, next fixture and cross-links.
 
+## FB-16 football team season
+
+- Fixed: match dates mount-gated; feed errors retryable; shared empty/error/not-found states; 44 px H2H/back links, focus rings, reduced-motion spinner; removed duplicate season label from the title.
+- Kept: season summary and match list.
+
 ## Foundation
 
 - Added overhaul documentation: `PROJECT_NOTES.md`, `HEALTH_BASELINE.md`, `SCREEN_INVENTORY.md`, `DESIGN_SYSTEM.md`, `PROGRESS.md`, `DECISIONS.md`, `BLOCKERS.md`, `SECURITY_FINDINGS.md`.

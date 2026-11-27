@@ -2,11 +2,11 @@
 
 ## BLK-SYS-01 — Remaining route screens (resource blocker)
 
-- **Screen IDs:** 104 route screens still `BLOCKED` in `SCREEN_INVENTORY.md` (plus 5 global items).
-- **Error:** the autonomous per-screen loop (audit → plan → 8 phases → verify) could not complete for every screen in the available execution budget. The foundation and 46 route screens are complete; the rest have the shared foundation but no per-screen audit.
-- **Tried:** router inventory; shared state components; global typecheck/audit/PWA/search/security fixes; 46 full screen passes; global football layout navigation; duplicate `main-content` cleanup.
+- **Screen IDs:** 103 route screens still `BLOCKED` in `SCREEN_INVENTORY.md` (plus 5 global items).
+- **Error:** the autonomous per-screen loop (audit → plan → 8 phases → verify) could not complete for every screen in the available execution budget. The foundation and 47 route screens are complete; the rest have the shared foundation but no per-screen audit.
+- **Tried:** router inventory; shared state components; global typecheck/audit/PWA/search/security fixes; 47 full screen passes; global football layout navigation; duplicate `main-content` cleanup.
 - **Status:** BLOCKED (resource).
-- **Resume:** start with FB-22 (football hub), FB-16 (team season) and FB-06/07 (match/player detail), then follow `FINAL_REPORT.md`. No screen should be marked DONE without its own `plans/<ID>.md` and Phase 8 verification.
+- **Resume:** start with FB-22 (football hub), FB-06/07 (match/player detail) and FB-02 (H2H), then follow `FINAL_REPORT.md`. No screen should be marked DONE without its own `plans/<ID>.md` and Phase 8 verification.
 
 ## Individual technical blockers
 
