@@ -39,17 +39,17 @@ export function CommentaryFeed({
 
   if (q.isLoading) {
     return (
-      <div className="flex items-center justify-center py-10 text-gray-500 text-sm">
-        <Loader2 className="size-4 animate-spin mr-2" /> Loading commentary…
+      <div className="flex items-center justify-center py-10 text-caption text-muted-foreground" role="status">
+        <Loader2 className="mr-2 size-4 animate-spin motion-reduce:animate-none" aria-hidden="true" /> Loading commentary…
       </div>
     );
   }
 
   if ((q.data?.items ?? []).length === 0) {
     return (
-      <div className="text-center py-10 text-sm text-gray-500">
+      <div className="py-10 text-center text-caption text-muted-foreground">
         No commentary yet. It usually starts at kickoff.
-        {q.data?.error && <div className="mt-1 text-[10px] text-red-400/60">({q.data.error})</div>}
+        {q.data?.error && <div className="mt-1 text-micro text-destructive/60">({q.data.error})</div>}
       </div>
     );
   }
@@ -57,19 +57,19 @@ export function CommentaryFeed({
   return (
     <div className="space-y-3">
       <div className="flex items-center gap-2">
-        <MessageSquare className="size-3.5 text-amber-300" />
-        <span className="text-[10px] uppercase tracking-widest text-amber-200/80 font-bold">
+        <MessageSquare className="size-3.5 text-primary" aria-hidden="true" />
+        <span className="text-micro uppercase text-primary/80">
           {items.length} entries
         </span>
-        <div className="ml-auto inline-flex items-center gap-1 rounded-full bg-black/40 ring-1 ring-white/10 p-0.5">
+        <div className="ml-auto inline-flex items-center gap-1 rounded-full bg-muted p-0.5 ring-1 ring-border">
           <FilterBtn active={filter === "all"} onClick={() => setFilter("all")}>All</FilterBtn>
           <FilterBtn active={filter === "key"} onClick={() => setFilter("key")}>
-            <Filter className="size-2.5 inline mr-0.5" /> Key
+            <Filter className="mr-0.5 inline size-2.5" aria-hidden="true" /> Key
           </FilterBtn>
         </div>
       </div>
 
-      <ol className="space-y-1.5 max-h-[520px] overflow-y-auto pr-1">
+      <ol className="max-h-[520px] space-y-1.5 overflow-y-auto pr-1">
         {items.map((item) => (
           <CommentaryRow key={item.id} item={item} homeCode={homeCode} awayCode={awayCode} />
         ))}
@@ -83,8 +83,9 @@ function FilterBtn({ active, onClick, children }: { active: boolean; onClick: ()
     <button
       type="button"
       onClick={onClick}
-      className={`text-[10px] font-bold uppercase tracking-widest px-2 py-1 rounded-full transition ${
-        active ? "bg-amber-500 text-black" : "text-gray-400 hover:text-white"
+      aria-pressed={active}
+      className={`inline-flex min-h-11 items-center rounded-full px-3 text-micro font-bold uppercase transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+        active ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
       }`}
     >
       {children}
@@ -97,23 +98,23 @@ function CommentaryRow({ item, homeCode, awayCode }: { item: Wc2026CommentaryIte
   const tag = item.team === "home" ? homeCode : item.team === "away" ? awayCode : null;
   return (
     <li
-      className={`flex gap-2 rounded-lg px-2.5 py-1.5 border-l-2 ${
+      className={`flex gap-2 rounded-lg border-l-2 px-2.5 py-1.5 ${
         isKey
-          ? "bg-amber-500/[0.06] border-amber-400/70"
-          : "bg-white/[0.02] border-white/10"
+          ? "border-primary/70 bg-primary/5"
+          : "border-border bg-muted/30"
       }`}
     >
       <div className="w-10 shrink-0 text-right">
-        <div className={`text-[11px] font-black tabular-nums ${isKey ? "text-amber-300" : "text-gray-400"}`}>
+        <div className={`text-micro font-black tabular-nums ${isKey ? "text-primary" : "text-muted-foreground"}`}>
           {item.minute != null ? `${item.minute}'` : "—"}
         </div>
         {tag && (
-          <div className="text-[8px] font-bold uppercase tracking-wider text-gray-600 mt-0.5">
+          <div className="mt-0.5 text-micro font-bold uppercase text-muted-foreground/70">
             {tag}
           </div>
         )}
       </div>
-      <p className={`flex-1 text-xs leading-snug ${isKey ? "text-white font-medium" : "text-gray-300"}`}>
+      <p className={`flex-1 text-caption leading-snug ${isKey ? "font-medium text-foreground" : "text-muted-foreground"}`}>
         {item.text}
       </p>
     </li>

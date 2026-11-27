@@ -25,7 +25,6 @@ export function YearDropdown({
   liveYear?: number;
 }) {
   const years = WC_YEARS.slice().reverse();
-  const champ = getChampion(year);
   const isLive = year === liveYear;
 
   return (
@@ -33,30 +32,30 @@ export function YearDropdown({
       <DropdownMenuTrigger asChild>
         <button
           type="button"
-          className="inline-flex items-center gap-2 rounded-xl border border-amber-500/40 bg-gradient-to-br from-amber-500/15 to-amber-600/10 pl-2.5 pr-3 py-2 text-sm font-bold text-amber-100 hover:from-amber-500/25 hover:to-amber-600/20 transition"
+          className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-primary/40 bg-primary/10 py-2 pl-2.5 pr-3 text-caption font-bold text-foreground transition-colors hover:bg-primary/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           aria-label="Choose tournament year"
         >
-          <Trophy className="size-4 text-amber-300" />
-          <span className="hidden sm:inline text-xs uppercase tracking-widest text-amber-200/80">
+          <Trophy className="size-4 text-primary" aria-hidden="true" />
+          <span className="hidden text-micro uppercase text-primary/80 sm:inline">
             FIFA World Cup
           </span>
-          <span className="tabular-nums text-white">{year}</span>
+          <span className="tabular-nums text-foreground">{year}</span>
           {isLive && (
-            <span className="inline-flex items-center gap-1 rounded-full bg-red-500/20 ring-1 ring-red-500/50 px-1.5 py-[1px] text-[9px] font-extrabold tracking-widest text-red-200 uppercase">
-              <span className="size-1 rounded-full bg-red-500 animate-pulse" /> Live
+            <span className="inline-flex items-center gap-1 rounded-full bg-live/20 px-1.5 py-px text-micro font-extrabold uppercase text-live ring-1 ring-live/50">
+              <span className="size-1 rounded-full bg-live animate-pulse motion-reduce:animate-none" aria-hidden="true" /> Live
             </span>
           )}
-          <ChevronDown className="size-4 text-amber-200/80" />
+          <ChevronDown className="size-4 text-muted-foreground" aria-hidden="true" />
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent
         align="start"
-        className="w-72 max-h-[70vh] overflow-y-auto bg-black/95 backdrop-blur-xl border border-amber-500/20"
+        className="max-h-[70vh] w-72 overflow-y-auto border-border bg-background/95 backdrop-blur-xl"
       >
-        <DropdownMenuLabel className="text-[10px] uppercase tracking-[0.18em] text-amber-300/70">
+        <DropdownMenuLabel className="text-micro uppercase text-primary/70">
           Browse tournaments
         </DropdownMenuLabel>
-        <DropdownMenuSeparator className="bg-white/10" />
+        <DropdownMenuSeparator className="bg-border" />
         {years.map((y) => {
           const c = getChampion(y);
           const active = y === year;
@@ -65,26 +64,26 @@ export function YearDropdown({
             <DropdownMenuItem
               key={y}
               onSelect={() => onChange(y)}
-              className={`flex items-center gap-2 cursor-pointer py-2 ${
-                active ? "bg-amber-500/15 text-amber-100" : "text-gray-200 focus:bg-white/10"
+              className={`flex min-h-11 cursor-pointer items-center gap-2 py-2 ${
+                active ? "bg-primary/15 text-foreground" : "text-foreground focus:bg-accent"
               }`}
             >
-              <span className="tabular-nums font-bold w-12 text-sm">{y}</span>
+              <span className="w-12 text-caption font-bold tabular-nums">{y}</span>
               {c ? (
                 <>
-                  <span className="text-base leading-none">{flagOf(c.champion)}</span>
-                  <span className="flex-1 text-xs truncate">{c.champion}</span>
-                  <span className="text-[10px] text-gray-500 truncate">{c.host}</span>
+                  <span className="text-base leading-none" aria-hidden="true">{flagOf(c.champion)}</span>
+                  <span className="flex-1 truncate text-caption">{c.champion}</span>
+                  <span className="truncate text-micro text-muted-foreground">{c.host}</span>
                 </>
               ) : (
-                <span className="flex-1 text-xs text-gray-500">TBD</span>
+                <span className="flex-1 text-caption text-muted-foreground">TBD</span>
               )}
               {live && (
-                <span className="inline-flex items-center gap-1 rounded-full bg-red-500/20 ring-1 ring-red-500/50 px-1.5 py-[1px] text-[9px] font-extrabold uppercase text-red-200">
-                  <span className="size-1 rounded-full bg-red-500 animate-pulse" /> Live
+                <span className="inline-flex items-center gap-1 rounded-full bg-live/20 px-1.5 py-px text-micro font-extrabold uppercase text-live ring-1 ring-live/50">
+                  <span className="size-1 rounded-full bg-live animate-pulse motion-reduce:animate-none" aria-hidden="true" /> Live
                 </span>
               )}
-              {active && !live && <Check className="size-3.5 text-amber-300" />}
+              {active && !live && <Check className="size-3.5 text-primary" aria-hidden="true" />}
             </DropdownMenuItem>
           );
         })}

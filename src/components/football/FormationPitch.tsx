@@ -36,23 +36,25 @@ export function FormationPitch({ formation, starters, side, onPick }: Props) {
 
   // Away flips vertically so both teams face the centre line.
   const orderedRows = side === "away" ? [...rows].reverse() : rows;
+  const isHome = side === "home";
 
   return (
     <div
-      className={`relative w-full rounded-xl overflow-hidden ring-1 ring-white/10 ${
-        side === "home"
-          ? "bg-gradient-to-b from-emerald-900/40 via-emerald-950/60 to-black"
-          : "bg-gradient-to-t from-sky-900/40 via-sky-950/60 to-black"
-      }`}
-      style={{ aspectRatio: "3 / 4" }}
+      className="relative w-full overflow-hidden rounded-xl ring-1 ring-border"
+      style={{
+        aspectRatio: "3 / 4",
+        background: isHome
+          ? "linear-gradient(to bottom, color-mix(in oklch, var(--color-accent-cricket) 25%, var(--background)), var(--background))"
+          : "linear-gradient(to top, color-mix(in oklch, var(--color-accent-mlb) 25%, var(--background)), var(--background))",
+      }}
       aria-label={`${side} formation ${formation}`}
     >
       {/* Pitch lines */}
-      <div className="absolute inset-2 border border-white/15 rounded-md" />
-      <div className="absolute left-2 right-2 top-1/2 border-t border-white/15" />
-      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 size-10 rounded-full border border-white/15" />
+      <div className="absolute inset-2 rounded-md border border-foreground/15" aria-hidden="true" />
+      <div className="absolute left-2 right-2 top-1/2 border-t border-foreground/15" aria-hidden="true" />
+      <div className="absolute left-1/2 top-1/2 size-10 -translate-x-1/2 -translate-y-1/2 rounded-full border border-foreground/15" aria-hidden="true" />
 
-      <div className="relative z-10 h-full grid" style={{ gridTemplateRows: `repeat(${orderedRows.length}, 1fr)` }}>
+      <div className="relative z-10 grid h-full" style={{ gridTemplateRows: `repeat(${orderedRows.length}, 1fr)` }}>
         {orderedRows.map((row, ri) => (
           <div key={ri} className="flex items-center justify-around px-2">
             {row.map((p) => (
@@ -60,20 +62,19 @@ export function FormationPitch({ formation, starters, side, onPick }: Props) {
                 key={p.id}
                 type="button"
                 onClick={() => onPick?.(p)}
-                className="group flex flex-col items-center gap-0.5 min-w-0 max-w-[68px] focus:outline-none"
+                className="group flex max-w-[68px] min-w-0 flex-col items-center gap-0.5 rounded-md p-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 <span
-                  className={`inline-flex items-center justify-center rounded-full text-[10px] font-black tabular-nums ring-2 transition
-                    ${side === "home"
-                      ? "bg-emerald-500 text-black ring-emerald-200/60 group-hover:ring-white"
-                      : "bg-sky-400 text-black ring-sky-100/60 group-hover:ring-white"}
-                    size-7`}
+                  className={`inline-flex size-7 items-center justify-center rounded-full text-micro font-black tabular-nums ring-2 transition
+                    ${isHome
+                      ? "bg-positive text-background ring-positive/60 group-hover:ring-foreground"
+                      : "bg-[var(--color-accent-mlb)] text-background ring-[var(--color-accent-mlb)]/60 group-hover:ring-foreground"}`}
                 >
                   {p.shirt ?? "–"}
                 </span>
-                <span className="text-[9px] text-white/90 font-semibold truncate max-w-full leading-tight">
+                <span className="max-w-full truncate text-micro font-semibold leading-tight text-foreground/90">
                   {shortName(p.name)}
-                  {p.captain && <span className="ml-0.5 text-amber-300">C</span>}
+                  {p.captain && <span className="ml-0.5 text-primary">C</span>}
                 </span>
               </button>
             ))}
@@ -81,7 +82,7 @@ export function FormationPitch({ formation, starters, side, onPick }: Props) {
         ))}
       </div>
 
-      <div className="absolute top-1.5 right-2 text-[9px] font-mono px-1.5 py-0.5 bg-black/50 rounded text-amber-200">
+      <div className="absolute right-2 top-1.5 rounded bg-background/50 px-1.5 py-0.5 font-mono text-micro text-primary">
         {formation}
       </div>
     </div>

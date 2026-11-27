@@ -62,30 +62,36 @@ export function FootballCoachmark({ force = false }: { force?: boolean }) {
   const isLast = step === STEPS.length - 1;
 
   return (
-    <div className="pointer-events-none fixed inset-0 z-[90] flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm animate-in fade-in duration-150">
+    <div className="pointer-events-none fixed inset-0 z-[90] flex items-end justify-center bg-background/60 backdrop-blur-sm animate-in fade-in duration-150 motion-reduce:animate-none sm:items-center">
       <div
-        className="pointer-events-auto w-full sm:max-w-sm m-3 sm:m-0 rounded-2xl border border-amber-500/40 bg-gradient-to-br from-gray-950 to-gray-900 shadow-[0_20px_60px_rgba(245,158,11,0.25)] overflow-hidden animate-in slide-in-from-bottom sm:zoom-in-95 duration-200"
+        className="pointer-events-auto m-3 w-full overflow-hidden rounded-2xl border border-primary/40 bg-card shadow-[var(--shadow-elevated)] animate-in slide-in-from-bottom duration-200 motion-reduce:animate-none sm:m-0 sm:max-w-sm sm:zoom-in-95"
         role="dialog"
+        aria-modal="true"
         aria-label="Quick tour"
       >
-        <div className="flex items-center justify-between px-4 py-2.5 border-b border-amber-500/20 bg-amber-500/5">
-          <div className="inline-flex items-center gap-2 text-amber-300">
-            <Sparkles className="size-4" />
-            <span className="text-[11px] font-bold tracking-[0.18em] uppercase">Quick tour · {step + 1}/{STEPS.length}</span>
+        <div className="flex items-center justify-between border-b border-primary/20 bg-primary/5 px-4 py-2.5">
+          <div className="inline-flex items-center gap-2 text-primary">
+            <Sparkles className="size-4" aria-hidden="true" />
+            <span className="text-micro font-bold uppercase">Quick tour · {step + 1}/{STEPS.length}</span>
           </div>
-          <button onClick={close} aria-label="Skip tour" className="rounded-full p-1 text-gray-400 hover:text-white">
-            <X className="size-4" />
+          <button
+            type="button"
+            onClick={close}
+            aria-label="Skip tour"
+            className="grid size-11 place-items-center rounded-full text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            <X className="size-4" aria-hidden="true" />
           </button>
         </div>
 
         <div className="px-5 py-5">
           <div className="flex items-start gap-3">
-            <div className="grid size-10 shrink-0 place-items-center rounded-xl bg-amber-500/15 ring-1 ring-amber-500/30 text-amber-300">
-              <Icon className="size-5" />
+            <div className="grid size-10 shrink-0 place-items-center rounded-xl bg-primary/15 text-primary ring-1 ring-primary/30">
+              <Icon className="size-5" aria-hidden="true" />
             </div>
             <div className="min-w-0">
-              <div className="text-base font-bold text-white">{S.title}</div>
-              <p className="text-xs text-gray-400 mt-1">{S.body}</p>
+              <div className="text-body font-bold text-foreground">{S.title}</div>
+              <p className="mt-1 text-caption text-muted-foreground">{S.body}</p>
             </div>
           </div>
 
@@ -94,20 +100,26 @@ export function FootballCoachmark({ force = false }: { force?: boolean }) {
               {STEPS.map((_, i) => (
                 <span
                   key={i}
-                  className={`block h-1 rounded-full transition-all ${i === step ? "w-6 bg-amber-400" : i < step ? "w-3 bg-amber-500/40" : "w-3 bg-white/10"}`}
+                  className={`block h-1 rounded-full transition-all ${i === step ? "w-6 bg-primary" : i < step ? "w-3 bg-primary/40" : "w-3 bg-muted"}`}
+                  aria-hidden="true"
                 />
               ))}
             </div>
             <div className="flex items-center gap-2">
-              <button onClick={close} className="text-[11px] text-gray-400 hover:text-white px-2 py-1">
+              <button
+                type="button"
+                onClick={close}
+                className="min-h-11 px-2 text-micro text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
                 Skip
               </button>
               <button
+                type="button"
                 onClick={() => (isLast ? close() : setStep((s) => s + 1))}
-                className="inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 text-black font-bold text-xs px-3 py-1.5 active:scale-95"
+                className="inline-flex min-h-11 items-center gap-1 rounded-full bg-primary px-3 text-caption font-bold text-primary-foreground transition-opacity hover:opacity-90 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 {isLast ? "Got it" : "Next"}
-                {!isLast && <ChevronRight className="size-3.5" />}
+                {!isLast && <ChevronRight className="size-3.5" aria-hidden="true" />}
               </button>
             </div>
           </div>
@@ -120,10 +132,11 @@ export function FootballCoachmark({ force = false }: { force?: boolean }) {
 export function ReplayTourButton({ onReplay }: { onReplay: () => void }) {
   return (
     <button
+      type="button"
       onClick={onReplay}
-      className="text-[11px] text-gray-500 hover:text-amber-300 inline-flex items-center gap-1"
+      className="inline-flex min-h-11 items-center gap-1 text-micro text-muted-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
     >
-      <Sparkles className="size-3" /> Replay tour
+      <Sparkles className="size-3" aria-hidden="true" /> Replay tour
     </button>
   );
 }

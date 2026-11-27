@@ -72,6 +72,14 @@ describe("design system foundation", () => {
       "src/components/wc/MatchModal.tsx",
       "src/components/wc/DateScrubber.tsx",
       "src/components/wc/Wc2026View.tsx",
+      "src/components/wc/YearDropdown.tsx",
+      "src/components/wc/TimezonePicker.tsx",
+      "src/components/wc/MobileGroupDeck.tsx",
+      "src/components/wc/LiveMatchCenter.tsx",
+      "src/components/football/Wc2026ScorersPanel.tsx",
+      "src/components/football/FootballCoachmark.tsx",
+      "src/components/football/FormationPitch.tsx",
+      "src/components/football/CommentaryFeed.tsx",
       "src/lib/sports-config.ts",
     ]) {
       expect(PALETTE.test(read(path)), `${path} hardcodes palette colours`).toBe(false);

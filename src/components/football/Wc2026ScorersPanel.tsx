@@ -19,30 +19,30 @@ export function Wc2026ScorersPanel() {
   return (
     <section
       id="scorers"
-      className="relative overflow-hidden rounded-2xl border border-amber-500/20 bg-gradient-to-br from-amber-950/40 via-gray-950 to-rose-950/30 p-5 sm:p-6"
+      className="relative overflow-hidden rounded-2xl border border-primary/20 bg-card p-5 sm:p-6"
     >
-      <div aria-hidden className="absolute -top-12 -right-12 size-40 rounded-full bg-amber-500/10 blur-3xl" />
+      <div aria-hidden="true" className="absolute -right-12 -top-12 size-40 rounded-full bg-primary/10 blur-3xl" />
       <header className="relative mb-5 flex items-center justify-between gap-3">
         <div className="flex items-center gap-2.5">
-          <span className="grid size-8 place-items-center rounded-xl bg-amber-500/20 ring-1 ring-amber-400/30">
-            <Trophy className="size-4 text-amber-300" />
+          <span className="grid size-8 place-items-center rounded-xl bg-primary/20 ring-1 ring-primary/30">
+            <Trophy className="size-4 text-primary" aria-hidden="true" />
           </span>
           <div>
-            <h3 className="text-sm font-extrabold uppercase tracking-[0.18em] text-amber-300">
+            <h3 className="text-micro uppercase text-primary">
               Golden Boot Race
             </h3>
-            <p className="text-[11px] text-muted-foreground">Top scorers · World Cup 2026</p>
+            <p className="text-micro text-muted-foreground">Top scorers · World Cup 2026</p>
           </div>
         </div>
-        <span className="text-[10px] uppercase tracking-widest text-muted-foreground">Updates · 60s</span>
+        <span className="text-micro uppercase text-muted-foreground">Updates · 60s</span>
       </header>
 
       {q.isLoading ? (
-        <div className="flex items-center gap-2 py-6 text-xs text-muted-foreground">
-          <Loader2 className="size-4 animate-spin" /> Loading scorers…
+        <div className="flex items-center gap-2 py-6 text-caption text-muted-foreground" role="status">
+          <Loader2 className="size-4 animate-spin motion-reduce:animate-none" aria-hidden="true" /> Loading scorers…
         </div>
       ) : scorers.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-white/10 bg-white/5 p-6 text-center text-xs text-muted-foreground">
+        <div className="rounded-xl border border-dashed border-border bg-muted/40 p-6 text-center text-caption text-muted-foreground">
           No goals scored yet — check back once matches begin.
         </div>
       ) : (
@@ -53,43 +53,43 @@ export function Wc2026ScorersPanel() {
             return (
               <li
                 key={s.playerId}
-                className="group relative overflow-hidden rounded-xl border border-white/5 bg-white/5 px-3 py-2.5 transition-all hover:bg-white/[0.08] hover:border-amber-400/30 animate-fade-in"
+                className="group relative overflow-hidden rounded-xl border border-border bg-muted/40 px-3 py-2.5 transition-colors animate-fade-in hover:border-primary/30 hover:bg-accent motion-reduce:animate-none"
                 style={{ animationDelay: `${i * 40}ms` }}
               >
                 {/* Bar */}
                 <div
-                  aria-hidden
+                  aria-hidden="true"
                   className={`absolute inset-y-0 left-0 transition-all ${
                     isLead
-                      ? "bg-gradient-to-r from-amber-500/30 via-amber-400/15 to-transparent"
-                      : "bg-gradient-to-r from-amber-500/15 to-transparent"
+                      ? "bg-gradient-to-r from-primary/30 via-primary/15 to-transparent"
+                      : "bg-gradient-to-r from-primary/15 to-transparent"
                   }`}
                   style={{ width: `${pct}%` }}
                 />
                 <div className="relative flex items-center gap-3">
                   <span
-                    className={`grid size-7 shrink-0 place-items-center rounded-lg text-[11px] font-extrabold tabular-nums ${
+                    className={`grid size-7 shrink-0 place-items-center rounded-lg text-micro font-extrabold tabular-nums ${
                       i === 0
-                        ? "bg-amber-400 text-black"
+                        ? "bg-gold text-gold-foreground"
                         : i === 1
-                        ? "bg-zinc-300 text-black"
-                        : i === 2
-                        ? "bg-amber-700 text-white"
-                        : "bg-white/10 text-muted-foreground"
+                          ? "bg-muted-foreground text-background"
+                          : i === 2
+                            ? "bg-primary/80 text-primary-foreground"
+                            : "bg-muted text-muted-foreground"
                     }`}
                   >
                     {i + 1}
                   </span>
-                  <span className="text-xl leading-none shrink-0">{flagOf(s.team.name)}</span>
+                  <span className="shrink-0 text-xl leading-none" aria-hidden="true">{flagOf(s.team.name)}</span>
                   <div className="min-w-0 flex-1">
-                    <div className="truncate text-sm font-semibold text-foreground">{s.name}</div>
-                    <div className="truncate text-[10px] uppercase tracking-wider text-muted-foreground">
+                    <div className="truncate text-caption font-semibold text-foreground">{s.name}</div>
+                    <div className="truncate text-micro uppercase text-muted-foreground">
                       {s.team.name} · {s.team.code}
                     </div>
                   </div>
                   <div className="shrink-0 text-right">
-                    <div className="text-lg font-extrabold tabular-nums text-amber-300">{s.goals}</div>
-                    <div className="text-[10px] uppercase tracking-widest text-muted-foreground">Goals</div>
+                    <div className="text-lg font-extrabold tabular-nums text-primary">{s.goals}</div>
+                    <div className="text-micro uppercase text-muted-foreground">Goals</div>
                   </div>
                 </div>
               </li>

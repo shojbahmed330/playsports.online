@@ -53,25 +53,30 @@ export function MobileGroupDeck({
   return (
     <div className="md:hidden">
       {/* Dot indicator */}
-      <div className="flex justify-center gap-1.5 mb-2">
+      <div className="mb-1 flex justify-center">
         {byGroup.map(([name], i) => (
           <button
             key={name}
+            type="button"
             onClick={() => {
               const el = scrollerRef.current;
               if (!el) return;
               el.scrollTo({ left: i * el.clientWidth, behavior: "smooth" });
             }}
-            className={`h-1.5 rounded-full transition-all ${
-              i === activeIdx ? "w-6 bg-amber-400" : "w-1.5 bg-gray-700"
-            }`}
+            className="grid size-11 place-items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             aria-label={`Show ${name}`}
-          />
+            aria-pressed={i === activeIdx}
+          >
+            <span
+              className={`block h-1.5 rounded-full transition-all ${i === activeIdx ? "w-6 bg-primary" : "w-1.5 bg-muted"}`}
+              aria-hidden="true"
+            />
+          </button>
         ))}
       </div>
       <div
         ref={scrollerRef}
-        className="flex snap-x snap-mandatory overflow-x-auto -mx-4 px-4 gap-3 pb-2"
+        className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2"
         style={{ scrollbarWidth: "none" }}
       >
         {byGroup.map(([name, rows]) => {
@@ -79,14 +84,14 @@ export function MobileGroupDeck({
           return (
             <div
               key={name}
-              className="snap-center shrink-0 w-[88vw] max-w-[420px] rounded-2xl border border-gray-800 bg-gradient-to-br from-gray-900 to-black p-3 space-y-3"
+              className="w-[88vw] max-w-[420px] shrink-0 snap-center space-y-3 rounded-2xl border border-border bg-card p-3"
             >
               <div className="flex items-center justify-between">
-                <h3 className="text-sm font-black tracking-wide text-amber-400">{name}</h3>
-                <span className="text-[10px] text-gray-500">{rows.length} teams</span>
+                <h3 className="text-caption font-black tracking-wide text-primary">{name}</h3>
+                <span className="text-micro text-muted-foreground">{rows.length} teams</span>
               </div>
-              <div className="rounded-xl bg-gray-950/60 ring-1 ring-white/5 overflow-hidden">
-                <div className="grid grid-cols-[20px_1fr_28px_28px_28px_32px] gap-1 px-2 py-1.5 text-[9px] uppercase tracking-widest text-gray-500 border-b border-white/5">
+              <div className="overflow-hidden rounded-xl bg-muted/40 ring-1 ring-border">
+                <div className="grid grid-cols-[20px_1fr_28px_28px_28px_32px] gap-1 border-b border-border px-2 py-1.5 text-micro uppercase text-muted-foreground">
                   <span>#</span><span>Team</span><span className="text-center">P</span>
                   <span className="text-center">GD</span><span className="text-center">Pts</span><span></span>
                 </div>
@@ -95,19 +100,19 @@ export function MobileGroupDeck({
                   return (
                     <div
                       key={r.team}
-                      className="grid grid-cols-[20px_1fr_28px_28px_28px_32px] gap-1 px-2 py-2 items-center text-xs border-b border-white/5 last:border-0"
+                      className="grid grid-cols-[20px_1fr_28px_28px_28px_32px] items-center gap-1 border-b border-border px-2 py-2 text-caption last:border-0"
                     >
-                      <span className="text-gray-600 tabular-nums">{r.position ?? "–"}</span>
+                      <span className="tabular-nums text-muted-foreground">{r.position ?? "–"}</span>
                       <span className="flex items-center gap-1.5 truncate">
-                        <span className="text-base">{flagOf(r.team)}</span>
-                        <span className="text-white truncate">{r.team}</span>
+                        <span className="text-base" aria-hidden="true">{flagOf(r.team)}</span>
+                        <span className="truncate text-foreground">{r.team}</span>
                       </span>
-                      <span className="text-center text-gray-400 tabular-nums">{r.played ?? 0}</span>
-                      <span className="text-center text-gray-400 tabular-nums">
+                      <span className="text-center tabular-nums text-muted-foreground">{r.played ?? 0}</span>
+                      <span className="text-center tabular-nums text-muted-foreground">
                         {(r.goals_for ?? 0) - (r.goals_against ?? 0)}
                       </span>
-                      <span className="text-center font-bold text-white tabular-nums">{r.points ?? 0}</span>
-                      <span className={`block h-3 w-1 rounded-full justify-self-end conf-${conf}`} />
+                      <span className="text-center font-bold tabular-nums text-foreground">{r.points ?? 0}</span>
+                      <span className={`block h-3 w-1 justify-self-end rounded-full conf-${conf}`} aria-hidden="true" />
                     </div>
                   );
                 })}
@@ -115,7 +120,7 @@ export function MobileGroupDeck({
 
               {fixtures.length > 0 && (
                 <div className="space-y-2">
-                  <div className="text-[10px] uppercase tracking-widest text-gray-500">Fixtures</div>
+                  <div className="text-micro uppercase text-muted-foreground">Fixtures</div>
                   {fixtures.map((m) => (
                     <MobileMatchCard key={m.id} match={m} onClick={() => onPick(m)} />
                   ))}
@@ -125,7 +130,7 @@ export function MobileGroupDeck({
           );
         })}
       </div>
-      <div className="text-center text-[10px] text-gray-600 mt-1">← swipe to browse groups →</div>
+      <div className="mt-1 text-center text-micro text-muted-foreground">← swipe to browse groups →</div>
     </div>
   );
 }
