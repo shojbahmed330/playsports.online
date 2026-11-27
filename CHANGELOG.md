@@ -199,6 +199,11 @@
 - Fixed: shared retryable error, not-found and empty states; 44 px back/edition links with focus rings; reduced-motion spinner.
 - Kept: record categories, decade roll-ups, standings/Copa fallbacks and competition head.
 
+## FB-11 / FB-13 football records + seasons alias
+
+- Fixed: Euro/Copa records now use `playsports.online` canonicals (old `allsportslive.lovable.app` URLs removed); added site name/Twitter/breadcrumb JSON-LD; shared error/not-found states; focus-visible cards, hidden icons and reduced motion.
+- Verified: `/seasons/:year` alias returns 307 to canonical `/history/:year`.
+
 ## Foundation
 
 - Added overhaul documentation: `PROJECT_NOTES.md`, `HEALTH_BASELINE.md`, `SCREEN_INVENTORY.md`, `DESIGN_SYSTEM.md`, `PROGRESS.md`, `DECISIONS.md`, `BLOCKERS.md`, `SECURITY_FINDINGS.md`.
