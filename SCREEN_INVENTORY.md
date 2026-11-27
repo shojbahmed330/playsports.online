@@ -3,7 +3,7 @@
 Generated from the real router files in `src/routes` and cross-checked against `src/routeTree.gen.ts`.
 
 
-> **Execution status:** the foundation plus 52 route screens are DONE (Home, the full Cricket module, 7 football programmatic screens, 17 football competition pages and My Football). The remaining 98 route screens are marked BLOCKED for this session because the per-screen audit/implementation budget was exhausted; the reason is recorded in `BLOCKERS.md` and the recommended order is in `FINAL_REPORT.md`. This is a resource blocker, not a claim that the screen is broken.
+> **Execution status:** the foundation plus 53 route screens are DONE (Home, the full Cricket module, 7 football programmatic screens, 17 football competition pages, My Football and campaign detail). The remaining 97 route screens are marked BLOCKED for this session because the per-screen audit/implementation budget was exhausted; the reason is recorded in `BLOCKERS.md` and the recommended order is in `FINAL_REPORT.md`. This is a resource blocker, not a claim that the screen is broken.
 
 ## 1. Summary
 
@@ -256,7 +256,7 @@ Generated from the real router files in `src/routes` and cross-checked against `
 | FB-15 | Football | FB-05 | Football Comp Teams TeamId | Full page | `/football/:comp/teams/:teamId`<br>`src/routes/football.$comp.teams.$teamId.index.tsx` | Team profile; record/standing/venue; next fixture; cross-links | football/CompetitionPageShell, ui/state | espn.functions | loading, empty, error+retry, 404 | DONE |
 | FB-16 | Football | FB-05 | Football Comp Teams TeamId Season Year | Full page | `/football/:comp/teams/:teamId/season-:year`<br>`src/routes/football.$comp.teams.$teamId.season-{$year}.tsx` | Team season summary and match list | football/CompetitionPageShell, ui/state | espn.functions | loading, empty, error+retry, 404 | DONE |
 | FB-17 | Football | FB-05 | Football Comp Teams | Full page | `/football/:comp/teams`<br>`src/routes/football.$comp.teams.index.tsx` | Team/club directory; Euro nations special page | football/CompetitionPageShell, football/EuroTeamsPage, ui/state | espn.functions | empty, error+retry, 404 | DONE |
-| FB-18 | Football | FB-22 | Football Campaigns Slug | Full page | `/football/campaigns/:slug`<br>`src/routes/football.campaigns.$slug.tsx` | SSR loader; JSON-LD; head meta | ads/AdSlot, seo/RelatedLinks | server fn / query | error | BLOCKED |
+| FB-18 | Football | FB-22 | Football Campaign Detail | Full page | `/football/campaigns/:slug`<br>`src/routes/football.campaigns.$slug.tsx` | Campaign record; match results; top scorers; related | ads/AdSlot, seo/RelatedLinks, ui/state | static campaign data | empty, error+retry, 404 | DONE |
 | FB-19 | Football | FB-22 | Football Campaigns | Full page | `/football/campaigns`<br>`src/routes/football.campaigns.index.tsx` | Static campaign list; year + team filters | ui/state, seo/withHubLinks | static entities | empty | DONE |
 | FB-20 | Football | FB-22 | Football Countries Slug World Cup Year | Full page | `/football/countries/:slug/world-cup-:year`<br>`src/routes/football.countries.$slug.world-cup-{$year}.tsx` | SSR loader; JSON-LD; head meta | — | server fn / query | empty, error | BLOCKED |
 | FB-21 | Football | FB-22 | Football Countries | Full page | `/football/countries`<br>`src/routes/football.countries.index.tsx` | SSR nation directory ranked by matches; flags and stats | ui/state | programmatic entities | empty | DONE |

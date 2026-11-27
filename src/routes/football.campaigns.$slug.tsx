@@ -10,7 +10,19 @@ import { canonical } from "@/lib/seo/canonical";
 import { breadcrumbList, faqPage, articlePage, ldScript } from "@/lib/seo/jsonld";
 import { AdSlot } from "@/components/ads/AdSlot";
 import { RelatedLinks } from "@/components/seo/RelatedLinks";
+import { EmptyState, ErrorState } from "@/components/ui/state";
 import { relatedCampaigns } from "@/lib/seo/related";
+
+function formatDate(iso: string): string {
+  const d = new Date(`${iso}T00:00:00Z`);
+  if (Number.isNaN(d.getTime())) return iso;
+  return d.toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    timeZone: "UTC",
+  });
+}
 
 export const Route = createFileRoute("/football/campaigns/$slug")({
   loader: ({ params }) => {
@@ -36,6 +48,10 @@ export const Route = createFileRoute("/football/campaigns/$slug")({
         { property: "og:description", content: desc },
         { property: "og:url", content: canonical(path) },
         { property: "og:type", content: "article" },
+        { property: "og:site_name", content: "PlaySports" },
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: desc },
       ],
       links: [{ rel: "canonical", href: canonical(path) }],
       scripts: [
@@ -81,8 +97,23 @@ export const Route = createFileRoute("/football/campaigns/$slug")({
     };
   },
   component: CampaignPage,
-  errorComponent: ({ error }) => <div className="p-6">Error: {errorMessage(error)}</div>,
-  notFoundComponent: () => <div className="p-6">Campaign not found.</div>,
+  errorComponent: ({ error, reset }) => (
+    <div className="mx-auto max-w-3xl px-4 py-10">
+      <ErrorState
+        title="Could not load this campaign"
+        message={errorMessage(error)}
+        onRetry={reset}
+      />
+    </div>
+  ),
+  notFoundComponent: () => (
+    <div className="mx-auto max-w-3xl px-4 py-10">
+      <EmptyState
+        title="Campaign not found"
+        description="This World Cup campaign is not in the archive."
+      />
+    </div>
+  ),
 });
 
 function CampaignPage() {
@@ -93,15 +124,15 @@ function CampaignPage() {
 
   return (
     <div className="container mx-auto max-w-4xl px-4 py-6 pb-20">
-      <nav className="mb-3 text-xs text-muted-foreground">
+      <nav className="mb-3 text-xs text-muted-foreground" aria-label="Breadcrumb">
         <Link to="/" className="hover:underline">
           Home
         </Link>{" "}
-        /{" "}
+        <span aria-hidden="true">/</span>{" "}
         <Link to="/football" className="hover:underline">
           Football
         </Link>{" "}
-        /{" "}
+        <span aria-hidden="true">/</span>{" "}
         <Link to="/football/campaigns" className="hover:underline">
           Campaigns
         </Link>
@@ -125,51 +156,58 @@ function CampaignPage() {
 
       <section className="mb-8">
         <h2 className="mb-3 text-lg font-semibold">Match results</h2>
-        <div className="divide-y divide-border rounded-2xl border border-border bg-card/40">
-          {c.matches.map((m: CampaignSummary["matches"][number], i: number) => {
-            const isHome = m.home_team === c.team;
-            const my = isHome ? m.home_score : m.away_score;
-            const op = isHome ? m.away_score : m.home_score;
-            const opp = isHome ? m.away_team : m.home_team;
-            const result = my > op ? "W" : my < op ? "L" : "D";
-            const resultColor =
-              result === "W"
-                ? "bg-emerald-500/15 text-emerald-400"
-                : result === "L"
-                  ? "bg-red-500/15 text-red-400"
-                  : "bg-yellow-500/15 text-yellow-400";
-            return (
-              <div key={i} className="flex items-center justify-between gap-3 px-4 py-3 text-sm">
-                <div className="flex items-center gap-3">
-                  <span
-                    className={`grid size-6 place-items-center rounded-full text-[11px] font-bold ${resultColor}`}
-                  >
-                    {result}
-                  </span>
-                  <div>
-                    <div className="font-semibold">
-                      vs{" "}
-                      <Link
-                        to="/football/teams/$slug"
-                        params={{ slug: slugify(opp) }}
-                        className="hover:text-gold"
-                      >
-                        {opp}
-                      </Link>
-                    </div>
-                    <div className="text-xs text-muted-foreground">
-                      {m.round ?? "Group Stage"}
-                      {m.match_date ? ` · ${m.match_date}` : ""}
+        {c.matches.length === 0 ? (
+          <EmptyState
+            title="No match results recorded"
+            description="Match results for this campaign are not in the archive."
+          />
+        ) : (
+          <div className="divide-y divide-border rounded-2xl border border-border bg-card/40">
+            {c.matches.map((m: CampaignSummary["matches"][number], i: number) => {
+              const isHome = m.home_team === c.team;
+              const my = isHome ? m.home_score : m.away_score;
+              const op = isHome ? m.away_score : m.home_score;
+              const opp = isHome ? m.away_team : m.home_team;
+              const result = my > op ? "W" : my < op ? "L" : "D";
+              const resultColor =
+                result === "W"
+                  ? "bg-emerald-500/15 text-emerald-400"
+                  : result === "L"
+                    ? "bg-red-500/15 text-red-400"
+                    : "bg-yellow-500/15 text-yellow-400";
+              return (
+                <div key={i} className="flex items-center justify-between gap-3 px-4 py-3 text-sm">
+                  <div className="flex items-center gap-3">
+                    <span
+                      className={`grid size-6 place-items-center rounded-full text-[11px] font-bold ${resultColor}`}
+                    >
+                      {result}
+                    </span>
+                    <div>
+                      <div className="font-semibold">
+                        vs{" "}
+                        <Link
+                          to="/football/teams/$slug"
+                          params={{ slug: slugify(opp) }}
+                          className="inline-flex min-h-11 items-center hover:text-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                        >
+                          {opp}
+                        </Link>
+                      </div>
+                      <div className="text-xs text-muted-foreground">
+                        {m.round ?? "Group Stage"}
+                        {m.match_date ? ` · ${formatDate(m.match_date)}` : ""}
+                      </div>
                     </div>
                   </div>
+                  <div className="text-lg font-bold tabular-nums">
+                    {my}–{op}
+                  </div>
                 </div>
-                <div className="text-lg font-bold tabular-nums">
-                  {my}–{op}
-                </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        )}
       </section>
 
       {c.topScorers.length > 0 && (
@@ -183,7 +221,7 @@ function CampaignPage() {
                 <Link
                   to="/football/players/$slug"
                   params={{ slug: slugify(s.name) }}
-                  className="font-medium hover:text-gold"
+                  className="inline-flex min-h-11 items-center font-medium hover:text-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   {s.name}
                 </Link>
@@ -207,7 +245,7 @@ function CampaignPage() {
                 key={o.slug}
                 to="/football/campaigns/$slug"
                 params={{ slug: o.slug }}
-                className="rounded-full bg-muted px-3 py-1 text-xs hover:bg-accent"
+                className="inline-flex min-h-11 items-center rounded-full bg-muted px-3 text-xs hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 {o.year}
               </Link>
@@ -220,7 +258,7 @@ function CampaignPage() {
         <Link
           to="/football/top-scorers/$year"
           params={{ year: String(c.year) }}
-          className="text-sm text-gold hover:underline"
+          className="inline-flex min-h-11 items-center text-sm text-gold hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           → See the full {c.year} World Cup top scorers →
         </Link>

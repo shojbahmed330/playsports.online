@@ -271,6 +271,11 @@
 - Fixed: feed errors retryable; shared empty/error states and removed the local component; page header no longer sticky under the shared nav; hidden icons, reduced-motion spinner/cards, 44 px controls, focus rings; removed `any` search updater.
 - Kept: starred-team live/upcoming/recent feed and reminders.
 
+## FB-18 football campaign detail
+
+- Fixed: shared error/not-found/empty states; empty match-results state; labelled breadcrumb; hidden separators; 44 px links/focus rings; human-readable dates; OG site name/Twitter meta.
+- Kept: campaign stats, match results, top scorers and related links.
+
 ## Foundation
 
 - Added overhaul documentation: `PROJECT_NOTES.md`, `HEALTH_BASELINE.md`, `SCREEN_INVENTORY.md`, `DESIGN_SYSTEM.md`, `PROGRESS.md`, `DECISIONS.md`, `BLOCKERS.md`, `SECURITY_FINDINGS.md`.
