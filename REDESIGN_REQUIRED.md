@@ -141,12 +141,20 @@ Redesigning 22 pages without primitives will produce 22 new dialects. Build firs
 
 ## 7. Execution order
 
-1. **Foundation** — type scale, spacing, colour roles, primitives (§6).
-2. **Wave 1: cross-sport** — HOME-01 → FB-22 → PLYR-02 → FB-30 → MINE-01.
-3. **Wave 2: cricket** — CRK-04 → CRK-19 → CRK-05 → CRK-11 → CRK-08 → CRK-21 → CRK-16 → CRK-03 → CRK-15 → CRK-20 → CRK-10 → CRK-06 → CRK-09 → CRK-18 → CRK-07 → CRK-24 → CRK-12.
-4. **Wave 3: templates** — Tier B, one template per PR, all routes inherit.
-5. **Wave 4: PREM-01** — only after the pricing decision.
-6. **QA pass** — contrast, 44 px targets, focus order, reduced motion, CLS, screenshots.
+Status: **Wave 0 done · HOME-01 done** · next is FB-22.
+
+- [x] **Foundation** — type scale, colour roles, primitives (`Card`, `StatTile`, `ScoreRow`, `TableShell`, `Hero`), token guard test.
+- [x] **HOME-01** — hero, ForYou (logic fix: only `recent` rendered before), Pulse, SportCard/LeagueCard/FifaCard, SportChipTabs, StatusBar, LiveTicker, TodayInZoneStrip, HallOfChampions, ShowMore. Guarded token-only; 390 px QA has no horizontal overflow.
+- [ ] **FB-22** football hub (1083 lines)
+- [ ] **PLYR-02** players hub (930 lines)
+- [ ] **FB-30** football team
+- [ ] **MINE-01** my feed
+- [ ] **Wave 2: cricket** — CRK-04 → CRK-19 → CRK-05 → CRK-11 → CRK-08 → CRK-21 → CRK-16 → CRK-03 → CRK-15 → CRK-20 → CRK-10 → CRK-06 → CRK-09 → CRK-18 → CRK-07 → CRK-24 → CRK-12.
+- [ ] **Wave 3: templates** — Tier B, one template per PR, all routes inherit.
+- [ ] **Wave 4: PREM-01** — only after the pricing decision.
+- [ ] **QA pass** — contrast, 44 px targets, focus order, reduced motion, CLS, screenshots.
+
+Known dead code: `src/components/home/HeroSpotlight.tsx` (364 lines, 52 palette hits) is not imported anywhere. Left in place; remove in a dedicated cleanup once the owner confirms.
 
 Estimated output: 22 route files + ~10 primitives. Target per route file: **≤ 300 lines** (extract components), **0 hardcoded palette utilities**, **1 header pattern**, **1 card pattern**.
 

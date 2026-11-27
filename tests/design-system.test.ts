@@ -54,6 +54,9 @@ describe("design system foundation", () => {
       "src/components/home/LeagueCard.tsx",
       "src/components/home/SportChipTabs.tsx",
       "src/components/home/StatusBar.tsx",
+      "src/components/home/TodayInZoneStrip.tsx",
+      "src/components/home/HallOfChampionsStrip.tsx",
+      "src/components/home/ShowMore.tsx",
       "src/components/sports/LiveTicker.tsx",
       "src/lib/sports-config.ts",
     ]) {

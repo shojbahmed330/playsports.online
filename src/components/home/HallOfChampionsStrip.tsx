@@ -1,15 +1,20 @@
+import { Link } from "@tanstack/react-router";
 import { Trophy } from "lucide-react";
 import { CHAMPIONS_OVERRIDE, type ChampionRecord } from "@/lib/champions";
+import { SectionHeader } from "@/components/ui/state";
 
-const SPORT_META: Record<ChampionRecord["sport"], { label: string; accent: string; href?: string }> = {
-  football_wc: { label: "FIFA World Cup", accent: "from-amber-500/20 to-amber-500/0", href: "/football" },
-  ipl: { label: "IPL", accent: "from-yellow-400/20 to-yellow-400/0", href: "/cricket/ipl" },
-  icc_wc: { label: "ICC ODI World Cup", accent: "from-sky-500/20 to-sky-500/0", href: "/cricket" },
-  t20_wc: { label: "T20 World Cup", accent: "from-emerald-500/20 to-emerald-500/0", href: "/cricket" },
-  mlb: { label: "MLB", accent: "from-red-500/20 to-red-500/0", href: "/mlb" },
-  nba: { label: "NBA", accent: "from-orange-500/20 to-orange-500/0", href: "/nba" },
-  nhl: { label: "NHL", accent: "from-blue-500/20 to-blue-500/0", href: "/nhl" },
-  mls: { label: "MLS", accent: "from-lime-500/20 to-lime-500/0", href: "/mls" },
+const SPORT_META: Record<
+  ChampionRecord["sport"],
+  { label: string; accentVar: string; href?: string }
+> = {
+  football_wc: { label: "FIFA World Cup", accentVar: "--color-accent-football", href: "/football" },
+  ipl: { label: "IPL", accentVar: "--color-accent-cricket", href: "/cricket/ipl" },
+  icc_wc: { label: "ICC ODI World Cup", accentVar: "--color-accent-cricket", href: "/cricket" },
+  t20_wc: { label: "T20 World Cup", accentVar: "--color-accent-cricket", href: "/cricket" },
+  mlb: { label: "MLB", accentVar: "--color-accent-mlb", href: "/mlb" },
+  nba: { label: "NBA", accentVar: "--color-accent-nba", href: "/nba" },
+  nhl: { label: "NHL", accentVar: "--color-accent-nhl", href: "/nhl" },
+  mls: { label: "MLS", accentVar: "--color-accent-mls", href: "/mls" },
 };
 
 /**
@@ -29,50 +34,53 @@ export function HallOfChampionsStrip() {
   if (!rows.length) return null;
 
   return (
-    <section className="space-y-3 animate-fade-in">
-      <div className="flex items-end justify-between">
-        <div>
-          <h2 className="text-xs uppercase tracking-[0.2em] text-muted-foreground font-bold">
-            Reigning champions
-          </h2>
-          <p className="text-lg sm:text-xl font-extrabold mt-1">Hall of titleholders</p>
-        </div>
-      </div>
+    <section className="animate-fade-in space-y-4 motion-reduce:animate-none">
+      <SectionHeader kicker="Reigning champions" title="Hall of titleholders" className="mb-0" />
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
         {rows.map((c) => {
           const meta = SPORT_META[c.sport];
-          const Inner = (
-            <div
-              className={`relative overflow-hidden rounded-2xl border border-border bg-gradient-to-br ${meta.accent} bg-card p-4 h-full transition-all hover:border-amber-500/50 hover:scale-[1.02]`}
-            >
+          const inner = (
+            <div className="relative h-full overflow-hidden rounded-2xl border border-border bg-card p-4 transition-all hover:border-primary/50 hover:scale-[1.02]">
+              <span
+                className="absolute inset-x-0 top-0 h-1"
+                style={{ background: `var(${meta.accentVar})` }}
+                aria-hidden="true"
+              />
               <div className="flex items-center justify-between gap-2">
-                <span className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground">
-                  {meta.label}
-                </span>
-                <span className="text-[10px] tabular-nums font-bold text-amber-300/80">{c.season}</span>
+                <span className="text-micro uppercase text-muted-foreground">{meta.label}</span>
+                <span className="text-micro font-bold tabular-nums text-primary">{c.season}</span>
               </div>
               <div className="mt-3 flex items-center gap-2">
-                <span className="text-3xl leading-none" aria-hidden>{c.emoji ?? "🏆"}</span>
+                <span className="text-3xl leading-none" aria-hidden="true">
+                  {c.emoji ?? "🏆"}
+                </span>
                 <div className="min-w-0">
-                  <div className="font-extrabold truncate">{c.champion}</div>
+                  <div className="truncate font-extrabold text-foreground">{c.champion}</div>
                   {c.runnerUp && (
-                    <div className="text-[11px] text-muted-foreground truncate">
+                    <div className="truncate text-caption text-muted-foreground">
                       def. {c.runnerUp}
                     </div>
                   )}
                 </div>
               </div>
-              <Trophy className="absolute -bottom-3 -right-2 size-16 text-amber-500/10" aria-hidden />
+              <Trophy
+                className="absolute -bottom-3 -right-2 size-16 text-primary/10"
+                aria-hidden="true"
+              />
             </div>
           );
 
           return meta.href ? (
-            <a key={`${c.sport}-${c.season}`} href={meta.href} className="block">
-              {Inner}
-            </a>
+            <Link
+              key={`${c.sport}-${c.season}`}
+              to={meta.href as "/football"}
+              className="block rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              {inner}
+            </Link>
           ) : (
-            <div key={`${c.sport}-${c.season}`}>{Inner}</div>
+            <div key={`${c.sport}-${c.season}`}>{inner}</div>
           );
         })}
       </div>

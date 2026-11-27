@@ -1,8 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 
-export type LeagueAccent = "pl" | "ucl";
-
 export function LeagueCard({
   slug,
   name,
@@ -14,7 +12,7 @@ export function LeagueCard({
   name: string;
   emoji: string;
   season: string;
-  accent: LeagueAccent;
+  accent: "pl" | "ucl";
 }) {
   return (
     <Link
