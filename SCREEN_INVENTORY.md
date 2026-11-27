@@ -3,7 +3,7 @@
 Generated from the real router files in `src/routes` and cross-checked against `src/routeTree.gen.ts`.
 
 
-> **Execution status:** the foundation plus 57 route screens are DONE (Home, the full Cricket module, 7 football programmatic screens, 17 football competition pages, My Football, campaign/country/match detail, records and player profiles). The remaining 93 route screens are marked BLOCKED for this session because the per-screen audit/implementation budget was exhausted; the reason is recorded in `BLOCKERS.md` and the recommended order is in `FINAL_REPORT.md`. This is a resource blocker, not a claim that the screen is broken.
+> **Execution status:** the foundation plus 58 route screens are DONE (Home, the full Cricket module, 7 football programmatic screens, 17 football competition pages, My Football, the football hub, campaign/country/match detail, records and player profiles). The remaining 92 route screens are marked BLOCKED for this session because the per-screen audit/implementation budget was exhausted; the reason is recorded in `BLOCKERS.md` and the recommended order is in `FINAL_REPORT.md`. This is a resource blocker, not a claim that the screen is broken.
 
 ## 1. Summary
 
@@ -260,7 +260,7 @@ Generated from the real router files in `src/routes` and cross-checked against `
 | FB-19 | Football | FB-22 | Football Campaigns | Full page | `/football/campaigns`<br>`src/routes/football.campaigns.index.tsx` | Static campaign list; year + team filters | ui/state, seo/withHubLinks | static entities | empty | DONE |
 | FB-20 | Football | FB-22 | Football Country World Cup Year | Full page | `/football/countries/:slug/world-cup-:year`<br>`src/routes/football.countries.$slug.world-cup-{$year}.tsx` | Nation-year campaign; results; scorers | ui/state | static programmatic data | empty, error+retry, 404 | DONE |
 | FB-21 | Football | FB-22 | Football Countries | Full page | `/football/countries`<br>`src/routes/football.countries.index.tsx` | SSR nation directory ranked by matches; flags and stats | ui/state | programmatic entities | empty | DONE |
-| FB-22 | Football | — | Football | Full page | `/football`<br>`src/routes/football.index.tsx` | SSR loader; client query; JSON-LD; head meta | sports/SportNav, wc/TournamentInfoCard, wc/GroupStage, wc/MatchCard | wc2026.functions | loading, empty, error | BLOCKED |
+| FB-22 | Football | - | Football Hub | Full page | `/football`<br>`src/routes/football.index.tsx` | Live/2026 views, archive groups and knockout bracket, modals | sports/SportNav, wc/TournamentInfoCard, wc/GroupStage, wc/MatchCard, ui/state | wc2026.functions + Supabase WC archive | loading, empty, error+retry | DONE |
 | FB-23 | Football | FB-22 | Football Match Id | Full page | `/football/match/:id`<br>`src/routes/football.match.$id.tsx` | SSR loader; client query; JSON-LD; head meta | wc/LiveMatchCenter, wc/WatchLivePanel, seo/MatchFaqBlock, affiliates/AffiliateStrip | wc2026.functions | loading, empty, error | BLOCKED |
 | FB-24 | Football | FB-22 | Football Match Recap Slug | Full page | `/football/matches/:slug`<br>`src/routes/football.matches.$slug.tsx` | Match score; highlights; recap; FAQs; related matches | ads/AdSlot, news/MatchRecapCard, ui/state | static match data + recap | error+retry, 404 | DONE |
 | FB-25 | Football | FB-22 | Football Mine | Full page | `/football/mine`<br>`src/routes/football.mine.tsx` | Starred-team live/upcoming/recent feed; reminders | ui/state | wc2026.functions + local storage | loading, empty, error+retry | DONE |

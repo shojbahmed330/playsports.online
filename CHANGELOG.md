@@ -296,6 +296,11 @@
 - Fixed: shared error/not-found/empty states; removed permanent live pulse and redundant “Live” badge; removed stale “currently active” copy; breadcrumb separators hidden; sr-only card labels; 44 px team/related links and focus rings; OG site name/Twitter meta.
 - Kept: hero stat strip, tournament breakdown, about copy, FAQs and related links.
 
+## FB-22 football hub
+
+- Fixed: archive query error state with retry; route error boundary; shared empty states; loading announced; favourites/tab/collapse accessible names and states; non-interactive click wrappers removed; route-owned `gray-*` replaced with tokens; unused imports removed; OG site name.
+- Kept: 2026 live/group/knockout/scorers views, archive groups and symmetric bracket, match modal, coachmark and favourites picker.
+
 ## Foundation
 
 - Added overhaul documentation: `PROJECT_NOTES.md`, `HEALTH_BASELINE.md`, `SCREEN_INVENTORY.md`, `DESIGN_SYSTEM.md`, `PROGRESS.md`, `DECISIONS.md`, `BLOCKERS.md`, `SECURITY_FINDINGS.md`.

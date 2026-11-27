@@ -31,7 +31,7 @@ import { FootballCoachmark, ReplayTourButton } from "@/components/football/Footb
 import { BackToTopFab } from "@/components/football/BackToTopFab";
 import { CurrentLeaguesStrip } from "@/components/football/CurrentLeaguesStrip";
 import { useWc2026Pulse } from "@/lib/use-wc2026-pulse";
-import { applyFilter, uniqueTeams, useMyTeams, type FootballFilter } from "@/lib/football-filters";
+import { type FootballFilter } from "@/lib/football-filters";
 import { Breadcrumbs } from "@/components/nav/Breadcrumbs";
 import {
   breadcrumbList,
@@ -42,6 +42,8 @@ import {
 } from "@/lib/seo/jsonld";
 import { getWc2026Fixtures, getWc2026Standings } from "@/lib/wc2026.functions";
 import { findClassicWcVideoUrl } from "@/lib/wc-video-seed";
+import { EmptyState, ErrorState } from "@/components/ui/state";
+import { errorMessage } from "@/lib/error-message";
 
 const GROUP_MATCHES_BY_YEAR = groupMatchesData as Record<string, WCMatch[]>;
 
@@ -92,6 +94,7 @@ export const Route = createFileRoute("/football/")({
         { property: "og:description", content: description },
         { property: "og:url", content: "https://www.playsports.online/football" },
         { property: "og:image", content: "https://www.playsports.online/og-default.png" },
+        { property: "og:site_name", content: "PlaySports" },
         { name: "twitter:card", content: "summary_large_image" },
         { name: "twitter:title", content: title },
         { name: "twitter:description", content: description },
@@ -152,6 +155,15 @@ export const Route = createFileRoute("/football/")({
     return null;
   },
   component: Index,
+  errorComponent: ({ error, reset }) => (
+    <div className="mx-auto max-w-3xl px-4 py-10">
+      <ErrorState
+        title="Could not load the football hub"
+        message={errorMessage(error)}
+        onRetry={reset}
+      />
+    </div>
+  ),
 });
 
 function classifyRound(round: string): RoundKey | "group" | null {
@@ -424,6 +436,12 @@ function Index() {
   }, [grouped]);
 
   const loading = tournament.isLoading || matches.isLoading || groups.isLoading;
+  const queryError = tournament.error ?? matches.error ?? groups.error;
+  const retryQueries = () => {
+    void tournament.refetch();
+    void matches.refetch();
+    void groups.refetch();
+  };
 
   const teamCount = useMemo(() => {
     const s = new Set<string>();
@@ -594,15 +612,29 @@ function Index() {
           </>
         ) : loading ? (
           <BracketSkeleton year={year} />
+        ) : queryError ? (
+          <ErrorState
+            title={`Could not load the ${year} World Cup`}
+            message={errorMessage(queryError)}
+            onRetry={retryQueries}
+          />
         ) : !tournament.data && allMatches.length === 0 ? (
-          <EmptyState year={year} />
+          <EmptyState
+            icon={
+              <span className="text-4xl" aria-hidden="true">
+                ⚽
+              </span>
+            }
+            title={`Tournament data coming soon for ${year}`}
+            description="We're still digitizing this edition of the archive."
+          />
         ) : (
           <>
             {tournament.data && <TournamentInfoCard t={tournament.data} />}
 
             {/* Info banner */}
             <div className="flex justify-center">
-              <div className="bg-gray-800/50 rounded-full px-4 py-1 text-xs text-gray-400">
+              <div className="rounded-full bg-muted px-4 py-1 text-xs text-muted-foreground">
                 {year} World Cup
                 {teamCount ? ` • ${teamCount} teams` : ""}
                 {tournament.data?.host_country ? ` • ${tournament.data.host_country}` : ""}
@@ -611,7 +643,7 @@ function Index() {
 
             {/* TABS */}
             <div className="flex justify-center">
-              <div className="bg-gray-900 rounded-2xl p-1 inline-flex gap-1 border border-gray-800">
+              <div className="inline-flex gap-1 rounded-2xl border border-border bg-card p-1">
                 <TabBtn
                   active={tab === "groups"}
                   onClick={() => setTabUser("groups")}
@@ -644,9 +676,10 @@ function Index() {
             ) : (
               <section key="knockout" className="wc-tab-content">
                 {knockoutRounds.length === 0 ? (
-                  <div className="rounded-2xl border border-dashed border-gray-800 p-12 text-center text-sm text-gray-500 bg-gray-900/40">
-                    Knockout bracket data coming soon for {year}.
-                  </div>
+                  <EmptyState
+                    title={`Knockout bracket coming soon for ${year}`}
+                    description="Knockout fixtures for this edition are not in the archive yet."
+                  />
                 ) : (
                   <>
                     {/* Desktop symmetric bracket — full viewport, no horizontal scroll */}
@@ -693,7 +726,8 @@ function FavoritesChip({ onOpen }: { onOpen: () => void }) {
     <button
       type="button"
       onClick={onOpen}
-      className="inline-flex items-center gap-1.5 rounded-xl border border-amber-500/40 bg-amber-500/10 hover:bg-amber-500/20 px-3 py-2 text-sm font-bold text-amber-200 transition"
+      aria-label="Choose favourite teams"
+      className="inline-flex min-h-11 items-center gap-1.5 rounded-xl border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-sm font-bold text-amber-200 transition hover:bg-amber-500/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
     >
       <Star className="size-4 fill-amber-300 text-amber-300" />
       <span className="hidden sm:inline">Favorites</span>
@@ -714,12 +748,14 @@ function TabBtn({
 }) {
   return (
     <button
+      type="button"
       onClick={onClick}
-      className={`px-6 py-2.5 rounded-xl text-sm transition-all duration-200 inline-flex items-center gap-2
+      aria-pressed={active}
+      className={`inline-flex min-h-11 items-center gap-2 rounded-xl px-6 py-2.5 text-sm transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring
         ${
           active
             ? "bg-gradient-to-r from-amber-500 to-amber-600 text-black font-bold shadow-md shadow-amber-500/20"
-            : "text-gray-400 hover:text-gray-200"
+            : "text-muted-foreground hover:text-foreground"
         }`}
     >
       {icon}
@@ -765,21 +801,19 @@ function BracketColumn({
 
       <div className="flex-1 flex flex-col justify-around gap-3">
         {matches.map((m, i) => (
-          <div
-            key={m.id}
-            onClick={() => {
-              if (showHint) onDismissHint?.();
-            }}
-          >
+          <div key={m.id}>
             <MatchCard
               match={m}
               round={round}
               isFinal={isFinal}
               index={i}
-              onClick={() => onPick(m)}
+              onClick={() => {
+                if (showHint) onDismissHint?.();
+                onPick(m);
+              }}
             />
             {showHint && i === 0 && (
-              <div className="text-[10px] text-gray-600 italic mt-1 text-center">
+              <div className="text-[10px] text-muted-foreground italic mt-1 text-center">
                 tap any match for details
               </div>
             )}
@@ -789,7 +823,7 @@ function BracketColumn({
 
       {extra.length > 0 && (
         <div className="mt-6">
-          <div className="text-[10px] uppercase tracking-[0.18em] text-gray-500 mb-2 text-center">
+          <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground mb-2 text-center">
             3rd Place Play-off
           </div>
           {extra.map((m, i) => (
@@ -820,11 +854,15 @@ function MobileRound({
 }) {
   const [open, setOpen] = useState(defaultOpen);
   const meta = ROUND_HEADER[round];
+  const panelId = `mobile-round-${round}`;
   return (
-    <div className="rounded-2xl border border-gray-800 bg-gray-900/60 overflow-hidden">
+    <div className="rounded-2xl border border-border bg-card overflow-hidden">
       <button
+        type="button"
         onClick={() => setOpen((o) => !o)}
-        className="w-full px-4 py-3 flex items-center justify-between"
+        aria-expanded={open}
+        aria-controls={panelId}
+        className="w-full px-4 py-3 flex items-center justify-between focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       >
         <span
           className={`bg-gradient-to-r ${meta.grad} text-white font-bold text-[11px] uppercase tracking-widest rounded-full px-3 py-1`}
@@ -832,11 +870,12 @@ function MobileRound({
           {meta.label}
         </span>
         <ChevronDown
-          className={`size-4 text-gray-400 transition-transform ${open ? "rotate-180" : ""}`}
+          aria-hidden="true"
+          className={`size-4 text-muted-foreground transition-transform ${open ? "rotate-180" : ""}`}
         />
       </button>
       {open && (
-        <div className="px-4 pb-4 space-y-3 wc-tab-content">
+        <div id={panelId} className="px-4 pb-4 space-y-3 wc-tab-content">
           {matches.map((m, i) => (
             <MatchCard
               key={m.id}
@@ -853,32 +892,25 @@ function MobileRound({
   );
 }
 
-function EmptyState({ year }: { year: number }) {
-  return (
-    <div className="rounded-2xl border border-dashed border-border p-12 text-center bg-card/40">
-      <div className="text-6xl mb-3">⚽</div>
-      <div className="text-lg font-semibold">Tournament data coming soon for {year}</div>
-      <div className="text-sm text-muted-foreground mt-1">
-        We're still digitizing this edition of the archive.
-      </div>
-    </div>
-  );
-}
-
 function BracketSkeleton({ year }: { year: number }) {
   return (
-    <div className="relative">
+    <div
+      className="relative"
+      role="status"
+      aria-live="polite"
+      aria-label={`Loading ${year} tournament`}
+    >
       <div className="flex justify-center mb-6">
-        <div className="h-9 w-40 rounded-2xl bg-gray-900/80 animate-pulse" />
+        <div className="h-9 w-40 rounded-2xl bg-muted/60 animate-pulse" />
       </div>
       <div className="flex items-stretch justify-center gap-3" style={{ minHeight: 540 }}>
         {[8, 4, 2, 1, 2, 4, 8].map((n, ci) => (
           <div key={ci} className="flex-1 max-w-[200px] flex flex-col gap-3 justify-around">
-            <div className="h-5 w-24 mx-auto rounded-full bg-gray-900/80 animate-pulse mb-2" />
+            <div className="h-5 w-24 mx-auto rounded-full bg-muted/60 animate-pulse mb-2" />
             {Array.from({ length: n }).map((_, i) => (
               <div
                 key={i}
-                className="h-16 rounded-xl bg-gray-900/70 border border-gray-800 animate-pulse"
+                className="h-16 rounded-xl bg-muted/40 border border-border animate-pulse"
                 style={{ animationDelay: `${ci * 80 + i * 40}ms` }}
               />
             ))}
@@ -887,7 +919,7 @@ function BracketSkeleton({ year }: { year: number }) {
       </div>
       <div className="absolute inset-0 grid place-items-center pointer-events-none">
         <div className="flex flex-col items-center gap-2 bg-black/30 backdrop-blur-sm rounded-2xl px-6 py-4">
-          <Loader2 className="size-7 text-gold animate-spin" />
+          <Loader2 aria-hidden="true" className="size-7 text-gold animate-spin" />
           <div className="text-xs text-muted-foreground">Loading {year} tournament…</div>
         </div>
       </div>
@@ -930,17 +962,18 @@ function BracketSideColumn({
       <RoundLabel round={round} />
       <div className="flex-1 flex flex-col justify-around gap-4">
         {matches.map((m, i) => (
-          <div
-            key={m.id}
-            className="wc-connect"
-            data-side={side}
-            onClick={() => {
-              if (showHint) onDismissHint?.();
-            }}
-          >
-            <MatchCard match={m} round={round} index={i} onClick={() => onPick(m)} />
+          <div key={m.id} className="wc-connect" data-side={side}>
+            <MatchCard
+              match={m}
+              round={round}
+              index={i}
+              onClick={() => {
+                if (showHint) onDismissHint?.();
+                onPick(m);
+              }}
+            />
             {showHint && i === 0 && (
-              <div className="text-[10px] text-gray-600 italic mt-1 text-center">
+              <div className="text-[10px] text-muted-foreground italic mt-1 text-center">
                 tap any match for details
               </div>
             )}
@@ -1018,7 +1051,7 @@ function SymmetricBracket({
           </div>
           {third.length > 0 && (
             <div className="w-full">
-              <div className="text-[10px] uppercase tracking-[0.18em] text-gray-500 mb-2 text-center">
+              <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground mb-2 text-center">
                 3rd Place Play-off
               </div>
               {third.map((m, i) => (
