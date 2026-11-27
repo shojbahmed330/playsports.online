@@ -204,6 +204,11 @@
 - Fixed: Euro/Copa records now use `playsports.online` canonicals (old `allsportslive.lovable.app` URLs removed); added site name/Twitter/breadcrumb JSON-LD; shared error/not-found states; focus-visible cards, hidden icons and reduced motion.
 - Verified: `/seasons/:year` alias returns 307 to canonical `/history/:year`.
 
+## FB-17 football competition teams
+
+- Fixed: Euro teams canonical now `playsports.online`; shared retryable error/empty states; hidden reduced-motion spinner; focus-visible/reduced-motion cards; breadcrumb JSON-LD and site/Twitter meta.
+- Kept: club/nation directory and Euro teams page.
+
 ## Foundation
 
 - Added overhaul documentation: `PROJECT_NOTES.md`, `HEALTH_BASELINE.md`, `SCREEN_INVENTORY.md`, `DESIGN_SYSTEM.md`, `PROGRESS.md`, `DECISIONS.md`, `BLOCKERS.md`, `SECURITY_FINDINGS.md`.
