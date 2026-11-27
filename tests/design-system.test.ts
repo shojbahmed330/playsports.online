@@ -44,6 +44,16 @@ describe("design system foundation", () => {
     }
   });
 
+  it("keeps redesigned screens token-only", () => {
+    for (const path of [
+      "src/routes/index.tsx",
+      "src/components/home/CompactHero.tsx",
+      "src/lib/sports-config.ts",
+    ]) {
+      expect(PALETTE.test(read(path)), `${path} hardcodes palette colours`).toBe(false);
+    }
+  });
+
   it("keeps interactive primitive targets at 44px", () => {
     const src = read("src/components/ui/primitives.tsx");
     // Any anchor/button rendered by a primitive must carry a 44px minimum.

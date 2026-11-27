@@ -10,12 +10,14 @@ export type SportConfig = {
   emoji: string;            // ⚾
   path: string;             // "baseball/mlb"
   tagline: string;          // "America's pastime"
-  accent: string;           // tailwind text color class
-  bgGrad: string;           // hero gradient
-  ring: string;             // ring color
-  chipBg: string;           // chip background
+  accent: string;           // semantic text colour (sport accent token)
+  bgGrad: string;           // hero gradient (sport accent token → background)
+  ring: string;             // ring colour (sport accent token)
+  chipBg: string;           // chip background (sport accent token)
 };
 
+// Sport colours are design tokens (`--color-accent-*` in styles.css), never
+// raw Tailwind palette classes, so a theme change moves every sport at once.
 export const SPORTS: Record<SportSlug, SportConfig> = {
   mlb: {
     slug: "mlb",
@@ -24,10 +26,11 @@ export const SPORTS: Record<SportSlug, SportConfig> = {
     emoji: "⚾",
     path: "baseball/mlb",
     tagline: "America's National Pastime",
-    accent: "text-sky-400",
-    bgGrad: "from-sky-900/40 via-slate-900 to-red-900/20",
-    ring: "ring-sky-500/30",
-    chipBg: "bg-sky-500/15",
+    accent: "text-[var(--color-accent-mlb)]",
+    bgGrad:
+      "from-[var(--color-accent-mlb)]/25 via-background to-background",
+    ring: "ring-[var(--color-accent-mlb)]/30",
+    chipBg: "bg-[var(--color-accent-mlb)]/15",
   },
   nba: {
     slug: "nba",
@@ -36,10 +39,11 @@ export const SPORTS: Record<SportSlug, SportConfig> = {
     emoji: "🏀",
     path: "basketball/nba",
     tagline: "Where amazing happens",
-    accent: "text-orange-400",
-    bgGrad: "from-orange-900/40 via-slate-900 to-amber-900/20",
-    ring: "ring-orange-500/30",
-    chipBg: "bg-orange-500/15",
+    accent: "text-[var(--color-accent-nba)]",
+    bgGrad:
+      "from-[var(--color-accent-nba)]/25 via-background to-background",
+    ring: "ring-[var(--color-accent-nba)]/30",
+    chipBg: "bg-[var(--color-accent-nba)]/15",
   },
   nhl: {
     slug: "nhl",
@@ -48,10 +52,11 @@ export const SPORTS: Record<SportSlug, SportConfig> = {
     emoji: "🏒",
     path: "hockey/nhl",
     tagline: "Fastest game on ice",
-    accent: "text-cyan-300",
-    bgGrad: "from-cyan-900/40 via-slate-900 to-blue-950/30",
-    ring: "ring-cyan-500/30",
-    chipBg: "bg-cyan-500/15",
+    accent: "text-[var(--color-accent-nhl)]",
+    bgGrad:
+      "from-[var(--color-accent-nhl)]/25 via-background to-background",
+    ring: "ring-[var(--color-accent-nhl)]/30",
+    chipBg: "bg-[var(--color-accent-nhl)]/15",
   },
   mls: {
     slug: "mls",
@@ -60,10 +65,11 @@ export const SPORTS: Record<SportSlug, SportConfig> = {
     emoji: "⚽",
     path: "soccer/usa.1",
     tagline: "Soccer's home in North America",
-    accent: "text-emerald-400",
-    bgGrad: "from-emerald-900/40 via-slate-900 to-red-900/20",
-    ring: "ring-emerald-500/30",
-    chipBg: "bg-emerald-500/15",
+    accent: "text-[var(--color-accent-mls)]",
+    bgGrad:
+      "from-[var(--color-accent-mls)]/25 via-background to-background",
+    ring: "ring-[var(--color-accent-mls)]/30",
+    chipBg: "bg-[var(--color-accent-mls)]/15",
   },
 };
 
