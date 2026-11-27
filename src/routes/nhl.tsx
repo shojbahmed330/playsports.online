@@ -3,6 +3,7 @@ import { SportNav } from "@/components/sports/SportNav";
 import { NhlHero } from "@/components/nhl/NhlHero";
 import { NhlSubNav } from "@/components/nhl/NhlSubNav";
 import { Breadcrumbs } from "@/components/nav/Breadcrumbs";
+import { canonical } from "@/lib/seo/canonical";
 
 export const Route = createFileRoute("/nhl")({
   head: () => ({
@@ -19,7 +20,17 @@ export const Route = createFileRoute("/nhl")({
         content:
           "Everything NHL — live games, standings, teams, leaders, player stats, championships.",
       },
+      { property: "og:url", content: canonical("/nhl") },
+      { property: "og:type", content: "website" },
+      { property: "og:site_name", content: "PlaySports" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "NHL Hub — Live Scores, Standings, Players, History" },
+      {
+        name: "twitter:description",
+        content: "Everything NHL — live games, standings, teams, leaders and championships.",
+      },
     ],
+    links: [{ rel: "canonical", href: canonical("/nhl") }],
   }),
   component: NhlLayout,
 });

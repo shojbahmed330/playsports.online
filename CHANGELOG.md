@@ -360,6 +360,11 @@
 - Fixed: layout canonical/OG/Twitter; scoreboard, standings, leaders and news query errors with retry; shared empty states; 44 px filters/search/tabs/links; `aria-pressed` toggles; hidden icons/pulse dots; table captions/`scope`; `noindex` for missing players/teams/games/editions; token surfaces across hub, scores, teams, player and history pages.
 - Kept: all NBA hubs, standings, leaders, news, game centre, player/team profiles and Finals history.
 
+## NHL module
+
+- Fixed: layout canonical/OG/Twitter; scoreboard, standings, leaders and news query errors with retry; shared empty states; 44 px filters/tabs/links; `aria-pressed` toggles; hidden icons/pulse dots; table captions/`scope`; `noindex` for missing players/teams/games/editions; token surfaces across hub, scores, teams, player and history pages.
+- Kept: all NHL hubs, standings, leaders, news, game centre, player/team profiles and Stanley Cup history.
+
 ## Foundation
 
 - Added overhaul documentation: `PROJECT_NOTES.md`, `HEALTH_BASELINE.md`, `SCREEN_INVENTORY.md`, `DESIGN_SYSTEM.md`, `PROGRESS.md`, `DECISIONS.md`, `BLOCKERS.md`, `SECURITY_FINDINGS.md`.

@@ -3,10 +3,10 @@
 Updated: 2026-11-27 (session 1 closed with a logged resource blocker)
 
 - Branch: `professional-overhaul` (never pushed)
-- Current phase: **session 2 — NBA module complete**
-- Current screen: NHL-01 NHL champions
-- Screens done: **107 / 150**
-- Screens blocked: **43** (resource, see `BLOCKERS.md`)
+- Current phase: **session 2 — NHL module complete**
+- Current screen: MLS-01 MLS champions
+- Screens done: **122 / 150**
+- Screens blocked: **28** (resource, see `BLOCKERS.md`)
 - Screens in progress: 0
 
 ## Completed

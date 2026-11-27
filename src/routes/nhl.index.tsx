@@ -8,51 +8,99 @@ import { GameCard } from "@/components/sports/GameCard";
 import { NhlLeaderBoard } from "@/components/nhl/NhlLeaderBoard";
 import { AdSlot } from "@/components/ads/AdSlot";
 import { todayYmd } from "@/components/sports/DateScrubber";
-import { breadcrumbList, collectionPage, sportsOrganization, faqPage, ldScript } from "@/lib/seo/jsonld";
+import {
+  breadcrumbList,
+  collectionPage,
+  sportsOrganization,
+  faqPage,
+  ldScript,
+} from "@/lib/seo/jsonld";
+import { EmptyState, ErrorState } from "@/components/ui/state";
+import { errorMessage } from "@/lib/error-message";
 
 import { withHubLinks } from "@/components/seo/withHubLinks";
 export const Route = createFileRoute("/nhl/")({
   head: () => ({
     meta: [
       { title: "NHL Today — Live Scores, Standings, Leaders, News" },
-      { name: "description", content: "Today's NHL games, standings snapshot, league leaders, and the latest hockey headlines in one hub." },
+      {
+        name: "description",
+        content:
+          "Today's NHL games, standings snapshot, league leaders, and the latest hockey headlines in one hub.",
+      },
       { property: "og:title", content: "NHL Today — Live Scores, Standings, Leaders" },
-      { property: "og:description", content: "Today's NHL games, standings, league leaders and hockey headlines." },
+      {
+        property: "og:description",
+        content: "Today's NHL games, standings, league leaders and hockey headlines.",
+      },
       { property: "og:url", content: "https://www.playsports.online/nhl" },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/110e40cc-d990-48af-a996-8f46b9fd0f97/id-preview-f9e73043--3e33a21e-e132-4b69-83ee-be28f3bc4583.lovable.app-1782037338724.png" },
+      {
+        property: "og:image",
+        content:
+          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/110e40cc-d990-48af-a996-8f46b9fd0f97/id-preview-f9e73043--3e33a21e-e132-4b69-83ee-be28f3bc4583.lovable.app-1782037338724.png",
+      },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "NHL Today — Live Scores, Standings, Leaders" },
-      { name: "twitter:description", content: "Today's NHL games, standings, league leaders and hockey headlines." },
+      {
+        name: "twitter:description",
+        content: "Today's NHL games, standings, league leaders and hockey headlines.",
+      },
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "PlaySports" },
-    
     ],
     links: [{ rel: "canonical", href: "https://www.playsports.online/nhl" }],
     scripts: [
-      ldScript(collectionPage({ name: "NHL — Live Scores, Standings & Leaders", description: "NHL hub: scores, standings, leaders and news.", path: "/nhl" })),
-      ldScript(sportsOrganization({ name: "National Hockey League", path: "/nhl", sport: "IceHockey" })),
-      ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "NHL", path: "/nhl" }])),
-      ldScript(faqPage([
-        { q: "How can I follow live NHL scores?", a: "PlaySports shows every NHL game with live period-by-period scoring, shots on goal and power-play tracking, refreshed in real time." },
-        { q: "How do NHL playoffs work?", a: "16 teams — the top three from each division plus two wild cards per conference — enter the Stanley Cup Playoffs, a best-of-seven bracket across four rounds." },
-        { q: "Does PlaySports cover Stanley Cup Playoffs?", a: "Yes — the full Stanley Cup bracket, series scores, scoring leaders and championship history are all on PlaySports." },
-      ])),
+      ldScript(
+        collectionPage({
+          name: "NHL — Live Scores, Standings & Leaders",
+          description: "NHL hub: scores, standings, leaders and news.",
+          path: "/nhl",
+        }),
+      ),
+      ldScript(
+        sportsOrganization({ name: "National Hockey League", path: "/nhl", sport: "IceHockey" }),
+      ),
+      ldScript(
+        breadcrumbList([
+          { name: "Home", path: "/" },
+          { name: "NHL", path: "/nhl" },
+        ]),
+      ),
+      ldScript(
+        faqPage([
+          {
+            q: "How can I follow live NHL scores?",
+            a: "PlaySports shows every NHL game with live period-by-period scoring, shots on goal and power-play tracking, refreshed in real time.",
+          },
+          {
+            q: "How do NHL playoffs work?",
+            a: "16 teams — the top three from each division plus two wild cards per conference — enter the Stanley Cup Playoffs, a best-of-seven bracket across four rounds.",
+          },
+          {
+            q: "Does PlaySports cover Stanley Cup Playoffs?",
+            a: "Yes — the full Stanley Cup bracket, series scores, scoring leaders and championship history are all on PlaySports.",
+          },
+        ]),
+      ),
     ],
-
   }),
   loader: async ({ context }) => {
     const day = todayYmd();
     await Promise.all([
-      context.queryClient.prefetchQuery({
-        queryKey: ["nhl", "sb", day],
-        queryFn: () => getNhlScoreboard({ data: { yyyymmdd: day } }),
-        staleTime: 20_000,
-      }).catch(() => null),
-      context.queryClient.prefetchQuery({
-        queryKey: ["nhl", "st"],
-        queryFn: () => getNhlStandingsPro(),
-        staleTime: 30 * 60_000,
-      }).catch(() => null),
+      context.queryClient
+        .prefetchQuery({
+          queryKey: ["nhl", "sb", day],
+          queryFn: () => getNhlScoreboard({ data: { yyyymmdd: day } }),
+          staleTime: 20_000,
+        })
+        .catch(() => null),
+      context.queryClient
+        .prefetchQuery({
+          queryKey: ["nhl", "st"],
+          queryFn: () => getNhlStandingsPro(),
+          staleTime: 30 * 60_000,
+        })
+        .catch(() => null),
     ]);
     return null;
   },
@@ -76,8 +124,16 @@ function NhlToday() {
     },
   });
   const stQ = useQuery({ queryKey: ["nhl", "st"], queryFn: () => stFn(), staleTime: 30 * 60_000 });
-  const ldQ = useQuery({ queryKey: ["nhl", "ld"], queryFn: () => ldFn({ data: {} }), staleTime: 60 * 60_000 });
-  const nwQ = useQuery({ queryKey: ["nhl", "nw"], queryFn: () => nwFn({ data: { sportPath: "hockey/nhl" } }), staleTime: 30 * 60_000 });
+  const ldQ = useQuery({
+    queryKey: ["nhl", "ld"],
+    queryFn: () => ldFn({ data: {} }),
+    staleTime: 60 * 60_000,
+  });
+  const nwQ = useQuery({
+    queryKey: ["nhl", "nw"],
+    queryFn: () => nwFn({ data: { sportPath: "hockey/nhl" } }),
+    staleTime: 30 * 60_000,
+  });
 
   const games = sbQ.data?.games ?? [];
   const live = games.filter((g) => g.status === "in");
@@ -87,16 +143,25 @@ function NhlToday() {
   const previewLeaders = (ldQ.data?.offensive ?? []).slice(0, 3);
   const previewStandings = (stQ.data?.conferences ?? []).map((c) => ({
     name: c.name,
-    rows: [...c.divisions.flatMap((d) => d.rows)].sort((a, b) => (b.pct ?? 0) - (a.pct ?? 0)).slice(0, 5),
+    rows: [...c.divisions.flatMap((d) => d.rows)]
+      .sort((a, b) => (b.pct ?? 0) - (a.pct ?? 0))
+      .slice(0, 5),
   }));
 
   return (
     <div className="space-y-8 sm:space-y-10 animate-fade-in">
       <section className="space-y-3">
-        <Header icon={<Flame className="size-4 text-orange-400" />} title={`Today — ${games.length} games`} link="/nhl/scores" linkLabel="Full scoreboard" />
+        <Header
+          icon={<Flame className="size-4 text-orange-400" />}
+          title={`Today — ${games.length} games`}
+          link="/nhl/scores"
+          linkLabel="Full scoreboard"
+        />
         {sbQ.isLoading && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-            {Array.from({ length: 3 }).map((_, i) => <CardSkeleton key={i} />)}
+            {Array.from({ length: 3 }).map((_, i) => (
+              <CardSkeleton key={i} />
+            ))}
           </div>
         )}
         {live.length > 0 && (
@@ -104,7 +169,11 @@ function NhlToday() {
             <SubLabel tone="red">Live now · {live.length}</SubLabel>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
               {live.map((g, i) => (
-                <div key={g.id} className="animate-fade-in" style={{ animationDelay: `${i * 40}ms` }}>
+                <div
+                  key={g.id}
+                  className="animate-fade-in"
+                  style={{ animationDelay: `${i * 40}ms` }}
+                >
                   <GameCard game={g as any} linkTo={`/nhl/game/${g.id}`} />
                 </div>
               ))}
@@ -131,34 +200,72 @@ function NhlToday() {
             </div>
           </div>
         )}
-        {!sbQ.isLoading && games.length === 0 && (
-          <div className="rounded-2xl border border-dashed border-border p-8 text-center text-sm text-muted-foreground bg-card/40">
-            No NHL games scheduled today.
-          </div>
-        )}
+        {!sbQ.isLoading && sbQ.error && games.length === 0 ? (
+          <ErrorState
+            title="Could not load today's NHL games"
+            message={errorMessage(sbQ.error)}
+            onRetry={() => void sbQ.refetch()}
+          />
+        ) : !sbQ.isLoading && games.length === 0 ? (
+          <EmptyState
+            title="No NHL games scheduled today"
+            description="Check the full scoreboard for other dates."
+            action={
+              <Link
+                to="/nhl/scores"
+                className="inline-flex min-h-11 items-center rounded-full bg-primary px-4 text-sm font-bold text-primary-foreground hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                Full scoreboard
+              </Link>
+            }
+          />
+        ) : null}
       </section>
 
       <AdSlot slot="in_content" />
 
       {previewStandings.length > 0 && (
         <section className="space-y-3">
-          <Header icon={<Trophy className="size-4 text-orange-400" />} title="Conference Standings" link="/nhl/standings" linkLabel="Full standings" />
+          <Header
+            icon={<Trophy className="size-4 text-orange-400" />}
+            title="Conference Standings"
+            link="/nhl/standings"
+            linkLabel="Full standings"
+          />
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             {previewStandings.map((c) => (
               <div key={c.name} className="rounded-2xl ring-1 ring-border bg-card overflow-hidden">
                 <div className="px-4 py-3 border-b border-border flex items-center gap-3">
                   <span className="block w-1.5 h-5 rounded-full bg-orange-500" />
-                  <h3 className="text-xs font-bold uppercase tracking-[0.18em] text-orange-300">{c.name}</h3>
+                  <h3 className="text-xs font-bold uppercase tracking-[0.18em] text-orange-300">
+                    {c.name}
+                  </h3>
                 </div>
                 <ul className="divide-y divide-border">
                   {c.rows.map((r, i) => (
                     <li key={r.teamId} className="flex items-center gap-3 px-4 py-2 text-sm">
-                      <span className="w-5 text-xs tabular-nums text-muted-foreground">{i + 1}</span>
-                      {r.logo && <img src={r.logo} alt="" className="size-5 object-contain" loading="lazy"  decoding="async" />}
-                      <Link to="/nhl/team/$id" params={{ id: r.teamId }} className="flex-1 truncate font-medium text-white hover:text-orange-300 transition">
+                      <span className="w-5 text-xs tabular-nums text-muted-foreground">
+                        {i + 1}
+                      </span>
+                      {r.logo && (
+                        <img
+                          src={r.logo}
+                          alt=""
+                          className="size-5 object-contain"
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      )}
+                      <Link
+                        to="/nhl/team/$id"
+                        params={{ id: r.teamId }}
+                        className="inline-flex min-h-11 flex-1 items-center truncate font-medium text-foreground transition hover:text-orange-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      >
                         {r.shortName || r.team}
                       </Link>
-                      <span className="tabular-nums text-muted-foreground">{r.wins}–{r.losses}</span>
+                      <span className="tabular-nums text-muted-foreground">
+                        {r.wins}–{r.losses}
+                      </span>
                     </li>
                   ))}
                 </ul>
@@ -170,7 +277,12 @@ function NhlToday() {
 
       {previewLeaders.length > 0 && (
         <section className="space-y-3">
-          <Header icon={<BarChart3 className="size-4 text-orange-400" />} title="League Leaders" link="/nhl/leaders" linkLabel="All categories" />
+          <Header
+            icon={<BarChart3 className="size-4 text-orange-400" />}
+            title="League Leaders"
+            link="/nhl/leaders"
+            linkLabel="All categories"
+          />
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {previewLeaders.map((cat) => (
               <NhlLeaderBoard key={cat.key} category={cat} compact />
@@ -181,18 +293,36 @@ function NhlToday() {
 
       {news.length > 0 && (
         <section className="space-y-3">
-          <Header icon={<Newspaper className="size-4 text-orange-400" />} title="Latest News" link="/nhl/news" linkLabel="All news" />
+          <Header
+            icon={<Newspaper className="size-4 text-orange-400" />}
+            title="Latest News"
+            link="/nhl/news"
+            linkLabel="All news"
+          />
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {news.map((n) => (
-              <a key={n.id} href={n.link} target="_blank" rel="noopener noreferrer"
-                 className="group rounded-2xl ring-1 ring-border bg-card overflow-hidden hover:ring-orange-400/40 transition">
+              <a
+                key={n.id}
+                href={n.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group rounded-2xl ring-1 ring-border bg-card overflow-hidden hover:ring-orange-400/40 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
                 {n.image && (
                   <div className="aspect-[16/9] overflow-hidden bg-background">
-                    <img src={n.image} alt="" loading="lazy" className="size-full object-cover group-hover:scale-105 transition-transform duration-500"  decoding="async" />
+                    <img
+                      src={n.image}
+                      alt=""
+                      loading="lazy"
+                      className="size-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      decoding="async"
+                    />
                   </div>
                 )}
                 <div className="p-3">
-                  <div className="text-sm font-semibold text-white line-clamp-2 group-hover:text-orange-300 transition">{n.headline}</div>
+                  <div className="text-sm font-semibold text-foreground line-clamp-2 group-hover:text-orange-300 transition">
+                    {n.headline}
+                  </div>
                 </div>
               </a>
             ))}
@@ -203,24 +333,50 @@ function NhlToday() {
   );
 }
 
-function Header({ icon, title, link, linkLabel }: { icon: React.ReactNode; title: string; link?: string; linkLabel?: string }) {
+function Header({
+  icon,
+  title,
+  link,
+  linkLabel,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  link?: string;
+  linkLabel?: string;
+}) {
   return (
     <div className="flex items-end justify-between gap-3">
-      <h2 className="text-lg sm:text-xl font-extrabold flex items-center gap-2 text-white">{icon}{title}</h2>
+      <h2 className="text-lg sm:text-xl font-extrabold flex items-center gap-2 text-foreground">
+        <span aria-hidden="true">{icon}</span>
+        {title}
+      </h2>
       {link && (
-        <Link to={link} className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-orange-300 transition">
-          {linkLabel} <ChevronRight className="size-3.5" />
+        <Link
+          to={link}
+          className="inline-flex min-h-11 items-center gap-1 text-xs text-muted-foreground transition hover:text-orange-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          {linkLabel} <ChevronRight className="size-3.5" aria-hidden="true" />
         </Link>
       )}
     </div>
   );
 }
 
-function SubLabel({ children, tone }: { children: React.ReactNode; tone: "red" | "amber" | "green" }) {
+function SubLabel({
+  children,
+  tone,
+}: {
+  children: React.ReactNode;
+  tone: "red" | "amber" | "green";
+}) {
   const map = {
-    red: "text-red-300", amber: "text-amber-300", green: "text-emerald-300",
+    red: "text-red-300",
+    amber: "text-amber-300",
+    green: "text-emerald-300",
   }[tone];
-  return <div className={`text-[10px] font-bold uppercase tracking-[0.2em] ${map}`}>{children}</div>;
+  return (
+    <div className={`text-[10px] font-bold uppercase tracking-[0.2em] ${map}`}>{children}</div>
+  );
 }
 
 function CardSkeleton() {

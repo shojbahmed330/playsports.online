@@ -3,7 +3,7 @@
 Generated from the real router files in `src/routes` and cross-checked against `src/routeTree.gen.ts`.
 
 
-> **Execution status:** the foundation plus 107 route screens are DONE, including Home, Cricket, Football, Live, News, Search, Auth, Admin, utility pages, the full MLB module and the full NBA module. The remaining 43 route screens are marked BLOCKED for this session because the per-screen audit/implementation budget was exhausted; the reason is recorded in `BLOCKERS.md` and the recommended order is in `FINAL_REPORT.md`. This is a resource blocker, not a claim that the screen is broken.
+> **Execution status:** the foundation plus 122 route screens are DONE, including Home, Cricket, Football, Live, News, Search, Auth, Admin, utility pages and the full MLB, NBA and NHL modules. The remaining 28 route screens are marked BLOCKED for this session because the per-screen audit/implementation budget was exhausted; the reason is recorded in `BLOCKERS.md` and the recommended order is in `FINAL_REPORT.md`. This is a resource blocker, not a claim that the screen is broken.
 
 ## 1. Summary
 
@@ -330,21 +330,21 @@ Generated from the real router files in `src/routes` and cross-checked against `
 | NBA-15 | NBA | NBA-05 | Nba Teams Slug | Full page | `/nba/teams/:slug`<br>`src/routes/nba.teams_.$slug.tsx` | SSR loader; JSON-LD; head meta | nba/NbaTeamView | server fn / query | loading, error | DONE |
 | NEWS-01 | News | NEWS-02 | News Article | Full page | `/news/:slug`<br>`src/routes/news.$slug.tsx` | Recap body, key moments, match link, related recaps | sports/SportNav, nav/Breadcrumbs, ui/state | server fn / query | error+retry, 404 | DONE |
 | NEWS-02 | News | - | News Index | Full page | `/news`<br>`src/routes/news.index.tsx` | Recap list with RSS entry point | sports/SportNav, nav/Breadcrumbs, ui/state | server fn / query | empty, error+retry | DONE |
-| NHL-01 | NHL | NHL-04 | Nhl Champions | Full page | `/nhl/champions`<br>`src/routes/nhl.champions.tsx` | JSON-LD; head meta | seo/withHubLinks | static/local | not verified | BLOCKED |
-| NHL-02 | NHL | NHL-04 | Nhl Game Id | Full page | `/nhl/game/:id`<br>`src/routes/nhl.game.$id.tsx` | SSR loader; client query; JSON-LD; head meta | nhl/NhlLinescore, nhl/NhlBoxScore, nhl/NhlPlayByPlay, seo/MatchFaqBlock | nhl.functions | loading | BLOCKED |
-| NHL-03 | NHL | NHL-04 | Nhl History | Full page | `/nhl/history`<br>`src/routes/nhl.history.tsx` | JSON-LD; head meta | seo/withHubLinks | static/local | not verified | BLOCKED |
-| NHL-04 | NHL | â€” | Nhl | Full page | `/nhl`<br>`src/routes/nhl.index.tsx` | SSR loader; client query; JSON-LD; head meta | sports/GameCard, nhl/NhlLeaderBoard, ads/AdSlot, sports/DateScrubber | nhl.functions, espn.functions | loading, empty | BLOCKED |
-| NHL-05 | NHL | NHL-04 | Nhl Leaders | Full page | `/nhl/leaders`<br>`src/routes/nhl.leaders.tsx` | SSR loader; client query; JSON-LD; head meta | nhl/NhlLeaderBoard, seo/withHubLinks | nhl.functions | loading, empty | BLOCKED |
-| NHL-06 | NHL | NHL-04 | Nhl News | Full page | `/nhl/news`<br>`src/routes/nhl.news.tsx` | client query; JSON-LD; head meta | sports/NewsRail, seo/withHubLinks | espn.functions | loading | BLOCKED |
-| NHL-07 | NHL | NHL-04 | Nhl Player Id | Full page | `/nhl/player/:id`<br>`src/routes/nhl.player.$id.tsx` | SSR loader; client query; JSON-LD; head meta | â€” | nhl.functions | loading, empty | BLOCKED |
-| NHL-08 | NHL | NHL-04 | Nhl Players Slug | Full page | `/nhl/players/:slug`<br>`src/routes/nhl.players.$slug.tsx` | SSR loader; JSON-LD; head meta | seo/RelatedLinks | server fn / query | error | BLOCKED |
-| NHL-09 | NHL | NHL-04 | Nhl Scores | Full page | `/nhl/scores`<br>`src/routes/nhl.scores.tsx` | client query; JSON-LD; head meta | sports/GameCard, sports/DateScrubber, seo/withHubLinks | nhl.functions | loading, empty | BLOCKED |
-| NHL-10 | NHL | NHL-04 | Nhl Standings | Full page | `/nhl/standings`<br>`src/routes/nhl.standings.tsx` | SSR loader; client query; JSON-LD; head meta | nhl/NhlStandingsPro, seo/withHubLinks | nhl.functions | loading | BLOCKED |
-| NHL-11 | NHL | NHL-04 | Nhl Stanley Cup Year | Full page | `/nhl/stanley-cup/:year`<br>`src/routes/nhl.stanley-cup.$year.tsx` | SSR loader; JSON-LD; head meta | seo/withYearNav | server fn / query | error | BLOCKED |
-| NHL-12 | NHL | NHL-04 | Nhl Team History Slug | Full page | `/nhl/team-history/:slug`<br>`src/routes/nhl.team-history.$slug.tsx` | SSR loader; JSON-LD; head meta | seo/RelatedLinks | server fn / query | empty, error | BLOCKED |
-| NHL-13 | NHL | NHL-04 | Nhl Team Id | Full page | `/nhl/team/:id`<br>`src/routes/nhl.team.$id.tsx` | SSR loader; head meta | nhl/NhlTeamView | server fn / query | not verified | BLOCKED |
-| NHL-14 | NHL | NHL-04 | Nhl Teams | Full page | `/nhl/teams`<br>`src/routes/nhl.teams.tsx` | SSR loader; client query; JSON-LD; head meta | nhl/NhlTeamCard, seo/withHubLinks | nhl.functions | loading | BLOCKED |
-| NHL-15 | NHL | NHL-04 | Nhl Teams Slug | Full page | `/nhl/teams/:slug`<br>`src/routes/nhl.teams_.$slug.tsx` | SSR loader; JSON-LD; head meta | nhl/NhlTeamView | server fn / query | loading, error | BLOCKED |
+| NHL-01 | NHL | NHL-04 | Nhl Champions | Full page | `/nhl/champions`<br>`src/routes/nhl.champions.tsx` | JSON-LD; head meta | seo/withHubLinks | static/local | not verified | DONE |
+| NHL-02 | NHL | NHL-04 | Nhl Game Id | Full page | `/nhl/game/:id`<br>`src/routes/nhl.game.$id.tsx` | SSR loader; client query; JSON-LD; head meta | nhl/NhlLinescore, nhl/NhlBoxScore, nhl/NhlPlayByPlay, seo/MatchFaqBlock | nhl.functions | loading | DONE |
+| NHL-03 | NHL | NHL-04 | Nhl History | Full page | `/nhl/history`<br>`src/routes/nhl.history.tsx` | JSON-LD; head meta | seo/withHubLinks | static/local | not verified | DONE |
+| NHL-04 | NHL | â€” | Nhl | Full page | `/nhl`<br>`src/routes/nhl.index.tsx` | SSR loader; client query; JSON-LD; head meta | sports/GameCard, nhl/NhlLeaderBoard, ads/AdSlot, sports/DateScrubber | nhl.functions, espn.functions | loading, empty | DONE |
+| NHL-05 | NHL | NHL-04 | Nhl Leaders | Full page | `/nhl/leaders`<br>`src/routes/nhl.leaders.tsx` | SSR loader; client query; JSON-LD; head meta | nhl/NhlLeaderBoard, seo/withHubLinks | nhl.functions | loading, empty | DONE |
+| NHL-06 | NHL | NHL-04 | Nhl News | Full page | `/nhl/news`<br>`src/routes/nhl.news.tsx` | client query; JSON-LD; head meta | sports/NewsRail, seo/withHubLinks | espn.functions | loading | DONE |
+| NHL-07 | NHL | NHL-04 | Nhl Player Id | Full page | `/nhl/player/:id`<br>`src/routes/nhl.player.$id.tsx` | SSR loader; client query; JSON-LD; head meta | â€” | nhl.functions | loading, empty | DONE |
+| NHL-08 | NHL | NHL-04 | Nhl Players Slug | Full page | `/nhl/players/:slug`<br>`src/routes/nhl.players.$slug.tsx` | SSR loader; JSON-LD; head meta | seo/RelatedLinks | server fn / query | error | DONE |
+| NHL-09 | NHL | NHL-04 | Nhl Scores | Full page | `/nhl/scores`<br>`src/routes/nhl.scores.tsx` | client query; JSON-LD; head meta | sports/GameCard, sports/DateScrubber, seo/withHubLinks | nhl.functions | loading, empty | DONE |
+| NHL-10 | NHL | NHL-04 | Nhl Standings | Full page | `/nhl/standings`<br>`src/routes/nhl.standings.tsx` | SSR loader; client query; JSON-LD; head meta | nhl/NhlStandingsPro, seo/withHubLinks | nhl.functions | loading | DONE |
+| NHL-11 | NHL | NHL-04 | Nhl Stanley Cup Year | Full page | `/nhl/stanley-cup/:year`<br>`src/routes/nhl.stanley-cup.$year.tsx` | SSR loader; JSON-LD; head meta | seo/withYearNav | server fn / query | error | DONE |
+| NHL-12 | NHL | NHL-04 | Nhl Team History Slug | Full page | `/nhl/team-history/:slug`<br>`src/routes/nhl.team-history.$slug.tsx` | SSR loader; JSON-LD; head meta | seo/RelatedLinks | server fn / query | empty, error | DONE |
+| NHL-13 | NHL | NHL-04 | Nhl Team Id | Full page | `/nhl/team/:id`<br>`src/routes/nhl.team.$id.tsx` | SSR loader; head meta | nhl/NhlTeamView | server fn / query | not verified | DONE |
+| NHL-14 | NHL | NHL-04 | Nhl Teams | Full page | `/nhl/teams`<br>`src/routes/nhl.teams.tsx` | SSR loader; client query; JSON-LD; head meta | nhl/NhlTeamCard, seo/withHubLinks | nhl.functions | loading | DONE |
+| NHL-15 | NHL | NHL-04 | Nhl Teams Slug | Full page | `/nhl/teams/:slug`<br>`src/routes/nhl.teams_.$slug.tsx` | SSR loader; JSON-LD; head meta | nhl/NhlTeamView | server fn / query | loading, error | DONE |
 | PLYR-01 | Players | PLYR-02 | Player Sport Slug | Full page | `/player/:sport/:slug`<br>`src/routes/player.$sport.$slug.tsx` | SSR loader; JSON-LD; head meta | affiliates/AffiliateStrip, ads/AdSlot | server fn / query | error | BLOCKED |
 | PLYR-02 | Players | â€” | Players | Full page | `/players`<br>`src/routes/players.tsx` | client query; JSON-LD; head meta | ads/AdSlot, players/PlayerSubNav, players/FilterBar, players/FilterSheet | server fn / query | loading, empty | BLOCKED |
 | PREM-01 | Premium | â€” | Premium | Full page | `/premium`<br>`src/routes/premium.tsx` | head meta | â€” | static/local | not verified | BLOCKED |
