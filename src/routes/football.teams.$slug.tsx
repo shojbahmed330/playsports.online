@@ -9,6 +9,19 @@ import { FaqSection } from "@/components/seo/FaqSection";
 import { RelatedLinks } from "@/components/seo/RelatedLinks";
 import { relatedForFootballTeam } from "@/lib/seo/related";
 import { flagOf } from "@/lib/flags";
+import { EmptyState, ErrorState } from "@/components/ui/state";
+
+function formatMatchDate(value?: string): string {
+  if (!value) return "";
+  const d = new Date(`${value.slice(0, 10)}T00:00:00Z`);
+  if (Number.isNaN(d.getTime())) return value;
+  return d.toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    timeZone: "UTC",
+  });
+}
 
 export const Route = createFileRoute("/football/teams/$slug")({
   loader: async ({ params }) => {
@@ -33,6 +46,10 @@ export const Route = createFileRoute("/football/teams/$slug")({
         { property: "og:description", content: desc },
         { property: "og:url", content: canonical(path) },
         { property: "og:type", content: "profile" },
+        { property: "og:site_name", content: "PlaySports" },
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: desc },
       ],
       links: [{ rel: "canonical", href: canonical(path) }],
       scripts: [
@@ -89,8 +106,19 @@ export const Route = createFileRoute("/football/teams/$slug")({
     };
   },
   component: FootballTeamPage,
-  errorComponent: ({ error }) => <div className="p-6">Error: {errorMessage(error)}</div>,
-  notFoundComponent: () => <div className="p-6">Team not found.</div>,
+  errorComponent: ({ error, reset }) => (
+    <div className="mx-auto max-w-3xl px-4 py-10">
+      <ErrorState title="Could not load this team" message={errorMessage(error)} onRetry={reset} />
+    </div>
+  ),
+  notFoundComponent: () => (
+    <div className="mx-auto max-w-3xl px-4 py-10">
+      <EmptyState
+        title="Team not found"
+        description="This national team is not in the World Cup archive."
+      />
+    </div>
+  ),
 });
 
 // Team-specific gradient palettes. Keyed by team name; falls back to a neutral
@@ -184,16 +212,31 @@ function FootballTeamPage() {
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
 
         <div className="relative container mx-auto px-4 pt-6 pb-8 max-w-5xl">
-          <nav className="text-[11px] uppercase tracking-widest font-semibold text-white/85 mb-5 flex items-center gap-1.5">
-            <Link to="/" className="hover:text-white">
+          <nav
+            aria-label="Breadcrumb"
+            className="text-[11px] uppercase tracking-widest font-semibold text-white/85 mb-5 flex items-center gap-1.5"
+          >
+            <Link
+              to="/"
+              className="inline-flex min-h-11 items-center hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
+            >
               Home
             </Link>
-            <span className="opacity-60">/</span>
-            <Link to="/football" className="hover:text-white">
+            <span className="opacity-60" aria-hidden="true">
+              /
+            </span>
+            <Link
+              to="/football"
+              className="inline-flex min-h-11 items-center hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
+            >
               Football
             </Link>
-            <span className="opacity-60">/</span>
-            <span className="text-white">Teams</span>
+            <span className="opacity-60" aria-hidden="true">
+              /
+            </span>
+            <span className="text-white" aria-current="page">
+              Teams
+            </span>
           </nav>
 
           <div className="flex items-center gap-4 sm:gap-6">
@@ -239,7 +282,10 @@ function FootballTeamPage() {
         {/* TOP SCORERS */}
         <Section eyebrow="Legends" title={`Top Scorers for ${team.name}`} accent={gradient}>
           {stats.topScorers.length === 0 ? (
-            <p className="text-sm text-muted-foreground">No scorers on record.</p>
+            <EmptyState
+              title="No scorers on record"
+              description={`No World Cup goals are recorded for ${team.name} players.`}
+            />
           ) : (
             <ol className="grid gap-2">
               {stats.topScorers.map((p: { name: string; goals: number }, i: number) => (
@@ -247,7 +293,7 @@ function FootballTeamPage() {
                   <Link
                     to="/football/players/$slug"
                     params={{ slug: slugify(p.name) }}
-                    className="group flex items-center gap-3 rounded-xl border border-border bg-card px-3 py-2.5 hover:border-primary/60 hover:bg-accent/50 transition-all"
+                    className="group flex min-h-11 items-center gap-3 rounded-xl border border-border bg-card px-3 py-2.5 hover:border-primary/60 hover:bg-accent/50 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   >
                     <span
                       className={`grid place-items-center h-9 w-9 shrink-0 rounded-full font-black text-sm ${
@@ -282,59 +328,72 @@ function FootballTeamPage() {
 
         {/* RECENT MATCHES */}
         <Section eyebrow="Form" title="Recent World Cup Matches" accent={gradient}>
-          <ul className="space-y-2">
-            {stats.recentMatches.map(
-              (
-                m: {
-                  match_date?: string;
-                  round?: string;
-                  home_team: string;
-                  home_score: number;
-                  away_score: number;
-                  away_team: string;
-                },
-                i: number,
-              ) => {
-                const isHome = m.home_team === team.name;
-                const teamScore = isHome ? m.home_score : m.away_score;
-                const oppScore = isHome ? m.away_score : m.home_score;
-                const opp = isHome ? m.away_team : m.home_team;
-                const result = teamScore > oppScore ? "W" : teamScore < oppScore ? "L" : "D";
-                const resultColor =
-                  result === "W"
-                    ? "bg-emerald-500/20 text-emerald-400 ring-emerald-500/40"
-                    : result === "L"
-                      ? "bg-rose-500/20 text-rose-400 ring-rose-500/40"
-                      : "bg-amber-500/20 text-amber-400 ring-amber-500/40";
-                return (
-                  <li
-                    key={i}
-                    className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 rounded-xl border border-border bg-card px-3 py-2.5"
-                  >
-                    <span
-                      className={`grid place-items-center h-9 w-9 shrink-0 rounded-lg font-black text-sm ring-1 ${resultColor}`}
+          {stats.recentMatches.length === 0 ? (
+            <EmptyState
+              title="No recent matches"
+              description={`No match results are recorded for ${team.name} in the archive.`}
+            />
+          ) : (
+            <ul className="space-y-2">
+              {stats.recentMatches.map(
+                (
+                  m: {
+                    match_date?: string;
+                    round?: string;
+                    home_team: string;
+                    home_score: number;
+                    away_score: number;
+                    away_team: string;
+                  },
+                  i: number,
+                ) => {
+                  const isHome = m.home_team === team.name;
+                  const teamScore = isHome ? m.home_score : m.away_score;
+                  const oppScore = isHome ? m.away_score : m.home_score;
+                  const opp = isHome ? m.away_team : m.home_team;
+                  const result = teamScore > oppScore ? "W" : teamScore < oppScore ? "L" : "D";
+                  const resultColor =
+                    result === "W"
+                      ? "bg-emerald-500/20 text-emerald-400 ring-emerald-500/40"
+                      : result === "L"
+                        ? "bg-rose-500/20 text-rose-400 ring-rose-500/40"
+                        : "bg-amber-500/20 text-amber-400 ring-amber-500/40";
+                  return (
+                    <li
+                      key={i}
+                      className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 rounded-xl border border-border bg-card px-3 py-2.5"
                     >
-                      {result}
-                    </span>
-                    <div className="min-w-0">
-                      <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold">
-                        {m.match_date} · {m.round}
+                      <span
+                        className={`grid place-items-center h-9 w-9 shrink-0 rounded-lg font-black text-sm ring-1 ${resultColor}`}
+                      >
+                        <span aria-hidden="true">{result}</span>
+                        <span className="sr-only">
+                          {result === "W" ? "Win" : result === "L" ? "Loss" : "Draw"}
+                        </span>
+                      </span>
+                      <div className="min-w-0">
+                        <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold">
+                          {[formatMatchDate(m.match_date), m.round].filter(Boolean).join(" · ")}
+                        </div>
+                        <div className="text-sm font-semibold truncate">
+                          {isHome ? "vs" : "@"}{" "}
+                          <span className="mr-1" aria-hidden="true">
+                            {flagOf(opp)}
+                          </span>
+                          {opp}
+                        </div>
                       </div>
-                      <div className="text-sm font-semibold truncate">
-                        {isHome ? "vs" : "@"} <span className="mr-1">{flagOf(opp)}</span>
-                        {opp}
+                      <div className="shrink-0 font-mono font-black text-lg tabular-nums">
+                        {teamScore}
+                        <span className="mx-0.5 text-muted-foreground">–</span>
+                        {oppScore}
                       </div>
-                    </div>
-                    <div className="shrink-0 font-mono font-black text-lg tabular-nums">
-                      {teamScore}
-                      <span className="mx-0.5 text-muted-foreground">–</span>
-                      {oppScore}
-                    </div>
-                  </li>
-                );
-              },
-            )}
-          </ul>
+                    </li>
+                  );
+                },
+              )}
+            </ul>
+          )}
         </Section>
 
         {/* APPEARANCES */}
@@ -345,7 +404,7 @@ function FootballTeamPage() {
                 key={y}
                 to="/football/countries/$slug/world-cup-{$year}"
                 params={{ slug: params.slug, year: String(y) }}
-                className="px-3 py-1.5 rounded-full bg-gradient-to-br from-card to-muted border border-border font-mono text-sm font-bold hover:border-primary hover:text-primary hover:scale-105 transition-all"
+                className="inline-flex min-h-11 items-center rounded-full bg-gradient-to-br from-card to-muted border border-border px-3 font-mono text-sm font-bold hover:border-primary hover:text-primary hover:scale-105 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 {y}
               </Link>
@@ -366,7 +425,7 @@ function FootballTeamPage() {
                   key={p.name}
                   to="/football/players/$slug"
                   params={{ slug: slugify(p.name) }}
-                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-card border border-border text-xs hover:border-primary hover:bg-accent transition-colors"
+                  className="inline-flex min-h-11 items-center gap-1.5 rounded-full bg-card border border-border px-2.5 text-xs hover:border-primary hover:bg-accent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   <span className="font-medium">{p.name}</span>
                   <span className="tabular-nums font-black text-primary">{p.goals}</span>
@@ -417,7 +476,7 @@ function FootballTeamPage() {
                   key={t.slug}
                   to="/football/teams/$slug"
                   params={{ slug: t.slug }}
-                  className="flex items-center gap-2 rounded-xl border border-border bg-card px-3 py-2 hover:border-primary hover:bg-accent transition-all min-w-0"
+                  className="flex min-h-11 items-center gap-2 rounded-xl border border-border bg-card px-3 py-2 hover:border-primary hover:bg-accent transition-all min-w-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   <span className="text-xl shrink-0" aria-hidden>
                     {flagOf(t.name)}

@@ -306,6 +306,11 @@
 - Fixed: shared error/not-found/empty states; empty-history desc guard; labelled breadcrumbs; hidden separators/flag/medal; table caption/`scope`; 44 px links/focus rings; shared card surface; OG site name/Twitter meta.
 - Kept: per-year stat strip, tournament context and career goals/cards table aliases.
 
+## FB-30 football team profile
+
+- Fixed: shared error/not-found/empty states; raw ISO dates replaced with UTC-formatted dates; labelled breadcrumb; hidden separators/flag; sr-only win/draw/loss labels; 44 px links/focus rings; OG site name/Twitter meta.
+- Kept: team-colour hero, stat pills, top scorers, recent matches, appearances and team directory.
+
 ## Foundation
 
 - Added overhaul documentation: `PROJECT_NOTES.md`, `HEALTH_BASELINE.md`, `SCREEN_INVENTORY.md`, `DESIGN_SYSTEM.md`, `PROGRESS.md`, `DECISIONS.md`, `BLOCKERS.md`, `SECURITY_FINDINGS.md`.
