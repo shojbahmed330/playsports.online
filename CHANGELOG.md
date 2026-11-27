@@ -50,6 +50,12 @@
 - Added: honest bundled-snapshot date/source note, shared empty state, table caption/sticky header, `aria-pressed`, 44 px controls.
 - Kept: category × format selectors, player links, ratings and trends.
 
+## CRK-18 Cricket records
+
+- Fixed: removed `any` from the records data path; added links from every record card to its full category page.
+- Added: shared empty state with Clear filters, labelled search, 44 px chips, table captions, snapshot date.
+- Kept: static records, player links, format filter.
+
 ## Foundation
 
 - Added overhaul documentation: `PROJECT_NOTES.md`, `HEALTH_BASELINE.md`, `SCREEN_INVENTORY.md`, `DESIGN_SYSTEM.md`, `PROGRESS.md`, `DECISIONS.md`, `BLOCKERS.md`, `SECURITY_FINDINGS.md`.

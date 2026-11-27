@@ -4,9 +4,9 @@ Updated: 2026-11-27 (session 1 closed with a logged resource blocker)
 
 - Branch: `professional-overhaul` (never pushed)
 - Current phase: **session 2 — continuing CRK screens**
-- Current screen: CRK-18 Cricket records
-- Screens done: **8 / 150**
-- Screens blocked: **142** (resource, see `BLOCKERS.md`)
+- Current screen: CRK-15 Cricket players
+- Screens done: **9 / 150**
+- Screens blocked: **141** (resource, see `BLOCKERS.md`)
 - Screens in progress: 0
 
 ## Completed
