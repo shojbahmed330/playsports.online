@@ -8,6 +8,8 @@ import { flagOf } from "@/lib/flags";
 import { getPlayerStatHistory } from "@/lib/seo/leaderboards";
 import { RelatedLinks } from "@/components/seo/RelatedLinks";
 import { relatedForFootballPlayer } from "@/lib/seo/related";
+import { EmptyState, ErrorState } from "@/components/ui/state";
+import { errorMessage } from "@/lib/error-message";
 
 // The URL segment /world-cup-{param} collides with two conceptually
 // different pages:
@@ -27,9 +29,10 @@ export const Route = createFileRoute("/football/players/$slug/world-cup-{$year}"
     if (key) {
       const hist = getPlayerStatHistory(params.slug);
       if (!hist) throw notFound();
-      const meta = key === "goals"
-        ? { name: "World Cup Goals", metric: "goals" as const }
-        : { name: "World Cup Cards", metric: "cards" as const };
+      const meta =
+        key === "goals"
+          ? { name: "World Cup Goals", metric: "goals" as const }
+          : { name: "World Cup Cards", metric: "cards" as const };
       return { kind: "stat" as const, hist, meta, statSlug: `world-cup-${key}` };
     }
     const year = Number(params.year);
@@ -42,15 +45,21 @@ export const Route = createFileRoute("/football/players/$slug/world-cup-{$year}"
     return { kind: "year" as const, player: py, stats, t, isTopScorer };
   },
   head: ({ params, loaderData }) => {
-    if (!loaderData) return { meta: [{ title: "Not found" }, { name: "robots", content: "noindex" }] };
+    if (!loaderData)
+      return { meta: [{ title: "Not found" }, { name: "robots", content: "noindex" }] };
     if (loaderData.kind === "stat") {
       const { hist, meta } = loaderData;
       const path = `/football/players/${params.slug}/world-cup-${params.year}`;
-      const total = meta.metric === "goals" ? hist.totals.goals : hist.totals.yellows + hist.totals.reds;
+      const total =
+        meta.metric === "goals" ? hist.totals.goals : hist.totals.yellows + hist.totals.reds;
       const title = `${hist.name} ${meta.name} — ${total} in ${hist.rows.length} tournaments | PlaySports`;
+      const firstYear = hist.rows[0]?.year;
+      const lastYear = hist.rows[hist.rows.length - 1]?.year;
+      const yearRange =
+        firstYear && lastYear ? ` Year-by-year breakdown from ${firstYear} to ${lastYear}.` : "";
       const desc =
         meta.metric === "goals"
-          ? `How many World Cup goals does ${hist.name} have? ${hist.totals.goals} total (${hist.totals.penalties} penalties). Year-by-year breakdown from ${hist.rows[0].year} to ${hist.rows[hist.rows.length - 1].year}.`
+          ? `How many World Cup goals does ${hist.name} have? ${hist.totals.goals} total (${hist.totals.penalties} penalties).${yearRange}`
           : `${hist.name} World Cup disciplinary record: ${hist.totals.yellows} yellow cards, ${hist.totals.reds} red cards across ${hist.rows.length} tournaments.`;
       const faq = buildStatFaq(hist, meta);
       return {
@@ -61,6 +70,10 @@ export const Route = createFileRoute("/football/players/$slug/world-cup-{$year}"
           { property: "og:description", content: desc },
           { property: "og:url", content: canonical(path) },
           { property: "og:type", content: "profile" },
+          { property: "og:site_name", content: "PlaySports" },
+          { name: "twitter:card", content: "summary_large_image" },
+          { name: "twitter:title", content: title },
+          { name: "twitter:description", content: desc },
         ],
         links: [{ rel: "canonical", href: canonical(path) }],
         scripts: [
@@ -90,29 +103,55 @@ export const Route = createFileRoute("/football/players/$slug/world-cup-{$year}"
         { property: "og:description", content: desc },
         { property: "og:url", content: canonical(path) },
         { property: "og:type", content: "profile" },
+        { property: "og:site_name", content: "PlaySports" },
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: desc },
       ],
       links: [{ rel: "canonical", href: canonical(path) }],
       scripts: [
         ldScript(athlete({ name: player.playerName, path, sport: "Football", team: player.team })),
-        ldScript(breadcrumbList([
-          { name: "Home", path: "/" },
-          { name: "Football", path: "/football" },
-          { name: "Players", path: "/football/players" },
-          { name: player.playerName, path: `/football/players/${player.playerSlug}` },
-          { name: `${player.year} World Cup`, path },
-        ])),
-        ldScript(faqPage(playerYearFaqs({
-          name: player.playerName,
-          team: player.team,
-          year: player.year,
-          goals: stats.goals,
-          isTopScorer,
-        }))),
+        ldScript(
+          breadcrumbList([
+            { name: "Home", path: "/" },
+            { name: "Football", path: "/football" },
+            { name: "Players", path: "/football/players" },
+            { name: player.playerName, path: `/football/players/${player.playerSlug}` },
+            { name: `${player.year} World Cup`, path },
+          ]),
+        ),
+        ldScript(
+          faqPage(
+            playerYearFaqs({
+              name: player.playerName,
+              team: player.team,
+              year: player.year,
+              goals: stats.goals,
+              isTopScorer,
+            }),
+          ),
+        ),
       ],
     };
   },
   component: PlayerYearOrStatPage,
-  notFoundComponent: () => <div className="p-6">No data for this page.</div>,
+  errorComponent: ({ error, reset }) => (
+    <div className="mx-auto max-w-3xl px-4 py-10">
+      <ErrorState
+        title="Could not load this player page"
+        message={errorMessage(error)}
+        onRetry={reset}
+      />
+    </div>
+  ),
+  notFoundComponent: () => (
+    <div className="mx-auto max-w-3xl px-4 py-10">
+      <EmptyState
+        title="No data for this page"
+        description="This player or tournament is not in the World Cup archive."
+      />
+    </div>
+  ),
 });
 
 function buildStatFaq(
@@ -141,9 +180,10 @@ function buildStatFaq(
     },
     {
       q: `Has ${hist.name} ever been sent off in a World Cup match?`,
-      a: hist.totals.reds > 0
-        ? `Yes — ${hist.name} received ${hist.totals.reds} red card${hist.totals.reds === 1 ? "" : "s"} across their World Cup career.`
-        : `No — ${hist.name} has never been shown a red card in a World Cup match.`,
+      a:
+        hist.totals.reds > 0
+          ? `Yes — ${hist.name} received ${hist.totals.reds} red card${hist.totals.reds === 1 ? "" : "s"} across their World Cup career.`
+          : `No — ${hist.name} has never been shown a red card in a World Cup match.`,
     },
   ];
 }
@@ -165,15 +205,31 @@ function StatView() {
   return (
     <main className="mx-auto max-w-3xl px-4 py-8">
       <nav aria-label="Breadcrumb" className="mb-4 text-sm text-muted-foreground">
-        <Link to="/" className="hover:underline">Home</Link>
-        {" / "}
-        <Link to="/football" className="hover:underline">Football</Link>
-        {" / "}
-        <Link to="/football/players/$slug" params={{ slug }} className="hover:underline">
+        <Link
+          to="/"
+          className="inline-flex min-h-11 items-center hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          Home
+        </Link>
+        <span aria-hidden="true"> / </span>
+        <Link
+          to="/football"
+          className="inline-flex min-h-11 items-center hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          Football
+        </Link>
+        <span aria-hidden="true"> / </span>
+        <Link
+          to="/football/players/$slug"
+          params={{ slug }}
+          className="inline-flex min-h-11 items-center hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
           {hist.name}
         </Link>
-        {" / "}
-        <span className="text-foreground">{meta.name}</span>
+        <span aria-hidden="true"> / </span>
+        <span className="text-foreground" aria-current="page">
+          {meta.name}
+        </span>
       </nav>
 
       <h1 className="text-3xl md:text-4xl font-bold mb-2">
@@ -185,52 +241,78 @@ function StatView() {
         {isGoals && hist.totals.penalties > 0 ? ` (${hist.totals.penalties} from penalties)` : ""}.
       </p>
 
-      <div className="overflow-x-auto rounded-lg border border-border">
-        <table className="w-full text-sm">
-          <thead className="bg-muted/50">
-            <tr>
-              <th className="px-3 py-2 text-left">Year</th>
-              <th className="px-3 py-2 text-left">Team</th>
-              {isGoals ? (
-                <>
-                  <th className="px-3 py-2 text-right">Goals</th>
-                  <th className="px-3 py-2 text-right">Penalties</th>
-                  <th className="px-3 py-2 text-right">Own Goals</th>
-                </>
-              ) : (
-                <>
-                  <th className="px-3 py-2 text-right">Yellow</th>
-                  <th className="px-3 py-2 text-right">Red</th>
-                </>
-              )}
-            </tr>
-          </thead>
-          <tbody>
-            {hist.rows.map((r: typeof hist.rows[number]) => (
-              <tr key={r.year} className="border-t border-border">
-                <td className="px-3 py-2 font-medium">{r.year}</td>
-                <td className="px-3 py-2">{r.team}</td>
+      {hist.rows.length === 0 ? (
+        <EmptyState
+          title="No tournament history"
+          description={`No World Cup ${isGoals ? "goals" : "cards"} are recorded for ${hist.name}.`}
+        />
+      ) : (
+        <div className="overflow-x-auto rounded-2xl border border-border bg-card/40">
+          <table className="w-full text-sm">
+            <caption className="sr-only">
+              {hist.name} World Cup {isGoals ? "goals" : "cards"} by tournament
+            </caption>
+            <thead className="bg-muted/50">
+              <tr>
+                <th scope="col" className="px-3 py-2 text-left">
+                  Year
+                </th>
+                <th scope="col" className="px-3 py-2 text-left">
+                  Team
+                </th>
                 {isGoals ? (
                   <>
-                    <td className="px-3 py-2 text-right tabular-nums font-semibold">{r.goals}</td>
-                    <td className="px-3 py-2 text-right tabular-nums">{r.penalties}</td>
-                    <td className="px-3 py-2 text-right tabular-nums">{r.ownGoals}</td>
+                    <th scope="col" className="px-3 py-2 text-right">
+                      Goals
+                    </th>
+                    <th scope="col" className="px-3 py-2 text-right">
+                      Penalties
+                    </th>
+                    <th scope="col" className="px-3 py-2 text-right">
+                      Own Goals
+                    </th>
                   </>
                 ) : (
                   <>
-                    <td className="px-3 py-2 text-right tabular-nums">{r.yellows}</td>
-                    <td className="px-3 py-2 text-right tabular-nums">{r.reds}</td>
+                    <th scope="col" className="px-3 py-2 text-right">
+                      Yellow
+                    </th>
+                    <th scope="col" className="px-3 py-2 text-right">
+                      Red
+                    </th>
                   </>
                 )}
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {hist.rows.map((r: (typeof hist.rows)[number]) => (
+                <tr key={r.year} className="border-t border-border">
+                  <td className="px-3 py-2 font-medium">{r.year}</td>
+                  <td className="px-3 py-2">{r.team}</td>
+                  {isGoals ? (
+                    <>
+                      <td className="px-3 py-2 text-right tabular-nums font-semibold">{r.goals}</td>
+                      <td className="px-3 py-2 text-right tabular-nums">{r.penalties}</td>
+                      <td className="px-3 py-2 text-right tabular-nums">{r.ownGoals}</td>
+                    </>
+                  ) : (
+                    <>
+                      <td className="px-3 py-2 text-right tabular-nums">{r.yellows}</td>
+                      <td className="px-3 py-2 text-right tabular-nums">{r.reds}</td>
+                    </>
+                  )}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
 
       <RelatedLinks
         title={`More World Cup stats for ${hist.name}`}
-        links={relatedForFootballPlayer(slug, hist.team, 10).filter((l) => l.href !== `/football/players/${slug}/${statSlug}`)}
+        links={relatedForFootballPlayer(slug, hist.team, 10).filter(
+          (l) => l.href !== `/football/players/${slug}/${statSlug}`,
+        )}
       />
     </main>
   );
@@ -244,22 +326,50 @@ function YearView() {
     <div className="min-h-screen bg-background pb-24">
       <header className="bg-gradient-to-br from-amber-600 via-orange-600 to-rose-600 py-10 px-4">
         <div className="container mx-auto max-w-5xl">
-          <nav className="text-xs uppercase tracking-widest font-semibold text-white/80 mb-3">
-            <Link to="/football/players" className="hover:text-white">Players</Link>
-            <span className="mx-2">/</span>
-            <Link to="/football/players/$slug" params={{ slug: player.playerSlug }} className="hover:text-white">{player.playerName}</Link>
-            <span className="mx-2">/</span>
-            <span className="text-white">{player.year} World Cup</span>
+          <nav
+            aria-label="Breadcrumb"
+            className="text-xs uppercase tracking-widest font-semibold text-white/80 mb-3"
+          >
+            <Link
+              to="/football/players"
+              className="inline-flex min-h-11 items-center hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
+            >
+              Players
+            </Link>
+            <span className="mx-2" aria-hidden="true">
+              /
+            </span>
+            <Link
+              to="/football/players/$slug"
+              params={{ slug: player.playerSlug }}
+              className="inline-flex min-h-11 items-center hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
+            >
+              {player.playerName}
+            </Link>
+            <span className="mx-2" aria-hidden="true">
+              /
+            </span>
+            <span className="text-white" aria-current="page">
+              {player.year} World Cup
+            </span>
           </nav>
           <h1 className="text-3xl sm:text-4xl font-black text-white">
             {player.playerName} — {player.year} FIFA World Cup
           </h1>
           <p className="mt-2 text-white/95 text-lg flex items-center gap-2 flex-wrap">
-            <span>{flagOf(player.team)}</span>
+            <span aria-hidden="true">{flagOf(player.team)}</span>
             <span>{player.team}</span>
-            <span className="opacity-70">·</span>
-            <strong>{stats.goals} goal{stats.goals === 1 ? "" : "s"}</strong>
-            {isTopScorer && <span className="ml-2 px-2 py-0.5 rounded-full bg-yellow-400 text-black text-xs font-bold">🥇 Golden Boot</span>}
+            <span className="opacity-70" aria-hidden="true">
+              ·
+            </span>
+            <strong>
+              {stats.goals} goal{stats.goals === 1 ? "" : "s"}
+            </strong>
+            {isTopScorer && (
+              <span className="ml-2 px-2 py-0.5 rounded-full bg-yellow-400 text-black text-xs font-bold">
+                <span aria-hidden="true">🥇</span> Golden Boot
+              </span>
+            )}
           </p>
         </div>
       </header>
@@ -273,23 +383,32 @@ function YearView() {
         </section>
 
         {t && (
-          <section className="rounded-xl bg-card border p-5">
+          <section className="rounded-2xl border border-border bg-card/40 p-5">
             <h2 className="text-xl font-bold mb-2">{t.year} Tournament Context</h2>
             <p className="text-sm">
-              Hosted by <strong>{t.host}</strong>. Champion: <strong>{t.champion}</strong>. Top scorer: <strong>{t.topScorer}</strong> ({t.topScorerGoals} goals).
+              Hosted by <strong>{t.host}</strong>. Champion: <strong>{t.champion}</strong>. Top
+              scorer: <strong>{t.topScorer}</strong> ({t.topScorerGoals} goals).
             </p>
             <div className="mt-3 flex flex-wrap gap-2 text-sm">
-              <Link to="/football/tournaments/$year" params={{ year: String(player.year) }} className="text-primary hover:underline">
+              <Link
+                to="/football/tournaments/$year"
+                params={{ year: String(player.year) }}
+                className="inline-flex min-h-11 items-center text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
                 → Full {player.year} tournament page
               </Link>
               <Link
                 to="/football/countries/$slug/world-cup-{$year}"
                 params={{ slug: slugify(player.team), year: String(player.year) }}
-                className="text-primary hover:underline"
+                className="inline-flex min-h-11 items-center text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 → {player.team} at {player.year} World Cup
               </Link>
-              <Link to="/football/players/$slug" params={{ slug: player.playerSlug }} className="text-primary hover:underline">
+              <Link
+                to="/football/players/$slug"
+                params={{ slug: player.playerSlug }}
+                className="inline-flex min-h-11 items-center text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
                 → {player.playerName}'s full profile
               </Link>
             </div>
@@ -302,7 +421,7 @@ function YearView() {
 
 function Stat({ label, value }: { label: string; value: string | number }) {
   return (
-    <div className="rounded-xl bg-card border p-4 text-center">
+    <div className="rounded-2xl border border-border bg-card/40 p-4 text-center">
       <div className="text-xs uppercase text-muted-foreground">{label}</div>
       <div className="mt-1 text-2xl font-black tabular-nums">{value}</div>
     </div>

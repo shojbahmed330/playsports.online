@@ -301,6 +301,11 @@
 - Fixed: archive query error state with retry; route error boundary; shared empty states; loading announced; favourites/tab/collapse accessible names and states; non-interactive click wrappers removed; route-owned `gray-*` replaced with tokens; unused imports removed; OG site name.
 - Kept: 2026 live/group/knockout/scorers views, archive groups and symmetric bracket, match modal, coachmark and favourites picker.
 
+## FB-27 football player World Cup year
+
+- Fixed: shared error/not-found/empty states; empty-history desc guard; labelled breadcrumbs; hidden separators/flag/medal; table caption/`scope`; 44 px links/focus rings; shared card surface; OG site name/Twitter meta.
+- Kept: per-year stat strip, tournament context and career goals/cards table aliases.
+
 ## Foundation
 
 - Added overhaul documentation: `PROJECT_NOTES.md`, `HEALTH_BASELINE.md`, `SCREEN_INVENTORY.md`, `DESIGN_SYSTEM.md`, `PROGRESS.md`, `DECISIONS.md`, `BLOCKERS.md`, `SECURITY_FINDINGS.md`.
