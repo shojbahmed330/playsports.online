@@ -5,6 +5,8 @@ import { CompetitionPageShell } from "@/components/football/CompetitionPageShell
 import { buildCompetitionHead } from "@/lib/competition-head";
 import { getCompetitionPlayer } from "@/lib/espn.functions";
 import { CareerInCompetition } from "@/components/football/CareerInCompetition";
+import { EmptyState, ErrorState } from "@/components/ui/state";
+import { errorMessage } from "@/lib/error-message";
 import { Loader2 } from "lucide-react";
 
 export const Route = createFileRoute("/football/$comp/players/$playerId")({
@@ -24,7 +26,23 @@ export const Route = createFileRoute("/football/$comp/players/$playerId")({
     });
   },
   component: PlayerDetailPage,
-  notFoundComponent: () => <div className="p-10 text-center">Player not found.</div>,
+  errorComponent: ({ error, reset }) => (
+    <div className="mx-auto max-w-3xl px-4 py-10">
+      <ErrorState
+        title="Could not load this player"
+        message={errorMessage(error)}
+        onRetry={reset}
+      />
+    </div>
+  ),
+  notFoundComponent: () => (
+    <div className="mx-auto max-w-3xl px-4 py-10">
+      <EmptyState
+        title="Player not found"
+        description="This player is not in the competition feed."
+      />
+    </div>
+  ),
 });
 
 function PlayerDetailPage() {
@@ -46,26 +64,44 @@ function PlayerDetailPage() {
         <Link
           to="/football/$comp/players"
           params={{ comp: comp.slug }}
-          className="text-muted-foreground hover:text-foreground underline underline-offset-4"
+          className="inline-flex min-h-11 items-center text-muted-foreground hover:text-foreground underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           ← All {comp.shortName} players
         </Link>
       </div>
 
-      {q.isLoading ? (
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <Loader2 className="size-4 animate-spin" /> Loading player…
+      {q.isError || q.data?.error ? (
+        <ErrorState
+          title="Player profile temporarily unavailable"
+          message={
+            q.isError ? errorMessage(q.error) : (q.data?.error ?? "Please refresh in a moment.")
+          }
+          onRetry={() => void q.refetch()}
+          className="border-white/10 bg-white/[0.02]"
+        />
+      ) : q.isLoading ? (
+        <div role="status" className="flex items-center gap-2 text-sm text-muted-foreground">
+          <Loader2 aria-hidden="true" className="size-4 animate-spin motion-reduce:animate-none" />{" "}
+          Loading player…
         </div>
-      ) : q.data?.error || !p ? (
-        <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-6 py-10 text-center text-sm text-muted-foreground">
-          {q.data?.error ?? "Player profile is not available right now."}
-        </div>
+      ) : !p ? (
+        <EmptyState
+          title="Player profile not available"
+          description="This player has no profile data right now."
+          className="border-white/10 bg-white/[0.02]"
+        />
       ) : (
         <>
           <header className="flex items-center gap-4 mb-6">
             <span className="size-20 rounded-2xl bg-white/5 ring-1 ring-white/10 grid place-items-center overflow-hidden shrink-0">
               {p.headshot ? (
-                <img src={p.headshot} alt="" className="size-full object-cover"  decoding="async" loading="lazy" />
+                <img
+                  src={p.headshot}
+                  alt=""
+                  className="size-full object-cover"
+                  decoding="async"
+                  loading="lazy"
+                />
               ) : (
                 <span className="text-2xl font-bold">
                   {p.displayName
@@ -90,7 +126,13 @@ function PlayerDetailPage() {
           {p.team && (
             <section className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 mb-6 flex items-center gap-3">
               {p.team.logo && (
-                <img src={p.team.logo} alt="" className="size-10 object-contain"  decoding="async" loading="lazy" />
+                <img
+                  src={p.team.logo}
+                  alt=""
+                  className="size-10 object-contain"
+                  decoding="async"
+                  loading="lazy"
+                />
               )}
               <div className="flex-1 min-w-0">
                 <div className="text-xs uppercase tracking-wide text-muted-foreground">Team</div>
@@ -100,7 +142,7 @@ function PlayerDetailPage() {
                 <Link
                   to="/football/$comp/teams/$teamId"
                   params={{ comp: comp.slug, teamId: p.team.id }}
-                  className="text-sm underline underline-offset-4 hover:text-foreground text-muted-foreground"
+                  className="inline-flex min-h-11 items-center text-sm underline underline-offset-4 hover:text-foreground text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   Team page →
                 </Link>
