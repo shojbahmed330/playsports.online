@@ -3,9 +3,9 @@
 Updated: 2026-11-27 (foundation complete, HOME-01 in progress)
 
 - Branch: `professional-overhaul` (never pushed)
-- Current phase: **CRK-21 planning**
-- Current screen: CRK-21 Cricket series
-- Screens done: **4 / 150** (HOME-01, CRK-04, CRK-19, CRK-13)
+- Current phase: **CRK-24 planning**
+- Current screen: CRK-24 Cricket teams
+- Screens done: **5 / 150** (HOME-01, CRK-04, CRK-19, CRK-13, CRK-21)
 - Screens in progress: 0
 - Screens blocked: 0
 

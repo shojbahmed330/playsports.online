@@ -14,6 +14,7 @@ import {
 } from "@/lib/cricket.functions";
 import { CRICKET_LEAGUE_BY_ID } from "@/lib/cricket-leagues";
 import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
+import { EmptyState, ErrorState, LoadingState } from "@/components/ui/state";
 
 const search = z.object({
   fmt: fallback(z.enum(["any", "t20", "odi", "test"]), "any").default("any"),
@@ -27,23 +28,15 @@ export const Route = createFileRoute("/cricket/series/")({
     middlewares: [stripSearchParams({ fmt: "any", group: "any" })],
   },
   loader: async ({ context }) => {
-    // SSR the series hub so crawlers see the current tours, not an empty shell.
-    await Promise.all([
-      context.queryClient
-        .prefetchQuery({
-          queryKey: ["cricket", "series-list"],
-          queryFn: () => getCricketSeriesList(),
-          staleTime: 5 * 60_000,
-        })
-        .catch(() => null),
-      context.queryClient
-        .prefetchQuery({
-          queryKey: ["cricket", "bilateral-tours"],
-          queryFn: () => getBilateralSeriesList(),
-          staleTime: 5 * 60_000,
-        })
-        .catch(() => null),
-    ]);
+    // The curated list is fast enough to block SSR. The bilateral builder
+    // scans hundreds of catalogue ids, so it stays a background prefetch.
+    await context.queryClient
+      .ensureQueryData({
+        queryKey: ["cricket", "series-list"],
+        queryFn: () => getCricketSeriesList(),
+        staleTime: 5 * 60_000,
+      })
+      .catch(() => null);
     return null;
   },
   head: () => ({
@@ -87,7 +80,10 @@ function SeriesIndex() {
     queryKey: ["cricket", "series-list"],
     queryFn: () => fn({}),
     staleTime: 5 * 60_000,
-    refetchInterval: 60_000,
+    refetchInterval: (qq) => {
+      const data = qq.state.data as { series?: Array<{ liveCount: number }> } | undefined;
+      return data?.series?.some((s) => s.liveCount > 0) ? 60_000 : false;
+    },
   });
 
   const tourFn = useServerFn(getBilateralSeriesList);
@@ -95,7 +91,10 @@ function SeriesIndex() {
     queryKey: ["cricket", "bilateral-tours"],
     queryFn: () => tourFn({}),
     staleTime: 5 * 60_000,
-    refetchInterval: 60_000,
+    refetchInterval: (qq) => {
+      const data = qq.state.data as { tours?: Array<{ liveCount: number }> } | undefined;
+      return data?.tours?.some((t) => t.liveCount > 0) ? 60_000 : false;
+    },
   });
   const tours: BilateralTour[] = tourQ.data?.tours ?? [];
 
@@ -155,7 +154,7 @@ function SeriesIndex() {
               <Link
                 to="/cricket/scores"
                 search={{ tab: "live", date: "", league: "internationals", fmt: "any" }}
-                className="text-xs font-bold text-sky-300 hover:text-sky-200 inline-flex items-center gap-1"
+                className="inline-flex min-h-11 items-center gap-1 text-xs font-bold text-sky-300 hover:text-sky-200"
               >
                 Live & fixtures <ChevronRight className="size-3.5" />
               </Link>
@@ -175,7 +174,7 @@ function SeriesIndex() {
                   <div className="mt-2 flex items-center gap-1.5 text-[11px]">
                     {t.liveCount > 0 && (
                       <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-500/15 text-red-300 ring-1 ring-red-500/30 font-bold">
-                        <span className="size-1.5 rounded-full bg-red-500 animate-pulse" />{" "}
+                        <span className="size-1.5 rounded-full bg-red-500 animate-pulse motion-reduce:animate-none" />{" "}
                         {t.liveCount} live
                       </span>
                     )}
@@ -192,6 +191,27 @@ function SeriesIndex() {
               ))}
             </div>
           </section>
+        )}
+
+        {tourQ.isLoading && (
+          <section aria-label="Loading bilateral tours">
+            <LoadingState label="Loading bilateral tours" rows={2} />
+          </section>
+        )}
+        {tourQ.isError && (
+          <div
+            role="alert"
+            className="flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-border bg-card/40 px-4 py-3 text-sm"
+          >
+            <span className="text-muted-foreground">Bilateral tours could not be loaded.</span>
+            <button
+              type="button"
+              onClick={() => void tourQ.refetch()}
+              className="inline-flex min-h-11 items-center rounded-full border border-border px-3 text-xs font-bold hover:bg-white/5"
+            >
+              Retry
+            </button>
+          </div>
         )}
 
         <div className="space-y-4">
@@ -212,16 +232,28 @@ function SeriesIndex() {
             </FilterGroup>
           </div>
 
-          {q.isLoading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-              {Array.from({ length: 6 }).map((_, i) => (
-                <div key={i} className="h-32 rounded-2xl bg-gray-900/50 animate-pulse" />
-              ))}
-            </div>
+          {q.isError ? (
+            <ErrorState
+              title="Series are temporarily unavailable"
+              message="The series feed did not respond. Try again, or browse the full cricket schedule."
+              onRetry={() => void q.refetch()}
+            />
+          ) : q.isLoading ? (
+            <LoadingState label="Loading cricket series" rows={4} />
           ) : filtered.length === 0 ? (
-            <div className="rounded-2xl border border-dashed border-gray-800 p-12 text-center text-sm text-muted-foreground">
-              No series match your filters.
-            </div>
+            <EmptyState
+              title="No series match your filters"
+              description="Clear the format or type filter to see every tracked series."
+              action={
+                <button
+                  type="button"
+                  onClick={() => set({ fmt: "any", group: "any" })}
+                  className="inline-flex min-h-11 items-center rounded-full bg-emerald-500/15 px-4 text-sm font-bold text-emerald-200 ring-1 ring-emerald-500/30"
+                >
+                  Clear filters
+                </button>
+              }
+            />
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
               {filtered.map((s) => {
@@ -254,7 +286,7 @@ function SeriesIndex() {
                     <div className="mt-3 flex items-center gap-2 text-[11px]">
                       {s.liveCount > 0 && (
                         <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-500/15 text-red-300 ring-1 ring-red-500/30 font-bold">
-                          <span className="size-1.5 rounded-full bg-red-500 animate-pulse" />
+                          <span className="size-1.5 rounded-full bg-red-500 animate-pulse motion-reduce:animate-none" />
                           <Flame className="size-3" /> {s.liveCount} live
                         </span>
                       )}
@@ -264,7 +296,7 @@ function SeriesIndex() {
                         </span>
                       )}
                       {s.liveCount === 0 && s.upcomingCount === 0 && (
-                        <span className="text-[10px] text-gray-500 uppercase tracking-wider">
+                        <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
                           No scheduled play
                         </span>
                       )}
@@ -283,7 +315,7 @@ function SeriesIndex() {
 function FilterGroup({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="flex items-center gap-1.5">
-      <span className="text-[10px] uppercase tracking-wider text-gray-500 font-bold mr-1">
+      <span className="mr-1 text-[10px] uppercase tracking-wider text-muted-foreground font-bold">
         {label}
       </span>
       <div className="flex flex-wrap gap-1">{children}</div>
@@ -305,7 +337,7 @@ function Chip({
       type="button"
       onClick={onClick}
       className={[
-        "px-3 py-1 rounded-full text-[11px] font-bold ring-1 transition",
+        "inline-flex min-h-11 items-center px-3 py-1 rounded-full text-[11px] font-bold ring-1 transition",
         active
           ? "bg-gradient-to-r from-emerald-500 to-teal-500 text-white ring-white/20"
           : "bg-white/5 text-gray-300 ring-white/10 hover:bg-white/10",

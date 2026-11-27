@@ -26,6 +26,12 @@
 - Added: validated search via `zodValidator`, friendly retry state.
 - Global: cleaned search URLs (`?leagueId=8043` instead of `%228043%22`) while accepting old links.
 
+## CRK-21 Cricket series hub
+
+- Fixed: curated series SSR, error/retry states, 44 px filters, reduced-motion dots, polling only when live.
+- Added: shared loading/empty states; bilateral tours no longer dehydrate on SSR (hydration-safe).
+- Kept: bilateral block, format/type filters, series cards, canonical.
+
 ## Foundation
 
 - Added overhaul documentation: `PROJECT_NOTES.md`, `HEALTH_BASELINE.md`, `SCREEN_INVENTORY.md`, `DESIGN_SYSTEM.md`, `PROGRESS.md`, `DECISIONS.md`, `BLOCKERS.md`, `SECURITY_FINDINGS.md`.
