@@ -8,9 +8,17 @@ export const Route = createFileRoute("/mlb")({
   head: () => ({
     meta: [
       { title: "MLB Hub — Live Scores, Standings, Players, History" },
-      { name: "description", content: "Live Major League Baseball scoreboard, standings, team profiles, league leaders, player careers, and 100+ years of World Series history." },
+      {
+        name: "description",
+        content:
+          "Live Major League Baseball scoreboard, standings, team profiles, league leaders, player careers, and 100+ years of World Series history.",
+      },
       { property: "og:title", content: "MLB Pro Hub — Live Scores · Stats · Careers · History" },
-      { property: "og:description", content: "Everything MLB — live games, standings, teams, leaders, player stats, World Series history." },
+      {
+        property: "og:description",
+        content:
+          "Everything MLB — live games, standings, teams, leaders, player stats, World Series history.",
+      },
     ],
   }),
   component: MlbLayout,
@@ -23,7 +31,7 @@ function MlbLayout() {
       <Breadcrumbs />
       <MlbHero />
       <MlbSubNav />
-      <main id="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
         <Outlet />
       </main>
     </div>

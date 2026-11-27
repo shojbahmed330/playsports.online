@@ -56,7 +56,7 @@ function NewsIndex() {
     <div className="min-h-screen">
       <SportNav />
       <Breadcrumbs />
-      <main id="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-8">
         <header className="rounded-2xl border border-border bg-gradient-to-br from-sky-950/40 via-background to-emerald-950/20 p-6 sm:p-8">
           <div className="flex items-start justify-between gap-3">
             <div className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] font-bold text-sky-300">
@@ -72,8 +72,8 @@ function NewsIndex() {
           </div>
           <h1 className="mt-3 text-3xl sm:text-4xl font-extrabold">Match recaps &amp; analysis</h1>
           <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
-            Data-grounded recaps from cricket and football — results, key moments and what
-            they mean.
+            Data-grounded recaps from cricket and football — results, key moments and what they
+            mean.
           </p>
         </header>
 

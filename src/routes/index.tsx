@@ -219,10 +219,7 @@ function HubPage() {
         </div>
       )}
 
-      <main
-        id="main-content"
-        className="max-w-7xl mx-auto px-4 sm:px-6 pt-6 sm:pt-8 pb-2 sm:pb-4 space-y-8 sm:space-y-10"
-      >
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 pt-6 sm:pt-8 pb-2 sm:pb-4 space-y-8 sm:space-y-10">
         {/* FOR YOU — quick-scan 3 cards (only on All filter) */}
         {filter === "all" && (
           <ForYouStrip

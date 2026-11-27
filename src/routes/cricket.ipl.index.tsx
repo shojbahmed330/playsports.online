@@ -117,7 +117,7 @@ function IplHome() {
         totalTitles={historyData.seasons.length}
       />
 
-      <main id="main-content" className="max-w-7xl mx-auto px-3 sm:px-6 py-6 space-y-8">
+      <main className="max-w-7xl mx-auto px-3 sm:px-6 py-6 space-y-8">
         {overview.error && (
           <div
             role="alert"

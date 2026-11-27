@@ -81,7 +81,7 @@ export function LegalLayout({
 }) {
   const effective = body && body.trim().length > 0 ? body : defaultBody;
   return (
-    <main id="main-content" className="min-h-screen pb-24 bg-gradient-to-b from-background via-background to-background/60">
+    <main className="min-h-screen pb-24 bg-gradient-to-b from-background via-background to-background/60">
       <div className="mx-auto max-w-3xl px-4 pt-8 pb-10">
         <nav className="text-xs text-muted-foreground" aria-label="Breadcrumb">
           <Link to="/" className="hover:text-foreground transition-colors">
@@ -98,7 +98,9 @@ export function LegalLayout({
           </div>
           <h1 className="mt-2 text-3xl sm:text-4xl font-bold tracking-tight">{title}</h1>
           {intro && (
-            <p className="mt-3 text-base text-muted-foreground max-w-2xl leading-relaxed">{intro}</p>
+            <p className="mt-3 text-base text-muted-foreground max-w-2xl leading-relaxed">
+              {intro}
+            </p>
           )}
           {updated && (
             <p className="mt-3 text-[11px] uppercase tracking-widest text-muted-foreground/80">

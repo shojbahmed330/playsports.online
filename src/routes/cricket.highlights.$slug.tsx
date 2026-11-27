@@ -159,7 +159,7 @@ function CricketHighlightPage() {
     <div className="min-h-screen bg-background text-foreground">
       <SportNav />
       <CricketSubNav />
-      <main id="main-content" className="container mx-auto px-4 py-6 pb-20 max-w-4xl">
+      <main className="container mx-auto px-4 py-6 pb-20 max-w-4xl">
         <nav className="text-xs text-muted-foreground mb-3" aria-label="Breadcrumb">
           <Link to="/" className="hover:underline">
             Home

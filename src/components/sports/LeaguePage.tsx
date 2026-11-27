@@ -3,12 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { Calendar, Trophy, Tv, Flame, ChevronRight, Newspaper } from "lucide-react";
 import type { SportConfig } from "@/lib/sports-config";
-import {
-  getScoreboard,
-  getStandings,
-  getSportNews,
-  type SportGame,
-} from "@/lib/espn.functions";
+import { getScoreboard, getStandings, getSportNews, type SportGame } from "@/lib/espn.functions";
 import { GameCard } from "./GameCard";
 import { DateScrubber, todayYmd } from "./DateScrubber";
 import { StandingsTable } from "./StandingsTable";
@@ -35,7 +30,8 @@ export function LeaguePage({ sport }: { sport: SportConfig }) {
 
   const sbQ = useQuery({
     queryKey: ["espn", sport.slug, "scoreboard", day],
-    queryFn: () => scoreboardFn({ data: { sportPath: sport.path, league: sport.label, yyyymmdd: day } }),
+    queryFn: () =>
+      scoreboardFn({ data: { sportPath: sport.path, league: sport.label, yyyymmdd: day } }),
     staleTime: 30_000,
     retry: 1,
     // Poll every 30s while any game is live
@@ -86,10 +82,10 @@ export function LeaguePage({ sport }: { sport: SportConfig }) {
       <SportNav />
       <Breadcrumbs />
 
-
-
       {/* HERO */}
-      <section className={`relative overflow-hidden border-b border-border bg-gradient-to-br ${sport.bgGrad}`}>
+      <section
+        className={`relative overflow-hidden border-b border-border bg-gradient-to-br ${sport.bgGrad}`}
+      >
         <div
           aria-hidden
           className="absolute inset-0 opacity-30"
@@ -101,27 +97,31 @@ export function LeaguePage({ sport }: { sport: SportConfig }) {
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-12">
           <div className="flex flex-col lg:flex-row lg:items-end gap-6">
             <div className="flex items-center gap-4 flex-1">
-              <div className={`size-16 sm:size-20 rounded-2xl ${sport.chipBg} ring-1 ${sport.ring} grid place-items-center text-4xl sm:text-5xl shrink-0`}>
+              <div
+                className={`size-16 sm:size-20 rounded-2xl ${sport.chipBg} ring-1 ${sport.ring} grid place-items-center text-4xl sm:text-5xl shrink-0`}
+              >
                 {sport.emoji}
               </div>
               <div className="min-w-0">
                 <div className={`text-[11px] uppercase tracking-[0.2em] ${sport.accent} font-bold`}>
                   {sport.label}
                 </div>
-                <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight">{sport.longName}</h1>
+                <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight">
+                  {sport.longName}
+                </h1>
                 <p className="text-sm text-muted-foreground mt-1">{sport.tagline}</p>
                 <div className="mt-3 flex flex-wrap items-center gap-2 text-[11px]">
                   <Stat label="Today" value={`${games.length} games`} />
                   {liveCount > 0 && <Stat label="Live now" value={liveCount} tone="red" />}
-                  {upcomingCount > 0 && <Stat label="Upcoming" value={upcomingCount} tone="amber" />}
+                  {upcomingCount > 0 && (
+                    <Stat label="Upcoming" value={upcomingCount} tone="amber" />
+                  )}
                   {finalCount > 0 && <Stat label="Final" value={finalCount} tone="muted" />}
                 </div>
               </div>
             </div>
 
-            {featured && (
-              <FeaturedCard game={featured} accent={sport.accent} />
-            )}
+            {featured && <FeaturedCard game={featured} accent={sport.accent} />}
           </div>
         </div>
       </section>
@@ -129,23 +129,65 @@ export function LeaguePage({ sport }: { sport: SportConfig }) {
       {/* TABS */}
       <div className="sticky top-16 z-20 border-b border-border bg-background/85 backdrop-blur">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center gap-1 overflow-x-auto">
-          <TabBtn icon={<Calendar className="size-4" />} label="Scores" active={tab === "scores"} onClick={() => setTab("scores")} count={games.length} accent={sport.accent} />
-          <TabBtn icon={<Trophy className="size-4" />} label="Standings" active={tab === "standings"} onClick={() => setTab("standings")} accent={sport.accent} />
-          <TabBtn icon={<Newspaper className="size-4" />} label="News" active={tab === "news"} onClick={() => setTab("news")} count={nwQ.data?.items.length} accent={sport.accent} />
+          <TabBtn
+            icon={<Calendar className="size-4" />}
+            label="Scores"
+            active={tab === "scores"}
+            onClick={() => setTab("scores")}
+            count={games.length}
+            accent={sport.accent}
+          />
+          <TabBtn
+            icon={<Trophy className="size-4" />}
+            label="Standings"
+            active={tab === "standings"}
+            onClick={() => setTab("standings")}
+            accent={sport.accent}
+          />
+          <TabBtn
+            icon={<Newspaper className="size-4" />}
+            label="News"
+            active={tab === "news"}
+            onClick={() => setTab("news")}
+            count={nwQ.data?.items.length}
+            accent={sport.accent}
+          />
         </div>
       </div>
 
-      <main id="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-10">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-10">
         {tab === "scores" && (
           <section className="space-y-4 tab-slide">
             <DateScrubber selected={day} onChange={setDay} />
 
             {/* Filter chips */}
             <div className="flex items-center gap-2 flex-wrap">
-              <FilterChip label="All" count={games.length} active={filter === "all"} onClick={() => setFilter("all")} />
-              <FilterChip label="Live" count={liveCount} active={filter === "live"} onClick={() => setFilter("live")} tone="red" />
-              <FilterChip label="Upcoming" count={upcomingCount} active={filter === "upcoming"} onClick={() => setFilter("upcoming")} tone="amber" />
-              <FilterChip label="Final" count={finalCount} active={filter === "final"} onClick={() => setFilter("final")} />
+              <FilterChip
+                label="All"
+                count={games.length}
+                active={filter === "all"}
+                onClick={() => setFilter("all")}
+              />
+              <FilterChip
+                label="Live"
+                count={liveCount}
+                active={filter === "live"}
+                onClick={() => setFilter("live")}
+                tone="red"
+              />
+              <FilterChip
+                label="Upcoming"
+                count={upcomingCount}
+                active={filter === "upcoming"}
+                onClick={() => setFilter("upcoming")}
+                tone="amber"
+              />
+              <FilterChip
+                label="Final"
+                count={finalCount}
+                active={filter === "final"}
+                onClick={() => setFilter("final")}
+              />
               {sbQ.isFetching && !sbQ.isLoading && (
                 <span className="ml-auto text-[10px] text-gray-500 inline-flex items-center gap-1.5">
                   <span className="size-1.5 rounded-full bg-amber-400 animate-pulse" /> Updating…
@@ -165,7 +207,9 @@ export function LeaguePage({ sport }: { sport: SportConfig }) {
               />
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                {filtered.map((g) => <GameCard key={g.id} game={g} />)}
+                {filtered.map((g) => (
+                  <GameCard key={g.id} game={g} />
+                ))}
               </div>
             )}
 
@@ -204,7 +248,11 @@ export function LeaguePage({ sport }: { sport: SportConfig }) {
           </section>
         )}
 
-        <AffiliateStrip placement="homepage" sport={sport.slug} heading={`${sport.label} fan shop & partners`} />
+        <AffiliateStrip
+          placement="homepage"
+          sport={sport.slug}
+          heading={`${sport.label} fan shop & partners`}
+        />
       </main>
     </div>
   );
@@ -223,12 +271,14 @@ function Stat({
     tone === "red"
       ? "bg-red-500/15 text-red-300 ring-red-500/30"
       : tone === "amber"
-      ? "bg-amber-500/15 text-amber-300 ring-amber-500/30"
-      : tone === "muted"
-      ? "bg-gray-800/60 text-gray-400 ring-gray-700/60"
-      : "bg-white/5 text-gray-200 ring-white/10";
+        ? "bg-amber-500/15 text-amber-300 ring-amber-500/30"
+        : tone === "muted"
+          ? "bg-gray-800/60 text-gray-400 ring-gray-700/60"
+          : "bg-white/5 text-gray-200 ring-white/10";
   return (
-    <span className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-md ring-1 font-semibold ${cls}`}>
+    <span
+      className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-md ring-1 font-semibold ${cls}`}
+    >
       {tone === "red" && <span className="size-1.5 rounded-full bg-red-500 animate-pulse" />}
       <span className="text-[10px] uppercase tracking-wider opacity-80">{label}</span>
       <span className="tabular-nums">{value}</span>
@@ -264,7 +314,9 @@ function TabBtn({
         </span>
       )}
       {active && (
-        <span className={`absolute left-2 right-2 bottom-0 h-0.5 rounded-full bg-current ${accent}`} />
+        <span
+          className={`absolute left-2 right-2 bottom-0 h-0.5 rounded-full bg-current ${accent}`}
+        />
       )}
     </button>
   );
@@ -287,15 +339,17 @@ function FilterChip({
     ? tone === "red"
       ? "bg-red-500 text-white ring-red-400"
       : tone === "amber"
-      ? "bg-amber-500 text-black ring-amber-400"
-      : "bg-white text-black ring-white"
+        ? "bg-amber-500 text-black ring-amber-400"
+        : "bg-white text-black ring-white"
     : "bg-gray-900 text-gray-300 ring-gray-800 hover:ring-gray-700";
   return (
     <button
       onClick={onClick}
       className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold ring-1 transition-colors ${base}`}
     >
-      {tone === "red" && !active && <span className="size-1.5 rounded-full bg-red-500 animate-pulse" />}
+      {tone === "red" && !active && (
+        <span className="size-1.5 rounded-full bg-red-500 animate-pulse" />
+      )}
       {label}
       <span className="tabular-nums opacity-70 text-[10px]">{count}</span>
     </button>
@@ -307,7 +361,9 @@ function FeaturedCard({ game, accent }: { game: SportGame; accent: string }) {
   return (
     <div className="w-full lg:w-[420px] rounded-2xl bg-black/40 backdrop-blur ring-1 ring-white/10 p-4 shadow-xl">
       <div className="flex items-center justify-between mb-3">
-        <span className={`text-[10px] font-bold uppercase tracking-[0.2em] ${accent} inline-flex items-center gap-1.5`}>
+        <span
+          className={`text-[10px] font-bold uppercase tracking-[0.2em] ${accent} inline-flex items-center gap-1.5`}
+        >
           {isLive ? (
             <>
               <Flame className="size-3" /> Featured · Live
@@ -331,7 +387,9 @@ function FeaturedCard({ game, accent }: { game: SportGame; accent: string }) {
         <FeaturedRow t={game.home} live={isLive} />
       </div>
       <div className="mt-3 pt-3 border-t border-white/5 flex items-center justify-between text-[10px] text-gray-400">
-        <span>{relativeDay(game.startTs)} · {formatLocalTime(game.startTs)}</span>
+        <span>
+          {relativeDay(game.startTs)} · {formatLocalTime(game.startTs)}
+        </span>
         {game.venue && <span className="truncate ml-2">{game.venue}</span>}
       </div>
     </div>
@@ -342,13 +400,25 @@ function FeaturedRow({ t, live }: { t: import("@/lib/espn.functions").SportTeam;
   return (
     <div className="flex items-center gap-3">
       <div className="size-9 rounded-lg bg-white/5 grid place-items-center overflow-hidden ring-1 ring-white/10">
-        {t.logo ? <img loading="lazy" decoding="async" src={t.logo} alt="" className="size-7 object-contain" /> : <span className="text-[10px] text-gray-400">{t.abbr}</span>}
+        {t.logo ? (
+          <img
+            loading="lazy"
+            decoding="async"
+            src={t.logo}
+            alt=""
+            className="size-7 object-contain"
+          />
+        ) : (
+          <span className="text-[10px] text-gray-400">{t.abbr}</span>
+        )}
       </div>
       <div className="flex-1 min-w-0">
         <div className="text-sm font-semibold text-white truncate">{t.name}</div>
         {t.record && <div className="text-[10px] text-gray-500">{t.record}</div>}
       </div>
-      <div className="text-2xl font-extrabold text-white tabular-nums">{live ? (t.score ?? 0) : "–"}</div>
+      <div className="text-2xl font-extrabold text-white tabular-nums">
+        {live ? (t.score ?? 0) : "–"}
+      </div>
     </div>
   );
 }
@@ -360,15 +430,7 @@ function ErrBox({ msg }: { msg: string }) {
     </div>
   );
 }
-function EmptyBox({
-  icon,
-  title,
-  body,
-}: {
-  icon: React.ReactNode;
-  title: string;
-  body: string;
-}) {
+function EmptyBox({ icon, title, body }: { icon: React.ReactNode; title: string; body: string }) {
   return (
     <div className="rounded-2xl border border-dashed border-gray-800 p-12 text-center bg-gray-900/40">
       <div className="mx-auto mb-3 inline-block">{icon}</div>

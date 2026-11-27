@@ -3,8 +3,20 @@ import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import {
-  Trophy, Loader2, LogOut, Search, ChevronDown, Save, Check,
-  Filter, ExternalLink, ArrowLeft, ShieldCheck, AlertTriangle, Sparkles, Command,
+  Trophy,
+  Loader2,
+  LogOut,
+  Search,
+  ChevronDown,
+  Save,
+  Check,
+  Filter,
+  ExternalLink,
+  ArrowLeft,
+  ShieldCheck,
+  AlertTriangle,
+  Sparkles,
+  Command,
 } from "lucide-react";
 import { CommandPalette } from "@/components/admin/CommandPalette";
 import { supabase, WC_YEARS, type WCMatch } from "@/lib/supabase";
@@ -31,23 +43,19 @@ import { AiFaqsCard } from "@/components/admin/AiFaqsCard";
 import { MatchRecapsCard } from "@/components/admin/MatchRecapsCard";
 import { SectionStatusStrip } from "@/components/admin/SectionStatusStrip";
 
-
 const GROUP_MATCHES_BY_YEAR = groupMatchesData as Record<string, WCMatch[]>;
 type AdminMatch = WCMatch & { _bundled?: boolean };
 
 type SeedEntry = { year: number; teams: [string, string]; url: string; title: string };
 const TEAM_ALIASES: Record<string, string[]> = {
   "South Korea": ["South Korea", "Korea Republic", "Korea, Republic of"],
-  "USA": ["United States", "USA", "United States of America"],
+  USA: ["United States", "USA", "United States of America"],
 };
 const teamVariants = (t: string) => TEAM_ALIASES[t] ?? [t];
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
-    meta: [
-      { title: "Admin — PlaySports" },
-      { name: "robots", content: "noindex" },
-    ],
+    meta: [{ title: "Admin — PlaySports" }, { name: "robots", content: "noindex" }],
   }),
   component: AdminPage,
 });
@@ -92,7 +100,10 @@ function NotAuthorized() {
         <p className="text-sm text-muted-foreground mt-2">
           Your account does not have admin access. Contact the site owner.
         </p>
-        <Link to="/" className="inline-flex mt-5 px-4 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 text-sm">
+        <Link
+          to="/"
+          className="inline-flex mt-5 px-4 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 text-sm"
+        >
           <ArrowLeft className="size-4 mr-1.5" /> Back to archive
         </Link>
       </div>
@@ -113,7 +124,11 @@ function AdminShell() {
     return (saved as AdminSection) || "overview";
   });
   useEffect(() => {
-    try { window.localStorage.setItem("admin.section", section); } catch { /* ignore quota */ }
+    try {
+      window.localStorage.setItem("admin.section", section);
+    } catch {
+      /* ignore quota */
+    }
   }, [section]);
   const [paletteOpen, setPaletteOpen] = useState(false);
 
@@ -130,7 +145,6 @@ function AdminShell() {
   }, []);
 
   const fixturesFn = useServerFn(getWc2026Fixtures);
-
 
   const matches = useQuery({
     queryKey: ["admin_wc_matches", year],
@@ -151,34 +165,34 @@ function AdminShell() {
         const [res, videoMap] = await Promise.all([fixturesFn(), fetch2026VideoMap()]);
         const bundled: AdminMatch[] = (res.fixtures ?? [])
           .filter((f) => !seen.has(`${f.home.name.toLowerCase()}|${f.away.name.toLowerCase()}`))
-          .map((f, i): AdminMatch => ({
-            id: 900000 + i, // synthetic; stripped on insert
-            tournament_year: 2026,
-            round: f.group,
-            match_number: i + 1,
-            home_team: f.home.name,
-            away_team: f.away.name,
-            home_score: f.home.goals,
-            away_score: f.away.goals,
-            home_score_pen: null,
-            away_score_pen: null,
-            match_date: f.startTs ? new Date(f.startTs * 1000).toISOString() : null,
-            stadium: f.venue,
-            city: f.city,
-            video_url: videoMap.get(videoKey(f.home.name, f.away.name)) ?? null,
-            _bundled: true,
-          }));
-        return [...db, ...bundled].sort(
-          (a, b) => (a.match_date ?? "").localeCompare(b.match_date ?? ""),
+          .map(
+            (f, i): AdminMatch => ({
+              id: 900000 + i, // synthetic; stripped on insert
+              tournament_year: 2026,
+              round: f.group,
+              match_number: i + 1,
+              home_team: f.home.name,
+              away_team: f.away.name,
+              home_score: f.home.goals,
+              away_score: f.away.goals,
+              home_score_pen: null,
+              away_score_pen: null,
+              match_date: f.startTs ? new Date(f.startTs * 1000).toISOString() : null,
+              stadium: f.venue,
+              city: f.city,
+              video_url: videoMap.get(videoKey(f.home.name, f.away.name)) ?? null,
+              _bundled: true,
+            }),
+          );
+        return [...db, ...bundled].sort((a, b) =>
+          (a.match_date ?? "").localeCompare(b.match_date ?? ""),
         );
       }
 
       const bundled = (GROUP_MATCHES_BY_YEAR[String(year)] ?? [])
         .filter((m) => !seen.has(`${m.home_team.toLowerCase()}|${m.away_team.toLowerCase()}`))
         .map((m) => ({ ...m, _bundled: true }) as AdminMatch);
-      return [...db, ...bundled].sort(
-        (a, b) => (a.match_number ?? 0) - (b.match_number ?? 0),
-      );
+      return [...db, ...bundled].sort((a, b) => (a.match_number ?? 0) - (b.match_number ?? 0));
     },
   });
 
@@ -215,14 +229,19 @@ function AdminShell() {
       <header className="sticky top-0 z-30 border-b border-border bg-background/85 backdrop-blur">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Link to="/" className="size-9 rounded-lg bg-gold/15 grid place-items-center ring-1 ring-gold/30 hover:ring-gold/50">
+            <Link
+              to="/"
+              className="size-9 rounded-lg bg-gold/15 grid place-items-center ring-1 ring-gold/30 hover:ring-gold/50"
+            >
               <Trophy className="size-5 text-gold" />
             </Link>
             <div className="leading-tight">
               <div className="text-sm font-bold tracking-wide inline-flex items-center gap-1.5">
                 Admin <ShieldCheck className="size-3.5 text-emerald-400" />
               </div>
-              <div className="text-[10px] uppercase tracking-[0.18em] text-gold">PlaySports Control</div>
+              <div className="text-[10px] uppercase tracking-[0.18em] text-gold">
+                PlaySports Control
+              </div>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -264,13 +283,15 @@ function AdminShell() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 lg:py-8 lg:flex lg:gap-8">
         <AdminSidebar active={section} onChange={setSection} />
 
-        <main id="main-content" className="flex-1 min-w-0 space-y-6 mt-4 lg:mt-0">
-          {section === "overview" && (
-            <OverviewPanel matchStats={stats} onJump={setSection} />
-          )}
+        <main className="flex-1 min-w-0 space-y-6 mt-4 lg:mt-0">
+          {section === "overview" && <OverviewPanel matchStats={stats} onJump={setSection} />}
 
           {section === "seo" && (
-            <SectionShell section="seo" title="SEO Analytics" hint="Google Search Console — clicks, impressions, top queries & pages">
+            <SectionShell
+              section="seo"
+              title="SEO Analytics"
+              hint="Google Search Console — clicks, impressions, top queries & pages"
+            >
               <SeoAnalyticsPanel />
               <SeoHealthCard />
               <AiFaqsCard />
@@ -279,7 +300,11 @@ function AdminShell() {
           )}
 
           {section === "monetize" && (
-            <SectionShell section="monetize" title="Monetize" hint="AdSense · Affiliates · Sponsored placements · Memberships">
+            <SectionShell
+              section="monetize"
+              title="Monetize"
+              hint="AdSense · Affiliates · Sponsored placements · Memberships"
+            >
               <AdSenseAdminCard />
               <AffiliateLinksCard />
               <SponsoredSlotsCard />
@@ -288,20 +313,32 @@ function AdminShell() {
           )}
 
           {section === "audience" && (
-            <SectionShell section="audience" title="Audience" hint="Newsletter signups & weekly digest">
+            <SectionShell
+              section="audience"
+              title="Audience"
+              hint="Newsletter signups & weekly digest"
+            >
               <NewsletterDigestCard />
             </SectionShell>
           )}
 
           {section === "content" && (
-            <SectionShell section="content" title="Content" hint="Auto-seed videos & 2026 highlights">
+            <SectionShell
+              section="content"
+              title="Content"
+              hint="Auto-seed videos & 2026 highlights"
+            >
               <SeedFromDataset />
               <Wc2026HighlightsCard />
             </SectionShell>
           )}
 
           {section === "settings" && (
-            <SectionShell section="settings" title="Settings" hint="Site identity, analytics, consent, legal pages">
+            <SectionShell
+              section="settings"
+              title="Settings"
+              hint="Site identity, analytics, consent, legal pages"
+            >
               <MonetizationCard />
             </SectionShell>
           )}
@@ -316,16 +353,22 @@ function AdminShell() {
               {/* Tournament + search controls */}
               <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:justify-between">
                 <div className="flex items-center gap-2">
-                  <label className="text-[11px] uppercase tracking-widest text-muted-foreground">Tournament</label>
+                  <label className="text-[11px] uppercase tracking-widest text-muted-foreground">
+                    Tournament
+                  </label>
                   <div className="relative">
                     <select
                       value={year}
                       onChange={(e) => setYear(Number(e.target.value))}
                       className="appearance-none pl-3 pr-9 py-2 rounded-lg bg-card border border-border text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-gold"
                     >
-                      {WC_YEARS.slice().reverse().map((y) => (
-                        <option key={y} value={y}>{y} World Cup</option>
-                      ))}
+                      {WC_YEARS.slice()
+                        .reverse()
+                        .map((y) => (
+                          <option key={y} value={y}>
+                            {y} World Cup
+                          </option>
+                        ))}
                     </select>
                     <ChevronDown className="size-4 text-gold absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                   </div>
@@ -399,7 +442,11 @@ function AdminShell() {
 }
 
 function SectionShell({
-  title, hint, section, matchStats, children,
+  title,
+  hint,
+  section,
+  matchStats,
+  children,
 }: {
   title: string;
   hint: string;
@@ -421,12 +468,19 @@ function SectionShell({
   );
 }
 
-
-function Stat({ label, value, tone }: { label: string; value: number; tone: "default" | "good" | "warn" }) {
+function Stat({
+  label,
+  value,
+  tone,
+}: {
+  label: string;
+  value: number;
+  tone: "default" | "good" | "warn";
+}) {
   const colors = {
     default: "border-border bg-card/60 text-foreground",
-    good:    "border-emerald-500/30 bg-emerald-500/10 text-emerald-300",
-    warn:    "border-amber-500/30 bg-amber-500/10 text-amber-300",
+    good: "border-emerald-500/30 bg-emerald-500/10 text-emerald-300",
+    warn: "border-amber-500/30 bg-amber-500/10 text-amber-300",
   }[tone];
   return (
     <div className={`rounded-xl border px-4 py-3 ${colors}`}>
@@ -439,7 +493,11 @@ function Stat({ label, value, tone }: { label: string; value: number; tone: "def
 function SeedFromDataset() {
   const queryClient = useQueryClient();
   const [running, setRunning] = useState(false);
-  const [result, setResult] = useState<{ updated: number; skipped: number; missing: number } | null>(null);
+  const [result, setResult] = useState<{
+    updated: number;
+    skipped: number;
+    missing: number;
+  } | null>(null);
 
   const seed: SeedEntry[] = videoSeed as SeedEntry[];
   const years = Array.from(new Set(seed.map((s) => s.year)));
@@ -461,23 +519,37 @@ function SeedFromDataset() {
         idx.set(key, m);
       }
 
-      let updated = 0, skipped = 0, missing = 0;
+      let updated = 0,
+        skipped = 0,
+        missing = 0;
       for (const entry of seed) {
         let row: Row | undefined;
         outer: for (const v1 of teamVariants(entry.teams[0])) {
           for (const v2 of teamVariants(entry.teams[1])) {
             const key = `${entry.year}|${[v1.toLowerCase(), v2.toLowerCase()].sort().join("|")}`;
             const hit = idx.get(key);
-            if (hit) { row = hit; break outer; }
+            if (hit) {
+              row = hit;
+              break outer;
+            }
           }
         }
-        if (!row) { missing++; continue; }
-        if (row.video_url && !overwrite) { skipped++; continue; }
+        if (!row) {
+          missing++;
+          continue;
+        }
+        if (row.video_url && !overwrite) {
+          skipped++;
+          continue;
+        }
         const { error: upErr } = await supabase
           .from("wc_matches")
           .update({ video_url: entry.url })
           .eq("id", row.id);
-        if (upErr) { missing++; continue; }
+        if (upErr) {
+          missing++;
+          continue;
+        }
         updated++;
       }
 
@@ -504,12 +576,15 @@ function SeedFromDataset() {
           <div>
             <div className="text-sm font-semibold">Auto-seed from YouTube dataset</div>
             <div className="text-xs text-muted-foreground mt-0.5">
-              {seed.length} curated full-match links (1998–2022) from <span className="font-mono">choucisan/fwc_games</span>.
+              {seed.length} curated full-match links (1998–2022) from{" "}
+              <span className="font-mono">choucisan/fwc_games</span>.
               {result && (
                 <span className="ml-2 text-foreground">
                   → <span className="text-emerald-400">{result.updated} updated</span>
-                  {", "}<span className="text-amber-400">{result.skipped} skipped</span>
-                  {", "}<span className="text-red-400">{result.missing} missing</span>
+                  {", "}
+                  <span className="text-amber-400">{result.skipped} skipped</span>
+                  {", "}
+                  <span className="text-red-400">{result.missing} missing</span>
                 </span>
               )}
             </div>
@@ -521,7 +596,11 @@ function SeedFromDataset() {
             disabled={running}
             className="px-3 py-2 text-xs font-semibold rounded-lg bg-amber-500 text-black hover:bg-amber-400 disabled:opacity-40 inline-flex items-center gap-1.5"
           >
-            {running ? <Loader2 className="size-3.5 animate-spin" /> : <Sparkles className="size-3.5" />}
+            {running ? (
+              <Loader2 className="size-3.5 animate-spin" />
+            ) : (
+              <Sparkles className="size-3.5" />
+            )}
             Seed missing
           </button>
           <button
@@ -574,10 +653,15 @@ function MatchRow({ match, year }: { match: AdminMatch; year: number }) {
           minute: _minute,
           ...rest
         } = match;
-        void _b; void _id; void _p; void _hs; void _as; void _status; void _statusDesc; void _minute;
-        const res = await supabase
-          .from("wc_matches")
-          .insert({ ...rest, video_url: newUrl });
+        void _b;
+        void _id;
+        void _p;
+        void _hs;
+        void _as;
+        void _status;
+        void _statusDesc;
+        void _minute;
+        const res = await supabase.from("wc_matches").insert({ ...rest, video_url: newUrl });
         error = res.error;
       } else {
         const res = await supabase
@@ -610,7 +694,10 @@ function MatchRow({ match, year }: { match: AdminMatch; year: number }) {
           {shortRound(match.round)}
         </span>
         {isBundled && (
-          <span className="text-[9px] uppercase tracking-widest bg-amber-500/15 border border-amber-500/40 text-amber-300 rounded px-1.5 py-0.5 shrink-0" title="Not in DB yet — saving will insert it">
+          <span
+            className="text-[9px] uppercase tracking-widest bg-amber-500/15 border border-amber-500/40 text-amber-300 rounded px-1.5 py-0.5 shrink-0"
+            title="Not in DB yet — saving will insert it"
+          >
             new
           </span>
         )}
@@ -647,8 +734,13 @@ function MatchRow({ match, year }: { match: AdminMatch; year: number }) {
           disabled={!dirty || saving}
           className="px-3 py-2 text-sm rounded-lg bg-amber-500 text-black font-semibold hover:bg-amber-400 disabled:opacity-40 disabled:cursor-not-allowed inline-flex items-center gap-1.5 shrink-0"
         >
-          {saving ? <Loader2 className="size-4 animate-spin" /> :
-            savedAt ? <Check className="size-4" /> : <Save className="size-4" />}
+          {saving ? (
+            <Loader2 className="size-4 animate-spin" />
+          ) : savedAt ? (
+            <Check className="size-4" />
+          ) : (
+            <Save className="size-4" />
+          )}
           {savedAt ? "Saved" : "Save"}
         </button>
       </div>
@@ -667,7 +759,13 @@ function MatchRow({ match, year }: { match: AdminMatch; year: number }) {
 
 function shortRound(r: string): string {
   const lc = r.toLowerCase();
-  if (lc.includes("final") && !lc.includes("semi") && !lc.includes("quarter") && !lc.includes("third")) return "FIN";
+  if (
+    lc.includes("final") &&
+    !lc.includes("semi") &&
+    !lc.includes("quarter") &&
+    !lc.includes("third")
+  )
+    return "FIN";
   if (lc.includes("third")) return "3RD";
   if (lc.includes("semi")) return "SF";
   if (lc.includes("quarter")) return "QF";

@@ -8,9 +8,17 @@ export const Route = createFileRoute("/nhl")({
   head: () => ({
     meta: [
       { title: "NHL Hub — Live Scores, Standings, Players, History" },
-      { name: "description", content: "Live NHL scoreboard, conference standings, team profiles, statistical leaders, player careers, and championship history." },
+      {
+        name: "description",
+        content:
+          "Live NHL scoreboard, conference standings, team profiles, statistical leaders, player careers, and championship history.",
+      },
       { property: "og:title", content: "NHL Pro Hub — Live Scores · Stats · Careers · History" },
-      { property: "og:description", content: "Everything NHL — live games, standings, teams, leaders, player stats, championships." },
+      {
+        property: "og:description",
+        content:
+          "Everything NHL — live games, standings, teams, leaders, player stats, championships.",
+      },
     ],
   }),
   component: NhlLayout,
@@ -23,7 +31,7 @@ function NhlLayout() {
       <Breadcrumbs />
       <NhlHero />
       <NhlSubNav />
-      <main id="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
         <Outlet />
       </main>
     </div>

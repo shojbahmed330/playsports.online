@@ -230,7 +230,7 @@ function MatchPage() {
       <MatchStickyBar match={match} />
       <MatchHero match={match} />
 
-      <main id="main-content" className="max-w-5xl mx-auto px-4 sm:px-6 py-6">
+      <main className="max-w-5xl mx-auto px-4 sm:px-6 py-6">
         <MatchTabs
           tabs={tabs}
           render={(active) => {

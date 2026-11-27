@@ -143,6 +143,10 @@
 - Fixed: shared empty state; `main-content` id; focus-visible cards; `h3` titles; human-readable dates.
 - Kept: tournament-grouped highlight cards and JSON-LD.
 
+## Global
+
+- Fixed: removed duplicate `id="main-content"` from 24 page/component roots; the `__root` wrapper is now the single skip-link target.
+
 ## CRK-01 cricket highlight detail
 
 - Fixed: shared retryable error and not-found states; `main-content` id; 44 px links; focus rings; hidden breadcrumb separators; human-readable dates; removed unused `itemList`.

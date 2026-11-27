@@ -26,13 +26,15 @@ export function IplPageShell({
             <div className="text-[10px] font-black uppercase tracking-[0.25em] text-amber-300/80">
               Indian Premier League
             </div>
-            <h1 className="mt-1 truncate text-2xl sm:text-3xl font-black tracking-tight">{title}</h1>
+            <h1 className="mt-1 truncate text-2xl sm:text-3xl font-black tracking-tight">
+              {title}
+            </h1>
             {subtitle && <p className="mt-1 text-sm text-white/60">{subtitle}</p>}
           </div>
           {right && <div className="shrink-0">{right}</div>}
         </div>
       </header>
-      <main id="main-content" className="max-w-7xl mx-auto px-3 sm:px-6 py-6">{children}</main>
+      <main className="max-w-7xl mx-auto px-3 sm:px-6 py-6">{children}</main>
     </div>
   );
 }

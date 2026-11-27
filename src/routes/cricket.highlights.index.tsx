@@ -97,7 +97,7 @@ function HighlightsHub() {
     <div className="min-h-screen bg-background text-foreground">
       <SportNav />
       <CricketSubNav />
-      <main id="main-content" className="max-w-5xl mx-auto px-4 py-6 sm:py-10">
+      <main className="max-w-5xl mx-auto px-4 py-6 sm:py-10">
         <nav className="text-xs text-muted-foreground mb-4" aria-label="Breadcrumb">
           <Link to="/" className="hover:underline">
             Home

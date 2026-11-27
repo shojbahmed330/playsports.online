@@ -12,12 +12,7 @@ export const Route = createFileRoute("/news/$slug")({
   loader: async ({ params }) => {
     const article = await getNewsRecap(params.slug);
     if (!article) throw notFound();
-    const related = pickRelatedNews(
-      article.slug,
-      article.sport,
-      await listNewsRecaps(12),
-      3,
-    );
+    const related = pickRelatedNews(article.slug, article.sport, await listNewsRecaps(12), 3);
     return { article, related };
   },
   head: ({ params, loaderData }) => {
@@ -102,7 +97,7 @@ function NewsArticlePage() {
     <div className="min-h-screen">
       <SportNav />
       <Breadcrumbs />
-      <main id="main-content" className="max-w-3xl mx-auto px-4 sm:px-6 py-8">
+      <main className="max-w-3xl mx-auto px-4 sm:px-6 py-8">
         <article>
           <header className="space-y-4">
             <div className="flex flex-wrap items-center gap-2 text-[10px] uppercase tracking-wider font-bold">

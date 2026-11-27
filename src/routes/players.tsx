@@ -60,8 +60,20 @@ export const Route = createFileRoute("/players")({
     ],
     links: [{ rel: "canonical", href: "https://www.playsports.online/players" }],
     scripts: [
-      ldScript(collectionPage({ name: "Player Statistics — FIFA World Cup", description: "All-time and live FIFA World Cup top scorers, card leaders and player records.", path: "/players" })),
-      ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "Players", path: "/players" }])),
+      ldScript(
+        collectionPage({
+          name: "Player Statistics — FIFA World Cup",
+          description:
+            "All-time and live FIFA World Cup top scorers, card leaders and player records.",
+          path: "/players",
+        }),
+      ),
+      ldScript(
+        breadcrumbList([
+          { name: "Home", path: "/" },
+          { name: "Players", path: "/players" },
+        ]),
+      ),
       ldScript({
         "@context": "https://schema.org",
         "@type": "FAQPage",
@@ -121,7 +133,6 @@ function PlayersPage() {
 
   // (Live 2026 scorers come from useMergedGoals above — shared query cache.)
 
-
   // Resolve filters
   const selectedYears = useMemo(() => {
     const ys = parseList(search.years).map(Number).filter(Boolean);
@@ -130,14 +141,8 @@ function PlayersPage() {
     return null;
   }, [search.years, search.era]);
 
-  const selectedCountries = useMemo(
-    () => new Set(parseList(search.countries)),
-    [search.countries],
-  );
-  const selectedConfeds = useMemo(
-    () => new Set(parseList(search.confeds)),
-    [search.confeds],
-  );
+  const selectedCountries = useMemo(() => new Set(parseList(search.countries)), [search.countries]);
+  const selectedConfeds = useMemo(() => new Set(parseList(search.confeds)), [search.confeds]);
 
   const countryAllowed = (c: string) => {
     if (selectedCountries.size && !selectedCountries.has(c)) return false;
@@ -161,7 +166,15 @@ function PlayersPage() {
       if (search.q && !fuzzyMatch(g.name, search.q)) return false;
       return true;
     });
-  }, [GOALS, search.goalType, search.pos, search.q, selectedYears, selectedCountries, selectedConfeds]);
+  }, [
+    GOALS,
+    search.goalType,
+    search.pos,
+    search.q,
+    selectedYears,
+    selectedCountries,
+    selectedConfeds,
+  ]);
 
   const filteredCards = useMemo(() => {
     return CARDS.filter((c) => {
@@ -207,29 +220,38 @@ function PlayersPage() {
         gpt: r.years.size ? r.goals / r.years.size : 0,
       }));
 
-    type Enriched = typeof enriched[number];
+    type Enriched = (typeof enriched)[number];
     const sorters: Record<string, (a: Enriched, b: Enriched) => number> = {
       goals: (a, b) => b.goals - a.goals || a.name.localeCompare(b.name),
       goals_per_tournament: (a, b) => b.gpt - a.gpt || b.goals - a.goals,
       tournaments: (a, b) => b.tournaments - a.tournaments || b.goals - a.goals,
       name: (a, b) => a.name.localeCompare(b.name),
       recent: (a, b) =>
-        (b.yearsList[b.yearsList.length - 1] ?? 0) -
-          (a.yearsList[a.yearsList.length - 1] ?? 0) || b.goals - a.goals,
+        (b.yearsList[b.yearsList.length - 1] ?? 0) - (a.yearsList[a.yearsList.length - 1] ?? 0) ||
+        b.goals - a.goals,
     };
     const sorter = sorters[search.sort] ?? sorters.goals;
     return enriched.sort(sorter).slice(0, 100);
   }, [filteredGoals, search.minGoals, search.sort]);
 
-  const topYellow = useMemo(() => buildCardLeaderboard(filteredCards, "yellow", 15), [filteredCards]);
+  const topYellow = useMemo(
+    () => buildCardLeaderboard(filteredCards, "yellow", 15),
+    [filteredCards],
+  );
   const topRed = useMemo(() => buildCardLeaderboard(filteredCards, "red", 15), [filteredCards]);
 
   const countryStats = useMemo(() => {
-    const agg = new Map<string, {
-      country: string; years: Set<number>; goals: number;
-      players: Set<string>; topScorer: { name: string; goals: number } | null;
-      scorerCount: Map<string, { name: string; goals: number }>;
-    }>();
+    const agg = new Map<
+      string,
+      {
+        country: string;
+        years: Set<number>;
+        goals: number;
+        players: Set<string>;
+        topScorer: { name: string; goals: number } | null;
+        scorerCount: Map<string, { name: string; goals: number }>;
+      }
+    >();
     for (const g of GOALS) {
       if (g.og) continue;
       if (selectedConfeds.size) {
@@ -239,8 +261,14 @@ function PlayersPage() {
       const key = g.pteam;
       let ex = agg.get(key);
       if (!ex) {
-        ex = { country: g.pteam, years: new Set(), goals: 0,
-               players: new Set(), topScorer: null, scorerCount: new Map() };
+        ex = {
+          country: g.pteam,
+          years: new Set(),
+          goals: 0,
+          players: new Set(),
+          topScorer: null,
+          scorerCount: new Map(),
+        };
         agg.set(key, ex);
       }
       ex.goals++;
@@ -256,8 +284,11 @@ function PlayersPage() {
         if (!top || s.goals > top.goals) top = s;
       }
       return {
-        country: c.country, tournaments: c.years.size, goals: c.goals,
-        playerCount: c.players.size, topScorer: top,
+        country: c.country,
+        tournaments: c.years.size,
+        goals: c.goals,
+        playerCount: c.players.size,
+        topScorer: top,
       };
     });
     out.sort((a, b) => b.tournaments - a.tournaments || b.goals - a.goals);
@@ -274,7 +305,9 @@ function PlayersPage() {
   void activePlayer; // sheet reads it itself
 
   const sharePage = async () => {
-    try { await navigator.clipboard.writeText(window.location.href); } catch {}
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+    } catch {}
   };
 
   return (
@@ -303,7 +336,10 @@ function PlayersPage() {
               to="/players"
               className="relative inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs sm:text-sm font-extrabold text-black shadow-md shadow-amber-500/20 bg-gradient-to-r from-amber-300 via-yellow-300 to-amber-400 ring-1 ring-amber-200/60"
             >
-              <span aria-hidden className="absolute -inset-px rounded-xl bg-gradient-to-r from-amber-300/40 to-yellow-200/40 blur-sm -z-10" />
+              <span
+                aria-hidden
+                className="absolute -inset-px rounded-xl bg-gradient-to-r from-amber-300/40 to-yellow-200/40 blur-sm -z-10"
+              />
               <Trophy className="size-3.5" />
               <span>Players</span>
               <span className="ml-0.5 inline-flex size-1.5 rounded-full bg-black/70 animate-pulse" />
@@ -353,7 +389,7 @@ function PlayersPage() {
 
       <PlayerSubNav />
 
-      <main id="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-8">
         {/* Filters: desktop bar + mobile sheet trigger */}
         <section className="space-y-3">
           <div className="flex items-center justify-between gap-2 md:hidden">
@@ -378,17 +414,11 @@ function PlayersPage() {
           />
         )}
 
-        {search.tab === "scorers" && (
-          <ScorersTab rows={topScorers} onPick={openPlayer} />
-        )}
+        {search.tab === "scorers" && <ScorersTab rows={topScorers} onPick={openPlayer} />}
 
-        {search.tab === "discipline" && (
-          <DisciplineTab yellow={topYellow} red={topRed} />
-        )}
+        {search.tab === "discipline" && <DisciplineTab yellow={topYellow} red={topRed} />}
 
-        {search.tab === "countries" && (
-          <CountriesTab rows={countryStats} />
-        )}
+        {search.tab === "countries" && <CountriesTab rows={countryStats} />}
 
         {search.tab === "rankings" && <RankingsTab />}
 
@@ -420,8 +450,16 @@ function countCountUnique(rows: GoalRow[]): number {
 
 /* ───────── KPI strip ───────── */
 function KpiStrip({
-  totalPlayers, totalGoals, tournaments, live2026,
-}: { totalPlayers: number; totalGoals: number; tournaments: number; live2026: number }) {
+  totalPlayers,
+  totalGoals,
+  tournaments,
+  live2026,
+}: {
+  totalPlayers: number;
+  totalGoals: number;
+  tournaments: number;
+  live2026: number;
+}) {
   const items = [
     { label: "Players tracked", value: totalPlayers.toLocaleString() },
     { label: "Goals recorded", value: totalGoals.toLocaleString() },
@@ -449,15 +487,29 @@ function KpiStrip({
 
 /* ───────── Overview tab ───────── */
 type ScorerRow = {
-  name: string; country: string; goals: number; tournaments: number;
-  yearsList: number[]; live2026: number; gpt: number;
+  name: string;
+  country: string;
+  goals: number;
+  tournaments: number;
+  yearsList: number[];
+  live2026: number;
+  gpt: number;
 };
 
 function OverviewTab({
-  topScorers, countryStats, onPickPlayer, live2026Count,
+  topScorers,
+  countryStats,
+  onPickPlayer,
+  live2026Count,
 }: {
   topScorers: ScorerRow[];
-  countryStats: { country: string; tournaments: number; goals: number; playerCount: number; topScorer: { name: string; goals: number } | null }[];
+  countryStats: {
+    country: string;
+    tournaments: number;
+    goals: number;
+    playerCount: number;
+    topScorer: { name: string; goals: number } | null;
+  }[];
   onPickPlayer: (n: string, c: string) => void;
   live2026Count: number;
 }) {
@@ -537,7 +589,10 @@ function OverviewTab({
               {live2026Count} active scorers are merged into the leaderboards above.
             </div>
           </div>
-          <button onClick={() => go("scorers")} className="text-xs text-emerald-300 hover:underline">
+          <button
+            onClick={() => go("scorers")}
+            className="text-xs text-emerald-300 hover:underline"
+          >
             View leaderboard →
           </button>
         </div>
@@ -548,16 +603,18 @@ function OverviewTab({
 
 /* ───────── Scorers tab ───────── */
 function ScorersTab({
-  rows, onPick,
-}: { rows: ScorerRow[]; onPick: (n: string, c: string) => void }) {
+  rows,
+  onPick,
+}: {
+  rows: ScorerRow[];
+  onPick: (n: string, c: string) => void;
+}) {
   return (
     <section className="space-y-4">
       <Wc2026Podium onPick={onPick} />
       <div className="flex items-baseline justify-between flex-wrap gap-2">
         <h2 className="text-xl sm:text-2xl font-bold">🥇 Top Scorers</h2>
-        <span className="text-xs text-muted-foreground tabular-nums">
-          Showing {rows.length}
-        </span>
+        <span className="text-xs text-muted-foreground tabular-nums">Showing {rows.length}</span>
       </div>
       {rows.length === 0 ? (
         <EmptyBlock label="No goal data matches the current filters." />
@@ -574,7 +631,14 @@ function ScorersTab({
             <div>Years</div>
           </div>
           <ul className="divide-y divide-border">
-            {rows.map((r, i) => <ScorerRowItem key={r.name + r.country + i} rank={i + 1} row={r} onPick={() => onPick(r.name, r.country)} />)}
+            {rows.map((r, i) => (
+              <ScorerRowItem
+                key={r.name + r.country + i}
+                rank={i + 1}
+                row={r}
+                onPick={() => onPick(r.name, r.country)}
+              />
+            ))}
           </ul>
         </div>
       )}
@@ -583,14 +647,23 @@ function ScorersTab({
 }
 
 function ScorerRowItem({
-  rank, row, onPick,
-}: { rank: number; row: ScorerRow; onPick: () => void }) {
+  rank,
+  row,
+  onPick,
+}: {
+  rank: number;
+  row: ScorerRow;
+  onPick: () => void;
+}) {
   const medal = rank === 1 ? "🥇" : rank === 2 ? "🥈" : rank === 3 ? "🥉" : null;
   const tint =
-    rank === 1 ? "bg-gradient-to-r from-amber-500/15 via-amber-500/[0.03] to-transparent"
-    : rank === 2 ? "bg-gradient-to-r from-zinc-300/10 to-transparent"
-    : rank === 3 ? "bg-gradient-to-r from-orange-700/15 to-transparent"
-    : "";
+    rank === 1
+      ? "bg-gradient-to-r from-amber-500/15 via-amber-500/[0.03] to-transparent"
+      : rank === 2
+        ? "bg-gradient-to-r from-zinc-300/10 to-transparent"
+        : rank === 3
+          ? "bg-gradient-to-r from-orange-700/15 to-transparent"
+          : "";
 
   return (
     <li
@@ -637,7 +710,8 @@ function ScorerRowItem({
 
 /* ───────── Discipline tab ───────── */
 function DisciplineTab({
-  yellow, red,
+  yellow,
+  red,
 }: {
   yellow: { name: string; country: string; total: number }[];
   red: { name: string; country: string; total: number }[];
@@ -654,9 +728,12 @@ function DisciplineTab({
 }
 
 function CardTable({
-  title, accent, rows,
+  title,
+  accent,
+  rows,
 }: {
-  title: string; accent: "yellow" | "red";
+  title: string;
+  accent: "yellow" | "red";
   rows: { name: string; country: string; total: number }[];
 }) {
   const badge = accent === "yellow" ? "bg-yellow-400" : "bg-red-600";
@@ -671,18 +748,23 @@ function CardTable({
       ) : (
         <ol className="divide-y divide-border">
           {rows.map((r, i) => (
-            <li key={r.name + r.country + i} className="flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-accent/40">
+            <li
+              key={r.name + r.country + i}
+              className="flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-accent/40"
+            >
               <span className="w-6 text-muted-foreground font-semibold tabular-nums">{i + 1}</span>
               <span className="text-base">{flagOf(r.country)}</span>
               <span className="font-medium truncate flex-1">{r.name}</span>
               <span className="text-xs text-muted-foreground hidden sm:inline truncate max-w-[120px]">
                 {r.country}
               </span>
-              <span className={`inline-flex items-center justify-center min-w-[36px] px-2 py-0.5 rounded text-xs font-bold ${
-                accent === "yellow"
-                  ? "bg-yellow-400/15 text-yellow-300 ring-1 ring-yellow-400/40"
-                  : "bg-red-500/15 text-red-300 ring-1 ring-red-500/40"
-              }`}>
+              <span
+                className={`inline-flex items-center justify-center min-w-[36px] px-2 py-0.5 rounded text-xs font-bold ${
+                  accent === "yellow"
+                    ? "bg-yellow-400/15 text-yellow-300 ring-1 ring-yellow-400/40"
+                    : "bg-red-500/15 text-red-300 ring-1 ring-red-500/40"
+                }`}
+              >
                 {r.total}
               </span>
             </li>
@@ -711,13 +793,21 @@ function buildCardLeaderboard(rows: CardRow[], type: "yellow" | "red", limit: nu
 function CountriesTab({
   rows,
 }: {
-  rows: { country: string; tournaments: number; goals: number; playerCount: number; topScorer: { name: string; goals: number } | null }[];
+  rows: {
+    country: string;
+    tournaments: number;
+    goals: number;
+    playerCount: number;
+    topScorer: { name: string; goals: number } | null;
+  }[];
 }) {
   return (
     <section className="space-y-4">
       <div className="flex items-baseline justify-between flex-wrap gap-2">
         <h2 className="text-xl sm:text-2xl font-bold">🌍 Country Statistics</h2>
-        <span className="text-xs text-muted-foreground">All-time totals · {rows.length} nations</span>
+        <span className="text-xs text-muted-foreground">
+          All-time totals · {rows.length} nations
+        </span>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {rows.map((c) => (
@@ -751,7 +841,9 @@ function CountriesTab({
 function CStat({ label, value, accent }: { label: string; value: number; accent?: boolean }) {
   return (
     <div>
-      <div className={`text-xl font-extrabold tabular-nums ${accent ? "text-gold" : ""}`}>{value}</div>
+      <div className={`text-xl font-extrabold tabular-nums ${accent ? "text-gold" : ""}`}>
+        {value}
+      </div>
       <div className="text-[10px] uppercase tracking-wider text-muted-foreground">{label}</div>
     </div>
   );
@@ -770,7 +862,10 @@ function RankingsTab() {
           <h3 className="text-sm font-bold mb-3 text-gold">Men's National Teams</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1.5 text-sm">
             {fifaRankings.countries.map((c) => (
-              <div key={c.rank} className="flex items-center justify-between gap-2 py-1 border-b border-border/60">
+              <div
+                key={c.rank}
+                className="flex items-center justify-between gap-2 py-1 border-b border-border/60"
+              >
                 <div className="flex items-center gap-2 min-w-0">
                   <span className="text-xs text-muted-foreground w-6 tabular-nums">#{c.rank}</span>
                   <span className="text-lg">{flagOf(c.country)}</span>
@@ -786,7 +881,10 @@ function RankingsTab() {
           <h3 className="text-sm font-bold mb-3 text-gold">Top Current Players</h3>
           <div className="space-y-1.5 text-sm">
             {fifaRankings.players.map((p) => (
-              <div key={p.rank} className="flex items-center justify-between gap-2 py-1 border-b border-border/60">
+              <div
+                key={p.rank}
+                className="flex items-center justify-between gap-2 py-1 border-b border-border/60"
+              >
                 <div className="flex items-center gap-2 min-w-0">
                   <span className="text-xs text-muted-foreground w-6 tabular-nums">#{p.rank}</span>
                   <span className="text-lg">{flagOf(p.country)}</span>
@@ -797,7 +895,8 @@ function RankingsTab() {
             ))}
           </div>
           <p className="text-[10px] text-muted-foreground mt-3">
-            Curated from 2024 Ballon d'Or shortlist + recent form. FIFA does not publish an official player ranking.
+            Curated from 2024 Ballon d'Or shortlist + recent form. FIFA does not publish an official
+            player ranking.
           </p>
         </div>
       </div>
@@ -812,8 +911,6 @@ function EmptyBlock({ label }: { label: string }) {
     </div>
   );
 }
-
-
 
 function SectionSkeleton() {
   return (

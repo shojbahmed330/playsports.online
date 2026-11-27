@@ -189,7 +189,7 @@ function CricketIndex() {
       <CricketHero matches={allMatches} liveCount={liveAll} />
       <LivePulseStrip matches={allMatches} />
 
-      <main id="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-10">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-10">
         {q.isError && allMatches.length === 0 && (
           <ErrorState
             title="Cricket scores are temporarily unavailable"

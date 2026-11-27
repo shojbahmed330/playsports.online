@@ -186,7 +186,7 @@ function SeriesPage() {
         </div>
       </section>
 
-      <main id="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-10">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-10">
         {q.isError && !q.data ? (
           <ErrorState
             title="Could not load this series"

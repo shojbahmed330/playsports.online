@@ -20,7 +20,11 @@ import { AdSlot } from "@/components/ads/AdSlot";
 import { Wc2026GroupsView, Wc2026KnockoutView } from "@/components/wc/Wc2026View";
 import { Wc2026TodayView } from "@/components/wc/Wc2026TodayView";
 import { FootballHero } from "@/components/football/FootballHero";
-import { FootballSubNav, type SubNavTab, type SubNavBadges } from "@/components/football/FootballSubNav";
+import {
+  FootballSubNav,
+  type SubNavTab,
+  type SubNavBadges,
+} from "@/components/football/FootballSubNav";
 import { Wc2026ScorersPanel } from "@/components/football/Wc2026ScorersPanel";
 import { FootballFilterBar } from "@/components/football/FootballFilterBar";
 import { FootballCoachmark, ReplayTourButton } from "@/components/football/FootballCoachmark";
@@ -30,18 +34,28 @@ import { CurrentLeaguesStrip } from "@/components/football/CurrentLeaguesStrip";
 import { useWc2026Pulse } from "@/lib/use-wc2026-pulse";
 import { applyFilter, uniqueTeams, useMyTeams, type FootballFilter } from "@/lib/football-filters";
 import { Breadcrumbs } from "@/components/nav/Breadcrumbs";
-import { breadcrumbList, collectionPage, sportsOrganization, faqPage, ldScript } from "@/lib/seo/jsonld";
+import {
+  breadcrumbList,
+  collectionPage,
+  sportsOrganization,
+  faqPage,
+  ldScript,
+} from "@/lib/seo/jsonld";
 import { getWc2026Fixtures, getWc2026Standings } from "@/lib/wc2026.functions";
 import { findClassicWcVideoUrl } from "@/lib/wc-video-seed";
-
-
 
 const GROUP_MATCHES_BY_YEAR = groupMatchesData as Record<string, WCMatch[]>;
 
 const FILTER_VALUES: FootballFilter[] = ["all", "live", "today", "my"];
 const TAB_VALUES: SubNavTab[] = ["today", "groups", "knockout", "scorers"];
 
-type FootballSearch = { year?: number; filter?: FootballFilter; team?: string; tab?: SubNavTab; date?: string };
+type FootballSearch = {
+  year?: number;
+  filter?: FootballFilter;
+  team?: string;
+  tab?: SubNavTab;
+  date?: string;
+};
 
 function withClassicVideo(m: WCMatch): WCMatch {
   if (m.video_url) return m;
@@ -55,7 +69,8 @@ export const Route = createFileRoute("/football/")({
     const f = String(s.filter ?? "");
     const t = typeof s.team === "string" && s.team.trim().length > 0 ? s.team.trim() : undefined;
     const tb = String(s.tab ?? "");
-    const dRaw = typeof s.date === "string" && /^\d{4}-\d{2}-\d{2}$/.test(s.date) ? s.date : undefined;
+    const dRaw =
+      typeof s.date === "string" && /^\d{4}-\d{2}-\d{2}$/.test(s.date) ? s.date : undefined;
     return {
       year: WC_YEARS.includes(y) ? y : undefined,
       filter: (FILTER_VALUES as string[]).includes(f) ? (f as FootballFilter) : undefined,
@@ -85,14 +100,36 @@ export const Route = createFileRoute("/football/")({
       ],
       links: [{ rel: "canonical", href: "https://www.playsports.online/football" }],
       scripts: [
-        ldScript(collectionPage({ name: "Live Football Scores, Tables & Fixtures", description, path: "/football" })),
+        ldScript(
+          collectionPage({
+            name: "Live Football Scores, Tables & Fixtures",
+            description,
+            path: "/football",
+          }),
+        ),
         ldScript(sportsOrganization({ name: "Football", path: "/football", sport: "Football" })),
-        ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "Football", path: "/football" }])),
-        ldScript(faqPage([
-          { q: "Which football competitions does PlaySports cover?", a: "PlaySports covers the Premier League, Champions League, La Liga, World Cup archive and more, with live scores, fixtures and tables." },
-          { q: "How often do football scores update?", a: "Live football scores refresh automatically while matches are in progress." },
-          { q: "Does PlaySports cover the FIFA World Cup?", a: "Yes — the complete FIFA World Cup archive from 1930 onwards, including the 2026 tournament." },
-        ])),
+        ldScript(
+          breadcrumbList([
+            { name: "Home", path: "/" },
+            { name: "Football", path: "/football" },
+          ]),
+        ),
+        ldScript(
+          faqPage([
+            {
+              q: "Which football competitions does PlaySports cover?",
+              a: "PlaySports covers the Premier League, Champions League, La Liga, World Cup archive and more, with live scores, fixtures and tables.",
+            },
+            {
+              q: "How often do football scores update?",
+              a: "Live football scores refresh automatically while matches are in progress.",
+            },
+            {
+              q: "Does PlaySports cover the FIFA World Cup?",
+              a: "Yes — the complete FIFA World Cup archive from 1930 onwards, including the 2026 tournament.",
+            },
+          ]),
+        ),
       ],
     };
   },
@@ -118,7 +155,6 @@ export const Route = createFileRoute("/football/")({
   component: Index,
 });
 
-
 function classifyRound(round: string): RoundKey | "group" | null {
   const r = round.toLowerCase().trim();
   if (r.includes("group")) return "group";
@@ -131,12 +167,32 @@ function classifyRound(round: string): RoundKey | "group" | null {
 }
 
 const ROUND_HEADER: Record<RoundKey, { label: string; grad: string; glow: string }> = {
-  round_of_32:   { label: "Round of 32",   grad: "from-sky-600 to-cyan-500",      glow: "shadow-sky-500/30" },
-  round_of_16:   { label: "Round of 16",   grad: "from-blue-600 to-blue-500",   glow: "shadow-blue-500/30" },
-  quarter_final: { label: "Quarter Final", grad: "from-purple-600 to-purple-500", glow: "shadow-purple-500/30" },
-  semi_final:    { label: "Semi Final",    grad: "from-orange-600 to-orange-500", glow: "shadow-orange-500/30" },
-  final:         { label: "Final",         grad: "from-amber-500 to-yellow-400",  glow: "shadow-amber-500/30" },
-  third_place:   { label: "3rd Place",     grad: "from-zinc-600 to-zinc-500",     glow: "shadow-zinc-500/20" },
+  round_of_32: {
+    label: "Round of 32",
+    grad: "from-sky-600 to-cyan-500",
+    glow: "shadow-sky-500/30",
+  },
+  round_of_16: {
+    label: "Round of 16",
+    grad: "from-blue-600 to-blue-500",
+    glow: "shadow-blue-500/30",
+  },
+  quarter_final: {
+    label: "Quarter Final",
+    grad: "from-purple-600 to-purple-500",
+    glow: "shadow-purple-500/30",
+  },
+  semi_final: {
+    label: "Semi Final",
+    grad: "from-orange-600 to-orange-500",
+    glow: "shadow-orange-500/30",
+  },
+  final: { label: "Final", grad: "from-amber-500 to-yellow-400", glow: "shadow-amber-500/30" },
+  third_place: {
+    label: "3rd Place",
+    grad: "from-zinc-600 to-zinc-500",
+    glow: "shadow-zinc-500/20",
+  },
 };
 
 function Index() {
@@ -164,7 +220,6 @@ function Index() {
   // Live pulse — drives tab badges + smart-default selection
   const pulse = useWc2026Pulse();
 
-
   // Sync URL ?year= and ?tab= when changed
   useEffect(() => {
     navigate({ search: (prev: FootballSearch) => ({ ...prev, year }), replace: true });
@@ -177,7 +232,10 @@ function Index() {
   }, [tab, navigate]);
   // External tab change (e.g. from MobileTabBar Link) → adopt into state
   useEffect(() => {
-    if (search.tab && search.tab !== tab) { setTab(search.tab); setUserPickedTab(true); }
+    if (search.tab && search.tab !== tab) {
+      setTab(search.tab);
+      setUserPickedTab(true);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search.tab]);
 
@@ -186,17 +244,32 @@ function Index() {
   // otherwise fall back to the most relevant stage tab.
   useEffect(() => {
     if (userPickedTab || pulse.loading || year !== LIVE_YEAR) return;
-    if (pulse.liveCount > 0 || pulse.todayCount > 0) { setTab("today"); return; }
-    if (pulse.finalToday) { setTab("knockout"); return; }
-    if (pulse.groupStageOver && pulse.hasKnockout) { setTab("knockout"); return; }
+    if (pulse.liveCount > 0 || pulse.todayCount > 0) {
+      setTab("today");
+      return;
+    }
+    if (pulse.finalToday) {
+      setTab("knockout");
+      return;
+    }
+    if (pulse.groupStageOver && pulse.hasKnockout) {
+      setTab("knockout");
+      return;
+    }
     // No live action → keep Today as the default so users see "next match".
     setTab("today");
   }, [pulse, userPickedTab, year, LIVE_YEAR]);
 
-  const setTabUser = (t: SubNavTab) => { setUserPickedTab(true); setTab(t); };
+  const setTabUser = (t: SubNavTab) => {
+    setUserPickedTab(true);
+    setTab(t);
+  };
 
   const setFilter = (f: FootballFilter) => {
-    navigate({ search: (prev: FootballSearch) => ({ ...prev, filter: f === "all" ? undefined : f }), replace: true });
+    navigate({
+      search: (prev: FootballSearch) => ({ ...prev, filter: f === "all" ? undefined : f }),
+      replace: true,
+    });
   };
   const setTeamFilter = (t: string | undefined) => {
     navigate({ search: (prev: FootballSearch) => ({ ...prev, team: t }), replace: true });
@@ -210,7 +283,9 @@ function Index() {
   useEffect(() => {
     try {
       setHintSeen(localStorage.getItem("wc_hint_seen") === "1");
-    } catch { /* ignore */ }
+    } catch {
+      /* ignore */
+    }
   }, []);
 
   const TEN_MIN = 10 * 60 * 1000;
@@ -222,7 +297,10 @@ function Index() {
     gcTime: THIRTY_MIN,
     queryFn: async (): Promise<WCTournament | null> => {
       const { data, error } = await supabase
-        .from("wc_tournaments").select("*").eq("year", year).maybeSingle();
+        .from("wc_tournaments")
+        .select("*")
+        .eq("year", year)
+        .maybeSingle();
       if (error) throw error;
       return data as WCTournament | null;
     },
@@ -234,7 +312,9 @@ function Index() {
     gcTime: THIRTY_MIN,
     queryFn: async (): Promise<WCMatch[]> => {
       const { data, error } = await supabase
-        .from("wc_matches").select("*").eq("tournament_year", year)
+        .from("wc_matches")
+        .select("*")
+        .eq("tournament_year", year)
         .order("match_number", { ascending: true });
       if (error) throw error;
       return (data ?? []) as WCMatch[];
@@ -247,19 +327,18 @@ function Index() {
     gcTime: THIRTY_MIN,
     queryFn: async (): Promise<WCGroup[]> => {
       const { data, error } = await supabase
-        .from("wc_groups").select("*").eq("tournament_year", year);
+        .from("wc_groups")
+        .select("*")
+        .eq("tournament_year", year);
       if (error) throw error;
       return (data ?? []) as WCGroup[];
     },
   });
 
-
   // Merge group-stage fixtures from bundled dataset (DB only has knockout rows).
   const allMatches = useMemo<WCMatch[]>(() => {
     const dbMatches = (matches.data ?? []).map(withClassicVideo);
-    const seen = new Set(
-      dbMatches.map((m) => `${m.home_team}|${m.away_team}|${m.round}`),
-    );
+    const seen = new Set(dbMatches.map((m) => `${m.home_team}|${m.away_team}|${m.round}`));
     const groupRows = (GROUP_MATCHES_BY_YEAR[String(year)] ?? [])
       .filter((m) => !seen.has(`${m.home_team}|${m.away_team}|${m.round}`))
       .map(withClassicVideo);
@@ -282,8 +361,7 @@ function Index() {
       if (!k || k === "group") continue;
       (buckets[k] ||= []).push(m);
     }
-    const sortByNum = (a: WCMatch, b: WCMatch) =>
-      (a.match_number ?? 0) - (b.match_number ?? 0);
+    const sortByNum = (a: WCMatch, b: WCMatch) => (a.match_number ?? 0) - (b.match_number ?? 0);
 
     const normalizeTeam = (team: string) => team.trim().toLowerCase();
     const winnerTeam = (m: WCMatch): string | null => {
@@ -350,12 +428,19 @@ function Index() {
 
   const teamCount = useMemo(() => {
     const s = new Set<string>();
-    allMatches.forEach((m) => { s.add(m.home_team); s.add(m.away_team); });
+    allMatches.forEach((m) => {
+      s.add(m.home_team);
+      s.add(m.away_team);
+    });
     return s.size;
   }, [allMatches]);
 
   const dismissHint = () => {
-    try { localStorage.setItem("wc_hint_seen", "1"); } catch { /* ignore */ }
+    try {
+      localStorage.setItem("wc_hint_seen", "1");
+    } catch {
+      /* ignore */
+    }
     setHintSeen(true);
   };
 
@@ -368,15 +453,19 @@ function Index() {
       <FootballHubSwitcher activeSlug="world-cup" />
       <Breadcrumbs />
 
-
-
       {/* HERO — live-aware for the active WC year, classic for archive years */}
       {year === LIVE_YEAR ? (
         <>
           <FootballHero />
           <section className="relative overflow-hidden border-b border-border">
             <div className="relative max-w-5xl mx-auto px-4 sm:px-6 py-5 sm:py-6 flex flex-wrap items-center justify-center gap-3">
-              <YearDropdown year={year} onChange={(y: number) => { setYear(y); toast(`Viewing ${y} World Cup`, { duration: 1800 }); }} />
+              <YearDropdown
+                year={year}
+                onChange={(y: number) => {
+                  setYear(y);
+                  toast(`Viewing ${y} World Cup`, { duration: 1800 });
+                }}
+              />
               <FavoritesChip onOpen={() => setPickerOpen(true)} />
             </div>
           </section>
@@ -401,10 +490,19 @@ function Index() {
               FIFA World Cup <span className="text-gold">Archive</span>
             </h1>
             <p className="mt-3 sm:mt-4 text-sm sm:text-lg text-muted-foreground max-w-xl mx-auto px-2">
-              Complete tournament history from <span className="text-foreground font-semibold">1930</span> to <span className="text-foreground font-semibold">{LIVE_YEAR}</span>. Every match, every champion.
+              Complete tournament history from{" "}
+              <span className="text-foreground font-semibold">1930</span> to{" "}
+              <span className="text-foreground font-semibold">{LIVE_YEAR}</span>. Every match, every
+              champion.
             </p>
             <div className="mt-8 sm:mt-10 flex flex-wrap items-center justify-center gap-3">
-              <YearDropdown year={year} onChange={(y: number) => { setYear(y); toast(`Viewing ${y} World Cup`, { duration: 1800 }); }} />
+              <YearDropdown
+                year={year}
+                onChange={(y: number) => {
+                  setYear(y);
+                  toast(`Viewing ${y} World Cup`, { duration: 1800 });
+                }}
+              />
               <FavoritesChip onOpen={() => setPickerOpen(true)} />
             </div>
           </div>
@@ -412,24 +510,43 @@ function Index() {
       )}
 
       {/* CONTENT */}
-      <main id="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6 space-y-6">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6 space-y-6">
         <CurrentLeaguesStrip />
         {year === LIVE_YEAR ? (
           <>
-
             <FootballSubNav
               active={tab}
               onChange={setTabUser}
               badges={{
-                today: (pulse.liveCount + pulse.todayCount) > 0
-                  ? { count: pulse.liveCount > 0 ? pulse.liveCount : pulse.todayCount, live: pulse.liveCount > 0, label: pulse.liveCount > 0 ? `${pulse.liveCount} live now` : `${pulse.todayCount} today` }
-                  : undefined,
-                groups: pulse.groupTodayCount > 0
-                  ? { count: pulse.groupTodayCount, live: pulse.liveCount > 0, label: `${pulse.groupTodayCount} group game${pulse.groupTodayCount === 1 ? "" : "s"} today` }
-                  : undefined,
-                knockout: pulse.knockoutTodayCount > 0
-                  ? { count: pulse.knockoutTodayCount, live: pulse.liveCount > 0, label: pulse.finalToday ? "Final today" : `${pulse.knockoutTodayCount} knockout today` }
-                  : undefined,
+                today:
+                  pulse.liveCount + pulse.todayCount > 0
+                    ? {
+                        count: pulse.liveCount > 0 ? pulse.liveCount : pulse.todayCount,
+                        live: pulse.liveCount > 0,
+                        label:
+                          pulse.liveCount > 0
+                            ? `${pulse.liveCount} live now`
+                            : `${pulse.todayCount} today`,
+                      }
+                    : undefined,
+                groups:
+                  pulse.groupTodayCount > 0
+                    ? {
+                        count: pulse.groupTodayCount,
+                        live: pulse.liveCount > 0,
+                        label: `${pulse.groupTodayCount} group game${pulse.groupTodayCount === 1 ? "" : "s"} today`,
+                      }
+                    : undefined,
+                knockout:
+                  pulse.knockoutTodayCount > 0
+                    ? {
+                        count: pulse.knockoutTodayCount,
+                        live: pulse.liveCount > 0,
+                        label: pulse.finalToday
+                          ? "Final today"
+                          : `${pulse.knockoutTodayCount} knockout today`,
+                      }
+                    : undefined,
               }}
             />
 
@@ -453,7 +570,12 @@ function Index() {
               </section>
             ) : tab === "groups" ? (
               <section key="groups-2026" className="wc-tab-content" id="fixtures">
-                <Wc2026GroupsView filter={filter} team={teamFilter} date={dateFilter} onDateChange={setDateFilter} />
+                <Wc2026GroupsView
+                  filter={filter}
+                  team={teamFilter}
+                  date={dateFilter}
+                  onDateChange={setDateFilter}
+                />
               </section>
             ) : tab === "scorers" ? (
               <section key="scorers-2026" className="wc-tab-content animate-fade-in" id="scorers">
@@ -461,10 +583,14 @@ function Index() {
               </section>
             ) : (
               <section key="knockout-2026" className="wc-tab-content" id="fixtures">
-                <Wc2026KnockoutView filter={filter} team={teamFilter} date={dateFilter} onDateChange={setDateFilter} />
+                <Wc2026KnockoutView
+                  filter={filter}
+                  team={teamFilter}
+                  date={dateFilter}
+                  onDateChange={setDateFilter}
+                />
               </section>
             )}
-
 
             <AdSlot slot="in_content" layout="in-article" />
           </>
@@ -488,10 +614,18 @@ function Index() {
             {/* TABS */}
             <div className="flex justify-center">
               <div className="bg-gray-900 rounded-2xl p-1 inline-flex gap-1 border border-gray-800">
-                <TabBtn active={tab === "groups"} onClick={() => setTabUser("groups")} icon={<Users className="size-4" />}>
+                <TabBtn
+                  active={tab === "groups"}
+                  onClick={() => setTabUser("groups")}
+                  icon={<Users className="size-4" />}
+                >
                   Group Stage
                 </TabBtn>
-                <TabBtn active={tab === "knockout"} onClick={() => setTabUser("knockout")} icon={<Swords className="size-4" />}>
+                <TabBtn
+                  active={tab === "knockout"}
+                  onClick={() => setTabUser("knockout")}
+                  icon={<Swords className="size-4" />}
+                >
                   Knockout Bracket
                 </TabBtn>
               </div>
@@ -502,7 +636,12 @@ function Index() {
 
             {tab === "groups" ? (
               <section key="groups" className="wc-tab-content">
-                <GroupStage groups={groups.data ?? []} matches={allMatches} year={year} onPick={openArchiveMatch} />
+                <GroupStage
+                  groups={groups.data ?? []}
+                  matches={allMatches}
+                  year={year}
+                  onPick={openArchiveMatch}
+                />
               </section>
             ) : (
               <section key="knockout" className="wc-tab-content">
@@ -541,7 +680,10 @@ function Index() {
 
       <MatchModal match={activeMatch} onClose={() => setActiveMatch(null)} />
 
-      <FootballCoachmark key={replayTour > 0 ? `replay-${replayTour}` : "init"} force={replayTour > 0} />
+      <FootballCoachmark
+        key={replayTour > 0 ? `replay-${replayTour}` : "init"}
+        force={replayTour > 0}
+      />
       <BackToTopFab />
       <FavoriteTeamPicker open={pickerOpen} onOpenChange={setPickerOpen} initialSport="football" />
     </div>
@@ -562,15 +704,25 @@ function FavoritesChip({ onOpen }: { onOpen: () => void }) {
 }
 
 function TabBtn({
-  active, onClick, children, icon,
-}: { active: boolean; onClick: () => void; children: React.ReactNode; icon: React.ReactNode }) {
+  active,
+  onClick,
+  children,
+  icon,
+}: {
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+  icon: React.ReactNode;
+}) {
   return (
     <button
       onClick={onClick}
       className={`px-6 py-2.5 rounded-xl text-sm transition-all duration-200 inline-flex items-center gap-2
-        ${active
-          ? "bg-gradient-to-r from-amber-500 to-amber-600 text-black font-bold shadow-md shadow-amber-500/20"
-          : "text-gray-400 hover:text-gray-200"}`}
+        ${
+          active
+            ? "bg-gradient-to-r from-amber-500 to-amber-600 text-black font-bold shadow-md shadow-amber-500/20"
+            : "text-gray-400 hover:text-gray-200"
+        }`}
     >
       {icon}
       {children}
@@ -579,7 +731,13 @@ function TabBtn({
 }
 
 function BracketColumn({
-  round, matches, extra, onPick, colIndex, showHint, onDismissHint,
+  round,
+  matches,
+  extra,
+  onPick,
+  colIndex,
+  showHint,
+  onDismissHint,
 }: {
   round: RoundKey;
   matches: WCMatch[];
@@ -611,9 +769,17 @@ function BracketColumn({
         {matches.map((m, i) => (
           <div
             key={m.id}
-            onClick={() => { if (showHint) onDismissHint?.(); }}
+            onClick={() => {
+              if (showHint) onDismissHint?.();
+            }}
           >
-            <MatchCard match={m} round={round} isFinal={isFinal} index={i} onClick={() => onPick(m)} />
+            <MatchCard
+              match={m}
+              round={round}
+              isFinal={isFinal}
+              index={i}
+              onClick={() => onPick(m)}
+            />
             {showHint && i === 0 && (
               <div className="text-[10px] text-gray-600 italic mt-1 text-center">
                 tap any match for details
@@ -644,7 +810,10 @@ function BracketColumn({
 }
 
 function MobileRound({
-  round, matches, defaultOpen, onPick,
+  round,
+  matches,
+  defaultOpen,
+  onPick,
 }: {
   round: RoundKey;
   matches: WCMatch[];
@@ -664,7 +833,9 @@ function MobileRound({
         >
           {meta.label}
         </span>
-        <ChevronDown className={`size-4 text-gray-400 transition-transform ${open ? "rotate-180" : ""}`} />
+        <ChevronDown
+          className={`size-4 text-gray-400 transition-transform ${open ? "rotate-180" : ""}`}
+        />
       </button>
       {open && (
         <div className="px-4 pb-4 space-y-3 wc-tab-content">
@@ -710,7 +881,7 @@ function BracketSkeleton({ year }: { year: number }) {
               <div
                 key={i}
                 className="h-16 rounded-xl bg-gray-900/70 border border-gray-800 animate-pulse"
-                style={{ animationDelay: `${(ci * 80 + i * 40)}ms` }}
+                style={{ animationDelay: `${ci * 80 + i * 40}ms` }}
               />
             ))}
           </div>
@@ -742,7 +913,12 @@ function RoundLabel({ round }: { round: RoundKey }) {
 }
 
 function BracketSideColumn({
-  round, matches, onPick, showHint, onDismissHint, side,
+  round,
+  matches,
+  onPick,
+  showHint,
+  onDismissHint,
+  side,
 }: {
   round: RoundKey;
   matches: WCMatch[];
@@ -760,7 +936,9 @@ function BracketSideColumn({
             key={m.id}
             className="wc-connect"
             data-side={side}
-            onClick={() => { if (showHint) onDismissHint?.(); }}
+            onClick={() => {
+              if (showHint) onDismissHint?.();
+            }}
           >
             <MatchCard match={m} round={round} index={i} onClick={() => onPick(m)} />
             {showHint && i === 0 && (
@@ -776,7 +954,10 @@ function BracketSideColumn({
 }
 
 function SymmetricBracket({
-  grouped, onPick, showHint, onDismissHint,
+  grouped,
+  onPick,
+  showHint,
+  onDismissHint,
 }: {
   grouped: Partial<Record<RoundKey, WCMatch[]>>;
   onPick: (m: WCMatch) => void;

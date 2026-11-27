@@ -174,7 +174,7 @@ function MatchPage() {
         </div>
       </header>
 
-      <main id="main-content" className="max-w-3xl mx-auto px-3 sm:px-4 py-4 space-y-4">
+      <main className="max-w-3xl mx-auto px-3 sm:px-4 py-4 space-y-4">
         {q.isLoading && (
           <div className="flex items-center justify-center py-20 text-gray-500">
             <Loader2 className="size-5 animate-spin mr-2" /> Loading match…
