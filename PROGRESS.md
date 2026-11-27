@@ -3,10 +3,10 @@
 Updated: 2026-11-27 (session 1 closed with a logged resource blocker)
 
 - Branch: `professional-overhaul` (never pushed)
-- Current phase: **session 2 — cricket screens complete**
-- Current screen: next module — football hub (FB-22)
-- Screens done: **27 / 150**
-- Screens blocked: **123** (resource, see `BLOCKERS.md`)
+- Current phase: **session 2 — football programmatic hubs**
+- Current screen: FB-21 countries index
+- Screens done: **29 / 150**
+- Screens blocked: **121** (resource, see `BLOCKERS.md`)
 - Screens in progress: 0
 
 ## Completed

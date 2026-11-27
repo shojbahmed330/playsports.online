@@ -165,6 +165,12 @@
 - Fixed: champions list is now a real table with caption/`scope`; empty-data guard and empty states; `aria-pressed` 44 px tournament selector; hidden decorative icons; 44 px footer link.
 - Kept: tournament switch, hero summary, leaderboards and JSON-LD.
 
+## FB-19 / FB-32 football programmatic hubs
+
+- Fixed: labelled 44 px filters (campaigns), focus-visible cards, hidden breadcrumb separators, shared empty states.
+- Added: OG site name/Twitter meta and CollectionPage/itemList JSON-LD.
+- Kept: year/team filtering and all-time featured card.
+
 ## Foundation
 
 - Added overhaul documentation: `PROJECT_NOTES.md`, `HEALTH_BASELINE.md`, `SCREEN_INVENTORY.md`, `DESIGN_SYSTEM.md`, `PROGRESS.md`, `DECISIONS.md`, `BLOCKERS.md`, `SECURITY_FINDINGS.md`.
