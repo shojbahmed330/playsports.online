@@ -26,6 +26,8 @@ import { MatchComments } from "@/components/football/MatchComments";
 import { HandleSetup } from "@/components/football/HandleSetup";
 import { useGoalAlerts } from "@/hooks/use-goal-alerts";
 import { MatchHighlightCard } from "@/components/wc/MatchHighlightCard";
+import { EmptyState, ErrorState } from "@/components/ui/state";
+import { errorMessage } from "@/lib/error-message";
 
 export const Route = createFileRoute("/football/match/$id")({
   loader: async ({ context, params }) => {
@@ -58,12 +60,8 @@ export const Route = createFileRoute("/football/match/$id")({
       };
     }
     const matchup = `${fx.home.name} vs ${fx.away.name}`;
-    const title = fx
-      ? `${matchup} — FIFA World Cup 2026 Live Score & Lineups`
-      : "FIFA World Cup 2026 Match — Live Score & Lineups";
-    const desc = fx
-      ? `${matchup}${fx.venue ? ` at ${fx.venue}` : ""} — live World Cup 2026 score, lineups, key events and where to watch on PlaySports.`
-      : "Live FIFA World Cup 2026 match: score, lineups, key events, broadcast info and where to watch.";
+    const title = `${matchup} — FIFA World Cup 2026 Live Score & Lineups`;
+    const desc = `${matchup}${fx.venue ? ` at ${fx.venue}` : ""} — live World Cup 2026 score, lineups, key events and where to watch on PlaySports.`;
     const ogImage = `https://www.playsports.online/og/match/match-${params.id}--FIFA%20World%20Cup%202026%20%C2%B7%20Live%20score%20%26%20lineups.svg`;
     const status =
       fx?.status === "inprogress" ? "live" : fx?.status === "finished" ? "ended" : "scheduled";
@@ -75,6 +73,7 @@ export const Route = createFileRoute("/football/match/$id")({
         { property: "og:description", content: desc },
         { property: "og:url", content: url },
         { property: "og:type", content: "article" },
+        { property: "og:site_name", content: "PlaySports" },
         { property: "og:image", content: ogImage },
         { property: "og:image:width", content: "1200" },
         { property: "og:image:height", content: "630" },
@@ -121,6 +120,11 @@ export const Route = createFileRoute("/football/match/$id")({
     };
   },
   component: MatchPage,
+  errorComponent: ({ error, reset }) => (
+    <div className="mx-auto max-w-3xl px-4 py-10">
+      <ErrorState title="Could not load this match" message={errorMessage(error)} onRetry={reset} />
+    </div>
+  ),
 });
 
 function MatchPage() {
@@ -141,25 +145,26 @@ function MatchPage() {
   useGoalAlerts(fx);
 
   return (
-    <div className="min-h-dvh bg-black text-foreground pb-16 sm:pb-0">
+    <div className="min-h-dvh bg-background text-foreground pb-16 sm:pb-0">
       {/* Single slim header — no nested look */}
-      <header className="sticky top-0 z-30 backdrop-blur-md bg-black/80 border-b border-white/10">
+      <header className="sticky top-0 z-30 backdrop-blur-md bg-background/85 border-b border-border">
         <div className="max-w-3xl mx-auto px-3 py-2.5 flex items-center gap-2">
           <Link
             to="/football"
             search={(prev: any) => ({ ...prev, year: prev.year ?? 2026, tab: prev.tab ?? "today" })}
-            className="inline-flex items-center gap-1 text-xs text-gray-400 hover:text-white shrink-0"
+            className="inline-flex min-h-11 items-center gap-1 text-xs text-muted-foreground hover:text-foreground shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             aria-label="Back to Football"
           >
-            <ChevronLeft className="size-4" />
+            <ChevronLeft className="size-4" aria-hidden="true" />
             <span className="hidden sm:inline">Football</span>
           </Link>
-          <h1 className="min-w-0 flex-1 truncate text-sm font-bold text-white text-center">
+          <h1 className="min-w-0 flex-1 truncate text-sm font-bold text-foreground text-center">
             {title}
           </h1>
           {isLive ? (
             <span className="shrink-0 inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-red-300">
-              <span className="size-1.5 rounded-full bg-red-500 animate-pulse" /> Live
+              <span className="size-1.5 rounded-full bg-red-500 animate-pulse" aria-hidden="true" />{" "}
+              Live
             </span>
           ) : fx?.status === "notstarted" ? (
             <div className="flex items-center gap-1.5">
@@ -167,7 +172,7 @@ function MatchPage() {
               <AddToCalendarButton fx={fx} compact />
             </div>
           ) : (
-            <span className="shrink-0 text-[10px] uppercase tracking-widest text-gray-600">
+            <span className="shrink-0 text-[10px] uppercase tracking-widest text-muted-foreground">
               2026
             </span>
           )}
@@ -175,36 +180,49 @@ function MatchPage() {
       </header>
 
       <main className="max-w-3xl mx-auto px-3 sm:px-4 py-4 space-y-4">
-        {q.isLoading && (
-          <div className="flex items-center justify-center py-20 text-gray-500">
-            <Loader2 className="size-5 animate-spin mr-2" /> Loading match…
+        {!Number.isFinite(matchId) ? (
+          <EmptyState
+            title="Match not found"
+            description="This match id is not valid. Browse today's fixtures or the World Cup archive."
+          />
+        ) : q.isLoading ? (
+          <div
+            className="flex items-center justify-center py-20 text-muted-foreground"
+            role="status"
+            aria-live="polite"
+          >
+            <Loader2 className="size-5 animate-spin mr-2" aria-hidden="true" /> Loading match…
           </div>
-        )}
-        {q.data?.error && !q.data.fixture && (
-          <div className="rounded-xl border border-white/10 bg-gray-900/60 p-5 text-center">
-            <h2 className="text-base font-bold text-white">Match unavailable</h2>
-            <p className="mt-1.5 text-sm text-gray-400">
-              We couldn&apos;t load this match from the feed. It may have been removed or the
-              tournament archive may not include it yet.
-            </p>
-            <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
-              <Link
-                to="/football/$comp"
-                params={{ comp: "world-cup" }}
-                className="rounded-full bg-amber-500 px-3 py-1.5 text-xs font-bold text-gray-950 hover:bg-amber-400"
-              >
-                World Cup archive
-              </Link>
-              <Link
-                to="/live/$sport"
-                params={{ sport: "football" }}
-                className="rounded-full border border-white/15 px-3 py-1.5 text-xs font-semibold text-gray-200 hover:bg-white/10"
-              >
-                Today&apos;s football
-              </Link>
-            </div>
-          </div>
-        )}
+        ) : q.isError ? (
+          <ErrorState
+            title="Could not load this match"
+            message={errorMessage(q.error)}
+            onRetry={() => void q.refetch()}
+          />
+        ) : q.data?.error && !q.data.fixture ? (
+          <EmptyState
+            title="Match unavailable"
+            description="We couldn't load this match from the feed. It may have been removed or the tournament archive may not include it yet."
+            action={
+              <>
+                <Link
+                  to="/football/$comp"
+                  params={{ comp: "world-cup" }}
+                  className="inline-flex min-h-11 items-center rounded-full bg-primary px-4 text-xs font-bold text-primary-foreground hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  World Cup archive
+                </Link>
+                <Link
+                  to="/live/$sport"
+                  params={{ sport: "football" }}
+                  className="inline-flex min-h-11 items-center rounded-full border border-border px-4 text-xs font-semibold text-foreground hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  Today&apos;s football
+                </Link>
+              </>
+            }
+          />
+        ) : null}
         {fx && (
           <>
             <LiveMatchCenter fixture={fx} />
@@ -225,20 +243,22 @@ function MatchPage() {
               <button
                 type="button"
                 onClick={() => setWatchOpen((v) => !v)}
-                className="w-full flex items-center gap-2 px-4 py-3 text-sm font-bold text-amber-200 hover:bg-amber-500/10 rounded-xl"
                 aria-expanded={watchOpen}
+                aria-controls="watch-live-panel"
+                className="w-full min-h-11 flex items-center gap-2 px-4 py-3 text-sm font-bold text-amber-200 hover:bg-amber-500/10 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
-                <Tv className="size-4" />
+                <Tv className="size-4" aria-hidden="true" />
                 <span>Watch live</span>
                 <span className="ml-auto text-[10px] uppercase tracking-widest text-amber-200/60">
                   {watchOpen ? "Hide" : "Show"}
                 </span>
                 <ChevronDown
+                  aria-hidden="true"
                   className={`size-4 transition-transform ${watchOpen ? "rotate-180" : ""}`}
                 />
               </button>
               {watchOpen && (
-                <div className="border-t border-amber-500/15 px-3 py-3">
+                <div id="watch-live-panel" className="border-t border-amber-500/15 px-3 py-3">
                   <WatchLivePanel compact />
                 </div>
               )}
@@ -301,13 +321,11 @@ function OtherMatchesToday({ currentId }: { currentId: number }) {
   if (list.length === 0) return null;
 
   return (
-    <section className="rounded-2xl border border-white/10 bg-gray-900/50 p-4">
+    <section className="rounded-2xl border border-border bg-card/40 p-4">
       <div className="flex items-center gap-2 mb-3">
-        <Flame className="size-4 text-red-400" />
-        <h2 className="text-xs font-bold uppercase tracking-[0.18em] text-red-300">
-          Also on today
-        </h2>
-        <span className="text-[10px] text-gray-500 tabular-nums">{list.length}</span>
+        <Flame className="size-4 text-red-400" aria-hidden="true" />
+        <h2 className="text-xs font-bold uppercase tracking-[0.18em] text-red-300">Also today</h2>
+        <span className="text-[10px] text-muted-foreground tabular-nums">{list.length}</span>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
         {list.map((f) => (
@@ -325,10 +343,10 @@ function OtherCard({ f }: { f: Wc2026Fixture }) {
     <Link
       to="/football/match/$id"
       params={{ id: String(f.id) }}
-      className={`group block rounded-xl border p-2.5 transition-all hover:-translate-y-0.5 ${
+      className={`group flex min-h-11 flex-col justify-center rounded-xl border p-2.5 transition-all hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
         live
           ? "border-red-500/40 bg-red-500/[0.05] hover:border-red-400/60"
-          : "border-white/10 bg-black/30 hover:border-amber-500/40"
+          : "border-border bg-card/40 hover:border-amber-500/40"
       }`}
     >
       <div className="flex items-center justify-between mb-1.5 gap-2">
@@ -336,7 +354,7 @@ function OtherCard({ f }: { f: Wc2026Fixture }) {
           {f.group}
         </span>
         <span
-          className={`text-[10px] font-bold shrink-0 ${live ? "text-red-300" : final ? "text-gray-400" : "text-sky-300"}`}
+          className={`text-[10px] font-bold shrink-0 ${live ? "text-red-300" : final ? "text-muted-foreground" : "text-sky-300"}`}
         >
           {live
             ? f.minute
@@ -356,9 +374,13 @@ function OtherCard({ f }: { f: Wc2026Fixture }) {
 function MiniRow({ name, score }: { name: string; score: number | null }) {
   return (
     <div className="flex items-center gap-2 py-0.5 min-w-0">
-      <span className="text-base leading-none shrink-0">{flagOf(name)}</span>
-      <span className="truncate flex-1 text-xs font-semibold text-gray-200">{name}</span>
-      <span className="shrink-0 text-xs font-black tabular-nums text-white">{score ?? "-"}</span>
+      <span className="text-base leading-none shrink-0" aria-hidden="true">
+        {flagOf(name)}
+      </span>
+      <span className="truncate flex-1 text-xs font-semibold text-foreground/90">{name}</span>
+      <span className="shrink-0 text-xs font-black tabular-nums text-foreground">
+        {score ?? "-"}
+      </span>
     </div>
   );
 }

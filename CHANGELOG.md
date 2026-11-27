@@ -311,6 +311,11 @@
 - Fixed: shared error/not-found/empty states; raw ISO dates replaced with UTC-formatted dates; labelled breadcrumb; hidden separators/flag; sr-only win/draw/loss labels; 44 px links/focus rings; OG site name/Twitter meta.
 - Kept: team-colour hero, stat pills, top scorers, recent matches, appearances and team directory.
 
+## FB-23 football match centre
+
+- Fixed: shared error/empty states; invalid-id state; query retry; route error boundary; route-owned black/gray/white classes replaced with tokens; loading announced; decorative icons hidden; watch disclosure `aria-controls`; 44 px back button and focus rings; OG site name.
+- Kept: live match centre, highlights, probability/momentum, venue/form/H2H, officials, watch panel, predictions, comments and FAQs.
+
 ## Foundation
 
 - Added overhaul documentation: `PROJECT_NOTES.md`, `HEALTH_BASELINE.md`, `SCREEN_INVENTORY.md`, `DESIGN_SYSTEM.md`, `PROGRESS.md`, `DECISIONS.md`, `BLOCKERS.md`, `SECURITY_FINDINGS.md`.
