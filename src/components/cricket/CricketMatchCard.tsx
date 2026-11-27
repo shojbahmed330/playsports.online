@@ -23,6 +23,10 @@ export function CricketMatchCard({
   match: CricketMatch;
   leagueSlug?: string;
 }) {
+  // A feed item without an event id cannot open a match page. Hide it rather
+  // than emit `/cricket/match/`, which the router resolves to `/cricket`.
+  if (!match.id) return null;
+
   const isLive = match.status === "in";
   const isFinal = match.status === "post";
   const isPre = match.status === "pre";
