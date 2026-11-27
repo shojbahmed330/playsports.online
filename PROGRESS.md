@@ -3,10 +3,10 @@
 Updated: 2026-11-27 (session 1 closed with a logged resource blocker)
 
 - Branch: `professional-overhaul` (never pushed)
-- Current phase: **FINAL PASS — session 1 handoff**
-- Current screen: none
-- Screens done: **6 / 150**
-- Screens blocked: **144** (resource, see `BLOCKERS.md`)
+- Current phase: **session 2 — continuing CRK screens**
+- Current screen: CRK-16 Cricket rankings
+- Screens done: **7 / 150**
+- Screens blocked: **143** (resource, see `BLOCKERS.md`)
 - Screens in progress: 0
 
 ## Completed

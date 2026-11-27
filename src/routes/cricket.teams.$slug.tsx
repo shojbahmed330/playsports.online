@@ -8,6 +8,7 @@ import { canonical } from "@/lib/seo/canonical";
 import { getCricketTeamBySlug, listCricketTeams } from "@/lib/seo/cricket-entities";
 import { readCachedFaqs } from "@/lib/ai-faqs.server";
 import { FaqSection } from "@/components/seo/FaqSection";
+import { EmptyState, ErrorState } from "@/components/ui/state";
 
 export const Route = createFileRoute("/cricket/teams/$slug")({
   loader: async ({ params }) => {
@@ -24,6 +25,7 @@ export const Route = createFileRoute("/cricket/teams/$slug")({
     }
     const { team } = loaderData;
     const url = canonical(`/cricket/teams/${params.slug}`);
+    const image = team.logo ?? "https://www.playsports.online/og-default.png";
     const title = team.isFranchise
       ? `${team.name} — IPL squad, captains, titles & home ground`
       : `${team.name} Cricket — ICC rankings, squad & recent form`;
@@ -39,6 +41,11 @@ export const Route = createFileRoute("/cricket/teams/$slug")({
         { property: "og:description", content: desc.slice(0, 200) },
         { property: "og:url", content: url },
         { property: "og:type", content: "profile" },
+        { property: "og:image", content: image },
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: desc.slice(0, 200) },
+        { name: "twitter:image", content: image },
       ],
       links: [{ rel: "canonical", href: url }],
       scripts: [
@@ -70,22 +77,42 @@ export const Route = createFileRoute("/cricket/teams/$slug")({
     };
   },
   component: CricketTeamProfile,
-  errorComponent: ({ error }) => (
-    <div className="min-h-screen grid place-items-center p-6 text-center">
-      <p className="text-lg font-semibold">Couldn't load team</p>
-      <p className="text-xs text-muted-foreground mt-1">{errorMessage(error)}</p>
+  errorComponent: ({ error, reset }) => (
+    <div className="min-h-screen">
+      <SportNav />
+      <div className="mx-auto max-w-3xl px-4 py-10">
+        <ErrorState
+          title="Could not load this team"
+          message={errorMessage(error)}
+          onRetry={reset}
+        />
+      </div>
     </div>
   ),
   notFoundComponent: () => (
-    <div className="min-h-screen grid place-items-center p-6 text-center">
-      <div>
-        <p className="text-lg font-semibold">Team not found</p>
-        <Link
-          to="/cricket/teams"
-          className="mt-4 inline-block text-emerald-400 hover:underline text-sm"
-        >
-          ← Browse all cricket teams
-        </Link>
+    <div className="min-h-screen">
+      <SportNav />
+      <div className="mx-auto max-w-3xl px-4 py-10">
+        <EmptyState
+          title="Team not found"
+          description="This team profile is not in the cricket registry yet."
+          action={
+            <>
+              <Link
+                to="/cricket/teams"
+                className="inline-flex min-h-11 items-center rounded-full bg-emerald-500/15 px-4 text-sm font-bold text-emerald-200 ring-1 ring-emerald-500/30"
+              >
+                Browse all teams
+              </Link>
+              <Link
+                to="/cricket"
+                className="inline-flex min-h-11 items-center rounded-full border border-border px-4 text-sm font-semibold text-foreground"
+              >
+                Cricket hub
+              </Link>
+            </>
+          }
+        />
       </div>
     </div>
   ),
@@ -177,6 +204,40 @@ function CricketTeamProfile() {
           </section>
         ) : null}
 
+        <section className="mb-10">
+          <h2 className="mb-3 text-lg font-semibold">Explore {team.name}</h2>
+          <nav
+            className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4"
+            aria-label={`Explore ${team.name}`}
+          >
+            <Link
+              to="/cricket/team-history/$slug"
+              params={{ slug: team.slug }}
+              className="inline-flex min-h-11 items-center rounded-xl border border-border bg-card px-4 text-sm font-semibold transition hover:border-emerald-500/40 hover:bg-white/[0.04]"
+            >
+              Team history →
+            </Link>
+            <Link
+              to="/cricket/rankings"
+              className="inline-flex min-h-11 items-center rounded-xl border border-border bg-card px-4 text-sm font-semibold transition hover:border-emerald-500/40 hover:bg-white/[0.04]"
+            >
+              ICC rankings →
+            </Link>
+            <Link
+              to="/cricket/series"
+              className="inline-flex min-h-11 items-center rounded-xl border border-border bg-card px-4 text-sm font-semibold transition hover:border-emerald-500/40 hover:bg-white/[0.04]"
+            >
+              Series & fixtures →
+            </Link>
+            <Link
+              to="/cricket/players"
+              className="inline-flex min-h-11 items-center rounded-xl border border-border bg-card px-4 text-sm font-semibold transition hover:border-emerald-500/40 hover:bg-white/[0.04]"
+            >
+              Player profiles →
+            </Link>
+          </nav>
+        </section>
+
         <FaqSection
           title={`Frequently asked about ${team.name}`}
           items={
@@ -188,7 +249,7 @@ function CricketTeamProfile() {
                     q: `What is ${team.name}'s home ground?`,
                     a: team.isFranchise
                       ? `${team.name} plays their home matches at ${team.franchise?.homeGround} in ${team.franchise?.city}.`
-                      : `${team.name} represents ${team.name} in international cricket venues.`,
+                      : `International teams do not have one permanent home ground; ${team.name} play home matches at venues selected by the host board.`,
                   },
                   {
                     q: `Who is the current captain of ${team.name}?`,
@@ -211,7 +272,7 @@ function CricketTeamProfile() {
                   <Link
                     to="/cricket/teams/$slug"
                     params={{ slug: r.slug }}
-                    className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5 text-sm hover:bg-muted/60"
+                    className="inline-flex min-h-11 items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5 text-sm hover:bg-muted/60"
                   >
                     {r.flag ?? ""} {r.name}
                   </Link>

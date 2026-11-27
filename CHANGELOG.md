@@ -38,6 +38,12 @@
 - Added: SSR team lists, all-error + partial-error states, shared empty state, labelled search, 44 px chips, reduced-motion skeleton.
 - Kept: league filters, crests, dedupe across leagues.
 
+## CRK-23 Cricket team profile
+
+- Fixed: meaningless international “home ground” FAQ; bare error/not-found replaced with branded states and 44 px CTAs.
+- Added: Explore links (history/rankings/series/players), OG image and Twitter tags.
+- Kept: SSR profile, rankings/franchise facts, FAQ schema, related teams.
+
 ## Foundation
 
 - Added overhaul documentation: `PROJECT_NOTES.md`, `HEALTH_BASELINE.md`, `SCREEN_INVENTORY.md`, `DESIGN_SYSTEM.md`, `PROGRESS.md`, `DECISIONS.md`, `BLOCKERS.md`, `SECURITY_FINDINGS.md`.
