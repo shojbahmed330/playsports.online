@@ -4,9 +4,9 @@ Updated: 2026-11-27 (session 1 closed with a logged resource blocker)
 
 - Branch: `professional-overhaul` (never pushed)
 - Current phase: **session 2 — continuing CRK screens**
-- Current screen: CRK-12 IPL teams
-- Screens done: **15 / 150**
-- Screens blocked: **135** (resource, see `BLOCKERS.md`)
+- Current screen: CRK-07 IPL players
+- Screens done: **16 / 150**
+- Screens blocked: **134** (resource, see `BLOCKERS.md`)
 - Screens in progress: 0
 
 ## Completed

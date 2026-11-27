@@ -92,6 +92,12 @@
 - Added: season in subtitle, table caption and `scope`.
 - Kept: SSR table, top-4 highlighting, NRR and form chips.
 
+## CRK-12 IPL teams
+
+- Fixed: branded error boundary with retry; shared empty state; focus-visible card ring; reduced-motion hover; accessible title history.
+- Added: CollectionPage JSON-LD.
+- Kept: SSR team directory, gradient cards, title-first sorting.
+
 ## Foundation
 
 - Added overhaul documentation: `PROJECT_NOTES.md`, `HEALTH_BASELINE.md`, `SCREEN_INVENTORY.md`, `DESIGN_SYSTEM.md`, `PROGRESS.md`, `DECISIONS.md`, `BLOCKERS.md`, `SECURITY_FINDINGS.md`.
