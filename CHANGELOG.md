@@ -104,6 +104,12 @@
 - Added: CollectionPage JSON-LD.
 - Kept: SSR leaderboards, Orange/Purple cap cards with historical fallback, six-hitting table.
 
+## CRK-08 IPL records
+
+- Fixed: season-leader errors now show Retry; branded error boundary; labelled search/sort/metric/season controls; `aria-pressed` chips; shared empty states; reduced-motion cards; accessible record counts.
+- Added: CollectionPage JSON-LD; neutral season badge.
+- Kept: static all-time record book, search/filter/sort, live leaderboard panel.
+
 ## Foundation
 
 - Added overhaul documentation: `PROJECT_NOTES.md`, `HEALTH_BASELINE.md`, `SCREEN_INVENTORY.md`, `DESIGN_SYSTEM.md`, `PROGRESS.md`, `DECISIONS.md`, `BLOCKERS.md`, `SECURITY_FINDINGS.md`.
