@@ -8,6 +8,8 @@ import { GameCard } from "@/components/sports/GameCard";
 import { DateScrubber, todayYmd } from "@/components/sports/DateScrubber";
 import { GameGridSkeleton } from "@/components/sports/Skeletons";
 import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
+import { EmptyState, ErrorState } from "@/components/ui/state";
+import { errorMessage } from "@/lib/error-message";
 
 import { withHubLinks } from "@/components/seo/withHubLinks";
 type Filter = "all" | "live" | "upcoming" | "final";
@@ -16,7 +18,11 @@ export const Route = createFileRoute("/mlb/scores")({
   head: () => ({
     meta: [
       { title: "MLB Scores & Schedule — Live, Upcoming, Final" },
-      { name: "description", content: "Live MLB scores, today's schedule, and final results across the league with broadcast info and quick filters." },
+      {
+        name: "description",
+        content:
+          "Live MLB scores, today's schedule, and final results across the league with broadcast info and quick filters.",
+      },
       { property: "og:title", content: "MLB Scores & Schedule" },
       { property: "og:description", content: "Live MLB scores and today's schedule." },
       { property: "og:url", content: "https://www.playsports.online/mlb/scores" },
@@ -24,11 +30,22 @@ export const Route = createFileRoute("/mlb/scores")({
       { property: "og:site_name", content: "PlaySports" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "MLB Scores & Schedule — Live, Upcoming, Final" },
-      { name: "twitter:description", content: "Live MLB scores, today's schedule, and final results across the league with broadcast info and quick filters." },
-    
+      {
+        name: "twitter:description",
+        content:
+          "Live MLB scores, today's schedule, and final results across the league with broadcast info and quick filters.",
+      },
     ],
     links: [{ rel: "canonical", href: "https://www.playsports.online/mlb/scores" }],
-    scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "MLB", path: "/mlb" }, { name: "Scores", path: "/mlb/scores" }]))],
+    scripts: [
+      ldScript(
+        breadcrumbList([
+          { name: "Home", path: "/" },
+          { name: "MLB", path: "/mlb" },
+          { name: "Scores", path: "/mlb/scores" },
+        ]),
+      ),
+    ],
   }),
   component: withHubLinks(ScoresPage, { sport: "mlb", currentPath: "/mlb/scores" }),
 });
@@ -60,38 +77,91 @@ function ScoresPage() {
     <div className="space-y-4">
       <DateScrubber selected={day} onChange={setDay} />
       <div className="flex flex-wrap items-center gap-2">
-        <Chip label="All" count={games.length} active={filter === "all"} onClick={() => setFilter("all")} />
-        <Chip label="Live" count={live} active={filter === "live"} onClick={() => setFilter("live")} tone="red" />
-        <Chip label="Upcoming" count={up} active={filter === "upcoming"} onClick={() => setFilter("upcoming")} tone="amber" />
-        <Chip label="Final" count={fin} active={filter === "final"} onClick={() => setFilter("final")} />
+        <Chip
+          label="All"
+          count={games.length}
+          active={filter === "all"}
+          onClick={() => setFilter("all")}
+        />
+        <Chip
+          label="Live"
+          count={live}
+          active={filter === "live"}
+          onClick={() => setFilter("live")}
+          tone="red"
+        />
+        <Chip
+          label="Upcoming"
+          count={up}
+          active={filter === "upcoming"}
+          onClick={() => setFilter("upcoming")}
+          tone="amber"
+        />
+        <Chip
+          label="Final"
+          count={fin}
+          active={filter === "final"}
+          onClick={() => setFilter("final")}
+        />
         {q.isFetching && !q.isLoading && (
-          <span className="ml-auto text-[10px] text-gray-500 inline-flex items-center gap-1.5">
-            <span className="size-1.5 rounded-full bg-amber-400 animate-pulse" /> Updating…
+          <span className="ml-auto inline-flex items-center gap-1.5 text-[10px] text-muted-foreground">
+            <span className="size-1.5 rounded-full bg-amber-400 animate-pulse" aria-hidden="true" />{" "}
+            Updating…
           </span>
         )}
       </div>
-      {q.isLoading ? <GameGridSkeleton /> : filtered.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-border p-10 text-center">
-          <Tv className="size-10 opacity-30 mx-auto mb-2" />
-          <p className="text-sm">No games for this filter.</p>
-        </div>
+      {q.isLoading ? (
+        <GameGridSkeleton />
+      ) : q.error ? (
+        <ErrorState
+          title="Could not load MLB scores"
+          message={errorMessage(q.error)}
+          onRetry={() => void q.refetch()}
+        />
+      ) : filtered.length === 0 ? (
+        <EmptyState
+          title="No games for this filter"
+          description="Try another date or switch back to the All filter."
+          icon={<Tv className="size-5" aria-hidden="true" />}
+        />
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          {filtered.map((g) => <GameCard key={g.id} game={g} linkTo={`/mlb/game/${g.id}`} />)}
+          {filtered.map((g) => (
+            <GameCard key={g.id} game={g} linkTo={`/mlb/game/${g.id}`} />
+          ))}
         </div>
       )}
     </div>
   );
 }
 
-function Chip({ label, count, active, onClick, tone = "default" }: { label: string; count: number; active: boolean; onClick: () => void; tone?: "red" | "amber" | "default" }) {
+function Chip({
+  label,
+  count,
+  active,
+  onClick,
+  tone = "default",
+}: {
+  label: string;
+  count: number;
+  active: boolean;
+  onClick: () => void;
+  tone?: "red" | "amber" | "default";
+}) {
   const base = active
-    ? tone === "red" ? "bg-red-500 text-white ring-red-400"
-      : tone === "amber" ? "bg-amber-500 text-black ring-amber-400"
-      : "bg-white text-black ring-white"
-    : "bg-gray-900 text-gray-300 ring-gray-800 hover:ring-gray-700";
+    ? tone === "red"
+      ? "bg-red-500 text-white ring-red-400"
+      : tone === "amber"
+        ? "bg-amber-500 text-black ring-amber-400"
+        : "bg-primary text-primary-foreground ring-primary"
+    : "bg-muted text-muted-foreground ring-border hover:ring-ring/60";
   return (
-    <button onClick={onClick} className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold ring-1 transition-colors ${base}`}>
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={active}
+      className={`inline-flex min-h-11 items-center gap-2 rounded-full px-3 text-xs font-semibold ring-1 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${base}`}
+    >
       {label}
       <span className="tabular-nums opacity-70 text-[10px]">{count}</span>
     </button>

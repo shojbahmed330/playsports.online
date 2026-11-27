@@ -3,6 +3,7 @@ import { SportNav } from "@/components/sports/SportNav";
 import { MlbHero } from "@/components/mlb/MlbHero";
 import { MlbSubNav } from "@/components/mlb/MlbSubNav";
 import { Breadcrumbs } from "@/components/nav/Breadcrumbs";
+import { canonical } from "@/lib/seo/canonical";
 
 export const Route = createFileRoute("/mlb")({
   head: () => ({
@@ -19,7 +20,17 @@ export const Route = createFileRoute("/mlb")({
         content:
           "Everything MLB — live games, standings, teams, leaders, player stats, World Series history.",
       },
+      { property: "og:url", content: canonical("/mlb") },
+      { property: "og:type", content: "website" },
+      { property: "og:site_name", content: "PlaySports" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "MLB Hub — Live Scores, Standings, Players, History" },
+      {
+        name: "twitter:description",
+        content: "Everything MLB — live games, standings, teams, leaders and World Series history.",
+      },
     ],
+    links: [{ rel: "canonical", href: canonical("/mlb") }],
   }),
   component: MlbLayout,
 });

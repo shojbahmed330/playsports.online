@@ -5,25 +5,45 @@ import { getSportNews } from "@/lib/espn.functions";
 import { MlbNewsHub } from "@/components/mlb/MlbNewsHub";
 import { GameGridSkeleton } from "@/components/sports/Skeletons";
 import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
+import { EmptyState, ErrorState } from "@/components/ui/state";
+import { errorMessage } from "@/lib/error-message";
 
 import { withHubLinks } from "@/components/seo/withHubLinks";
 export const Route = createFileRoute("/mlb/news")({
   head: () => ({
     meta: [
       { title: "MLB News — Latest Headlines, Trades, Injuries" },
-      { name: "description", content: "The latest MLB news: headlines, trades, injuries, recaps, and analysis updated throughout the day." },
+      {
+        name: "description",
+        content:
+          "The latest MLB news: headlines, trades, injuries, recaps, and analysis updated throughout the day.",
+      },
       { property: "og:title", content: "MLB News — Latest Headlines, Trades, Injuries" },
-      { property: "og:description", content: "Live MLB headlines and analysis updated throughout the day." },
+      {
+        property: "og:description",
+        content: "Live MLB headlines and analysis updated throughout the day.",
+      },
       { property: "og:url", content: "https://www.playsports.online/mlb/news" },
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "PlaySports" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "MLB News — Latest Headlines, Trades, Injuries" },
-      { name: "twitter:description", content: "The latest MLB news: headlines, trades, injuries, recaps, and analysis updated throughout the day." },
-    
+      {
+        name: "twitter:description",
+        content:
+          "The latest MLB news: headlines, trades, injuries, recaps, and analysis updated throughout the day.",
+      },
     ],
     links: [{ rel: "canonical", href: "https://www.playsports.online/mlb/news" }],
-    scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "MLB", path: "/mlb" }, { name: "News", path: "/mlb/news" }]))],
+    scripts: [
+      ldScript(
+        breadcrumbList([
+          { name: "Home", path: "/" },
+          { name: "MLB", path: "/mlb" },
+          { name: "News", path: "/mlb/news" },
+        ]),
+      ),
+    ],
   }),
   component: withHubLinks(NewsPage, { sport: "mlb", currentPath: "/mlb/news" }),
 });
@@ -44,7 +64,22 @@ function NewsPage() {
           Headlines, trades, injuries, and recaps from around the league
         </p>
       </header>
-      {q.isLoading ? <GameGridSkeleton count={6} /> : <MlbNewsHub items={q.data?.items ?? []} />}
+      {q.isLoading ? (
+        <GameGridSkeleton count={6} />
+      ) : q.error ? (
+        <ErrorState
+          title="Could not load MLB news"
+          message={errorMessage(q.error)}
+          onRetry={() => void q.refetch()}
+        />
+      ) : (q.data?.items.length ?? 0) === 0 ? (
+        <EmptyState
+          title="No MLB headlines right now"
+          description="The news feed is empty or temporarily unavailable. Check back soon."
+        />
+      ) : (
+        <MlbNewsHub items={q.data?.items ?? []} />
+      )}
     </div>
   );
 }

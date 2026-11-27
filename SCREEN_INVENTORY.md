@@ -3,7 +3,7 @@
 Generated from the real router files in `src/routes` and cross-checked against `src/routeTree.gen.ts`.
 
 
-> **Execution status:** the foundation plus 75 route screens are DONE (Home, Cricket, Football, Live, News, Search, Auth, Admin and the utility/legal pages). The remaining 75 route screens are marked BLOCKED for this session because the per-screen audit/implementation budget was exhausted; the reason is recorded in `BLOCKERS.md` and the recommended order is in `FINAL_REPORT.md`. This is a resource blocker, not a claim that the screen is broken.
+> **Execution status:** the foundation plus 81 route screens are DONE, including Home, Cricket, Football, Live, News, Search, Auth, Admin, utility pages and the key MLB hub/scoreboard/standings/news/team screens. The remaining 69 route screens are marked BLOCKED for this session because the per-screen audit/implementation budget was exhausted; the reason is recorded in `BLOCKERS.md` and the recommended order is in `FINAL_REPORT.md`. This is a resource blocker, not a claim that the screen is broken.
 
 ## 1. Summary
 
@@ -284,19 +284,19 @@ Generated from the real router files in `src/routes` and cross-checked against `
 | MLB-01 | MLB | MLB-04 | Mlb Champions | Full page | `/mlb/champions`<br>`src/routes/mlb.champions.tsx` | JSON-LD; head meta | seo/withHubLinks | static/local | not verified | BLOCKED |
 | MLB-02 | MLB | MLB-04 | Mlb Game Id | Full page | `/mlb/game/:id`<br>`src/routes/mlb.game.$id.tsx` | SSR loader; client query; JSON-LD; head meta | mlb/MlbLinescore, mlb/MlbBoxScore, mlb/MlbScoringPlays, mlb/MlbWinProbabilityChart | mlb.functions | loading | BLOCKED |
 | MLB-03 | MLB | MLB-04 | Mlb History | Full page | `/mlb/history`<br>`src/routes/mlb.history.tsx` | JSON-LD; head meta | mlb/HistoryTimeline, mlb/MlbSeasonLeaderHistory, seo/withHubLinks | static/local | not verified | BLOCKED |
-| MLB-04 | MLB | — | Mlb | Full page | `/mlb`<br>`src/routes/mlb.index.tsx` | SSR loader; client query; JSON-LD; head meta | sports/GameCard, mlb/LeaderBoard, ads/AdSlot, sports/DateScrubber | espn.functions, mlb.functions | loading, empty | BLOCKED |
-| MLB-05 | MLB | MLB-04 | Mlb News | Full page | `/mlb/news`<br>`src/routes/mlb.news.tsx` | client query; JSON-LD; head meta | mlb/MlbNewsHub, sports/Skeletons, seo/withHubLinks | espn.functions | loading | BLOCKED |
+| MLB-04 | MLB | - | MLB Hub | Full page | `/mlb`<br>`src/routes/mlb.index.tsx` | Today's games, division leaders, leaders, news | sports/GameCard, mlb/LeaderBoard, ads/AdSlot, ui/state | espn.functions, mlb.functions | loading, empty, error+retry | DONE |
+| MLB-05 | MLB | MLB-04 | MLB News | Full page | `/mlb/news`<br>`src/routes/mlb.news.tsx` | Full headlines feed | mlb/MlbNewsHub, sports/Skeletons, ui/state | espn.functions | loading, empty, error+retry | DONE |
 | MLB-06 | MLB | MLB-04 | Mlb Player Id | Full page | `/mlb/player/:id`<br>`src/routes/mlb.player.$id.tsx` | SSR loader; client query; JSON-LD; head meta | mlb/PlayerProfile, affiliates/AffiliateStrip | mlb.functions | loading | BLOCKED |
 | MLB-07 | MLB | MLB-04 | Mlb Players Slug | Full page | `/mlb/players/:slug`<br>`src/routes/mlb.players.$slug.tsx` | SSR loader; JSON-LD; head meta | seo/RelatedLinks | server fn / query | error | BLOCKED |
 | MLB-08 | MLB | MLB-04 | Mlb Players | Full page | `/mlb/players`<br>`src/routes/mlb.players.tsx` | client query; JSON-LD; head meta | mlb/LeaderBoard, seo/withHubLinks | mlb.functions | loading, empty | BLOCKED |
 | MLB-09 | MLB | MLB-04 | Mlb Postseason | Full page | `/mlb/postseason`<br>`src/routes/mlb.postseason.tsx` | client query; JSON-LD; head meta | mlb/MlbPostseasonBracket, seo/withHubLinks | mlb.functions | loading | BLOCKED |
 | MLB-10 | MLB | MLB-04 | Mlb Records Category | Full page | `/mlb/records/:category`<br>`src/routes/mlb.records.$category.tsx` | SSR loader; JSON-LD; head meta | — | server fn / query | error | BLOCKED |
-| MLB-11 | MLB | MLB-04 | Mlb Scores | Full page | `/mlb/scores`<br>`src/routes/mlb.scores.tsx` | client query; JSON-LD; head meta | sports/GameCard, sports/DateScrubber, sports/Skeletons, seo/withHubLinks | espn.functions | loading, empty | BLOCKED |
-| MLB-12 | MLB | MLB-04 | Mlb Standings | Full page | `/mlb/standings`<br>`src/routes/mlb.standings.tsx` | client query; JSON-LD; head meta | mlb/MlbStandingsPro, sports/Skeletons, seo/withHubLinks | mlb.functions | loading | BLOCKED |
+| MLB-11 | MLB | MLB-04 | MLB Scores | Full page | `/mlb/scores`<br>`src/routes/mlb.scores.tsx` | Date-scrubbed scoreboard and status filters | sports/GameCard, sports/DateScrubber, ui/state | espn.functions | loading, empty, error+retry | DONE |
+| MLB-12 | MLB | MLB-04 | MLB Standings | Full page | `/mlb/standings`<br>`src/routes/mlb.standings.tsx` | Division/league/wild-card standings | mlb/MlbStandingsPro, sports/Skeletons, ui/state | mlb.functions | loading, empty, error+retry | DONE |
 | MLB-13 | MLB | MLB-04 | Mlb Team History Slug | Full page | `/mlb/team-history/:slug`<br>`src/routes/mlb.team-history.$slug.tsx` | SSR loader; JSON-LD; head meta | seo/RelatedLinks | server fn / query | empty, error | BLOCKED |
 | MLB-14 | MLB | MLB-04 | Mlb Team Id | Full page | `/mlb/team/:id`<br>`src/routes/mlb.team.$id.tsx` | SSR loader; head meta | mlb/MlbTeamView | server fn / query | not verified | BLOCKED |
-| MLB-15 | MLB | MLB-04 | Mlb Teams | Full page | `/mlb/teams`<br>`src/routes/mlb.teams.tsx` | client query; JSON-LD; head meta | mlb/TeamCard, seo/withHubLinks | mlb.functions | loading | BLOCKED |
-| MLB-16 | MLB | MLB-04 | Mlb Teams Slug | Full page | `/mlb/teams/:slug`<br>`src/routes/mlb.teams_.$slug.tsx` | SSR loader; JSON-LD; head meta | mlb/MlbTeamView | server fn / query | loading, error | BLOCKED |
+| MLB-15 | MLB | MLB-04 | MLB Teams | Full page | `/mlb/teams`<br>`src/routes/mlb.teams.tsx` | Searchable 30-franchise directory | mlb/TeamCard, ui/state | mlb.functions | loading, empty, error+retry | DONE |
+| MLB-16 | MLB | MLB-04 | MLB Team Profile | Full page | `/mlb/teams/:slug`<br>`src/routes/mlb.teams_.$slug.tsx` | Schedule, roster, stats, injuries, related teams | mlb/MlbTeamView, ui/state | mlb.functions | empty, error+retry, 404 | DONE |
 | MLB-17 | MLB | MLB-04 | Mlb World Series Year | Full page | `/mlb/world-series/:year`<br>`src/routes/mlb.world-series.$year.tsx` | SSR loader; JSON-LD; head meta | seo/withYearNav | server fn / query | error | BLOCKED |
 | MLS-01 | MLS | MLS-05 | Mls Champions | Full page | `/mls/champions`<br>`src/routes/mls.champions.tsx` | JSON-LD; head meta | seo/withHubLinks | static/local | not verified | BLOCKED |
 | MLS-02 | MLS | MLS-05 | Mls Cup Year | Full page | `/mls/cup/:year`<br>`src/routes/mls.cup.$year.tsx` | SSR loader; JSON-LD; head meta | seo/withYearNav | server fn / query | error | BLOCKED |

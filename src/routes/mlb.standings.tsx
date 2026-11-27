@@ -5,25 +5,45 @@ import { getMlbStandingsPro } from "@/lib/mlb.functions";
 import { MlbStandingsPro } from "@/components/mlb/MlbStandingsPro";
 import { StandingsSkeleton } from "@/components/sports/Skeletons";
 import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
+import { EmptyState, ErrorState } from "@/components/ui/state";
+import { errorMessage } from "@/lib/error-message";
 
 import { withHubLinks } from "@/components/seo/withHubLinks";
 export const Route = createFileRoute("/mlb/standings")({
   head: () => ({
     meta: [
       { title: "MLB Standings — AL · NL · Wild Card" },
-      { name: "description", content: "Live MLB standings by Division, League, and Wild Card with GB, PCT, L10, streak, run differential, and playoff probability." },
+      {
+        name: "description",
+        content:
+          "Live MLB standings by Division, League, and Wild Card with GB, PCT, L10, streak, run differential, and playoff probability.",
+      },
       { property: "og:title", content: "MLB Standings — AL · NL · Wild Card" },
-      { property: "og:description", content: "Live MLB standings with playoff probability and run differential." },
+      {
+        property: "og:description",
+        content: "Live MLB standings with playoff probability and run differential.",
+      },
       { property: "og:url", content: "https://www.playsports.online/mlb/standings" },
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "PlaySports" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "MLB Standings — AL · NL · Wild Card" },
-      { name: "twitter:description", content: "Live MLB standings by Division, League, and Wild Card with GB, PCT, L10, streak, run differential, and playoff probability." },
-    
+      {
+        name: "twitter:description",
+        content:
+          "Live MLB standings by Division, League, and Wild Card with GB, PCT, L10, streak, run differential, and playoff probability.",
+      },
     ],
     links: [{ rel: "canonical", href: "https://www.playsports.online/mlb/standings" }],
-    scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "MLB", path: "/mlb" }, { name: "Standings", path: "/mlb/standings" }]))],
+    scripts: [
+      ldScript(
+        breadcrumbList([
+          { name: "Home", path: "/" },
+          { name: "MLB", path: "/mlb" },
+          { name: "Standings", path: "/mlb/standings" },
+        ]),
+      ),
+    ],
   }),
   component: withHubLinks(StandingsPage, { sport: "mlb", currentPath: "/mlb/standings" }),
 });
@@ -46,6 +66,17 @@ function StandingsPage() {
       </div>
       {q.isLoading ? (
         <StandingsSkeleton />
+      ) : q.error ? (
+        <ErrorState
+          title="Could not load MLB standings"
+          message={errorMessage(q.error)}
+          onRetry={() => void q.refetch()}
+        />
+      ) : (q.data?.leagues.length ?? 0) === 0 ? (
+        <EmptyState
+          title="No standings available"
+          description="The MLB standings feed is temporarily unavailable. Try again shortly."
+        />
       ) : (
         <MlbStandingsPro leagues={q.data?.leagues ?? []} />
       )}

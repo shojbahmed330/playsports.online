@@ -8,12 +8,12 @@
 
 | Status | Count |
 |---|---|
-| DONE (full per-screen plan + phases 1–8 + verification) | **75** |
-| BLOCKED (resource: per-screen budget exhausted) | **75** |
+| DONE (full per-screen plan + phases 1–8 + verification) | **81** |
+| BLOCKED (resource: per-screen budget exhausted) | **69** |
 | Global/overlay items | 5 marked BLOCKED; PWA item addressed |
 | Total route screens | **150** |
 
-**DONE screens:** HOME-01; all 26 Cricket routes (CRK-01–CRK-26); all 34 Football routes (FB-01–FB-34); both Live routes (LIVE-01, LIVE-02); both News routes (NEWS-01, NEWS-02); Search (SRCH-01); Auth (AUTH-01); Admin (ADMIN-01); and all seven utility pages (UTIL-01–UTIL-07).
+**DONE screens:** HOME-01; all 26 Cricket routes; all 34 Football routes; LIVE-01/02; NEWS-01/02; SRCH-01; AUTH-01; ADMIN-01; UTIL-01–07; and MLB-04, MLB-05, MLB-11, MLB-12, MLB-15, MLB-16.
 
 This is **not** a completed 150-screen overhaul. The remaining screens have the shared foundation applied, and football now has correct shared navigation, but they have not received their own audit, redesign or Phase 8 verification.
 

@@ -346,6 +346,10 @@
 - Fixed: `LegalLayout` empty/loading states, labelled breadcrumb, hidden slash, 44 px Home link, static status dot; contact inline error/success, field names/autocomplete, token controls; cookie consent button; unsubscribe status/retry states.
 - Kept: DB-backed legal copy with static defaults, contact delivery and token unsubscribe.
 
+## MLB hub, scores, standings, news, teams
+
+- Fixed: MLB layout canonical/OG/Twitter meta; scoreboard/standings/news/teams query errors with retry; shared empty states; 44 px filter/search/section links and focus rings; `aria-pressed` filters; hidden icons/pulse dots; token text in the hub.
+
 ## Foundation
 
 - Added overhaul documentation: `PROJECT_NOTES.md`, `HEALTH_BASELINE.md`, `SCREEN_INVENTORY.md`, `DESIGN_SYSTEM.md`, `PROGRESS.md`, `DECISIONS.md`, `BLOCKERS.md`, `SECURITY_FINDINGS.md`.
