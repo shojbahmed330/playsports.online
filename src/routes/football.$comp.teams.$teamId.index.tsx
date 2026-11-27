@@ -4,7 +4,10 @@ import { getCompetition, requireCompetition } from "@/lib/competitions";
 import { CompetitionPageShell } from "@/components/football/CompetitionPageShell";
 import { buildCompetitionHead } from "@/lib/competition-head";
 import { getCompetitionTeam, getCompetitionTeams } from "@/lib/espn.functions";
+import { EmptyState, ErrorState } from "@/components/ui/state";
+import { errorMessage } from "@/lib/error-message";
 import { Loader2 } from "lucide-react";
+import { useEffect, useState } from "react";
 
 export const Route = createFileRoute("/football/$comp/teams/$teamId/")({
   loader: ({ params }) => {
@@ -23,24 +26,39 @@ export const Route = createFileRoute("/football/$comp/teams/$teamId/")({
     });
   },
   component: TeamDetailPage,
-  notFoundComponent: () => <div className="p-10 text-center">Team not found.</div>,
+  errorComponent: ({ error, reset }) => (
+    <div className="mx-auto max-w-3xl px-4 py-10">
+      <ErrorState title="Could not load this team" message={errorMessage(error)} onRetry={reset} />
+    </div>
+  ),
+  notFoundComponent: () => (
+    <div className="mx-auto max-w-3xl px-4 py-10">
+      <EmptyState
+        title="Team not found"
+        description="This team is not in the competition directory."
+      />
+    </div>
+  ),
 });
 
 function TeamDetailPage() {
   const { comp: raw, teamId } = Route.useLoaderData();
   const comp = requireCompetition(raw.slug);
+  const [hydrated, setHydrated] = useState(false);
+
+  useEffect(() => {
+    setHydrated(true);
+  }, []);
 
   const q = useQuery({
     queryKey: ["comp-team", comp.slug, teamId],
-    queryFn: () =>
-      getCompetitionTeam({ data: { sportPath: `soccer/${comp.espnLeague}`, teamId } }),
+    queryFn: () => getCompetitionTeam({ data: { sportPath: `soccer/${comp.espnLeague}`, teamId } }),
     staleTime: 6 * 60 * 60_000,
   });
 
   const teamsQ = useQuery({
     queryKey: ["comp-teams", comp.slug],
-    queryFn: () =>
-      getCompetitionTeams({ data: { sportPath: `soccer/${comp.espnLeague}` } }),
+    queryFn: () => getCompetitionTeams({ data: { sportPath: `soccer/${comp.espnLeague}` } }),
     staleTime: 12 * 60 * 60_000,
   });
   const team = q.data?.team;
@@ -54,20 +72,32 @@ function TeamDetailPage() {
         <Link
           to="/football/$comp/teams"
           params={{ comp: comp.slug }}
-          className="text-muted-foreground hover:text-foreground underline underline-offset-4"
+          className="inline-flex min-h-11 items-center text-muted-foreground hover:text-foreground underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           ← All {comp.shortName} {comp.kind === "league" ? "clubs" : "teams"}
         </Link>
       </div>
 
-      {q.isLoading ? (
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <Loader2 className="size-4 animate-spin" /> Loading team…
+      {q.isError || q.data?.error ? (
+        <ErrorState
+          title="Team profile temporarily unavailable"
+          message={
+            q.isError ? errorMessage(q.error) : (q.data?.error ?? "Please refresh in a moment.")
+          }
+          onRetry={() => void q.refetch()}
+          className="border-white/10 bg-white/[0.02]"
+        />
+      ) : q.isLoading ? (
+        <div role="status" className="flex items-center gap-2 text-sm text-muted-foreground">
+          <Loader2 aria-hidden="true" className="size-4 animate-spin motion-reduce:animate-none" />{" "}
+          Loading team…
         </div>
-      ) : q.data?.error || !team ? (
-        <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-6 py-10 text-center text-sm text-muted-foreground">
-          {q.data?.error ?? "Team profile is not available right now."}
-        </div>
+      ) : !team ? (
+        <EmptyState
+          title="Team profile not available"
+          description="This team has no profile data right now."
+          className="border-white/10 bg-white/[0.02]"
+        />
       ) : (
         <>
           <header className="flex items-center gap-4 mb-6">
@@ -76,7 +106,13 @@ function TeamDetailPage() {
               style={team.color ? { backgroundColor: `${team.color}20` } : undefined}
             >
               {team.logo ? (
-                <img src={team.logo} alt="" className="size-12 object-contain"  decoding="async" loading="lazy" />
+                <img
+                  src={team.logo}
+                  alt=""
+                  className="size-12 object-contain"
+                  decoding="async"
+                  loading="lazy"
+                />
               ) : (
                 <span className="text-lg font-bold">{team.abbr || team.shortName.slice(0, 3)}</span>
               )}
@@ -86,9 +122,7 @@ function TeamDetailPage() {
               {team.location && (
                 <div className="text-sm text-muted-foreground truncate">{team.location}</div>
               )}
-              <div className="mt-1 text-xs text-muted-foreground">
-                Competing in {comp.name}
-              </div>
+              <div className="mt-1 text-xs text-muted-foreground">Competing in {comp.name}</div>
             </div>
           </header>
 
@@ -120,7 +154,7 @@ function TeamDetailPage() {
               </h2>
               <div className="font-semibold">{team.nextEvent.name}</div>
               <div className="text-sm text-muted-foreground">
-                {team.nextEvent.date
+                {hydrated && team.nextEvent.date
                   ? new Date(team.nextEvent.date).toLocaleString(undefined, {
                       dateStyle: "medium",
                       timeStyle: "short",
@@ -135,28 +169,28 @@ function TeamDetailPage() {
             <Link
               to="/football/$comp/teams/$teamId/season-{$year}"
               params={{ comp: comp.slug, teamId, year: String(comp.currentSeason) }}
-              className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm hover:border-white/20 hover:bg-white/[0.06] transition"
+              className="flex min-h-11 items-center rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm hover:border-white/20 hover:bg-white/[0.06] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring motion-reduce:transition-none"
             >
               Season {comp.currentSeason} run →
             </Link>
             <Link
               to="/football/$comp/fixtures"
               params={{ comp: comp.slug }}
-              className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm hover:border-white/20 hover:bg-white/[0.06] transition"
+              className="flex min-h-11 items-center rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm hover:border-white/20 hover:bg-white/[0.06] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring motion-reduce:transition-none"
             >
               {comp.shortName} fixtures →
             </Link>
             <Link
               to="/football/$comp/standings"
               params={{ comp: comp.slug }}
-              className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm hover:border-white/20 hover:bg-white/[0.06] transition"
+              className="flex min-h-11 items-center rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm hover:border-white/20 hover:bg-white/[0.06] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring motion-reduce:transition-none"
             >
               {comp.shortName} standings →
             </Link>
             <Link
               to="/football/$comp/scores"
               params={{ comp: comp.slug }}
-              className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm hover:border-white/20 hover:bg-white/[0.06] transition"
+              className="flex min-h-11 items-center rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm hover:border-white/20 hover:bg-white/[0.06] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring motion-reduce:transition-none"
             >
               {comp.shortName} live scores →
             </Link>
@@ -173,7 +207,7 @@ function TeamDetailPage() {
                     <Link
                       to="/football/$comp/teams/$teamId"
                       params={{ comp: comp.slug, teamId: t.id }}
-                      className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2 text-sm transition hover:border-white/20 hover:bg-white/[0.06]"
+                      className="flex min-h-11 items-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2 text-sm transition hover:border-white/20 hover:bg-white/[0.06] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring motion-reduce:transition-none"
                     >
                       {t.logo ? (
                         <img

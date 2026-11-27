@@ -236,6 +236,11 @@
 - Fixed: Euro players canonical now `playsports.online`; shared retryable error/empty states; hidden reduced-motion spinner; focus-visible/reduced-motion leader rows; site/Twitter/breadcrumb JSON-LD.
 - Kept: leader categories and Euro players page.
 
+## FB-15 football competition team page
+
+- Fixed: next-fixture local date mount-gated; query/payload errors retryable; shared not-found/empty/error states; 44 px nav/related links, focus rings, reduced-motion spinner.
+- Kept: record/standing/venue, next fixture and cross-links.
+
 ## Foundation
 
 - Added overhaul documentation: `PROJECT_NOTES.md`, `HEALTH_BASELINE.md`, `SCREEN_INVENTORY.md`, `DESIGN_SYSTEM.md`, `PROGRESS.md`, `DECISIONS.md`, `BLOCKERS.md`, `SECURITY_FINDINGS.md`.
