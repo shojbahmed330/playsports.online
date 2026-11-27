@@ -3,7 +3,7 @@
 Generated from the real router files in `src/routes` and cross-checked against `src/routeTree.gen.ts`.
 
 
-> **Execution status:** the foundation plus 61 route screens are DONE (Home, the full Cricket module, the full Football module, campaign/country/match detail, records, player/team profiles). The remaining 89 route screens are marked BLOCKED for this session because the per-screen audit/implementation budget was exhausted; the reason is recorded in `BLOCKERS.md` and the recommended order is in `FINAL_REPORT.md`. This is a resource blocker, not a claim that the screen is broken.
+> **Execution status:** the foundation plus 63 route screens are DONE (Home, the full Cricket, Football and Live modules, football detail/records/player/team pages). The remaining 87 route screens are marked BLOCKED for this session because the per-screen audit/implementation budget was exhausted; the reason is recorded in `BLOCKERS.md` and the recommended order is in `FINAL_REPORT.md`. This is a resource blocker, not a claim that the screen is broken.
 
 ## 1. Summary
 
@@ -278,8 +278,8 @@ Generated from the real router files in `src/routes` and cross-checked against `
 | GUIDE-03 | Guides | GUIDE-02 | Highlights Slug | Full page | `/highlights/:slug`<br>`src/routes/highlights.$slug.tsx` | SSR loader; JSON-LD; head meta | — | server fn / query | loading, error | BLOCKED |
 | GUIDE-04 | Guides | GUIDE-02 | Highlights | Full page | `/highlights`<br>`src/routes/highlights.index.tsx` | JSON-LD; head meta | — | static/local | not verified | BLOCKED |
 | HOME-01 | Home | — | Home dashboard | Full page | `/`<br>`src/routes/index.tsx` | SSR hero feeds; live/upcoming/finals; sport chips; cricket + football slates; sport doors | home/CompactHero, home/StatusBar, home/SportChipTabs, home/ForYouStrip | espn.functions, wc2026.functions, cricket.functions | loading, empty, error+retry | DONE |
-| LIVE-01 | Live | LIVE-02 | Live Sport | Full page | `/live/:sport`<br>`src/routes/live.$sport.tsx` | SSR loader; JSON-LD; head meta | — | server fn / query | not verified | BLOCKED |
-| LIVE-02 | Live | — | Live Today | Full page | `/live/today`<br>`src/routes/live.today.tsx` | JSON-LD; head meta | seo/withHubLinks | static/local | empty | BLOCKED |
+| LIVE-01 | Live | LIVE-02 | Live Sport | Full page | `/live/:sport`<br>`src/routes/live.$sport.tsx` | Sport live-hub entry; 404 for unknown sport; hub CTA | ui/state | static hub map | 404, invalid sport | DONE |
+| LIVE-02 | Live | - | Live Today | Full page | `/live/today`<br>`src/routes/live.today.tsx` | Cross-sport live index | seo/withHubLinks | static | not applicable | DONE |
 | MINE-01 | My Sports | — | Mine | Full page | `/mine`<br>`src/routes/mine.tsx` | head meta | common/FavoriteTeamPicker | static/local | loading, empty | BLOCKED |
 | MLB-01 | MLB | MLB-04 | Mlb Champions | Full page | `/mlb/champions`<br>`src/routes/mlb.champions.tsx` | JSON-LD; head meta | seo/withHubLinks | static/local | not verified | BLOCKED |
 | MLB-02 | MLB | MLB-04 | Mlb Game Id | Full page | `/mlb/game/:id`<br>`src/routes/mlb.game.$id.tsx` | SSR loader; client query; JSON-LD; head meta | mlb/MlbLinescore, mlb/MlbBoxScore, mlb/MlbScoringPlays, mlb/MlbWinProbabilityChart | mlb.functions | loading | BLOCKED |

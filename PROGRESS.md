@@ -3,10 +3,10 @@
 Updated: 2026-11-27 (session 1 closed with a logged resource blocker)
 
 - Branch: `professional-overhaul` (never pushed)
-- Current phase: **session 2 — football complete; next LIVE/NEWS**
-- Current screen: LIVE-01 live hub
-- Screens done: **61 / 150**
-- Screens blocked: **89** (resource, see `BLOCKERS.md`)
+- Current phase: **session 2 — live module complete; next NEWS**
+- Current screen: NEWS-01 news index
+- Screens done: **63 / 150**
+- Screens blocked: **87** (resource, see `BLOCKERS.md`)
 - Screens in progress: 0
 
 ## Completed

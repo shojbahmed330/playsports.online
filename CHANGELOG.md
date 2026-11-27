@@ -316,6 +316,11 @@
 - Fixed: shared error/empty states; invalid-id state; query retry; route error boundary; route-owned black/gray/white classes replaced with tokens; loading announced; decorative icons hidden; watch disclosure `aria-controls`; 44 px back button and focus rings; OG site name.
 - Kept: live match centre, highlights, probability/momentum, venue/form/H2H, officials, watch panel, predictions, comments and FAQs.
 
+## LIVE-01 / LIVE-02 live hubs
+
+- Fixed: unknown sport now returns a real 404 with a shared empty state; honest hub copy; labelled breadcrumbs; hidden separators; 44 px links/CTAs; shared card surface; OG site name/Twitter meta.
+- Kept: per-sport routing and the cross-sport live index.
+
 ## Foundation
 
 - Added overhaul documentation: `PROJECT_NOTES.md`, `HEALTH_BASELINE.md`, `SCREEN_INVENTORY.md`, `DESIGN_SYSTEM.md`, `PROGRESS.md`, `DECISIONS.md`, `BLOCKERS.md`, `SECURITY_FINDINGS.md`.
