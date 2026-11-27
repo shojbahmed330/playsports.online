@@ -130,12 +130,12 @@ many routes at once. Do them **after** Tier A.
 
 Redesigning 22 pages without primitives will produce 22 new dialects. Build first:
 
-1. **Type scale** — display / h1 / h2 / body / caption, with responsive sizes and line-heights.
-2. **Spacing + radius scale** — one card radius, one gap rhythm, one section rhythm.
-3. **Colour roles** — surface / elevated surface / border / accent / live / positive / negative / gold. Sport accents become tokens (`--sport-cricket`, `--sport-football`, …), not hardcoded emerald/amber.
-4. **Primitives** — `Card`, `StatTile`, `ScoreRow`, `Table`, `Tabs`, `FilterBar`, `Hero`, `SectionHeader`, `TeamHeader`, `PlayerHeader`.
-5. **Motion rules** — durations, reduced-motion fallback.
-6. **Visual QA harness** — 360 / 768 / 1280 screenshots per screen, light/dark token check.
+1. **Type scale** — display / h1 / h2 / body / caption, with responsive sizes and line-heights. ✅ done (`--text-*` in `src/styles.css`)
+2. **Spacing + radius scale** — one card radius, one gap rhythm, one section rhythm. ✅ existing token set (`--radius`, `--shadow-elevated`, `--gradient-hero/card`)
+3. **Colour roles** — surface / elevated surface / border / accent / live / positive / negative / gold. Sport accents become tokens (`--sport-cricket`, `--sport-football`, …), not hardcoded emerald/amber. ✅ `--color-accent-*`, `--color-live`, `--color-positive`, `--color-gold`
+4. **Primitives** — `Card`, `StatTile`, `ScoreRow`, `Table`, `Tabs`, `FilterBar`, `Hero`, `SectionHeader`, `TeamHeader`, `PlayerHeader`. ✅ first wave in `src/components/ui/primitives.tsx` (`Card`, `StatTile`, `ScoreRow`, `TableShell`, `Hero`); `SectionHeader` already exists in `ui/state.tsx`
+5. **Motion rules** — durations, reduced-motion fallback. ✅ existing `motion-reduce:` convention
+6. **Visual QA harness** — 360 / 768 / 1280 screenshots per screen, light/dark token check. ⏳ runs as part of each screen's definition of done
 
 ---
 

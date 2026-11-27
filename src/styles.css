@@ -48,6 +48,7 @@
   --color-gold: var(--gold);
   --color-gold-foreground: var(--gold-foreground);
   --color-live: var(--live);
+  --color-positive: var(--positive);
   --color-accent-football: var(--accent-football);
   --color-accent-cricket: var(--accent-cricket);
   --color-accent-mlb: var(--accent-mlb);
@@ -56,6 +57,32 @@
   --color-accent-mls: var(--accent-mls);
   --font-sans: "Inter", system-ui, sans-serif;
   --font-display: "Sora Variable", "Inter", system-ui, sans-serif;
+
+  /* Type scale — every screen uses these steps, never ad-hoc text sizes. */
+  --text-display: 2.75rem;
+  --text-display--line-height: 1.02;
+  --text-display--letter-spacing: -0.035em;
+  --text-display--font-weight: 800;
+  --text-h1: 2rem;
+  --text-h1--line-height: 1.1;
+  --text-h1--letter-spacing: -0.025em;
+  --text-h1--font-weight: 800;
+  --text-h2: 1.5rem;
+  --text-h2--line-height: 1.2;
+  --text-h2--letter-spacing: -0.02em;
+  --text-h2--font-weight: 700;
+  --text-h3: 1.25rem;
+  --text-h3--line-height: 1.3;
+  --text-h3--letter-spacing: -0.01em;
+  --text-h3--font-weight: 700;
+  --text-body: 0.9375rem;
+  --text-body--line-height: 1.6;
+  --text-caption: 0.8125rem;
+  --text-caption--line-height: 1.4;
+  --text-micro: 0.6875rem;
+  --text-micro--line-height: 1.2;
+  --text-micro--letter-spacing: 0.12em;
+  --text-micro--font-weight: 700;
 }
 
 :root {
@@ -86,6 +113,7 @@
   --gold: oklch(0.78 0.16 75);
   --gold-foreground: oklch(0.18 0.02 264);
   --live: oklch(0.68 0.22 22);
+  --positive: oklch(0.74 0.16 155);
   /* Per-sport accent tokens */
   --accent-football: oklch(0.78 0.16 75);
   --accent-cricket: oklch(0.74 0.16 155);
