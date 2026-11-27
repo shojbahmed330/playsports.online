@@ -209,6 +209,11 @@
 - Fixed: Euro teams canonical now `playsports.online`; shared retryable error/empty states; hidden reduced-motion spinner; focus-visible/reduced-motion cards; breadcrumb JSON-LD and site/Twitter meta.
 - Kept: club/nation directory and Euro teams page.
 
+## FB-04 football competition history
+
+- Fixed: Euro/Copa history canonical and item URLs now use `playsports.online`; shared error/not-found/empty states; 44 px links, hidden icons, focus rings, reduced motion; site/Twitter/breadcrumb JSON-LD.
+- Kept: Euro/Copa history experiences and generic decade/edition history.
+
 ## Foundation
 
 - Added overhaul documentation: `PROJECT_NOTES.md`, `HEALTH_BASELINE.md`, `SCREEN_INVENTORY.md`, `DESIGN_SYSTEM.md`, `PROGRESS.md`, `DECISIONS.md`, `BLOCKERS.md`, `SECURITY_FINDINGS.md`.

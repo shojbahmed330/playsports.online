@@ -17,6 +17,10 @@ import { EuroHistoryJumpBar } from "@/components/football/EuroHistoryJumpBar";
 import { LastEditionRecap } from "@/components/football/LastEditionRecap";
 import { CopaHistoryPage } from "@/components/football/CopaHistoryPage";
 import { copaStats } from "@/lib/copa-history";
+import { canonical } from "@/lib/seo/canonical";
+import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
+import { EmptyState, ErrorState } from "@/components/ui/state";
+import { errorMessage } from "@/lib/error-message";
 import { Trophy } from "lucide-react";
 
 export const Route = createFileRoute("/football/$comp/history/")({
@@ -32,7 +36,7 @@ export const Route = createFileRoute("/football/$comp/history/")({
       const s = euroStats();
       const title = `UEFA Euro History — ${s.tournaments} tournaments, ${s.champions} champions (${s.span})`;
       const description = `Every UEFA European Championship since 1960 — Spain's record 4 titles, every final, top scorer and host. Euro 2028 heads to UK & Ireland next.`;
-      const url = `https://allsportslive.lovable.app/football/euro/history`;
+      const url = canonical("/football/euro/history");
       const itemList = {
         "@context": "https://schema.org",
         "@type": "ItemList",
@@ -51,9 +55,21 @@ export const Route = createFileRoute("/football/$comp/history/")({
           { property: "og:description", content: description },
           { property: "og:url", content: url },
           { property: "og:type", content: "website" },
+          { property: "og:site_name", content: "PlaySports" },
+          { name: "twitter:card", content: "summary_large_image" },
+          { name: "twitter:title", content: title },
+          { name: "twitter:description", content: description },
         ],
         links: [{ rel: "canonical", href: url }],
         scripts: [
+          ldScript(
+            breadcrumbList([
+              { name: "Home", path: "/" },
+              { name: "Football", path: "/football" },
+              { name: "Euro", path: "/football/euro" },
+              { name: "History", path: "/football/euro/history" },
+            ]),
+          ),
           { type: "application/ld+json", children: JSON.stringify(itemList) },
         ],
       };
@@ -62,7 +78,7 @@ export const Route = createFileRoute("/football/$comp/history/")({
       const s = copaStats();
       const title = `Copa América History — ${s.tournaments} tournaments, ${s.champions} champions (${s.span})`;
       const description = `Every Copa América since 1916 — Argentina's record 16 titles, Uruguay's 15, every final, top scorer and host. Next Copa América: 2028.`;
-      const url = `https://allsportslive.lovable.app/football/copa-america/history`;
+      const url = canonical("/football/copa-america/history");
       const itemList = {
         "@context": "https://schema.org",
         "@type": "ItemList",
@@ -81,9 +97,23 @@ export const Route = createFileRoute("/football/$comp/history/")({
           { property: "og:description", content: description },
           { property: "og:url", content: url },
           { property: "og:type", content: "website" },
+          { property: "og:site_name", content: "PlaySports" },
+          { name: "twitter:card", content: "summary_large_image" },
+          { name: "twitter:title", content: title },
+          { name: "twitter:description", content: description },
         ],
         links: [{ rel: "canonical", href: url }],
-        scripts: [{ type: "application/ld+json", children: JSON.stringify(itemList) }],
+        scripts: [
+          ldScript(
+            breadcrumbList([
+              { name: "Home", path: "/" },
+              { name: "Football", path: "/football" },
+              { name: "Copa América", path: "/football/copa-america" },
+              { name: "History", path: "/football/copa-america/history" },
+            ]),
+          ),
+          { type: "application/ld+json", children: JSON.stringify(itemList) },
+        ],
       };
     }
     return buildCompetitionHead({
@@ -94,7 +124,31 @@ export const Route = createFileRoute("/football/$comp/history/")({
     });
   },
   component: HistoryRoute,
-  notFoundComponent: () => <div className="p-10 text-center">Competition not found.</div>,
+  errorComponent: ({ error, reset }) => (
+    <div className="mx-auto max-w-3xl px-4 py-10">
+      <ErrorState
+        title="Could not load competition history"
+        message={errorMessage(error)}
+        onRetry={reset}
+      />
+    </div>
+  ),
+  notFoundComponent: () => (
+    <div className="mx-auto max-w-3xl px-4 py-10">
+      <EmptyState
+        title="Competition not found"
+        description="This competition is not in the football directory."
+        action={
+          <Link
+            to="/football"
+            className="inline-flex min-h-11 items-center rounded-full bg-primary/15 px-4 text-sm font-bold text-primary ring-1 ring-primary/30"
+          >
+            Back to football
+          </Link>
+        }
+      />
+    </div>
+  ),
 });
 
 function HistoryRoute() {
@@ -133,7 +187,7 @@ function EuroHistoryPage() {
           <Link
             to="/football/$comp"
             params={{ comp: "euro" }}
-            className="text-[11px] text-muted-foreground hover:text-foreground"
+            className="inline-flex min-h-11 items-center text-[11px] text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             ← Back to overview
           </Link>
@@ -156,16 +210,29 @@ function GenericHistoryPage() {
     <CompetitionPageShell comp={comp}>
       <h2 className="text-lg sm:text-xl font-bold mb-1">{comp.name} — All Editions</h2>
       <p className="text-sm text-muted-foreground mb-6">
-        {comp.years.length} {comp.kind === "league" ? "seasons" : "editions"} from {comp.years[0]} to {comp.years[comp.years.length - 1]}.
+        {comp.years.length} {comp.kind === "league" ? "seasons" : "editions"} from {comp.years[0]}{" "}
+        to {comp.years[comp.years.length - 1]}.
       </p>
+
+      {decades.length === 0 && (
+        <EmptyState
+          title="No historical editions available"
+          description="History will appear once this competition has recorded editions."
+        />
+      )}
 
       {titles.length > 0 && (
         <section className="mb-8">
-          <h3 className="text-sm uppercase tracking-widest text-muted-foreground mb-3">Most titles</h3>
+          <h3 className="text-sm uppercase tracking-widest text-muted-foreground mb-3">
+            Most titles
+          </h3>
           <div className="flex flex-wrap gap-2">
             {titles.map((t) => (
-              <span key={t.team} className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-xs">
-                <Trophy className="size-3.5 text-amber-300" />
+              <span
+                key={t.team}
+                className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-xs"
+              >
+                <Trophy aria-hidden="true" className="size-3.5 text-amber-300" />
                 <span className="font-semibold">{t.team}</span>
                 <span className="text-muted-foreground">×{t.titles}</span>
               </span>
@@ -177,37 +244,56 @@ function GenericHistoryPage() {
       {decades.map((bucket) => (
         <section key={bucket.decade} className="mb-8">
           <div className="flex items-baseline justify-between mb-3">
-            <h3 className="text-sm uppercase tracking-widest text-muted-foreground">{bucket.label}</h3>
+            <h3 className="text-sm uppercase tracking-widest text-muted-foreground">
+              {bucket.label}
+            </h3>
             {bucket.champions[0] && (
               <span className="text-xs text-muted-foreground">
-                Top of decade: <span className="text-foreground font-semibold">{bucket.champions[0].team}</span> ×{bucket.champions[0].titles}
+                Top of decade:{" "}
+                <span className="text-foreground font-semibold">{bucket.champions[0].team}</span> ×
+                {bucket.champions[0].titles}
               </span>
             )}
           </div>
           <ul className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
             {[...bucket.editions].reverse().map((edition) => {
               const year = edition.year;
-              const winnerLabel = comp.slug === "world-cup" ? null : (edition.winner && edition.winner !== "TBD" ? edition.winner : null) ?? getEdition(comp.slug, year)?.winner ?? null;
+              const winnerLabel =
+                comp.slug === "world-cup"
+                  ? null
+                  : ((edition.winner && edition.winner !== "TBD" ? edition.winner : null) ??
+                    getEdition(comp.slug, year)?.winner ??
+                    null);
               const inner = (
                 <>
                   <span className="flex items-center gap-3 min-w-0">
                     <span className="size-8 shrink-0 rounded-full bg-gradient-to-br from-amber-500/30 to-rose-500/20 grid place-items-center ring-1 ring-white/10">
-                      <Trophy className="size-4 text-amber-300" />
+                      <Trophy aria-hidden="true" className="size-4 text-amber-300" />
                     </span>
                     <span className="min-w-0">
                       <span className="block font-semibold">{formatSeasonLabel(comp, year)}</span>
-                      {winnerLabel && <span className="block text-[11px] text-muted-foreground truncate">{winnerLabel}</span>}
+                      {winnerLabel && (
+                        <span className="block text-[11px] text-muted-foreground truncate">
+                          {winnerLabel}
+                        </span>
+                      )}
                     </span>
                   </span>
-                  <span className="text-xs text-muted-foreground group-hover:text-foreground">View →</span>
+                  <span className="text-xs text-muted-foreground group-hover:text-foreground">
+                    View →
+                  </span>
                 </>
               );
               const cls =
-                "group flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.03] p-3 hover:border-white/20 hover:bg-white/[0.06] transition";
+                "group flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.03] p-3 hover:border-white/20 hover:bg-white/[0.06] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring motion-reduce:transition-none";
               return (
                 <li key={year}>
                   {comp.slug === "world-cup" ? (
-                    <Link to="/football/tournaments/$year" params={{ year: String(year) }} className={cls}>
+                    <Link
+                      to="/football/tournaments/$year"
+                      params={{ year: String(year) }}
+                      className={cls}
+                    >
                       {inner}
                     </Link>
                   ) : (

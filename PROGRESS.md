@@ -4,9 +4,9 @@ Updated: 2026-11-27 (session 1 closed with a logged resource blocker)
 
 - Branch: `professional-overhaul` (never pushed)
 - Current phase: **session 2 — football competition pages**
-- Current screen: FB-04 competition history index
-- Screens done: **40 / 150**
-- Screens blocked: **110** (resource, see `BLOCKERS.md`)
+- Current screen: FB-05 competition overview
+- Screens done: **41 / 150**
+- Screens blocked: **109** (resource, see `BLOCKERS.md`)
 - Screens in progress: 0
 
 ## Completed
