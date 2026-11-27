@@ -5,6 +5,8 @@ import { Breadcrumbs } from "@/components/nav/Breadcrumbs";
 import { listNewsRecaps } from "@/lib/news.server";
 import { formatNewsDate } from "@/lib/news-date";
 import { breadcrumbList, collectionPage, ldScript } from "@/lib/seo/jsonld";
+import { EmptyState, ErrorState } from "@/components/ui/state";
+import { errorMessage } from "@/lib/error-message";
 
 export const Route = createFileRoute("/news/")({
   loader: async () => ({ articles: await listNewsRecaps(30) }),
@@ -21,6 +23,7 @@ export const Route = createFileRoute("/news/")({
         { property: "og:url", content: "https://www.playsports.online/news" },
         { property: "og:type", content: "website" },
         { property: "og:image", content: "https://www.playsports.online/og-default.png" },
+        { property: "og:site_name", content: "PlaySports" },
         { name: "twitter:card", content: "summary_large_image" },
         { name: "twitter:title", content: title },
         { name: "twitter:description", content: description },
@@ -47,6 +50,15 @@ export const Route = createFileRoute("/news/")({
     };
   },
   component: NewsIndex,
+  errorComponent: ({ error, reset }) => (
+    <div className="mx-auto max-w-3xl px-4 py-10">
+      <ErrorState
+        title="Could not load the news feed"
+        message={errorMessage(error)}
+        onRetry={reset}
+      />
+    </div>
+  ),
 });
 
 function NewsIndex() {
@@ -60,14 +72,14 @@ function NewsIndex() {
         <header className="rounded-2xl border border-border bg-gradient-to-br from-sky-950/40 via-background to-emerald-950/20 p-6 sm:p-8">
           <div className="flex items-start justify-between gap-3">
             <div className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] font-bold text-sky-300">
-              <Newspaper className="size-4" /> PlaySports news
+              <Newspaper className="size-4" aria-hidden="true" /> PlaySports news
             </div>
             <a
               href="/news/rss.xml"
-              className="inline-flex items-center gap-1 rounded-full border border-border px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-muted-foreground transition-colors hover:border-sky-500/40 hover:text-sky-300"
+              className="inline-flex min-h-11 items-center gap-1 rounded-full border border-border px-3 text-[10px] font-bold uppercase tracking-wider text-muted-foreground transition-colors hover:border-sky-500/40 hover:text-sky-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               aria-label="Subscribe to the PlaySports news RSS feed"
             >
-              <Rss className="size-3" /> RSS
+              <Rss className="size-3" aria-hidden="true" /> RSS
             </a>
           </div>
           <h1 className="mt-3 text-3xl sm:text-4xl font-extrabold">Match recaps &amp; analysis</h1>
@@ -78,26 +90,26 @@ function NewsIndex() {
         </header>
 
         {articles.length === 0 ? (
-          <section className="rounded-2xl border border-dashed border-border p-10 text-center">
-            <h2 className="text-lg font-bold">No recaps published yet</h2>
-            <p className="mt-2 text-sm text-muted-foreground">
-              Recaps are generated after matches finish. In the meantime, browse live scores.
-            </p>
-            <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
-              <Link
-                to="/cricket"
-                className="rounded-full bg-emerald-500/15 px-3 py-1.5 text-xs font-bold text-emerald-200 ring-1 ring-emerald-500/30 hover:bg-emerald-500/25"
-              >
-                Cricket scores
-              </Link>
-              <Link
-                to="/football"
-                className="rounded-full bg-sky-500/15 px-3 py-1.5 text-xs font-bold text-sky-200 ring-1 ring-sky-500/30 hover:bg-sky-500/25"
-              >
-                Football scores
-              </Link>
-            </div>
-          </section>
+          <EmptyState
+            title="No recaps published yet"
+            description="Recaps are generated after matches finish. In the meantime, browse live scores."
+            action={
+              <>
+                <Link
+                  to="/cricket"
+                  className="inline-flex min-h-11 items-center rounded-full bg-emerald-500/15 px-3 text-xs font-bold text-emerald-200 ring-1 ring-emerald-500/30 hover:bg-emerald-500/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  Cricket scores
+                </Link>
+                <Link
+                  to="/football"
+                  className="inline-flex min-h-11 items-center rounded-full bg-sky-500/15 px-3 text-xs font-bold text-sky-200 ring-1 ring-sky-500/30 hover:bg-sky-500/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  Football scores
+                </Link>
+              </>
+            }
+          />
         ) : (
           <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {articles.map((article) => (
@@ -105,12 +117,12 @@ function NewsIndex() {
                 key={article.slug}
                 to="/news/$slug"
                 params={{ slug: article.slug }}
-                className="group flex flex-col rounded-2xl border border-border bg-card p-4 transition-all hover:-translate-y-0.5 hover:border-sky-500/40"
+                className="group flex flex-col rounded-2xl border border-border bg-card p-4 transition-all hover:-translate-y-0.5 hover:border-sky-500/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 <div className="flex items-center justify-between gap-2 text-[10px] uppercase tracking-wider text-muted-foreground">
                   <span className="font-bold text-sky-300">{article.sport}</span>
                   <span className="inline-flex items-center gap-1">
-                    <CalendarDays className="size-3" />
+                    <CalendarDays className="size-3" aria-hidden="true" />
                     {formatNewsDate(article.updatedAt)}
                   </span>
                 </div>
@@ -123,7 +135,7 @@ function NewsIndex() {
                     {article.homeTeam} v {article.awayTeam}
                   </span>
                   <span className="inline-flex items-center gap-0.5 font-bold text-sky-300 group-hover:gap-1.5 transition-all">
-                    Read <ChevronRight className="size-3" />
+                    Read <ChevronRight className="size-3" aria-hidden="true" />
                   </span>
                 </div>
               </Link>

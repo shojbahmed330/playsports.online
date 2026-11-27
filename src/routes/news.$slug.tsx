@@ -7,6 +7,8 @@ import { pickRelatedNews, recapMatchPath } from "@/lib/news-feed";
 import { formatNewsDate } from "@/lib/news-date";
 import { markdownToHtml } from "@/lib/markdown-lite";
 import { articlePage, breadcrumbList, ldScript } from "@/lib/seo/jsonld";
+import { EmptyState, ErrorState } from "@/components/ui/state";
+import { errorMessage } from "@/lib/error-message";
 
 export const Route = createFileRoute("/news/$slug")({
   loader: async ({ params }) => {
@@ -36,6 +38,7 @@ export const Route = createFileRoute("/news/$slug")({
         { property: "og:url", content: `https://www.playsports.online${path}` },
         { property: "og:type", content: "article" },
         { property: "og:image", content: image },
+        { property: "og:site_name", content: "PlaySports" },
         { property: "article:published_time", content: article.updatedAt },
         { name: "twitter:card", content: "summary_large_image" },
         { name: "twitter:title", content: article.headline },
@@ -75,15 +78,29 @@ export const Route = createFileRoute("/news/$slug")({
     };
   },
   component: NewsArticlePage,
+  errorComponent: ({ error, reset }) => (
+    <div className="mx-auto max-w-2xl px-4 py-10">
+      <ErrorState
+        title="Could not load this article"
+        message={errorMessage(error)}
+        onRetry={reset}
+      />
+    </div>
+  ),
   notFoundComponent: () => (
-    <div className="mx-auto max-w-2xl px-4 py-20 text-center">
-      <h1 className="text-2xl font-bold">Article not found</h1>
-      <p className="mt-2 text-sm text-muted-foreground">
-        This recap may have been moved or is not published yet.
-      </p>
-      <Link to="/news" className="mt-6 inline-flex text-sm font-bold text-sky-300 underline">
-        Back to news
-      </Link>
+    <div className="mx-auto max-w-2xl px-4 py-16">
+      <EmptyState
+        title="Article not found"
+        description="This recap may have been moved or is not published yet."
+        action={
+          <Link
+            to="/news"
+            className="inline-flex min-h-11 items-center text-sm font-bold text-sky-300 underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            Back to news
+          </Link>
+        }
+      />
     </div>
   ),
 });
@@ -92,6 +109,8 @@ function NewsArticlePage() {
   const { article, related } = Route.useLoaderData();
   const html = markdownToHtml(article.fullArticle);
   const matchPath = recapMatchPath(article.sport, article.matchKey);
+  const wordCount = article.fullArticle.trim().split(/\s+/).filter(Boolean).length;
+  const readMinutes = Math.max(1, Math.round(wordCount / 200));
 
   return (
     <div className="min-h-screen">
@@ -105,15 +124,16 @@ function NewsArticlePage() {
                 {article.sport}
               </span>
               {article.tournament && (
-                <span className="rounded-full bg-white/5 px-2 py-1 text-muted-foreground">
+                <span className="rounded-full bg-muted px-2 py-1 text-muted-foreground">
                   {article.tournament}
                 </span>
               )}
               <span className="inline-flex items-center gap-1 text-muted-foreground">
-                <CalendarDays className="size-3" /> {formatNewsDate(article.updatedAt)}
+                <CalendarDays className="size-3" aria-hidden="true" />{" "}
+                {formatNewsDate(article.updatedAt)}
               </span>
               <span className="inline-flex items-center gap-1 text-muted-foreground">
-                <Clock3 className="size-3" /> 4 min read
+                <Clock3 className="size-3" aria-hidden="true" /> {readMinutes} min read
               </span>
             </div>
             <h1 className="text-3xl sm:text-4xl font-extrabold leading-tight">
@@ -131,9 +151,9 @@ function NewsArticlePage() {
               {matchPath && (
                 <a
                   href={matchPath}
-                  className="inline-flex items-center gap-0.5 font-bold text-sky-300 hover:text-sky-200"
+                  className="inline-flex min-h-11 items-center gap-0.5 font-bold text-sky-300 hover:text-sky-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
-                  Match page <ChevronRight className="size-3" />
+                  Match page <ChevronRight className="size-3" aria-hidden="true" />
                 </a>
               )}
             </div>
@@ -142,7 +162,7 @@ function NewsArticlePage() {
           {article.heroImage && (
             <img
               src={article.heroImage}
-              alt=""
+              alt={article.headline}
               className="mt-6 w-full rounded-2xl border border-border object-cover"
               loading="lazy"
               decoding="async"
@@ -178,9 +198,9 @@ function NewsArticlePage() {
           <div className="mt-10 border-t border-border pt-6">
             <Link
               to="/news"
-              className="inline-flex items-center gap-1 text-sm font-bold text-sky-300 hover:text-sky-200"
+              className="inline-flex min-h-11 items-center gap-1 text-sm font-bold text-sky-300 hover:text-sky-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
-              <ChevronRight className="size-4 rotate-180" /> All match recaps
+              <ChevronRight className="size-4 rotate-180" aria-hidden="true" /> All match recaps
             </Link>
           </div>
         </article>
@@ -196,7 +216,7 @@ function NewsArticlePage() {
                   key={item.slug}
                   to="/news/$slug"
                   params={{ slug: item.slug }}
-                  className="group rounded-xl border border-border bg-card p-3 transition-colors hover:border-sky-500/40"
+                  className="group rounded-xl border border-border bg-card p-3 transition-colors hover:border-sky-500/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   <span className="text-[10px] font-bold uppercase tracking-wider text-sky-300">
                     {item.sport}

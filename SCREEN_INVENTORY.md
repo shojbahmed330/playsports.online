@@ -3,7 +3,7 @@
 Generated from the real router files in `src/routes` and cross-checked against `src/routeTree.gen.ts`.
 
 
-> **Execution status:** the foundation plus 63 route screens are DONE (Home, the full Cricket, Football and Live modules, football detail/records/player/team pages). The remaining 87 route screens are marked BLOCKED for this session because the per-screen audit/implementation budget was exhausted; the reason is recorded in `BLOCKERS.md` and the recommended order is in `FINAL_REPORT.md`. This is a resource blocker, not a claim that the screen is broken.
+> **Execution status:** the foundation plus 65 route screens are DONE (Home, Cricket, Football, Live and News modules). The remaining 85 route screens are marked BLOCKED for this session because the per-screen audit/implementation budget was exhausted; the reason is recorded in `BLOCKERS.md` and the recommended order is in `FINAL_REPORT.md`. This is a resource blocker, not a claim that the screen is broken.
 
 ## 1. Summary
 
@@ -328,8 +328,8 @@ Generated from the real router files in `src/routes` and cross-checked against `
 | NBA-13 | NBA | NBA-05 | Nba Team Id | Full page | `/nba/team/:id`<br>`src/routes/nba.team.$id.tsx` | SSR loader; head meta | nba/NbaTeamView | server fn / query | not verified | BLOCKED |
 | NBA-14 | NBA | NBA-05 | Nba Teams | Full page | `/nba/teams`<br>`src/routes/nba.teams.tsx` | SSR loader; client query; JSON-LD; head meta | nba/NbaTeamCard, seo/withHubLinks | nba.functions | loading | BLOCKED |
 | NBA-15 | NBA | NBA-05 | Nba Teams Slug | Full page | `/nba/teams/:slug`<br>`src/routes/nba.teams_.$slug.tsx` | SSR loader; JSON-LD; head meta | nba/NbaTeamView | server fn / query | loading, error | BLOCKED |
-| NEWS-01 | News | NEWS-02 | News Slug | Full page | `/news/:slug`<br>`src/routes/news.$slug.tsx` | SSR loader; JSON-LD; head meta | sports/SportNav, nav/Breadcrumbs | server fn / query | loading, error | BLOCKED |
-| NEWS-02 | News | — | News | Full page | `/news`<br>`src/routes/news.index.tsx` | SSR loader; JSON-LD; head meta | sports/SportNav, nav/Breadcrumbs | server fn / query | empty | BLOCKED |
+| NEWS-01 | News | NEWS-02 | News Article | Full page | `/news/:slug`<br>`src/routes/news.$slug.tsx` | Recap body, key moments, match link, related recaps | sports/SportNav, nav/Breadcrumbs, ui/state | server fn / query | error+retry, 404 | DONE |
+| NEWS-02 | News | - | News Index | Full page | `/news`<br>`src/routes/news.index.tsx` | Recap list with RSS entry point | sports/SportNav, nav/Breadcrumbs, ui/state | server fn / query | empty, error+retry | DONE |
 | NHL-01 | NHL | NHL-04 | Nhl Champions | Full page | `/nhl/champions`<br>`src/routes/nhl.champions.tsx` | JSON-LD; head meta | seo/withHubLinks | static/local | not verified | BLOCKED |
 | NHL-02 | NHL | NHL-04 | Nhl Game Id | Full page | `/nhl/game/:id`<br>`src/routes/nhl.game.$id.tsx` | SSR loader; client query; JSON-LD; head meta | nhl/NhlLinescore, nhl/NhlBoxScore, nhl/NhlPlayByPlay, seo/MatchFaqBlock | nhl.functions | loading | BLOCKED |
 | NHL-03 | NHL | NHL-04 | Nhl History | Full page | `/nhl/history`<br>`src/routes/nhl.history.tsx` | JSON-LD; head meta | seo/withHubLinks | static/local | not verified | BLOCKED |

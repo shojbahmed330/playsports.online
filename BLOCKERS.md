@@ -2,11 +2,11 @@
 
 ## BLK-SYS-01 — Remaining route screens (resource blocker)
 
-- **Screen IDs:** 87 route screens still `BLOCKED` in `SCREEN_INVENTORY.md` (plus 5 global items).
-- **Error:** the autonomous per-screen loop (audit → plan → 8 phases → verify) could not complete for every screen in the available execution budget. The foundation and 63 route screens are complete; the rest have the shared foundation but no per-screen audit.
-- **Tried:** router inventory; shared state components; global typecheck/audit/PWA/search/security fixes; 63 full screen passes; global football layout navigation; duplicate `main-content` cleanup.
+- **Screen IDs:** 85 route screens still `BLOCKED` in `SCREEN_INVENTORY.md` (plus 5 global items).
+- **Error:** the autonomous per-screen loop (audit → plan → 8 phases → verify) could not complete for every screen in the available execution budget. The foundation and 65 route screens are complete; the rest have the shared foundation but no per-screen audit.
+- **Tried:** router inventory; shared state components; global typecheck/audit/PWA/search/security fixes; 65 full screen passes; global football layout navigation; duplicate `main-content` cleanup.
 - **Status:** BLOCKED (resource).
-- **Resume:** start with NEWS-01/02, then SRCH/AUTH/ADMIN/UTIL and the US-sport modules, following `FINAL_REPORT.md`. No screen should be marked DONE without its own `plans/<ID>.md` and Phase 8 verification.
+- **Resume:** start with SRCH, then AUTH/ADMIN/UTIL and the US-sport modules, following `FINAL_REPORT.md`. No screen should be marked DONE without its own `plans/<ID>.md` and Phase 8 verification.
 
 ## Individual technical blockers
 

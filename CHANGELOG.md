@@ -321,6 +321,11 @@
 - Fixed: unknown sport now returns a real 404 with a shared empty state; honest hub copy; labelled breadcrumbs; hidden separators; 44 px links/CTAs; shared card surface; OG site name/Twitter meta.
 - Kept: per-sport routing and the cross-sport live index.
 
+## NEWS-01 / NEWS-02 news module
+
+- Fixed: shared error/not-found/empty states; RSS/empty actions 44 px; decorative icons hidden; cards and links focus rings; computed reading time; headline alt text; `bg-muted` badge; OG site name.
+- Kept: recap listing, RSS feed, article metadata, key moments, match link and related recaps.
+
 ## Foundation
 
 - Added overhaul documentation: `PROJECT_NOTES.md`, `HEALTH_BASELINE.md`, `SCREEN_INVENTORY.md`, `DESIGN_SYSTEM.md`, `PROGRESS.md`, `DECISIONS.md`, `BLOCKERS.md`, `SECURITY_FINDINGS.md`.
