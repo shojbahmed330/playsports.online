@@ -341,6 +341,11 @@
 - Fixed: route error boundary; announced auth check; match-query retry plus shared loading/empty/error states; labels/`aria-pressed`; 44 px buttons/inputs; focus rings; hidden icons/flags; remaining `gray-*` replaced with tokens; OG site name.
 - Kept: role gate, sidebar sections, seeding, monetisation/SEO cards and per-match video save flow.
 
+## UTIL-01–07 utility pages
+
+- Fixed: `LegalLayout` empty/loading states, labelled breadcrumb, hidden slash, 44 px Home link, static status dot; contact inline error/success, field names/autocomplete, token controls; cookie consent button; unsubscribe status/retry states.
+- Kept: DB-backed legal copy with static defaults, contact delivery and token unsubscribe.
+
 ## Foundation
 
 - Added overhaul documentation: `PROJECT_NOTES.md`, `HEALTH_BASELINE.md`, `SCREEN_INVENTORY.md`, `DESIGN_SYSTEM.md`, `PROGRESS.md`, `DECISIONS.md`, `BLOCKERS.md`, `SECURITY_FINDINGS.md`.

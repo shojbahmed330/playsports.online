@@ -3,7 +3,7 @@
 Generated from the real router files in `src/routes` and cross-checked against `src/routeTree.gen.ts`.
 
 
-> **Execution status:** the foundation plus 68 route screens are DONE (Home, Cricket, Football, Live, News, Search, Auth and Admin). The remaining 82 route screens are marked BLOCKED for this session because the per-screen audit/implementation budget was exhausted; the reason is recorded in `BLOCKERS.md` and the recommended order is in `FINAL_REPORT.md`. This is a resource blocker, not a claim that the screen is broken.
+> **Execution status:** the foundation plus 75 route screens are DONE (Home, Cricket, Football, Live, News, Search, Auth, Admin and the utility/legal pages). The remaining 75 route screens are marked BLOCKED for this session because the per-screen audit/implementation budget was exhausted; the reason is recorded in `BLOCKERS.md` and the recommended order is in `FINAL_REPORT.md`. This is a resource blocker, not a claim that the screen is broken.
 
 ## 1. Summary
 
@@ -206,12 +206,12 @@ Generated from the real router files in `src/routes` and cross-checked against `
 
 | ID | Module | Parent | Screen name | Type | Route / file path | Data and features shown | Key components | API/data sources | Has loading/empty/error states? | Status |
 |---|---|---|---|---|---|---|---|---|---|---|
-| UTIL-01 | Utility | — | About | Full page | `/about`<br>`src/routes/about.tsx` | head meta | site/LegalLayout | static/local | loading, empty | BLOCKED |
+| UTIL-01 | Utility | - | About | Full page | `/about`<br>`src/routes/about.tsx` | About page with DB override | site/LegalLayout, ui/state | static default + site settings | empty, loading | DONE |
 | ADMIN-01 | Admin | - | Admin | Full page | `/admin`<br>`src/routes/admin.tsx` | Role-gated console: overview, SEO, monetise, audience, content, settings, match video library | admin/*, ui/state | Supabase + wc2026.functions | loading, empty, error+retry, unauthorized | DONE |
 | XSPT-01 | Cross-sport | — | Archive Sport Year | Full page | `/archive/:sport/:year`<br>`src/routes/archive.$sport.$year.tsx` | SSR loader; JSON-LD; head meta | affiliates/AffiliateStrip, ads/AdSlot | server fn / query | error | BLOCKED |
 | AUTH-01 | Auth | - | Auth | Full page | `/auth`<br>`src/routes/auth.tsx` | Admin email/password sign-in with session redirect | - | Supabase Auth | loading, inline error | DONE |
-| UTIL-02 | Utility | — | Contact | Full page | `/contact`<br>`src/routes/contact.tsx` | head meta | site/LegalLayout | contact.functions | error | BLOCKED |
-| UTIL-03 | Utility | — | Cookies | Full page | `/cookies`<br>`src/routes/cookies.tsx` | head meta | site/LegalLayout | static/local | loading | BLOCKED |
+| UTIL-02 | Utility | - | Contact | Full page | `/contact`<br>`src/routes/contact.tsx` | Contact form with inline status | site/LegalLayout | contact.functions | error, success | DONE |
+| UTIL-03 | Utility | - | Cookies | Full page | `/cookies`<br>`src/routes/cookies.tsx` | Cookie policy + consent trigger | site/LegalLayout, ui/state | static default + site settings | empty, loading | DONE |
 | CRK-01 | Cricket | CRK-04 | Cricket Highlight Detail | Full page | `/cricket/highlights/:slug`<br>`src/routes/cricket.highlights.$slug.tsx` | SSR video page; recap link; team profiles; related highlights | sports/SportNav, cricket/CricketSubNav, news/MatchRecapCard, ui/state | static entities + recap | error+retry, 404 | DONE |
 | CRK-02 | Cricket | CRK-04 | Cricket Highlights | Full page | `/cricket/highlights`<br>`src/routes/cricket.highlights.index.tsx` | Static tournament-grouped highlight cards | sports/SportNav, cricket/CricketSubNav, ui/state | static entities | empty | DONE |
 | CRK-03 | Cricket | CRK-04 | Cricket History | Full page | `/cricket/history`<br>`src/routes/cricket.history.tsx` | Tournament switcher; champions table; run/wicket leaders | sports/SportNav, cricket/CricketSubNav, cricket/PlayerLink, ui/state | static history JSON | empty | DONE |
@@ -238,7 +238,7 @@ Generated from the real router files in `src/routes` and cross-checked against `
 | CRK-24 | Cricket | CRK-04 | Cricket Teams | Full page | `/cricket/teams`<br>`src/routes/cricket.teams.index.tsx` | SSR team lists; search + league filter; profile/series links | cricket/TeamCrest, sports/SportNav, cricket/CricketSubNav, ui/state | cricket.functions | loading, empty, error+retry | DONE |
 | CRK-25 | Cricket | CRK-04 | Cricket Tournament Profile | Full page | `/cricket/tournaments/:slug`<br>`src/routes/cricket.tournaments.$slug.tsx` | SSR champions; top runs/wickets; FAQs; related tournaments | sports/SportNav, cricket/CricketSubNav, ui/state | static entities | empty, error+retry, 404 | DONE |
 | CRK-26 | Cricket | CRK-04 | Cricket Tournaments | Full page | `/cricket/tournaments`<br>`src/routes/cricket.tournaments.index.tsx` | Static grouped tournament hub; collection/item-list JSON-LD | sports/SportNav, cricket/CricketSubNav, ui/state | static entities | empty | DONE |
-| UTIL-04 | Utility | — | Disclaimer | Full page | `/disclaimer`<br>`src/routes/disclaimer.tsx` | head meta | site/LegalLayout | static/local | loading, empty, error | BLOCKED |
+| UTIL-04 | Utility | - | Disclaimer | Full page | `/disclaimer`<br>`src/routes/disclaimer.tsx` | Editorial/affiliate disclosure | site/LegalLayout, ui/state | static default + site settings | empty, loading | DONE |
 | FB-01 | Football | FB-05 | Football Comp Fixtures | Full page | `/football/:comp/fixtures`<br>`src/routes/football.$comp.fixtures.tsx` | Upcoming fixtures; Euro/Copa roadmaps; calendar/month groups | football/CompetitionPageShell, CompetitionMatchList, Euro/Copa fixture widgets, ui/state | espn.functions | loading, empty, error+retry, 404 | DONE |
 | FB-02 | Football | FB-05 | Football Comp H2h Matchup | Full page | `/football/:comp/h2h/:matchup`<br>`src/routes/football.$comp.h2h.$matchup.tsx` | Head-to-head record and completed meetings | football/CompetitionPageShell, ui/state | comp-head-to-head.functions | loading, empty, error+retry, 404 | DONE |
 | FB-03 | Football | FB-05 | Football Comp History Year | Full page | `/football/:comp/history/:year`<br>`src/routes/football.$comp.history.$year.tsx` | Edition recap; winner/awards; squad; moments | football/CompetitionPageShell, ui/state | static editions + WC data | empty, error+retry, 404 | DONE |
@@ -348,13 +348,13 @@ Generated from the real router files in `src/routes` and cross-checked against `
 | PLYR-01 | Players | PLYR-02 | Player Sport Slug | Full page | `/player/:sport/:slug`<br>`src/routes/player.$sport.$slug.tsx` | SSR loader; JSON-LD; head meta | affiliates/AffiliateStrip, ads/AdSlot | server fn / query | error | BLOCKED |
 | PLYR-02 | Players | — | Players | Full page | `/players`<br>`src/routes/players.tsx` | client query; JSON-LD; head meta | ads/AdSlot, players/PlayerSubNav, players/FilterBar, players/FilterSheet | server fn / query | loading, empty | BLOCKED |
 | PREM-01 | Premium | — | Premium | Full page | `/premium`<br>`src/routes/premium.tsx` | head meta | — | static/local | not verified | BLOCKED |
-| UTIL-05 | Utility | — | Privacy | Full page | `/privacy`<br>`src/routes/privacy.tsx` | head meta | site/LegalLayout | static/local | loading, empty | BLOCKED |
+| UTIL-05 | Utility | - | Privacy | Full page | `/privacy`<br>`src/routes/privacy.tsx` | Privacy policy | site/LegalLayout, ui/state | static default + site settings | empty, loading | DONE |
 | SRCH-01 | Search | - | Search | Full page | `/search`<br>`src/routes/search.tsx` | Fuzzy World Cup search; initial/no-results states | ui/state | static entities | empty, no results | DONE |
 | XSPT-02 | Cross-sport | — | Team Sport Slug | Full page | `/team/:sport/:slug`<br>`src/routes/team.$sport.$slug.tsx` | SSR loader; JSON-LD; head meta | affiliates/AffiliateStrip, ads/AdSlot | server fn / query | empty, error | BLOCKED |
-| UTIL-06 | Utility | — | Terms | Full page | `/terms`<br>`src/routes/terms.tsx` | head meta | site/LegalLayout | static/local | loading, empty, error | BLOCKED |
+| UTIL-06 | Utility | - | Terms | Full page | `/terms`<br>`src/routes/terms.tsx` | Terms of service | site/LegalLayout, ui/state | static default + site settings | empty, loading | DONE |
 | XSPT-03 | Cross-sport | — | Tournaments Tournament Leaderboard | Full page | `/tournaments/:tournament/:leaderboard`<br>`src/routes/tournaments.$tournament.$leaderboard.tsx` | SSR loader; JSON-LD; head meta | ads/AdSlot | server fn / query | error | BLOCKED |
 | XSPT-04 | Cross-sport | — | Tournaments Fifa World Cup 2026 Stage | Full page | `/tournaments/fifa-world-cup-2026/:stage`<br>`src/routes/tournaments.fifa-world-cup-2026.$stage.tsx` | SSR loader; JSON-LD; head meta | — | server fn / query | error | BLOCKED |
-| UTIL-07 | Utility | — | Unsubscribe | Full page | `/unsubscribe`<br>`src/routes/unsubscribe.tsx` | head meta | — | digest.functions | loading, error | BLOCKED |
+| UTIL-07 | Utility | - | Unsubscribe | Full page | `/unsubscribe`<br>`src/routes/unsubscribe.tsx` | Token-based digest unsubscribe | ui/state | digest.functions | loading, error+retry, missing token | DONE |
 | XSPT-05 | Cross-sport | — | Vs Sport Matchup | Full page | `/vs/:sport/:matchup`<br>`src/routes/vs.$sport.$matchup.tsx` | SSR loader; JSON-LD; head meta | affiliates/AffiliateStrip, ads/AdSlot | server fn / query | empty, error | BLOCKED |
 
 ## 4. Shared / global pieces and overlays

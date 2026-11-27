@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Loader2 } from "lucide-react";
 import type { ReactNode } from "react";
+import { EmptyState } from "@/components/ui/state";
 
 /**
  * Tiny safe Markdown-ish renderer: paragraphs, ## headings, - list items, **bold**.
@@ -84,16 +85,23 @@ export function LegalLayout({
     <main className="min-h-screen pb-24 bg-gradient-to-b from-background via-background to-background/60">
       <div className="mx-auto max-w-3xl px-4 pt-8 pb-10">
         <nav className="text-xs text-muted-foreground" aria-label="Breadcrumb">
-          <Link to="/" className="hover:text-foreground transition-colors">
+          <Link
+            to="/"
+            className="inline-flex min-h-11 items-center transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
             Home
           </Link>
-          <span className="mx-1.5 opacity-50">/</span>
-          <span className="text-foreground">{title}</span>
+          <span className="mx-1.5 opacity-50" aria-hidden="true">
+            /
+          </span>
+          <span className="text-foreground" aria-current="page">
+            {title}
+          </span>
         </nav>
 
         <header className="mt-5 border-b border-border/60 pb-6">
           <div className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-emerald-500/90 font-semibold">
-            <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="size-1.5 rounded-full bg-emerald-500" aria-hidden="true" />
             PlaySports
           </div>
           <h1 className="mt-2 text-3xl sm:text-4xl font-bold tracking-tight">{title}</h1>
@@ -111,12 +119,22 @@ export function LegalLayout({
 
         <article className="mt-6 prose-asl">
           {loading ? (
-            <div className="text-muted-foreground inline-flex items-center gap-2 text-sm">
-              <Loader2 className="size-4 animate-spin" /> Loading…
+            <div
+              className="inline-flex items-center gap-2 text-sm text-muted-foreground"
+              role="status"
+              aria-live="polite"
+            >
+              <Loader2 className="size-4 animate-spin" aria-hidden="true" />
+              Loading…
             </div>
           ) : effective ? (
             renderBody(effective)
-          ) : null}
+          ) : (
+            <EmptyState
+              title="Content unavailable"
+              description="This page has no published content yet. Please check back soon."
+            />
+          )}
           {children}
         </article>
       </div>

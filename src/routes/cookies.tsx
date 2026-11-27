@@ -11,13 +11,18 @@ export const Route = createFileRoute("/cookies")({
       { name: "description", content: "What cookies PlaySports uses and how to manage them." },
       { property: "og:title", content: "Cookie Policy — PlaySports" },
       { property: "og:url", content: URL },
-      { property: "og:description", content: "What cookies PlaySports uses and how to manage them." },
+      {
+        property: "og:description",
+        content: "What cookies PlaySports uses and how to manage them.",
+      },
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "PlaySports" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "Cookie Policy — PlaySports" },
-      { name: "twitter:description", content: "What cookies PlaySports uses and how to manage them." },
-    
+      {
+        name: "twitter:description",
+        content: "What cookies PlaySports uses and how to manage them.",
+      },
     ],
     links: [{ rel: "canonical", href: URL }],
   }),
@@ -36,8 +41,9 @@ function Page() {
     >
       <div className="mt-6">
         <button
+          type="button"
           onClick={openConsent}
-          className="px-3 py-2 text-xs font-semibold rounded-lg bg-emerald-500 text-black hover:bg-emerald-400"
+          className="inline-flex min-h-11 items-center rounded-xl bg-primary px-4 text-xs font-bold text-primary-foreground hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           Manage cookie preferences
         </button>

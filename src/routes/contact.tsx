@@ -22,7 +22,6 @@ export const Route = createFileRoute("/contact")({
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "Contact — PlaySports" },
       { name: "twitter:description", content: "Get in touch with the PlaySports team." },
-    
     ],
     links: [{ rel: "canonical", href: URL }],
   }),
@@ -35,20 +34,22 @@ function Page() {
   const [form, setForm] = useState({ name: "", email: "", subject: "", body: "", hp: "" });
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (busy) return;
     setBusy(true);
+    setFormError(null);
     try {
       await send({ data: form });
       setDone(true);
       setForm({ name: "", email: "", subject: "", body: "", hp: "" });
       toast.success("Message sent — thanks!");
     } catch (err) {
-      toast.error("Send failed", {
-        description: err instanceof Error ? err.message : "Try again later",
-      });
+      const message = err instanceof Error ? err.message : "Try again later";
+      setFormError(message);
+      toast.error("Send failed", { description: message });
     } finally {
       setBusy(false);
     }
@@ -62,7 +63,10 @@ function Page() {
       {settings?.email && (
         <p className="text-sm">
           Prefer email? Reach us at{" "}
-          <a href={`mailto:${settings.email}`} className="text-primary underline">
+          <a
+            href={`mailto:${settings.email}`}
+            className="inline-flex min-h-11 items-center text-primary underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
             {settings.email}
           </a>
           .
@@ -79,50 +83,76 @@ function Page() {
           className="hidden"
           aria-hidden
         />
+        {formError && (
+          <p
+            role="alert"
+            className="rounded-xl border border-destructive/40 bg-destructive/10 px-3 py-2 text-xs text-destructive"
+          >
+            {formError}
+          </p>
+        )}
+        {done && !busy && (
+          <p role="status" className="text-sm text-emerald-500">
+            Thanks — your message has been sent.
+          </p>
+        )}
         <Field label="Your name">
           <input
             required
+            name="name"
+            autoComplete="name"
             maxLength={100}
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
-            className="w-full px-3 py-2 text-sm rounded-lg bg-background border border-input focus:border-emerald-500 focus:outline-none"
+            className="min-h-11 w-full rounded-xl border border-input bg-background px-3 text-sm focus:border-gold focus:outline-none focus:ring-2 focus:ring-ring"
           />
         </Field>
         <Field label="Email">
           <input
             type="email"
             required
+            name="email"
+            autoComplete="email"
             maxLength={255}
             value={form.email}
             onChange={(e) => setForm({ ...form, email: e.target.value })}
-            className="w-full px-3 py-2 text-sm rounded-lg bg-background border border-input focus:border-emerald-500 focus:outline-none"
+            className="min-h-11 w-full rounded-xl border border-input bg-background px-3 text-sm focus:border-gold focus:outline-none focus:ring-2 focus:ring-ring"
           />
         </Field>
         <Field label="Subject (optional)">
           <input
+            name="subject"
             maxLength={200}
             value={form.subject}
             onChange={(e) => setForm({ ...form, subject: e.target.value })}
-            className="w-full px-3 py-2 text-sm rounded-lg bg-background border border-input focus:border-emerald-500 focus:outline-none"
+            className="min-h-11 w-full rounded-xl border border-input bg-background px-3 text-sm focus:border-gold focus:outline-none focus:ring-2 focus:ring-ring"
           />
         </Field>
         <Field label="Message">
           <textarea
             required
+            name="body"
             maxLength={4000}
             rows={6}
             value={form.body}
             onChange={(e) => setForm({ ...form, body: e.target.value })}
-            className="w-full px-3 py-2 text-sm rounded-lg bg-background border border-input focus:border-emerald-500 focus:outline-none"
+            className="w-full rounded-xl border border-input bg-background px-3 py-2 text-sm focus:border-gold focus:outline-none focus:ring-2 focus:ring-ring"
           />
         </Field>
         <button
           type="submit"
           disabled={busy}
-          className="px-4 py-2 text-sm font-semibold rounded-lg bg-emerald-500 text-black hover:bg-emerald-400 disabled:opacity-50 inline-flex items-center gap-2"
+          aria-busy={busy}
+          className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-primary px-4 text-sm font-bold text-primary-foreground hover:opacity-90 disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
-          {busy ? <Loader2 className="size-4 animate-spin" /> : done ? <Check className="size-4" /> : <Send className="size-4" />}
-          {done ? "Sent" : "Send message"}
+          {busy ? (
+            <Loader2 className="size-4 animate-spin" aria-hidden="true" />
+          ) : done ? (
+            <Check className="size-4" aria-hidden="true" />
+          ) : (
+            <Send className="size-4" aria-hidden="true" />
+          )}
+          {busy ? "Sending…" : done ? "Sent" : "Send message"}
         </button>
       </form>
     </LegalLayout>
