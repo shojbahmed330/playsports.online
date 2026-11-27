@@ -8,6 +8,19 @@ import { AdSlot } from "@/components/ads/AdSlot";
 import { getRecapLinkForMatch } from "@/lib/news.server";
 import { MatchRecapCard } from "@/components/news/MatchRecapCard";
 import { relatedMatches } from "@/lib/seo/related";
+import { EmptyState, ErrorState } from "@/components/ui/state";
+
+function formatDate(value?: string | null): string {
+  if (!value) return "";
+  const d = new Date(`${value}T00:00:00Z`);
+  if (Number.isNaN(d.getTime())) return value;
+  return d.toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    timeZone: "UTC",
+  });
+}
 
 export const Route = createFileRoute("/football/matches/$slug")({
   loader: async ({ params }) => {
@@ -39,6 +52,10 @@ export const Route = createFileRoute("/football/matches/$slug")({
         { property: "og:description", content: desc },
         { property: "og:url", content: canonical(path) },
         { property: "og:type", content: "article" },
+        { property: "og:site_name", content: "PlaySports" },
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: desc },
       ],
       links: [{ rel: "canonical", href: canonical(path) }],
       scripts: [
@@ -73,7 +90,7 @@ export const Route = createFileRoute("/football/matches/$slug")({
             },
             {
               q: `When was ${m.home_team} vs ${m.away_team} played?`,
-              a: `The match was played on ${m.match_date ?? `during the ${m.tournament_year} FIFA World Cup`}${m.round ? ` in the ${m.round}` : ""}.`,
+              a: `The match was played on ${m.match_date ? formatDate(m.match_date) : `during the ${m.tournament_year} FIFA World Cup`}${m.round ? ` in the ${m.round}` : ""}.`,
             },
             {
               q: `Where was ${m.home_team} vs ${m.away_team} played?`,
@@ -87,8 +104,19 @@ export const Route = createFileRoute("/football/matches/$slug")({
     };
   },
   component: MatchSlugPage,
-  errorComponent: ({ error }) => <div className="p-6">Error: {errorMessage(error)}</div>,
-  notFoundComponent: () => <div className="p-6">Match not found.</div>,
+  errorComponent: ({ error, reset }) => (
+    <div className="mx-auto max-w-3xl px-4 py-10">
+      <ErrorState title="Could not load this match" message={errorMessage(error)} onRetry={reset} />
+    </div>
+  ),
+  notFoundComponent: () => (
+    <div className="mx-auto max-w-3xl px-4 py-10">
+      <EmptyState
+        title="Match not found"
+        description="This World Cup match is not in the archive."
+      />
+    </div>
+  ),
 });
 
 function MatchSlugPage() {
@@ -96,15 +124,15 @@ function MatchSlugPage() {
   const ytId = highlight?.match(/(?:v=|youtu\.be\/|embed\/)([A-Za-z0-9_-]{11})/)?.[1];
   return (
     <div className="container mx-auto px-4 py-6 pb-20 max-w-4xl">
-      <nav className="text-xs text-muted-foreground mb-3">
+      <nav className="text-xs text-muted-foreground mb-3" aria-label="Breadcrumb">
         <Link to="/" className="hover:underline">
           Home
         </Link>{" "}
-        /{" "}
+        <span aria-hidden="true">/</span>{" "}
         <Link to="/football" className="hover:underline">
           Football
         </Link>{" "}
-        /{" "}
+        <span aria-hidden="true">/</span>{" "}
         <Link
           to="/archive/$sport/$year"
           params={{ sport: "football_wc", year: String(m.tournament_year) }}
@@ -120,7 +148,7 @@ function MatchSlugPage() {
       <p className="text-muted-foreground mb-6" data-speakable>
         FIFA World Cup {m.tournament_year}
         {m.round ? ` · ${m.round}` : ""}
-        {m.match_date ? ` · ${m.match_date}` : ""}
+        {m.match_date ? ` · ${formatDate(m.match_date)}` : ""}
         {m.stadium ? ` · ${m.stadium}${m.city ? ", " + m.city : ""}` : ""}
       </p>
 
@@ -136,7 +164,7 @@ function MatchSlugPage() {
             <iframe
               className="h-full w-full"
               loading="lazy"
-              src={`https://www.youtube.com/embed/${ytId}`}
+              src={`https://www.youtube-nocookie.com/embed/${ytId}`}
               title={`${m.home_team} vs ${m.away_team} highlights`}
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
@@ -162,7 +190,7 @@ function MatchSlugPage() {
             },
             {
               q: `When was the match played?`,
-              a: `${m.match_date ?? `During the ${m.tournament_year} FIFA World Cup`}${m.round ? ` in the ${m.round}` : ""}.`,
+              a: `${m.match_date ? formatDate(m.match_date) : `During the ${m.tournament_year} FIFA World Cup`}${m.round ? ` in the ${m.round}` : ""}.`,
             },
             {
               q: `Where was it played?`,
@@ -188,7 +216,7 @@ function MatchSlugPage() {
             <a
               key={x.href}
               href={x.href}
-              className="px-3 py-1 rounded-full bg-muted text-xs hover:bg-accent"
+              className="inline-flex min-h-11 items-center rounded-full bg-muted px-3 text-xs hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               {x.label.replace(" — ", " · ")}
             </a>
@@ -204,7 +232,7 @@ function TeamCard({ team, score }: { team: string; score: number }) {
     <Link
       to="/football/teams/$slug"
       params={{ slug: slugify(team) }}
-      className="rounded-lg border p-4 text-center hover:bg-accent"
+      className="rounded-lg border p-4 text-center hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
     >
       <div className="text-sm text-muted-foreground">{team}</div>
       <div className="text-4xl font-bold">{score}</div>

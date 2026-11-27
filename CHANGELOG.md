@@ -281,6 +281,11 @@
 - Fixed: shared error/not-found/empty states; labelled breadcrumb; hidden flag/separators; 44 px links; OG site name/Twitter meta.
 - Kept: campaign summary, results and scorers.
 
+## FB-24 football match recap slug
+
+- Fixed: shared error/not-found states with retry; labelled breadcrumb; hidden separators; human dates; 44 px links/focus rings; privacy-enhanced YouTube; OG site name/Twitter meta.
+- Kept: score, highlights, recap, FAQs and related matches.
+
 ## Foundation
 
 - Added overhaul documentation: `PROJECT_NOTES.md`, `HEALTH_BASELINE.md`, `SCREEN_INVENTORY.md`, `DESIGN_SYSTEM.md`, `PROGRESS.md`, `DECISIONS.md`, `BLOCKERS.md`, `SECURITY_FINDINGS.md`.
