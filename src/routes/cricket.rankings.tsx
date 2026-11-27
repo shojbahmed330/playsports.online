@@ -8,6 +8,7 @@ import { CricketSubNav } from "@/components/cricket/CricketSubNav";
 import { PlayerLink } from "@/components/cricket/PlayerLink";
 import rankings from "@/data/cricket/rankings.json";
 import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
+import { EmptyState } from "@/components/ui/state";
 
 import { withHubLinks } from "@/components/seo/withHubLinks";
 const search = z.object({
@@ -66,6 +67,22 @@ const FORMATS: { id: Fmt; label: string }[] = [
   { id: "test", label: "Test" },
 ];
 
+type RankingRow = {
+  rank: number;
+  team: string;
+  code: string;
+  flag: string;
+  rating: number;
+  trend?: number;
+  player?: string;
+};
+type RankingsData = {
+  updatedAt: string;
+  source: string;
+} & Record<Cat, Record<Fmt, RankingRow[]>>;
+
+const rankingsData = rankings as RankingsData;
+
 function RankingsPage() {
   const { cat, fmt } = Route.useSearch() as { cat: Cat; fmt: Fmt };
   const navigate = Route.useNavigate();
@@ -74,8 +91,7 @@ function RankingsPage() {
   const setFmt = (f: Fmt) =>
     navigate({ search: (p: { cat: Cat; fmt: Fmt }) => ({ ...p, fmt: f }), replace: true });
 
-  const data: any[] =
-    (rankings as any)[cat]?.[cat === "teams" && fmt === "test" ? "test" : fmt] ?? [];
+  const data: RankingRow[] = rankingsData[cat]?.[fmt] ?? [];
 
   return (
     <div className="min-h-screen">
@@ -94,7 +110,7 @@ function RankingsPage() {
               </div>
               <h1 className="text-2xl sm:text-3xl font-extrabold">Cricket Rankings</h1>
               <p className="text-xs text-muted-foreground mt-1">
-                Updated {(rankings as any).updatedAt}.
+                Bundled snapshot: {rankingsData.updatedAt}.
               </p>
             </div>
           </div>
@@ -107,9 +123,11 @@ function RankingsPage() {
             {CATS.map((c) => (
               <button
                 key={c.id}
+                type="button"
+                aria-pressed={cat === c.id}
                 onClick={() => setCat(c.id)}
                 className={[
-                  "px-3 py-1.5 rounded-full text-[11px] font-bold ring-1 transition inline-flex items-center gap-1.5",
+                  "inline-flex min-h-11 items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-bold ring-1 transition sm:min-h-8",
                   cat === c.id
                     ? `bg-gradient-to-r ${c.grad} text-white ring-white/20`
                     : "bg-white/5 text-gray-300 ring-white/10 hover:bg-white/10",
@@ -123,9 +141,11 @@ function RankingsPage() {
             {FORMATS.map((f) => (
               <button
                 key={f.id}
+                type="button"
+                aria-pressed={fmt === f.id}
                 onClick={() => setFmt(f.id)}
                 className={[
-                  "px-3 py-1 rounded-full text-[11px] font-bold transition",
+                  "min-h-11 rounded-full px-3 py-1 text-[11px] font-bold transition sm:min-h-8",
                   fmt === f.id ? "bg-white text-slate-900" : "text-gray-300 hover:text-white",
                 ].join(" ")}
               >
@@ -137,7 +157,11 @@ function RankingsPage() {
 
         <div className="overflow-hidden rounded-2xl border border-gray-800 bg-gray-900/50">
           <table className="w-full text-sm">
-            <thead className="bg-gray-900/80 text-[10px] uppercase tracking-wider text-gray-400">
+            <caption className="sr-only">
+              ICC {cat === "teams" ? "team" : cat} rankings, {fmt.toUpperCase()}, bundled{" "}
+              {rankingsData.updatedAt}
+            </caption>
+            <thead className="sticky top-0 bg-gray-900/95 text-[10px] uppercase tracking-wider text-muted-foreground backdrop-blur">
               <tr>
                 <th className="text-left px-3 py-2.5 w-12">#</th>
                 <th className="text-left px-3 py-2.5">{cat === "teams" ? "Team" : "Player"}</th>
@@ -196,12 +220,16 @@ function RankingsPage() {
             </tbody>
           </table>
           {data.length === 0 && (
-            <div className="p-8 text-center text-xs text-muted-foreground">
-              No data for this combination.
-            </div>
+            <EmptyState
+              title="No rankings for this combination"
+              description="Choose another category or format. The rankings are a bundled snapshot, not a live ICC feed."
+            />
           )}
         </div>
-        <p className="text-[10px] text-gray-500 text-center">Source: {(rankings as any).source}</p>
+        <p className="text-center text-[10px] text-muted-foreground">
+          Bundled snapshot from {rankingsData.updatedAt}; it may lag the latest ICC update. Source:{" "}
+          {rankingsData.source}
+        </p>
       </div>
     </div>
   );

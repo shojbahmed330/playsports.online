@@ -44,6 +44,12 @@
 - Added: Explore links (history/rankings/series/players), OG image and Twitter tags.
 - Kept: SSR profile, rankings/franchise facts, FAQ schema, related teams.
 
+## CRK-16 Cricket rankings
+
+- Fixed: removed `any` from the rankings data path; typed JSON shape.
+- Added: honest bundled-snapshot date/source note, shared empty state, table caption/sticky header, `aria-pressed`, 44 px controls.
+- Kept: category × format selectors, player links, ratings and trends.
+
 ## Foundation
 
 - Added overhaul documentation: `PROJECT_NOTES.md`, `HEALTH_BASELINE.md`, `SCREEN_INVENTORY.md`, `DESIGN_SYSTEM.md`, `PROGRESS.md`, `DECISIONS.md`, `BLOCKERS.md`, `SECURITY_FINDINGS.md`.
