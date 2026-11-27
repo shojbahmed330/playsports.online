@@ -14,6 +14,7 @@ import { flagOf } from "@/lib/flags";
 import { Trophy, Target, Flag, ShieldAlert, Goal as GoalIcon } from "lucide-react";
 import { useMergedGoals } from "@/lib/use-merged-goals";
 import { useMergedCards } from "@/lib/use-merged-cards";
+import { EmptyState, ErrorState } from "@/components/ui/state";
 
 export const Route = createFileRoute("/football/players/$slug/")({
   loader: async ({ params }) => {
@@ -43,6 +44,10 @@ export const Route = createFileRoute("/football/players/$slug/")({
         { property: "og:description", content: desc },
         { property: "og:url", content: canonical(path) },
         { property: "og:type", content: "profile" },
+        { property: "og:site_name", content: "PlaySports" },
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: desc },
       ],
       links: [{ rel: "canonical", href: canonical(path) }],
       scripts: [
@@ -81,8 +86,23 @@ export const Route = createFileRoute("/football/players/$slug/")({
     };
   },
   component: FootballPlayerPage,
-  errorComponent: ({ error }) => <div className="p-6">Error: {errorMessage(error)}</div>,
-  notFoundComponent: () => <div className="p-6">Player not found.</div>,
+  errorComponent: ({ error, reset }) => (
+    <div className="mx-auto max-w-3xl px-4 py-10">
+      <ErrorState
+        title="Could not load this player"
+        message={errorMessage(error)}
+        onRetry={reset}
+      />
+    </div>
+  ),
+  notFoundComponent: () => (
+    <div className="mx-auto max-w-3xl px-4 py-10">
+      <EmptyState
+        title="Player not found"
+        description="This player is not in the World Cup archive."
+      />
+    </div>
+  ),
 });
 
 function FootballPlayerPage() {
@@ -165,19 +185,36 @@ function FootballPlayerPage() {
             aria-label="Breadcrumb"
             className="text-[11px] sm:text-xs uppercase tracking-widest text-muted-foreground mb-4 sm:mb-6 truncate"
           >
-            <Link to="/" className="hover:text-foreground">
+            <Link
+              to="/"
+              className="inline-flex min-h-11 items-center hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
               Home
             </Link>
-            <span className="mx-1.5 opacity-50">/</span>
-            <Link to="/football" className="hover:text-foreground">
+            <span className="mx-1.5 opacity-50" aria-hidden="true">
+              /
+            </span>
+            <Link
+              to="/football"
+              className="inline-flex min-h-11 items-center hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
               Football
             </Link>
-            <span className="mx-1.5 opacity-50">/</span>
-            <Link to="/players" className="hover:text-foreground">
+            <span className="mx-1.5 opacity-50" aria-hidden="true">
+              /
+            </span>
+            <Link
+              to="/players"
+              className="inline-flex min-h-11 items-center hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
               Players
             </Link>
-            <span className="mx-1.5 opacity-50">/</span>
-            <span className="text-foreground">{player.name}</span>
+            <span className="mx-1.5 opacity-50" aria-hidden="true">
+              /
+            </span>
+            <span className="text-foreground" aria-current="page">
+              {player.name}
+            </span>
           </nav>
 
           <div className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-4 sm:gap-6">
@@ -198,15 +235,18 @@ function FootballPlayerPage() {
                 <Link
                   to="/football/teams/$slug"
                   params={{ slug: teamSlug }}
-                  className="font-semibold text-foreground hover:underline underline-offset-4"
+                  className="inline-flex min-h-11 items-center font-semibold text-foreground hover:underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   {player.team}
                 </Link>
-                <span className="opacity-40">·</span>
+                <span className="opacity-40" aria-hidden="true">
+                  ·
+                </span>
                 <span>FIFA World Cup Career</span>
                 {has2026 && (
                   <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 text-[10px] font-bold uppercase tracking-wider ring-1 ring-inset ring-emerald-500/30">
-                    <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" /> WC 2026
+                    <span className="size-1.5 rounded-full bg-emerald-400" aria-hidden="true" />{" "}
+                    2026
                   </span>
                 )}
               </div>
@@ -255,39 +295,44 @@ function FootballPlayerPage() {
               {stats.byYear.length} appearances
             </span>
           </div>
-          <div className="rounded-2xl border border-border bg-card overflow-hidden">
-            {stats.byYear.length === 0 ? (
-              <div className="p-6 text-sm text-muted-foreground">No World Cup goals on record.</div>
-            ) : (
+          {stats.byYear.length === 0 ? (
+            <EmptyState
+              title="No World Cup goals on record"
+              description={`${player.name} has no tournament scoring entries in the archive.`}
+            />
+          ) : (
+            <div className="rounded-2xl border border-border bg-card overflow-hidden">
               <ul className="divide-y divide-border">
                 {stats.byYear.map((y: { year: number; goals: number }) => {
                   const row = hist?.rows.find((r: { year: number }) => r.year === y.year);
-                  const isLive = y.year === 2026;
                   return (
                     <li key={y.year}>
                       <Link
                         to="/football/players/$slug/world-cup-{$year}"
                         params={{ slug: player.slug, year: String(y.year) }}
-                        className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 py-3 sm:px-5 sm:py-4 hover:bg-accent/40 transition-colors"
+                        className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 py-3 sm:px-5 sm:py-4 hover:bg-accent/40 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                       >
                         <div className="min-w-0">
                           <div className="flex items-center gap-2">
                             <span className="font-bold text-base sm:text-lg">
                               World Cup {y.year}
                             </span>
-                            {isLive && (
-                              <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-300 text-[9px] font-bold uppercase tracking-wider ring-1 ring-inset ring-emerald-500/30">
-                                Live
-                              </span>
-                            )}
                           </div>
                           {row && (row.penalties > 0 || row.yellows > 0 || row.reds > 0) && (
                             <div className="mt-0.5 flex flex-wrap gap-x-3 gap-y-0.5 text-[11px] text-muted-foreground">
                               {row.penalties > 0 && <span>{row.penalties} pen</span>}
                               {row.yellows > 0 && (
-                                <span className="text-yellow-500">🟨 {row.yellows}</span>
+                                <span className="text-yellow-500">
+                                  <span aria-hidden="true">🟨</span>
+                                  <span className="sr-only">yellow cards: </span> {row.yellows}
+                                </span>
                               )}
-                              {row.reds > 0 && <span className="text-red-500">🟥 {row.reds}</span>}
+                              {row.reds > 0 && (
+                                <span className="text-red-500">
+                                  <span aria-hidden="true">🟥</span>
+                                  <span className="sr-only">red cards: </span> {row.reds}
+                                </span>
+                              )}
                             </div>
                           )}
                         </div>
@@ -304,8 +349,8 @@ function FootballPlayerPage() {
                   );
                 })}
               </ul>
-            )}
-          </div>
+            </div>
+          )}
         </section>
 
         {/* About */}
@@ -322,7 +367,7 @@ function FootballPlayerPage() {
             across {stats.years.length} tournament{stats.years.length === 1 ? "" : "s"}
             {stats.years.length ? ` (${stats.years.join(", ")})` : ""}.
             {stats.pen > 0 ? ` ${stats.pen} came from the penalty spot.` : ""}
-            {has2026 ? ` Currently active in the 2026 FIFA World Cup.` : ""}
+            {has2026 ? ` Also featured at the 2026 FIFA World Cup.` : ""}
           </p>
         </section>
 
@@ -367,7 +412,7 @@ function FootballPlayerPage() {
                   key={p.slug}
                   to="/football/players/$slug"
                   params={{ slug: p.slug }}
-                  className="px-3 py-1.5 rounded-full bg-muted text-xs sm:text-sm font-medium hover:bg-accent hover:-translate-y-0.5 transition-all"
+                  className="inline-flex min-h-11 items-center rounded-full bg-muted px-3 text-xs sm:text-sm font-medium hover:bg-accent hover:-translate-y-0.5 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   {p.name}
                 </Link>

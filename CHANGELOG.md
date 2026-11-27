@@ -291,6 +291,11 @@
 - Fixed: shared error/not-found/empty states; zero-match goals-per-game guard; shared card surface; labelled breadcrumb; hidden separators; table caption/`scope`; 44 px links/focus rings; OG site name/Twitter meta.
 - Kept: all-time scorers, iconic records, 2026 live totals and tournament totals.
 
+## FB-26 football player profile
+
+- Fixed: shared error/not-found/empty states; removed permanent live pulse and redundant “Live” badge; removed stale “currently active” copy; breadcrumb separators hidden; sr-only card labels; 44 px team/related links and focus rings; OG site name/Twitter meta.
+- Kept: hero stat strip, tournament breakdown, about copy, FAQs and related links.
+
 ## Foundation
 
 - Added overhaul documentation: `PROJECT_NOTES.md`, `HEALTH_BASELINE.md`, `SCREEN_INVENTORY.md`, `DESIGN_SYSTEM.md`, `PROGRESS.md`, `DECISIONS.md`, `BLOCKERS.md`, `SECURITY_FINDINGS.md`.
