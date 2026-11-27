@@ -13,19 +13,15 @@ import { AddSeasonToCalendar } from "@/components/football/AddSeasonToCalendar";
 import { FixturesCalendarStrip } from "@/components/football/FixturesCalendarStrip";
 import { FixturesMonthGroups } from "@/components/football/FixturesMonthGroups";
 import { FixturesEmptyStateEuro } from "@/components/football/FixturesEmptyStateEuro";
-import {
-  EuroTeamFilterChips,
-  useEuroFavTeams,
-} from "@/components/football/EuroTeamFilterChips";
+import { EuroTeamFilterChips, useEuroFavTeams } from "@/components/football/EuroTeamFilterChips";
 import { CopaFixturesHero } from "@/components/football/CopaFixturesHero";
 import { CopaFixturesRoadmap } from "@/components/football/CopaFixturesRoadmap";
 import { CopaVenuesTeaser } from "@/components/football/CopaVenuesTeaser";
-import {
-  CopaTeamFilterChips,
-  useCopaFavTeams,
-} from "@/components/football/CopaTeamFilterChips";
+import { CopaTeamFilterChips, useCopaFavTeams } from "@/components/football/CopaTeamFilterChips";
 import { FixturesEmptyStateCopa } from "@/components/football/FixturesEmptyStateCopa";
 import { buildCompetitionHead } from "@/lib/competition-head";
+import { EmptyState, ErrorState } from "@/components/ui/state";
+import { errorMessage } from "@/lib/error-message";
 import { Loader2 } from "lucide-react";
 import type { Competition } from "@/lib/competitions";
 
@@ -63,15 +59,25 @@ export const Route = createFileRoute("/football/$comp/fixtures")({
       const desc =
         "Copa América 2028 fixtures, qualifying schedule and the road to the final — every kickoff plus the full 2024 archive.";
       head.meta = (head.meta ?? []).map((m: any) =>
-        m?.name === "description" || m?.property === "og:description"
-          ? { ...m, content: desc }
-          : m,
+        m?.name === "description" || m?.property === "og:description" ? { ...m, content: desc } : m,
       );
     }
     return head;
   },
   component: FixturesPage,
-  notFoundComponent: () => <div className="p-10 text-center">Competition not found.</div>,
+  errorComponent: ({ error, reset }) => (
+    <div className="mx-auto max-w-3xl px-4 py-10">
+      <ErrorState title="Could not load fixtures" message={errorMessage(error)} onRetry={reset} />
+    </div>
+  ),
+  notFoundComponent: () => (
+    <div className="mx-auto max-w-3xl px-4 py-10">
+      <EmptyState
+        title="Competition not found"
+        description="This competition is not in the football directory."
+      />
+    </div>
+  ),
 });
 
 function FixturesPage() {
@@ -86,17 +92,18 @@ function FixturesPage() {
   const q = useQuery({
     queryKey: ["comp-fixtures", comp.slug, isTournament ? "wide" : "std"],
     queryFn: async () => {
-      const results = await Promise.all([
-        getScoreboard({
-          data: { sportPath: `soccer/${comp.espnLeague}`, league: comp.name },
-        }).catch(() => null),
-        ...dates.map((d) =>
+      // The primary request decides success/failure; per-date extras are best-effort.
+      const primary = await getScoreboard({
+        data: { sportPath: `soccer/${comp.espnLeague}`, league: comp.name },
+      });
+      const extras = await Promise.all(
+        dates.map((d) =>
           getScoreboard({
             data: { sportPath: `soccer/${comp.espnLeague}`, league: comp.name, yyyymmdd: d },
           }).catch(() => null),
         ),
-      ]);
-      const all = results.flatMap((r) => r?.games ?? []);
+      );
+      const all = [primary, ...extras].flatMap((r) => r?.games ?? []);
       const seen = new Set<string>();
       const upcoming = all
         .filter((g) => {
@@ -111,10 +118,19 @@ function FixturesPage() {
   });
 
   const games = q.data ?? [];
+  const feedError = q.isError ? (
+    <ErrorState
+      title="Could not load fixtures"
+      message={errorMessage(q.error)}
+      onRetry={() => void q.refetch()}
+      className="mb-6 border-white/10 bg-white/[0.02]"
+    />
+  ) : null;
 
   if (isEuro) {
     return (
       <CompetitionPageShell comp={comp}>
+        {feedError}
         <EuroFixturesInner comp={comp} games={games} loading={q.isLoading} />
       </CompetitionPageShell>
     );
@@ -123,6 +139,7 @@ function FixturesPage() {
   if (isCopa) {
     return (
       <CompetitionPageShell comp={comp}>
+        {feedError}
         <CopaFixturesInner comp={comp} games={games} loading={q.isLoading} />
       </CompetitionPageShell>
     );
@@ -131,9 +148,11 @@ function FixturesPage() {
   return (
     <CompetitionPageShell comp={comp}>
       <h2 className="text-lg sm:text-xl font-bold mb-4">Upcoming Fixtures</h2>
+      {feedError}
       {q.isLoading ? (
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <Loader2 className="size-4 animate-spin" /> Loading fixtures…
+        <div role="status" className="flex items-center gap-2 text-sm text-muted-foreground">
+          <Loader2 aria-hidden="true" className="size-4 animate-spin motion-reduce:animate-none" />{" "}
+          Loading fixtures…
         </div>
       ) : (
         <CompetitionMatchList
@@ -163,8 +182,11 @@ function CopaFixturesInner({
     const yr = new Date(g.startTs).getUTCFullYear();
     const mo = new Date(g.startTs).getUTCMonth();
     if (
-      s.includes("group") || s.includes("quarter") || s.includes("semi") ||
-      s.includes("final") || s.includes("knockout")
+      s.includes("group") ||
+      s.includes("quarter") ||
+      s.includes("semi") ||
+      s.includes("final") ||
+      s.includes("knockout")
     ) {
       return yr >= 2028 && mo >= 5 ? "finals" : "qualifying";
     }
@@ -196,11 +218,7 @@ function CopaFixturesInner({
 
   return (
     <>
-      <CopaFixturesHero
-        filter={filter}
-        onFilterChange={setFilter}
-        counts={counts}
-      />
+      <CopaFixturesHero filter={filter} onFilterChange={setFilter} counts={counts} />
       <CopaFixturesRoadmap />
 
       <div className="mb-4 flex flex-wrap items-center gap-2">
@@ -214,11 +232,7 @@ function CopaFixturesInner({
       ) : games.length > 0 ? (
         <>
           <FixturesCalendarStrip games={filteredByType} />
-          <CopaTeamFilterChips
-            selected={favTeams}
-            onToggle={toggleFav}
-            onClear={clearFav}
-          />
+          <CopaTeamFilterChips selected={favTeams} onToggle={toggleFav} onClear={clearFav} />
           {filteredByType.length === 0 ? (
             <FixturesEmptyStateCopa comp={comp} />
           ) : (
@@ -247,8 +261,12 @@ function EuroFixturesInner({
   const classify = (g: SportGame): "qualifying" | "finals" => {
     const s = (g.shortDetail || "").toLowerCase();
     if (
-      s.includes("group") || s.includes("quarter") || s.includes("semi") ||
-      s.includes("final") || s.includes("round of 16") || s.includes("r16")
+      s.includes("group") ||
+      s.includes("quarter") ||
+      s.includes("semi") ||
+      s.includes("final") ||
+      s.includes("round of 16") ||
+      s.includes("r16")
     ) {
       // Finals-tournament stages start June 2028
       const yr = new Date(g.startTs).getUTCFullYear();
@@ -280,15 +298,18 @@ function EuroFixturesInner({
     return c as Record<FixtureFilter, number>;
   }, [games, favTeams]);
 
-  const filterLabel = filter === "my" ? "My teams" : filter === "all" ? "All" : filter === "qualifying" ? "Qualifying" : "Finals";
+  const filterLabel =
+    filter === "my"
+      ? "My teams"
+      : filter === "all"
+        ? "All"
+        : filter === "qualifying"
+          ? "Qualifying"
+          : "Finals";
 
   return (
     <>
-      <EuroFixturesHero
-        filter={filter}
-        onFilterChange={setFilter}
-        counts={counts}
-      />
+      <EuroFixturesHero filter={filter} onFilterChange={setFilter} counts={counts} />
       <EuroFixturesRoadmap />
 
       <div className="mb-4 flex flex-wrap items-center gap-2">
@@ -302,21 +323,28 @@ function EuroFixturesInner({
       ) : games.length > 0 ? (
         <>
           <FixturesCalendarStrip games={filteredByType} />
-          <EuroTeamFilterChips
-            selected={favTeams}
-            onToggle={toggleFav}
-            onClear={clearFav}
-          />
+          <EuroTeamFilterChips selected={favTeams} onToggle={toggleFav} onClear={clearFav} />
           {filteredByType.length === 0 ? (
             <FixturesEmptyStateEuro
               filterLabel={filterLabel}
-              onReset={() => { setFilter("all"); clearFav(); }}
+              onReset={() => {
+                setFilter("all");
+                clearFav();
+              }}
             />
           ) : (
             <FixturesMonthGroups games={filteredByType} compSlug={comp.slug} />
           )}
         </>
-      ) : null}
+      ) : (
+        <FixturesEmptyStateEuro
+          filterLabel="All"
+          onReset={() => {
+            setFilter("all");
+            clearFav();
+          }}
+        />
+      )}
 
       <div className="mt-8">
         <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-2">
@@ -334,7 +362,7 @@ function SkeletonList() {
       {Array.from({ length: 6 }).map((_, i) => (
         <li
           key={i}
-          className="h-[104px] rounded-2xl border border-white/10 bg-white/[0.03] animate-pulse"
+          className="h-[104px] rounded-2xl border border-white/10 bg-white/[0.03] animate-pulse motion-reduce:animate-none"
         />
       ))}
     </ul>

@@ -219,6 +219,12 @@
 - Fixed: hydration mismatch risk from server-formatted local kickoff time (now mount-gated); scoreboard errors show a retry and no longer masquerade as off-season; shared not-found/error states; focus-visible quick links; hidden arrow icons.
 - Kept: hero/countdown, facts, honours, scorers, news, H2H and archive widgets.
 
+## FB-01 football competition fixtures
+
+- Fixed: primary scoreboard failure now shows a retryable error instead of a false “no fixtures”; Euro zero-game empty state; shared not-found/error boundaries; hidden reduced-motion spinner/skeleton.
+- Logged: up-to-181-request tournament date scan as a known perf follow-up in `DECISIONS.md`.
+- Kept: Euro/Copa roadmaps, calendar strip and month groups.
+
 ## Foundation
 
 - Added overhaul documentation: `PROJECT_NOTES.md`, `HEALTH_BASELINE.md`, `SCREEN_INVENTORY.md`, `DESIGN_SYSTEM.md`, `PROGRESS.md`, `DECISIONS.md`, `BLOCKERS.md`, `SECURITY_FINDINGS.md`.
