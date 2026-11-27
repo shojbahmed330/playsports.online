@@ -188,6 +188,12 @@
 - Added: OG site name/Twitter meta.
 - Kept: podium, stats, awards, top scorers and JSON-LD.
 
+## FB-31 football top scorers year
+
+- Fixed: table caption/scopes; shared retryable error/not-found states; empty scorer row; labelled breadcrumb; hidden separators; 44 px player/team/year links.
+- Added: OG site name/Twitter meta.
+- Kept: year/all-time modes, FAQ JSON-LD and year nav.
+
 ## Foundation
 
 - Added overhaul documentation: `PROJECT_NOTES.md`, `HEALTH_BASELINE.md`, `SCREEN_INVENTORY.md`, `DESIGN_SYSTEM.md`, `PROGRESS.md`, `DECISIONS.md`, `BLOCKERS.md`, `SECURITY_FINDINGS.md`.

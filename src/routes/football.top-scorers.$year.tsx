@@ -10,6 +10,7 @@ import { slugify } from "@/lib/seo/programmatic";
 import { canonical } from "@/lib/seo/canonical";
 import { breadcrumbList, faqPage, ldScript } from "@/lib/seo/jsonld";
 import { AdSlot } from "@/components/ads/AdSlot";
+import { EmptyState, ErrorState } from "@/components/ui/state";
 
 import { withYearNav } from "@/components/seo/withYearNav";
 export const Route = createFileRoute("/football/top-scorers/$year")({
@@ -47,6 +48,10 @@ export const Route = createFileRoute("/football/top-scorers/$year")({
         { property: "og:description", content: desc },
         { property: "og:url", content: canonical(path) },
         { property: "og:type", content: "article" },
+        { property: "og:site_name", content: "PlaySports" },
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: desc },
       ],
       links: [{ rel: "canonical", href: canonical(path) }],
       scripts: [
@@ -84,8 +89,31 @@ export const Route = createFileRoute("/football/top-scorers/$year")({
     maxYear: 2026,
     label: "Top scorers",
   }),
-  errorComponent: ({ error }) => <div className="p-6">Error: {errorMessage(error)}</div>,
-  notFoundComponent: () => <div className="p-6">No data for this tournament.</div>,
+  errorComponent: ({ error, reset }) => (
+    <div className="mx-auto max-w-3xl px-4 py-10">
+      <ErrorState
+        title="Could not load top scorers"
+        message={errorMessage(error)}
+        onRetry={reset}
+      />
+    </div>
+  ),
+  notFoundComponent: () => (
+    <div className="mx-auto max-w-3xl px-4 py-10">
+      <EmptyState
+        title="No data for this tournament"
+        description="That top-scorer year is not in the archive."
+        action={
+          <Link
+            to="/football/top-scorers"
+            className="inline-flex min-h-11 items-center rounded-full bg-gold/15 px-4 text-sm font-bold text-gold ring-1 ring-gold/30"
+          >
+            Browse all years
+          </Link>
+        }
+      />
+    </div>
+  ),
 });
 
 function TopScorersPage() {
@@ -102,15 +130,15 @@ function TopScorersPage() {
 
   return (
     <div className="container mx-auto max-w-3xl px-4 py-6 pb-20">
-      <nav className="mb-3 text-xs text-muted-foreground">
+      <nav className="mb-3 text-xs text-muted-foreground" aria-label="Breadcrumb">
         <Link to="/" className="hover:underline">
           Home
         </Link>{" "}
-        /{" "}
+        <span aria-hidden="true">/</span>{" "}
         <Link to="/football" className="hover:underline">
           Football
         </Link>{" "}
-        /{" "}
+        <span aria-hidden="true">/</span>{" "}
         <Link to="/football/top-scorers" className="hover:underline">
           Top Scorers
         </Link>
@@ -120,16 +148,34 @@ function TopScorersPage() {
 
       <div className="mb-6 overflow-hidden rounded-2xl border border-border">
         <table className="w-full text-sm">
+          <caption className="sr-only">{heading}</caption>
           <thead className="bg-muted/40 text-[11px] uppercase tracking-wider text-muted-foreground">
             <tr>
-              <th className="px-3 py-2 text-left">#</th>
-              <th className="px-3 py-2 text-left">Player</th>
-              <th className="px-3 py-2 text-left">Team</th>
-              <th className="px-3 py-2 text-right">Goals</th>
-              <th className="px-3 py-2 text-right">Pen</th>
+              <th scope="col" className="px-3 py-2 text-left">
+                #
+              </th>
+              <th scope="col" className="px-3 py-2 text-left">
+                Player
+              </th>
+              <th scope="col" className="px-3 py-2 text-left">
+                Team
+              </th>
+              <th scope="col" className="px-3 py-2 text-right">
+                Goals
+              </th>
+              <th scope="col" className="px-3 py-2 text-right">
+                Pen
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
+            {data.scorers.length === 0 && (
+              <tr>
+                <td colSpan={5} className="px-3 py-6 text-center text-sm text-muted-foreground">
+                  No scorers recorded for this tournament.
+                </td>
+              </tr>
+            )}
             {data.scorers.map((s: TopScorer, i: number) => (
               <tr key={s.name + s.team} className="hover:bg-muted/20">
                 <td className="px-3 py-2 tabular-nums text-muted-foreground">{i + 1}</td>
@@ -137,7 +183,7 @@ function TopScorersPage() {
                   <Link
                     to="/football/players/$slug"
                     params={{ slug: slugify(s.name) }}
-                    className="hover:text-gold"
+                    className="inline-flex min-h-11 items-center hover:text-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   >
                     {s.name}
                   </Link>
@@ -146,7 +192,7 @@ function TopScorersPage() {
                   <Link
                     to="/football/teams/$slug"
                     params={{ slug: slugify(s.team) }}
-                    className="hover:text-gold"
+                    className="inline-flex min-h-11 items-center hover:text-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   >
                     {s.team}
                   </Link>
@@ -170,7 +216,7 @@ function TopScorersPage() {
             <Link
               to="/football/top-scorers/$year"
               params={{ year: "all-time" }}
-              className="rounded-full bg-gold/10 px-3 py-1 text-xs font-semibold text-gold hover:bg-gold/20"
+              className="inline-flex min-h-11 items-center rounded-full bg-gold/10 px-3 text-xs font-semibold text-gold hover:bg-gold/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               All-time
             </Link>
@@ -182,14 +228,14 @@ function TopScorersPage() {
                 key={y}
                 to="/football/top-scorers/$year"
                 params={{ year: String(y) }}
-                className="rounded-full bg-muted px-3 py-1 text-xs hover:bg-accent"
+                className="inline-flex min-h-11 items-center rounded-full bg-muted px-3 text-xs hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 {y}
               </Link>
             ))}
           <Link
             to="/football/top-scorers"
-            className="rounded-full border border-border px-3 py-1 text-xs hover:bg-accent"
+            className="inline-flex min-h-11 items-center rounded-full border border-border px-3 text-xs hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             All years →
           </Link>
