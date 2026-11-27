@@ -214,6 +214,11 @@
 - Fixed: Euro/Copa history canonical and item URLs now use `playsports.online`; shared error/not-found/empty states; 44 px links, hidden icons, focus rings, reduced motion; site/Twitter/breadcrumb JSON-LD.
 - Kept: Euro/Copa history experiences and generic decade/edition history.
 
+## FB-05 football competition overview
+
+- Fixed: hydration mismatch risk from server-formatted local kickoff time (now mount-gated); scoreboard errors show a retry and no longer masquerade as off-season; shared not-found/error states; focus-visible quick links; hidden arrow icons.
+- Kept: hero/countdown, facts, honours, scorers, news, H2H and archive widgets.
+
 ## Foundation
 
 - Added overhaul documentation: `PROJECT_NOTES.md`, `HEALTH_BASELINE.md`, `SCREEN_INVENTORY.md`, `DESIGN_SYSTEM.md`, `PROGRESS.md`, `DECISIONS.md`, `BLOCKERS.md`, `SECURITY_FINDINGS.md`.

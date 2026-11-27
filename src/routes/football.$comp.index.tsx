@@ -35,7 +35,10 @@ import { CopaPopularMatchups } from "@/components/football/CopaPopularMatchups";
 import { copaTitleCounts } from "@/lib/copa-history";
 import { buildCompetitionHead } from "@/lib/competition-head";
 import { ldScript } from "@/lib/seo/jsonld";
+import { EmptyState, ErrorState } from "@/components/ui/state";
+import { errorMessage } from "@/lib/error-message";
 import { ArrowRight } from "lucide-react";
+import { useEffect, useState } from "react";
 
 /**
  * Landing page for /football/$comp (Overview tab). Lives in an index route so
@@ -79,12 +82,41 @@ export const Route = createFileRoute("/football/$comp/")({
     return { ...base, scripts: [...(base.scripts ?? []), honoursLD] };
   },
   component: CompetitionLandingPage,
-  notFoundComponent: () => <div className="p-10 text-center">Competition not found.</div>,
+  errorComponent: ({ error, reset }) => (
+    <div className="mx-auto max-w-3xl px-4 py-10">
+      <ErrorState
+        title="Could not load this competition"
+        message={errorMessage(error)}
+        onRetry={reset}
+      />
+    </div>
+  ),
+  notFoundComponent: () => (
+    <div className="mx-auto max-w-3xl px-4 py-10">
+      <EmptyState
+        title="Competition not found"
+        description="This competition is not in the football directory."
+        action={
+          <Link
+            to="/football"
+            className="inline-flex min-h-11 items-center rounded-full bg-primary/15 px-4 text-sm font-bold text-primary ring-1 ring-primary/30"
+          >
+            Back to football
+          </Link>
+        }
+      />
+    </div>
+  ),
 });
 
 function CompetitionLandingPage() {
   const { comp: raw } = Route.useLoaderData();
   const comp = requireCompetition(raw.slug);
+  const [hydrated, setHydrated] = useState(false);
+
+  useEffect(() => {
+    setHydrated(true);
+  }, []);
 
   const scoreboard = useQuery({
     queryKey: ["comp-scoreboard", comp.slug],
@@ -98,19 +130,22 @@ function CompetitionLandingPage() {
   const live = games.filter((g) => g.status === "in");
   const today = games.filter((g) => g.status !== "post");
   const nextGame = games.find((g) => g.status === "pre");
-  const nextLabel = nextGame
-    ? new Date(nextGame.startTs).toLocaleString(undefined, {
-        weekday: "short",
-        hour: "numeric",
-        minute: "2-digit",
-      })
-    : null;
+  // Local formatting must not run during SSR: server and client timezones differ.
+  const nextLabel =
+    hydrated && nextGame
+      ? new Date(nextGame.startTs).toLocaleString(undefined, {
+          weekday: "short",
+          hour: "numeric",
+          minute: "2-digit",
+        })
+      : null;
 
   const isFutureEdition =
     comp.kind === "tournament" &&
     comp.currentSeason > new Date().getFullYear() &&
     games.length === 0;
-  const isOffSeason = !scoreboard.isLoading && games.length === 0 && !isFutureEdition;
+  const isOffSeason =
+    !scoreboard.isLoading && !scoreboard.isError && games.length === 0 && !isFutureEdition;
 
   return (
     <CompetitionPageShell
@@ -119,6 +154,15 @@ function CompetitionLandingPage() {
       todayCount={today.length}
       nextLabel={nextLabel}
     >
+      {scoreboard.isError && (
+        <ErrorState
+          title="Live competition feed unavailable"
+          message={errorMessage(scoreboard.error)}
+          onRetry={() => void scoreboard.refetch()}
+          className="mb-6 border-white/10 bg-white/[0.02]"
+        />
+      )}
+
       {comp.slug === "euro" && comp.currentSeason === 2028 ? (
         <>
           <Euro2028Hero />
@@ -214,9 +258,9 @@ function QuickLinks({ comp }: { comp: Competition }) {
           <Link
             key={l.to}
             to={l.to}
-            className="tap-target rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-sm font-semibold text-center hover:border-white/20 hover:bg-white/[0.06] inline-flex items-center gap-1"
+            className="tap-target rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-sm font-semibold text-center hover:border-white/20 hover:bg-white/[0.06] inline-flex items-center gap-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
-            {l.label} <ArrowRight className="size-3.5 opacity-60" />
+            {l.label} <ArrowRight aria-hidden="true" className="size-3.5 opacity-60" />
           </Link>
         ))}
       </div>
