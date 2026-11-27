@@ -116,6 +116,12 @@
 - Added: OG/Twitter meta.
 - Kept: hero, captain timeline, squad grid, fixtures, H2H and titles tabs.
 
+## CRK-05 IPL history
+
+- Fixed: bracket errors show Retry; branded error boundary; shared empty states; labelled filters; `aria-pressed` era chips; accordion `aria-expanded`/`aria-controls`; sr-only auction-bar data; removed discarded filter write; no in-place year sort; reduced-motion Hall cards; real auction count.
+- Added: CollectionPage JSON-LD.
+- Kept: season cards, Hall of Champions, auction trend/headlines and playoff brackets.
+
 ## Foundation
 
 - Added overhaul documentation: `PROJECT_NOTES.md`, `HEALTH_BASELINE.md`, `SCREEN_INVENTORY.md`, `DESIGN_SYSTEM.md`, `PROGRESS.md`, `DECISIONS.md`, `BLOCKERS.md`, `SECURITY_FINDINGS.md`.
