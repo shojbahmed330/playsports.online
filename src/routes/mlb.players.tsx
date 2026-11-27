@@ -6,25 +6,45 @@ import { getMlbLeaders, searchMlbPlayers } from "@/lib/mlb.functions";
 import { currentSeason } from "@/lib/tournament-config";
 import { LeaderBoard } from "@/components/mlb/LeaderBoard";
 import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
+import { EmptyState, ErrorState } from "@/components/ui/state";
+import { errorMessage } from "@/lib/error-message";
 
 import { withHubLinks } from "@/components/seo/withHubLinks";
 export const Route = createFileRoute("/mlb/players")({
   head: () => ({
     meta: [
       { title: "MLB Leaders & Player Search — Batting · Pitching" },
-      { name: "description", content: "MLB batting and pitching leaders by season with Top 10/25 toggles, plus player search across the league." },
+      {
+        name: "description",
+        content:
+          "MLB batting and pitching leaders by season with Top 10/25 toggles, plus player search across the league.",
+      },
       { property: "og:title", content: "MLB Leaders & Player Search" },
-      { property: "og:description", content: "Batting and pitching leaders by season, plus player search." },
+      {
+        property: "og:description",
+        content: "Batting and pitching leaders by season, plus player search.",
+      },
       { property: "og:url", content: "https://www.playsports.online/mlb/players" },
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "PlaySports" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "MLB Leaders & Player Search — Batting · Pitching" },
-      { name: "twitter:description", content: "MLB batting and pitching leaders by season with Top 10/25 toggles, plus player search across the league." },
-    
+      {
+        name: "twitter:description",
+        content:
+          "MLB batting and pitching leaders by season with Top 10/25 toggles, plus player search across the league.",
+      },
     ],
     links: [{ rel: "canonical", href: "https://www.playsports.online/mlb/players" }],
-    scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "MLB", path: "/mlb" }, { name: "Players", path: "/mlb/players" }]))],
+    scripts: [
+      ldScript(
+        breadcrumbList([
+          { name: "Home", path: "/" },
+          { name: "MLB", path: "/mlb" },
+          { name: "Players", path: "/mlb/players" },
+        ]),
+      ),
+    ],
   }),
   component: withHubLinks(LeadersPage, { sport: "mlb", currentPath: "/mlb/players" }),
 });
@@ -58,7 +78,8 @@ function LeadersPage() {
     staleTime: 5 * 60_000,
   });
 
-  const cats = group === "batting" ? (leadersQ.data?.batting ?? []) : (leadersQ.data?.pitching ?? []);
+  const cats =
+    group === "batting" ? (leadersQ.data?.batting ?? []) : (leadersQ.data?.pitching ?? []);
   const filtered = useMemo(() => {
     if (!filter.trim()) return cats;
     const f = filter.toLowerCase();
@@ -77,17 +98,21 @@ function LeadersPage() {
             Player search
           </span>
           <div className="mt-1 flex items-center gap-2">
-            <span className="text-base">🔎</span>
+            <span className="text-base" aria-hidden="true">
+              🔎
+            </span>
             <input
+              aria-label="Search MLB players"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search MLB players (e.g. Ohtani, Judge, Soto)…"
-              className="flex-1 bg-transparent border-0 outline-0 text-sm placeholder:text-muted-foreground"
+              className="min-h-11 flex-1 border-0 bg-transparent text-sm outline-0 placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring"
             />
             {query && (
               <button
+                type="button"
                 onClick={() => setQuery("")}
-                className="text-xs text-muted-foreground hover:text-white"
+                className="inline-flex min-h-11 items-center rounded-lg px-2 text-xs text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 Clear
               </button>
@@ -99,6 +124,8 @@ function LeadersPage() {
       {showingSearch ? (
         <SearchResults
           loading={searchQ.isLoading}
+          error={searchQ.error}
+          onRetry={() => void searchQ.refetch()}
           hits={searchQ.data?.hits ?? []}
           query={debounced}
         />
@@ -120,34 +147,48 @@ function LeadersPage() {
             </div>
 
             <div className="flex flex-wrap items-center gap-2">
+              <label htmlFor="mlb-cat-filter" className="sr-only">
+                Filter leaderboard categories
+              </label>
               <input
+                id="mlb-cat-filter"
                 value={filter}
                 onChange={(e) => setFilter(e.target.value)}
                 placeholder="Filter categories…"
-                className="bg-card ring-1 ring-border rounded-full px-3 py-1.5 text-xs w-44"
+                className="min-h-11 w-44 rounded-full bg-card px-3 text-xs ring-1 ring-border focus:outline-none focus:ring-2 focus:ring-ring"
               />
+              <label htmlFor="mlb-leaders-season" className="sr-only">
+                Leaderboard season
+              </label>
               <select
+                id="mlb-leaders-season"
                 value={season}
                 onChange={(e) => setSeason(Number(e.target.value))}
-                className="bg-card ring-1 ring-border rounded-full px-3 py-1.5 text-xs font-semibold"
+                className="min-h-11 rounded-full bg-card px-3 text-xs font-semibold ring-1 ring-border focus:outline-none focus:ring-2 focus:ring-ring"
               >
                 {years.map((y) => (
-                  <option key={y} value={y}>{y}</option>
+                  <option key={y} value={y}>
+                    {y}
+                  </option>
                 ))}
               </select>
               <div className="flex rounded-full bg-card ring-1 ring-border p-0.5">
                 <button
+                  type="button"
                   onClick={() => setTopN(10)}
-                  className={`px-3 py-1 rounded-full text-xs font-bold ${
-                    topN === 10 ? "bg-white/10 text-white" : "text-muted-foreground"
+                  aria-pressed={topN === 10}
+                  className={`inline-flex min-h-11 items-center rounded-full px-3 text-xs font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                    topN === 10 ? "bg-accent text-foreground" : "text-muted-foreground"
                   }`}
                 >
                   Top 10
                 </button>
                 <button
+                  type="button"
                   onClick={() => setTopN(25)}
-                  className={`px-3 py-1 rounded-full text-xs font-bold ${
-                    topN === 25 ? "bg-white/10 text-white" : "text-muted-foreground"
+                  aria-pressed={topN === 25}
+                  className={`inline-flex min-h-11 items-center rounded-full px-3 text-xs font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                    topN === 25 ? "bg-accent text-foreground" : "text-muted-foreground"
                   }`}
                 >
                   Top 25
@@ -155,8 +196,10 @@ function LeadersPage() {
               </div>
               <div className="flex rounded-full bg-card ring-1 ring-border p-0.5">
                 <button
+                  type="button"
                   onClick={() => setGroup("batting")}
-                  className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${
+                  aria-pressed={group === "batting"}
+                  className={`inline-flex min-h-11 items-center rounded-full px-3 text-xs font-bold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                     group === "batting"
                       ? "bg-gradient-to-r from-[#002d72] to-[#d50032] text-white"
                       : "text-muted-foreground"
@@ -165,8 +208,10 @@ function LeadersPage() {
                   Batting
                 </button>
                 <button
+                  type="button"
                   onClick={() => setGroup("pitching")}
-                  className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${
+                  aria-pressed={group === "pitching"}
+                  className={`inline-flex min-h-11 items-center rounded-full px-3 text-xs font-bold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                     group === "pitching"
                       ? "bg-gradient-to-r from-[#002d72] to-[#d50032] text-white"
                       : "text-muted-foreground"
@@ -181,13 +226,25 @@ function LeadersPage() {
           {leadersQ.isLoading ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {Array.from({ length: 6 }).map((_, i) => (
-                <div key={i} className="h-80 rounded-2xl bg-card ring-1 ring-border animate-pulse" />
+                <div
+                  key={i}
+                  className="h-80 rounded-2xl bg-card ring-1 ring-border animate-pulse"
+                />
               ))}
             </div>
+          ) : leadersQ.error ? (
+            <ErrorState
+              title="Could not load league leaders"
+              message={errorMessage(leadersQ.error)}
+              onRetry={() => void leadersQ.refetch()}
+            />
           ) : filtered.length === 0 ? (
-            <div className="rounded-2xl border border-dashed border-border p-10 text-center text-sm text-muted-foreground">
-              {filter ? "No categories match that filter." : "No leader data for this season yet."}
-            </div>
+            <EmptyState
+              title={filter ? "No categories match that filter" : "No leader data for this season"}
+              description={
+                filter ? "Clear the filter to see every leaderboard." : "Try another season."
+              }
+            />
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {filtered.map((c) => (
@@ -203,10 +260,14 @@ function LeadersPage() {
 
 function SearchResults({
   loading,
+  error,
+  onRetry,
   hits,
   query,
 }: {
   loading: boolean;
+  error: unknown;
+  onRetry: () => void;
   hits: ReadonlyArray<{
     id: string;
     name: string;
@@ -220,24 +281,34 @@ function SearchResults({
 }) {
   if (loading) {
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2" role="status">
         {Array.from({ length: 6 }).map((_, i) => (
           <div key={i} className="h-16 rounded-xl bg-card ring-1 ring-border animate-pulse" />
         ))}
       </div>
     );
   }
+  if (error) {
+    return (
+      <ErrorState
+        title="Could not search players"
+        message={errorMessage(error)}
+        onRetry={onRetry}
+      />
+    );
+  }
   if (hits.length === 0) {
     return (
-      <div className="rounded-2xl border border-dashed border-border p-10 text-center text-sm text-muted-foreground">
-        No players found for "{query}".
-      </div>
+      <EmptyState
+        title={`No players found for “${query}”`}
+        description="Try a shorter name or check the spelling."
+      />
     );
   }
   return (
     <div className="space-y-2">
       <div className="text-[11px] uppercase tracking-[0.18em] font-bold text-muted-foreground">
-        {hits.length} result{hits.length === 1 ? "" : "s"} for "{query}"
+        {hits.length} result{hits.length === 1 ? "" : "s"} for “{query}”
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
         {hits.map((h) => (
@@ -245,22 +316,31 @@ function SearchResults({
             key={h.id}
             to="/mlb/player/$id"
             params={{ id: h.id }}
-            className="flex items-center gap-3 rounded-xl bg-card hover:bg-white/[0.05] ring-1 ring-border p-3"
+            className="flex min-h-11 items-center gap-3 rounded-xl bg-card hover:bg-accent ring-1 ring-border p-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             {h.headshot ? (
               <img
                 src={h.headshot}
                 alt=""
-                className="size-12 rounded-full object-cover bg-white/10 shrink-0"
+                className="size-12 rounded-full object-cover bg-muted shrink-0"
                 loading="lazy"
-               decoding="async" />
+                decoding="async"
+              />
             ) : (
-              <div className="size-12 rounded-full bg-white/10 shrink-0" />
+              <div className="size-12 rounded-full bg-muted shrink-0" />
             )}
             <div className="min-w-0 flex-1">
-              <div className="text-sm font-bold text-white truncate">{h.name}</div>
+              <div className="text-sm font-bold text-foreground truncate">{h.name}</div>
               <div className="text-[11px] text-muted-foreground flex items-center gap-1.5 truncate">
-                {h.teamLogo && <img loading="lazy" decoding="async" src={h.teamLogo} alt="" className="size-3.5 object-contain" />}
+                {h.teamLogo && (
+                  <img
+                    loading="lazy"
+                    decoding="async"
+                    src={h.teamLogo}
+                    alt=""
+                    className="size-3.5 object-contain"
+                  />
+                )}
                 <span className="truncate">{h.teamName ?? h.teamAbbr ?? "Free Agent"}</span>
                 {h.position && <span>· {h.position}</span>}
               </div>

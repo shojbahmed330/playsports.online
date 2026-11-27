@@ -1,9 +1,15 @@
 // Phase 2.1 — World Series edition landing page (SSR, indexable).
 import { createFileRoute, notFound, Link } from "@tanstack/react-router";
-import { getWorldSeriesByYear, listWorldSeriesYears, listWorldSeries } from "@/lib/seo/mlb-entities";
+import {
+  getWorldSeriesByYear,
+  listWorldSeriesYears,
+  listWorldSeries,
+} from "@/lib/seo/mlb-entities";
 import { breadcrumbList, faqPage, ldScript, sportsEvent } from "@/lib/seo/jsonld";
 import { canonical } from "@/lib/seo/canonical";
 import { slugify } from "@/lib/seo/programmatic";
+import { EmptyState, ErrorState } from "@/components/ui/state";
+import { errorMessage } from "@/lib/error-message";
 
 import { withYearNav } from "@/components/seo/withYearNav";
 export const Route = createFileRoute("/mlb/world-series/$year")({
@@ -25,9 +31,18 @@ export const Route = createFileRoute("/mlb/world-series/$year")({
       : "MLB World Series recap.";
     const faqs = e
       ? [
-          { q: `Who won the ${e.year} World Series?`, a: `The ${e.champion} won the ${e.year} World Series, defeating the ${e.runnerUp} ${e.result}.` },
-          { q: `Who was the ${e.year} World Series MVP?`, a: `${e.mvp} was named World Series MVP of the ${e.year} Fall Classic.` },
-          { q: `What was the score of the ${e.year} World Series?`, a: `The ${e.champion} won the series ${e.result} over the ${e.runnerUp}.` },
+          {
+            q: `Who won the ${e.year} World Series?`,
+            a: `The ${e.champion} won the ${e.year} World Series, defeating the ${e.runnerUp} ${e.result}.`,
+          },
+          {
+            q: `Who was the ${e.year} World Series MVP?`,
+            a: `${e.mvp} was named World Series MVP of the ${e.year} Fall Classic.`,
+          },
+          {
+            q: `What was the score of the ${e.year} World Series?`,
+            a: `The ${e.champion} won the series ${e.result} over the ${e.runnerUp}.`,
+          },
         ]
       : [];
     return {
@@ -38,34 +53,68 @@ export const Route = createFileRoute("/mlb/world-series/$year")({
         { property: "og:description", content: desc },
         { property: "og:url", content: url },
         { property: "og:type", content: "article" },
+        { property: "og:site_name", content: "PlaySports" },
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: desc },
+        ...(e ? [] : [{ name: "robots", content: "noindex" }]),
       ],
       links: [{ rel: "canonical", href: url }],
       scripts: e
         ? [
-            ldScript(sportsEvent({
-              name: `${e.year} World Series`,
-              path: `/mlb/world-series/${e.year}`,
-              sport: "Baseball",
-              startDate: `${e.year}-10-01`,
-              homeTeam: e.champion,
-              awayTeam: e.runnerUp,
-              status: "ended",
-            })),
-            ldScript(breadcrumbList([
-              { name: "Home", path: "/" },
-              { name: "MLB", path: "/mlb" },
-              { name: "History", path: "/mlb/history" },
-              { name: `${e.year} World Series`, path: `/mlb/world-series/${e.year}` },
-            ])),
+            ldScript(
+              sportsEvent({
+                name: `${e.year} World Series`,
+                path: `/mlb/world-series/${e.year}`,
+                sport: "Baseball",
+                startDate: `${e.year}-10-01`,
+                homeTeam: e.champion,
+                awayTeam: e.runnerUp,
+                status: "ended",
+              }),
+            ),
+            ldScript(
+              breadcrumbList([
+                { name: "Home", path: "/" },
+                { name: "MLB", path: "/mlb" },
+                { name: "History", path: "/mlb/history" },
+                { name: `${e.year} World Series`, path: `/mlb/world-series/${e.year}` },
+              ]),
+            ),
             ldScript(faqPage(faqs)),
           ]
         : [],
     };
   },
-  component: withYearNav(WorldSeriesPage, { basePath: "/mlb/world-series", minYear: 1903, maxYear: 2025, label: "World Series" }),
+  component: withYearNav(WorldSeriesPage, {
+    basePath: "/mlb/world-series",
+    minYear: 1903,
+    maxYear: 2025,
+    label: "World Series",
+  }),
+  errorComponent: ({ error, reset }) => (
+    <div className="mx-auto max-w-3xl px-4 py-10">
+      <ErrorState
+        title="Could not load this World Series"
+        message={errorMessage(error)}
+        onRetry={reset}
+      />
+    </div>
+  ),
   notFoundComponent: () => (
-    <div className="rounded-2xl border border-dashed border-border p-10 text-center text-sm text-muted-foreground">
-      Edition not found. <Link to="/mlb/history" className="underline">Browse MLB history</Link>.
+    <div className="py-10">
+      <EmptyState
+        title="World Series edition not found"
+        description="This edition is not in the archive."
+        action={
+          <Link
+            to="/mlb/history"
+            className="inline-flex min-h-11 items-center rounded-full bg-primary px-4 text-sm font-bold text-primary-foreground hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            Browse MLB history
+          </Link>
+        }
+      />
     </div>
   ),
 });
@@ -85,10 +134,13 @@ function WorldSeriesPage() {
       <header className="rounded-2xl bg-mlb-hero ring-1 ring-[#f7e6c4]/15 p-6 relative overflow-hidden">
         <div aria-hidden className="absolute inset-0 mlb-pinstripes opacity-40" />
         <div className="relative">
-          <div className="text-[11px] uppercase tracking-[0.2em] text-white/70 font-bold">MLB · World Series</div>
+          <div className="text-[11px] uppercase tracking-[0.2em] text-white/70 font-bold">
+            MLB · World Series
+          </div>
           <h1 className="text-3xl font-extrabold text-white mt-1">{edition.year} World Series</h1>
           <p className="text-sm text-white/80 mt-1">
-            <TeamLink name={edition.champion} /> defeated <TeamLink name={edition.runnerUp} /> {edition.result}
+            <TeamLink name={edition.champion} /> defeated <TeamLink name={edition.runnerUp} />{" "}
+            {edition.result}
           </p>
           <p className="text-xs text-[#f7e6c4] mt-2 font-semibold uppercase tracking-wider">
             MVP: <PlayerLink name={edition.mvp} />
@@ -104,15 +156,27 @@ function WorldSeriesPage() {
 
       <div className="flex items-center justify-between text-sm">
         {prev ? (
-          <Link to="/mlb/world-series/$year" params={{ year: String(prev) }} className="text-[#f7e6c4] font-semibold">
+          <Link
+            to="/mlb/world-series/$year"
+            params={{ year: String(prev) }}
+            className="inline-flex min-h-11 items-center font-semibold text-[#f7e6c4] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
             ← {prev} World Series
           </Link>
-        ) : <span />}
+        ) : (
+          <span />
+        )}
         {next ? (
-          <Link to="/mlb/world-series/$year" params={{ year: String(next) }} className="text-[#f7e6c4] font-semibold">
+          <Link
+            to="/mlb/world-series/$year"
+            params={{ year: String(next) }}
+            className="inline-flex min-h-11 items-center font-semibold text-[#f7e6c4] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
             {next} World Series →
           </Link>
-        ) : <span />}
+        ) : (
+          <span />
+        )}
       </div>
 
       {related.length > 0 && (
@@ -123,11 +187,14 @@ function WorldSeriesPage() {
           <ul className="grid grid-cols-2 sm:grid-cols-3 gap-2">
             {related.map((w) => (
               <li key={w.year}>
-                <Link to="/mlb/world-series/$year" params={{ year: String(w.year) }}
-                  className="block rounded-xl bg-white/[0.03] hover:bg-white/[0.07] ring-1 ring-border p-2.5 text-sm">
+                <Link
+                  to="/mlb/world-series/$year"
+                  params={{ year: String(w.year) }}
+                  className="flex min-h-11 flex-col justify-center rounded-xl bg-muted/40 hover:bg-accent ring-1 ring-border px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
                   <span className="font-black tabular-nums text-[#f7e6c4]">{w.year}</span>
-                  <span className="ml-2 text-white">vs {w.runnerUp}</span>
-                  <span className="ml-2 text-muted-foreground">({w.result})</span>
+                  <span className="text-foreground">vs {w.runnerUp}</span>
+                  <span className="text-muted-foreground">({w.result})</span>
                 </Link>
               </li>
             ))}
@@ -141,8 +208,10 @@ function WorldSeriesPage() {
 function Stat({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-2xl bg-card ring-1 ring-border p-4">
-      <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold">{label}</div>
-      <div className="mt-1 text-lg font-extrabold text-white">{value}</div>
+      <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold">
+        {label}
+      </div>
+      <div className="mt-1 text-lg font-extrabold text-foreground">{value}</div>
     </div>
   );
 }
@@ -152,7 +221,11 @@ function TeamLink({ name }: { name: string }) {
   // Attempt slug lookup by current mapping first; fall back to plain text.
   const guess = slugify(name);
   return (
-    <Link to="/mlb/teams/$slug" params={{ slug: guess }} className="font-bold text-white hover:text-[#f7e6c4]">
+    <Link
+      to="/mlb/teams/$slug"
+      params={{ slug: guess }}
+      className="inline-flex min-h-11 items-center font-bold text-white hover:text-[#f7e6c4] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+    >
       {name}
     </Link>
   );
@@ -161,7 +234,11 @@ function TeamLink({ name }: { name: string }) {
 function PlayerLink({ name }: { name: string }) {
   if (name.includes(" & ") || name.includes(",")) return <span className="text-white">{name}</span>;
   return (
-    <Link to="/mlb/players/$slug" params={{ slug: slugify(name) }} className="text-white hover:text-[#f7e6c4]">
+    <Link
+      to="/mlb/players/$slug"
+      params={{ slug: slugify(name) }}
+      className="inline-flex min-h-11 items-center text-white hover:text-[#f7e6c4] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+    >
       {name}
     </Link>
   );

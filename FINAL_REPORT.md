@@ -8,12 +8,12 @@
 
 | Status | Count |
 |---|---|
-| DONE (full per-screen plan + phases 1–8 + verification) | **81** |
-| BLOCKED (resource: per-screen budget exhausted) | **69** |
+| DONE (full per-screen plan + phases 1–8 + verification) | **92** |
+| BLOCKED (resource: per-screen budget exhausted) | **58** |
 | Global/overlay items | 5 marked BLOCKED; PWA item addressed |
 | Total route screens | **150** |
 
-**DONE screens:** HOME-01; all 26 Cricket routes; all 34 Football routes; LIVE-01/02; NEWS-01/02; SRCH-01; AUTH-01; ADMIN-01; UTIL-01–07; and MLB-04, MLB-05, MLB-11, MLB-12, MLB-15, MLB-16.
+**DONE screens:** HOME-01; all 26 Cricket routes; all 34 Football routes; LIVE-01/02; NEWS-01/02; SRCH-01; AUTH-01; ADMIN-01; UTIL-01–07; and all 17 MLB routes (MLB-01–MLB-17).
 
 This is **not** a completed 150-screen overhaul. 81 route screens are complete; 69 route screens and 10 global items remain. This is a resource blocker, not a claim that the remaining screens are broken.
 

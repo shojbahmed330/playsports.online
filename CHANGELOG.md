@@ -350,6 +350,11 @@
 
 - Fixed: MLB layout canonical/OG/Twitter meta; scoreboard/standings/news/teams query errors with retry; shared empty states; 44 px filter/search/section links and focus rings; `aria-pressed` filters; hidden icons/pulse dots; token text in the hub.
 
+## MLB remaining screens
+
+- Fixed: shared error/not-found/empty states across champions, history, postseason, records, team history, World Series year, game centre, player/leaders pages; table captions/`scope`; 44 px links/controls/focus rings; `aria-pressed` toggles; `noindex` for missing entities; OG site name/Twitter meta; token surfaces.
+- Kept: all MLB content, brackets, honors, leaderboards and game tabs.
+
 ## Foundation
 
 - Added overhaul documentation: `PROJECT_NOTES.md`, `HEALTH_BASELINE.md`, `SCREEN_INVENTORY.md`, `DESIGN_SYSTEM.md`, `PROGRESS.md`, `DECISIONS.md`, `BLOCKERS.md`, `SECURITY_FINDINGS.md`.

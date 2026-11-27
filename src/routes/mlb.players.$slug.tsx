@@ -6,6 +6,8 @@ import { athlete, breadcrumbList, faqPage, ldScript } from "@/lib/seo/jsonld";
 import { canonical } from "@/lib/seo/canonical";
 import { RelatedLinks } from "@/components/seo/RelatedLinks";
 import { relatedForLeaguePlayer } from "@/lib/seo/related";
+import { EmptyState, ErrorState } from "@/components/ui/state";
+import { errorMessage } from "@/lib/error-message";
 
 export const Route = createFileRoute("/mlb/players/$slug")({
   loader: ({ params }) => {
@@ -17,7 +19,9 @@ export const Route = createFileRoute("/mlb/players/$slug")({
     const p = loaderData?.player;
     const url = canonical(`/mlb/players/${params.slug}`);
     const bestLine = p ? buildHeadline(p) : "";
-    const title = p ? `${p.name} — MLB Career Honors, MVPs, Cy Youngs & Records` : "MLB Player — PlaySports";
+    const title = p
+      ? `${p.name} — MLB Career Honors, MVPs, Cy Youngs & Records`
+      : "MLB Player — PlaySports";
     const desc = p
       ? `${p.name} — ${bestLine}. Full MLB career honors, awards and all-time leaderboard rankings on PlaySports.`
       : "MLB player career honors, awards and records.";
@@ -30,26 +34,53 @@ export const Route = createFileRoute("/mlb/players/$slug")({
         { property: "og:description", content: desc },
         { property: "og:url", content: url },
         { property: "og:type", content: "profile" },
+        { property: "og:site_name", content: "PlaySports" },
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: desc },
+        ...(p ? [] : [{ name: "robots", content: "noindex" }]),
       ],
       links: [{ rel: "canonical", href: url }],
       scripts: p
         ? [
             ldScript(athlete({ name: p.name, path: `/mlb/players/${p.slug}`, sport: "Baseball" })),
-            ldScript(breadcrumbList([
-              { name: "Home", path: "/" },
-              { name: "MLB", path: "/mlb" },
-              { name: "Players", path: "/mlb/players" },
-              { name: p.name, path: `/mlb/players/${p.slug}` },
-            ])),
+            ldScript(
+              breadcrumbList([
+                { name: "Home", path: "/" },
+                { name: "MLB", path: "/mlb" },
+                { name: "Players", path: "/mlb/players" },
+                { name: p.name, path: `/mlb/players/${p.slug}` },
+              ]),
+            ),
             ldScript(faqPage(faqs)),
           ]
         : [],
     };
   },
   component: PlayerSlugPage,
+  errorComponent: ({ error, reset }) => (
+    <div className="mx-auto max-w-3xl px-4 py-10">
+      <ErrorState
+        title="Could not load this player"
+        message={errorMessage(error)}
+        onRetry={reset}
+      />
+    </div>
+  ),
   notFoundComponent: () => (
-    <div className="rounded-2xl border border-dashed border-border p-10 text-center text-sm text-muted-foreground">
-      Player not found. <Link to="/mlb/players" className="underline">Browse MLB players</Link>.
+    <div className="py-10">
+      <EmptyState
+        title="Player not found"
+        description="This player is not in the MLB honors archive."
+        action={
+          <Link
+            to="/mlb/players"
+            className="inline-flex min-h-11 items-center rounded-full bg-primary px-4 text-sm font-bold text-primary-foreground hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            Browse MLB players
+          </Link>
+        }
+      />
     </div>
   ),
 });
@@ -65,7 +96,8 @@ function buildHeadline(p: NonNullable<ReturnType<typeof getMlbPlayerBySlug>>): s
   if (cy.length) bits.push(`${cy.length}× Cy Young`);
   if (roy.length) bits.push(`${roy.length}× Rookie of the Year`);
   if (ws.length) bits.push(`${ws.length}× World Series MVP`);
-  if (atl.length) bits.push(`ranked on ${atl.length} all-time leaderboard${atl.length === 1 ? "" : "s"}`);
+  if (atl.length)
+    bits.push(`ranked on ${atl.length} all-time leaderboard${atl.length === 1 ? "" : "s"}`);
   return bits.join(" · ") || "MLB career highlights";
 }
 
@@ -111,35 +143,54 @@ function PlayerSlugPage() {
       <header className="rounded-2xl bg-mlb-hero ring-1 ring-[#f7e6c4]/15 p-6 relative overflow-hidden">
         <div aria-hidden className="absolute inset-0 mlb-pinstripes opacity-40" />
         <div className="relative">
-          <div className="text-[11px] uppercase tracking-[0.2em] text-white/70 font-bold">MLB · Career Honors</div>
+          <div className="text-[11px] uppercase tracking-[0.2em] text-white/70 font-bold">
+            MLB · Career Honors
+          </div>
           <h1 className="text-3xl font-extrabold text-white mt-1">{player.name}</h1>
           <p className="text-sm text-white/80 mt-1">{buildHeadline(player)}</p>
         </div>
       </header>
 
-      {groups.map((g) => (
-        <section key={g.title} className="rounded-2xl bg-card ring-1 ring-border p-4">
-          <h2 className="text-sm font-bold text-white mb-3">{g.title}</h2>
-          <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-            {g.rows.map((r, i) => (
-              <li key={i} className="flex items-center gap-3 rounded-xl bg-white/[0.03] ring-1 ring-border p-2.5 text-sm">
-                {r.year && <span className="font-black tabular-nums text-[#f7e6c4] w-14">{r.year}</span>}
-                {r.rank != null && <span className="font-black tabular-nums text-[#f7e6c4] w-10">#{r.rank}</span>}
-                <span className="flex-1 text-white">
-                  {r.category ?? r.kind}
-                  {r.league && <span className="text-muted-foreground"> · {r.league}</span>}
-                </span>
-                {r.value && <span className="tabular-nums text-white font-semibold">{r.value}</span>}
-                {r.team && (
-                  <TeamPill teamName={r.team} />
-                )}
-              </li>
-            ))}
-          </ul>
-        </section>
-      ))}
+      {groups.length === 0 ? (
+        <EmptyState
+          title="No honors on record"
+          description={`No MVP, Cy Young, Rookie of the Year or all-time leaderboard entries are recorded for ${player.name}.`}
+        />
+      ) : (
+        groups.map((g) => (
+          <section key={g.title} className="rounded-2xl bg-card ring-1 ring-border p-4">
+            <h2 className="text-sm font-bold text-foreground mb-3">{g.title}</h2>
+            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              {g.rows.map((r, i) => (
+                <li
+                  key={i}
+                  className="flex min-h-11 items-center gap-3 rounded-xl bg-muted/40 ring-1 ring-border p-2.5 text-sm"
+                >
+                  {r.year && (
+                    <span className="font-black tabular-nums text-[#f7e6c4] w-14">{r.year}</span>
+                  )}
+                  {r.rank != null && (
+                    <span className="font-black tabular-nums text-[#f7e6c4] w-10">#{r.rank}</span>
+                  )}
+                  <span className="flex-1 text-foreground">
+                    {r.category ?? r.kind}
+                    {r.league && <span className="text-muted-foreground"> · {r.league}</span>}
+                  </span>
+                  {r.value && (
+                    <span className="tabular-nums text-foreground font-semibold">{r.value}</span>
+                  )}
+                  {r.team && <TeamPill teamName={r.team} />}
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))
+      )}
 
-      <RelatedLinks title={`More MLB player pages`} links={relatedForLeaguePlayer("mlb", player.slug, undefined, 12)} />
+      <RelatedLinks
+        title={`More MLB player pages`}
+        links={relatedForLeaguePlayer("mlb", player.slug, undefined, 12)}
+      />
     </div>
   );
 }
@@ -149,7 +200,11 @@ function TeamPill({ teamName }: { teamName: string }) {
   const t = getMlbTeamByAbbr(teamName) ?? null;
   if (t) {
     return (
-      <Link to="/mlb/teams/$slug" params={{ slug: t.slug }} className="text-xs font-bold text-white/80 hover:text-white">
+      <Link
+        to="/mlb/teams/$slug"
+        params={{ slug: t.slug }}
+        className="inline-flex min-h-11 items-center rounded-lg px-1 text-xs font-bold text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      >
         {t.abbr}
       </Link>
     );
@@ -158,8 +213,13 @@ function TeamPill({ teamName }: { teamName: string }) {
   return <span className="text-xs text-muted-foreground">{teamName}</span>;
 }
 
-type HonorGroup = { title: string; rows: NonNullable<ReturnType<typeof getMlbPlayerBySlug>>["honors"] };
-function groupHonors(honors: NonNullable<ReturnType<typeof getMlbPlayerBySlug>>["honors"]): HonorGroup[] {
+type HonorGroup = {
+  title: string;
+  rows: NonNullable<ReturnType<typeof getMlbPlayerBySlug>>["honors"];
+};
+function groupHonors(
+  honors: NonNullable<ReturnType<typeof getMlbPlayerBySlug>>["honors"],
+): HonorGroup[] {
   const order: Array<HonorGroup["title"]> = [
     "Most Valuable Player",
     "Cy Young Award",
@@ -170,11 +230,15 @@ function groupHonors(honors: NonNullable<ReturnType<typeof getMlbPlayerBySlug>>[
   const map = new Map<string, HonorGroup["rows"]>();
   for (const h of honors) {
     const key =
-      h.kind === "MVP" ? "Most Valuable Player" :
-      h.kind === "Cy Young" ? "Cy Young Award" :
-      h.kind === "Rookie of the Year" ? "Rookie of the Year" :
-      h.kind === "World Series MVP" ? "World Series MVP" :
-      "All-Time Leaderboards";
+      h.kind === "MVP"
+        ? "Most Valuable Player"
+        : h.kind === "Cy Young"
+          ? "Cy Young Award"
+          : h.kind === "Rookie of the Year"
+            ? "Rookie of the Year"
+            : h.kind === "World Series MVP"
+              ? "World Series MVP"
+              : "All-Time Leaderboards";
     if (!map.has(key)) map.set(key, []);
     map.get(key)!.push(h);
   }
@@ -182,6 +246,8 @@ function groupHonors(honors: NonNullable<ReturnType<typeof getMlbPlayerBySlug>>[
     .filter((k) => map.has(k))
     .map((title) => ({
       title,
-      rows: map.get(title)!.sort((a, b) => (a.year && b.year ? b.year - a.year : (a.rank ?? 0) - (b.rank ?? 0))),
+      rows: map
+        .get(title)!
+        .sort((a, b) => (a.year && b.year ? b.year - a.year : (a.rank ?? 0) - (b.rank ?? 0))),
     }));
 }
