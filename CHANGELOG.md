@@ -32,6 +32,12 @@
 - Added: shared loading/empty states; bilateral tours no longer dehydrate on SSR (hydration-safe).
 - Kept: bilateral block, format/type filters, series cards, canonical.
 
+## CRK-24 Cricket teams
+
+- Fixed: team cards now open the team profile when one exists (series fallback otherwise), instead of always opening a series.
+- Added: SSR team lists, all-error + partial-error states, shared empty state, labelled search, 44 px chips, reduced-motion skeleton.
+- Kept: league filters, crests, dedupe across leagues.
+
 ## Foundation
 
 - Added overhaul documentation: `PROJECT_NOTES.md`, `HEALTH_BASELINE.md`, `SCREEN_INVENTORY.md`, `DESIGN_SYSTEM.md`, `PROGRESS.md`, `DECISIONS.md`, `BLOCKERS.md`, `SECURITY_FINDINGS.md`.
