@@ -35,7 +35,10 @@ export function StatusBar({
           suppressHydrationWarning
           className="no-scrollbar flex min-w-0 items-center gap-3 overflow-x-auto sm:gap-4"
         >
-          <span className="inline-flex shrink-0 items-center gap-1.5 font-bold text-live">
+          <span
+            suppressHydrationWarning
+            className="inline-flex shrink-0 items-center gap-1.5 font-bold text-live"
+          >
             <span
               className={`size-1.5 rounded-full ${
                 mounted && liveCount > 0
@@ -47,9 +50,13 @@ export function StatusBar({
             {liveCount} live
           </span>
           <span className="shrink-0 text-muted-foreground" aria-hidden="true">·</span>
-          <span className="shrink-0 font-semibold text-primary">{upcomingCount} upcoming</span>
+          <span suppressHydrationWarning className="shrink-0 font-semibold text-primary">
+            {upcomingCount} upcoming
+          </span>
           <span className="shrink-0 text-muted-foreground" aria-hidden="true">·</span>
-          <span className="shrink-0 text-muted-foreground">{totalToday} today</span>
+          <span suppressHydrationWarning className="shrink-0 text-muted-foreground">
+            {totalToday} today
+          </span>
         </div>
         {zone && (
           <span className="hidden truncate text-muted-foreground sm:inline" title={zone}>
