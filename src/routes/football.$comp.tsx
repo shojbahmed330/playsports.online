@@ -1,7 +1,6 @@
 import { createFileRoute, notFound, Link, Outlet } from "@tanstack/react-router";
 import { getCompetition } from "@/lib/competitions";
 import { getScoreboard, getStandings } from "@/lib/espn.functions";
-import { SportNav } from "@/components/sports/SportNav";
 
 /**
  * Layout route for /football/$comp/*. Prefetches shared data and delegates
@@ -32,14 +31,14 @@ export const Route = createFileRoute("/football/$comp")({
   },
   head: ({ params, loaderData }) => {
     const comp = loaderData?.comp ?? getCompetition(params.comp);
-    if (!comp) return { meta: [{ title: "Football competition" }, { name: "robots", content: "noindex" }] };
+    if (!comp)
+      return { meta: [{ title: "Football competition" }, { name: "robots", content: "noindex" }] };
     // Leaf routes (index / scores / fixtures / ...) own the title, description,
     // canonical and structured data. The layout must not add a second canonical.
     return { meta: [] };
   },
   notFoundComponent: () => (
     <div className="min-h-screen bg-background text-foreground">
-      <SportNav />
       <div className="max-w-3xl mx-auto px-4 py-16 text-center">
         <h1 className="text-2xl font-bold">Competition not found</h1>
         <p className="mt-3 text-muted-foreground">

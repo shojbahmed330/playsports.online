@@ -146,6 +146,7 @@
 ## Global
 
 - Fixed: removed duplicate `id="main-content"` from 24 page/component roots; the `__root` wrapper is now the single skip-link target.
+- Fixed: football now renders `SportNav` once from the `/football` layout, so every football child route (campaigns, countries, top-scorers, venues, players, matches) has site navigation without duplicate headers.
 
 ## CRK-01 cricket highlight detail
 

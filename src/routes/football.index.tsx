@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Trophy, Loader2, ChevronDown, Users, Swords, Goal, Calendar } from "lucide-react";
-import { SportNav } from "@/components/sports/SportNav";
+import { FootballHubSwitcher } from "@/components/football/FootballHubSwitcher";
 import { supabase, WC_YEARS, type WCTournament, type WCMatch, type WCGroup } from "@/lib/supabase";
 import { liveWcYear, FOOTBALL_WC } from "@/lib/tournament-config";
 import { TournamentInfoCard } from "@/components/wc/TournamentInfoCard";
@@ -29,7 +29,6 @@ import { Wc2026ScorersPanel } from "@/components/football/Wc2026ScorersPanel";
 import { FootballFilterBar } from "@/components/football/FootballFilterBar";
 import { FootballCoachmark, ReplayTourButton } from "@/components/football/FootballCoachmark";
 import { BackToTopFab } from "@/components/football/BackToTopFab";
-import { FootballHubSwitcher } from "@/components/football/FootballHubSwitcher";
 import { CurrentLeaguesStrip } from "@/components/football/CurrentLeaguesStrip";
 import { useWc2026Pulse } from "@/lib/use-wc2026-pulse";
 import { applyFilter, uniqueTeams, useMyTeams, type FootballFilter } from "@/lib/football-filters";
@@ -448,8 +447,7 @@ function Index() {
 
   return (
     <div className="min-h-screen">
-      {/* HEADER — shared sport nav (same look as Hub / MLB / NBA) */}
-      <SportNav />
+      {/* HEADER - shared sport nav renders in the /football layout */}
       <FootballHubSwitcher activeSlug="world-cup" />
       <Breadcrumbs />
 

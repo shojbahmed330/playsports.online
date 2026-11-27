@@ -1,5 +1,4 @@
 import type { ReactNode } from "react";
-import { SportNav } from "@/components/sports/SportNav";
 import { Breadcrumbs } from "@/components/nav/Breadcrumbs";
 import { FootballHubSwitcher } from "@/components/football/FootballHubSwitcher";
 import { CompetitionHero } from "@/components/football/CompetitionHero";
@@ -25,7 +24,6 @@ export function CompetitionPageShell({
 }) {
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <SportNav />
       <FootballHubSwitcher activeSlug={comp.slug} />
       <Breadcrumbs />
       <CompetitionHero
@@ -35,9 +33,7 @@ export function CompetitionPageShell({
         nextLabel={nextLabel}
       />
       <CompetitionSubNav comp={comp} />
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
-        {children}
-      </main>
+      <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8">{children}</main>
     </div>
   );
 }
