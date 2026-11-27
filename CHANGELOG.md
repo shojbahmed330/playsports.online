@@ -80,6 +80,12 @@
 - Added: reduced-motion hero ping.
 - Kept: SSR overview/history/caps, live/upcoming/recent sections, standings preview, champions list.
 
+## CRK-09 IPL scores
+
+- Fixed: feed-error banner has Retry; local empty state replaced with the shared one and a “Show all matches” action; invalid match ids are skipped globally.
+- Added: filtered/total count, labelled season select, `aria-pressed`, 44 px status chips.
+- Kept: SSR season loader, URL filters, match grid.
+
 ## Foundation
 
 - Added overhaul documentation: `PROJECT_NOTES.md`, `HEALTH_BASELINE.md`, `SCREEN_INVENTORY.md`, `DESIGN_SYSTEM.md`, `PROGRESS.md`, `DECISIONS.md`, `BLOCKERS.md`, `SECURITY_FINDINGS.md`.
