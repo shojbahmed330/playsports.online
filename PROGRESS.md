@@ -4,9 +4,9 @@ Updated: 2026-11-27 (session 1 closed with a logged resource blocker)
 
 - Branch: `professional-overhaul` (never pushed)
 - Current phase: **session 2 — football pages**
-- Current screen: FB-22 football hub
-- Screens done: **53 / 150**
-- Screens blocked: **97** (resource, see `BLOCKERS.md`)
+- Current screen: FB-24 match recap slug
+- Screens done: **54 / 150**
+- Screens blocked: **96** (resource, see `BLOCKERS.md`)
 - Screens in progress: 0
 
 ## Completed

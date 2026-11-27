@@ -276,6 +276,11 @@
 - Fixed: shared error/not-found/empty states; empty match-results state; labelled breadcrumb; hidden separators; 44 px links/focus rings; human-readable dates; OG site name/Twitter meta.
 - Kept: campaign stats, match results, top scorers and related links.
 
+## FB-20 country World Cup year
+
+- Fixed: shared error/not-found/empty states; labelled breadcrumb; hidden flag/separators; 44 px links; OG site name/Twitter meta.
+- Kept: campaign summary, results and scorers.
+
 ## Foundation
 
 - Added overhaul documentation: `PROJECT_NOTES.md`, `HEALTH_BASELINE.md`, `SCREEN_INVENTORY.md`, `DESIGN_SYSTEM.md`, `PROGRESS.md`, `DECISIONS.md`, `BLOCKERS.md`, `SECURITY_FINDINGS.md`.

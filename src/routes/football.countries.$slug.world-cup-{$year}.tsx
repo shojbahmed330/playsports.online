@@ -5,6 +5,8 @@ import { canonical } from "@/lib/seo/canonical";
 import { breadcrumbList, faqPage, ldScript, sportsTeam } from "@/lib/seo/jsonld";
 import { countryYearFaqs } from "@/lib/seo/faq-templates";
 import { flagOf } from "@/lib/flags";
+import { EmptyState, ErrorState } from "@/components/ui/state";
+import { errorMessage } from "@/lib/error-message";
 
 export const Route = createFileRoute("/football/countries/$slug/world-cup-{$year}")({
   loader: ({ params }) => {
@@ -17,7 +19,8 @@ export const Route = createFileRoute("/football/countries/$slug/world-cup-{$year
     return { country: cy, stats, t };
   },
   head: ({ params, loaderData }) => {
-    if (!loaderData) return { meta: [{ title: "Not found" }, { name: "robots", content: "noindex" }] };
+    if (!loaderData)
+      return { meta: [{ title: "Not found" }, { name: "robots", content: "noindex" }] };
     const { country, stats, t } = loaderData;
     const path = `/football/countries/${params.slug}/world-cup-${params.year}`;
     const host = t?.host ?? "";
@@ -32,32 +35,68 @@ export const Route = createFileRoute("/football/countries/$slug/world-cup-{$year
         { property: "og:description", content: desc },
         { property: "og:url", content: canonical(path) },
         { property: "og:type", content: "article" },
+        { property: "og:site_name", content: "PlaySports" },
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: desc },
       ],
       links: [{ rel: "canonical", href: canonical(path) }],
       scripts: [
-        ldScript(sportsTeam({ name: country.countryName, path, sport: "Football", league: `FIFA World Cup ${country.year}` })),
-        ldScript(breadcrumbList([
-          { name: "Home", path: "/" },
-          { name: "Football", path: "/football" },
-          { name: "Countries", path: "/football/countries" },
-          { name: country.countryName, path: `/football/teams/${country.countrySlug}` },
-          { name: `${country.year} World Cup`, path },
-        ])),
-        ldScript(faqPage(countryYearFaqs({
-          name: country.countryName,
-          year: country.year,
-          host: host || "TBD",
-          finish,
-          played: stats.played,
-          w: stats.w, d: stats.d, l: stats.l,
-          gf: stats.gf, ga: stats.ga,
-          topScorer: stats.topScorers[0],
-        }))),
+        ldScript(
+          sportsTeam({
+            name: country.countryName,
+            path,
+            sport: "Football",
+            league: `FIFA World Cup ${country.year}`,
+          }),
+        ),
+        ldScript(
+          breadcrumbList([
+            { name: "Home", path: "/" },
+            { name: "Football", path: "/football" },
+            { name: "Countries", path: "/football/countries" },
+            { name: country.countryName, path: `/football/teams/${country.countrySlug}` },
+            { name: `${country.year} World Cup`, path },
+          ]),
+        ),
+        ldScript(
+          faqPage(
+            countryYearFaqs({
+              name: country.countryName,
+              year: country.year,
+              host: host || "TBD",
+              finish,
+              played: stats.played,
+              w: stats.w,
+              d: stats.d,
+              l: stats.l,
+              gf: stats.gf,
+              ga: stats.ga,
+              topScorer: stats.topScorers[0],
+            }),
+          ),
+        ),
       ],
     };
   },
   component: CountryYearPage,
-  notFoundComponent: () => <div className="p-6">No data for this nation × year.</div>,
+  errorComponent: ({ error, reset }) => (
+    <div className="mx-auto max-w-3xl px-4 py-10">
+      <ErrorState
+        title="Could not load this campaign"
+        message={errorMessage(error)}
+        onRetry={reset}
+      />
+    </div>
+  ),
+  notFoundComponent: () => (
+    <div className="mx-auto max-w-3xl px-4 py-10">
+      <EmptyState
+        title="No data for this nation × year"
+        description="This country-year campaign is not in the archive."
+      />
+    </div>
+  ),
 });
 
 function deriveFinish(name: string, year: number, t: ReturnType<typeof getTournament>): string {
@@ -76,21 +115,40 @@ function CountryYearPage() {
     <div className="min-h-screen bg-background pb-24">
       <header className="bg-gradient-to-br from-slate-800 via-slate-700 to-slate-900 py-10 px-4">
         <div className="container mx-auto max-w-5xl">
-          <nav className="text-xs uppercase tracking-widest font-semibold text-white/70 mb-3">
-            <Link to="/football/countries" className="hover:text-white">Countries</Link>
-            <span className="mx-2">/</span>
-            <Link to="/football/teams/$slug" params={{ slug: country.countrySlug }} className="hover:text-white">{country.countryName}</Link>
-            <span className="mx-2">/</span>
+          <nav
+            className="text-xs uppercase tracking-widest font-semibold text-white/70 mb-3"
+            aria-label="Breadcrumb"
+          >
+            <Link to="/football/countries" className="hover:text-white">
+              Countries
+            </Link>
+            <span className="mx-2" aria-hidden="true">
+              /
+            </span>
+            <Link
+              to="/football/teams/$slug"
+              params={{ slug: country.countrySlug }}
+              className="hover:text-white"
+            >
+              {country.countryName}
+            </Link>
+            <span className="mx-2" aria-hidden="true">
+              /
+            </span>
             <span className="text-white">{country.year} World Cup</span>
           </nav>
           <div className="flex items-center gap-4">
-            <div className="text-6xl">{flagOf(country.countryName)}</div>
+            <div className="text-6xl" aria-hidden="true">
+              {flagOf(country.countryName)}
+            </div>
             <div>
               <h1 className="text-3xl sm:text-4xl font-black text-white">
                 {country.countryName} at the {country.year} FIFA World Cup
               </h1>
               <p className="mt-2 text-white/90 text-lg">
-                Quick Answer: {country.countryName} <strong>{finish}</strong> at the {country.year} World Cup{t?.host ? ` in ${t.host}` : ""} — {stats.played} matches, {stats.w}W-{stats.d}D-{stats.l}L, {stats.gf} scored, {stats.ga} conceded.
+                Quick Answer: {country.countryName} <strong>{finish}</strong> at the {country.year}{" "}
+                World Cup{t?.host ? ` in ${t.host}` : ""} — {stats.played} matches, {stats.w}W-
+                {stats.d}D-{stats.l}L, {stats.gf} scored, {stats.ga} conceded.
               </p>
             </div>
           </div>
@@ -106,16 +164,37 @@ function CountryYearPage() {
           <Stat label="GF – GA" value={`${stats.gf} – ${stats.ga}`} />
         </section>
 
+        {stats.matches.length === 0 && stats.topScorers.length === 0 && (
+          <EmptyState
+            title="No match detail recorded"
+            description={`Match results and scorers for ${country.countryName} at the ${country.year} World Cup are not in the archive.`}
+          />
+        )}
+
         {stats.matches.length > 0 && (
           <section className="rounded-xl bg-card border p-5">
             <h2 className="text-xl font-bold mb-3">Match Results</h2>
             <ol className="space-y-1.5 text-sm">
-              {stats.matches.map((m: { home_team: string; away_team: string; home_score: number; away_score: number }, i: number) => (
-                <li key={i} className="flex justify-between border-b border-border/50 pb-1">
-                  <span>{m.home_team} vs {m.away_team}</span>
-                  <span className="font-semibold tabular-nums">{m.home_score} – {m.away_score}</span>
-                </li>
-              ))}
+              {stats.matches.map(
+                (
+                  m: {
+                    home_team: string;
+                    away_team: string;
+                    home_score: number;
+                    away_score: number;
+                  },
+                  i: number,
+                ) => (
+                  <li key={i} className="flex justify-between border-b border-border/50 pb-1">
+                    <span>
+                      {m.home_team} vs {m.away_team}
+                    </span>
+                    <span className="font-semibold tabular-nums">
+                      {m.home_score} – {m.away_score}
+                    </span>
+                  </li>
+                ),
+              )}
             </ol>
           </section>
         )}
@@ -129,7 +208,7 @@ function CountryYearPage() {
                   <Link
                     to="/football/players/$slug/world-cup-{$year}"
                     params={{ slug: slugify(s.name), year: String(country.year) }}
-                    className="hover:text-primary"
+                    className="inline-flex min-h-11 items-center hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   >
                     {s.name}
                   </Link>
@@ -140,13 +219,21 @@ function CountryYearPage() {
           </section>
         )}
 
-        <section className="text-sm text-muted-foreground">
-          <Link to="/football/teams/$slug" params={{ slug: country.countrySlug }} className="text-primary hover:underline">
+        <section className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-muted-foreground">
+          <Link
+            to="/football/teams/$slug"
+            params={{ slug: country.countrySlug }}
+            className="inline-flex min-h-11 items-center text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
             → See {country.countryName}'s complete World Cup history
           </Link>
           {" · "}
           {t && (
-            <Link to="/football/tournaments/$year" params={{ year: String(country.year) }} className="text-primary hover:underline">
+            <Link
+              to="/football/tournaments/$year"
+              params={{ year: String(country.year) }}
+              className="inline-flex min-h-11 items-center text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
               → Full {country.year} tournament summary
             </Link>
           )}
