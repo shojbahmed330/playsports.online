@@ -331,6 +331,11 @@
 - Fixed: shared initial/no-results states; labelled input and submit button; token header/input; hidden flags; 44 px controls/focus rings; World Cup scope copy; consistent result-kind labels; OG site name.
 - Kept: fuzzy country/player/tournament search, year shortcut and capped result list.
 
+## AUTH-01 admin sign in
+
+- Fixed: session-check loading state; inline `role="alert"` error with `aria-invalid`/`aria-describedby`; busy label; hidden icons; 44 px controls/focus rings; primary token button; OG site name.
+- Kept: email/password sign-in, success toast and admin redirect.
+
 ## Foundation
 
 - Added overhaul documentation: `PROJECT_NOTES.md`, `HEALTH_BASELINE.md`, `SCREEN_INVENTORY.md`, `DESIGN_SYSTEM.md`, `PROGRESS.md`, `DECISIONS.md`, `BLOCKERS.md`, `SECURITY_FINDINGS.md`.

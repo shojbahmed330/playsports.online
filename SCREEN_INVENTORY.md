@@ -3,7 +3,7 @@
 Generated from the real router files in `src/routes` and cross-checked against `src/routeTree.gen.ts`.
 
 
-> **Execution status:** the foundation plus 66 route screens are DONE (Home, Cricket, Football, Live, News and Search). The remaining 84 route screens are marked BLOCKED for this session because the per-screen audit/implementation budget was exhausted; the reason is recorded in `BLOCKERS.md` and the recommended order is in `FINAL_REPORT.md`. This is a resource blocker, not a claim that the screen is broken.
+> **Execution status:** the foundation plus 67 route screens are DONE (Home, Cricket, Football, Live, News, Search and Auth). The remaining 83 route screens are marked BLOCKED for this session because the per-screen audit/implementation budget was exhausted; the reason is recorded in `BLOCKERS.md` and the recommended order is in `FINAL_REPORT.md`. This is a resource blocker, not a claim that the screen is broken.
 
 ## 1. Summary
 
@@ -209,7 +209,7 @@ Generated from the real router files in `src/routes` and cross-checked against `
 | UTIL-01 | Utility | — | About | Full page | `/about`<br>`src/routes/about.tsx` | head meta | site/LegalLayout | static/local | loading, empty | BLOCKED |
 | ADMIN-01 | Admin | — | Admin | Full page | `/admin`<br>`src/routes/admin.tsx` | client query; head meta | admin/CommandPalette, wc/VideoPlayer, admin/AdSenseAdminCard, admin/MonetizationCard | wc2026.functions | loading, empty, error | BLOCKED |
 | XSPT-01 | Cross-sport | — | Archive Sport Year | Full page | `/archive/:sport/:year`<br>`src/routes/archive.$sport.$year.tsx` | SSR loader; JSON-LD; head meta | affiliates/AffiliateStrip, ads/AdSlot | server fn / query | error | BLOCKED |
-| AUTH-01 | Auth | — | Auth | Full page | `/auth`<br>`src/routes/auth.tsx` | head meta | — | static/local | loading, error | BLOCKED |
+| AUTH-01 | Auth | - | Auth | Full page | `/auth`<br>`src/routes/auth.tsx` | Admin email/password sign-in with session redirect | - | Supabase Auth | loading, inline error | DONE |
 | UTIL-02 | Utility | — | Contact | Full page | `/contact`<br>`src/routes/contact.tsx` | head meta | site/LegalLayout | contact.functions | error | BLOCKED |
 | UTIL-03 | Utility | — | Cookies | Full page | `/cookies`<br>`src/routes/cookies.tsx` | head meta | site/LegalLayout | static/local | loading | BLOCKED |
 | CRK-01 | Cricket | CRK-04 | Cricket Highlight Detail | Full page | `/cricket/highlights/:slug`<br>`src/routes/cricket.highlights.$slug.tsx` | SSR video page; recap link; team profiles; related highlights | sports/SportNav, cricket/CricketSubNav, news/MatchRecapCard, ui/state | static entities + recap | error+retry, 404 | DONE |
