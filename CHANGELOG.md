@@ -56,6 +56,12 @@
 - Added: shared empty state with Clear filters, labelled search, 44 px chips, table captions, snapshot date.
 - Kept: static records, player links, format filter.
 
+## CRK-15 Cricket players
+
+- Fixed: removed `any` from rankings data; explained that ratings are format-specific.
+- Added: visible count, snapshot date, full-rankings link, shared empty state, labelled search, `aria-pressed`, 44 px chips.
+- Kept: player search, role/format filters, cards and player links.
+
 ## Foundation
 
 - Added overhaul documentation: `PROJECT_NOTES.md`, `HEALTH_BASELINE.md`, `SCREEN_INVENTORY.md`, `DESIGN_SYSTEM.md`, `PROGRESS.md`, `DECISIONS.md`, `BLOCKERS.md`, `SECURITY_FINDINGS.md`.
