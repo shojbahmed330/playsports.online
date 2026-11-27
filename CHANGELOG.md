@@ -143,6 +143,12 @@
 - Fixed: shared empty state; `main-content` id; focus-visible cards; `h3` titles; human-readable dates.
 - Kept: tournament-grouped highlight cards and JSON-LD.
 
+## CRK-01 cricket highlight detail
+
+- Fixed: shared retryable error and not-found states; `main-content` id; 44 px links; focus rings; hidden breadcrumb separators; human-readable dates; removed unused `itemList`.
+- Added: OG site name/Twitter meta; privacy-enhanced `youtube-nocookie.com` embed.
+- Kept: video/FAQ/breadcrumb JSON-LD, recap card, team profiles, related highlights.
+
 ## Foundation
 
 - Added overhaul documentation: `PROJECT_NOTES.md`, `HEALTH_BASELINE.md`, `SCREEN_INVENTORY.md`, `DESIGN_SYSTEM.md`, `PROGRESS.md`, `DECISIONS.md`, `BLOCKERS.md`, `SECURITY_FINDINGS.md`.

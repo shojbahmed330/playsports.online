@@ -4,9 +4,9 @@ Updated: 2026-11-27 (session 1 closed with a logged resource blocker)
 
 - Branch: `professional-overhaul` (never pushed)
 - Current phase: **session 2 — continuing CRK screens**
-- Current screen: CRK-01 highlight detail
-- Screens done: **24 / 150**
-- Screens blocked: **126** (resource, see `BLOCKERS.md`)
+- Current screen: CRK-22 team history
+- Screens done: **25 / 150**
+- Screens blocked: **125** (resource, see `BLOCKERS.md`)
 - Screens in progress: 0
 
 ## Completed
