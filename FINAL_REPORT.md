@@ -15,7 +15,7 @@
 
 **DONE screens:** HOME-01; all 26 Cricket routes; all 34 Football routes; LIVE-01/02; NEWS-01/02; SRCH-01; AUTH-01; ADMIN-01; UTIL-01–07; and MLB-04, MLB-05, MLB-11, MLB-12, MLB-15, MLB-16.
 
-This is **not** a completed 150-screen overhaul. The remaining screens have the shared foundation applied, and football now has correct shared navigation, but they have not received their own audit, redesign or Phase 8 verification.
+This is **not** a completed 150-screen overhaul. 81 route screens are complete; 69 route screens and 10 global items remain. This is a resource blocker, not a claim that the remaining screens are broken.
 
 ## 2. Baseline → current
 
@@ -56,7 +56,7 @@ This is **not** a completed 150-screen overhaul. The remaining screens have the 
 
 ## 5. Remaining risks
 
-- **116 screens** have not been individually audited (all Football leaf/competition pages, News, Live, Search, Auth, Admin, legal utilities, Players, Premium and all MLB/NBA/NHL/MLS screens).
+- **69 route screens plus 10 global items** have not been individually audited (remaining MLB screens, all NBA/NHL/MLS screens, XSPT/GUIDE/MINE/PLYR/PREM routes, and the GLB layout/header/footer/PWA items).
 - Home still ships a **745 KB** index chunk; route-level code splitting deferred.
 - **6 dependency advisories** remain; no major upgrades taken.
 - **Repo-wide ESLint** still fails on pre-existing issues outside touched files.
@@ -65,10 +65,10 @@ This is **not** a completed 150-screen overhaul. The remaining screens have the 
 
 ## 6. Recommended next order
 
-1. **FB-22 Football hub** (982 lines — audit carefully), then **FB-05 competition overview** and **FB-01 fixtures**.
-2. Remaining football competition leaves: scores, standings, teams, matches, players, records, history; then campaigns/countries/players/top-scorer detail pages.
-3. NEWS-01/02, LIVE, SRCH, AUTH, ADMIN, UTIL pages.
-4. MLB/NBA/NHL/MLS (archive tier), then the final cross-screen consistency + Lighthouse pass.
+1. Finish the remaining MLB screens: champions, history, postseason, records, team history, game centre, players index/profile, world-series year, legacy team id.
+2. NBA, NHL and MLS modules (same templates as MLB: scores, standings, teams/team profile, players/player profile, game centre, leaders, news, history/champions/finals).
+3. XSPT-01–05, GUIDE-01–04, MINE-01, PLYR-01/02, PREM-01.
+4. GLB-01–10 (layout/header/footer/search overlay/player sheet/404/PWA), then the final cross-screen consistency + Lighthouse pass.
 5. Deploy the PWA fix and verify `/sw.js` once the owner allows a deployment.
 
 ## 7. Artifacts
