@@ -76,43 +76,44 @@ export function MatchModal({ match, onClose }: { match: WCMatch | null; onClose:
 
   return (
     <div
-      className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-sm animate-in fade-in duration-200"
+      className="fixed inset-0 z-[100] flex items-end justify-center bg-background/80 backdrop-blur-sm animate-in fade-in duration-200 motion-reduce:animate-none sm:items-center"
       onClick={onClose}
+      role="presentation"
     >
       <div
         ref={sheetRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label={`${match.home_team} vs ${match.away_team} — ${match.tournament_year} World Cup`}
         onClick={(e) => e.stopPropagation()}
         onTouchStart={onTouchStart}
         onTouchMove={onTouchMove}
         onTouchEnd={onTouchEnd}
         style={dragDy > 0 ? { transform: `translateY(${dragDy}px)`, transition: "none" } : undefined}
-        className="relative w-full sm:max-w-[640px] max-h-[92vh] sm:max-h-[90vh] sm:my-8
-          rounded-t-2xl sm:rounded-2xl border border-gray-800 bg-gray-950 shadow-2xl
-          overflow-hidden flex flex-col
-          animate-in slide-in-from-bottom-4 sm:slide-in-from-bottom-0 sm:zoom-in-95 duration-200"
+        className="relative flex max-h-[92vh] w-full flex-col overflow-hidden rounded-t-2xl border border-border bg-background shadow-[var(--shadow-elevated)] animate-in slide-in-from-bottom-4 duration-200 motion-reduce:animate-none sm:my-8 sm:max-h-[90vh] sm:max-w-[640px] sm:rounded-2xl sm:slide-in-from-bottom-0 sm:zoom-in-95"
       >
         {/* Mobile drag handle */}
-        <div className="sm:hidden pt-2 pb-1 grid place-items-center shrink-0">
-          <span className="block h-1.5 w-10 rounded-full bg-gray-700" />
+        <div className="grid shrink-0 place-items-center pb-1 pt-2 sm:hidden">
+          <span className="block h-1.5 w-10 rounded-full bg-muted-foreground/40" aria-hidden="true" />
         </div>
 
         {/* Sticky header (visible while scrolling content) */}
-        <div className="flex items-center justify-between px-5 pt-2 sm:pt-4 pb-2 gap-2 shrink-0 border-b border-gray-900/80 bg-gray-950/95 backdrop-blur z-10">
-          <div className="flex items-center gap-2 min-w-0">
-            <span className={`shrink-0 font-bold text-[10px] uppercase tracking-widest rounded-full px-3 py-1 ${
+        <div className="z-10 flex shrink-0 items-center justify-between gap-2 border-b border-border bg-background/95 px-5 pb-2 pt-2 backdrop-blur sm:pt-4">
+          <div className="flex min-w-0 items-center gap-2">
+            <span className={`shrink-0 rounded-full px-3 py-1 text-micro font-bold uppercase ${
               isPredicted
-                ? "bg-sky-500/15 text-sky-300 ring-1 ring-sky-400/40"
-                : "bg-gradient-to-r from-amber-500 to-amber-600 text-black"
+                ? "bg-[var(--color-accent-mlb)]/15 text-[var(--color-accent-mlb)] ring-1 ring-[var(--color-accent-mlb)]/40"
+                : "bg-primary text-primary-foreground"
             }`}>
               {isPredicted ? "Predicted" : match.round} · {match.tournament_year}
             </span>
             {is2026 && !isPredicted && (
-              <span className="hidden xs:inline-flex items-center gap-1 text-[10px] font-bold text-red-300 bg-red-500/10 ring-1 ring-red-500/40 rounded-full px-2 py-0.5">
-                <Radio className="size-2.5" /> Live data
+              <span className="hidden items-center gap-1 rounded-full bg-live/10 px-2 py-0.5 text-micro font-bold text-live ring-1 ring-live/40 xs:inline-flex">
+                <Radio className="size-2.5" aria-hidden="true" /> Live data
               </span>
             )}
           </div>
-          <div className="flex items-center gap-2 shrink-0">
+          <div className="flex shrink-0 items-center gap-2">
             {!isPredicted && (
               <ShareButton
                 title={`${match.home_team} vs ${match.away_team} — ${match.tournament_year} World Cup`}
@@ -120,52 +121,53 @@ export function MatchModal({ match, onClose }: { match: WCMatch | null; onClose:
               />
             )}
             <button
+              type="button"
               onClick={onClose}
-              className="size-8 grid place-items-center rounded-full bg-gray-900 hover:bg-gray-800 border border-gray-800"
-              aria-label="Close"
+              className="grid size-11 place-items-center rounded-full border border-border bg-card text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              aria-label="Close match details"
             >
-              <X className="size-4" />
+              <X className="size-4" aria-hidden="true" />
             </button>
           </div>
         </div>
 
         {/* Scrollable content */}
         <div className="flex-1 overflow-y-auto overscroll-contain">
-          <div className="px-5 sm:px-6 pt-5 pb-2">
+          <div className="px-5 pb-2 pt-5 sm:px-6">
             {/* Score row */}
             <div className="flex items-center justify-between gap-2 sm:gap-3">
-              <div className="flex-1 flex items-center gap-1.5 min-w-0">
-                <span className="text-xl sm:text-2xl shrink-0">{flagOf(match.home_team)}</span>
-                <span className={`truncate text-sm sm:text-lg font-semibold ${win === "home" ? "text-amber-400" : "text-gray-300"}`}>
+              <div className="flex min-w-0 flex-1 items-center gap-1.5">
+                <span className="shrink-0 text-xl sm:text-2xl" aria-hidden="true">{flagOf(match.home_team)}</span>
+                <span className={`truncate text-caption font-semibold sm:text-lg ${win === "home" ? "text-primary" : "text-foreground"}`}>
                   {match.home_team}
                 </span>
                 {!isPredicted && <StarTeamButton team={match.home_team} />}
               </div>
-              <div className={`text-3xl sm:text-5xl font-black tabular-nums whitespace-nowrap ${
-                isPredicted ? "text-gray-600" : "text-amber-400"
+              <div className={`whitespace-nowrap text-3xl font-black tabular-nums sm:text-5xl ${
+                isPredicted ? "text-muted-foreground/60" : "text-primary"
               }`}>
-                {match.home_score ?? "–"} <span className="text-gray-700 mx-0.5">:</span> {match.away_score ?? "–"}
+                {match.home_score ?? "–"} <span className="mx-0.5 text-muted-foreground">:</span> {match.away_score ?? "–"}
               </div>
-              <div className="flex-1 flex items-center gap-1.5 min-w-0 justify-end">
+              <div className="flex min-w-0 flex-1 items-center justify-end gap-1.5">
                 {!isPredicted && <StarTeamButton team={match.away_team} />}
-                <span className={`truncate text-sm sm:text-lg font-semibold text-right ${win === "away" ? "text-amber-400" : "text-gray-300"}`}>
+                <span className={`truncate text-right text-caption font-semibold sm:text-lg ${win === "away" ? "text-primary" : "text-foreground"}`}>
                   {match.away_team}
                 </span>
-                <span className="text-xl sm:text-2xl shrink-0">{flagOf(match.away_team)}</span>
+                <span className="shrink-0 text-xl sm:text-2xl" aria-hidden="true">{flagOf(match.away_team)}</span>
               </div>
             </div>
 
             {hasPen && (
-              <div className="text-center text-sm text-amber-600 mt-2">
+              <div className="mt-2 text-center text-caption text-primary">
                 ({match.home_score_pen} - {match.away_score_pen} on penalties)
               </div>
             )}
 
             {/* Info rows */}
-            <div className="mt-5 flex flex-col gap-1.5 text-sm text-gray-400">
+            <div className="mt-5 flex flex-col gap-1.5 text-caption text-muted-foreground">
               {date && (
                 <div className="flex items-center gap-2">
-                  <CalendarDays className="size-4 text-gray-500" />
+                  <CalendarDays className="size-4 text-muted-foreground" aria-hidden="true" />
                   <span>{date}{match.match_date && new Date(match.match_date).getTime() > Date.now()
                     ? ` · ${new Date(match.match_date).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`
                     : ""}</span>
@@ -173,7 +175,7 @@ export function MatchModal({ match, onClose }: { match: WCMatch | null; onClose:
               )}
               {(match.stadium || match.city) && (
                 <div className="flex items-center gap-2">
-                  <MapPin className="size-4 text-gray-500" />
+                  <MapPin className="size-4 text-muted-foreground" aria-hidden="true" />
                   <span>{[match.stadium, match.city].filter(Boolean).join(", ")}</span>
                 </div>
               )}
@@ -182,11 +184,11 @@ export function MatchModal({ match, onClose }: { match: WCMatch | null; onClose:
 
           {/* Predicted-fixture explainer */}
           {isPredicted && (
-            <div className="mx-5 sm:mx-6 mt-3 rounded-xl border border-dashed border-sky-500/40 bg-sky-500/[0.06] p-4">
+            <div className="mx-5 mt-3 rounded-xl border border-dashed border-[var(--color-accent-mlb)]/40 bg-[var(--color-accent-mlb)]/[0.06] p-4 sm:mx-6">
               <div className="flex items-start gap-2.5">
-                <Sparkles className="size-4 text-sky-300 mt-0.5 shrink-0" />
-                <div className="text-xs text-sky-200/90 leading-relaxed">
-                  <div className="font-bold text-sky-300 mb-1">Predicted Round of 32 fixture</div>
+                <Sparkles className="mt-0.5 size-4 shrink-0 text-[var(--color-accent-mlb)]" aria-hidden="true" />
+                <div className="text-caption leading-relaxed text-[var(--color-accent-mlb)]/90">
+                  <div className="mb-1 font-bold text-[var(--color-accent-mlb)]">Predicted Round of 32 fixture</div>
                   These teams are derived from current group standings using the
                   official FIFA 2026 R32 snake-pairing. The real opponents will
                   drop in here automatically once the group stage settles and
@@ -198,7 +200,7 @@ export function MatchModal({ match, onClose }: { match: WCMatch | null; onClose:
 
           {/* Video / highlights */}
           {(!isPredicted || match.video_url) && (
-            <div className="px-5 sm:px-6 pt-4">
+            <div className="px-5 pt-4 sm:px-6">
               <MatchHighlightCard
                 home={match.home_team}
                 away={match.away_team}
@@ -209,7 +211,7 @@ export function MatchModal({ match, onClose }: { match: WCMatch | null; onClose:
 
           {/* 2026 Live Match Centre — only for real ESPN events */}
           {canShowLiveCenter && (
-            <div className="px-5 sm:px-6 pt-5 space-y-4">
+            <div className="space-y-4 px-5 pt-5 sm:px-6">
               <LiveMatchCenter
                 fixture={{
                   id: match.id,
@@ -228,10 +230,10 @@ export function MatchModal({ match, onClose }: { match: WCMatch | null; onClose:
               <Link
                 to="/football/match/$id"
                 params={{ id: String(match.id) }}
-                className="flex items-center justify-center gap-2 w-full rounded-lg border border-amber-500/40 bg-amber-500/10 hover:bg-amber-500/20 py-2 text-xs font-medium text-amber-300"
+                className="flex min-h-11 w-full items-center justify-center gap-2 rounded-lg border border-primary/40 bg-primary/10 py-2 text-caption font-medium text-primary transition-colors hover:bg-primary/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 onClick={onClose}
               >
-                Open full match page <ExternalLink className="size-3.5" />
+                Open full match page <ExternalLink className="size-3.5" aria-hidden="true" />
               </Link>
             </div>
           )}
@@ -239,15 +241,16 @@ export function MatchModal({ match, onClose }: { match: WCMatch | null; onClose:
           {/* Predicted: still surface broadcasters because users want to know
               where to watch the eventual fixture. */}
           {isPredicted && (
-            <div className="px-5 sm:px-6 pt-4">
+            <div className="px-5 pt-4 sm:px-6">
               <WatchLivePanel compact />
             </div>
           )}
 
-          <div className="p-5 sm:p-6 pt-4">
+          <div className="p-5 pt-4 sm:p-6">
             <button
+              type="button"
               onClick={onClose}
-              className="w-full bg-gray-800 hover:bg-gray-700 rounded-lg py-2.5 text-sm font-medium"
+              className="min-h-11 w-full rounded-lg bg-muted py-2.5 text-caption font-medium text-foreground transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               Close
             </button>

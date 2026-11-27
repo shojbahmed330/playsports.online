@@ -25,6 +25,7 @@ import { computeR32, computePredictedKnockout, inferWc2026KnockoutMatchNo } from
 
 import { applyFilter, useMyTeams, type FootballFilter } from "@/lib/football-filters";
 import { FootballPitchSkeleton, FootballEmptyBall } from "@/components/football/FootballSkeleton";
+import { EmptyState, ErrorState } from "@/components/ui/state";
 
 const HOUR = 60 * 60 * 1000;
 const LIVE_MS = 20 * 1000;
@@ -330,19 +331,19 @@ export function Wc2026GroupsView({ filter = "all", team, date, onDateChange }: {
       )}
 
       {date && wcMatchesForDate.length === 0 && (
-        <div className="mb-4 rounded-xl border border-sky-500/30 bg-sky-500/5 px-4 py-3 text-xs text-sky-200">
+        <div className="mb-4 rounded-xl border border-[var(--color-accent-mlb)]/30 bg-[var(--color-accent-mlb)]/5 px-4 py-3 text-caption text-[var(--color-accent-mlb)]">
           No matches scheduled on this date. All group fixtures still shown below — tap “Clear date” on the scrubber to dismiss.
         </div>
       )}
 
       {date && wcMatchesForDate.length > 0 && (
-        <section className="mb-6 rounded-2xl border border-sky-500/30 bg-sky-500/5 p-4">
-          <div className="flex items-center gap-2 mb-3">
-            <span className="block w-1.5 h-5 rounded-full bg-sky-400" />
-            <h3 className="text-xs font-bold uppercase tracking-[0.18em] text-sky-300">
+        <section className="mb-6 rounded-2xl border border-[var(--color-accent-mlb)]/30 bg-[var(--color-accent-mlb)]/5 p-4">
+          <div className="mb-3 flex items-center gap-2">
+            <span className="block h-5 w-1.5 rounded-full bg-[var(--color-accent-mlb)]" aria-hidden="true" />
+            <h3 className="text-micro uppercase text-[var(--color-accent-mlb)]">
               Matches on this date
             </h3>
-            <span className="text-[10px] text-sky-200/70">{wcMatchesForDate.length} fixture{wcMatchesForDate.length === 1 ? "" : "s"}</span>
+            <span className="text-micro text-[var(--color-accent-mlb)]/70">{wcMatchesForDate.length} fixture{wcMatchesForDate.length === 1 ? "" : "s"}</span>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {wcMatchesForDate.map((m, i) => (
@@ -551,11 +552,11 @@ export function Wc2026KnockoutView({ filter = "all", team, date, onDateChange }:
             {groupedKnockout.map(([round, list]) => (
               <section key={round} className="space-y-4">
                 <div className="flex items-center gap-3">
-                  <span className="block w-1.5 h-6 rounded-full bg-amber-500" />
-                  <h3 className="text-sm font-bold uppercase tracking-[0.18em] text-amber-400">
+                  <span className="block h-6 w-1.5 rounded-full bg-primary" aria-hidden="true" />
+                  <h3 className="text-micro uppercase text-primary">
                     {ROUND_LABEL[round]}
                   </h3>
-                  <span className="text-[10px] text-gray-500">{list.length} match{list.length === 1 ? "" : "es"}</span>
+                  <span className="text-micro text-muted-foreground">{list.length} match{list.length === 1 ? "" : "es"}</span>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                   {list.map((m, i) => (
@@ -579,32 +580,32 @@ export function Wc2026KnockoutView({ filter = "all", team, date, onDateChange }:
 
 
       {/* Top Scorers */}
-      <section className="rounded-2xl border border-gray-800 bg-gray-900/60 p-5">
-        <h3 className="text-sm font-bold uppercase tracking-[0.18em] text-amber-400 mb-4 flex items-center gap-2">
-          <Trophy className="size-4" /> Top Scorers
+      <section className="rounded-2xl border border-border bg-card p-5">
+        <h3 className="mb-4 flex items-center gap-2 text-micro uppercase text-primary">
+          <Trophy className="size-4" aria-hidden="true" /> Top Scorers
         </h3>
         {tQ.isLoading ? (
-          <div className="text-xs text-gray-500 py-2">Loading…</div>
+          <div className="py-2 text-caption text-muted-foreground" role="status">Loading…</div>
         ) : (tQ.data?.scorers?.length ?? 0) === 0 ? (
-          <div className="text-xs text-gray-500 py-2">
+          <div className="py-2 text-caption text-muted-foreground">
             No goals scored yet.
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1.5 text-sm">
+          <div className="grid grid-cols-1 gap-x-6 gap-y-1.5 text-caption sm:grid-cols-2">
             {tQ.data!.scorers.map((s) => (
               <div
                 key={s.playerId}
-                className="flex items-center justify-between gap-2 py-1.5 border-b border-gray-800/40"
+                className="flex items-center justify-between gap-2 border-b border-border/40 py-1.5"
               >
-                <div className="flex items-center gap-2 min-w-0">
-                  <span className="text-xs text-gray-500 w-7 tabular-nums">#{s.rank}</span>
-                  <span className="text-base leading-none">{flagOf(s.team.name)}</span>
-                  <span className="truncate font-medium text-white">{s.name}</span>
-                  <span className="text-[10px] text-gray-500 uppercase">{s.team.code}</span>
+                <div className="flex min-w-0 items-center gap-2">
+                  <span className="w-7 text-caption tabular-nums text-muted-foreground">#{s.rank}</span>
+                  <span className="text-base leading-none" aria-hidden="true">{flagOf(s.team.name)}</span>
+                  <span className="truncate font-medium text-foreground">{s.name}</span>
+                  <span className="text-micro uppercase text-muted-foreground">{s.team.code}</span>
                 </div>
-                <span className="text-amber-400 font-bold tabular-nums">
+                <span className="font-bold tabular-nums text-primary">
                   {s.goals}
-                  <span className="text-[10px] text-gray-500 ml-1">G</span>
+                  <span className="ml-1 text-micro text-muted-foreground">G</span>
                 </span>
               </div>
             ))}
@@ -620,24 +621,20 @@ export function Wc2026KnockoutView({ filter = "all", team, date, onDateChange }:
 // ──────────────────────────────────────────────────────────────
 function Spinner() {
   return (
-    <div className="flex items-center justify-center py-16 text-muted-foreground">
-      <Loader2 className="size-6 animate-spin" />
+    <div className="flex items-center justify-center py-16 text-muted-foreground" role="status">
+      <Loader2 className="size-6 animate-spin motion-reduce:animate-none" aria-hidden="true" />
     </div>
   );
 }
 function ErrBox({ msg }: { msg: string }) {
-  return (
-    <div className="rounded-xl border border-red-500/40 bg-red-500/10 p-4 text-sm text-red-200">
-      ⚠️ {msg}
-    </div>
-  );
+  return <ErrorState title="Could not load the 2026 tournament" message={msg} />;
 }
 function EmptyBox({ title, body }: { title: string; body: string }) {
   return (
-    <div className="rounded-2xl border border-dashed border-gray-800 p-12 text-center bg-gray-900/40">
-      <Trophy className="size-10 mx-auto mb-3 opacity-30" />
-      <p className="text-sm font-medium">{title}</p>
-      <p className="text-xs text-muted-foreground mt-1">{body}</p>
-    </div>
+    <EmptyState
+      title={title}
+      description={body}
+      icon={<Trophy className="size-5" aria-hidden="true" />}
+    />
   );
 }

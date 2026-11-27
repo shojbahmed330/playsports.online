@@ -67,6 +67,11 @@ describe("design system foundation", () => {
       "src/components/wc/MobileMatchCard.tsx",
       "src/components/wc/GroupStage.tsx",
       "src/components/wc/Wc2026TodayView.tsx",
+      "src/components/wc/WatchLivePanel.tsx",
+      "src/components/wc/MobileBracket.tsx",
+      "src/components/wc/MatchModal.tsx",
+      "src/components/wc/DateScrubber.tsx",
+      "src/components/wc/Wc2026View.tsx",
       "src/lib/sports-config.ts",
     ]) {
       expect(PALETTE.test(read(path)), `${path} hardcodes palette colours`).toBe(false);

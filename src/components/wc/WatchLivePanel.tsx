@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { ExternalLink, Tv, Radio, ShieldCheck, X, Play } from "lucide-react";
+import { ExternalLink, Radio, ShieldCheck } from "lucide-react";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle,
 } from "@/components/ui/dialog";
@@ -34,27 +34,30 @@ export function WatchLivePanel({ compact = false }: { compact?: boolean }) {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className={`group relative w-full overflow-hidden rounded-2xl border border-red-500/40 bg-gradient-to-r from-red-600 via-rose-600 to-amber-500 text-white font-bold shadow-[0_10px_40px_-12px_rgba(244,63,94,0.55)] hover:shadow-[0_14px_50px_-10px_rgba(244,63,94,0.75)] transition-all hover:-translate-y-0.5 active:translate-y-0 ${compact ? "py-3 px-4 text-sm" : "py-4 px-5 text-base"}`}
+        className={`group relative w-full overflow-hidden rounded-2xl border border-live/40 bg-live text-live-foreground shadow-[var(--shadow-elevated)] transition-all hover:-translate-y-0.5 hover:brightness-110 active:translate-y-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${compact ? "min-h-11 px-4 py-3 text-caption" : "min-h-11 px-5 py-4 text-body"} font-bold`}
         aria-label="Open live stream"
       >
-        <span aria-hidden className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity bg-[linear-gradient(110deg,transparent_30%,rgba(255,255,255,0.25)_50%,transparent_70%)] bg-[length:200%_100%] animate-[shimmer_1.6s_linear_infinite]" />
+        <span
+          aria-hidden="true"
+          className="absolute inset-0 opacity-0 transition-opacity group-hover:opacity-100 bg-[linear-gradient(110deg,transparent_30%,color-mix(in_oklch,var(--live-foreground)_25%,transparent)_50%,transparent_70%)] bg-[length:200%_100%] animate-[shimmer_1.6s_linear_infinite] motion-reduce:hidden"
+        />
         <span className="relative flex items-center justify-center gap-3">
           <span className="relative grid place-items-center">
-            <span className="absolute size-5 rounded-full bg-white/40 animate-ping" />
-            <Radio className="relative size-5" />
+            <span className="absolute size-5 rounded-full bg-live-foreground/40 animate-ping motion-reduce:animate-none" aria-hidden="true" />
+            <Radio className="relative size-5" aria-hidden="true" />
           </span>
-          <span className="tracking-wide uppercase">Watch Live Now</span>
-          <span className="hidden sm:inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest bg-black/30 rounded-full px-2 py-0.5">
+          <span className="uppercase tracking-wide">Watch Live Now</span>
+          <span className="hidden items-center gap-1 rounded-full bg-background/30 px-2 py-0.5 text-micro uppercase sm:inline-flex">
             Free · FIFA+
           </span>
         </span>
       </button>
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="max-w-3xl p-0 bg-black border-gray-800">
-          <DialogHeader className="px-4 pt-4 pb-2">
-            <DialogTitle className="flex items-center gap-2 text-base">
-              <Radio className="size-4 text-red-400" />
+        <DialogContent className="max-w-3xl border-border bg-background p-0">
+          <DialogHeader className="px-4 pb-2 pt-4">
+            <DialogTitle className="flex items-center gap-2 text-body">
+              <Radio className="size-4 text-live" aria-hidden="true" />
               Live Football — FIFA Official Stream
             </DialogTitle>
           </DialogHeader>
@@ -62,11 +65,11 @@ export function WatchLivePanel({ compact = false }: { compact?: boolean }) {
           {/* Embed FIFA's live YouTube channel feed. Shows whatever they
               are currently broadcasting; otherwise YouTube serves a fallback
               with related videos. 100% legal, no IPTV. */}
-          <div className="relative bg-black aspect-video w-full">
+          <div className="relative aspect-video w-full bg-background">
             <iframe
               src={`https://www.youtube.com/embed/live_stream?channel=${FIFA_CHANNEL_ID}&autoplay=1`}
               title="FIFA Live"
-              className="absolute inset-0 w-full h-full"
+              className="absolute inset-0 h-full w-full"
               allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; web-share"
               allowFullScreen
               referrerPolicy="strict-origin-when-cross-origin"
@@ -74,47 +77,47 @@ export function WatchLivePanel({ compact = false }: { compact?: boolean }) {
           </div>
 
           <div className="px-4 pb-2 pt-3">
-            <div className="flex items-center justify-between gap-2 mb-2">
-              <div className="flex items-center gap-2 text-xs text-gray-400">
-                <ShieldCheck className="size-3.5 text-emerald-400" />
-                Official broadcasters in {meta?.flag} {data.region}
+            <div className="mb-2 flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2 text-caption text-muted-foreground">
+                <ShieldCheck className="size-3.5 text-positive" aria-hidden="true" />
+                Official broadcasters in <span aria-hidden="true">{meta?.flag}</span> {data.region}
               </div>
               <CountrySelector onChange={(c) => setCc(c)} />
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-[40vh] overflow-y-auto pr-1">
+            <div className="grid max-h-[40vh] grid-cols-1 gap-2 overflow-y-auto pr-1 sm:grid-cols-2">
               {list.map((b) => (
                 <a
                   key={`${b.name}-${b.url}`}
                   href={b.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`group flex items-center justify-between gap-2 px-3 py-2 rounded-lg border text-xs transition-all ${
+                  className={`group flex min-h-11 items-center justify-between gap-2 rounded-lg border px-3 py-2 text-caption transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                     b.free
-                      ? "border-emerald-500/30 bg-emerald-500/5 hover:bg-emerald-500/10"
-                      : "border-gray-800 bg-gray-900/50 hover:bg-gray-900"
+                      ? "border-positive/30 bg-positive/5 hover:bg-positive/10"
+                      : "border-border bg-card/50 hover:bg-accent"
                   }`}
                 >
-                  <span className="flex items-center gap-2 min-w-0">
-                    <span className="text-base shrink-0">{b.logo ?? "📺"}</span>
+                  <span className="flex min-w-0 items-center gap-2">
+                    <span className="shrink-0 text-base" aria-hidden="true">{b.logo ?? "📺"}</span>
                     <span className="min-w-0">
-                      <span className="block font-medium text-white truncate">{b.name}</span>
-                      {b.note && <span className="block text-[10px] text-gray-500 truncate">{b.note}</span>}
+                      <span className="block truncate font-medium text-foreground">{b.name}</span>
+                      {b.note && <span className="block truncate text-micro text-muted-foreground">{b.note}</span>}
                     </span>
                   </span>
-                  <span className="flex items-center gap-1 shrink-0">
+                  <span className="flex shrink-0 items-center gap-1">
                     {b.free && (
-                      <span className="text-[9px] font-bold uppercase tracking-wider text-emerald-400">
+                      <span className="text-micro uppercase text-positive">
                         Free
                       </span>
                     )}
-                    <ExternalLink className="size-3 text-gray-500 group-hover:text-white" />
+                    <ExternalLink className="size-3 text-muted-foreground group-hover:text-foreground" aria-hidden="true" />
                   </span>
                 </a>
               ))}
             </div>
-            <p className="mt-3 text-[10px] text-gray-600 leading-relaxed">
+            <p className="mt-3 text-micro leading-relaxed text-muted-foreground">
               Stream is FIFA's official YouTube live feed. Region-specific links above are
-              <span className="text-emerald-400 font-medium"> licensed broadcasters</span> only — no IPTV / pirate sources.
+              <span className="font-medium text-positive"> licensed broadcasters</span> only — no IPTV / pirate sources.
             </p>
           </div>
         </DialogContent>

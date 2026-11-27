@@ -57,29 +57,30 @@ export function MobileBracket({
   return (
     <div className="md:hidden" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
       {/* Sticky round header: progress rail + chip row */}
-      <div className="sticky top-14 z-20 -mx-3 px-3 pt-2 pb-2 bg-black/85 backdrop-blur-md border-b border-white/5">
-        <div className="flex items-center gap-1.5 px-1 mb-2">
+      <div className="sticky top-14 z-20 -mx-3 border-b border-border bg-background/85 px-3 pb-2 pt-2 backdrop-blur-md">
+        <div className="mb-2 flex items-center gap-1.5 px-1">
           <button
             type="button"
             onClick={prev}
             disabled={activeIdx === 0}
             aria-label="Previous round"
-            className="grid size-6 place-items-center rounded-full text-gray-400 hover:text-amber-300 disabled:opacity-30 disabled:pointer-events-none"
+            className="grid size-11 place-items-center rounded-full text-muted-foreground transition-colors hover:text-primary disabled:pointer-events-none disabled:opacity-30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
-            <ChevronLeft className="size-4" />
+            <ChevronLeft className="size-4" aria-hidden="true" />
           </button>
           {rounds.map((r, i) => {
             const isPast = i < activeIdx;
             const isOn = i === activeIdx;
             return (
-              <div key={r.round} className="flex items-center gap-1.5 min-w-0">
+              <div key={r.round} className="flex min-w-0 items-center gap-1.5">
                 <span
-                  className={`block size-2 rounded-full shrink-0 ${
-                    isOn ? "bg-amber-400 ring-2 ring-amber-400/30" : isPast ? "bg-amber-500/40" : "bg-gray-700"
+                  className={`block size-2 shrink-0 rounded-full ${
+                    isOn ? "bg-primary ring-2 ring-primary/30" : isPast ? "bg-primary/40" : "bg-muted"
                   }`}
+                  aria-hidden="true"
                 />
                 {i < rounds.length - 1 && (
-                  <span className={`block h-px w-4 ${isPast ? "bg-amber-500/40" : "bg-gray-800"}`} />
+                  <span className={`block h-px w-4 ${isPast ? "bg-primary/40" : "bg-border"}`} aria-hidden="true" />
                 )}
               </div>
             );
@@ -89,30 +90,32 @@ export function MobileBracket({
             onClick={next}
             disabled={activeIdx === rounds.length - 1}
             aria-label="Next round"
-            className="grid size-6 place-items-center rounded-full text-gray-400 hover:text-amber-300 disabled:opacity-30 disabled:pointer-events-none"
+            className="grid size-11 place-items-center rounded-full text-muted-foreground transition-colors hover:text-primary disabled:pointer-events-none disabled:opacity-30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
-            <ChevronRight className="size-4" />
+            <ChevronRight className="size-4" aria-hidden="true" />
           </button>
-          <span className="ml-auto text-[10px] uppercase tracking-[0.18em] text-amber-400 font-bold tabular-nums">
+          <span className="ml-auto text-micro uppercase tabular-nums text-primary">
             {activeIdx + 1}/{rounds.length} · {ROUND_LABEL[active]}
           </span>
         </div>
 
-        <div className="flex gap-2 overflow-x-auto snap-x px-1 -mx-1" style={{ scrollbarWidth: "none" }}>
+        <div className="-mx-1 flex snap-x gap-2 overflow-x-auto px-1" style={{ scrollbarWidth: "none" }}>
           {rounds.map(({ round, matches }) => {
             const isActive = round === active;
             return (
               <button
                 key={round}
+                type="button"
+                aria-pressed={isActive}
                 onClick={() => setActive(round)}
-                className={`snap-center shrink-0 px-3 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wider transition-all ${
+                className={`inline-flex min-h-11 shrink-0 snap-center items-center rounded-full px-3 text-micro font-bold uppercase transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                   isActive
-                    ? "bg-gradient-to-r from-amber-500 to-amber-600 text-black shadow-md shadow-amber-500/30"
-                    : "bg-gray-900 text-gray-400 ring-1 ring-gray-800"
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-muted text-muted-foreground ring-1 ring-border hover:text-foreground"
                 }`}
               >
                 {ROUND_LABEL[round]}
-                <span className={`ml-1 text-[9px] ${isActive ? "text-black/70" : "text-gray-600"}`}>
+                <span className={`ml-1 text-micro ${isActive ? "text-primary-foreground/70" : "text-muted-foreground"}`}>
                   {matches.length}
                 </span>
               </button>
@@ -123,20 +126,20 @@ export function MobileBracket({
 
       {stage && (
         <>
-          <div className="text-center my-3">
-            <div className="text-[10px] uppercase tracking-widest text-gray-500">
+          <div className="my-3 text-center">
+            <div className="text-micro uppercase text-muted-foreground">
               {ROUND_FULL[stage.round]}
             </div>
-            <div className="text-[10px] text-gray-600 mt-0.5">
+            <div className="mt-0.5 text-micro text-muted-foreground">
               {stage.matches.length} match{stage.matches.length === 1 ? "" : "es"} · swipe ← → to change round
             </div>
           </div>
-          <div className="space-y-3 relative">
+          <div className="relative space-y-3">
             {stage.matches.map((m, i) => (
               <div key={m.id} className="relative">
                 <MobileMatchCard match={m} onClick={() => onPick(m)} />
                 {i < stage.matches.length - 1 && (
-                  <div className="absolute left-1/2 -bottom-2 w-px h-2 bg-gray-700" />
+                  <div className="absolute -bottom-2 left-1/2 h-2 w-px bg-border" aria-hidden="true" />
                 )}
               </div>
             ))}
