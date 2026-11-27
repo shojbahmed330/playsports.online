@@ -12,3 +12,6 @@ One line each. BREAKING-RISK entries need review before merge.
 | 6 | Preserve existing route URLs and public API contracts. | SEO/sitemap stability; any change needs a BREAKING-RISK entry. | none |
 | 7 | Dark theme only for now. | It is the existing design; tokens remain light-ready. | none |
 | 8 | Replace TanStack's default search serialiser with plain scalar values, while still parsing JSON-quoted/array values. | Default produced `?leagueId=%228043%22`; plain URLs are shareable and match canonical. Old quoted URLs still parse. | Low: a schema expecting a number must use `z.coerce` (IPL year already does). |
+| 9 | Render `SportNav` once from `src/routes/football.tsx` and remove per-page copies. | Every football child route was missing the header; one layout copy prevents duplicates and keeps navigation on programmatic pages. | Low: competition shell no longer renders its own header; URLs/contracts unchanged. |
+| 10 | Keep a single `id="main-content"` on the root wrapper and remove page-level duplicates. | Duplicate IDs invalidate the skip link; root wrapper is always present. | Low: page-level `<main>` elements keep their semantics but no longer own the skip target. |
+| 11 | Correct stale 2026 future-tense copy to past tense after the tournament window. | Today is Nov 2026; “will be played” was factually wrong. | None; venue/result facts unchanged. |
