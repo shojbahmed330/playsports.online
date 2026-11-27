@@ -246,6 +246,11 @@
 - Fixed: match dates mount-gated; feed errors retryable; shared empty/error/not-found states; 44 px H2H/back links, focus rings, reduced-motion spinner; removed duplicate season label from the title.
 - Kept: season summary and match list.
 
+## FB-06 football competition match
+
+- Fixed: kickoff time mount-gated; feed errors retryable; shared empty/error/not-found states; hidden/reduced-motion spinner and icons; 44 px back/H2H links.
+- Kept: scoreboard, goals, officials and H2H link.
+
 ## Foundation
 
 - Added overhaul documentation: `PROJECT_NOTES.md`, `HEALTH_BASELINE.md`, `SCREEN_INVENTORY.md`, `DESIGN_SYSTEM.md`, `PROGRESS.md`, `DECISIONS.md`, `BLOCKERS.md`, `SECURITY_FINDINGS.md`.
