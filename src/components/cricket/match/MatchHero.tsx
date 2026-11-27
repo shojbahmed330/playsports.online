@@ -67,7 +67,11 @@ export function MatchHero({ match }: { match: CricketMatch }) {
         </div>
 
         {/* team score rows */}
-        <div className="mt-5 grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div
+          className="mt-5 grid grid-cols-1 md:grid-cols-2 gap-3"
+          aria-live={isLive ? "polite" : undefined}
+          aria-atomic="true"
+        >
           <TeamScoreRow t={match.home} score={homeScore} won={match.home.winner === true} />
           <TeamScoreRow t={match.away} score={awayScore} won={match.away.winner === true} />
         </div>

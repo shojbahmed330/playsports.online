@@ -134,7 +134,11 @@ function CricketScoresPage() {
   // server render and the first client render agree; the live tab, which is
   // the default, still renders fully on the server.
   const [todayIso, setTodayIso] = useState("");
-  useEffect(() => setTodayIso(isoDate(new Date())), []);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+    setTodayIso(isoDate(new Date()));
+  }, []);
   const dateStrip = useMemo(() => (todayIso ? buildDateStrip() : []), [todayIso]);
   const effectiveDate = date || (tab === "today" ? todayIso : "");
 
@@ -237,7 +241,7 @@ function CricketScoresPage() {
                 Cricket — Live, today, upcoming & results
               </h1>
             </div>
-            {q.isFetching && !q.isLoading && (
+            {mounted && q.isFetching && !q.isLoading && (
               <span className="shrink-0 text-[10px] text-emerald-200/70 inline-flex items-center gap-1.5">
                 <span className="size-1.5 rounded-full bg-amber-400 animate-pulse motion-reduce:animate-none" />{" "}
                 Updating…

@@ -11,3 +11,4 @@ One line each. BREAKING-RISK entries need review before merge.
 | 5 | Prefer `bun audit fix` within semver for vulnerabilities; no major upgrades without a dedicated check. | Mission forbids risky dependency changes; build must stay green. | none |
 | 6 | Preserve existing route URLs and public API contracts. | SEO/sitemap stability; any change needs a BREAKING-RISK entry. | none |
 | 7 | Dark theme only for now. | It is the existing design; tokens remain light-ready. | none |
+| 8 | Replace TanStack's default search serialiser with plain scalar values, while still parsing JSON-quoted/array values. | Default produced `?leagueId=%228043%22`; plain URLs are shareable and match canonical. Old quoted URLs still parse. | Low: a schema expecting a number must use `z.coerce` (IPL year already does). |

@@ -20,6 +20,12 @@
 - Added: shared empty state with Reset filters.
 - Kept: tabs, date strip, series/format filters, grouped match cards, canonical.
 
+## CRK-13 Cricket match detail
+
+- Fixed: canonical keeps non-default `leagueId`; missing match no longer prints raw server errors; branded not-found; live score region announced; 44 px CTAs.
+- Added: validated search via `zodValidator`, friendly retry state.
+- Global: cleaned search URLs (`?leagueId=8043` instead of `%228043%22`) while accepting old links.
+
 ## Foundation
 
 - Added overhaul documentation: `PROJECT_NOTES.md`, `HEALTH_BASELINE.md`, `SCREEN_INVENTORY.md`, `DESIGN_SYSTEM.md`, `PROGRESS.md`, `DECISIONS.md`, `BLOCKERS.md`, `SECURITY_FINDINGS.md`.

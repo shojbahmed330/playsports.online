@@ -4,6 +4,7 @@ import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { z } from "zod";
+import { zodValidator } from "@tanstack/zod-adapter";
 import { SportNav } from "@/components/sports/SportNav";
 import { CricketPlayerSheet } from "@/components/cricket/CricketPlayerSheet";
 import { getCricketMatchDetail } from "@/lib/cricket.functions";
@@ -18,6 +19,7 @@ import { ScorecardTab } from "@/components/cricket/match/ScorecardTab";
 import { CommentaryTab } from "@/components/cricket/match/CommentaryTab";
 import { InfoTab } from "@/components/cricket/match/InfoTab";
 import { MatchFaqBlock } from "@/components/seo/MatchFaqBlock";
+import { EmptyState, ErrorState } from "@/components/ui/state";
 
 const searchSchema = z.object({
   leagueId: z.string().default("8048"),
@@ -31,19 +33,27 @@ const detailOpts = (leagueId: string, eventId: string) =>
   });
 
 export const Route = createFileRoute("/cricket/match/$id")({
-  validateSearch: searchSchema,
+  validateSearch: zodValidator(searchSchema),
   loaderDeps: ({ search }) => ({ leagueId: search.leagueId }),
   loader: async ({ params, deps, context }) => {
     try {
-      return await context.queryClient.ensureQueryData(detailOpts(deps.leagueId, params.id));
+      const data = await context.queryClient.ensureQueryData(detailOpts(deps.leagueId, params.id));
+      return { ...data, leagueId: deps.leagueId };
     } catch {
-      return { match: null, innings: [], commentary: [], error: null } as unknown as Awaited<
-        ReturnType<typeof getCricketMatchDetail>
-      >;
+      return {
+        match: null,
+        innings: [],
+        commentary: [],
+        error: null,
+        leagueId: deps.leagueId,
+      } as unknown as Awaited<ReturnType<typeof getCricketMatchDetail>> & { leagueId: string };
     }
   },
   head: ({ params, loaderData }) => {
-    const url = `https://www.playsports.online/cricket/match/${params.id}`;
+    const leagueId = (loaderData as { leagueId?: string } | undefined)?.leagueId ?? "8048";
+    const url = `https://www.playsports.online/cricket/match/${params.id}${
+      leagueId !== "8048" ? `?leagueId=${encodeURIComponent(leagueId)}` : ""
+    }`;
     const m = loaderData?.match;
     let title = "Live Cricket Scorecard — PlaySports";
     let desc = "Live cricket scorecard, batting and bowling figures, commentary and lineups.";
@@ -121,7 +131,31 @@ export const Route = createFileRoute("/cricket/match/$id")({
     </div>
   ),
   notFoundComponent: () => (
-    <div className="min-h-screen grid place-items-center p-6 text-center">Match not found.</div>
+    <div className="min-h-screen">
+      <SportNav />
+      <div className="mx-auto max-w-3xl px-4 py-10">
+        <EmptyState
+          title="Match not found"
+          description="This match may have finished and moved, or the link is incomplete."
+          action={
+            <>
+              <Link
+                to="/cricket/scores"
+                className="inline-flex min-h-11 items-center rounded-full bg-emerald-500/15 px-4 text-sm font-bold text-emerald-200 ring-1 ring-emerald-500/30"
+              >
+                Cricket scores
+              </Link>
+              <Link
+                to="/cricket"
+                className="inline-flex min-h-11 items-center rounded-full border border-border px-4 text-sm font-semibold text-foreground"
+              >
+                Cricket hub
+              </Link>
+            </>
+          }
+        />
+      </div>
+    </div>
   ),
 });
 
@@ -148,15 +182,20 @@ function MatchPage() {
     return (
       <div className="min-h-screen">
         <SportNav />
-        <div className="max-w-5xl mx-auto px-4 py-12 text-center">
-          <p className="text-sm">Match data unavailable.</p>
-          <p className="text-xs text-muted-foreground mt-1">{q.data?.error}</p>
-          <Link
-            to="/cricket"
-            className="mt-4 inline-block text-emerald-400 hover:underline text-sm"
-          >
-            ← Back to cricket
-          </Link>
+        <div className="mx-auto max-w-3xl px-4 py-10">
+          <ErrorState
+            title="Match unavailable"
+            message="The match feed did not return this scorecard. It may have been removed, or the link may be incomplete."
+            onRetry={() => void q.refetch()}
+          />
+          <div className="mt-4 text-center">
+            <Link
+              to="/cricket/scores"
+              className="inline-flex min-h-11 items-center gap-1 rounded-full border border-border px-4 text-sm font-semibold text-foreground hover:bg-white/5"
+            >
+              Browse cricket scores
+            </Link>
+          </div>
         </div>
       </div>
     );
