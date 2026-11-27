@@ -10,6 +10,8 @@ import { Copa2024GroupsSnapshot } from "@/components/football/Copa2024GroupsSnap
 import { Copa2024KnockoutBracket } from "@/components/football/Copa2024KnockoutBracket";
 import { buildCompetitionHead } from "@/lib/competition-head";
 import { Loader2 } from "lucide-react";
+import { EmptyState, ErrorState } from "@/components/ui/state";
+import { errorMessage } from "@/lib/error-message";
 
 export const Route = createFileRoute("/football/$comp/standings")({
   loader: async ({ params, context }) => {
@@ -37,15 +39,25 @@ export const Route = createFileRoute("/football/$comp/standings")({
       const desc =
         "Copa América group standings and knockout path — live table when the tournament is on, plus the definitive 2024 group tables and bracket.";
       head.meta = (head.meta ?? []).map((m: any) =>
-        m?.name === "description" || m?.property === "og:description"
-          ? { ...m, content: desc }
-          : m,
+        m?.name === "description" || m?.property === "og:description" ? { ...m, content: desc } : m,
       );
     }
     return head;
   },
   component: StandingsPage,
-  notFoundComponent: () => <div className="p-10 text-center">Competition not found.</div>,
+  errorComponent: ({ error, reset }) => (
+    <div className="mx-auto max-w-3xl px-4 py-10">
+      <ErrorState title="Could not load standings" message={errorMessage(error)} onRetry={reset} />
+    </div>
+  ),
+  notFoundComponent: () => (
+    <div className="mx-auto max-w-3xl px-4 py-10">
+      <EmptyState
+        title="Competition not found"
+        description="This competition is not in the football directory."
+      />
+    </div>
+  ),
 });
 
 function StandingsPage() {
@@ -65,9 +77,20 @@ function StandingsPage() {
     return (
       <CompetitionPageShell comp={comp}>
         <CopaStandingsHero live={hasLive} />
-        {q.isLoading ? (
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Loader2 className="size-4 animate-spin" /> Loading standings…
+        {q.isError ? (
+          <ErrorState
+            title="Could not load standings"
+            message={errorMessage(q.error)}
+            onRetry={() => void q.refetch()}
+            className="border-white/10 bg-white/[0.02]"
+          />
+        ) : q.isLoading ? (
+          <div role="status" className="flex items-center gap-2 text-sm text-muted-foreground">
+            <Loader2
+              aria-hidden="true"
+              className="size-4 animate-spin motion-reduce:animate-none"
+            />{" "}
+            Loading standings…
           </div>
         ) : hasLive ? (
           <CompetitionStandingsTable groups={groups} compSlug={comp.slug} />
@@ -81,25 +104,39 @@ function StandingsPage() {
     );
   }
 
-  const showFallback =
-    !q.isLoading && comp.kind === "tournament" && groups.length === 0;
+  const showFallback = !q.isLoading && comp.kind === "tournament" && groups.length === 0;
 
   return (
     <CompetitionPageShell comp={comp}>
       <h2 className="text-lg sm:text-xl font-bold mb-4">
         {comp.kind === "league" ? "League Table" : "Group Standings"}
       </h2>
-      {q.isLoading ? (
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <Loader2 className="size-4 animate-spin" /> Loading standings…
+      {q.isError ? (
+        <ErrorState
+          title="Could not load standings"
+          message={errorMessage(q.error)}
+          onRetry={() => void q.refetch()}
+          className="border-white/10 bg-white/[0.02]"
+        />
+      ) : q.isLoading ? (
+        <div role="status" className="flex items-center gap-2 text-sm text-muted-foreground">
+          <Loader2 aria-hidden="true" className="size-4 animate-spin motion-reduce:animate-none" />{" "}
+          Loading standings…
         </div>
       ) : showFallback ? (
         <div>
           <p className="mb-4 text-sm text-muted-foreground">
-            The next {comp.shortName} tournament hasn&apos;t started yet, so there&apos;s no live table. Here&apos;s the last completed edition:
+            The next {comp.shortName} tournament hasn&apos;t started yet, so there&apos;s no live
+            table. Here&apos;s the last completed edition:
           </p>
           <LastEditionRecap comp={comp} />
         </div>
+      ) : groups.length === 0 ? (
+        <EmptyState
+          title="No standings available"
+          description="The table appears once this competition has played matches."
+          className="border-white/10 bg-white/[0.02]"
+        />
       ) : (
         <CompetitionStandingsTable groups={groups} compSlug={comp.slug} />
       )}

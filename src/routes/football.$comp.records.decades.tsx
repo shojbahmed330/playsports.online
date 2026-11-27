@@ -3,6 +3,8 @@ import { getCompetition, requireCompetition, formatSeasonLabel } from "@/lib/com
 import { CompetitionPageShell } from "@/components/football/CompetitionPageShell";
 import { buildCompetitionHead } from "@/lib/competition-head";
 import { editionsByDecade } from "@/lib/competition-history";
+import { EmptyState, ErrorState } from "@/components/ui/state";
+import { errorMessage } from "@/lib/error-message";
 
 export const Route = createFileRoute("/football/$comp/records/decades")({
   loader: ({ params }) => {
@@ -12,7 +14,8 @@ export const Route = createFileRoute("/football/$comp/records/decades")({
   },
   head: ({ params, loaderData }) => {
     const comp = loaderData?.comp ?? getCompetition(params.comp);
-    if (!comp) return { meta: [{ title: "Records by decade" }, { name: "robots", content: "noindex" }] };
+    if (!comp)
+      return { meta: [{ title: "Records by decade" }, { name: "robots", content: "noindex" }] };
     return buildCompetitionHead({
       comp,
       section: "Records by Decade",
@@ -21,7 +24,31 @@ export const Route = createFileRoute("/football/$comp/records/decades")({
     });
   },
   component: DecadesPage,
-  notFoundComponent: () => <div className="p-10 text-center">Competition not found.</div>,
+  errorComponent: ({ error, reset }) => (
+    <div className="mx-auto max-w-3xl px-4 py-10">
+      <ErrorState
+        title="Could not load records by decade"
+        message={errorMessage(error)}
+        onRetry={reset}
+      />
+    </div>
+  ),
+  notFoundComponent: () => (
+    <div className="mx-auto max-w-3xl px-4 py-10">
+      <EmptyState
+        title="Competition not found"
+        description="This competition is not in the football directory."
+        action={
+          <Link
+            to="/football"
+            className="inline-flex min-h-11 items-center rounded-full bg-primary/15 px-4 text-sm font-bold text-primary ring-1 ring-primary/30"
+          >
+            Back to football
+          </Link>
+        }
+      />
+    </div>
+  ),
 });
 
 function DecadesPage() {
@@ -35,7 +62,7 @@ function DecadesPage() {
         <Link
           to="/football/$comp/records"
           params={{ comp: comp.slug }}
-          className="text-muted-foreground hover:text-foreground underline underline-offset-4"
+          className="inline-flex min-h-11 items-center text-muted-foreground hover:text-foreground underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           ← All {comp.shortName} records
         </Link>
@@ -46,9 +73,10 @@ function DecadesPage() {
       </p>
 
       {decades.length === 0 ? (
-        <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-6 py-10 text-center text-sm text-muted-foreground">
-          No historical editions available yet.
-        </div>
+        <EmptyState
+          title="No historical editions available"
+          description="Decade roll-ups will appear once this competition has recorded editions."
+        />
       ) : (
         <ul className="grid gap-4">
           {decades.map((d) => (
@@ -89,7 +117,7 @@ function DecadesPage() {
                     key={e.year}
                     to="/football/$comp/history/$year"
                     params={{ comp: comp.slug, year: String(e.year) }}
-                    className="rounded-lg border border-white/10 bg-white/[0.02] hover:border-white/25 hover:bg-white/[0.06] px-3 py-1.5 text-xs"
+                    className="inline-flex min-h-11 items-center rounded-lg border border-white/10 bg-white/[0.02] hover:border-white/25 hover:bg-white/[0.06] px-3 py-1.5 text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   >
                     <span className="tabular-nums font-semibold">
                       {formatSeasonLabel(comp, e.year)}

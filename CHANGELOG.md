@@ -194,6 +194,11 @@
 - Added: OG site name/Twitter meta.
 - Kept: year/all-time modes, FAQ JSON-LD and year nav.
 
+## FB-09 / FB-10 / FB-14 football competition pages
+
+- Fixed: shared retryable error, not-found and empty states; 44 px back/edition links with focus rings; reduced-motion spinner.
+- Kept: record categories, decade roll-ups, standings/Copa fallbacks and competition head.
+
 ## Foundation
 
 - Added overhaul documentation: `PROJECT_NOTES.md`, `HEALTH_BASELINE.md`, `SCREEN_INVENTORY.md`, `DESIGN_SYSTEM.md`, `PROGRESS.md`, `DECISIONS.md`, `BLOCKERS.md`, `SECURITY_FINDINGS.md`.

@@ -3,10 +3,10 @@
 Updated: 2026-11-27 (session 1 closed with a logged resource blocker)
 
 - Branch: `professional-overhaul` (never pushed)
-- Current phase: **session 2 — football programmatic hubs**
-- Current screen: none active — session capacity reached
-- Screens done: **34 / 150**
-- Screens blocked: **116** (resource, see `BLOCKERS.md`)
+- Current phase: **session 2 — football competition pages**
+- Current screen: FB-04 competition history index
+- Screens done: **37 / 150**
+- Screens blocked: **113** (resource, see `BLOCKERS.md`)
 - Screens in progress: 0
 
 ## Completed
