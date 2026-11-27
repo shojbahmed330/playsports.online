@@ -2,14 +2,21 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { listCricketHighlights } from "@/lib/seo/cricket-entities";
 import { canonical } from "@/lib/seo/canonical";
-import {
-  breadcrumbList,
-  collectionPage,
-  itemList,
-  ldScript,
-} from "@/lib/seo/jsonld";
+import { breadcrumbList, collectionPage, itemList, ldScript } from "@/lib/seo/jsonld";
 import { SportNav } from "@/components/sports/SportNav";
 import { CricketSubNav } from "@/components/cricket/CricketSubNav";
+import { EmptyState } from "@/components/ui/state";
+
+function formatDate(iso: string): string {
+  const d = new Date(`${iso}T00:00:00Z`);
+  if (Number.isNaN(d.getTime())) return iso;
+  return d.toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    timeZone: "UTC",
+  });
+}
 
 export const Route = createFileRoute("/cricket/highlights/")({
   head: () => {
@@ -30,12 +37,18 @@ export const Route = createFileRoute("/cricket/highlights/")({
             "Full match highlights from every major ICC final, IPL final and classic Test match.",
         },
         { property: "og:url", content: url },
-      { property: "og:type", content: "website" },
-      { property: "og:site_name", content: "PlaySports" },
-      { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Cricket Highlights — World Cup, T20 WC, IPL Finals & Classics" },
-      { name: "twitter:description", content: "Watch highlights from cricket's most iconic matches: ICC Cricket World Cup finals, T20 World Cup finals, Champions Trophy, IPL finals and classic Test matches." },
-    
+        { property: "og:type", content: "website" },
+        { property: "og:site_name", content: "PlaySports" },
+        { name: "twitter:card", content: "summary_large_image" },
+        {
+          name: "twitter:title",
+          content: "Cricket Highlights — World Cup, T20 WC, IPL Finals & Classics",
+        },
+        {
+          name: "twitter:description",
+          content:
+            "Watch highlights from cricket's most iconic matches: ICC Cricket World Cup finals, T20 World Cup finals, Champions Trophy, IPL finals and classic Test matches.",
+        },
       ],
       links: [{ rel: "canonical", href: url }],
       scripts: [
@@ -84,11 +97,15 @@ function HighlightsHub() {
     <div className="min-h-screen bg-background text-foreground">
       <SportNav />
       <CricketSubNav />
-      <main className="max-w-5xl mx-auto px-4 py-6 sm:py-10">
+      <main id="main-content" className="max-w-5xl mx-auto px-4 py-6 sm:py-10">
         <nav className="text-xs text-muted-foreground mb-4" aria-label="Breadcrumb">
-          <Link to="/" className="hover:underline">Home</Link>
+          <Link to="/" className="hover:underline">
+            Home
+          </Link>
           <span className="mx-1">/</span>
-          <Link to="/cricket" className="hover:underline">Cricket</Link>
+          <Link to="/cricket" className="hover:underline">
+            Cricket
+          </Link>
           <span className="mx-1">/</span>
           <span className="text-foreground">Highlights</span>
         </nav>
@@ -97,6 +114,13 @@ function HighlightsHub() {
         <p className="text-sm text-muted-foreground mb-8">
           Full-match highlights from every major ICC final, IPL final and classic Test match.
         </p>
+
+        {groups.size === 0 && (
+          <EmptyState
+            title="No highlights available"
+            description="Classic match highlights will appear here as they are added."
+          />
+        )}
 
         {Array.from(groups.entries()).map(([tournament, items]) => (
           <section key={tournament} className="mb-8">
@@ -110,13 +134,13 @@ function HighlightsHub() {
                     key={h.slug}
                     to="/cricket/highlights/$slug"
                     params={{ slug: h.slug }}
-                    className="rounded-lg border border-border bg-card p-4 hover:bg-muted/60"
+                    className="rounded-lg border border-border bg-card p-4 hover:bg-muted/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   >
-                    <p className="font-medium">
+                    <h3 className="font-medium">
                       {h.teamA} vs {h.teamB}
-                    </p>
+                    </h3>
                     <p className="text-xs text-muted-foreground mt-1">
-                      {h.stage} · {h.venue} · {h.date}
+                      {h.stage} · {h.venue} · {formatDate(h.date)}
                     </p>
                     <p className="text-xs text-muted-foreground mt-1">{h.result}</p>
                   </Link>
