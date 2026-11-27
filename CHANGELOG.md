@@ -14,6 +14,12 @@
 - Removed: local `Section` markup, hardcoded empty box, unused `now` field.
 - Fixed: SSR slate (`ensureQueryData`), feed error + Retry, shared empty state, 44 px “See all” links, reduced-motion live dots.
 
+## CRK-19 Cricket scores
+
+- Fixed: SSR live tab, error retry, dead series links, hydration-safe local today, 44 px filters/date buttons, reduced motion.
+- Added: shared empty state with Reset filters.
+- Kept: tabs, date strip, series/format filters, grouped match cards, canonical.
+
 ## Foundation
 
 - Added overhaul documentation: `PROJECT_NOTES.md`, `HEALTH_BASELINE.md`, `SCREEN_INVENTORY.md`, `DESIGN_SYSTEM.md`, `PROGRESS.md`, `DECISIONS.md`, `BLOCKERS.md`, `SECURITY_FINDINGS.md`.

@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, Link, stripSearchParams } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -12,6 +12,7 @@ import { CricketMatchCard } from "@/components/cricket/CricketMatchCard";
 import { getMultiCricketToday, type CricketMatch } from "@/lib/cricket.functions";
 import { CRICKET_LEAGUES, FORMAT_META } from "@/lib/cricket-leagues";
 import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
+import { EmptyState, ErrorState } from "@/components/ui/state";
 
 import { withHubLinks } from "@/components/seo/withHubLinks";
 type Tab = "live" | "today" | "upcoming" | "results";
@@ -28,6 +29,17 @@ export const Route = createFileRoute("/cricket/scores")({
   validateSearch: zodValidator(searchSchema),
   search: {
     middlewares: [stripSearchParams({ tab: "live", date: "", league: "all", fmt: "any" })],
+  },
+  loader: async ({ context }) => {
+    const leagueIds = CRICKET_LEAGUES.map((l) => l.id);
+    await context.queryClient
+      .ensureQueryData({
+        queryKey: ["cricket", "scores", leagueIds.join(",")],
+        queryFn: () => getMultiCricketToday({ data: { leagueIds } }),
+        staleTime: 20_000,
+      })
+      .catch(() => null);
+    return null;
   },
   head: () => ({
     meta: [
@@ -118,8 +130,13 @@ function CricketScoresPage() {
 
   const allMatches = q.data?.matches ?? [];
   const liveAll = allMatches.filter((m) => m.status === "in").length;
-  const dateStrip = useMemo(buildDateStrip, []);
-  const effectiveDate = date || (tab === "today" ? isoDate(new Date()) : "");
+  // "Today" depends on the viewer's timezone. Compute it after mount so the
+  // server render and the first client render agree; the live tab, which is
+  // the default, still renders fully on the server.
+  const [todayIso, setTodayIso] = useState("");
+  useEffect(() => setTodayIso(isoDate(new Date())), []);
+  const dateStrip = useMemo(() => (todayIso ? buildDateStrip() : []), [todayIso]);
+  const effectiveDate = date || (tab === "today" ? todayIso : "");
 
   const filtered = useMemo(() => {
     let m = allMatches;
@@ -185,7 +202,7 @@ function CricketScoresPage() {
       id: "today",
       label: "Today",
       icon: <Calendar className="size-3.5" />,
-      count: allMatches.filter((m) => sameDay(m.startTs, isoDate(new Date()))).length,
+      count: allMatches.filter((m) => sameDay(m.startTs, todayIso)).length,
       tone: "from-emerald-500 to-teal-500",
     },
     {
@@ -222,7 +239,8 @@ function CricketScoresPage() {
             </div>
             {q.isFetching && !q.isLoading && (
               <span className="shrink-0 text-[10px] text-emerald-200/70 inline-flex items-center gap-1.5">
-                <span className="size-1.5 rounded-full bg-amber-400 animate-pulse" /> Updating…
+                <span className="size-1.5 rounded-full bg-amber-400 animate-pulse motion-reduce:animate-none" />{" "}
+                Updating…
               </span>
             )}
           </div>
@@ -244,12 +262,12 @@ function CricketScoresPage() {
                       }) => ({
                         ...prev,
                         tab: t.id,
-                        date: t.id === "today" ? isoDate(new Date()) : "",
+                        date: t.id === "today" ? todayIso || isoDate(new Date()) : "",
                       }),
                     })
                   }
                   className={[
-                    "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold ring-1 transition-all",
+                    "inline-flex items-center gap-1.5 min-h-11 sm:min-h-8 px-3 py-1.5 rounded-full text-xs font-bold ring-1 transition-all",
                     active
                       ? `bg-gradient-to-r ${t.tone} text-white ring-white/20 shadow-[0_6px_18px_-6px_rgba(0,0,0,0.5)]`
                       : "bg-white/[0.04] hover:bg-white/[0.09] text-gray-300 ring-white/10",
@@ -285,7 +303,7 @@ function CricketScoresPage() {
                       }) => ({ ...prev, date: isoDate(cur), tab: "upcoming" }),
                     });
                   }}
-                  className="shrink-0 size-8 rounded-full grid place-items-center bg-white/[0.06] hover:bg-white/[0.12] ring-1 ring-white/10"
+                  className="shrink-0 size-11 rounded-full grid place-items-center bg-white/[0.06] hover:bg-white/[0.12] ring-1 ring-white/10"
                 >
                   <ChevronLeft className="size-4" />
                 </button>
@@ -307,7 +325,7 @@ function CricketScoresPage() {
                             })
                           }
                           className={[
-                            "flex flex-col items-center min-w-[56px] px-2.5 py-1.5 rounded-xl ring-1 transition-all",
+                            "flex flex-col items-center min-h-12 min-w-[56px] px-2.5 py-1.5 rounded-xl ring-1 transition-all",
                             active
                               ? "bg-gradient-to-b from-emerald-500 to-emerald-700 ring-emerald-300/40 text-white shadow-[0_6px_18px_-6px_rgba(16,185,129,0.55)]"
                               : d.isToday
@@ -338,7 +356,7 @@ function CricketScoresPage() {
                       }) => ({ ...prev, date: isoDate(cur), tab: "upcoming" }),
                     });
                   }}
-                  className="shrink-0 size-8 rounded-full grid place-items-center bg-white/[0.06] hover:bg-white/[0.12] ring-1 ring-white/10"
+                  className="shrink-0 size-11 rounded-full grid place-items-center bg-white/[0.06] hover:bg-white/[0.12] ring-1 ring-white/10"
                 >
                   <ChevronRight className="size-4" />
                 </button>
@@ -417,7 +435,7 @@ function CricketScoresPage() {
                     })
                   }
                   className={[
-                    "inline-flex items-center px-2.5 py-1.5 rounded-full text-[11px] font-bold ring-1 transition-all",
+                    "inline-flex items-center min-h-11 sm:min-h-8 px-2.5 py-1.5 rounded-full text-[11px] font-bold ring-1 transition-all",
                     active
                       ? `${meta.color} ring-1`
                       : "bg-white/[0.04] hover:bg-white/[0.09] text-gray-300 ring-white/10",
@@ -432,46 +450,60 @@ function CricketScoresPage() {
       </section>
 
       <main id="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-8">
-        {q.isLoading ? (
+        {q.isError ? (
+          <ErrorState
+            title="Cricket scores are temporarily unavailable"
+            message="The score feed did not respond. Check your connection and try again."
+            onRetry={() => void q.refetch()}
+          />
+        ) : q.isLoading ? (
           <GameGridSkeleton />
         ) : groups.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-gray-800 p-12 text-center bg-gray-900/40">
-            <Calendar className="mx-auto size-10 opacity-30 mb-3" />
-            <p className="text-sm font-medium">No matches in this slice</p>
-            <p className="text-xs text-muted-foreground mt-1">
-              Try a different tab, date or filter.
-            </p>
-            <Link
-              to="/cricket"
-              className="mt-4 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/15 ring-1 ring-emerald-500/30 text-emerald-200 text-xs font-bold"
-            >
-              Back to Cricket Hub
-            </Link>
-          </div>
+          <EmptyState
+            icon={<Calendar className="size-5" aria-hidden="true" />}
+            title="No matches in this slice"
+            description="Try a different tab, date or series filter."
+            action={
+              <Link
+                to="/cricket/scores"
+                className="inline-flex min-h-11 items-center rounded-full bg-emerald-500/15 px-4 text-sm font-bold text-emerald-200 ring-1 ring-emerald-500/30 hover:bg-emerald-500/25"
+              >
+                Reset filters
+              </Link>
+            }
+          />
         ) : (
-          groups.map((g) => (
-            <section key={g.leagueId} className="space-y-3">
-              <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
-                <h2 className="text-sm sm:text-base font-bold text-white truncate">
-                  <span className="text-amber-300">●</span>{" "}
-                  {g.leagueName || g.leagueAbbr || "Cricket"}
-                  <span className="ml-2 text-xs text-gray-500 font-normal">({g.items.length})</span>
-                </h2>
-                <Link
-                  to="/cricket/series/$id"
-                  params={{ id: g.leagueId }}
-                  className="shrink-0 text-[11px] font-bold text-emerald-300 hover:text-emerald-200 inline-flex items-center gap-0.5"
-                >
-                  Series page <ChevronRight className="size-3" />
-                </Link>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                {g.items.map((m) => (
-                  <CricketMatchCard key={m.id} match={m} />
-                ))}
-              </div>
-            </section>
-          ))
+          groups.map((g) => {
+            const seriesId =
+              g.leagueId && g.leagueId !== "_" && g.leagueId !== "global" ? g.leagueId : null;
+            return (
+              <section key={g.leagueId || g.leagueName || "cricket"} className="space-y-3">
+                <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
+                  <h2 className="text-sm sm:text-base font-bold text-white truncate">
+                    <span className="text-amber-300">●</span>{" "}
+                    {g.leagueName || g.leagueAbbr || "Cricket"}
+                    <span className="ml-2 text-xs text-muted-foreground font-normal">
+                      ({g.items.length})
+                    </span>
+                  </h2>
+                  {seriesId && (
+                    <Link
+                      to="/cricket/series/$id"
+                      params={{ id: seriesId }}
+                      className="inline-flex min-h-11 shrink-0 items-center gap-0.5 px-2 text-xs font-bold text-emerald-300 hover:text-emerald-200"
+                    >
+                      Series page <ChevronRight className="size-3" />
+                    </Link>
+                  )}
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                  {g.items.map((m) => (
+                    <CricketMatchCard key={m.id} match={m} />
+                  ))}
+                </div>
+              </section>
+            );
+          })
         )}
       </main>
     </div>
