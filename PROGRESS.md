@@ -3,10 +3,10 @@
 Updated: 2026-11-27 (session 1 closed with a logged resource blocker)
 
 - Branch: `professional-overhaul` (never pushed)
-- Current phase: **session 2 — auth complete; next admin/util**
-- Current screen: ADMIN-01 admin console
-- Screens done: **67 / 150**
-- Screens blocked: **83** (resource, see `BLOCKERS.md`)
+- Current phase: **session 2 — admin complete; next util**
+- Current screen: UTIL-01 about
+- Screens done: **68 / 150**
+- Screens blocked: **82** (resource, see `BLOCKERS.md`)
 - Screens in progress: 0
 
 ## Completed

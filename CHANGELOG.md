@@ -336,6 +336,11 @@
 - Fixed: session-check loading state; inline `role="alert"` error with `aria-invalid`/`aria-describedby`; busy label; hidden icons; 44 px controls/focus rings; primary token button; OG site name.
 - Kept: email/password sign-in, success toast and admin redirect.
 
+## ADMIN-01 admin console
+
+- Fixed: route error boundary; announced auth check; match-query retry plus shared loading/empty/error states; labels/`aria-pressed`; 44 px buttons/inputs; focus rings; hidden icons/flags; remaining `gray-*` replaced with tokens; OG site name.
+- Kept: role gate, sidebar sections, seeding, monetisation/SEO cards and per-match video save flow.
+
 ## Foundation
 
 - Added overhaul documentation: `PROJECT_NOTES.md`, `HEALTH_BASELINE.md`, `SCREEN_INVENTORY.md`, `DESIGN_SYSTEM.md`, `PROGRESS.md`, `DECISIONS.md`, `BLOCKERS.md`, `SECURITY_FINDINGS.md`.

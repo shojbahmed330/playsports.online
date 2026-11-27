@@ -42,6 +42,8 @@ import { SeoHealthCard } from "@/components/admin/SeoHealthCard";
 import { AiFaqsCard } from "@/components/admin/AiFaqsCard";
 import { MatchRecapsCard } from "@/components/admin/MatchRecapsCard";
 import { SectionStatusStrip } from "@/components/admin/SectionStatusStrip";
+import { EmptyState, ErrorState } from "@/components/ui/state";
+import { errorMessage } from "@/lib/error-message";
 
 const GROUP_MATCHES_BY_YEAR = groupMatchesData as Record<string, WCMatch[]>;
 type AdminMatch = WCMatch & { _bundled?: boolean };
@@ -55,9 +57,18 @@ const teamVariants = (t: string) => TEAM_ALIASES[t] ?? [t];
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
-    meta: [{ title: "Admin — PlaySports" }, { name: "robots", content: "noindex" }],
+    meta: [
+      { title: "Admin — PlaySports" },
+      { name: "robots", content: "noindex" },
+      { property: "og:site_name", content: "PlaySports" },
+    ],
   }),
   component: AdminPage,
+  errorComponent: ({ error, reset }) => (
+    <div className="mx-auto max-w-3xl px-4 py-10">
+      <ErrorState title="Admin console error" message={errorMessage(error)} onRetry={reset} />
+    </div>
+  ),
 });
 
 function AdminPage() {
@@ -79,8 +90,11 @@ function AdminPage() {
   // Only block on the *initial* load. Subsequent rechecks keep the shell mounted.
   if (!settledOnceRef.current && (loading || (user && roleLoading))) {
     return (
-      <div className="min-h-screen grid place-items-center">
-        <Loader2 className="size-7 text-gold animate-spin" />
+      <div className="min-h-screen grid place-items-center" role="status">
+        <span className="inline-flex items-center gap-2 text-sm text-muted-foreground">
+          <Loader2 className="size-5 text-gold animate-spin" aria-hidden="true" />
+          Checking admin access…
+        </span>
       </div>
     );
   }
@@ -95,16 +109,16 @@ function NotAuthorized() {
   return (
     <div className="min-h-screen grid place-items-center px-4">
       <div className="text-center max-w-sm">
-        <AlertTriangle className="size-10 text-amber-500 mx-auto mb-3" />
+        <AlertTriangle className="size-10 text-amber-500 mx-auto mb-3" aria-hidden="true" />
         <h1 className="text-xl font-bold">Not authorized</h1>
         <p className="text-sm text-muted-foreground mt-2">
           Your account does not have admin access. Contact the site owner.
         </p>
         <Link
           to="/"
-          className="inline-flex mt-5 px-4 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 text-sm"
+          className="mt-5 inline-flex min-h-11 items-center rounded-xl bg-muted px-4 text-sm hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
-          <ArrowLeft className="size-4 mr-1.5" /> Back to archive
+          <ArrowLeft className="size-4 mr-1.5" aria-hidden="true" /> Back to archive
         </Link>
       </div>
     </div>
@@ -231,13 +245,13 @@ function AdminShell() {
           <div className="flex items-center gap-3">
             <Link
               to="/"
-              className="size-9 rounded-lg bg-gold/15 grid place-items-center ring-1 ring-gold/30 hover:ring-gold/50"
+              className="size-11 rounded-xl bg-gold/15 grid place-items-center ring-1 ring-gold/30 hover:ring-gold/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
-              <Trophy className="size-5 text-gold" />
+              <Trophy className="size-5 text-gold" aria-hidden="true" />
             </Link>
             <div className="leading-tight">
               <div className="text-sm font-bold tracking-wide inline-flex items-center gap-1.5">
-                Admin <ShieldCheck className="size-3.5 text-emerald-400" />
+                Admin <ShieldCheck className="size-3.5 text-emerald-400" aria-hidden="true" />
               </div>
               <div className="text-[10px] uppercase tracking-[0.18em] text-gold">
                 PlaySports Control
@@ -246,29 +260,32 @@ function AdminShell() {
           </div>
           <div className="flex items-center gap-2">
             <button
+              type="button"
               onClick={() => setPaletteOpen(true)}
-              className="hidden sm:inline-flex items-center gap-2 px-3 py-1.5 rounded-md text-xs bg-card border border-border hover:border-gold/40 text-muted-foreground hover:text-foreground transition"
+              className="hidden min-h-11 sm:inline-flex items-center gap-2 rounded-xl border border-border bg-card px-3 text-xs text-muted-foreground transition hover:border-gold/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               aria-label="Open quick jump"
             >
-              <Search className="size-3.5" />
+              <Search className="size-3.5" aria-hidden="true" />
               <span>Quick jump…</span>
               <kbd className="ml-1 text-[10px] px-1.5 py-0.5 rounded bg-muted font-mono">⌘K</kbd>
             </button>
             <button
+              type="button"
               onClick={() => setPaletteOpen(true)}
-              className="sm:hidden size-9 grid place-items-center rounded-md bg-card border border-border text-muted-foreground"
+              className="size-11 sm:hidden grid place-items-center rounded-xl border border-border bg-card text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               aria-label="Open quick jump"
             >
-              <Command className="size-4" />
+              <Command className="size-4" aria-hidden="true" />
             </button>
             <span className="hidden md:block text-xs text-muted-foreground truncate max-w-[200px]">
               {user?.email}
             </span>
             <button
+              type="button"
               onClick={signOut}
-              className="px-3 py-1.5 rounded-md text-xs bg-gray-900 border border-gray-800 hover:bg-gray-800 inline-flex items-center gap-1.5"
+              className="inline-flex min-h-11 items-center gap-1.5 rounded-xl border border-border bg-card px-3 text-xs hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
-              <LogOut className="size-3.5" /> Sign out
+              <LogOut className="size-3.5" aria-hidden="true" /> Sign out
             </button>
           </div>
         </div>
@@ -353,14 +370,18 @@ function AdminShell() {
               {/* Tournament + search controls */}
               <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:justify-between">
                 <div className="flex items-center gap-2">
-                  <label className="text-[11px] uppercase tracking-widest text-muted-foreground">
+                  <label
+                    htmlFor="admin-year"
+                    className="text-[11px] uppercase tracking-widest text-muted-foreground"
+                  >
                     Tournament
                   </label>
                   <div className="relative">
                     <select
+                      id="admin-year"
                       value={year}
                       onChange={(e) => setYear(Number(e.target.value))}
-                      className="appearance-none pl-3 pr-9 py-2 rounded-lg bg-card border border-border text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-gold"
+                      className="min-h-11 appearance-none rounded-xl border border-border bg-card pl-3 pr-9 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-ring"
                     >
                       {WC_YEARS.slice()
                         .reverse()
@@ -370,29 +391,41 @@ function AdminShell() {
                           </option>
                         ))}
                     </select>
-                    <ChevronDown className="size-4 text-gold absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    <ChevronDown
+                      className="pointer-events-none absolute right-2.5 top-1/2 size-4 -translate-y-1/2 text-gold"
+                      aria-hidden="true"
+                    />
                   </div>
                 </div>
 
                 <div className="flex items-center gap-2 flex-1 sm:max-w-md">
                   <div className="relative flex-1">
-                    <Search className="size-4 text-muted-foreground absolute left-2.5 top-1/2 -translate-y-1/2" />
+                    <label htmlFor="admin-search" className="sr-only">
+                      Search matches by team or round
+                    </label>
+                    <Search
+                      className="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
+                      aria-hidden="true"
+                    />
                     <input
+                      id="admin-search"
                       value={search}
                       onChange={(e) => setSearch(e.target.value)}
                       placeholder="Search team or round…"
-                      className="w-full pl-8 pr-3 py-2 rounded-lg bg-card border border-border text-sm focus:outline-none focus:border-gold"
+                      className="min-h-11 w-full rounded-xl border border-border bg-card pl-8 pr-3 text-sm focus:border-gold focus:outline-none focus:ring-2 focus:ring-ring"
                     />
                   </div>
                   <button
+                    type="button"
                     onClick={() => setMissingOnly((v) => !v)}
-                    className={`px-3 py-2 rounded-lg text-xs inline-flex items-center gap-1.5 border transition-colors ${
+                    aria-pressed={missingOnly}
+                    className={`inline-flex min-h-11 items-center gap-1.5 rounded-xl border px-3 text-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                       missingOnly
-                        ? "bg-amber-500/15 border-amber-500/40 text-amber-300"
-                        : "bg-card border-border text-muted-foreground hover:text-foreground"
+                        ? "border-amber-500/40 bg-amber-500/15 text-amber-300"
+                        : "border-border bg-card text-muted-foreground hover:text-foreground"
                     }`}
                   >
-                    <Filter className="size-3.5" /> Missing only
+                    <Filter className="size-3.5" aria-hidden="true" /> Missing only
                   </button>
                 </div>
               </div>
@@ -407,18 +440,36 @@ function AdminShell() {
               {/* Match table */}
               <div className="rounded-2xl border border-border bg-card/40 overflow-hidden">
                 {matches.isLoading ? (
-                  <div className="p-12 text-center text-sm text-muted-foreground">
-                    <Loader2 className="size-6 mx-auto animate-spin mb-2" /> Loading {year} matches…
+                  <div
+                    className="p-12 text-center text-sm text-muted-foreground"
+                    role="status"
+                    aria-live="polite"
+                  >
+                    <Loader2 className="size-6 mx-auto animate-spin mb-2" aria-hidden="true" />{" "}
+                    Loading {year} matches…
                   </div>
                 ) : matches.error ? (
-                  <div className="p-8 text-center text-sm text-red-400">
-                    Failed to load matches.
+                  <div className="p-6">
+                    <ErrorState
+                      title="Could not load matches"
+                      message={errorMessage(matches.error)}
+                      onRetry={() => void matches.refetch()}
+                    />
                   </div>
                 ) : filtered.length === 0 ? (
-                  <div className="p-12 text-center text-sm text-muted-foreground">
-                    {(matches.data?.length ?? 0) === 0
-                      ? `No matches in DB for ${year} yet.`
-                      : "No matches match your filters."}
+                  <div className="p-6">
+                    <EmptyState
+                      title={
+                        (matches.data?.length ?? 0) === 0
+                          ? `No matches in the database for ${year}`
+                          : "No matches match these filters"
+                      }
+                      description={
+                        (matches.data?.length ?? 0) === 0
+                          ? "Seed or import this tournament, then refresh."
+                          : "Clear the search or the missing-only filter to see all rows."
+                      }
+                    />
                   </div>
                 ) : (
                   <div className="divide-y divide-border">
@@ -571,7 +622,7 @@ function SeedFromDataset() {
       <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:justify-between">
         <div className="flex items-start gap-3">
           <div className="size-9 rounded-lg bg-amber-500/15 grid place-items-center ring-1 ring-amber-500/30 shrink-0">
-            <Sparkles className="size-4 text-amber-400" />
+            <Sparkles className="size-4 text-amber-400" aria-hidden="true" />
           </div>
           <div>
             <div className="text-sm font-semibold">Auto-seed from YouTube dataset</div>
@@ -592,23 +643,25 @@ function SeedFromDataset() {
         </div>
         <div className="flex items-center gap-2 shrink-0">
           <button
+            type="button"
             onClick={() => run(false)}
             disabled={running}
-            className="px-3 py-2 text-xs font-semibold rounded-lg bg-amber-500 text-black hover:bg-amber-400 disabled:opacity-40 inline-flex items-center gap-1.5"
+            className="inline-flex min-h-11 items-center gap-1.5 rounded-lg bg-amber-500 px-3 text-xs font-semibold text-black hover:bg-amber-400 disabled:opacity-40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             {running ? (
-              <Loader2 className="size-3.5 animate-spin" />
+              <Loader2 className="size-3.5 animate-spin" aria-hidden="true" />
             ) : (
-              <Sparkles className="size-3.5" />
+              <Sparkles className="size-3.5" aria-hidden="true" />
             )}
             Seed missing
           </button>
           <button
+            type="button"
             onClick={() => {
               if (confirm("Overwrite existing video URLs with dataset links?")) run(true);
             }}
             disabled={running}
-            className="px-3 py-2 text-xs rounded-lg bg-gray-900 border border-gray-800 hover:bg-gray-800 disabled:opacity-40"
+            className="inline-flex min-h-11 items-center rounded-lg border border-border bg-card px-3 text-xs hover:bg-accent disabled:opacity-40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             Overwrite all
           </button>
@@ -690,7 +743,7 @@ function MatchRow({ match, year }: { match: AdminMatch; year: number }) {
     <div className="px-4 py-3 flex flex-col md:flex-row md:items-center gap-3 hover:bg-accent/30">
       {/* Match identity */}
       <div className="md:w-[280px] shrink-0 flex items-center gap-2 text-sm">
-        <span className="text-[10px] uppercase tracking-widest bg-gray-900 border border-gray-800 rounded px-1.5 py-0.5 text-muted-foreground shrink-0">
+        <span className="text-[10px] uppercase tracking-widest bg-muted border border-border rounded px-1.5 py-0.5 text-muted-foreground shrink-0">
           {shortRound(match.round)}
         </span>
         {isBundled && (
@@ -702,44 +755,50 @@ function MatchRow({ match, year }: { match: AdminMatch; year: number }) {
           </span>
         )}
         <span className="truncate">
-          <span>{flagOf(match.home_team)}</span> {match.home_team}
+          <span aria-hidden="true">{flagOf(match.home_team)}</span> {match.home_team}
           <span className="mx-1.5 text-muted-foreground tabular-nums">
             {match.home_score ?? "-"}-{match.away_score ?? "-"}
           </span>
-          {match.away_team} <span>{flagOf(match.away_team)}</span>
+          {match.away_team} <span aria-hidden="true">{flagOf(match.away_team)}</span>
         </span>
       </div>
 
       {/* URL input */}
       <div className="flex-1 flex items-center gap-2">
+        <label htmlFor={`video-${match.id}`} className="sr-only">
+          Video URL for {match.home_team} vs {match.away_team}
+        </label>
         <input
+          id={`video-${match.id}`}
           value={value}
           onChange={(e) => setValue(e.target.value)}
           placeholder="https://youtube.com/watch?v=… or paste an mp4 / vimeo / fifa+ link"
-          className="flex-1 px-3 py-2 text-sm rounded-lg bg-background border border-input focus:border-gold focus:outline-none font-mono"
+          className="min-h-11 flex-1 rounded-xl border border-input bg-background px-3 font-mono text-sm focus:border-gold focus:outline-none focus:ring-2 focus:ring-ring"
         />
         {value && (
           <a
             href={value}
             target="_blank"
             rel="noreferrer"
-            className="size-9 grid place-items-center rounded-lg bg-gray-900 border border-gray-800 hover:bg-gray-800"
+            className="grid size-11 place-items-center rounded-xl border border-border bg-card hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             title="Open URL"
+            aria-label={`Open video link for ${match.home_team} vs ${match.away_team}`}
           >
-            <ExternalLink className="size-4 text-muted-foreground" />
+            <ExternalLink className="size-4 text-muted-foreground" aria-hidden="true" />
           </a>
         )}
         <button
+          type="button"
           onClick={save}
           disabled={!dirty || saving}
-          className="px-3 py-2 text-sm rounded-lg bg-amber-500 text-black font-semibold hover:bg-amber-400 disabled:opacity-40 disabled:cursor-not-allowed inline-flex items-center gap-1.5 shrink-0"
+          className="inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-xl bg-amber-500 px-3 text-sm font-semibold text-black hover:bg-amber-400 disabled:cursor-not-allowed disabled:opacity-40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           {saving ? (
-            <Loader2 className="size-4 animate-spin" />
+            <Loader2 className="size-4 animate-spin" aria-hidden="true" />
           ) : savedAt ? (
-            <Check className="size-4" />
+            <Check className="size-4" aria-hidden="true" />
           ) : (
-            <Save className="size-4" />
+            <Save className="size-4" aria-hidden="true" />
           )}
           {savedAt ? "Saved" : "Save"}
         </button>
