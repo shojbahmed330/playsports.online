@@ -4,6 +4,7 @@ import { Trophy, Award, Target } from "lucide-react";
 import { SportNav } from "@/components/sports/SportNav";
 import { CricketSubNav } from "@/components/cricket/CricketSubNav";
 import { PlayerLink } from "@/components/cricket/PlayerLink";
+import { EmptyState } from "@/components/ui/state";
 import history from "@/data/cricket/history.json";
 import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
 
@@ -77,13 +78,29 @@ export const Route = createFileRoute("/cricket/history")({
 });
 
 function HistoryPage() {
-  const [active, setActive] = useState<string>(SLUGS[0]);
+  const [active, setActive] = useState<string>(SLUGS[0] ?? "");
   const t = DATA[active];
 
   const lastChamp = useMemo(() => {
+    if (!t) return undefined;
     const sorted = [...t.champions].sort((a, b) => b.year - a.year);
     return sorted[0];
   }, [t]);
+
+  if (!t) {
+    return (
+      <div className="min-h-screen">
+        <SportNav />
+        <CricketSubNav />
+        <div className="mx-auto max-w-3xl px-4 py-10">
+          <EmptyState
+            title="No cricket history available"
+            description="The history archive is empty right now."
+          />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen">
@@ -100,9 +117,11 @@ function HistoryPage() {
               return (
                 <button
                   key={s}
+                  type="button"
+                  aria-pressed={on}
                   onClick={() => setActive(s)}
                   className={[
-                    "snap-start shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold ring-1 transition-all",
+                    "snap-start shrink-0 inline-flex min-h-11 items-center gap-1.5 px-3 rounded-full text-xs font-bold ring-1 transition-all",
                     on
                       ? "bg-gradient-to-r from-emerald-500 to-amber-500 text-black ring-amber-300"
                       : "bg-white/[0.04] hover:bg-white/[0.09] ring-white/10 text-gray-200",
@@ -121,7 +140,10 @@ function HistoryPage() {
         {/* Hero */}
         <section className="relative overflow-hidden rounded-3xl border border-emerald-500/20 bg-gradient-to-br from-emerald-950 via-slate-900 to-amber-950 p-5 sm:p-8">
           <div className="flex items-start gap-3 mb-3">
-            <div className="size-12 sm:size-14 rounded-2xl bg-amber-500/15 ring-1 ring-amber-500/40 grid place-items-center text-2xl shrink-0">
+            <div
+              className="size-12 sm:size-14 rounded-2xl bg-amber-500/15 ring-1 ring-amber-500/40 grid place-items-center text-2xl shrink-0"
+              aria-hidden="true"
+            >
               {t.emoji}
             </div>
             <div className="min-w-0">
@@ -138,19 +160,19 @@ function HistoryPage() {
           {lastChamp && (
             <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
               <Mini
-                icon={<Trophy className="size-4 text-amber-300" />}
+                icon={<Trophy aria-hidden="true" className="size-4 text-amber-300" />}
                 label="Reigning champion"
                 value={lastChamp.champion}
                 sub={`Won ${lastChamp.year}`}
               />
               <Mini
-                icon={<Award className="size-4 text-sky-300" />}
+                icon={<Award aria-hidden="true" className="size-4 text-sky-300" />}
                 label="Most recent runner-up"
                 value={lastChamp.runnerUp}
                 sub={lastChamp.venue ?? "—"}
               />
               <Mini
-                icon={<Target className="size-4 text-emerald-300" />}
+                icon={<Target aria-hidden="true" className="size-4 text-emerald-300" />}
                 label="Editions held"
                 value={String(t.champions.length)}
                 sub={`${t.champions[0].year} → ${lastChamp.year}`}
@@ -162,34 +184,51 @@ function HistoryPage() {
         {/* Champions */}
         <section>
           <h2 className="text-lg font-bold mb-3 flex items-center gap-2">
-            <Trophy className="size-5 text-amber-400" /> All-time champions
+            <Trophy aria-hidden="true" className="size-5 text-amber-400" /> All-time champions
           </h2>
-          <div className="rounded-2xl border border-border overflow-hidden">
-            <div className="grid grid-cols-12 text-[10px] uppercase tracking-widest text-muted-foreground bg-gray-900/60 px-3 py-2">
-              <div className="col-span-2">Year</div>
-              <div className="col-span-5">Champion</div>
-              <div className="col-span-5">Runner-up · Result</div>
+          {t.champions.length === 0 ? (
+            <EmptyState
+              title="No champions recorded"
+              description="Winners will appear once this tournament has completed editions."
+            />
+          ) : (
+            <div className="rounded-2xl border border-border overflow-hidden">
+              <table className="w-full text-sm">
+                <caption className="sr-only">{t.label} champions by year</caption>
+                <thead className="bg-gray-900/60 text-[10px] uppercase tracking-widest text-muted-foreground">
+                  <tr>
+                    <th scope="col" className="w-[16.6%] px-3 py-2 text-left">
+                      Year
+                    </th>
+                    <th scope="col" className="w-[41.7%] px-3 py-2 text-left">
+                      Champion
+                    </th>
+                    <th scope="col" className="px-3 py-2 text-left">
+                      Runner-up · Result
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border">
+                  {[...t.champions]
+                    .sort((a, b) => b.year - a.year)
+                    .map((c) => (
+                      <tr key={c.year} className="hover:bg-accent/30">
+                        <td className="px-3 py-2.5 font-bold tabular-nums text-amber-300">
+                          {c.year}
+                        </td>
+                        <td className="px-3 py-2.5 font-semibold">{c.champion}</td>
+                        <td className="px-3 py-2.5 text-muted-foreground">
+                          <span className="text-foreground/80">{c.runnerUp}</span>
+                          {c.result && (
+                            <span className="text-[11px] ml-2 opacity-70">· {c.result}</span>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
             </div>
-            <div className="divide-y divide-border">
-              {[...t.champions]
-                .sort((a, b) => b.year - a.year)
-                .map((c) => (
-                  <div
-                    key={c.year}
-                    className="grid grid-cols-12 px-3 py-2.5 text-sm hover:bg-accent/30"
-                  >
-                    <div className="col-span-2 font-bold tabular-nums text-amber-300">{c.year}</div>
-                    <div className="col-span-5 font-semibold">{c.champion}</div>
-                    <div className="col-span-5 text-muted-foreground">
-                      <span className="text-foreground/80">{c.runnerUp}</span>
-                      {c.result && (
-                        <span className="text-[11px] ml-2 opacity-70">· {c.result}</span>
-                      )}
-                    </div>
-                  </div>
-                ))}
-            </div>
-          </div>
+          )}
         </section>
 
         {/* Leaders */}
@@ -200,7 +239,10 @@ function HistoryPage() {
 
         <p className="text-center text-[11px] text-muted-foreground">
           Records are compiled from public archives and updated each season.{" "}
-          <Link to="/cricket" className="text-emerald-400 hover:underline">
+          <Link
+            to="/cricket"
+            className="inline-flex min-h-11 items-center text-emerald-400 hover:underline"
+          >
             Back to live scores →
           </Link>
         </p>
@@ -245,14 +287,19 @@ function Leaderboard({
       <div className="px-4 py-3 border-b border-border bg-gradient-to-r from-emerald-500/10 to-amber-500/5">
         <h3 className="text-sm font-bold inline-flex items-center gap-1.5">
           {kind === "runs" ? (
-            <Target className="size-4 text-emerald-400" />
+            <Target aria-hidden="true" className="size-4 text-emerald-400" />
           ) : (
-            <Award className="size-4 text-amber-400" />
+            <Award aria-hidden="true" className="size-4 text-amber-400" />
           )}
           {title}
         </h3>
       </div>
       <div className="divide-y divide-border">
+        {data.length === 0 && (
+          <p className="px-3 py-6 text-center text-sm text-muted-foreground">
+            No leaderboard data recorded yet.
+          </p>
+        )}
         {data.map((p, i) => (
           <div key={p.player} className="px-3 py-2.5 flex items-center gap-3 text-sm">
             <div

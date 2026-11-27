@@ -159,6 +159,11 @@
 - Added: OG site name/Twitter meta.
 - Kept: trophy/runner-up lists, related teams and JSON-LD.
 
+## CRK-03 cricket history
+
+- Fixed: champions list is now a real table with caption/`scope`; empty-data guard and empty states; `aria-pressed` 44 px tournament selector; hidden decorative icons; 44 px footer link.
+- Kept: tournament switch, hero summary, leaderboards and JSON-LD.
+
 ## Foundation
 
 - Added overhaul documentation: `PROJECT_NOTES.md`, `HEALTH_BASELINE.md`, `SCREEN_INVENTORY.md`, `DESIGN_SYSTEM.md`, `PROGRESS.md`, `DECISIONS.md`, `BLOCKERS.md`, `SECURITY_FINDINGS.md`.
