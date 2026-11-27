@@ -98,6 +98,12 @@
 - Added: CollectionPage JSON-LD.
 - Kept: SSR team directory, gradient cards, title-first sorting.
 
+## CRK-07 IPL players
+
+- Fixed: shared retry banner for leaderboard failures; branded error boundary; labelled 44 px season picker; season-aware sixes heading; shared empty state.
+- Added: CollectionPage JSON-LD.
+- Kept: SSR leaderboards, Orange/Purple cap cards with historical fallback, six-hitting table.
+
 ## Foundation
 
 - Added overhaul documentation: `PROJECT_NOTES.md`, `HEALTH_BASELINE.md`, `SCREEN_INVENTORY.md`, `DESIGN_SYSTEM.md`, `PROGRESS.md`, `DECISIONS.md`, `BLOCKERS.md`, `SECURITY_FINDINGS.md`.
