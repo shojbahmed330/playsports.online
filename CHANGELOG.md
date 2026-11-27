@@ -74,6 +74,12 @@
 - Added: OG/Twitter tags, snapshot date, branded error/not-found, empty leaderboard state, 44 px related links.
 - Kept: SSR leaderboard, FAQs, ItemList schema and other-record links.
 
+## CRK-06 IPL hub
+
+- Fixed: feed-error banner now has Retry; standings team names link to franchise pages.
+- Added: reduced-motion hero ping.
+- Kept: SSR overview/history/caps, live/upcoming/recent sections, standings preview, champions list.
+
 ## Foundation
 
 - Added overhaul documentation: `PROJECT_NOTES.md`, `HEALTH_BASELINE.md`, `SCREEN_INVENTORY.md`, `DESIGN_SYSTEM.md`, `PROGRESS.md`, `DECISIONS.md`, `BLOCKERS.md`, `SECURITY_FINDINGS.md`.

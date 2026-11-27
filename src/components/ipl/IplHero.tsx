@@ -29,7 +29,7 @@ export function IplHero({ seasonLabel, liveCount, nextMatchLabel, totalTitles }:
             {liveCount > 0 ? (
               <span className="inline-flex items-center gap-1.5 rounded-full bg-rose-500/90 px-3 py-1 text-[11px] font-black text-white shadow-[0_8px_24px_-8px_rgba(244,63,94,0.7)]">
                 <span className="relative inline-flex">
-                  <span className="absolute inset-0 animate-ping rounded-full bg-white/70" />
+                  <span className="absolute inset-0 animate-ping rounded-full bg-white/70 motion-reduce:animate-none" />
                   <span className="relative h-1.5 w-1.5 rounded-full bg-white" />
                 </span>
                 {liveCount} LIVE
@@ -56,7 +56,9 @@ export function IplHero({ seasonLabel, liveCount, nextMatchLabel, totalTitles }:
           <div className="flex items-center gap-2 rounded-2xl bg-white/[0.08] px-4 py-3 ring-1 ring-white/10 backdrop-blur">
             <Trophy className="size-5 text-amber-300" />
             <div className="text-right">
-              <div className="text-[10px] uppercase tracking-widest text-white/60">Seasons played</div>
+              <div className="text-[10px] uppercase tracking-widest text-white/60">
+                Seasons played
+              </div>
               <div className="text-xl font-black text-white">{totalTitles}</div>
             </div>
           </div>
