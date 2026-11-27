@@ -4,9 +4,9 @@ Updated: 2026-11-27 (session 1 closed with a logged resource blocker)
 
 - Branch: `professional-overhaul` (never pushed)
 - Current phase: **session 2 — continuing CRK screens**
-- Current screen: CRK-26 tournaments index
-- Screens done: **22 / 150**
-- Screens blocked: **128** (resource, see `BLOCKERS.md`)
+- Current screen: CRK-02 cricket highlights index
+- Screens done: **23 / 150**
+- Screens blocked: **127** (resource, see `BLOCKERS.md`)
 - Screens in progress: 0
 
 ## Completed

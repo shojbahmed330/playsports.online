@@ -133,6 +133,11 @@
 - Added: OG site name and Twitter meta.
 - Kept: champions/top runs/wickets, FAQs, related tournaments and JSON-LD.
 
+## CRK-26 tournaments index
+
+- Fixed: shared empty state; `main-content` id; focus-visible cards; `h3` card titles.
+- Kept: grouped tournament hub and JSON-LD.
+
 ## Foundation
 
 - Added overhaul documentation: `PROJECT_NOTES.md`, `HEALTH_BASELINE.md`, `SCREEN_INVENTORY.md`, `DESIGN_SYSTEM.md`, `PROGRESS.md`, `DECISIONS.md`, `BLOCKERS.md`, `SECURITY_FINDINGS.md`.

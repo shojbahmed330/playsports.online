@@ -2,12 +2,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SportNav } from "@/components/sports/SportNav";
 import { CricketSubNav } from "@/components/cricket/CricketSubNav";
-import {
-  breadcrumbList,
-  collectionPage,
-  itemList,
-  ldScript,
-} from "@/lib/seo/jsonld";
+import { EmptyState } from "@/components/ui/state";
+import { breadcrumbList, collectionPage, itemList, ldScript } from "@/lib/seo/jsonld";
 import { canonical } from "@/lib/seo/canonical";
 import { listCricketTournaments } from "@/lib/seo/cricket-entities";
 
@@ -26,22 +22,27 @@ export const Route = createFileRoute("/cricket/tournaments/")({
         { property: "og:title", content: "Cricket Tournaments — Champions & Records" },
         {
           property: "og:description",
-          content: "All-time champions, top scorers and wicket-takers across every major cricket tournament.",
+          content:
+            "All-time champions, top scorers and wicket-takers across every major cricket tournament.",
         },
         { property: "og:url", content: url },
-      { property: "og:type", content: "website" },
-      { property: "og:site_name", content: "PlaySports" },
-      { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Cricket Tournaments — IPL, World Cup, T20 WC & more" },
-      { name: "twitter:description", content: "Every major cricket tournament: full champions list, top scorers, wicket-takers and fixtures. IPL, ICC World Cup, T20 WC, BBL, PSL and more." },
-    
+        { property: "og:type", content: "website" },
+        { property: "og:site_name", content: "PlaySports" },
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: "Cricket Tournaments — IPL, World Cup, T20 WC & more" },
+        {
+          name: "twitter:description",
+          content:
+            "Every major cricket tournament: full champions list, top scorers, wicket-takers and fixtures. IPL, ICC World Cup, T20 WC, BBL, PSL and more.",
+        },
       ],
       links: [{ rel: "canonical", href: url }],
       scripts: [
         ldScript(
           collectionPage({
             name: "Cricket Tournaments",
-            description: "All-time champions, top scorers and wicket-takers across every major cricket tournament.",
+            description:
+              "All-time champions, top scorers and wicket-takers across every major cricket tournament.",
             path: "/cricket/tournaments",
           }),
         ),
@@ -78,11 +79,15 @@ function TournamentsHub() {
     <div className="min-h-screen bg-background text-foreground">
       <SportNav />
       <CricketSubNav />
-      <main className="max-w-5xl mx-auto px-4 py-6 sm:py-10">
+      <main id="main-content" className="max-w-5xl mx-auto px-4 py-6 sm:py-10">
         <nav className="text-xs text-muted-foreground mb-4" aria-label="Breadcrumb">
-          <Link to="/" className="hover:underline">Home</Link>
+          <Link to="/" className="hover:underline">
+            Home
+          </Link>
           <span className="mx-1">/</span>
-          <Link to="/cricket" className="hover:underline">Cricket</Link>
+          <Link to="/cricket" className="hover:underline">
+            Cricket
+          </Link>
           <span className="mx-1">/</span>
           <span className="text-foreground">Tournaments</span>
         </nav>
@@ -91,6 +96,13 @@ function TournamentsHub() {
         <p className="text-sm text-muted-foreground mb-8">
           Champions, top scorers and wicket-takers for every major cricket competition.
         </p>
+
+        {list.length === 0 && (
+          <EmptyState
+            title="No tournaments available"
+            description="The cricket tournament directory is empty right now."
+          />
+        )}
 
         {[
           { label: "International", items: international },
@@ -106,11 +118,13 @@ function TournamentsHub() {
                     key={t.slug}
                     to="/cricket/tournaments/$slug"
                     params={{ slug: t.slug }}
-                    className="flex items-center gap-3 rounded-lg border border-border bg-card p-4 hover:bg-muted/60"
+                    className="flex items-center gap-3 rounded-lg border border-border bg-card p-4 hover:bg-muted/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   >
-                    <span className="text-2xl" aria-hidden>{t.emoji}</span>
+                    <span className="text-2xl" aria-hidden>
+                      {t.emoji}
+                    </span>
                     <div>
-                      <p className="font-medium">{t.longName}</p>
+                      <h3 className="font-medium">{t.longName}</h3>
                       <p className="text-xs text-muted-foreground">
                         {t.format.toUpperCase()}
                         {t.totalEditions ? ` · ${t.totalEditions} editions` : ""}
