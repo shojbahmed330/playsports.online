@@ -5,32 +5,55 @@ import { useState } from "react";
 import { getNbaLeaders } from "@/lib/nba.functions";
 import { NbaLeaderBoard } from "@/components/nba/NbaLeaderBoard";
 import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
+import { EmptyState, ErrorState } from "@/components/ui/state";
+import { errorMessage } from "@/lib/error-message";
 
 import { withHubLinks } from "@/components/seo/withHubLinks";
 export const Route = createFileRoute("/nba/leaders")({
   head: () => ({
     meta: [
       { title: "NBA Leaders — Points, Assists, Rebounds, Steals, Blocks" },
-      { name: "description", content: "NBA statistical leaders across scoring, playmaking, rebounding and defense. Updated daily from ESPN's feed." },
+      {
+        name: "description",
+        content:
+          "NBA statistical leaders across scoring, playmaking, rebounding and defense. Updated daily from ESPN's feed.",
+      },
       { property: "og:url", content: "https://www.playsports.online/nba/leaders" },
       { property: "og:title", content: "NBA Leaders — Points, Assists, Rebounds, Steals, Blocks" },
-      { property: "og:description", content: "NBA statistical leaders across scoring, playmaking, rebounding and defense. Updated daily from ESPN's feed." },
+      {
+        property: "og:description",
+        content:
+          "NBA statistical leaders across scoring, playmaking, rebounding and defense. Updated daily from ESPN's feed.",
+      },
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "PlaySports" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "NBA Leaders — Points, Assists, Rebounds, Steals, Blocks" },
-      { name: "twitter:description", content: "NBA statistical leaders across scoring, playmaking, rebounding and defense. Updated daily from ESPN's feed." },
-    
+      {
+        name: "twitter:description",
+        content:
+          "NBA statistical leaders across scoring, playmaking, rebounding and defense. Updated daily from ESPN's feed.",
+      },
     ],
     links: [{ rel: "canonical", href: "https://www.playsports.online/nba/leaders" }],
-    scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "NBA", path: "/nba" }, { name: "Leaders", path: "/nba/leaders" }]))],
+    scripts: [
+      ldScript(
+        breadcrumbList([
+          { name: "Home", path: "/" },
+          { name: "NBA", path: "/nba" },
+          { name: "Leaders", path: "/nba/leaders" },
+        ]),
+      ),
+    ],
   }),
   loader: async ({ context }) => {
-    await context.queryClient.prefetchQuery({
-      queryKey: ["nba", "ld"],
-      queryFn: () => getNbaLeaders({ data: {} }),
-      staleTime: 60 * 60_000,
-    }).catch(() => null);
+    await context.queryClient
+      .prefetchQuery({
+        queryKey: ["nba", "ld"],
+        queryFn: () => getNbaLeaders({ data: {} }),
+        staleTime: 60 * 60_000,
+      })
+      .catch(() => null);
     return null;
   },
   component: withHubLinks(NbaLeaders, { sport: "nba", currentPath: "/nba/leaders" }),
@@ -40,17 +63,36 @@ type Group = "offensive" | "defensive" | "general";
 
 function NbaLeaders() {
   const fn = useServerFn(getNbaLeaders);
-  const q = useQuery({ queryKey: ["nba", "ld"], queryFn: () => fn({ data: {} }), staleTime: 60 * 60_000 });
+  const q = useQuery({
+    queryKey: ["nba", "ld"],
+    queryFn: () => fn({ data: {} }),
+    staleTime: 60 * 60_000,
+  });
   const [group, setGroup] = useState<Group>("offensive");
 
   if (q.isLoading) {
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-        {Array.from({ length: 6 }).map((_, i) => <div key={i} className="h-80 rounded-2xl ring-1 ring-border bg-card animate-pulse" />)}
+      <div
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"
+        role="status"
+        aria-label="Loading NBA leaders"
+      >
+        {Array.from({ length: 6 }).map((_, i) => (
+          <div key={i} className="h-80 rounded-2xl ring-1 ring-border bg-card animate-pulse" />
+        ))}
       </div>
     );
   }
-  const cats = (q.data?.[group] ?? []);
+  if (q.error) {
+    return (
+      <ErrorState
+        title="Could not load NBA leaders"
+        message={errorMessage(q.error)}
+        onRetry={() => void q.refetch()}
+      />
+    );
+  }
+  const cats = q.data?.[group] ?? [];
 
   return (
     <div className="space-y-4">
@@ -59,20 +101,35 @@ function NbaLeaders() {
           {(["offensive", "defensive", "general"] as Group[]).map((g) => (
             <button
               key={g}
+              type="button"
               onClick={() => setGroup(g)}
-              className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition capitalize ${
-                group === g ? "bg-orange-500/20 text-orange-200 ring-1 ring-orange-500/40" : "text-muted-foreground hover:text-white"
+              aria-pressed={group === g}
+              className={`inline-flex min-h-11 items-center gap-1.5 rounded-lg px-3 text-xs font-semibold capitalize transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                group === g
+                  ? "bg-orange-500/20 text-orange-200 ring-1 ring-orange-500/40"
+                  : "text-muted-foreground hover:text-foreground"
               }`}
-            >{g}</button>
+            >
+              {g}
+            </button>
           ))}
         </div>
-        {q.data?.season && <div className="text-xs text-muted-foreground">Season: <span className="text-white font-bold">{q.data.season}</span></div>}
+        {q.data?.season && (
+          <div className="text-xs text-muted-foreground">
+            Season: <span className="font-bold text-foreground">{q.data.season}</span>
+          </div>
+        )}
       </div>
       {cats.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-border p-8 text-center text-sm text-muted-foreground bg-card/40">No leaders available for this category.</div>
+        <EmptyState
+          title="No leaders in this category"
+          description="Try another group or check back later."
+        />
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          {cats.map((c) => <NbaLeaderBoard key={c.key} category={c} />)}
+          {cats.map((c) => (
+            <NbaLeaderBoard key={c.key} category={c} />
+          ))}
         </div>
       )}
     </div>

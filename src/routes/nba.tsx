@@ -3,6 +3,7 @@ import { SportNav } from "@/components/sports/SportNav";
 import { NbaHero } from "@/components/nba/NbaHero";
 import { NbaSubNav } from "@/components/nba/NbaSubNav";
 import { Breadcrumbs } from "@/components/nav/Breadcrumbs";
+import { canonical } from "@/lib/seo/canonical";
 
 export const Route = createFileRoute("/nba")({
   head: () => ({
@@ -19,7 +20,17 @@ export const Route = createFileRoute("/nba")({
         content:
           "Everything NBA — live games, standings, teams, leaders, player stats, championships.",
       },
+      { property: "og:url", content: canonical("/nba") },
+      { property: "og:type", content: "website" },
+      { property: "og:site_name", content: "PlaySports" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "NBA Hub — Live Scores, Standings, Players, History" },
+      {
+        name: "twitter:description",
+        content: "Everything NBA — live games, standings, teams, leaders and championships.",
+      },
     ],
+    links: [{ rel: "canonical", href: canonical("/nba") }],
   }),
   component: NbaLayout,
 });
