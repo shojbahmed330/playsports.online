@@ -13,7 +13,7 @@ export function PulseStrip({ items }: { items: Tagged[] }) {
         <div className="flex items-center justify-between mb-2.5">
           <div className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] font-bold text-red-300">
             <span className="relative flex size-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400/70" />
+              <span className="absolute inline-flex h-full w-full animate-ping motion-reduce:animate-none rounded-full bg-red-400/70" />
               <span className="relative inline-flex size-2 rounded-full bg-red-500" />
             </span>
             Pulse · {items.length} live
@@ -32,7 +32,7 @@ export function PulseStrip({ items }: { items: Tagged[] }) {
                   {sport.emoji} {sport.label}
                 </span>
                 <span className="inline-flex items-center gap-1 text-[9px] font-bold text-red-300">
-                  <span className="size-1 rounded-full bg-red-500 animate-pulse" />
+                  <span className="size-1 rounded-full bg-red-500 animate-pulse motion-reduce:animate-none" />
                   {game.shortDetail || "LIVE"}
                 </span>
               </div>
@@ -50,7 +50,13 @@ function Row({ team }: { team: SportGame["home"] }) {
   return (
     <div className="flex items-center gap-2 py-1">
       {team.logo ? (
-        <img loading="lazy" decoding="async" src={team.logo} alt="" className="size-5 shrink-0 object-contain" />
+        <img
+          loading="lazy"
+          decoding="async"
+          src={team.logo}
+          alt=""
+          className="size-5 shrink-0 object-contain"
+        />
       ) : (
         <span className="size-5 shrink-0 rounded bg-gray-800" />
       )}

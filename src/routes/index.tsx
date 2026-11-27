@@ -32,7 +32,7 @@ import { PopularSearches } from "@/components/seo/PopularSearches";
 import { TodayInZoneStrip } from "@/components/home/TodayInZoneStrip";
 import { HallOfChampionsStrip } from "@/components/home/HallOfChampionsStrip";
 import { NewsletterCard } from "@/components/site/NewsletterCard";
-import { ErrorState } from "@/components/ui/state";
+import { ErrorState, SectionHeader } from "@/components/ui/state";
 
 const SITE_TITLE = "PlaySports — Live Cricket & Football Scores, Stats & History";
 const HOME_DESCRIPTION =
@@ -390,24 +390,26 @@ function Section({
       ? "text-red-300 bg-red-500/15 ring-red-500/30"
       : badgeTone === "amber"
         ? "text-amber-300 bg-amber-500/15 ring-amber-500/30"
-        : "text-gray-400 bg-gray-800/60 ring-gray-700/60";
+        : "text-muted-foreground bg-white/[0.04] ring-border";
   return (
     <section className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h2 className="text-lg font-bold flex items-center gap-2">
-          {icon} {title}
-        </h2>
-        {badge && (
-          <span
-            className={`inline-flex items-center gap-1.5 text-xs font-bold px-2 py-1 rounded-full ring-1 ${tone}`}
-          >
-            {badgeTone === "red" && (
-              <span className="size-1.5 rounded-full bg-red-500 animate-pulse" />
-            )}
-            {badge}
-          </span>
-        )}
-      </div>
+      <SectionHeader
+        icon={icon}
+        title={title}
+        action={
+          badge ? (
+            <span
+              className={`inline-flex items-center gap-1.5 rounded-full px-2 py-1 text-xs font-bold ring-1 ${tone}`}
+            >
+              {badgeTone === "red" && (
+                <span className="size-1.5 rounded-full bg-live animate-pulse motion-reduce:animate-none" />
+              )}
+              {badge}
+            </span>
+          ) : undefined
+        }
+        className="mb-0"
+      />
       {children}
     </section>
   );

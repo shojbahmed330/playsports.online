@@ -36,15 +36,19 @@ export function StatusBar({
           className="flex items-center gap-3 sm:gap-4 min-w-0 overflow-x-auto no-scrollbar"
         >
           <span className="inline-flex items-center gap-1.5 font-bold text-red-300 shrink-0">
-            <span className={`size-1.5 rounded-full ${mounted && liveCount > 0 ? "bg-red-500 animate-pulse" : "bg-gray-600"}`} />
-            {mounted ? liveCount : 0} live
+            <span
+              className={`size-1.5 rounded-full ${
+                mounted && liveCount > 0
+                  ? "bg-live animate-pulse motion-reduce:animate-none"
+                  : "bg-muted"
+              }`}
+            />
+            {liveCount} live
           </span>
-          <span className="text-gray-500 shrink-0">·</span>
-          <span className="text-amber-300 font-semibold shrink-0">
-            {mounted ? upcomingCount : 0} upcoming
-          </span>
-          <span className="text-gray-500 shrink-0">·</span>
-          <span className="text-gray-400 shrink-0">{mounted ? totalToday : 0} today</span>
+          <span className="text-muted-foreground shrink-0">·</span>
+          <span className="text-amber-300 font-semibold shrink-0">{upcomingCount} upcoming</span>
+          <span className="text-muted-foreground shrink-0">·</span>
+          <span className="text-muted-foreground shrink-0">{totalToday} today</span>
         </div>
         {zone && (
           <span className="text-gray-500 truncate hidden sm:inline" title={zone}>

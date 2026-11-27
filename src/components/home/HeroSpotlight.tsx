@@ -45,7 +45,9 @@ export function HeroSpotlight({
 
   // Swipe gestures (mobile)
   const touchX = useRef<number | null>(null);
-  const onTouchStart = (e: React.TouchEvent) => { touchX.current = e.touches[0].clientX; };
+  const onTouchStart = (e: React.TouchEvent) => {
+    touchX.current = e.touches[0].clientX;
+  };
   const onTouchEnd = (e: React.TouchEvent) => {
     if (touchX.current == null) return;
     const dx = e.changedTouches[0].clientX - touchX.current;
@@ -86,14 +88,14 @@ export function HeroSpotlight({
               {totalLive > 0 ? (
                 <>
                   <span className="relative flex size-2">
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400/60" />
+                    <span className="absolute inline-flex h-full w-full animate-ping motion-reduce:animate-none rounded-full bg-red-400/60" />
                     <span className="relative inline-flex size-2 rounded-full bg-red-500" />
                   </span>
                   {totalLive} live now
                 </>
               ) : (
                 <>
-                  <span className="size-1.5 rounded-full bg-amber-400 animate-pulse" />
+                  <span className="size-1.5 rounded-full bg-amber-400 animate-pulse motion-reduce:animate-none" />
                   Live across 5 leagues
                 </>
               )}
@@ -107,8 +109,9 @@ export function HeroSpotlight({
               Every Game. Every Score.
             </h1>
             <p className="mt-4 text-sm sm:text-base text-muted-foreground max-w-xl mx-auto lg:mx-0">
-              Live <strong className="text-foreground">MLB · NBA · NHL · MLS · Cricket</strong>, plus the
-              full <strong className="text-foreground">FIFA World Cup</strong> archive 1930 → 2026.
+              Live <strong className="text-foreground">MLB · NBA · NHL · MLS · Cricket</strong>,
+              plus the full <strong className="text-foreground">FIFA World Cup</strong> archive 1930
+              → 2026.
             </p>
 
             {/* Stat strip */}
@@ -199,7 +202,15 @@ export function HeroSpotlight({
   );
 }
 
-function StatPill({ label, value, tone }: { label: string; value: number; tone: "red" | "amber" | "sky" }) {
+function StatPill({
+  label,
+  value,
+  tone,
+}: {
+  label: string;
+  value: number;
+  tone: "red" | "amber" | "sky";
+}) {
   const tones: Record<string, string> = {
     red: "from-red-500/20 to-red-500/5 ring-red-500/30 text-red-300",
     amber: "from-amber-500/20 to-amber-500/5 ring-amber-500/30 text-amber-300",
@@ -215,9 +226,7 @@ function StatPill({ label, value, tone }: { label: string; value: number; tone: 
 
 // ─── Spotlight slide content ───
 
-type SpotlightSlide =
-  | { kind: "game"; tagged: Tagged }
-  | { kind: "wc"; fixture: Wc2026Fixture };
+type SpotlightSlide = { kind: "game"; tagged: Tagged } | { kind: "wc"; fixture: Wc2026Fixture };
 
 function SpotlightCard({ slide }: { slide: SpotlightSlide }) {
   if (slide.kind === "wc") {
@@ -232,10 +241,14 @@ function SpotlightCard({ slide }: { slide: SpotlightSlide }) {
           <span className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.18em] font-bold text-amber-300">
             <Trophy className="size-3" /> FIFA WC 2026 · {f.group}
           </span>
-          {live ? <LiveBadge minute={f.minute ?? null} /> : finished ? (
+          {live ? (
+            <LiveBadge minute={f.minute ?? null} />
+          ) : finished ? (
             <span className="text-[10px] font-bold text-gray-400">FT</span>
           ) : (
-            <span className="text-[10px] font-semibold text-amber-200">{relativeDay(startMs)} · {formatLocalTime(startMs)}</span>
+            <span className="text-[10px] font-semibold text-amber-200">
+              {relativeDay(startMs)} · {formatLocalTime(startMs)}
+            </span>
           )}
         </div>
         <div className="space-y-3">
@@ -248,7 +261,8 @@ function SpotlightCard({ slide }: { slide: SpotlightSlide }) {
         </div>
       </>
     );
-    const cls = "group block h-full rounded-2xl overflow-hidden bg-gradient-to-br from-amber-900/50 via-gray-900 to-red-900/30 ring-1 ring-amber-500/30 hover:ring-amber-400/60 transition-all p-5 sm:p-6";
+    const cls =
+      "group block h-full rounded-2xl overflow-hidden bg-gradient-to-br from-amber-900/50 via-gray-900 to-red-900/30 ring-1 ring-amber-500/30 hover:ring-amber-400/60 transition-all p-5 sm:p-6";
     return deepLink ? (
       <Link to="/football/match/$id" params={{ id: String(f.id) }} className={cls}>
         {commonBody}
@@ -269,18 +283,32 @@ function SpotlightCard({ slide }: { slide: SpotlightSlide }) {
       className={`group block h-full rounded-2xl overflow-hidden bg-gradient-to-br ${sport.bgGrad} ring-1 ${sport.ring} hover:ring-2 transition-all p-5 sm:p-6`}
     >
       <div className="flex items-center justify-between mb-4">
-        <span className={`inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.18em] font-bold ${sport.accent}`}>
+        <span
+          className={`inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.18em] font-bold ${sport.accent}`}
+        >
           <span className="text-base">{sport.emoji}</span> {sport.longName}
         </span>
-        {live ? <LiveBadge minute={null} detail={game.shortDetail} /> : finished ? (
+        {live ? (
+          <LiveBadge minute={null} detail={game.shortDetail} />
+        ) : finished ? (
           <span className="text-[10px] font-bold text-gray-400">FINAL</span>
         ) : (
-          <span className={`text-[10px] font-semibold ${sport.accent}`}>{relativeDay(game.startTs)} · {formatLocalTime(game.startTs)}</span>
+          <span className={`text-[10px] font-semibold ${sport.accent}`}>
+            {relativeDay(game.startTs)} · {formatLocalTime(game.startTs)}
+          </span>
         )}
       </div>
       <div className="space-y-3">
-        <TeamRow logo={game.away.logo} name={game.away.shortName || game.away.name} score={game.away.score} />
-        <TeamRow logo={game.home.logo} name={game.home.shortName || game.home.name} score={game.home.score} />
+        <TeamRow
+          logo={game.away.logo}
+          name={game.away.shortName || game.away.name}
+          score={game.away.score}
+        />
+        <TeamRow
+          logo={game.home.logo}
+          name={game.home.shortName || game.home.name}
+          score={game.home.score}
+        />
       </div>
       <div className="mt-4 flex items-center justify-between text-[11px] text-gray-400">
         <span className="truncate">{game.venue ?? game.broadcast ?? ""}</span>
@@ -290,11 +318,27 @@ function SpotlightCard({ slide }: { slide: SpotlightSlide }) {
   );
 }
 
-function TeamRow({ flag, logo, name, score }: { flag?: string; logo?: string | null; name: string; score: number | null }) {
+function TeamRow({
+  flag,
+  logo,
+  name,
+  score,
+}: {
+  flag?: string;
+  logo?: string | null;
+  name: string;
+  score: number | null;
+}) {
   return (
     <div className="flex items-center gap-3">
       {logo ? (
-        <img loading="lazy" decoding="async" src={logo} alt="" className="size-7 shrink-0 object-contain" />
+        <img
+          loading="lazy"
+          decoding="async"
+          src={logo}
+          alt=""
+          className="size-7 shrink-0 object-contain"
+        />
       ) : (
         <span className="text-2xl shrink-0">{flag ?? "🏟️"}</span>
       )}
@@ -310,10 +354,10 @@ function LiveBadge({ minute, detail }: { minute?: number | null; detail?: string
   return (
     <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-red-500/20 ring-1 ring-red-500/40 text-[10px] font-bold text-red-300">
       <span className="relative flex size-1.5">
-        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400/70" />
+        <span className="absolute inline-flex h-full w-full animate-ping motion-reduce:animate-none rounded-full bg-red-400/70" />
         <span className="relative inline-flex size-1.5 rounded-full bg-red-500" />
       </span>
-      {minute ? `${minute}'` : detail ?? "LIVE"}
+      {minute ? `${minute}'` : (detail ?? "LIVE")}
     </span>
   );
 }

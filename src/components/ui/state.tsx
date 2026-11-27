@@ -99,12 +99,14 @@ export function SectionHeader({
   title,
   description,
   action,
+  icon,
   className = "",
 }: {
   kicker?: string;
   title: string;
   description?: string;
   action?: ReactNode;
+  icon?: ReactNode;
   className?: string;
 }) {
   return (
@@ -115,7 +117,8 @@ export function SectionHeader({
             {kicker}
           </div>
         )}
-        <h2 className="mt-0.5 text-lg font-extrabold tracking-tight text-foreground sm:text-xl">
+        <h2 className="mt-0.5 flex items-center gap-2 text-lg font-extrabold tracking-tight text-foreground sm:text-xl">
+          {icon}
           {title}
         </h2>
         {description && <p className="mt-1 text-sm text-muted-foreground">{description}</p>}

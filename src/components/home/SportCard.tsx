@@ -32,13 +32,15 @@ export function SportCard({
       />
       <div className="relative p-4 sm:p-5">
         <div className="flex items-start justify-between mb-3">
-          <div className={`size-12 rounded-xl ${sport.chipBg} ring-1 ${sport.ring} grid place-items-center text-2xl shrink-0`}>
+          <div
+            className={`size-12 rounded-xl ${sport.chipBg} ring-1 ${sport.ring} grid place-items-center text-2xl shrink-0`}
+          >
             {sport.emoji}
           </div>
           {liveCount > 0 ? (
             <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-500/20 ring-1 ring-red-500/40 text-[10px] font-bold text-red-300">
               <span className="relative flex size-1.5">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400/70" />
+                <span className="absolute inline-flex h-full w-full animate-ping motion-reduce:animate-none rounded-full bg-red-400/70" />
                 <span className="relative inline-flex size-1.5 rounded-full bg-red-500" />
               </span>
               {liveCount} live
@@ -71,7 +73,9 @@ export function SportCard({
           <div className="mt-3 text-[11px] text-gray-500 line-clamp-2">{sport.tagline}</div>
         )}
 
-        <div className={`mt-3 inline-flex items-center gap-1 text-[11px] font-bold ${sport.accent} group-hover:gap-2 transition-all`}>
+        <div
+          className={`mt-3 inline-flex items-center gap-1 text-[11px] font-bold ${sport.accent} group-hover:gap-2 transition-all`}
+        >
           Open <ArrowRight className="size-3" />
         </div>
       </div>
@@ -90,8 +94,7 @@ export function FifaCard() {
         aria-hidden
         className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
         style={{
-          background:
-            "radial-gradient(60% 80% at 100% 0%, rgba(252,211,77,0.15), transparent 60%)",
+          background: "radial-gradient(60% 80% at 100% 0%, rgba(252,211,77,0.15), transparent 60%)",
         }}
       />
       <div className="relative p-4 sm:p-5">
@@ -103,7 +106,9 @@ export function FifaCard() {
             ⭐ Archive
           </span>
         </div>
-        <div className="text-[10px] uppercase tracking-[0.18em] font-bold text-amber-400">FIFA World Cup</div>
+        <div className="text-[10px] uppercase tracking-[0.18em] font-bold text-amber-400">
+          FIFA World Cup
+        </div>
         <div className="text-lg font-extrabold leading-tight mt-0.5">1930 → 2026</div>
         <div className="mt-3 text-[11px] text-gray-400 leading-snug">
           Every match, every goal, every player — plus live 2026.
@@ -139,7 +144,9 @@ export function CricketCard() {
             All formats
           </span>
         </div>
-        <div className="text-[10px] uppercase tracking-[0.18em] font-bold text-emerald-400">Cricket</div>
+        <div className="text-[10px] uppercase tracking-[0.18em] font-bold text-emerald-400">
+          Cricket
+        </div>
         <div className="text-lg font-extrabold leading-tight mt-0.5">Live · IPL · WC</div>
         <div className="mt-3 text-[11px] text-gray-400 leading-snug">
           Scores, series hubs, points tables and history.

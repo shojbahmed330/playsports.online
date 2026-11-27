@@ -41,18 +41,24 @@ function WcHero({ f, live }: { f: Wc2026Fixture; live: boolean }) {
   const deepLink = f.id > 0;
   return (
     <section className="relative overflow-hidden border-b border-amber-500/20 bg-gradient-to-br from-amber-950/60 via-gray-950 to-red-950/40">
-      <div className="absolute inset-0 opacity-25 pointer-events-none" aria-hidden style={{
-        background: "radial-gradient(60% 60% at 50% 0%, oklch(0.78 0.16 75 / 0.5), transparent 65%)",
-      }} />
+      <div
+        className="absolute inset-0 opacity-25 pointer-events-none"
+        aria-hidden
+        style={{
+          background:
+            "radial-gradient(60% 60% at 50% 0%, oklch(0.78 0.16 75 / 0.5), transparent 65%)",
+        }}
+      />
       <div className="relative max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
         <h1 className="sr-only">
-          {live ? "Live" : "Up next"}: {f.home.name} vs {f.away.name} — FIFA World Cup 2026 {f.group ?? ""}
+          {live ? "Live" : "Up next"}: {f.home.name} vs {f.away.name} — FIFA World Cup 2026{" "}
+          {f.group ?? ""}
         </h1>
         <div className="flex items-center justify-between mb-4">
           <span className="inline-flex items-center gap-1.5 text-[10px] sm:text-xs uppercase tracking-[0.2em] font-bold text-amber-300">
             {live ? (
               <>
-                <span className="size-1.5 rounded-full bg-red-500 animate-pulse" />
+                <span className="size-1.5 rounded-full bg-red-500 animate-pulse motion-reduce:animate-none" />
                 <span>Live</span>
               </>
             ) : (
@@ -78,11 +84,21 @@ function WcHero({ f, live }: { f: Wc2026Fixture; live: boolean }) {
 
         <div className="mt-4 flex items-center justify-between flex-wrap gap-2 text-[11px] sm:text-xs text-gray-400">
           <span className="inline-flex items-center gap-1.5 min-w-0 truncate">
-            {f.venue && <><MapPin className="size-3 shrink-0" /> <span className="truncate">{f.venue}{f.city ? `, ${f.city}` : ""}</span></>}
+            {f.venue && (
+              <>
+                <MapPin className="size-3 shrink-0" />{" "}
+                <span className="truncate">
+                  {f.venue}
+                  {f.city ? `, ${f.city}` : ""}
+                </span>
+              </>
+            )}
           </span>
           <div className="flex items-center gap-2">
             {!live && f.status !== "finished" && (
-              <span className="text-amber-200">{relativeDay(startMs)} · <Countdown ts={startMs} /></span>
+              <span className="text-amber-200">
+                {relativeDay(startMs)} · <Countdown ts={startMs} />
+              </span>
             )}
             {deepLink ? (
               <Link
@@ -108,7 +124,15 @@ function WcHero({ f, live }: { f: Wc2026Fixture; live: boolean }) {
   );
 }
 
-function HeroScoreBoard({ f, live, startMs }: { f: Wc2026Fixture; live: boolean; startMs: number }) {
+function HeroScoreBoard({
+  f,
+  live,
+  startMs,
+}: {
+  f: Wc2026Fixture;
+  live: boolean;
+  startMs: number;
+}) {
   return (
     <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 sm:gap-6">
       <div className="flex items-center gap-2 sm:gap-3 min-w-0">
@@ -117,7 +141,9 @@ function HeroScoreBoard({ f, live, startMs }: { f: Wc2026Fixture; live: boolean;
       </div>
       <div className="text-3xl sm:text-5xl font-black text-amber-300 tabular-nums whitespace-nowrap">
         {live || f.status === "finished" ? (
-          <>{f.home.goals ?? 0} <span className="text-gray-600">:</span> {f.away.goals ?? 0}</>
+          <>
+            {f.home.goals ?? 0} <span className="text-gray-600">:</span> {f.away.goals ?? 0}
+          </>
         ) : (
           <span className="text-amber-400/80 text-base sm:text-lg">{formatLocalTime(startMs)}</span>
         )}
@@ -134,16 +160,20 @@ function EspnHero({ t, live }: { t: Tagged; live: boolean }) {
   const { sport, game } = t;
   const startMs = game.startTs * 1000;
   return (
-    <section className={`relative overflow-hidden border-b border-white/10 bg-gradient-to-br ${sport.bgGrad}`}>
+    <section
+      className={`relative overflow-hidden border-b border-white/10 bg-gradient-to-br ${sport.bgGrad}`}
+    >
       <div className="relative max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
         <h1 className="sr-only">
           {live ? "Live" : "Up next"}: {game.home.name} vs {game.away.name} — {sport.longName}
         </h1>
         <div className="flex items-center justify-between mb-4">
-          <span className={`inline-flex items-center gap-1.5 text-[10px] sm:text-xs uppercase tracking-[0.2em] font-bold ${sport.accent}`}>
+          <span
+            className={`inline-flex items-center gap-1.5 text-[10px] sm:text-xs uppercase tracking-[0.2em] font-bold ${sport.accent}`}
+          >
             {live ? (
               <>
-                <span className="size-1.5 rounded-full bg-red-500 animate-pulse" />
+                <span className="size-1.5 rounded-full bg-red-500 animate-pulse motion-reduce:animate-none" />
                 <span>Live</span>
               </>
             ) : (
@@ -158,23 +188,44 @@ function EspnHero({ t, live }: { t: Tagged; live: boolean }) {
         <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 sm:gap-6">
           <div className="flex items-center gap-2 sm:gap-3 min-w-0">
             {game.home.logo && (
-              <img src={game.home.logo} alt="" width={48} height={48} loading="eager"
-                className="size-10 sm:size-14 object-contain shrink-0"  decoding="async" />
+              <img
+                src={game.home.logo}
+                alt=""
+                width={48}
+                height={48}
+                loading="eager"
+                className="size-10 sm:size-14 object-contain shrink-0"
+                decoding="async"
+              />
             )}
             <span className="truncate text-sm sm:text-xl font-extrabold">{game.home.name}</span>
           </div>
-          <div className={`text-3xl sm:text-5xl font-black tabular-nums whitespace-nowrap ${sport.accent}`}>
+          <div
+            className={`text-3xl sm:text-5xl font-black tabular-nums whitespace-nowrap ${sport.accent}`}
+          >
             {live || game.status === "post" ? (
-              <>{game.home.score ?? 0} <span className="text-gray-600">:</span> {game.away.score ?? 0}</>
+              <>
+                {game.home.score ?? 0} <span className="text-gray-600">:</span>{" "}
+                {game.away.score ?? 0}
+              </>
             ) : (
               <span className="text-base sm:text-lg opacity-80">{formatLocalTime(startMs)}</span>
             )}
           </div>
           <div className="flex items-center gap-2 sm:gap-3 min-w-0 justify-end">
-            <span className="truncate text-sm sm:text-xl font-extrabold text-right">{game.away.name}</span>
+            <span className="truncate text-sm sm:text-xl font-extrabold text-right">
+              {game.away.name}
+            </span>
             {game.away.logo && (
-              <img src={game.away.logo} alt="" width={48} height={48} loading="eager"
-                className="size-10 sm:size-14 object-contain shrink-0"  decoding="async" />
+              <img
+                src={game.away.logo}
+                alt=""
+                width={48}
+                height={48}
+                loading="eager"
+                className="size-10 sm:size-14 object-contain shrink-0"
+                decoding="async"
+              />
             )}
           </div>
         </div>
@@ -182,7 +233,11 @@ function EspnHero({ t, live }: { t: Tagged; live: boolean }) {
         <div className="mt-4 flex items-center justify-between flex-wrap gap-2 text-[11px] sm:text-xs text-gray-400">
           <span className="truncate">{game.statusDetail || sport.longName}</span>
           <div className="flex items-center gap-2">
-            {!live && game.status === "pre" && <span>{relativeDay(startMs)} · <Countdown ts={startMs} /></span>}
+            {!live && game.status === "pre" && (
+              <span>
+                {relativeDay(startMs)} · <Countdown ts={startMs} />
+              </span>
+            )}
             <Link
               to={`/${sport.slug}` as "/mlb" | "/nba" | "/nhl" | "/mls"}
               className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-full ${sport.chipBg} ring-1 ${sport.ring} ${sport.accent} text-[11px] sm:text-xs font-bold hover:scale-[1.03] transition-transform`}
