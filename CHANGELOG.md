@@ -256,6 +256,11 @@
 - Fixed: feed errors retryable; shared empty/error/not-found states; hidden reduced-motion spinner; 44 px back/team links.
 - Kept: profile, team link, stats and career block.
 
+## FB-02 football head-to-head
+
+- Fixed: match dates mount-gated; feed errors retryable; shared empty/error/not-found states; hidden icons, reduced-motion spinner, 44 px links.
+- Kept: win/draw summary and completed meetings list.
+
 ## Foundation
 
 - Added overhaul documentation: `PROJECT_NOTES.md`, `HEALTH_BASELINE.md`, `SCREEN_INVENTORY.md`, `DESIGN_SYSTEM.md`, `PROGRESS.md`, `DECISIONS.md`, `BLOCKERS.md`, `SECURITY_FINDINGS.md`.
