@@ -4,9 +4,9 @@ Updated: 2026-11-27 (session 1 closed with a logged resource blocker)
 
 - Branch: `professional-overhaul` (never pushed)
 - Current phase: **session 2 — football programmatic hubs**
-- Current screen: FB-33 tournaments year
-- Screens done: **32 / 150**
-- Screens blocked: **118** (resource, see `BLOCKERS.md`)
+- Current screen: FB-31 top scorers year
+- Screens done: **33 / 150**
+- Screens blocked: **117** (resource, see `BLOCKERS.md`)
 - Screens in progress: 0
 
 ## Completed

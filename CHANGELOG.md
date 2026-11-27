@@ -182,6 +182,12 @@
 - Fixed: stale future-tense copy after the 2026 tournament; labelled breadcrumb; hidden separators/icons/flags; 44 px related links; reduced-motion cards; shared empty state.
 - Kept: 16-stadium country grouping, metadata and JSON-LD.
 
+## FB-33 football tournament year
+
+- Fixed: shared retryable error and not-found states; labelled breadcrumb; hidden separators/emoji/flags; 44 px scorer/year links.
+- Added: OG site name/Twitter meta.
+- Kept: podium, stats, awards, top scorers and JSON-LD.
+
 ## Foundation
 
 - Added overhaul documentation: `PROJECT_NOTES.md`, `HEALTH_BASELINE.md`, `SCREEN_INVENTORY.md`, `DESIGN_SYSTEM.md`, `PROGRESS.md`, `DECISIONS.md`, `BLOCKERS.md`, `SECURITY_FINDINGS.md`.
