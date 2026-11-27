@@ -35,26 +35,31 @@ export function SiteFooter() {
     <footer className="mt-16 px-4 pb-20 sm:pb-8">
       <div className="mx-auto w-full max-w-7xl mb-6 rounded-2xl border border-border bg-card/40 p-4 sm:p-5">
         <form method="get" action="/search" className="flex gap-2 items-center">
-          <label htmlFor="site-search" className="sr-only">Search PlaySports</label>
+          <label htmlFor="footer-site-search" className="sr-only">
+            Search PlaySports
+          </label>
           <input
-            id="site-search"
+            id="footer-site-search"
             name="q"
             type="search"
             placeholder="Search any country, player, year or World Cup…"
-            className="flex-1 rounded-xl px-4 py-2.5 text-sm bg-background border border-border focus:outline-none focus:ring-2 focus:ring-primary/50"
+            className="min-h-11 flex-1 rounded-xl border border-border bg-background px-4 text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           />
-          <button type="submit" className="rounded-xl px-4 py-2.5 text-sm font-semibold bg-primary text-primary-foreground hover:opacity-90">
+          <button
+            type="submit"
+            className="inline-flex min-h-11 items-center rounded-xl bg-primary px-4 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
             Search
           </button>
         </form>
       </div>
       <div className="mx-auto w-full max-w-7xl bg-card/40 text-muted-foreground rounded-2xl overflow-hidden border border-border shadow-2xl">
-
         {/* Affiliate strip */}
         <div className="bg-background/40 border-b border-border px-6 py-3">
           <p className="text-xs text-center lg:text-left leading-relaxed">
-            <span className="text-indigo-400 font-semibold">Affiliate Disclosure:</span>{" "}
-            Some links on this site may earn us a commission at no extra cost to you. This helps support our real-time data infrastructure.
+            <span className="text-indigo-400 font-semibold">Affiliate Disclosure:</span> Some links
+            on this site may earn us a commission at no extra cost to you. This helps support our
+            real-time data infrastructure.
           </p>
         </div>
 
@@ -83,7 +88,7 @@ export function SiteFooter() {
                     <Link
                       to={s.to}
                       search={s.search as never}
-                      className="block py-1.5 hover:text-indigo-400 transition-colors"
+                      className="inline-flex min-h-11 items-center py-1.5 transition-colors hover:text-indigo-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     >
                       {s.label}
                     </Link>
@@ -99,7 +104,7 @@ export function SiteFooter() {
                   <li key={l.to}>
                     <Link
                       to={l.to}
-                      className="block py-1.5 hover:text-indigo-400 transition-colors"
+                      className="inline-flex min-h-11 items-center py-1.5 transition-colors hover:text-indigo-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     >
                       {l.label}
                     </Link>
@@ -108,15 +113,16 @@ export function SiteFooter() {
                 <li>
                   <a
                     href="/sitemap.xml"
-                    className="block py-1.5 hover:text-indigo-400 transition-colors"
+                    className="inline-flex min-h-11 items-center py-1.5 transition-colors hover:text-indigo-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   >
                     Sitemap
                   </a>
                 </li>
                 <li>
                   <button
+                    type="button"
                     onClick={openConsent}
-                    className="block py-1.5 text-left w-full hover:text-indigo-400 transition-colors"
+                    className="inline-flex min-h-11 w-full items-center py-1.5 text-left transition-colors hover:text-indigo-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   >
                     Cookie Preferences
                   </button>
@@ -149,7 +155,8 @@ export function SiteFooter() {
                 )}
               </div>
               <p className="mt-6 text-xs text-muted-foreground/80 leading-tight italic">
-                PlaySports is not affiliated with any official sports league, team, or athletic organization.
+                PlaySports is not affiliated with any official sports league, team, or athletic
+                organization.
               </p>
             </FooterCol>
           </div>
@@ -162,10 +169,17 @@ export function SiteFooter() {
             </p>
             <div className="flex items-center gap-3">
               <span className="inline-flex items-center gap-1.5">
-                <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" aria-hidden />
-                <span className="uppercase tracking-widest text-[10px] font-semibold">Live data</span>
+                <span
+                  className="size-1.5 rounded-full bg-emerald-500 animate-pulse motion-reduce:animate-none"
+                  aria-hidden
+                />
+                <span className="uppercase tracking-widest text-[10px] font-semibold">
+                  Live data
+                </span>
               </span>
-              <span className="opacity-50" aria-hidden>·</span>
+              <span className="opacity-50" aria-hidden>
+                ·
+              </span>
               <span className="uppercase tracking-widest text-[10px]">ESPN · FIFA · ICC</span>
             </div>
           </div>
@@ -201,7 +215,7 @@ function SocialIcon({
       target="_blank"
       rel="noopener noreferrer"
       aria-label={label}
-      className="w-10 h-10 rounded-lg bg-background/60 border border-border flex items-center justify-center hover:bg-indigo-600 hover:border-indigo-500 hover:text-white transition-all text-foreground"
+      className="inline-flex size-11 items-center justify-center rounded-lg border border-border bg-background/60 text-foreground transition-all hover:border-indigo-500 hover:bg-indigo-600 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
     >
       <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
         {children}
@@ -229,7 +243,9 @@ function NewsletterInline() {
       if (res?.ok) {
         setDone(true);
         setEmail("");
-        toast.success(res.already ? "You're already on the list" : "Subscribed — see you tomorrow!");
+        toast.success(
+          res.already ? "You're already on the list" : "Subscribed — see you tomorrow!",
+        );
       }
     } catch (err) {
       toast.error("Subscribe failed", {
@@ -244,6 +260,9 @@ function NewsletterInline() {
     <div className="space-y-3">
       <p className="text-xs font-bold uppercase tracking-widest text-foreground">Stay Updated</p>
       <form onSubmit={onSubmit} className="flex">
+        <label htmlFor="footer-newsletter-email" className="sr-only">
+          Email address
+        </label>
         <input
           type="text"
           tabIndex={-1}
@@ -254,29 +273,35 @@ function NewsletterInline() {
           aria-hidden
         />
         <input
+          id="footer-newsletter-email"
           type="email"
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Email address"
-          aria-label="Email address"
-          className="min-w-0 flex-1 bg-background/60 border border-border rounded-l-lg px-3 py-2 text-sm focus:outline-none focus:border-indigo-500 transition-colors text-foreground"
+          className="min-h-11 min-w-0 flex-1 rounded-l-lg border border-border bg-background/60 px-3 text-sm text-foreground transition-colors focus:border-indigo-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         />
         <button
           type="submit"
           disabled={busy || done}
-          className="shrink-0 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white px-4 py-2 rounded-r-lg text-sm font-semibold transition-colors inline-flex items-center justify-center gap-1.5 min-w-[68px]"
+          aria-busy={busy}
+          className="inline-flex min-h-11 min-w-[68px] shrink-0 items-center justify-center gap-1.5 rounded-r-lg bg-indigo-600 px-4 text-sm font-semibold text-white transition-colors hover:bg-indigo-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50"
         >
           {busy ? (
-            <Loader2 className="size-4 animate-spin" />
+            <Loader2
+              className="size-4 animate-spin motion-reduce:animate-none"
+              aria-hidden="true"
+            />
           ) : done ? (
-            <Check className="size-4" />
+            <Check className="size-4" aria-hidden="true" />
           ) : (
             "Join"
           )}
         </button>
       </form>
-      <p className="text-[11px] text-muted-foreground">One email a day. Unsubscribe anytime.</p>
+      <p className="text-[11px] text-muted-foreground" aria-live="polite">
+        {done ? "Subscribed — check your inbox." : "One email a day. Unsubscribe anytime."}
+      </p>
     </div>
   );
 }

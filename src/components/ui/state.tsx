@@ -18,7 +18,7 @@ export function EmptyState({
 }) {
   return (
     <section className={`${card} ${className}`} aria-live="polite">
-      <div className="mx-auto grid size-11 place-items-center rounded-full bg-white/[0.04] text-muted-foreground ring-1 ring-border">
+      <div className="mx-auto grid size-11 place-items-center rounded-full bg-muted text-muted-foreground ring-1 ring-border">
         {icon ?? <Inbox className="size-5" aria-hidden="true" />}
       </div>
       <h2 className="mt-3 text-base font-bold text-foreground">{title}</h2>
@@ -83,10 +83,10 @@ export function LoadingState({
           key={i}
           className="flex min-h-16 items-center gap-3 rounded-2xl border border-border bg-card/30 px-4 py-3"
         >
-          <div className="size-9 shrink-0 animate-pulse rounded-full bg-white/[0.06]" />
+          <div className="size-9 shrink-0 animate-pulse rounded-full bg-muted motion-reduce:animate-none" />
           <div className="min-w-0 flex-1 space-y-2">
-            <div className="h-3 w-1/3 animate-pulse rounded bg-white/[0.08]" />
-            <div className="h-3 w-2/3 animate-pulse rounded bg-white/[0.05]" />
+            <div className="h-3 w-1/3 animate-pulse rounded bg-muted motion-reduce:animate-none" />
+            <div className="h-3 w-2/3 animate-pulse rounded bg-muted/70 motion-reduce:animate-none" />
           </div>
         </div>
       ))}

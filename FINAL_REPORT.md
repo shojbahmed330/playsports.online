@@ -1,6 +1,6 @@
 # Final Report — professional overhaul (sessions 1–2)
 
-**Date:** 2026-11-27
+**Date:** 2026-11-28
 **Branch:** `professional-overhaul` (local only — **not pushed, not deployed**)
 **Scope:** playsports.online, 150 route-level screens + 10 global/overlay items.
 
@@ -8,15 +8,14 @@
 
 | Status | Count |
 |---|---|
-| DONE (full per-screen plan + phases 1–8 + verification) | **150** |
-| BLOCKED (route screens) | **0** |
-| BLOCKED (global GLB items) | **10** |
-| Global/overlay items | 5 marked BLOCKED; PWA item addressed |
+| DONE (full per-screen plan + phases 1–8 + verification) | **150 route screens** |
+| DONE (global items, each with a `plans/GLB-*.md`) | **10** |
+| BLOCKED | **0** |
 | Total route screens | **150** |
 
-**DONE screens:** all 150 route screens — Home, all Cricket, Football, Live, News, Search, Auth, Admin, Utility, MLB, NBA, NHL, MLS, guides, highlights, cross-sport archive/team/player/H2H/tournament, players, mine and premium.
+**DONE screens:** all 150 route screens — Home, all Cricket, Football, Live, News, Search, Auth, Admin, Utility, MLB, NBA, NHL, MLS, guides, highlights, cross-sport archive/team/player/H2H/tournament, players, mine and premium. Plus GLB-01–GLB-10 (root layout, header, mobile nav, footer, breadcrumbs, search, player sheets, auth shell, 404/500 shell, PWA).
 
-This is a **completed 150-screen route overhaul**. All 150 route screens are complete; the 10 GLB global items (layout/header/footer/PWA) remain for a dedicated global pass. This is a resource blocker, not a claim that those global items are broken.
+This is a **completed overhaul of every route screen and every global item in scope**. Remaining work is owner-gated or deploy-gated, not code-blocked (see §5).
 
 ## 2. Baseline → current
 
@@ -57,7 +56,7 @@ This is a **completed 150-screen route overhaul**. All 150 route screens are com
 
 ## 5. Remaining risks
 
-- **10 global items** have not been individually audited: GLB-01 root layout, GLB-02 desktop header, GLB-03 mobile nav, GLB-04 footer, GLB-05 breadcrumbs, GLB-06 search overlay, GLB-07 player sheet, GLB-08 auth shell, GLB-09 404/error shell and GLB-10 PWA service worker/manifest.
+- **Global items** GLB-01–GLB-10 are audited and complete; their plans are in `plans/GLB-*.md`. Residual risks: the shared `DateScrubber` hydration mismatch (BLK-HYDRATION-01), a path-based header exclusion list that a future section must be added to, and the IndexNow route doubling as the single-segment 404 catch-all.
 - Home still ships a **745 KB** index chunk; route-level code splitting deferred.
 - **6 dependency advisories** remain; no major upgrades taken.
 - **Repo-wide ESLint** still fails on pre-existing issues outside touched files.
@@ -66,9 +65,10 @@ This is a **completed 150-screen route overhaul**. All 150 route screens are com
 
 ## 6. Recommended next order
 
-1. GLB-01–GLB-10: root layout, desktop header/sport switcher, mobile tab bar, footer, breadcrumbs, search overlay, player sheet, auth shell, 404/error shell and PWA service worker/manifest.
-2. Final cross-screen consistency + Lighthouse pass.
-3. Deploy the PWA fix and verify `/sw.js` once the owner allows a deployment.
+1. Deploy the PWA fix and verify `/sw.js`, the manifest and the offline fallback on the real host (owner approval required).
+2. Fix `DateScrubber` hydration determinism (BLK-HYDRATION-01).
+3. Decide the premium price/checkout path ($3 mailto vs $5 Google Play Billing).
+4. Final cross-screen consistency + Lighthouse pass on the deployed build.
 
 ## 7. Artifacts
 

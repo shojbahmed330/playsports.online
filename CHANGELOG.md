@@ -365,6 +365,17 @@
 - Fixed: layout canonical/OG/Twitter; scoreboard, standings, leaders and news query errors with retry; shared empty states; 44 px filters/tabs/links; `aria-pressed` toggles; hidden icons/pulse dots; table captions/`scope`; `noindex` for missing players/teams/games/editions; token surfaces across hub, scores, teams, player and history pages.
 - Kept: all NHL hubs, standings, leaders, news, game centre, player/team profiles and Stanley Cup history.
 
+## GLB-01–GLB-10 Global shell
+
+- Fixed: global header (GLB-02) now mounts once in the root for every route that has no section layout, so `/search`, `/guides`, `/highlights`, `/players`, `/mine`, `/premium`, `/live`, `/archive`, `/team`, `/player`, `/vs` and `/tournaments` no longer ship without desktop navigation.
+- Fixed: exactly one breadcrumb per page — shared trail only where the route does not render its own; dynamic segments are no longer linked to guessed paths that 404.
+- Fixed: 404/500 shells. Root cause of the plain-text "Not Found" was the IndexNow route `$key[.]txt.tsx` (invalid param name → matched every single-segment URL); it now returns a branded 404 page for non-`.txt` requests. React 404 gained a search action and section links; SSR 500 responses send `no-store` + `X-Robots-Tag: noindex`; both static pages use the dark palette with 44 px actions.
+- Fixed: footer search input had a duplicate `id="site-search"`; renamed to `footer-site-search` and wired its label.
+- Fixed: search page now offers popular queries and a recovery action on zero results; result count is announced.
+- Fixed: PWA manifest gained `id`, `lang`, `dir` and four shortcuts; navigation caching and the SW `navigateFallback` denylist now exclude `/admin`, `/auth`, `/mine`.
+- A11y/tokens: 44 px targets across header, footer, breadcrumbs, mobile tab bar and player sheets; focus rings; `aria-hidden` icons; `motion-reduce` on pulses/spinners/slide-ins; player sheet roles/Escape/scroll lock; mobile submenu backdrop is a labelled button and Escape closes it.
+- Fixed: mobile "Scorers" tab no longer lights up on `/football`; "More" menu covers news/guides/highlights/premium and cricket uses a trophy icon.
+
 ## MLS, guides, cross-sport and premium screens
 
 - Fixed: shared error/empty/not-found states across MLS, guides/highlights, archive/team/player/H2H, tournament leaderboards/stages, players hub and premium; 44 px links/tabs/controls; `aria-pressed` toggles; UTC dates; privacy-enhanced highlight embeds; `noindex` for missing entities; OG site name/Twitter meta; token surfaces; announced loading.

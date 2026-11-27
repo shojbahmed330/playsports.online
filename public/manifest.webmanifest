@@ -1,7 +1,10 @@
 {
+  "id": "/",
   "name": "PlaySports — Live Scores & Stats",
   "short_name": "PlaySports",
   "description": "Live scores, standings and stats across football, cricket, MLB, NBA, NHL and MLS — plus the full FIFA World Cup archive.",
+  "lang": "en",
+  "dir": "ltr",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
@@ -13,5 +16,31 @@
     { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
     { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
     { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    {
+      "name": "Live scores",
+      "short_name": "Live",
+      "url": "/live/today",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "Cricket",
+      "short_name": "Cricket",
+      "url": "/cricket",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "Football",
+      "short_name": "Football",
+      "url": "/football",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "World Cup archive",
+      "short_name": "World Cup",
+      "url": "/football/world-cup",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    }
   ]
 }

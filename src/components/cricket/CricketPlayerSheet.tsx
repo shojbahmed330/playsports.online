@@ -51,32 +51,36 @@ export function CricketPlayerSheet({ athleteId, leagueId, onClose }: Props) {
       <aside
         role="dialog"
         aria-modal="true"
-        className="absolute right-0 top-0 h-full w-full sm:max-w-md bg-gradient-to-b from-emerald-950 via-slate-950 to-slate-950 ring-1 ring-emerald-500/20 shadow-2xl overflow-y-auto animate-in slide-in-from-right duration-300"
+        aria-label="Cricket player profile"
+        className="absolute right-0 top-0 h-full w-full overflow-y-auto bg-gradient-to-b from-emerald-950 via-slate-950 to-slate-950 shadow-2xl ring-1 ring-emerald-500/20 animate-in slide-in-from-right duration-300 motion-reduce:animate-none sm:max-w-md"
       >
-        <header className="sticky top-0 z-10 flex items-center justify-between gap-3 px-4 py-3 border-b border-emerald-500/15 bg-emerald-950/80 backdrop-blur">
-          <div className="text-[10px] uppercase tracking-[0.18em] font-bold text-emerald-300 inline-flex items-center gap-1.5">
-            <User className="size-3.5" /> Player Profile
+        <header className="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-emerald-500/15 bg-emerald-950/80 px-4 py-3 backdrop-blur">
+          <div className="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-emerald-300">
+            <User className="size-3.5" aria-hidden="true" /> Player Profile
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="size-8 grid place-items-center rounded-full bg-white/5 hover:bg-white/15 ring-1 ring-white/10 transition"
-            aria-label="Close"
+            className="grid size-11 place-items-center rounded-full bg-white/5 ring-1 ring-white/10 transition hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            aria-label="Close player profile"
           >
-            <X className="size-4" />
+            <X className="size-4" aria-hidden="true" />
           </button>
         </header>
 
         {q.isLoading && (
-          <div className="grid place-items-center py-20 text-emerald-200/70 text-sm">
-            <Loader2 className="size-6 animate-spin mb-2" />
+          <div className="grid place-items-center py-20 text-sm text-emerald-200/70" role="status">
+            <Loader2
+              className="mb-2 size-6 animate-spin motion-reduce:animate-none"
+              aria-hidden="true"
+            />
             Loading profile…
           </div>
         )}
 
         {!q.isLoading && (!p || q.data?.error) && (
-          <div className="px-4 py-16 text-center space-y-3">
-            <AlertCircle className="size-10 mx-auto text-amber-400/80" />
+          <div className="space-y-3 px-4 py-16 text-center">
+            <AlertCircle className="mx-auto size-10 text-amber-400/80" aria-hidden="true" />
             <div className="text-sm text-amber-200/90 font-semibold">Profile unavailable</div>
             <p className="text-xs text-muted-foreground max-w-xs mx-auto">
               ESPN didn't return data for this player. Try another match — bilateral &amp; older

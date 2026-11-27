@@ -361,16 +361,16 @@ Generated from the real router files in `src/routes` and cross-checked against `
 
 | ID | Module | Screen name | Type | Location | Notes | Status |
 |---|---|---|---|---|---|---|
-| GLB-01 | Global | Root layout, skip link, meta, JSON-LD | Layout | `src/routes/__root.tsx` | Header/footer/nav/notifications mount here | BLOCKED |
-| GLB-02 | Global | Desktop header + sport switcher + search entry | Global | `src/components/sports/SportNav.tsx` | Sticky header, live badge, mobile menu | BLOCKED |
-| GLB-03 | Global | Mobile tab bar + More menu | Global | `src/components/nav/MobileTabBar.tsx` | 5 tabs, More sheet | BLOCKED |
-| GLB-04 | Global | Footer | Global | `src/components/site/SiteFooter.tsx` | Search, link columns, legal | BLOCKED |
-| GLB-05 | Global | Breadcrumbs | Global | `src/components/nav/Breadcrumbs.tsx` | Route-derived trail | BLOCKED |
-| GLB-06 | Global | Search overlay / page | Overlay | `src/routes/search.tsx` + search components | Query, results, empty state | BLOCKED |
-| GLB-07 | Global | Player sheet / modal | Sheet | `src/components/cricket/CricketPlayerSheet.tsx` | Player stats drawer | BLOCKED |
-| GLB-08 | Global | Auth page | Screen | `src/routes/auth.tsx` | Supabase auth | BLOCKED |
-| GLB-09 | Global | 404 / error page | Screen | `src/lib/error-page.ts`, `src/server.ts` | Branded 404/500 | BLOCKED |
-| GLB-10 | Global | PWA service worker + manifest | Asset | `vite.config.ts`, `src/lib/pwa-register.ts` | `/sw.js` currently 404s in production | BLOCKED |
+| GLB-01 | Global | Root layout, skip link, meta, JSON-LD | Layout | `src/routes/__root.tsx` | Header/footer/nav/notifications mount here | DONE |
+| GLB-02 | Global | Desktop header + sport switcher + search entry | Global | `src/components/sports/SportNav.tsx` | Sticky header, live badge, mobile menu | DONE |
+| GLB-03 | Global | Mobile tab bar + More menu | Global | `src/components/nav/MobileTabBar.tsx` | 5 tabs, More sheet | DONE |
+| GLB-04 | Global | Footer | Global | `src/components/site/SiteFooter.tsx` | Search, link columns, legal | DONE |
+| GLB-05 | Global | Breadcrumbs | Global | `src/components/nav/Breadcrumbs.tsx` | Route-derived trail | DONE |
+| GLB-06 | Global | Search overlay / page | Overlay | `src/routes/search.tsx` + search components | Query, results, empty state | DONE |
+| GLB-07 | Global | Player sheet / modal | Sheet | `src/components/cricket/CricketPlayerSheet.tsx` | Player stats drawer | DONE |
+| GLB-08 | Global | Auth page | Screen | `src/routes/auth.tsx` | Supabase auth | DONE |
+| GLB-09 | Global | 404 / error page | Screen | `src/lib/error-page.ts`, `src/server.ts` | Branded 404/500 | DONE |
+| GLB-10 | Global | PWA service worker + manifest | Asset | `vite.config.ts`, `src/lib/pwa-register.ts` | `/sw.js` currently 404s in production | DONE |
 
 ## 5. Excluded route files
 

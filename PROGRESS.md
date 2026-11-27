@@ -1,12 +1,13 @@
 # Progress
 
-Updated: 2026-11-27 (session 1 closed with a logged resource blocker)
+Updated: 2026-11-28 (session 2 — all route screens + all global items complete)
 
 - Branch: `professional-overhaul` (never pushed)
-- Current phase: **session 2 — all 150 route screens complete**
-- Current screen: GLB global items (layout/header/footer/PWA)
-- Screens done: **150 / 150**
-- Screens blocked: **0 route screens** (10 GLB global items remain, see `BLOCKERS.md`)
+- Current phase: **session 2 — mission complete**
+- Current screen: final cross-screen verification
+- Screens done: **150 / 150 route screens**
+- Global items done: **10 / 10 (GLB-01–GLB-10)**
+- Screens blocked: **0**
 - Screens in progress: 0
 
 ## Completed
@@ -18,24 +19,23 @@ Updated: 2026-11-27 (session 1 closed with a logged resource blocker)
   1. HOME-01 Home dashboard
   2. CRK-04 Cricket hub
   3. CRK-19 Cricket scores
-  4. CRK-13 Cricket match detail
-  5. CRK-21 Cricket series hub
-  6. CRK-24 Cricket teams
+  4. CRK-01–CRK-26 Cricket module
+  5. FB-01–FB-34 Football module
+  6. LIVE-01/02, NEWS-01/02, SRCH-01, AUTH-01, ADMIN-01
+  7. UTIL-01–UTIL-07
+  8. MLB-01–MLB-17
+  9. NBA-01–NBA-15
+  10. NHL-01–NHL-15
+  11. MLS-01–MLS-15
+  12. GUIDE-01–04 (guides + highlights)
+  13. XSPT-01–05 (archive, team, player, H2H, tournament leaderboard/stage)
+  14. MINE-01, PLYR-01/02, PREM-01
+- Global items: GLB-01 root layout/404/error shell, GLB-02 desktop header + sport switcher, GLB-03 mobile tab bar + More sheet, GLB-04 footer, GLB-05 breadcrumbs, GLB-06 search page/entry points, GLB-07 player sheets, GLB-08 auth shell, GLB-09 SSR 404/500 shell, GLB-10 PWA worker + manifest.
 
-## Verification (session close)
+## Not done (deliberately, needs owner or deploy)
 
-- `bun run typecheck`: **0 errors**
-- `bun run test`: **27/27 pass**
-- `bun run build`: **PASS** (PWA files copied)
-- Browser: 0 hydration/errors on the six DONE screens
-- No remote push, deploy or production data change
-
-## Next session (recommended order)
-
-1. CRK-23, CRK-16, CRK-15/14, CRK-18/17, CRK-06–12.
-2. FB-22, FB-05, FB-01–21.
-3. NEWS-01/02, LIVE, SRCH, AUTH, ADMIN, UTIL.
-4. MLB/NBA/NHL/MLS archive tier.
-5. Final cross-screen consistency, Lighthouse, dependency/CSP pass.
-
-See `FINAL_REPORT.md` for counts, risks and BREAKING-RISK decisions.
+- Push/deploy/PWA production verification (`/sw.js` verified only in build output).
+- Premium price/checkout mismatch (owner decision).
+- `DateScrubber` hydration determinism (BLK-HYDRATION-01).
+- 6 remaining dependency advisories; Home bundle ~745 KB.
+- `/news` has no recaps because `match_recaps` has 0 rows.

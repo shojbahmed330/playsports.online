@@ -26,14 +26,24 @@ export default defineConfig({
         devOptions: { enabled: false },
         workbox: {
           navigateFallback: "/",
-          navigateFallbackDenylist: [/^\/~oauth/, /^\/api\//, /^\/_serverFn\//],
+          // Never serve the app shell for authenticated/admin surfaces or
+          // server endpoints; they must hit the network or fail honestly.
+          navigateFallbackDenylist: [
+            /^\/~oauth/,
+            /^\/api\//,
+            /^\/_serverFn\//,
+            /^\/admin/,
+            /^\/auth/,
+            /^\/mine/,
+          ],
           globPatterns: ["**/*.{js,css,html,svg,png,ico,webp,woff,woff2}"],
           cleanupOutdatedCaches: true,
           clientsClaim: true,
           skipWaiting: true,
           runtimeCaching: [
             {
-              urlPattern: ({ request }) => request.mode === "navigate",
+              urlPattern: ({ request, url }) =>
+                request.mode === "navigate" && !/^\/(?:admin|auth|mine)(?:\/|$)/.test(url.pathname),
               handler: "NetworkFirst",
               options: {
                 cacheName: "html-nav",
@@ -51,7 +61,8 @@ export default defineConfig({
               },
             },
             {
-              urlPattern: /^https:\/\/(site\.api\.espn\.com|sports\.core\.api\.espn\.com|.*\.rapidapi\.com)\//,
+              urlPattern:
+                /^https:\/\/(site\.api\.espn\.com|sports\.core\.api\.espn\.com|.*\.rapidapi\.com)\//,
               handler: "NetworkFirst",
               options: {
                 cacheName: "sports-api",

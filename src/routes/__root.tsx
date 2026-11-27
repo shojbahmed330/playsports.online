@@ -4,6 +4,7 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useRouterState,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
@@ -15,30 +16,59 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AdSenseLoader } from "../components/ads/AdSenseLoader";
 import { AdSlot } from "../components/ads/AdSlot";
 import { GlobalMobileNav } from "../components/nav/GlobalMobileNav";
+import { Breadcrumbs } from "../components/nav/Breadcrumbs";
+import { SportNav } from "../components/sports/SportNav";
 import { AnalyticsLoader } from "../components/site/AnalyticsLoader";
 import { CookieConsent } from "../components/site/CookieConsent";
 import { SiteFooter } from "../components/site/SiteFooter";
 import { FootballLiveBadge } from "../components/football/FootballLiveBadge";
 
-function NotFoundComponent() {
+export function NotFoundComponent() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
+    <main className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
-        <h1 className="text-7xl font-bold text-foreground">404</h1>
-        <h2 className="mt-4 text-xl font-semibold text-foreground">Page not found</h2>
+        <p className="text-7xl font-bold text-foreground" aria-hidden="true">
+          404
+        </p>
+        <h1 className="mt-4 text-xl font-semibold text-foreground">Page not found</h1>
         <p className="mt-2 text-sm text-muted-foreground">
           The page you're looking for doesn't exist or has been moved.
         </p>
-        <div className="mt-6">
+        <div className="mt-6 flex flex-wrap justify-center gap-2">
           <Link
             to="/"
-            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+            className="inline-flex min-h-11 items-center justify-center rounded-xl bg-primary px-4 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             Go home
           </Link>
+          <Link
+            to="/search"
+            className="inline-flex min-h-11 items-center justify-center rounded-xl border border-border bg-background px-4 text-sm font-semibold text-foreground transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            Search the site
+          </Link>
         </div>
+        <nav aria-label="Popular sections" className="mt-8">
+          <ul className="flex flex-wrap justify-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
+            {[
+              { to: "/cricket", label: "Cricket" },
+              { to: "/football", label: "Football" },
+              { to: "/live/today", label: "Live scores" },
+              { to: "/news", label: "News" },
+            ].map((l) => (
+              <li key={l.to}>
+                <Link
+                  to={l.to}
+                  className="inline-flex min-h-11 items-center underline-offset-4 hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  {l.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
       </div>
-    </div>
+    </main>
   );
 }
 
@@ -52,7 +82,7 @@ function ErrorComponent({ error, reset }: { error: unknown; reset: () => void })
   }, [error]);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
+    <main className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
         <h1 className="text-xl font-semibold tracking-tight text-foreground">
           This page didn't load
@@ -62,23 +92,24 @@ function ErrorComponent({ error, reset }: { error: unknown; reset: () => void })
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
           <button
+            type="button"
             onClick={() => {
               router.invalidate();
               reset();
             }}
-            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+            className="inline-flex min-h-11 items-center justify-center rounded-xl bg-primary px-4 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             Try again
           </button>
-          <a
-            href="/"
-            className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
+          <Link
+            to="/"
+            className="inline-flex min-h-11 items-center justify-center rounded-xl border border-border bg-background px-4 text-sm font-semibold text-foreground transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             Go home
-          </a>
+          </Link>
         </div>
       </div>
-    </div>
+    </main>
   );
 }
 
@@ -210,6 +241,17 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+
+  // Section layouts (home, cricket, football, MLB/NBA/NHL/MLS, news) mount
+  // their own SportNav. Every other route gets the shared header here so no
+  // page is left without desktop navigation.
+  const sectionOwnsHeader =
+    /^\/(?:$|cricket|football|mlb|nba|nhl|mls|news|admin|auth)(?:\/|$)/.test(pathname);
+  // These detail routes render their own breadcrumb with page-specific labels
+  // (e.g. "Argentina vs Brazil"), so the shared trail would duplicate them.
+  const selfBreadcrumbs =
+    /^\/(?:live|guides|highlights|player|team|archive|vs|tournaments)(?:\/|$)/.test(pathname);
 
   useEffect(() => {
     // Registers the PWA service worker in production top-level windows only.
@@ -229,6 +271,12 @@ function RootComponent() {
       <AnalyticsLoader />
       {/* Site-wide top banner — shows on every route once AdSense is configured. */}
       <AdSlot slot="header" className="px-4" />
+      {!sectionOwnsHeader && (
+        <>
+          <SportNav />
+          {!selfBreadcrumbs && <Breadcrumbs />}
+        </>
+      )}
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <div id="main-content" tabIndex={-1} className="focus:outline-none">
         <Outlet />

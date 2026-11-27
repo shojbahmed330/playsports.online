@@ -25,7 +25,11 @@ export const Route = createFileRoute("/search")({
         { property: "og:title", content: title },
         { property: "og:description", content: desc },
         { property: "og:url", content: canonical("/search") },
+        { property: "og:image", content: "https://www.playsports.online/og-default.png" },
         { property: "og:site_name", content: "PlaySports" },
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: desc },
         { name: "robots", content: "noindex, follow" },
       ],
       links: [{ rel: "canonical", href: canonical("/search") }],
@@ -159,21 +163,51 @@ function SearchPage() {
 
       <main className="container mx-auto max-w-3xl px-4 pt-6">
         {!query && (
-          <EmptyState
-            title="Find a World Cup page"
-            description="Enter a country, player, year or tournament to see matching pages."
-            icon={<Search className="size-5" aria-hidden="true" />}
-          />
+          <>
+            <EmptyState
+              title="Find a World Cup page"
+              description="Enter a country, player, year or tournament to see matching pages."
+              icon={<Search className="size-5" aria-hidden="true" />}
+            />
+            <nav aria-label="Popular searches" className="mt-6">
+              <h2 className="mb-2 text-xs font-bold uppercase tracking-widest text-muted-foreground">
+                Popular searches
+              </h2>
+              <ul className="flex flex-wrap gap-2">
+                {["Argentina", "Brazil", "Messi", "2022", "France", "World Cup 1998"].map(
+                  (term) => (
+                    <li key={term}>
+                      <Link
+                        to="/search"
+                        search={{ q: term }}
+                        className="inline-flex min-h-11 items-center rounded-full border border-border bg-card px-4 text-sm text-foreground transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      >
+                        {term}
+                      </Link>
+                    </li>
+                  ),
+                )}
+              </ul>
+            </nav>
+          </>
         )}
         {query && results.length === 0 && (
           <EmptyState
             title={`No results for “${q}”`}
             description="Try a country or player name, a four-digit year, or “world cup” and a host."
+            action={
+              <Link
+                to="/football"
+                className="inline-flex min-h-11 items-center rounded-full bg-primary px-4 text-sm font-bold text-primary-foreground transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                Browse the football archive
+              </Link>
+            }
           />
         )}
         {results.length > 0 && (
           <>
-            <p className="mb-3 text-sm text-muted-foreground">
+            <p className="mb-3 text-sm text-muted-foreground" aria-live="polite">
               {results.length} result{results.length === 1 ? "" : "s"} for “{q}”
             </p>
             <ul className="space-y-2">
