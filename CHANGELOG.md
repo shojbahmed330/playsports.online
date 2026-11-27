@@ -127,6 +127,12 @@
 - Fixed: query failures now show a retryable shared error state; branded route error/not-found states; shared empty state; standings caption/`scope`; `h2` section titles; reduced-motion live pulse; hidden decorative emoji/icon.
 - Kept: hero, live/upcoming/results grids, derived standings and SportNav live count.
 
+## CRK-25 cricket tournament profile
+
+- Fixed: shared retryable error and not-found states; table caption/`scope`; player links now use the shared `slugify`; `main-content` id; 44 px CTA/related links; shared empty state for missing champions.
+- Added: OG site name and Twitter meta.
+- Kept: champions/top runs/wickets, FAQs, related tournaments and JSON-LD.
+
 ## Foundation
 
 - Added overhaul documentation: `PROJECT_NOTES.md`, `HEALTH_BASELINE.md`, `SCREEN_INVENTORY.md`, `DESIGN_SYSTEM.md`, `PROGRESS.md`, `DECISIONS.md`, `BLOCKERS.md`, `SECURITY_FINDINGS.md`.

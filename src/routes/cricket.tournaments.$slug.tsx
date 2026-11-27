@@ -3,8 +3,10 @@ import { errorMessage } from "@/lib/error-message";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { SportNav } from "@/components/sports/SportNav";
 import { CricketSubNav } from "@/components/cricket/CricketSubNav";
+import { EmptyState, ErrorState } from "@/components/ui/state";
 import { breadcrumbList, faqPage, itemList, ldScript, sportsOrganization } from "@/lib/seo/jsonld";
 import { canonical } from "@/lib/seo/canonical";
+import { slugify } from "@/lib/seo/programmatic";
 import { getCricketTournamentBySlug, listCricketTournaments } from "@/lib/seo/cricket-entities";
 
 export const Route = createFileRoute("/cricket/tournaments/$slug")({
@@ -34,6 +36,10 @@ export const Route = createFileRoute("/cricket/tournaments/$slug")({
         { property: "og:description", content: desc.slice(0, 200) },
         { property: "og:url", content: url },
         { property: "og:type", content: "website" },
+        { property: "og:site_name", content: "PlaySports" },
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: desc.slice(0, 200) },
       ],
       links: [{ rel: "canonical", href: url }],
       scripts: [
@@ -71,15 +77,37 @@ export const Route = createFileRoute("/cricket/tournaments/$slug")({
     };
   },
   component: TournamentPage,
-  errorComponent: ({ error }) => (
-    <div className="min-h-screen grid place-items-center p-6 text-center">
-      <p className="text-lg font-semibold">Couldn't load tournament</p>
-      <p className="text-xs text-muted-foreground mt-1">{errorMessage(error)}</p>
+  errorComponent: ({ error, reset }) => (
+    <div className="min-h-screen bg-background text-foreground">
+      <SportNav />
+      <CricketSubNav />
+      <div className="mx-auto max-w-3xl px-4 py-10">
+        <ErrorState
+          title="Could not load this tournament"
+          message={errorMessage(error)}
+          onRetry={reset}
+        />
+      </div>
     </div>
   ),
   notFoundComponent: () => (
-    <div className="min-h-screen grid place-items-center p-6 text-center">
-      <p>Tournament not found.</p>
+    <div className="min-h-screen bg-background text-foreground">
+      <SportNav />
+      <CricketSubNav />
+      <div className="mx-auto max-w-3xl px-4 py-10">
+        <EmptyState
+          title="Tournament not found"
+          description="This tournament is not in the cricket directory."
+          action={
+            <Link
+              to="/cricket/tournaments"
+              className="inline-flex min-h-11 items-center rounded-full bg-emerald-500/15 px-4 text-sm font-bold text-emerald-200 ring-1 ring-emerald-500/30"
+            >
+              Browse all tournaments
+            </Link>
+          }
+        />
+      </div>
     </div>
   ),
 });
@@ -139,7 +167,7 @@ function TournamentPage() {
       <SportNav />
       <CricketSubNav />
 
-      <main className="max-w-5xl mx-auto px-4 py-6 sm:py-10">
+      <main id="main-content" className="max-w-5xl mx-auto px-4 py-6 sm:py-10">
         <nav className="text-xs text-muted-foreground mb-4" aria-label="Breadcrumb">
           <Link to="/" className="hover:underline">
             Home
@@ -172,7 +200,7 @@ function TournamentPage() {
           <Link
             to="/cricket/series/$id"
             params={{ id: t.id }}
-            className="inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium hover:bg-emerald-500"
+            className="inline-flex min-h-11 items-center gap-2 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium hover:bg-emerald-500"
           >
             View live fixtures & results →
           </Link>
@@ -183,13 +211,24 @@ function TournamentPage() {
             <h2 className="text-lg font-semibold mb-3">Champions by year</h2>
             <div className="overflow-x-auto rounded-lg border border-border">
               <table className="w-full text-sm">
+                <caption className="sr-only">{t.longName} champions by year</caption>
                 <thead className="bg-muted/40 text-xs uppercase tracking-wide">
                   <tr>
-                    <th className="text-left px-3 py-2">Year</th>
-                    <th className="text-left px-3 py-2">Champion</th>
-                    <th className="text-left px-3 py-2">Runner-up</th>
-                    <th className="text-left px-3 py-2">Venue</th>
-                    <th className="text-left px-3 py-2">Result</th>
+                    <th scope="col" className="text-left px-3 py-2">
+                      Year
+                    </th>
+                    <th scope="col" className="text-left px-3 py-2">
+                      Champion
+                    </th>
+                    <th scope="col" className="text-left px-3 py-2">
+                      Runner-up
+                    </th>
+                    <th scope="col" className="text-left px-3 py-2">
+                      Venue
+                    </th>
+                    <th scope="col" className="text-left px-3 py-2">
+                      Result
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -206,7 +245,15 @@ function TournamentPage() {
               </table>
             </div>
           </section>
-        ) : null}
+        ) : (
+          <section className="mb-10">
+            <h2 className="text-lg font-semibold mb-3">Champions by year</h2>
+            <EmptyState
+              title="No champions recorded yet"
+              description="The winners list will appear once this tournament has completed editions."
+            />
+          </section>
+        )}
 
         {t.history?.topRuns?.length ? (
           <section className="mb-10">
@@ -219,7 +266,7 @@ function TournamentPage() {
                 >
                   <Link
                     to="/cricket/players/$slug"
-                    params={{ slug: r.player.toLowerCase().replace(/\s+/g, "-") }}
+                    params={{ slug: slugify(r.player) }}
                     className="font-medium hover:underline"
                   >
                     {r.player} <span className="text-xs text-muted-foreground">({r.country})</span>
@@ -244,7 +291,7 @@ function TournamentPage() {
                 >
                   <Link
                     to="/cricket/players/$slug"
-                    params={{ slug: w.player.toLowerCase().replace(/\s+/g, "-") }}
+                    params={{ slug: slugify(w.player) }}
                     className="font-medium hover:underline"
                   >
                     {w.player} <span className="text-xs text-muted-foreground">({w.country})</span>
@@ -279,7 +326,7 @@ function TournamentPage() {
                   <Link
                     to="/cricket/tournaments/$slug"
                     params={{ slug: o.slug }}
-                    className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5 text-sm hover:bg-muted/60"
+                    className="inline-flex min-h-11 items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5 text-sm hover:bg-muted/60"
                   >
                     <span aria-hidden>{o.emoji}</span> {o.longName}
                   </Link>
