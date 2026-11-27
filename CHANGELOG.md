@@ -225,6 +225,12 @@
 - Logged: up-to-181-request tournament date scan as a known perf follow-up in `DECISIONS.md`.
 - Kept: Euro/Copa roadmaps, calendar strip and month groups.
 
+## FB-12 football competition scores
+
+- Fixed: local kickoff label and generic date heading mount-gated; query/payload errors now show a retryable ErrorState; shared not-found/error boundaries; reduced-motion skeleton.
+- Logged: shared `DateScrubber` locale/UTC hydration risk in `BLOCKERS.md`.
+- Kept: Euro/Copa heroes, ticker, date scrubber, jump bar and recap.
+
 ## Foundation
 
 - Added overhaul documentation: `PROJECT_NOTES.md`, `HEALTH_BASELINE.md`, `SCREEN_INVENTORY.md`, `DESIGN_SYSTEM.md`, `PROGRESS.md`, `DECISIONS.md`, `BLOCKERS.md`, `SECURITY_FINDINGS.md`.

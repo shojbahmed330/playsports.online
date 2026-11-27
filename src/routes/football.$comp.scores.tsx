@@ -17,6 +17,9 @@ import { CopaOnThisDayFinal } from "@/components/football/CopaOnThisDayFinal";
 import { CompetitionMatchList } from "@/components/football/CompetitionMatchList";
 import { LastEditionRecap } from "@/components/football/LastEditionRecap";
 import { buildCompetitionHead } from "@/lib/competition-head";
+import { EmptyState, ErrorState } from "@/components/ui/state";
+import { errorMessage } from "@/lib/error-message";
+import { useEffect } from "react";
 
 export const Route = createFileRoute("/football/$comp/scores")({
   loader: ({ params, context }) => {
@@ -46,7 +49,19 @@ export const Route = createFileRoute("/football/$comp/scores")({
     });
   },
   component: ScoresPage,
-  notFoundComponent: () => <div className="p-10 text-center">Competition not found.</div>,
+  errorComponent: ({ error, reset }) => (
+    <div className="mx-auto max-w-3xl px-4 py-10">
+      <ErrorState title="Could not load scores" message={errorMessage(error)} onRetry={reset} />
+    </div>
+  ),
+  notFoundComponent: () => (
+    <div className="mx-auto max-w-3xl px-4 py-10">
+      <EmptyState
+        title="Competition not found"
+        description="This competition is not in the football directory."
+      />
+    </div>
+  ),
 });
 
 function ScoresPage() {
@@ -54,6 +69,12 @@ function ScoresPage() {
   const comp = requireCompetition(raw.slug);
   const isEuro = comp.slug === "euro";
   const isCopa = comp.slug === "copa-america";
+  const [hydrated, setHydrated] = useState(false);
+
+  useEffect(() => {
+    setHydrated(true);
+  }, []);
+
   const [day, setDay] = useState<Date>(() => new Date());
   const [filter, setFilter] = useState<ScoresFilter>("all");
   const isToday = toYmd(day) === toYmd(new Date());
@@ -80,20 +101,35 @@ function ScoresPage() {
   const live = games.filter((g) => g.status === "in");
   const today = games.filter((g) => g.status !== "post");
   const nextGame = today.find((g) => g.status === "pre");
-  const nextLabel = nextGame
-    ? new Date(nextGame.startTs).toLocaleString(undefined, {
-        weekday: "short",
-        hour: "numeric",
-        minute: "2-digit",
-      })
-    : null;
+  const nextLabel =
+    hydrated && nextGame
+      ? new Date(nextGame.startTs).toLocaleString(undefined, {
+          weekday: "short",
+          hour: "numeric",
+          minute: "2-digit",
+        })
+      : null;
+  const feedError =
+    q.isError || q.data?.error ? (
+      <ErrorState
+        title="Live scores temporarily unavailable"
+        message={
+          q.isError ? errorMessage(q.error) : (q.data?.error ?? "Please refresh in a moment.")
+        }
+        onRetry={() => void q.refetch()}
+        className="border-white/10 bg-white/[0.02]"
+      />
+    ) : null;
 
-  const counts = useMemo(() => ({
-    all: games.length,
-    live: live.length,
-    upcoming: games.filter((g) => g.status === "pre").length,
-    final: games.filter((g) => g.status === "post").length,
-  }), [games, live.length]);
+  const counts = useMemo(
+    () => ({
+      all: games.length,
+      live: live.length,
+      upcoming: games.filter((g) => g.status === "pre").length,
+      final: games.filter((g) => g.status === "post").length,
+    }),
+    [games, live.length],
+  );
 
   const filtered = useMemo(() => {
     if (filter === "all") return games;
@@ -125,21 +161,14 @@ function ScoresPage() {
           <EuroPastFinalsStrip value={day} />
 
           <div className="mt-4">
-            {q.isLoading ? (
+            {feedError ? (
+              feedError
+            ) : q.isLoading ? (
               <SkeletonList />
-            ) : q.data?.error ? (
-              <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-6 py-10 text-center text-sm text-muted-foreground">
-                Live scores are temporarily unavailable. Please refresh in a moment.
-              </div>
             ) : filtered.length === 0 ? (
               <div className="space-y-4">
                 {isToday && <EuroQualifyingBanner />}
-                <ScoresEmptyState
-                  comp={comp}
-                  value={day}
-                  onJumpTo={setDay}
-                  showRecap={isToday}
-                />
+                <ScoresEmptyState comp={comp} value={day} onJumpTo={setDay} showRecap={isToday} />
               </div>
             ) : (
               <ScoresGroupedList games={filtered} compSlug={comp.slug} />
@@ -164,26 +193,19 @@ function ScoresPage() {
           <CopaOnThisDayFinal value={day} />
 
           <div className="mt-4">
-            {q.isLoading ? (
+            {feedError ? (
+              feedError
+            ) : q.isLoading ? (
               <SkeletonList />
-            ) : q.data?.error ? (
-              <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-6 py-10 text-center text-sm text-muted-foreground">
-                Live scores are temporarily unavailable. Please refresh in a moment.
-              </div>
             ) : filtered.length === 0 ? (
               <div className="space-y-4">
                 {isToday && (
                   <div className="rounded-2xl border border-amber-400/20 bg-amber-500/[0.05] px-4 py-3 text-[13px] text-amber-100">
-                    Next Copa América · <span className="font-bold">2028</span> — off-season below, browse the {" "}
-                    <span className="font-bold">2024 recap</span>.
+                    Next Copa América · <span className="font-bold">2028</span> — off-season below,
+                    browse the <span className="font-bold">2024 recap</span>.
                   </div>
                 )}
-                <ScoresEmptyState
-                  comp={comp}
-                  value={day}
-                  onJumpTo={setDay}
-                  showRecap={isToday}
-                />
+                <ScoresEmptyState comp={comp} value={day} onJumpTo={setDay} showRecap={isToday} />
               </div>
             ) : (
               <ScoresGroupedList games={filtered} compSlug={comp.slug} />
@@ -196,21 +218,24 @@ function ScoresPage() {
         // Non-Euro competitions: keep existing simple layout.
         <>
           <h2 className="text-lg sm:text-xl font-bold mb-4">
-            {isToday
+            {!hydrated || isToday
               ? "Live & Today"
-              : day.toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" })}
+              : day.toLocaleDateString(undefined, {
+                  weekday: "long",
+                  month: "long",
+                  day: "numeric",
+                })}
           </h2>
           <DateScrubber value={day} onChange={setDay} />
-          {q.isLoading ? (
+          {feedError ? (
+            feedError
+          ) : q.isLoading ? (
             <SkeletonList />
-          ) : q.data?.error ? (
-            <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-6 py-10 text-center text-sm text-muted-foreground">
-              Live scores are temporarily unavailable. Please refresh in a moment.
-            </div>
           ) : games.length === 0 && comp.kind === "tournament" && isToday ? (
             <div className="mt-2">
               <p className="mb-4 text-sm text-muted-foreground">
-                No {comp.shortName} matches scheduled around this date. Here&apos;s the last completed edition:
+                No {comp.shortName} matches scheduled around this date. Here&apos;s the last
+                completed edition:
               </p>
               <LastEditionRecap comp={comp} />
             </div>
@@ -233,7 +258,7 @@ function SkeletonList() {
       {Array.from({ length: 4 }).map((_, i) => (
         <li
           key={i}
-          className="h-[104px] rounded-2xl border border-white/10 bg-white/[0.03] animate-pulse"
+          className="h-[104px] rounded-2xl border border-white/10 bg-white/[0.03] animate-pulse motion-reduce:animate-none"
         />
       ))}
     </ul>
