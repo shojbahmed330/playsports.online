@@ -110,6 +110,12 @@
 - Added: CollectionPage JSON-LD; neutral season badge.
 - Kept: static all-time record book, search/filter/sort, live leaderboard panel.
 
+## CRK-11 IPL team profile
+
+- Fixed: squad errors show Retry; branded error boundary and shared not-found state; associated season label; 44 px season/tab controls; `aria-pressed` tabs; shared empty states; reduced-motion hero/squad; accessible trophy counts.
+- Added: OG/Twitter meta.
+- Kept: hero, captain timeline, squad grid, fixtures, H2H and titles tabs.
+
 ## Foundation
 
 - Added overhaul documentation: `PROJECT_NOTES.md`, `HEALTH_BASELINE.md`, `SCREEN_INVENTORY.md`, `DESIGN_SYSTEM.md`, `PROGRESS.md`, `DECISIONS.md`, `BLOCKERS.md`, `SECURITY_FINDINGS.md`.

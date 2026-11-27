@@ -8,6 +8,7 @@ import { IplPageShell } from "@/components/ipl/IplPageShell";
 import { CricketMatchCard } from "@/components/cricket/CricketMatchCard";
 import { CricketPlayerSheet } from "@/components/cricket/CricketPlayerSheet";
 import { PlayerLink } from "@/components/cricket/PlayerLink";
+import { EmptyState, ErrorState } from "@/components/ui/state";
 import { toCricketMatch } from "@/components/ipl/toCricketMatch";
 
 import { getIplTeam, getIplTeamSquad, IPL_SEASON_IDS } from "@/lib/ipl.functions";
@@ -55,6 +56,14 @@ export const Route = createFileRoute("/cricket/ipl/teams/$teamId")({
             },
             { property: "og:url", content: url },
             { property: "og:image", content: loaderData.team.logo },
+            { property: "og:type", content: "website" },
+            { property: "og:site_name", content: "PlaySports" },
+            { name: "twitter:card", content: "summary_large_image" },
+            { name: "twitter:title", content: `${loaderData.team.name} — IPL` },
+            {
+              name: "twitter:description",
+              content: `Squad, fixtures and title history for ${loaderData.team.name}.`,
+            },
           ]
         : [{ title: "IPL Team" }, { property: "og:url", content: url }],
       links: [{ rel: "canonical", href: url }],
@@ -82,18 +91,27 @@ export const Route = createFileRoute("/cricket/ipl/teams/$teamId")({
 
   notFoundComponent: () => (
     <IplPageShell title="Team not found">
-      <p className="text-white/60">
-        That franchise does not exist.{" "}
-        <Link to="/cricket/ipl/teams" className="underline">
-          Back to teams
-        </Link>
-        .
-      </p>
+      <EmptyState
+        title="Franchise not found"
+        description="That franchise does not exist in the IPL directory."
+        action={
+          <Link
+            to="/cricket/ipl/teams"
+            className="inline-flex min-h-11 items-center rounded-full bg-white/10 px-4 text-sm font-bold text-white ring-1 ring-white/15"
+          >
+            Back to all teams
+          </Link>
+        }
+      />
     </IplPageShell>
   ),
-  errorComponent: ({ error }) => (
+  errorComponent: ({ error, reset }) => (
     <IplPageShell title="Could not load team">
-      <p className="text-rose-300">{errorMessage(error)}</p>
+      <ErrorState
+        title="Could not load this franchise"
+        message={errorMessage(error)}
+        onRetry={reset}
+      />
     </IplPageShell>
   ),
   component: TeamPage,
@@ -189,13 +207,13 @@ function TeamPage() {
         {/* shine sweep */}
         <span
           aria-hidden
-          className="pointer-events-none absolute inset-0 -translate-x-full animate-[iplShine_3.6s_ease-in-out_infinite] bg-gradient-to-r from-transparent via-white/15 to-transparent"
+          className="pointer-events-none absolute inset-0 -translate-x-full animate-[iplShine_3.6s_ease-in-out_infinite] bg-gradient-to-r from-transparent via-white/15 to-transparent motion-reduce:animate-none"
         />
         <div className="relative grid grid-cols-[minmax(0,1fr)_auto] items-center gap-4 sm:flex sm:justify-between">
           <div className="min-w-0">
             <div className="inline-flex items-center gap-2 rounded-full bg-black/25 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.22em] ring-1 ring-white/15">
-              <span className="size-1.5 rounded-full bg-white animate-pulse" /> {t.short} · IPL
-              Franchise
+              <span className="size-1.5 rounded-full bg-white animate-pulse motion-reduce:animate-none" />{" "}
+              {t.short} · IPL Franchise
             </div>
             <h2 className="mt-2 truncate text-2xl sm:text-4xl font-black drop-shadow-[0_2px_8px_rgba(0,0,0,0.45)]">
               {t.name}
@@ -222,16 +240,20 @@ function TeamPage() {
 
       {/* Season selector */}
       <div className="mt-6 flex items-center gap-2">
-        <Calendar className="size-3.5 text-white/40" />
-        <label className="text-[10px] font-black uppercase tracking-widest text-white/40">
+        <Calendar aria-hidden="true" className="size-3.5 text-white/40" />
+        <label
+          htmlFor="ipl-team-season"
+          className="text-[10px] font-black uppercase tracking-widest text-white/40"
+        >
           Season
         </label>
         <select
+          id="ipl-team-season"
           value={String(seasonYear)}
           onChange={(e) =>
             setSeasonYear(e.target.value === "current" ? "current" : Number(e.target.value))
           }
-          className="rounded-md border border-white/10 bg-gray-900/70 px-2.5 py-1 text-xs font-bold text-white focus:border-white/30 focus:outline-none"
+          className="min-h-11 rounded-md border border-white/10 bg-gray-900/70 px-2.5 py-1 text-xs font-bold text-white focus:border-white/30 focus:outline-none focus:ring-2 focus:ring-white/30"
         >
           {IPL_SEASON_IDS.map((s) => (
             <option key={String(s.year)} value={String(s.year)}>
@@ -256,8 +278,9 @@ function TeamPage() {
           <button
             key={opt.id}
             type="button"
+            aria-pressed={tab === opt.id}
             onClick={() => setTab(opt.id)}
-            className={`shrink-0 rounded-full px-3.5 py-1.5 text-[12px] font-bold transition ${
+            className={`inline-flex min-h-11 shrink-0 items-center rounded-full px-3.5 text-[12px] font-bold transition ${
               tab === opt.id ? "bg-white text-gray-950 shadow-sm" : "text-white/65 hover:text-white"
             }`}
             style={tab === opt.id ? { background: t.primary, color: t.ink } : undefined}
@@ -273,7 +296,7 @@ function TeamPage() {
           <section className="mt-6 grid gap-3 sm:grid-cols-2">
             <div className="rounded-2xl border border-white/5 bg-gray-900/60 p-4">
               <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-white/40">
-                <MapPin className="size-3.5" /> Home venue
+                <MapPin aria-hidden="true" className="size-3.5" /> Home venue
               </div>
               <h3 className="mt-2 text-base font-black text-white">{t.homeGround}</h3>
               <p className="mt-1 text-xs text-white/55">{t.city}</p>
@@ -288,7 +311,7 @@ function TeamPage() {
             </div>
             <div className="rounded-2xl border border-white/5 bg-gray-900/60 p-4">
               <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-white/40">
-                <Crown className="size-3.5" /> Captain timeline
+                <Crown aria-hidden="true" className="size-3.5" /> Captain timeline
               </div>
               {captainTimeline.length === 0 ? (
                 <p className="mt-3 text-sm text-white/55">Captain timeline coming soon.</p>
@@ -304,7 +327,13 @@ function TeamPage() {
                       </PlayerLink>
                       <span className="shrink-0 text-[11px] text-white/55">
                         {c.years}
-                        {c.titles > 0 ? ` · 🏆${c.titles}` : ""}
+                        {c.titles > 0 ? (
+                          <>
+                            <span aria-hidden="true"> · 🏆</span>
+                            <span className="sr-only"> · titles: </span>
+                            {c.titles}
+                          </>
+                        ) : null}
                       </span>
                     </li>
                   ))}
@@ -326,19 +355,30 @@ function TeamPage() {
                 : `${squadQ.data?.players.length ?? 0} players this season`}
             </span>
           </div>
-          {squadQ.isLoading ? (
-            <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-6">
+          {squadQ.isError ? (
+            <ErrorState
+              title="Could not load the squad"
+              message={errorMessage(squadQ.error)}
+              onRetry={() => void squadQ.refetch()}
+            />
+          ) : squadQ.isLoading ? (
+            <div
+              className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-6"
+              role="status"
+              aria-label="Loading squad"
+            >
               {Array.from({ length: 12 }).map((_, i) => (
                 <div
                   key={i}
-                  className="h-28 animate-pulse rounded-xl bg-white/[0.04] ring-1 ring-white/10"
+                  className="h-28 animate-pulse rounded-xl bg-white/[0.04] ring-1 ring-white/10 motion-reduce:animate-none"
                 />
               ))}
             </div>
           ) : (squadQ.data?.players.length ?? 0) === 0 ? (
-            <p className="px-1 text-sm text-white/60">
-              Squad data will appear once this season has completed matches.
-            </p>
+            <EmptyState
+              title="No squad published yet"
+              description="Squad data appears once this season has completed matches."
+            />
           ) : (
             <ul className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-6">
               {squadQ.data!.players.map((p) => (
@@ -346,7 +386,7 @@ function TeamPage() {
                   <button
                     type="button"
                     onClick={() => setActiveAthlete(p.athleteId)}
-                    className="group relative w-full overflow-hidden rounded-xl bg-white/[0.04] p-3 ring-1 ring-white/10 transition hover:-translate-y-0.5 hover:bg-white/[0.08] hover:ring-white/20 focus:outline-none focus:ring-2 focus:ring-amber-300/60"
+                    className="group relative w-full overflow-hidden rounded-xl bg-white/[0.04] p-3 ring-1 ring-white/10 transition hover:-translate-y-0.5 hover:bg-white/[0.08] hover:ring-white/20 focus:outline-none focus:ring-2 focus:ring-amber-300/60 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
                   >
                     <span
                       aria-hidden
@@ -397,9 +437,10 @@ function TeamPage() {
             Title-winning seasons
           </h3>
           {titleSeasons.length === 0 ? (
-            <p className="px-1 text-sm text-white/60">
-              No championships yet — every season is a fresh shot.
-            </p>
+            <EmptyState
+              title="No championships yet"
+              description="Every season is a fresh shot at the title."
+            />
           ) : (
             <ul className="grid gap-2 sm:grid-cols-2">
               {titleSeasons.map((s) => (
@@ -425,9 +466,10 @@ function TeamPage() {
             This season's fixtures
           </h3>
           {data.fixtures.length === 0 ? (
-            <p className="px-1 text-sm text-white/60">
-              No fixtures published yet for the current season.
-            </p>
+            <EmptyState
+              title="No fixtures yet"
+              description="Fixtures appear once the schedule is published."
+            />
           ) : (
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {data.fixtures.map((m) => (
@@ -445,7 +487,10 @@ function TeamPage() {
             Head-to-head this season
           </h3>
           {h2h.length === 0 ? (
-            <p className="px-1 text-sm text-white/60">No opponents tracked yet.</p>
+            <EmptyState
+              title="No opponents tracked yet"
+              description="Head-to-head records build up as the season progresses."
+            />
           ) : (
             <ul className="grid gap-2 sm:grid-cols-2">
               {h2h.map((o) => {
