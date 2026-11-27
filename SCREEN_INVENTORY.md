@@ -3,7 +3,7 @@
 Generated from the real router files in `src/routes` and cross-checked against `src/routeTree.gen.ts`.
 
 
-> **Execution status:** the foundation plus 51 route screens are DONE (Home, the full Cricket module, 7 football programmatic screens and 17 football competition pages). The remaining 99 route screens are marked BLOCKED for this session because the per-screen audit/implementation budget was exhausted; the reason is recorded in `BLOCKERS.md` and the recommended order is in `FINAL_REPORT.md`. This is a resource blocker, not a claim that the screen is broken.
+> **Execution status:** the foundation plus 52 route screens are DONE (Home, the full Cricket module, 7 football programmatic screens, 17 football competition pages and My Football). The remaining 98 route screens are marked BLOCKED for this session because the per-screen audit/implementation budget was exhausted; the reason is recorded in `BLOCKERS.md` and the recommended order is in `FINAL_REPORT.md`. This is a resource blocker, not a claim that the screen is broken.
 
 ## 1. Summary
 
@@ -263,7 +263,7 @@ Generated from the real router files in `src/routes` and cross-checked against `
 | FB-22 | Football | — | Football | Full page | `/football`<br>`src/routes/football.index.tsx` | SSR loader; client query; JSON-LD; head meta | sports/SportNav, wc/TournamentInfoCard, wc/GroupStage, wc/MatchCard | wc2026.functions | loading, empty, error | BLOCKED |
 | FB-23 | Football | FB-22 | Football Match Id | Full page | `/football/match/:id`<br>`src/routes/football.match.$id.tsx` | SSR loader; client query; JSON-LD; head meta | wc/LiveMatchCenter, wc/WatchLivePanel, seo/MatchFaqBlock, affiliates/AffiliateStrip | wc2026.functions | loading, empty, error | BLOCKED |
 | FB-24 | Football | FB-22 | Football Matches Slug | Full page | `/football/matches/:slug`<br>`src/routes/football.matches.$slug.tsx` | SSR loader; JSON-LD; head meta | ads/AdSlot, news/MatchRecapCard | server fn / query | loading, error | BLOCKED |
-| FB-25 | Football | FB-22 | Football Mine | Full page | `/football/mine`<br>`src/routes/football.mine.tsx` | client query; head meta | — | wc2026.functions | loading, empty | BLOCKED |
+| FB-25 | Football | FB-22 | Football Mine | Full page | `/football/mine`<br>`src/routes/football.mine.tsx` | Starred-team live/upcoming/recent feed; reminders | ui/state | wc2026.functions + local storage | loading, empty, error+retry | DONE |
 | FB-26 | Football | FB-22 | Football Players Slug | Full page | `/football/players/:slug`<br>`src/routes/football.players.$slug.index.tsx` | SSR loader; JSON-LD; head meta | ads/AdSlot, seo/FaqSection, seo/RelatedLinks | server fn / query | empty, error | BLOCKED |
 | FB-27 | Football | FB-22 | Football Players Slug World Cup Year | Full page | `/football/players/:slug/world-cup-:year`<br>`src/routes/football.players.$slug.world-cup-{$year}.tsx` | SSR loader; JSON-LD; head meta | seo/RelatedLinks | server fn / query | empty, error | BLOCKED |
 | FB-28 | Football | FB-22 | Football Players | Full page | `/football/players`<br>`src/routes/football.players.index.tsx` | SSR A–Z goalscorer index with letter anchors | ui/state, seo/withHubLinks | programmatic entities | empty | DONE |

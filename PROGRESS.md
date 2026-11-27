@@ -3,10 +3,10 @@
 Updated: 2026-11-27 (session 1 closed with a logged resource blocker)
 
 - Branch: `professional-overhaul` (never pushed)
-- Current phase: **session 2 — football competition pages**
-- Current screen: FB-25 football mine
-- Screens done: **51 / 150**
-- Screens blocked: **99** (resource, see `BLOCKERS.md`)
+- Current phase: **session 2 — football pages**
+- Current screen: FB-18 campaign detail
+- Screens done: **52 / 150**
+- Screens blocked: **98** (resource, see `BLOCKERS.md`)
 - Screens in progress: 0
 
 ## Completed

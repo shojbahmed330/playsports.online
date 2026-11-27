@@ -266,6 +266,11 @@
 - Fixed: shared error/not-found/empty states; hidden stat icons; 44 px links; removed duplicate season label from the head title.
 - Kept: edition recap, awards, squad and notable moments.
 
+## FB-25 football mine
+
+- Fixed: feed errors retryable; shared empty/error states and removed the local component; page header no longer sticky under the shared nav; hidden icons, reduced-motion spinner/cards, 44 px controls, focus rings; removed `any` search updater.
+- Kept: starred-team live/upcoming/recent feed and reminders.
+
 ## Foundation
 
 - Added overhaul documentation: `PROJECT_NOTES.md`, `HEALTH_BASELINE.md`, `SCREEN_INVENTORY.md`, `DESIGN_SYSTEM.md`, `PROGRESS.md`, `DECISIONS.md`, `BLOCKERS.md`, `SECURITY_FINDINGS.md`.
