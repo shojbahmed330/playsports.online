@@ -286,6 +286,11 @@
 - Fixed: shared error/not-found states with retry; labelled breadcrumb; hidden separators; human dates; 44 px links/focus rings; privacy-enhanced YouTube; OG site name/Twitter meta.
 - Kept: score, highlights, recap, FAQs and related matches.
 
+## FB-29 football records category
+
+- Fixed: shared error/not-found/empty states; zero-match goals-per-game guard; shared card surface; labelled breadcrumb; hidden separators; table caption/`scope`; 44 px links/focus rings; OG site name/Twitter meta.
+- Kept: all-time scorers, iconic records, 2026 live totals and tournament totals.
+
 ## Foundation
 
 - Added overhaul documentation: `PROJECT_NOTES.md`, `HEALTH_BASELINE.md`, `SCREEN_INVENTORY.md`, `DESIGN_SYSTEM.md`, `PROGRESS.md`, `DECISIONS.md`, `BLOCKERS.md`, `SECURITY_FINDINGS.md`.

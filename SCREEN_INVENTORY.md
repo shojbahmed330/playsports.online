@@ -3,7 +3,7 @@
 Generated from the real router files in `src/routes` and cross-checked against `src/routeTree.gen.ts`.
 
 
-> **Execution status:** the foundation plus 55 route screens are DONE (Home, the full Cricket module, 7 football programmatic screens, 17 football competition pages, My Football, campaign/country/match detail). The remaining 95 route screens are marked BLOCKED for this session because the per-screen audit/implementation budget was exhausted; the reason is recorded in `BLOCKERS.md` and the recommended order is in `FINAL_REPORT.md`. This is a resource blocker, not a claim that the screen is broken.
+> **Execution status:** the foundation plus 56 route screens are DONE (Home, the full Cricket module, 7 football programmatic screens, 17 football competition pages, My Football, campaign/country/match detail and records). The remaining 94 route screens are marked BLOCKED for this session because the per-screen audit/implementation budget was exhausted; the reason is recorded in `BLOCKERS.md` and the recommended order is in `FINAL_REPORT.md`. This is a resource blocker, not a claim that the screen is broken.
 
 ## 1. Summary
 
@@ -267,7 +267,7 @@ Generated from the real router files in `src/routes` and cross-checked against `
 | FB-26 | Football | FB-22 | Football Players Slug | Full page | `/football/players/:slug`<br>`src/routes/football.players.$slug.index.tsx` | SSR loader; JSON-LD; head meta | ads/AdSlot, seo/FaqSection, seo/RelatedLinks | server fn / query | empty, error | BLOCKED |
 | FB-27 | Football | FB-22 | Football Players Slug World Cup Year | Full page | `/football/players/:slug/world-cup-:year`<br>`src/routes/football.players.$slug.world-cup-{$year}.tsx` | SSR loader; JSON-LD; head meta | seo/RelatedLinks | server fn / query | empty, error | BLOCKED |
 | FB-28 | Football | FB-22 | Football Players | Full page | `/football/players`<br>`src/routes/football.players.index.tsx` | SSR A–Z goalscorer index with letter anchors | ui/state, seo/withHubLinks | programmatic entities | empty | DONE |
-| FB-29 | Football | FB-22 | Football Records Category | Full page | `/football/records/:category`<br>`src/routes/football.records.$category.tsx` | SSR loader; JSON-LD; head meta | — | server fn / query | empty, error | BLOCKED |
+| FB-29 | Football | FB-22 | Football Records Category | Full page | `/football/records/:category`<br>`src/routes/football.records.$category.tsx` | Four records views: all-time scorers, iconic records, 2026 live totals, tournament totals | ui/state | static record data + merged live goals/cards | empty, error+retry, 404 | DONE |
 | FB-30 | Football | FB-22 | Football Teams Slug | Full page | `/football/teams/:slug`<br>`src/routes/football.teams.$slug.tsx` | SSR loader; JSON-LD; head meta | ads/AdSlot, seo/FaqSection, seo/RelatedLinks | server fn / query | empty, error | BLOCKED |
 | FB-31 | Football | FB-22 | Football Top Scorers Year | Full page | `/football/top-scorers/:year`<br>`src/routes/football.top-scorers.$year.tsx` | SSR year/all-time scorer table; FAQ; year nav | ads/AdSlot, seo/withYearNav, ui/state | static entities | empty, error+retry, 404 | DONE |
 | FB-32 | Football | FB-22 | Football Top Scorers | Full page | `/football/top-scorers`<br>`src/routes/football.top-scorers.index.tsx` | All-time feature + yearly top-scorer links | ui/state, seo/withHubLinks | static entities | empty | DONE |
