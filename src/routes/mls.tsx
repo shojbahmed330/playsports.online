@@ -3,6 +3,7 @@ import { SportNav } from "@/components/sports/SportNav";
 import { MlsHero } from "@/components/mls/MlsHero";
 import { MlsSubNav } from "@/components/mls/MlsSubNav";
 import { Breadcrumbs } from "@/components/nav/Breadcrumbs";
+import { canonical } from "@/lib/seo/canonical";
 
 export const Route = createFileRoute("/mls")({
   head: () => ({
@@ -19,7 +20,17 @@ export const Route = createFileRoute("/mls")({
         content:
           "Everything MLS — live games, standings, teams, leaders, player stats, championships.",
       },
+      { property: "og:url", content: canonical("/mls") },
+      { property: "og:type", content: "website" },
+      { property: "og:site_name", content: "PlaySports" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "MLS Hub — Live Scores, Standings, Players, History" },
+      {
+        name: "twitter:description",
+        content: "Everything MLS — live games, standings, teams, leaders and championships.",
+      },
     ],
+    links: [{ rel: "canonical", href: canonical("/mls") }],
   }),
   component: MlsLayout,
 });

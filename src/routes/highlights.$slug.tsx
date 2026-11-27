@@ -5,6 +5,7 @@ import { slugify } from "@/lib/seo/programmatic";
 import { canonical } from "@/lib/seo/canonical";
 import { breadcrumbList, videoObject, faqPage, ldScript } from "@/lib/seo/jsonld";
 import { relatedHighlights } from "@/lib/seo/related";
+import { EmptyState, ErrorState } from "@/components/ui/state";
 
 export const Route = createFileRoute("/highlights/$slug")({
   loader: ({ params }) => {
@@ -32,7 +33,12 @@ export const Route = createFileRoute("/highlights/$slug")({
         { property: "og:description", content: desc },
         { property: "og:url", content: canonical(path) },
         { property: "og:type", content: "video.other" },
+        { property: "og:site_name", content: "PlaySports" },
         { property: "og:image", content: thumb },
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: desc },
+        { name: "twitter:image", content: thumb },
       ],
       links: [{ rel: "canonical", href: canonical(path) }],
       scripts: [
@@ -42,7 +48,7 @@ export const Route = createFileRoute("/highlights/$slug")({
             description: desc,
             path,
             thumbnailUrl: thumb,
-            uploadDate: new Date().toISOString(),
+            uploadDate: "2026-01-01T00:00:00.000Z",
             embedUrl: embed,
             contentUrl: h.videoUrl,
           }),
@@ -68,8 +74,31 @@ export const Route = createFileRoute("/highlights/$slug")({
     };
   },
   component: HighlightPage,
-  errorComponent: ({ error }) => <div className="p-6">Error: {errorMessage(error)}</div>,
-  notFoundComponent: () => <div className="p-6">Highlight not found.</div>,
+  errorComponent: ({ error, reset }) => (
+    <div className="mx-auto max-w-3xl px-4 py-10">
+      <ErrorState
+        title="Could not load this highlight"
+        message={errorMessage(error)}
+        onRetry={reset}
+      />
+    </div>
+  ),
+  notFoundComponent: () => (
+    <div className="mx-auto max-w-3xl px-4 py-16">
+      <EmptyState
+        title="Highlight not found"
+        description="This highlight is not in the archive."
+        action={
+          <Link
+            to="/highlights"
+            className="inline-flex min-h-11 items-center rounded-full bg-primary px-4 text-sm font-bold text-primary-foreground hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            All highlights
+          </Link>
+        }
+      />
+    </div>
+  ),
 });
 
 function HighlightPage() {
@@ -77,16 +106,28 @@ function HighlightPage() {
   const related = relatedHighlights(h, 12);
   return (
     <div className="container mx-auto px-4 py-6 pb-20 max-w-4xl">
-      <nav className="text-xs text-muted-foreground mb-3">
-        <Link to="/" className="hover:underline">
+      <nav
+        aria-label="Breadcrumb"
+        className="mb-3 flex flex-wrap items-center text-xs text-muted-foreground"
+      >
+        <Link
+          to="/"
+          className="inline-flex min-h-11 items-center hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
           Home
-        </Link>{" "}
-        /{" "}
-        <Link to="/football" className="hover:underline">
+        </Link>
+        <span aria-hidden="true"> / </span>
+        <Link
+          to="/football"
+          className="inline-flex min-h-11 items-center hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
           Football
-        </Link>{" "}
-        /{" "}
-        <Link to="/highlights" className="hover:underline">
+        </Link>
+        <span aria-hidden="true"> / </span>
+        <Link
+          to="/highlights"
+          className="inline-flex min-h-11 items-center hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
           Highlights
         </Link>
       </nav>
@@ -119,7 +160,7 @@ function HighlightPage() {
           <iframe
             className="h-full w-full"
             loading="lazy"
-            src={`https://www.youtube.com/embed/${h.youtubeId}`}
+            src={`https://www.youtube-nocookie.com/embed/${h.youtubeId}`}
             title={`${h.teamA} vs ${h.teamB} highlights`}
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
@@ -130,7 +171,7 @@ function HighlightPage() {
           href={h.videoUrl}
           target="_blank"
           rel="noreferrer"
-          className="inline-block rounded-lg bg-primary px-4 py-2 text-primary-foreground"
+          className="inline-flex min-h-11 items-center rounded-full bg-primary px-4 text-primary-foreground hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           Watch on YouTube
         </a>
@@ -144,7 +185,7 @@ function HighlightPage() {
               <a
                 key={x.href}
                 href={x.href}
-                className="px-3 py-1 rounded-full bg-muted text-xs hover:bg-accent"
+                className="inline-flex min-h-11 items-center rounded-full bg-muted px-3 text-xs hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 {x.label.replace(" — highlights", "")}
               </a>

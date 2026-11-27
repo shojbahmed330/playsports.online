@@ -9,12 +9,17 @@ import { SPORT_META } from "@/data/team-directory";
 import { formatLocalTime } from "@/lib/time";
 import { flagOf } from "@/lib/flags";
 import { toast } from "sonner";
+import { EmptyState as SharedEmptyState } from "@/components/ui/state";
 
 export const Route = createFileRoute("/mine")({
   head: () => ({
     meta: [
       { title: "My Feed — Favorite Teams & Reminders | PlaySports" },
-      { name: "description", content: "Your personal cross-sport feed on PlaySports: favorite teams' live matches, upcoming fixtures with kickoff reminders and recent results — football, cricket, NBA, NHL, MLB, MLS." },
+      {
+        name: "description",
+        content:
+          "Your personal cross-sport feed on PlaySports: favorite teams' live matches, upcoming fixtures with kickoff reminders and recent results — football, cricket, NBA, NHL, MLB, MLS.",
+      },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -27,7 +32,12 @@ const LAST_RESULT_KEY = "mine:last-result:";
 
 function MinePage() {
   const [snapshot, setSnapshot] = useState<Record<Sport, string[]>>({
-    football: [], cricket: [], nba: [], nhl: [], mlb: [], mls: [],
+    football: [],
+    cricket: [],
+    nba: [],
+    nhl: [],
+    mlb: [],
+    mls: [],
   });
   const [pickerOpen, setPickerOpen] = useState(false);
   const [pickerSport, setPickerSport] = useState<Sport>("football");
@@ -45,7 +55,12 @@ function MinePage() {
     };
   }, []);
 
-  const { items: reminders, add: addReminder, has: hasReminder, remove: removeReminder } = useMatchReminders();
+  const {
+    items: reminders,
+    add: addReminder,
+    has: hasReminder,
+    remove: removeReminder,
+  } = useMatchReminders();
   const { live, upcoming, recent, loading } = useMyMatches(snapshot);
   const totalStarred = Object.values(snapshot).reduce((s, l) => s + l.length, 0);
 
@@ -80,9 +95,14 @@ function MinePage() {
             body: `${m.home.name} ${m.home.score ?? ""}–${m.away.score ?? ""} ${m.away.name}`,
             tag: m.key,
           });
-          n.onclick = () => { window.focus(); window.location.href = m.href; };
+          n.onclick = () => {
+            window.focus();
+            window.location.href = m.href;
+          };
         }
-      } catch { /* ignore */ }
+      } catch {
+        /* ignore */
+      }
     });
   }, [notify, upcoming, recent, addReminder, hasReminder]);
 
@@ -93,45 +113,68 @@ function MinePage() {
       toast("Notifications paused");
       return;
     }
-    if (!("Notification" in window)) { toast("This browser doesn't support notifications"); return; }
+    if (!("Notification" in window)) {
+      toast("This browser doesn't support notifications");
+      return;
+    }
     let p = Notification.permission;
     if (p === "default") p = await Notification.requestPermission();
-    if (p !== "granted") { toast("Notifications blocked by your browser"); return; }
+    if (p !== "granted") {
+      toast("Notifications blocked by your browser");
+      return;
+    }
     window.localStorage.setItem(NOTIFY_KEY, "on");
     setNotify(true);
     toast("Notifications on · we'll ping you 15 min before kickoff");
   };
 
-  const openPicker = (s: Sport) => { setPickerSport(s); setPickerOpen(true); };
+  const openPicker = (s: Sport) => {
+    setPickerSport(s);
+    setPickerOpen(true);
+  };
 
   return (
-    <div className="min-h-dvh bg-black text-foreground pb-20">
-      <header className="sticky top-0 z-30 backdrop-blur-md bg-black/80 border-b border-white/10">
-        <div className="max-w-4xl mx-auto px-3 py-2.5 flex items-center gap-2">
-          <Link to="/" className="inline-flex items-center gap-1 text-xs text-gray-400 hover:text-white shrink-0">
-            <ChevronLeft className="size-4" /> Home
+    <div className="min-h-dvh bg-background pb-20 text-foreground">
+      <header className="sticky top-0 z-30 border-b border-border bg-background/85 backdrop-blur-md">
+        <div className="mx-auto flex max-w-4xl items-center gap-2 px-3 py-2.5">
+          <Link
+            to="/"
+            className="inline-flex min-h-11 shrink-0 items-center gap-1 text-xs text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            <ChevronLeft className="size-4" aria-hidden="true" /> Home
           </Link>
-          <h1 className="flex-1 text-center text-sm font-bold text-white truncate">
-            <Star className="inline size-4 text-amber-300 mr-1 -mt-0.5 fill-amber-300" />
+          <h1 className="min-w-0 flex-1 truncate text-center text-sm font-bold text-foreground">
+            <Star
+              className="mr-1 -mt-0.5 inline size-4 fill-amber-300 text-amber-300"
+              aria-hidden="true"
+            />
             My Feed
           </h1>
           <button
+            type="button"
             onClick={toggleNotify}
+            aria-pressed={notify}
+            aria-label={notify ? "Turn match notifications off" : "Turn match notifications on"}
             title={notify ? "Turn notifications off" : "Turn notifications on"}
-            className={`inline-flex items-center gap-1 rounded-full border px-2 py-1 text-[10px] font-bold uppercase tracking-widest transition ${
+            className={`inline-flex min-h-11 items-center gap-1 rounded-full border px-2 text-[10px] font-bold uppercase tracking-widest transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
               notify
                 ? "border-emerald-400/40 bg-emerald-500/15 text-emerald-200"
-                : "border-white/15 bg-white/5 text-gray-300 hover:bg-white/10"
+                : "border-border bg-muted text-muted-foreground hover:bg-accent"
             }`}
           >
-            {notify ? <Bell className="size-3" /> : <BellOff className="size-3" />}
+            {notify ? (
+              <Bell className="size-3" aria-hidden="true" />
+            ) : (
+              <BellOff className="size-3" aria-hidden="true" />
+            )}
             {notify ? "On" : "Off"}
           </button>
           <button
+            type="button"
             onClick={() => openPicker("football")}
-            className="inline-flex items-center gap-1 rounded-full border border-amber-500/40 bg-amber-500/15 text-amber-200 px-2 py-1 text-[10px] font-bold uppercase tracking-widest hover:bg-amber-500/25"
+            className="inline-flex min-h-11 items-center gap-1 rounded-full border border-amber-500/40 bg-amber-500/15 px-2 text-[10px] font-bold uppercase tracking-widest text-amber-200 hover:bg-amber-500/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
-            <Plus className="size-3" /> Add
+            <Plus className="size-3" aria-hidden="true" /> Add
           </button>
         </div>
         {notify && (
@@ -142,35 +185,65 @@ function MinePage() {
       </header>
 
       <main className="max-w-4xl mx-auto px-3 sm:px-4 py-4 space-y-5">
-        {totalStarred === 0 && <EmptyState onPick={openPicker} />}
+        {totalStarred === 0 && (
+          <SharedEmptyState
+            title="Choose your favorite teams"
+            description="Pick teams across sports and we'll build a personal feed — live matches, upcoming fixtures and recent results."
+            action={
+              <button
+                type="button"
+                onClick={() => openPicker("football")}
+                className="inline-flex min-h-11 items-center gap-2 rounded-full bg-amber-500 px-4 text-sm font-bold text-black hover:bg-amber-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                <Plus className="size-4" aria-hidden="true" /> Add favorite teams
+              </button>
+            }
+          />
+        )}
+
+        {loading && totalStarred > 0 && (
+          <div
+            className="flex items-center justify-center py-6 text-sm text-muted-foreground"
+            role="status"
+          >
+            Loading your feed…
+          </div>
+        )}
 
         {live.length > 0 && (
           <FeedSection title="Live now" tone="text-red-300" pulse>
-            {live.map((m) => <MatchRow key={m.key} m={m} />)}
+            {live.map((m) => (
+              <MatchRow key={m.key} m={m} />
+            ))}
           </FeedSection>
         )}
         {upcoming.length > 0 && (
           <FeedSection title="Upcoming" tone="text-sky-300">
             {upcoming.map((m) => (
               <MatchRow
-                key={m.key} m={m}
+                key={m.key}
+                m={m}
                 reminderNode={
-                  m.sport === "football" && typeof m.matchId === "number"
-                    ? <ReminderButton
-                        active={hasReminder(m.matchId)}
-                        onToggle={async () => {
-                          const id = m.matchId as number;
-                          if (hasReminder(id)) { removeReminder(id); toast("Reminder cleared"); return; }
-                          const ok = await addReminder({
-                            matchId: id,
-                            title: `${m.home.name} v ${m.away.name}`,
-                            startMs: m.startMs,
-                            url: m.href,
-                          });
-                          toast(ok ? "Reminder set" : "Notifications blocked");
-                        }}
-                      />
-                    : null
+                  m.sport === "football" && typeof m.matchId === "number" ? (
+                    <ReminderButton
+                      active={hasReminder(m.matchId)}
+                      onToggle={async () => {
+                        const id = m.matchId as number;
+                        if (hasReminder(id)) {
+                          removeReminder(id);
+                          toast("Reminder cleared");
+                          return;
+                        }
+                        const ok = await addReminder({
+                          matchId: id,
+                          title: `${m.home.name} v ${m.away.name}`,
+                          startMs: m.startMs,
+                          url: m.href,
+                        });
+                        toast(ok ? "Reminder set" : "Notifications blocked");
+                      }}
+                    />
+                  ) : null
                 }
               />
             ))}
@@ -178,25 +251,46 @@ function MinePage() {
         )}
         {recent.length > 0 && (
           <FeedSection title="Recent results" tone="text-emerald-300">
-            {recent.map((m) => <MatchRow key={m.key} m={m} showResult />)}
+            {recent.map((m) => (
+              <MatchRow key={m.key} m={m} showResult />
+            ))}
           </FeedSection>
         )}
-        {totalStarred > 0 && live.length === 0 && upcoming.length === 0 && recent.length === 0 && !loading && (
-          <div className="rounded-xl border border-white/10 bg-white/[0.03] p-5 text-center text-xs text-gray-400">
-            No scheduled matches yet for your starred teams — check back closer to matchday.
-          </div>
-        )}
+        {totalStarred > 0 &&
+          live.length === 0 &&
+          upcoming.length === 0 &&
+          recent.length === 0 &&
+          !loading && (
+            <SharedEmptyState
+              title="No scheduled matches yet"
+              description="Check back closer to matchday for your starred teams."
+            />
+          )}
 
         {reminders.length > 0 && (
           <FeedSection title={`Active reminders (${reminders.length})`} tone="text-amber-300">
             {reminders.map((r) => (
-              <li key={r.matchId} className="flex items-center justify-between rounded-lg bg-black/40 border border-white/10 px-3 py-2 text-xs">
-                <Link to="/football/match/$id" params={{ id: String(r.matchId) }} className="flex-1 min-w-0 truncate text-white font-semibold hover:text-amber-300">
+              <li
+                key={r.matchId}
+                className="flex items-center justify-between rounded-lg border border-border bg-card px-3 py-2 text-xs"
+              >
+                <Link
+                  to="/football/match/$id"
+                  params={{ id: String(r.matchId) }}
+                  className="inline-flex min-h-11 min-w-0 flex-1 items-center truncate font-semibold text-foreground hover:text-amber-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
                   {r.title}
                 </Link>
-                <span className="text-gray-500 shrink-0 tabular-nums mx-3">{formatLocalTime(r.startMs)}</span>
-                <button onClick={() => removeReminder(r.matchId)} className="text-gray-500 hover:text-red-300" aria-label="Clear reminder">
-                  <X className="size-3.5" />
+                <span className="mx-3 shrink-0 tabular-nums text-muted-foreground">
+                  {formatLocalTime(r.startMs)}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => removeReminder(r.matchId)}
+                  className="inline-flex min-h-11 min-w-11 items-center justify-center text-muted-foreground hover:text-destructive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  aria-label={`Clear reminder for ${r.title}`}
+                >
+                  <X className="size-3.5" aria-hidden="true" />
                 </button>
               </li>
             ))}
@@ -206,16 +300,34 @@ function MinePage() {
         <StarredGrid snapshot={snapshot} onPick={openPicker} />
       </main>
 
-      <FavoriteTeamPicker open={pickerOpen} onOpenChange={setPickerOpen} initialSport={pickerSport} />
+      <FavoriteTeamPicker
+        open={pickerOpen}
+        onOpenChange={setPickerOpen}
+        initialSport={pickerSport}
+      />
     </div>
   );
 }
 
-function FeedSection({ title, tone, pulse, children }: { title: string; tone: string; pulse?: boolean; children: React.ReactNode }) {
+function FeedSection({
+  title,
+  tone,
+  pulse,
+  children,
+}: {
+  title: string;
+  tone: string;
+  pulse?: boolean;
+  children: React.ReactNode;
+}) {
   return (
     <section>
-      <div className={`mb-2 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] ${tone}`}>
-        {pulse && <span className="inline-block size-1.5 rounded-full bg-red-500 animate-pulse" />}
+      <div
+        className={`mb-2 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] ${tone}`}
+      >
+        {pulse && (
+          <span className="inline-block size-1.5 rounded-full bg-red-500" aria-hidden="true" />
+        )}
         {title}
       </div>
       <ul className="space-y-2">{children}</ul>
@@ -223,52 +335,94 @@ function FeedSection({ title, tone, pulse, children }: { title: string; tone: st
   );
 }
 
-function MatchRow({ m, showResult, reminderNode }: { m: MyMatch; showResult?: boolean; reminderNode?: React.ReactNode }) {
+function MatchRow({
+  m,
+  showResult,
+  reminderNode,
+}: {
+  m: MyMatch;
+  showResult?: boolean;
+  reminderNode?: React.ReactNode;
+}) {
   const meta = SPORT_META[m.sport];
   const isTeamGame = m.sport === "football" || m.sport === "cricket";
   const teamWon =
     showResult && m.home.score != null && m.away.score != null
-      ? (m.home.name === m.starredTeam ? (m.home.score > m.away.score ? "W" : m.home.score < m.away.score ? "L" : "D")
-                                       : (m.away.score > m.home.score ? "W" : m.away.score < m.home.score ? "L" : "D"))
+      ? m.home.name === m.starredTeam
+        ? m.home.score > m.away.score
+          ? "W"
+          : m.home.score < m.away.score
+            ? "L"
+            : "D"
+        : m.away.score > m.home.score
+          ? "W"
+          : m.away.score < m.home.score
+            ? "L"
+            : "D"
       : null;
   return (
-    <li className="rounded-xl border border-white/10 bg-white/[0.03] hover:bg-white/[0.06] transition">
-      <Link to={m.href as any} className="flex items-center gap-3 px-3 py-2.5">
-        <span className="text-base leading-none shrink-0">{meta.emoji}</span>
+    <li className="rounded-xl border border-border bg-card/40 transition hover:bg-accent/40">
+      <Link
+        to={m.href as any}
+        className="flex min-h-11 items-center gap-3 px-3 py-2.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      >
+        <span className="shrink-0 text-base leading-none" aria-hidden="true">
+          {meta.emoji}
+        </span>
         <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-widest text-gray-500">
+          <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-widest text-muted-foreground">
             <span className={meta.tone}>{meta.label}</span>
-            <span>·</span>
+            <span aria-hidden="true">·</span>
             <span className="truncate">{m.label}</span>
           </div>
-          <div className="text-sm font-semibold text-white truncate flex items-center gap-1.5">
-            {isTeamGame && <span className="text-sm">{flagOf(m.home.name)}</span>}
-            <span className={m.home.name === m.starredTeam ? "text-amber-200" : ""}>{m.home.name}</span>
+          <div className="flex items-center gap-1.5 truncate text-sm font-semibold text-foreground">
+            {isTeamGame && (
+              <span className="text-sm" aria-hidden="true">
+                {flagOf(m.home.name)}
+              </span>
+            )}
+            <span className={m.home.name === m.starredTeam ? "text-amber-200" : ""}>
+              {m.home.name}
+            </span>
             {m.home.score != null && (
-              <span className="tabular-nums text-gray-300 ml-1">{m.home.score}</span>
+              <span className="ml-1 tabular-nums text-muted-foreground">{m.home.score}</span>
             )}
-            <span className="text-gray-500 mx-1">v</span>
+            <span className="mx-1 text-muted-foreground">v</span>
             {m.away.score != null && (
-              <span className="tabular-nums text-gray-300 mr-1">{m.away.score}</span>
+              <span className="mr-1 tabular-nums text-muted-foreground">{m.away.score}</span>
             )}
-            <span className={m.away.name === m.starredTeam ? "text-amber-200" : ""}>{m.away.name}</span>
-            {isTeamGame && <span className="text-sm">{flagOf(m.away.name)}</span>}
+            <span className={m.away.name === m.starredTeam ? "text-amber-200" : ""}>
+              {m.away.name}
+            </span>
+            {isTeamGame && (
+              <span className="text-sm" aria-hidden="true">
+                {flagOf(m.away.name)}
+              </span>
+            )}
           </div>
         </div>
-        <div className="text-right shrink-0 flex items-center gap-2">
+        <div className="flex shrink-0 items-center gap-2 text-right">
           {teamWon && (
-            <span className={`inline-flex items-center justify-center size-5 rounded text-[10px] font-extrabold ${
-              teamWon === "W" ? "bg-emerald-500/20 text-emerald-300" :
-              teamWon === "L" ? "bg-red-500/20 text-red-300" :
-              "bg-gray-500/20 text-gray-300"
-            }`}>{teamWon}</span>
+            <span
+              className={`inline-flex size-5 items-center justify-center rounded text-[10px] font-extrabold ${
+                teamWon === "W"
+                  ? "bg-emerald-500/20 text-emerald-300"
+                  : teamWon === "L"
+                    ? "bg-red-500/20 text-red-300"
+                    : "bg-muted text-muted-foreground"
+              }`}
+            >
+              {teamWon}
+            </span>
           )}
           {m.status === "live" ? (
             <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest text-red-300">
-              <Circle className="size-1.5 fill-red-500 text-red-500 animate-pulse" /> Live
+              <Circle className="size-1.5 fill-red-500 text-red-500" aria-hidden="true" /> Live
             </span>
           ) : (
-            <span className="text-[11px] tabular-nums text-gray-400">{formatLocalTime(m.startMs)}</span>
+            <span className="text-[11px] tabular-nums text-muted-foreground">
+              {formatLocalTime(m.startMs)}
+            </span>
           )}
           {reminderNode}
         </div>
@@ -281,24 +435,36 @@ function ReminderButton({ active, onToggle }: { active: boolean; onToggle: () =>
   return (
     <button
       type="button"
-      onClick={(e) => { e.preventDefault(); e.stopPropagation(); onToggle(); }}
-      className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest ${
+      onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        onToggle();
+      }}
+      className={`inline-flex min-h-11 items-center gap-1 rounded-full border px-2 text-[10px] font-bold uppercase tracking-widest focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
         active
           ? "border-emerald-400/40 bg-emerald-500/15 text-emerald-200"
-          : "border-white/15 bg-white/5 text-gray-300 hover:bg-white/10"
+          : "border-border bg-muted text-muted-foreground hover:bg-accent"
       }`}
     >
-      <Bell className="size-3" />
+      <Bell className="size-3" aria-hidden="true" />
       {active ? "On" : "Remind"}
     </button>
   );
 }
 
-function StarredGrid({ snapshot, onPick }: { snapshot: Record<Sport, string[]>; onPick: (s: Sport) => void }) {
+function StarredGrid({
+  snapshot,
+  onPick,
+}: {
+  snapshot: Record<Sport, string[]>;
+  onPick: (s: Sport) => void;
+}) {
   const sports: Sport[] = ["football", "cricket", "nba", "nhl", "mlb", "mls"];
   return (
     <section className="pt-2">
-      <div className="mb-2 text-[11px] font-bold uppercase tracking-[0.18em] text-gray-400">Your teams</div>
+      <div className="mb-2 text-[11px] font-bold uppercase tracking-[0.18em] text-muted-foreground">
+        Your teams
+      </div>
       <div className="grid gap-2">
         {sports.map((s) => (
           <SportRow key={s} sport={s} items={snapshot[s] ?? []} onAdd={() => onPick(s)} />
@@ -313,51 +479,52 @@ function SportRow({ sport, items, onAdd }: { sport: Sport; items: string[]; onAd
   const meta = SPORT_META[sport];
   const showFlag = sport === "football" || sport === "cricket";
   return (
-    <div className="rounded-xl border border-white/10 bg-white/[0.02] px-3 py-2.5">
-      <div className="flex items-center gap-2 mb-2">
-        <span className="text-base">{meta.emoji}</span>
-        <span className={`text-xs font-bold uppercase tracking-widest ${meta.tone}`}>{meta.label}</span>
-        <Link to={meta.hub as any} className="ml-auto text-[10px] uppercase tracking-widest text-gray-500 hover:text-white">Open</Link>
-        <button onClick={onAdd} className="text-[10px] uppercase tracking-widest text-amber-300 hover:text-amber-200 inline-flex items-center gap-1">
-          <Plus className="size-3" /> Add
+    <div className="rounded-xl border border-border bg-card/30 px-3 py-2.5">
+      <div className="mb-2 flex items-center gap-2">
+        <span className="text-base" aria-hidden="true">
+          {meta.emoji}
+        </span>
+        <span className={`text-xs font-bold uppercase tracking-widest ${meta.tone}`}>
+          {meta.label}
+        </span>
+        <Link
+          to={meta.hub as any}
+          className="ml-auto inline-flex min-h-11 items-center text-[10px] uppercase tracking-widest text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          Open
+        </Link>
+        <button
+          type="button"
+          onClick={onAdd}
+          className="inline-flex min-h-11 items-center gap-1 text-[10px] uppercase tracking-widest text-amber-300 hover:text-amber-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          <Plus className="size-3" aria-hidden="true" /> Add
         </button>
       </div>
       {items.length === 0 ? (
-        <div className="text-[11px] text-gray-500">No teams starred yet.</div>
+        <div className="text-[11px] text-muted-foreground">No teams starred yet.</div>
       ) : (
         <div className="flex flex-wrap gap-1.5">
           {items.map((name) => (
             <button
               key={name}
+              type="button"
               onClick={() => toggle(name)}
-              className="group inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-1 text-xs text-gray-200 hover:border-red-400/40 hover:text-red-200"
+              aria-label={`Remove ${name} from favourites`}
+              className="group inline-flex min-h-11 items-center gap-1.5 rounded-full border border-border bg-card px-2.5 text-xs text-foreground hover:border-red-400/40 hover:text-red-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               title={`Unstar ${name}`}
             >
-              {showFlag && <span className="text-sm leading-none">{flagOf(name)}</span>}
+              {showFlag && (
+                <span className="text-sm leading-none" aria-hidden="true">
+                  {flagOf(name)}
+                </span>
+              )}
               <span>{name}</span>
-              <X className="size-3 opacity-40 group-hover:opacity-100" />
+              <X className="size-3 opacity-40 group-hover:opacity-100" aria-hidden="true" />
             </button>
           ))}
         </div>
       )}
-    </div>
-  );
-}
-
-function EmptyState({ onPick }: { onPick: (s: Sport) => void }) {
-  return (
-    <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-gray-900 to-black p-8 text-center">
-      <Star className="mx-auto size-10 text-amber-300 mb-3 fill-amber-300/40" />
-      <h2 className="text-lg font-bold text-white mb-1">Choose your favorite teams</h2>
-      <p className="text-sm text-gray-400 mb-4">
-        Pick teams across sports and we'll build a personal feed — live matches, upcoming fixtures with kickoff reminders and recent results.
-      </p>
-      <button
-        onClick={() => onPick("football")}
-        className="inline-flex items-center gap-2 rounded-full bg-amber-500 text-black font-bold px-4 py-2 text-sm hover:bg-amber-400"
-      >
-        <Plus className="size-4" /> Add favorite teams
-      </button>
     </div>
   );
 }

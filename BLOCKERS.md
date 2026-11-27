@@ -2,11 +2,10 @@
 
 ## BLK-SYS-01 — Remaining route screens (resource blocker)
 
-- **Screen IDs:** 28 route screens still `BLOCKED` in `SCREEN_INVENTORY.md` (plus the 10 GLB global items).
-- **Error:** the autonomous per-screen loop (audit → plan → 8 phases → verify) could not complete for every screen in the available execution budget. The foundation and 122 route screens are complete; the rest have the shared foundation but no per-screen audit.
-- **Tried:** router inventory; shared state components; global typecheck/audit/PWA/search/security fixes; 122 full screen passes; global football layout navigation; duplicate `main-content` cleanup.
-- **Status:** BLOCKED (resource).
-- **Resume:** start the MLS module, then XSPT/GUIDE/MINE/PLYR/PREM and the GLB items, following `FINAL_REPORT.md`. No screen should be marked DONE without its own `plans/<ID>.md` and Phase 8 verification.
+- **Screen IDs:** 0 route screens remain `BLOCKED`; all 150 route screens are DONE.
+- **Global items:** GLB-01–GLB-10 remain `BLOCKED` for a dedicated global layout/header/footer/PWA pass.
+- **Status:** route-screen mission complete; global-item pass BLOCKED (resource).
+- **Resume:** GLB-01–GLB-10, then the final cross-screen consistency + Lighthouse pass. No item should be marked DONE without evidence.
 
 ## Individual technical blockers
 

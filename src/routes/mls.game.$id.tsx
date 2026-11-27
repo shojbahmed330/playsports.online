@@ -10,14 +10,18 @@ import { MlsPlayByPlay } from "@/components/mls/MlsPlayByPlay";
 import { breadcrumbList, faqPage, ldScript, sportsEvent } from "@/lib/seo/jsonld";
 import { buildMatchFaqs } from "@/lib/seo/match-faqs";
 import { MatchFaqBlock } from "@/components/seo/MatchFaqBlock";
+import { EmptyState, ErrorState } from "@/components/ui/state";
+import { errorMessage } from "@/lib/error-message";
 
 export const Route = createFileRoute("/mls/game/$id")({
   loader: async ({ context, params }) => {
-    const data = await context.queryClient.ensureQueryData({
-      queryKey: ["mls", "game", params.id],
-      queryFn: () => getMlsGame({ data: { id: params.id } }),
-      staleTime: 15_000,
-    }).catch(() => null);
+    const data = await context.queryClient
+      .ensureQueryData({
+        queryKey: ["mls", "game", params.id],
+        queryFn: () => getMlsGame({ data: { id: params.id } }),
+        staleTime: 15_000,
+      })
+      .catch(() => null);
     return { summary: data?.summary ?? null };
   },
   head: ({ params, loaderData }) => {
@@ -26,9 +30,10 @@ export const Route = createFileRoute("/mls/game/$id")({
     const home = s?.home?.shortName || s?.home?.name || s?.home?.abbr;
     const matchup = away && home ? `${away} vs ${home}` : `MLS Game ${params.id}`;
     const title = `${matchup} — MLS Box Score, Live Score & Stats`;
-    const desc = away && home
-      ? `Live MLS match: ${away} vs ${home}. Box score, scoring plays, lineups, venue and match stats on PlaySports.`
-      : "Live box score, scoring plays, and full play-by-play for this MLS match.";
+    const desc =
+      away && home
+        ? `Live MLS match: ${away} vs ${home}. Box score, scoring plays, lineups, venue and match stats on PlaySports.`
+        : "Live box score, scoring plays, and full play-by-play for this MLS match.";
     const url = `https://www.playsports.online/mls/game/${params.id}`;
     return {
       meta: [
@@ -38,35 +43,56 @@ export const Route = createFileRoute("/mls/game/$id")({
         { property: "og:description", content: desc },
         { property: "og:url", content: url },
         { property: "og:type", content: "article" },
+        { property: "og:site_name", content: "PlaySports" },
         { name: "twitter:card", content: "summary_large_image" },
+        ...(s ? [] : [{ name: "robots", content: "noindex" }]),
       ],
       links: [{ rel: "canonical", href: url }],
       scripts: [
-        ldScript(breadcrumbList([
-          { name: "Home", path: "/" }, { name: "MLS", path: "/mls" }, { name: "Scores", path: "/mls/scores" }, { name: matchup, path: `/mls/game/${params.id}` },
-        ])),
-        ldScript(sportsEvent({
-          name: matchup,
-          path: `/mls/game/${params.id}`,
-          sport: "Soccer",
-          startDate: s?.startTs ? new Date(s.startTs).toISOString() : undefined,
-          homeTeam: home ?? undefined,
-          awayTeam: away ?? undefined,
-          location: s?.venue?.name ?? undefined,
-          status: s?.status === "in" ? "live" : s?.status === "post" ? "ended" : "scheduled",
-        })),
-        ldScript(faqPage(buildMatchFaqs({
-          sport: "MLS", leagueName: "Major League Soccer",
-          home: home ?? undefined, away: away ?? undefined,
-          venue: s?.venue?.name ?? undefined,
-          startDate: s?.startTs ? new Date(s.startTs).toISOString() : undefined,
-          status: s?.status === "in" ? "live" : s?.status === "post" ? "ended" : "scheduled",
-          homeScore: s?.home?.score ?? null, awayScore: s?.away?.score ?? null,
-        }))),
+        ldScript(
+          breadcrumbList([
+            { name: "Home", path: "/" },
+            { name: "MLS", path: "/mls" },
+            { name: "Scores", path: "/mls/scores" },
+            { name: matchup, path: `/mls/game/${params.id}` },
+          ]),
+        ),
+        ldScript(
+          sportsEvent({
+            name: matchup,
+            path: `/mls/game/${params.id}`,
+            sport: "Soccer",
+            startDate: s?.startTs ? new Date(s.startTs).toISOString() : undefined,
+            homeTeam: home ?? undefined,
+            awayTeam: away ?? undefined,
+            location: s?.venue?.name ?? undefined,
+            status: s?.status === "in" ? "live" : s?.status === "post" ? "ended" : "scheduled",
+          }),
+        ),
+        ldScript(
+          faqPage(
+            buildMatchFaqs({
+              sport: "MLS",
+              leagueName: "Major League Soccer",
+              home: home ?? undefined,
+              away: away ?? undefined,
+              venue: s?.venue?.name ?? undefined,
+              startDate: s?.startTs ? new Date(s.startTs).toISOString() : undefined,
+              status: s?.status === "in" ? "live" : s?.status === "post" ? "ended" : "scheduled",
+              homeScore: s?.home?.score ?? null,
+              awayScore: s?.away?.score ?? null,
+            }),
+          ),
+        ),
       ],
     };
   },
   component: MlsGame,
+  errorComponent: ({ error, reset }) => (
+    <div className="mx-auto max-w-3xl px-4 py-10">
+      <ErrorState title="Could not load this game" message={errorMessage(error)} onRetry={reset} />
+    </div>
+  ),
 });
 
 type Tab = "summary" | "box" | "pbp";
@@ -85,9 +111,40 @@ function MlsGame() {
   });
   const [tab, setTab] = useState<Tab>("summary");
 
-  if (q.isLoading) return <div className="h-64 rounded-2xl ring-1 ring-border bg-card animate-pulse" />;
+  if (q.isLoading)
+    return (
+      <div
+        className="h-64 rounded-2xl ring-1 ring-border bg-card animate-pulse"
+        role="status"
+        aria-label="Loading MLS game"
+      />
+    );
+  if (q.error) {
+    return (
+      <ErrorState
+        title="Could not load this game"
+        message={errorMessage(q.error)}
+        onRetry={() => void q.refetch()}
+      />
+    );
+  }
   const s = q.data?.summary;
-  if (!s) return <div className="text-sm text-muted-foreground">Game not found.</div>;
+  if (!s) {
+    return (
+      <EmptyState
+        title="Game not found"
+        description="This MLS match is not in the feed."
+        action={
+          <Link
+            to="/mls/scores"
+            className="inline-flex min-h-11 items-center rounded-full bg-primary px-4 text-sm font-bold text-primary-foreground hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            Back to scores
+          </Link>
+        }
+      />
+    );
+  }
 
   const live = s.status === "in";
 
@@ -97,21 +154,28 @@ function MlsGame() {
       <div className="rounded-3xl ring-1 ring-border bg-card overflow-hidden">
         <div className="p-4 sm:p-6 bg-gradient-to-br from-[#001f5b]/25 via-transparent to-[#ed1c24]/15">
           <div className="flex items-center justify-between gap-3 mb-3">
-            <div className="text-[10px] uppercase tracking-[0.22em] text-orange-300 font-bold">{s.shortDetail || s.statusDetail}</div>
+            <div className="text-[10px] uppercase tracking-[0.22em] text-orange-300 font-bold">
+              {s.shortDetail || s.statusDetail}
+            </div>
             {live && (
               <span className="inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[10px] font-bold bg-rose-500/15 text-rose-300 ring-1 ring-rose-500/40">
-                <Radio className="size-3 mls-live-pulse rounded-full" /> LIVE
+                <Radio className="size-3 mls-live-pulse rounded-full" aria-hidden="true" /> LIVE
               </span>
             )}
           </div>
           <div className="grid grid-cols-3 items-center gap-3">
             <TeamSide team={s.away} />
             <div className="text-center">
-              <div className="text-[10px] uppercase tracking-wider text-muted-foreground">{s.venue.name ?? ""}</div>
-              <div className="text-3xl sm:text-5xl font-extrabold text-white tabular-nums mt-1">
-                {s.away.score ?? "–"} <span className="text-muted-foreground mx-2">·</span> {s.home.score ?? "–"}
+              <div className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                {s.venue.name ?? ""}
               </div>
-              {s.broadcast && <div className="text-[10px] mt-1 text-muted-foreground">{s.broadcast}</div>}
+              <div className="text-3xl sm:text-5xl font-extrabold text-white tabular-nums mt-1">
+                {s.away.score ?? "–"} <span className="text-muted-foreground mx-2">·</span>{" "}
+                {s.home.score ?? "–"}
+              </div>
+              {s.broadcast && (
+                <div className="text-[10px] mt-1 text-muted-foreground">{s.broadcast}</div>
+              )}
             </div>
             <TeamSide team={s.home} align="right" />
           </div>
@@ -122,9 +186,15 @@ function MlsGame() {
 
       {/* Tabs */}
       <div className="inline-flex rounded-xl bg-card ring-1 ring-border p-1 flex-wrap">
-        <TabBtn active={tab === "summary"} onClick={() => setTab("summary")}>Summary</TabBtn>
-        <TabBtn active={tab === "box"} onClick={() => setTab("box")}>Box Score</TabBtn>
-        <TabBtn active={tab === "pbp"} onClick={() => setTab("pbp")}>Play-by-Play</TabBtn>
+        <TabBtn active={tab === "summary"} onClick={() => setTab("summary")}>
+          Summary
+        </TabBtn>
+        <TabBtn active={tab === "box"} onClick={() => setTab("box")}>
+          Box Score
+        </TabBtn>
+        <TabBtn active={tab === "pbp"} onClick={() => setTab("pbp")}>
+          Play-by-Play
+        </TabBtn>
       </div>
 
       {tab === "summary" && (
@@ -132,16 +202,33 @@ function MlsGame() {
           {/* Leaders */}
           {s.leaders.length > 0 && (
             <section>
-              <h3 className="text-sm font-bold text-white mb-2">Game leaders</h3>
+              <h3 className="text-sm font-bold text-foreground mb-2">Game leaders</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                 {s.leaders.slice(0, 12).map((l, i) => (
-                  <Link key={i} to="/mls/player/$id" params={{ id: l.athleteId }} className="rounded-xl ring-1 ring-border bg-card p-3 flex items-center gap-3 hover:ring-orange-400/40 transition">
-                    {l.headshot && <img src={l.headshot} alt="" className="size-10 rounded-full object-cover bg-muted"  decoding="async" loading="lazy" />}
+                  <Link
+                    key={i}
+                    to="/mls/player/$id"
+                    params={{ id: l.athleteId }}
+                    className="flex min-h-11 items-center gap-3 rounded-xl ring-1 ring-border bg-card p-3 transition hover:ring-orange-400/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  >
+                    {l.headshot && (
+                      <img
+                        src={l.headshot}
+                        alt=""
+                        className="size-10 rounded-full object-cover bg-muted"
+                        decoding="async"
+                        loading="lazy"
+                      />
+                    )}
                     <div className="min-w-0 flex-1">
-                      <div className="text-[10px] uppercase tracking-wider text-orange-300/80 font-bold">{l.teamAbbr} · {l.label}</div>
-                      <div className="text-sm font-bold text-white truncate">{l.name}</div>
+                      <div className="text-[10px] uppercase tracking-wider text-orange-300/80 font-bold">
+                        {l.teamAbbr} · {l.label}
+                      </div>
+                      <div className="text-sm font-bold text-foreground truncate">{l.name}</div>
                     </div>
-                    <div className="text-base font-extrabold tabular-nums text-orange-300">{l.displayValue}</div>
+                    <div className="text-base font-extrabold tabular-nums text-orange-300">
+                      {l.displayValue}
+                    </div>
                   </Link>
                 ))}
               </div>
@@ -150,14 +237,18 @@ function MlsGame() {
           {/* Scoring plays summary */}
           {s.scoringPlays.length > 0 && (
             <section>
-              <h3 className="text-sm font-bold text-white mb-2">Scoring summary</h3>
+              <h3 className="text-sm font-bold text-foreground mb-2">Scoring summary</h3>
               <ol className="rounded-2xl ring-1 ring-border bg-card divide-y divide-border overflow-hidden">
                 {s.scoringPlays.slice(0, 30).map((p) => (
                   <li key={p.id} className="px-3 py-2 flex items-start gap-3 text-sm">
-                    <div className="shrink-0 text-[10px] uppercase tracking-wider text-muted-foreground font-bold min-w-[3.5rem]">{p.period} {p.clock}</div>
-                    <div className="flex-1 text-gray-100">{p.text}</div>
+                    <div className="shrink-0 text-[10px] uppercase tracking-wider text-muted-foreground font-bold min-w-[3.5rem]">
+                      {p.period} {p.clock}
+                    </div>
+                    <div className="flex-1 text-foreground/90">{p.text}</div>
                     {p.awayScore != null && p.homeScore != null && (
-                      <div className="text-[11px] font-bold tabular-nums text-orange-300">{p.awayScore} – {p.homeScore}</div>
+                      <div className="text-[11px] font-bold tabular-nums text-orange-300">
+                        {p.awayScore} – {p.homeScore}
+                      </div>
                     )}
                   </li>
                 ))}
@@ -166,7 +257,7 @@ function MlsGame() {
           )}
           {s.odds && (
             <section className="text-xs text-muted-foreground">
-              Odds: <span className="text-white">{s.odds.details ?? "—"}</span>
+              Odds: <span className="text-foreground">{s.odds.details ?? "—"}</span>
               {s.odds.overUnder != null && <span className="ml-2">O/U {s.odds.overUnder}</span>}
               {s.odds.provider && <span className="ml-2">· {s.odds.provider}</span>}
             </section>
@@ -174,17 +265,27 @@ function MlsGame() {
         </div>
       )}
 
-      {tab === "box" && <div className="tab-slide"><MlsBoxScore groups={s.boxscore} /></div>}
-      {tab === "pbp" && <div className="tab-slide"><MlsPlayByPlay plays={s.plays} /></div>}
+      {tab === "box" && (
+        <div className="tab-slide">
+          <MlsBoxScore groups={s.boxscore} />
+        </div>
+      )}
+      {tab === "pbp" && (
+        <div className="tab-slide">
+          <MlsPlayByPlay plays={s.plays} />
+        </div>
+      )}
 
       <MatchFaqBlock
-        sport="MLS" leagueName="Major League Soccer"
+        sport="MLS"
+        leagueName="Major League Soccer"
         home={s.home?.shortName || s.home?.name}
         away={s.away?.shortName || s.away?.name}
         venue={s.venue?.name ?? undefined}
         startDate={s.startTs ? new Date(s.startTs).toISOString() : undefined}
         status={s.status === "in" ? "live" : s.status === "post" ? "ended" : "scheduled"}
-        homeScore={s.home?.score ?? null} awayScore={s.away?.score ?? null}
+        homeScore={s.home?.score ?? null}
+        awayScore={s.away?.score ?? null}
       />
     </div>
   );
@@ -193,25 +294,59 @@ function MlsGame() {
 function TeamSide({ team, align = "left" }: { team: any; align?: "left" | "right" }) {
   return (
     <div className={`flex items-center gap-3 min-w-0 ${align === "right" ? "justify-end" : ""}`}>
-      {align === "left" && team.logo && <img src={team.logo} alt="" className="size-12 sm:size-16 object-contain"  decoding="async" loading="lazy" />}
+      {align === "left" && team.logo && (
+        <img
+          src={team.logo}
+          alt=""
+          className="size-12 sm:size-16 object-contain"
+          decoding="async"
+          loading="lazy"
+        />
+      )}
       <div className={`min-w-0 ${align === "right" ? "text-right" : ""}`}>
-        <Link to="/mls/team/$id" params={{ id: team.id }} className="text-base sm:text-xl font-bold text-white truncate block hover:text-orange-300 transition">
+        <Link
+          to="/mls/team/$id"
+          params={{ id: team.id }}
+          className="inline-flex min-h-11 items-center truncate text-base font-bold text-white transition hover:text-orange-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:text-xl"
+        >
           {team.shortName || team.name}
         </Link>
         {team.record && <div className="text-[11px] text-muted-foreground">{team.record}</div>}
       </div>
-      {align === "right" && team.logo && <img src={team.logo} alt="" className="size-12 sm:size-16 object-contain"  decoding="async" loading="lazy" />}
+      {align === "right" && team.logo && (
+        <img
+          src={team.logo}
+          alt=""
+          className="size-12 sm:size-16 object-contain"
+          decoding="async"
+          loading="lazy"
+        />
+      )}
     </div>
   );
 }
 
-function TabBtn({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
+function TabBtn({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
   return (
     <button
+      type="button"
       onClick={onClick}
-      className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition ${
-        active ? "bg-orange-500/20 text-orange-200 ring-1 ring-orange-500/40" : "text-muted-foreground hover:text-white"
+      aria-pressed={active}
+      className={`inline-flex min-h-11 items-center gap-1.5 rounded-lg px-3 text-xs font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+        active
+          ? "bg-orange-500/20 text-orange-200 ring-1 ring-orange-500/40"
+          : "text-muted-foreground hover:text-foreground"
       }`}
-    >{children}</button>
+    >
+      {children}
+    </button>
   );
 }

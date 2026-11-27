@@ -5,6 +5,19 @@ import { canonical } from "@/lib/seo/canonical";
 import { breadcrumbList, sportsTeam, faqPage, itemList, ldScript } from "@/lib/seo/jsonld";
 import { AffiliateStrip } from "@/components/affiliates/AffiliateStrip";
 import { AdSlot } from "@/components/ads/AdSlot";
+import { EmptyState, ErrorState } from "@/components/ui/state";
+
+function formatDate(value?: string): string {
+  if (!value) return "";
+  const d = new Date(`${value.slice(0, 10)}T00:00:00Z`);
+  if (Number.isNaN(d.getTime())) return value;
+  return d.toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    timeZone: "UTC",
+  });
+}
 
 export const Route = createFileRoute("/team/$sport/$slug")({
   loader: ({ params }) => {
@@ -29,10 +42,13 @@ export const Route = createFileRoute("/team/$sport/$slug")({
         { property: "og:description", content: desc },
         { property: "og:url", content: canonical(path) },
         { property: "og:type", content: "profile" },
+        { property: "og:site_name", content: "PlaySports" },
         { property: "og:image", content: canonical(`/og/team/${params.slug}.svg`) },
         { property: "og:image:width", content: "1200" },
         { property: "og:image:height", content: "630" },
         { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: desc },
         { name: "twitter:image", content: canonical(`/og/team/${params.slug}.svg`) },
       ],
       links: [{ rel: "canonical", href: canonical(path) }],
@@ -90,8 +106,27 @@ export const Route = createFileRoute("/team/$sport/$slug")({
     };
   },
   component: TeamPage,
-  errorComponent: ({ error }) => <div className="p-6">Error: {errorMessage(error)}</div>,
-  notFoundComponent: () => <div className="p-6">Team not found.</div>,
+  errorComponent: ({ error, reset }) => (
+    <div className="mx-auto max-w-3xl px-4 py-10">
+      <ErrorState title="Could not load this team" message={errorMessage(error)} onRetry={reset} />
+    </div>
+  ),
+  notFoundComponent: () => (
+    <div className="mx-auto max-w-3xl px-4 py-16">
+      <EmptyState
+        title="Team not found"
+        description="This team is not in the World Cup archive."
+        action={
+          <Link
+            to="/football"
+            className="inline-flex min-h-11 items-center rounded-full bg-primary px-4 text-sm font-bold text-primary-foreground hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            Football hub
+          </Link>
+        }
+      />
+    </div>
+  ),
 });
 
 function TeamPage() {
@@ -99,15 +134,27 @@ function TeamPage() {
   const { slug: currentSlug } = Route.useParams();
   return (
     <div className="container mx-auto px-4 py-6 pb-20 max-w-5xl">
-      <nav className="text-xs text-muted-foreground mb-3">
-        <Link to="/" className="hover:underline">
+      <nav
+        aria-label="Breadcrumb"
+        className="mb-3 flex flex-wrap items-center text-xs text-muted-foreground"
+      >
+        <Link
+          to="/"
+          className="inline-flex min-h-11 items-center hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
           Home
-        </Link>{" "}
-        /{" "}
-        <Link to="/football" className="hover:underline">
+        </Link>
+        <span aria-hidden="true"> / </span>
+        <Link
+          to="/football"
+          className="inline-flex min-h-11 items-center hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
           Football
-        </Link>{" "}
-        / <span>{team.name}</span>
+        </Link>
+        <span aria-hidden="true"> / </span>
+        <span className="text-foreground" aria-current="page">
+          {team.name}
+        </span>
       </nav>
       <h1 className="text-3xl font-bold mb-2">{team.name} — FIFA World Cup</h1>
       <p className="text-muted-foreground mb-6">
@@ -126,20 +173,27 @@ function TeamPage() {
 
       <section className="mt-8">
         <h2 className="text-xl font-semibold mb-3">Top Scorers for {team.name}</h2>
-        <ul className="divide-y rounded-lg border">
-          {stats.topScorers.map((p: { name: string; goals: number }) => (
-            <li key={p.name} className="flex justify-between px-4 py-2">
-              <Link
-                to="/player/$sport/$slug"
-                params={{ sport: "football_wc", slug: slug(p.name) }}
-                className="hover:underline"
-              >
-                {p.name}
-              </Link>
-              <span className="font-mono">{p.goals}</span>
-            </li>
-          ))}
-        </ul>
+        {stats.topScorers.length === 0 ? (
+          <EmptyState
+            title="No scorers on record"
+            description={`No World Cup goals are recorded for ${team.name}.`}
+          />
+        ) : (
+          <ul className="divide-y rounded-xl border border-border bg-card/40">
+            {stats.topScorers.map((p: { name: string; goals: number }) => (
+              <li key={p.name} className="flex justify-between px-4 py-2">
+                <Link
+                  to="/player/$sport/$slug"
+                  params={{ sport: "football_wc", slug: slug(p.name) }}
+                  className="inline-flex min-h-11 items-center hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  {p.name}
+                </Link>
+                <span className="font-mono">{p.goals}</span>
+              </li>
+            ))}
+          </ul>
+        )}
       </section>
 
       <AdSlot slot="in_content" />
@@ -149,9 +203,7 @@ function TeamPage() {
         <ul className="space-y-2">
           {stats.recentMatches.map((m: any, i: number) => (
             <li key={i} className="flex justify-between border rounded px-3 py-2 text-sm">
-              <span>
-                {m.match_date} · {m.round}
-              </span>
+              <span>{[formatDate(m.match_date), m.round].filter(Boolean).join(" · ")}</span>
               <span className="font-medium">
                 {m.home_team} {m.home_score}–{m.away_score} {m.away_team}
               </span>
@@ -168,7 +220,7 @@ function TeamPage() {
               key={y}
               to="/archive/$sport/$year"
               params={{ sport: "football_wc", year: String(y) }}
-              className="px-3 py-1 rounded-full bg-muted text-sm hover:bg-accent"
+              className="inline-flex min-h-11 items-center rounded-full bg-muted px-3 text-sm hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               {y}
             </Link>
@@ -216,7 +268,7 @@ function TeamPage() {
                 key={t.slug}
                 to="/team/$sport/$slug"
                 params={{ sport: "football_wc", slug: t.slug }}
-                className="px-3 py-1 rounded-full bg-muted text-xs hover:bg-accent"
+                className="inline-flex min-h-11 items-center rounded-full bg-muted px-3 text-xs hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 {t.name}
               </Link>

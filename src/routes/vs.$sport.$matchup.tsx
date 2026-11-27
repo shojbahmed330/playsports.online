@@ -5,6 +5,19 @@ import { canonical } from "@/lib/seo/canonical";
 import { breadcrumbList, faqPage, ldScript } from "@/lib/seo/jsonld";
 import { AffiliateStrip } from "@/components/affiliates/AffiliateStrip";
 import { AdSlot } from "@/components/ads/AdSlot";
+import { EmptyState, ErrorState } from "@/components/ui/state";
+
+function formatDate(value?: string): string {
+  if (!value) return "";
+  const d = new Date(`${value.slice(0, 10)}T00:00:00Z`);
+  if (Number.isNaN(d.getTime())) return value;
+  return d.toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    timeZone: "UTC",
+  });
+}
 
 export const Route = createFileRoute("/vs/$sport/$matchup")({
   loader: ({ params }) => {
@@ -57,10 +70,14 @@ export const Route = createFileRoute("/vs/$sport/$matchup")({
         { property: "og:title", content: title },
         { property: "og:description", content: desc },
         { property: "og:url", content: canonical(path) },
+        { property: "og:type", content: "article" },
+        { property: "og:site_name", content: "PlaySports" },
         { property: "og:image", content: canonical(`/og/vs/${params.matchup}.svg`) },
         { property: "og:image:width", content: "1200" },
         { property: "og:image:height", content: "630" },
         { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: desc },
         { name: "twitter:image", content: canonical(`/og/vs/${params.matchup}.svg`) },
       ],
       links: [{ rel: "canonical", href: canonical(path) }],
@@ -90,8 +107,31 @@ export const Route = createFileRoute("/vs/$sport/$matchup")({
   },
 
   component: H2HPage,
-  errorComponent: ({ error }) => <div className="p-6">Error: {errorMessage(error)}</div>,
-  notFoundComponent: () => <div className="p-6">Matchup not found.</div>,
+  errorComponent: ({ error, reset }) => (
+    <div className="mx-auto max-w-3xl px-4 py-10">
+      <ErrorState
+        title="Could not load this matchup"
+        message={errorMessage(error)}
+        onRetry={reset}
+      />
+    </div>
+  ),
+  notFoundComponent: () => (
+    <div className="mx-auto max-w-3xl px-4 py-16">
+      <EmptyState
+        title="Matchup not found"
+        description="These teams do not have a World Cup head-to-head page."
+        action={
+          <Link
+            to="/football"
+            className="inline-flex min-h-11 items-center rounded-full bg-primary px-4 text-sm font-bold text-primary-foreground hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            Football hub
+          </Link>
+        }
+      />
+    </div>
+  ),
 });
 
 function H2HPage() {
@@ -115,15 +155,27 @@ function H2HPage() {
 
   return (
     <div className="container mx-auto px-4 py-6 pb-20 max-w-4xl">
-      <nav className="text-xs text-muted-foreground mb-3">
-        <Link to="/" className="hover:underline">
+      <nav
+        aria-label="Breadcrumb"
+        className="mb-3 flex flex-wrap items-center text-xs text-muted-foreground"
+      >
+        <Link
+          to="/"
+          className="inline-flex min-h-11 items-center hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
           Home
-        </Link>{" "}
-        /{" "}
-        <Link to="/football" className="hover:underline">
+        </Link>
+        <span aria-hidden="true"> / </span>
+        <Link
+          to="/football"
+          className="inline-flex min-h-11 items-center hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
           Football
-        </Link>{" "}
-        / <span>H2H</span>
+        </Link>
+        <span aria-hidden="true"> / </span>
+        <span className="text-foreground" aria-current="page">
+          H2H
+        </span>
       </nav>
       <h1 className="text-3xl font-bold mb-2">
         {h2h.teamA} vs {h2h.teamB}
@@ -156,18 +208,30 @@ function H2HPage() {
 
       <section className="mt-8">
         <h2 className="text-xl font-semibold mb-3">All Meetings</h2>
-        <ul className="space-y-2">
-          {matches.map((m: any, i: number) => (
-            <li key={i} className="flex justify-between border rounded px-3 py-2 text-sm">
-              <span>
-                {m.match_date} · WC {m.tournament_year}
-              </span>
-              <span className="font-medium">
-                {m.home_team} {m.home_score}–{m.away_score} {m.away_team}
-              </span>
-            </li>
-          ))}
-        </ul>
+        {matches.length === 0 ? (
+          <EmptyState
+            title="No meetings on record"
+            description="These teams have not met at the World Cup finals."
+          />
+        ) : (
+          <ul className="space-y-2">
+            {matches.map((m: any, i: number) => (
+              <li
+                key={i}
+                className="flex justify-between rounded-xl border border-border bg-card/40 px-3 py-2 text-sm"
+              >
+                <span>
+                  {[formatDate(m.match_date), `WC ${m.tournament_year}`]
+                    .filter(Boolean)
+                    .join(" · ")}
+                </span>
+                <span className="font-medium">
+                  {m.home_team} {m.home_score}–{m.away_score} {m.away_team}
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
       </section>
 
       <AdSlot slot="in_content" />
@@ -176,14 +240,14 @@ function H2HPage() {
         <Link
           to="/team/$sport/$slug"
           params={{ sport: "football_wc", slug: slug(h2h.teamA) }}
-          className="px-3 py-2 rounded border hover:bg-accent"
+          className="inline-flex min-h-11 items-center rounded-xl border border-border px-3 hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           View {h2h.teamA}
         </Link>
         <Link
           to="/team/$sport/$slug"
           params={{ sport: "football_wc", slug: slug(h2h.teamB) }}
-          className="px-3 py-2 rounded border hover:bg-accent"
+          className="inline-flex min-h-11 items-center rounded-xl border border-border px-3 hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           View {h2h.teamB}
         </Link>

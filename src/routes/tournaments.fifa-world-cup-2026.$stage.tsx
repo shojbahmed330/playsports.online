@@ -3,6 +3,19 @@ import { createFileRoute, notFound, Link } from "@tanstack/react-router";
 import { getStageBySlug, WC2026_STAGES } from "@/lib/seo/entities";
 import { canonical } from "@/lib/seo/canonical";
 import { breadcrumbList, sportsEvent, itemList, faqPage, ldScript } from "@/lib/seo/jsonld";
+import { EmptyState, ErrorState } from "@/components/ui/state";
+
+function formatDate(value?: string): string {
+  if (!value) return "TBD";
+  const d = new Date(`${value.slice(0, 10)}T00:00:00Z`);
+  if (Number.isNaN(d.getTime())) return value;
+  return d.toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    timeZone: "UTC",
+  });
+}
 
 const STAGE_DESCRIPTIONS: Record<string, string> = {
   "group-stage":
@@ -38,6 +51,10 @@ export const Route = createFileRoute("/tournaments/fifa-world-cup-2026/$stage")(
         { property: "og:description", content: desc },
         { property: "og:url", content: canonical(path) },
         { property: "og:type", content: "article" },
+        { property: "og:site_name", content: "PlaySports" },
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: desc },
       ],
       links: [{ rel: "canonical", href: canonical(path) }],
       scripts: [
@@ -85,8 +102,27 @@ export const Route = createFileRoute("/tournaments/fifa-world-cup-2026/$stage")(
     };
   },
   component: StagePage,
-  errorComponent: ({ error }) => <div className="p-6">Error: {errorMessage(error)}</div>,
-  notFoundComponent: () => <div className="p-6">Stage not found.</div>,
+  errorComponent: ({ error, reset }) => (
+    <div className="mx-auto max-w-3xl px-4 py-10">
+      <ErrorState title="Could not load this stage" message={errorMessage(error)} onRetry={reset} />
+    </div>
+  ),
+  notFoundComponent: () => (
+    <div className="mx-auto max-w-3xl px-4 py-16">
+      <EmptyState
+        title="Stage not found"
+        description="This World Cup 2026 stage is not in the archive."
+        action={
+          <Link
+            to="/football"
+            className="inline-flex min-h-11 items-center rounded-full bg-primary px-4 text-sm font-bold text-primary-foreground hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            Football hub
+          </Link>
+        }
+      />
+    </div>
+  ),
 });
 
 function StagePage() {
@@ -96,21 +132,35 @@ function StagePage() {
   const next = idx < WC2026_STAGES.length - 1 ? WC2026_STAGES[idx + 1] : null;
   return (
     <div className="container mx-auto px-4 py-6 pb-20 max-w-4xl">
-      <nav className="text-xs text-muted-foreground mb-3">
-        <Link to="/" className="hover:underline">
+      <nav
+        aria-label="Breadcrumb"
+        className="mb-3 flex flex-wrap items-center text-xs text-muted-foreground"
+      >
+        <Link
+          to="/"
+          className="inline-flex min-h-11 items-center hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
           Home
-        </Link>{" "}
-        /{" "}
-        <Link to="/football" className="hover:underline">
+        </Link>
+        <span aria-hidden="true"> / </span>
+        <Link
+          to="/football"
+          className="inline-flex min-h-11 items-center hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
           Football
-        </Link>{" "}
-        / <span>FIFA World Cup 2026</span> / <span>{stage.name}</span>
+        </Link>
+        <span aria-hidden="true"> / </span>
+        <span>FIFA World Cup 2026</span>
+        <span aria-hidden="true"> / </span>
+        <span className="text-foreground" aria-current="page">
+          {stage.name}
+        </span>
       </nav>
 
       <h1 className="text-3xl font-bold mb-2">FIFA World Cup 2026 — {stage.name}</h1>
       <p className="text-muted-foreground mb-6">
-        {stage.matches.length} match{stage.matches.length === 1 ? "" : "es"} · {stage.startDate} –{" "}
-        {stage.endDate}
+        {stage.matches.length} match{stage.matches.length === 1 ? "" : "es"} ·{" "}
+        {formatDate(stage.startDate)} – {formatDate(stage.endDate)}
       </p>
 
       <section className="mb-6 prose dark:prose-invert max-w-none">
@@ -119,25 +169,32 @@ function StagePage() {
 
       <section className="mt-4">
         <h2 className="text-xl font-semibold mb-3">Matches in this stage</h2>
-        <ul className="divide-y rounded-lg border">
-          {stage.matches.map(
-            (m: { matchNo: number; dateISO?: string; stadium?: string; city?: string }) => (
-              <li key={m.matchNo} className="flex justify-between items-center px-4 py-2">
-                <Link
-                  to="/football/match/$id"
-                  params={{ id: String(m.matchNo) }}
-                  className="hover:underline text-sm"
-                >
-                  Match {m.matchNo}
-                  {m.stadium ? ` · ${m.stadium}${m.city ? ", " + m.city : ""}` : ""}
-                </Link>
-                <span className="text-xs text-muted-foreground font-mono">
-                  {m.dateISO ? m.dateISO.slice(0, 10) : "TBD"}
-                </span>
-              </li>
-            ),
-          )}
-        </ul>
+        {stage.matches.length === 0 ? (
+          <EmptyState
+            title="No matches scheduled"
+            description="Fixtures for this stage are not available yet."
+          />
+        ) : (
+          <ul className="divide-y rounded-xl border border-border bg-card/40">
+            {stage.matches.map(
+              (m: { matchNo: number; dateISO?: string; stadium?: string; city?: string }) => (
+                <li key={m.matchNo} className="flex justify-between items-center px-4 py-2">
+                  <Link
+                    to="/football/match/$id"
+                    params={{ id: String(m.matchNo) }}
+                    className="inline-flex min-h-11 items-center text-sm hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  >
+                    Match {m.matchNo}
+                    {m.stadium ? ` · ${m.stadium}${m.city ? ", " + m.city : ""}` : ""}
+                  </Link>
+                  <span className="text-xs text-muted-foreground font-mono">
+                    {formatDate(m.dateISO)}
+                  </span>
+                </li>
+              ),
+            )}
+          </ul>
+        )}
       </section>
 
       <section className="mt-8">
@@ -164,7 +221,7 @@ function StagePage() {
           <Link
             to="/tournaments/fifa-world-cup-2026/$stage"
             params={{ stage: prev.slug }}
-            className="rounded-lg border px-4 py-2 hover:bg-accent"
+            className="inline-flex min-h-11 items-center rounded-xl border border-border px-4 hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             ← {prev.name}
           </Link>
@@ -175,7 +232,7 @@ function StagePage() {
           <Link
             to="/tournaments/fifa-world-cup-2026/$stage"
             params={{ stage: next.slug }}
-            className="rounded-lg border px-4 py-2 hover:bg-accent"
+            className="inline-flex min-h-11 items-center rounded-xl border border-border px-4 hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             {next.name} →
           </Link>
@@ -192,7 +249,7 @@ function StagePage() {
               key={s.slug}
               to="/tournaments/fifa-world-cup-2026/$stage"
               params={{ stage: s.slug }}
-              className="px-3 py-1 rounded-full bg-muted text-xs hover:bg-accent"
+              className="inline-flex min-h-11 items-center rounded-full bg-muted px-3 text-xs hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               {s.name}
             </Link>

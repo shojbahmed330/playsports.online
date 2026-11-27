@@ -9,6 +9,8 @@ import {
 import { canonical } from "@/lib/seo/canonical";
 import { breadcrumbList, faqPage, itemList, ldScript, collectionPage } from "@/lib/seo/jsonld";
 import { AdSlot } from "@/components/ads/AdSlot";
+import { EmptyState, ErrorState } from "@/components/ui/state";
+import { errorMessage } from "@/lib/error-message";
 
 export const Route = createFileRoute("/tournaments/$tournament/$leaderboard")({
   loader: ({ params }) => {
@@ -50,6 +52,10 @@ export const Route = createFileRoute("/tournaments/$tournament/$leaderboard")({
         { property: "og:description", content: desc },
         { property: "og:url", content: canonical(path) },
         { property: "og:type", content: "website" },
+        { property: "og:site_name", content: "PlaySports" },
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: desc },
       ],
       links: [{ rel: "canonical", href: canonical(path) }],
       scripts: [
@@ -78,6 +84,31 @@ export const Route = createFileRoute("/tournaments/$tournament/$leaderboard")({
     };
   },
   component: LeaderboardPage,
+  errorComponent: ({ error, reset }) => (
+    <div className="mx-auto max-w-3xl px-4 py-10">
+      <ErrorState
+        title="Could not load this leaderboard"
+        message={errorMessage(error)}
+        onRetry={reset}
+      />
+    </div>
+  ),
+  notFoundComponent: () => (
+    <div className="mx-auto max-w-3xl px-4 py-16">
+      <EmptyState
+        title="Leaderboard not found"
+        description="This tournament leaderboard is not in the archive."
+        action={
+          <Link
+            to="/football"
+            className="inline-flex min-h-11 items-center rounded-full bg-primary px-4 text-sm font-bold text-primary-foreground hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            Football hub
+          </Link>
+        }
+      />
+    </div>
+  ),
 });
 
 function LeaderboardPage() {
@@ -88,14 +119,29 @@ function LeaderboardPage() {
 
   return (
     <main className="mx-auto max-w-4xl px-4 py-8">
-      <nav aria-label="Breadcrumb" className="mb-4 text-sm text-muted-foreground">
-        <Link to="/" className="hover:underline">Home</Link>
-        {" / "}
-        <Link to="/football" className="hover:underline">Football</Link>
-        {" / "}
+      <nav
+        aria-label="Breadcrumb"
+        className="mb-4 flex flex-wrap items-center text-sm text-muted-foreground"
+      >
+        <Link
+          to="/"
+          className="inline-flex min-h-11 items-center hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          Home
+        </Link>
+        <span aria-hidden="true"> / </span>
+        <Link
+          to="/football"
+          className="inline-flex min-h-11 items-center hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          Football
+        </Link>
+        <span aria-hidden="true"> / </span>
         <span>{tournament.name}</span>
-        {" / "}
-        <span className="text-foreground">{board.name}</span>
+        <span aria-hidden="true"> / </span>
+        <span className="text-foreground" aria-current="page">
+          {board.name}
+        </span>
       </nav>
 
       <h1 className="text-3xl md:text-4xl font-bold mb-2">
@@ -103,29 +149,46 @@ function LeaderboardPage() {
       </h1>
       <p className="text-muted-foreground mb-6">
         Complete ranked list of the {tournament.name.toLowerCase()} {board.name.toLowerCase()}
-        {tournament.year ? ` from ${tournament.year}` : " across every edition since 1930"}.
-        {" "}Leader: <strong>{leader.name}</strong> ({leader.team}) with <strong>{leader.count}</strong>{" "}
+        {tournament.year ? ` from ${tournament.year}` : " across every edition since 1930"}. Leader:{" "}
+        <strong>{leader.name}</strong> ({leader.team}) with <strong>{leader.count}</strong>{" "}
         {board.metric.toLowerCase()}. {rows.length} players ranked.
       </p>
 
-      <div className="my-6"><AdSlot slot="in_content" /></div>
+      <div className="my-6">
+        <AdSlot slot="in_content" />
+      </div>
 
-      <div className="overflow-x-auto rounded-lg border border-border">
+      <div className="overflow-x-auto rounded-2xl border border-border bg-card/40">
         <table className="w-full text-sm">
+          <caption className="sr-only">
+            {tournament.name} {board.name} leaderboard
+          </caption>
           <thead className="bg-muted/50">
             <tr>
-              <th className="px-3 py-2 text-left">#</th>
-              <th className="px-3 py-2 text-left">Player</th>
-              <th className="px-3 py-2 text-left">Team</th>
-              <th className="px-3 py-2 text-right">{board.metric}</th>
+              <th scope="col" className="px-3 py-2 text-left">
+                #
+              </th>
+              <th scope="col" className="px-3 py-2 text-left">
+                Player
+              </th>
+              <th scope="col" className="px-3 py-2 text-left">
+                Team
+              </th>
+              <th scope="col" className="px-3 py-2 text-right">
+                {board.metric}
+              </th>
             </tr>
           </thead>
           <tbody>
-            {rows.map((r: typeof rows[number]) => (
-              <tr key={r.pid} className="border-t border-border hover:bg-muted/30">
+            {rows.map((r: (typeof rows)[number]) => (
+              <tr key={r.pid} className="border-t border-border hover:bg-accent/40">
                 <td className="px-3 py-2 tabular-nums">{r.rank}</td>
                 <td className="px-3 py-2">
-                  <Link to="/football/players/$slug" params={{ slug: r.slug }} className="hover:underline">
+                  <Link
+                    to="/football/players/$slug"
+                    params={{ slug: r.slug }}
+                    className="inline-flex min-h-11 items-center hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  >
                     {r.name}
                   </Link>
                 </td>
@@ -145,7 +208,7 @@ function LeaderboardPage() {
               key={l.slug}
               to="/tournaments/$tournament/$leaderboard"
               params={{ tournament: tournament.slug, leaderboard: l.slug }}
-              className="rounded-md border border-border px-3 py-2 hover:bg-muted/50"
+              className="inline-flex min-h-11 items-center rounded-xl border border-border px-3 hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               {tournament.name} — {l.name}
             </Link>
@@ -155,7 +218,7 @@ function LeaderboardPage() {
               key={t.slug}
               to="/tournaments/$tournament/$leaderboard"
               params={{ tournament: t.slug, leaderboard: board.slug }}
-              className="rounded-md border border-border px-3 py-2 hover:bg-muted/50"
+              className="inline-flex min-h-11 items-center rounded-xl border border-border px-3 hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               {t.name} — {board.name}
             </Link>
@@ -165,16 +228,18 @@ function LeaderboardPage() {
 
       <section className="mt-10 prose prose-sm dark:prose-invert max-w-none">
         <h2>Frequently asked</h2>
-        <h3>Who has the most {board.metric.toLowerCase()} in {tournament.name}?</h3>
+        <h3>
+          Who has the most {board.metric.toLowerCase()} in {tournament.name}?
+        </h3>
         <p>
           {leader.name} of {leader.team} leads the {tournament.name.toLowerCase()}{" "}
           {board.name.toLowerCase()} list with {leader.count} {board.metric.toLowerCase()}.
         </p>
         <h3>How is this leaderboard compiled?</h3>
         <p>
-          Data is aggregated from PlaySports' World Cup dataset spanning 1930 to 2022, plus
-          live 2026 fixtures as they complete. {board.name} are counted per-player, per-tournament,
-          with penalties and own goals classified separately for goal totals.
+          Data is aggregated from PlaySports' World Cup dataset spanning 1930 to 2022, plus live
+          2026 fixtures as they complete. {board.name} are counted per-player, per-tournament, with
+          penalties and own goals classified separately for goal totals.
         </p>
       </section>
     </main>

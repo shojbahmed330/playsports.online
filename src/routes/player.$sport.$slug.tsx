@@ -5,6 +5,7 @@ import { canonical } from "@/lib/seo/canonical";
 import { breadcrumbList, athlete, faqPage, ldScript } from "@/lib/seo/jsonld";
 import { AffiliateStrip } from "@/components/affiliates/AffiliateStrip";
 import { AdSlot } from "@/components/ads/AdSlot";
+import { EmptyState, ErrorState } from "@/components/ui/state";
 
 export const Route = createFileRoute("/player/$sport/$slug")({
   loader: ({ params }) => {
@@ -29,10 +30,13 @@ export const Route = createFileRoute("/player/$sport/$slug")({
         { property: "og:description", content: desc },
         { property: "og:url", content: canonical(path) },
         { property: "og:type", content: "profile" },
+        { property: "og:site_name", content: "PlaySports" },
         { property: "og:image", content: canonical(`/og/player/${params.slug}.svg`) },
         { property: "og:image:width", content: "1200" },
         { property: "og:image:height", content: "630" },
         { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: desc },
         { name: "twitter:image", content: canonical(`/og/player/${params.slug}.svg`) },
       ],
       links: [{ rel: "canonical", href: canonical(path) }],
@@ -67,30 +71,65 @@ export const Route = createFileRoute("/player/$sport/$slug")({
     };
   },
   component: PlayerPage,
-  errorComponent: ({ error }) => <div className="p-6">Error: {errorMessage(error)}</div>,
-  notFoundComponent: () => <div className="p-6">Player not found.</div>,
+  errorComponent: ({ error, reset }) => (
+    <div className="mx-auto max-w-3xl px-4 py-10">
+      <ErrorState
+        title="Could not load this player"
+        message={errorMessage(error)}
+        onRetry={reset}
+      />
+    </div>
+  ),
+  notFoundComponent: () => (
+    <div className="mx-auto max-w-3xl px-4 py-16">
+      <EmptyState
+        title="Player not found"
+        description="This player is not in the World Cup archive."
+        action={
+          <Link
+            to="/players"
+            className="inline-flex min-h-11 items-center rounded-full bg-primary px-4 text-sm font-bold text-primary-foreground hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            Browse players
+          </Link>
+        }
+      />
+    </div>
+  ),
 });
 
 function PlayerPage() {
   const { player, stats } = Route.useLoaderData();
   return (
     <div className="container mx-auto px-4 py-6 pb-20 max-w-4xl">
-      <nav className="text-xs text-muted-foreground mb-3">
-        <Link to="/" className="hover:underline">
+      <nav
+        aria-label="Breadcrumb"
+        className="mb-3 flex flex-wrap items-center text-xs text-muted-foreground"
+      >
+        <Link
+          to="/"
+          className="inline-flex min-h-11 items-center hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
           Home
-        </Link>{" "}
-        /{" "}
-        <Link to="/players" className="hover:underline">
+        </Link>
+        <span aria-hidden="true"> / </span>
+        <Link
+          to="/players"
+          className="inline-flex min-h-11 items-center hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
           Players
-        </Link>{" "}
-        / <span>{player.name}</span>
+        </Link>
+        <span aria-hidden="true"> / </span>
+        <span className="text-foreground" aria-current="page">
+          {player.name}
+        </span>
       </nav>
       <h1 className="text-3xl font-bold">{player.name}</h1>
       <p className="text-muted-foreground mb-6">
         <Link
           to="/team/$sport/$slug"
           params={{ sport: "football_wc", slug: slug(player.team) }}
-          className="hover:underline"
+          className="inline-flex min-h-11 items-center hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           {player.team}
         </Link>
@@ -107,22 +146,29 @@ function PlayerPage() {
 
       <section className="mt-8">
         <h2 className="text-xl font-semibold mb-3">Goals by Tournament</h2>
-        <ul className="divide-y rounded-lg border">
-          {stats.byYear.map((y: { year: number; goals: number }) => (
-            <li key={y.year} className="flex justify-between px-4 py-2">
-              <Link
-                to="/archive/$sport/$year"
-                params={{ sport: "football_wc", year: String(y.year) }}
-                className="hover:underline"
-              >
-                World Cup {y.year}
-              </Link>
-              <span className="font-mono">
-                {y.goals} goal{y.goals === 1 ? "" : "s"}
-              </span>
-            </li>
-          ))}
-        </ul>
+        {stats.byYear.length === 0 ? (
+          <EmptyState
+            title="No goals on record"
+            description={`No World Cup goals are recorded for ${player.name}.`}
+          />
+        ) : (
+          <ul className="divide-y rounded-xl border border-border bg-card/40">
+            {stats.byYear.map((y: { year: number; goals: number }) => (
+              <li key={y.year} className="flex justify-between px-4 py-2">
+                <Link
+                  to="/archive/$sport/$year"
+                  params={{ sport: "football_wc", year: String(y.year) }}
+                  className="inline-flex min-h-11 items-center hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  World Cup {y.year}
+                </Link>
+                <span className="font-mono">
+                  {y.goals} goal{y.goals === 1 ? "" : "s"}
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
       </section>
 
       <AdSlot slot="in_content" />

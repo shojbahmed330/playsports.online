@@ -6,25 +6,43 @@ import { getMlsScoreboard } from "@/lib/mls.functions";
 import { GameCard } from "@/components/sports/GameCard";
 import { DateScrubber, todayYmd } from "@/components/sports/DateScrubber";
 import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
+import { EmptyState, ErrorState } from "@/components/ui/state";
+import { errorMessage } from "@/lib/error-message";
 
 import { withHubLinks } from "@/components/seo/withHubLinks";
 export const Route = createFileRoute("/mls/scores")({
   head: () => ({
     meta: [
       { title: "MLS Scoreboard — Live & Recent Games" },
-      { name: "description", content: "Browse every MLS game by date with live scores, quarters, and matchup details." },
+      {
+        name: "description",
+        content: "Browse every MLS game by date with live scores, quarters, and matchup details.",
+      },
       { property: "og:url", content: "https://www.playsports.online/mls/scores" },
       { property: "og:title", content: "MLS Scoreboard — Live & Recent Games" },
-      { property: "og:description", content: "Browse every MLS game by date with live scores, quarters, and matchup details." },
+      {
+        property: "og:description",
+        content: "Browse every MLS game by date with live scores, quarters, and matchup details.",
+      },
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "PlaySports" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "MLS Scoreboard — Live & Recent Games" },
-      { name: "twitter:description", content: "Browse every MLS game by date with live scores, quarters, and matchup details." },
-    
+      {
+        name: "twitter:description",
+        content: "Browse every MLS game by date with live scores, quarters, and matchup details.",
+      },
     ],
     links: [{ rel: "canonical", href: "https://www.playsports.online/mls/scores" }],
-    scripts: [ldScript(breadcrumbList([{ name: "Home", path: "/" }, { name: "MLS", path: "/mls" }, { name: "Scores", path: "/mls/scores" }]))],
+    scripts: [
+      ldScript(
+        breadcrumbList([
+          { name: "Home", path: "/" },
+          { name: "MLS", path: "/mls" },
+          { name: "Scores", path: "/mls/scores" },
+        ]),
+      ),
+    ],
   }),
   component: withHubLinks(MlsScores, { sport: "mls", currentPath: "/mls/scores" }),
 });
@@ -61,25 +79,42 @@ function MlsScores() {
         {(["all", "live", "upcoming", "final"] as Filter[]).map((f) => (
           <button
             key={f}
+            type="button"
             onClick={() => setFilter(f)}
-            className={`rounded-full px-3 py-1.5 text-xs font-bold ring-1 transition ${
-              filter === f ? "bg-orange-500/20 text-orange-200 ring-orange-500/40" : "bg-card text-muted-foreground ring-border hover:text-white"
+            aria-pressed={filter === f}
+            className={`inline-flex min-h-11 items-center rounded-full px-3 text-xs font-bold ring-1 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+              filter === f
+                ? "bg-orange-500/20 text-orange-200 ring-orange-500/40"
+                : "bg-card text-muted-foreground ring-border hover:text-foreground"
             }`}
-          >{f.toUpperCase()}</button>
+          >
+            {f.toUpperCase()}
+          </button>
         ))}
-        <div className="ml-auto text-xs text-muted-foreground">{filtered.length} game{filtered.length === 1 ? "" : "s"}</div>
+        <div className="ml-auto text-xs text-muted-foreground">
+          {filtered.length} game{filtered.length === 1 ? "" : "s"}
+        </div>
       </div>
 
       {sbQ.isLoading && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          {Array.from({ length: 6 }).map((_, i) => <div key={i} className="h-24 rounded-2xl ring-1 ring-border bg-card animate-pulse" />)}
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="h-24 rounded-2xl ring-1 ring-border bg-card animate-pulse" />
+          ))}
         </div>
       )}
-      {!sbQ.isLoading && filtered.length === 0 && (
-        <div className="rounded-2xl border border-dashed border-border p-8 text-center text-sm text-muted-foreground bg-card/40">
-          No games match the current filter on this date.
-        </div>
-      )}
+      {!sbQ.isLoading && sbQ.error ? (
+        <ErrorState
+          title="Could not load MLS games"
+          message={errorMessage(sbQ.error)}
+          onRetry={() => void sbQ.refetch()}
+        />
+      ) : !sbQ.isLoading && filtered.length === 0 ? (
+        <EmptyState
+          title="No games match this filter"
+          description="Try another date or switch back to All."
+        />
+      ) : null}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
         {filtered.map((g) => (
           <GameCard key={g.id} game={g as any} linkTo={`/mls/game/${g.id}`} />

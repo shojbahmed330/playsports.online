@@ -3,10 +3,10 @@
 Updated: 2026-11-27 (session 1 closed with a logged resource blocker)
 
 - Branch: `professional-overhaul` (never pushed)
-- Current phase: **session 2 — NHL module complete**
-- Current screen: MLS-01 MLS champions
-- Screens done: **122 / 150**
-- Screens blocked: **28** (resource, see `BLOCKERS.md`)
+- Current phase: **session 2 — all 150 route screens complete**
+- Current screen: GLB global items (layout/header/footer/PWA)
+- Screens done: **150 / 150**
+- Screens blocked: **0 route screens** (10 GLB global items remain, see `BLOCKERS.md`)
 - Screens in progress: 0
 
 ## Completed

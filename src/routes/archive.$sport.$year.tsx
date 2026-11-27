@@ -6,6 +6,19 @@ import { breadcrumbList, faqPage, itemList, ldScript } from "@/lib/seo/jsonld";
 import { AffiliateStrip } from "@/components/affiliates/AffiliateStrip";
 import { AdSlot } from "@/components/ads/AdSlot";
 import { findMatchSlug } from "@/lib/seo/entities";
+import { EmptyState, ErrorState } from "@/components/ui/state";
+
+function formatDate(value?: string): string {
+  if (!value) return "";
+  const d = new Date(`${value.slice(0, 10)}T00:00:00Z`);
+  if (Number.isNaN(d.getTime())) return value;
+  return d.toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    timeZone: "UTC",
+  });
+}
 
 export const Route = createFileRoute("/archive/$sport/$year")({
   loader: ({ params }) => {
@@ -29,6 +42,7 @@ export const Route = createFileRoute("/archive/$sport/$year")({
         { property: "og:description", content: desc },
         { property: "og:url", content: canonical(path) },
         { property: "og:type", content: "article" },
+        { property: "og:site_name", content: "PlaySports" },
         {
           property: "og:image",
           content: canonical(`/og/archive/${params.year}--${params.sport}.svg`),
@@ -36,6 +50,8 @@ export const Route = createFileRoute("/archive/$sport/$year")({
         { property: "og:image:width", content: "1200" },
         { property: "og:image:height", content: "630" },
         { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: desc },
         {
           name: "twitter:image",
           content: canonical(`/og/archive/${params.year}--${params.sport}.svg`),
@@ -91,28 +107,64 @@ export const Route = createFileRoute("/archive/$sport/$year")({
     };
   },
   component: ArchivePage,
-  errorComponent: ({ error }) => <div className="p-6">Error: {errorMessage(error)}</div>,
-  notFoundComponent: () => <div className="p-6">Season not found.</div>,
+  errorComponent: ({ error, reset }) => (
+    <div className="mx-auto max-w-3xl px-4 py-10">
+      <ErrorState
+        title="Could not load this archive"
+        message={errorMessage(error)}
+        onRetry={reset}
+      />
+    </div>
+  ),
+  notFoundComponent: () => (
+    <div className="mx-auto max-w-3xl px-4 py-16">
+      <EmptyState
+        title="Season not found"
+        description="This World Cup edition is not in the archive."
+        action={
+          <Link
+            to="/archive/$sport/$year"
+            params={{ sport: "football_wc", year: "2022" }}
+            className="inline-flex min-h-11 items-center rounded-full bg-primary px-4 text-sm font-bold text-primary-foreground hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            Open the 2022 archive
+          </Link>
+        }
+      />
+    </div>
+  ),
 });
 
 function ArchivePage() {
   const { year, stats } = Route.useLoaderData();
   return (
     <div className="container mx-auto px-4 py-6 pb-20 max-w-5xl">
-      <nav className="text-xs text-muted-foreground mb-3">
-        <Link to="/" className="hover:underline">
+      <nav
+        aria-label="Breadcrumb"
+        className="mb-3 flex flex-wrap items-center text-xs text-muted-foreground"
+      >
+        <Link
+          to="/"
+          className="inline-flex min-h-11 items-center hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
           Home
-        </Link>{" "}
-        /{" "}
-        <Link to="/football" className="hover:underline">
+        </Link>
+        <span aria-hidden="true"> / </span>
+        <Link
+          to="/football"
+          className="inline-flex min-h-11 items-center hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
           Football
-        </Link>{" "}
-        / <span>WC {year}</span>
+        </Link>
+        <span aria-hidden="true"> / </span>
+        <span className="text-foreground" aria-current="page">
+          WC {year}
+        </span>
       </nav>
       <h1 className="text-3xl font-bold mb-2">FIFA World Cup {year}</h1>
       {stats.champion && (
         <p className="text-lg mb-4">
-          🏆 Champion: <strong>{stats.champion.champion}</strong>
+          🏆 Champion: <strong>{stats.champion.champion}</strong>{" "}
           {stats.champion.runnerUp ? <> · Runner-up: {stats.champion.runnerUp}</> : null}
           {stats.champion.thirdPlace ? <> · 3rd: {stats.champion.thirdPlace}</> : null}
         </p>
@@ -122,20 +174,27 @@ function ArchivePage() {
 
       <section className="mt-6">
         <h2 className="text-xl font-semibold mb-3">Top Scorers</h2>
-        <ul className="divide-y rounded-lg border">
-          {stats.topScorers.map((p: { name: string; team: string; goals: number }) => (
-            <li key={p.name} className="flex justify-between px-4 py-2">
-              <Link
-                to="/football/players/$slug"
-                params={{ slug: slug(p.name) }}
-                className="hover:underline"
-              >
-                {p.name} <span className="text-muted-foreground text-xs">· {p.team}</span>
-              </Link>
-              <span className="font-mono">{p.goals}</span>
-            </li>
-          ))}
-        </ul>
+        {stats.topScorers.length === 0 ? (
+          <EmptyState
+            title="No scorers on record"
+            description={`No goals are recorded for the ${year} World Cup.`}
+          />
+        ) : (
+          <ul className="divide-y rounded-xl border border-border bg-card/40">
+            {stats.topScorers.map((p: { name: string; team: string; goals: number }) => (
+              <li key={p.name} className="flex justify-between px-4 py-2">
+                <Link
+                  to="/football/players/$slug"
+                  params={{ slug: slug(p.name) }}
+                  className="inline-flex min-h-11 items-center hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  {p.name} <span className="text-muted-foreground text-xs">· {p.team}</span>
+                </Link>
+                <span className="font-mono">{p.goals}</span>
+              </li>
+            ))}
+          </ul>
+        )}
       </section>
 
       {stats.allScorers && stats.allScorers.length > stats.topScorers.length && (
@@ -147,7 +206,7 @@ function ArchivePage() {
                 key={p.name}
                 to="/football/players/$slug"
                 params={{ slug: slug(p.name) }}
-                className="px-3 py-1 rounded-full bg-muted text-xs hover:bg-accent"
+                className="inline-flex min-h-11 items-center rounded-full bg-muted px-3 text-xs hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 {p.name}{" "}
                 <span className="text-muted-foreground">
@@ -171,14 +230,12 @@ function ArchivePage() {
                 key={i}
                 className="flex flex-col gap-1 border rounded px-3 py-2 text-sm sm:flex-row sm:items-center sm:justify-between"
               >
-                <span>
-                  {m.match_date} · {m.round}
-                </span>
+                <span>{[formatDate(m.match_date), m.round].filter(Boolean).join(" · ")}</span>
                 {matchSlug ? (
                   <Link
                     to="/football/matches/$slug"
                     params={{ slug: matchSlug }}
-                    className="font-medium hover:underline"
+                    className="inline-flex min-h-11 items-center font-medium hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   >
                     {m.home_team} {m.home_score}–{m.away_score} {m.away_team}
                   </Link>

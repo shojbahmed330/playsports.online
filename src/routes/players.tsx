@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 
 import { Trophy, ShieldCheck, Share2, TrendingUp } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
+import { EmptyState } from "@/components/ui/state";
 import { flagOf } from "@/lib/flags";
 import { AdSlot } from "@/components/ads/AdSlot";
 import fifaRankings from "@/data/fifa_rankings.json";
@@ -57,6 +58,14 @@ export const Route = createFileRoute("/players")({
           "Live 2026 top scorers, hat-tricks, Golden Boot race, and all-time records across every FIFA World Cup edition.",
       },
       { property: "og:url", content: "https://www.playsports.online/players" },
+      { property: "og:site_name", content: "PlaySports" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Player Statistics & Records — FIFA World Cup 1930–2026" },
+      {
+        name: "twitter:description",
+        content:
+          "Live 2026 top scorers, hat-tricks, Golden Boot race, and all-time records across every FIFA World Cup edition.",
+      },
     ],
     links: [{ rel: "canonical", href: "https://www.playsports.online/players" }],
     scripts: [
@@ -317,7 +326,7 @@ function PlayersPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2.5">
             <div className="size-9 rounded-lg bg-gold/15 grid place-items-center ring-1 ring-gold/30">
-              <Trophy className="size-5 text-gold" />
+              <Trophy className="size-5 text-gold" aria-hidden="true" />
             </div>
             <div className="leading-tight">
               <div className="text-sm font-bold tracking-wide">FIFA World Cup</div>
@@ -327,7 +336,7 @@ function PlayersPage() {
           <nav className="flex items-center gap-1.5 sm:gap-2 text-sm">
             <Link
               to="/"
-              className="group relative inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs sm:text-sm font-semibold text-muted-foreground ring-1 ring-white/10 bg-white/5 hover:text-foreground hover:bg-white/10 hover:ring-white/20 transition-all"
+              className="group relative inline-flex min-h-11 items-center gap-1.5 rounded-xl px-3 text-xs font-semibold text-muted-foreground ring-1 ring-border bg-muted hover:text-foreground hover:bg-accent hover:ring-ring/40 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               <span aria-hidden>🏠</span>
               <span>Home</span>
@@ -905,11 +914,7 @@ function RankingsTab() {
 }
 
 function EmptyBlock({ label }: { label: string }) {
-  return (
-    <div className="rounded-2xl border border-dashed border-border p-10 text-center text-sm text-muted-foreground bg-card/30">
-      {label}
-    </div>
-  );
+  return <EmptyState title="No data" description={label} />;
 }
 
 function SectionSkeleton() {

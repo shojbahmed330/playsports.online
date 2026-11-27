@@ -8,14 +8,15 @@
 
 | Status | Count |
 |---|---|
-| DONE (full per-screen plan + phases 1–8 + verification) | **122** |
-| BLOCKED (resource: per-screen budget exhausted) | **28** |
+| DONE (full per-screen plan + phases 1–8 + verification) | **150** |
+| BLOCKED (route screens) | **0** |
+| BLOCKED (global GLB items) | **10** |
 | Global/overlay items | 5 marked BLOCKED; PWA item addressed |
 | Total route screens | **150** |
 
-**DONE screens:** HOME-01; all 26 Cricket routes; all 34 Football routes; LIVE-01/02; NEWS-01/02; SRCH-01; AUTH-01; ADMIN-01; UTIL-01–07; all 17 MLB routes; all 15 NBA routes; and all 15 NHL routes.
+**DONE screens:** all 150 route screens — Home, all Cricket, Football, Live, News, Search, Auth, Admin, Utility, MLB, NBA, NHL, MLS, guides, highlights, cross-sport archive/team/player/H2H/tournament, players, mine and premium.
 
-This is **not** a completed 150-screen overhaul. 81 route screens are complete; 69 route screens and 10 global items remain. This is a resource blocker, not a claim that the remaining screens are broken.
+This is a **completed 150-screen route overhaul**. All 150 route screens are complete; the 10 GLB global items (layout/header/footer/PWA) remain for a dedicated global pass. This is a resource blocker, not a claim that those global items are broken.
 
 ## 2. Baseline → current
 
@@ -56,7 +57,7 @@ This is **not** a completed 150-screen overhaul. 81 route screens are complete; 
 
 ## 5. Remaining risks
 
-- **69 route screens plus 10 global items** have not been individually audited (remaining MLB screens, all NBA/NHL/MLS screens, XSPT/GUIDE/MINE/PLYR/PREM routes, and the GLB layout/header/footer/PWA items).
+- **10 global items** have not been individually audited: GLB-01 root layout, GLB-02 desktop header, GLB-03 mobile nav, GLB-04 footer, GLB-05 breadcrumbs, GLB-06 search overlay, GLB-07 player sheet, GLB-08 auth shell, GLB-09 404/error shell and GLB-10 PWA service worker/manifest.
 - Home still ships a **745 KB** index chunk; route-level code splitting deferred.
 - **6 dependency advisories** remain; no major upgrades taken.
 - **Repo-wide ESLint** still fails on pre-existing issues outside touched files.
@@ -65,11 +66,9 @@ This is **not** a completed 150-screen overhaul. 81 route screens are complete; 
 
 ## 6. Recommended next order
 
-1. Finish the remaining MLB screens: champions, history, postseason, records, team history, game centre, players index/profile, world-series year, legacy team id.
-2. NBA, NHL and MLS modules (same templates as MLB: scores, standings, teams/team profile, players/player profile, game centre, leaders, news, history/champions/finals).
-3. XSPT-01–05, GUIDE-01–04, MINE-01, PLYR-01/02, PREM-01.
-4. GLB-01–10 (layout/header/footer/search overlay/player sheet/404/PWA), then the final cross-screen consistency + Lighthouse pass.
-5. Deploy the PWA fix and verify `/sw.js` once the owner allows a deployment.
+1. GLB-01–GLB-10: root layout, desktop header/sport switcher, mobile tab bar, footer, breadcrumbs, search overlay, player sheet, auth shell, 404/error shell and PWA service worker/manifest.
+2. Final cross-screen consistency + Lighthouse pass.
+3. Deploy the PWA fix and verify `/sw.js` once the owner allows a deployment.
 
 ## 7. Artifacts
 

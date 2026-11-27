@@ -365,6 +365,11 @@
 - Fixed: layout canonical/OG/Twitter; scoreboard, standings, leaders and news query errors with retry; shared empty states; 44 px filters/tabs/links; `aria-pressed` toggles; hidden icons/pulse dots; table captions/`scope`; `noindex` for missing players/teams/games/editions; token surfaces across hub, scores, teams, player and history pages.
 - Kept: all NHL hubs, standings, leaders, news, game centre, player/team profiles and Stanley Cup history.
 
+## MLS, guides, cross-sport and premium screens
+
+- Fixed: shared error/empty/not-found states across MLS, guides/highlights, archive/team/player/H2H, tournament leaderboards/stages, players hub and premium; 44 px links/tabs/controls; `aria-pressed` toggles; UTC dates; privacy-enhanced highlight embeds; `noindex` for missing entities; OG site name/Twitter meta; token surfaces; announced loading.
+- Kept: all MLS content, guides, highlights, personal feed, player stats, tournament pages and premium plans.
+
 ## Foundation
 
 - Added overhaul documentation: `PROJECT_NOTES.md`, `HEALTH_BASELINE.md`, `SCREEN_INVENTORY.md`, `DESIGN_SYSTEM.md`, `PROGRESS.md`, `DECISIONS.md`, `BLOCKERS.md`, `SECURITY_FINDINGS.md`.

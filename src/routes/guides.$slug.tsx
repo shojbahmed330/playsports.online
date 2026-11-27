@@ -2,6 +2,7 @@ import { createFileRoute, notFound, Link } from "@tanstack/react-router";
 import { getGuide, listGuides } from "@/content/guides";
 import { canonical } from "@/lib/seo/canonical";
 import { breadcrumbList, faqPage, ldScript } from "@/lib/seo/jsonld";
+import { EmptyState } from "@/components/ui/state";
 
 export const Route = createFileRoute("/guides/$slug")({
   loader: ({ params }) => {
@@ -23,6 +24,10 @@ export const Route = createFileRoute("/guides/$slug")({
         { property: "og:description", content: guide.description },
         { property: "og:url", content: canonical(path) },
         { property: "og:type", content: "article" },
+        { property: "og:site_name", content: "PlaySports" },
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: guide.title },
+        { name: "twitter:description", content: guide.description },
         { property: "article:modified_time", content: guide.updated },
       ],
       links: [{ rel: "canonical", href: canonical(path) }],
@@ -50,6 +55,22 @@ export const Route = createFileRoute("/guides/$slug")({
     };
   },
   component: GuidePage,
+  notFoundComponent: () => (
+    <div className="mx-auto max-w-3xl px-4 py-16">
+      <EmptyState
+        title="Guide not found"
+        description="This guide may have moved or is not published."
+        action={
+          <Link
+            to="/guides"
+            className="inline-flex min-h-11 items-center rounded-full bg-primary px-4 text-sm font-bold text-primary-foreground hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            All guides
+          </Link>
+        }
+      />
+    </div>
+  ),
 });
 
 function GuidePage() {
@@ -59,9 +80,18 @@ function GuidePage() {
   return (
     <main className="mx-auto max-w-3xl px-4 py-10 md:py-14">
       <nav aria-label="Breadcrumb" className="mb-6 text-sm text-muted-foreground">
-        <Link to="/" className="hover:text-foreground transition-colors">Home</Link>
-        <span className="mx-2 text-border">/</span>
-        <span className="text-foreground">Guides</span>
+        <Link
+          to="/"
+          className="inline-flex min-h-11 items-center transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          Home
+        </Link>
+        <span className="mx-2 text-border" aria-hidden="true">
+          /
+        </span>
+        <span className="text-foreground" aria-current="page">
+          Guides
+        </span>
       </nav>
 
       <header className="mb-10 pb-8 border-b border-border">
@@ -71,7 +101,13 @@ function GuidePage() {
         </h1>
         <p className="text-lg text-muted-foreground leading-relaxed">{guide.description}</p>
         <p className="mt-4 text-xs text-muted-foreground">
-          Updated {new Date(guide.updated).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
+          Updated{" "}
+          {new Date(guide.updated).toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+            timeZone: "UTC",
+          })}
         </p>
       </header>
 
@@ -101,7 +137,7 @@ function GuidePage() {
                 <Link
                   to="/guides/$slug"
                   params={{ slug: g.slug }}
-                  className="block rounded-lg border border-border bg-card p-4 hover:border-primary hover:bg-accent transition-colors"
+                  className="flex min-h-11 items-center rounded-xl border border-border bg-card p-4 transition-colors hover:border-primary hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   <span className="font-medium text-foreground">{g.title}</span>
                 </Link>

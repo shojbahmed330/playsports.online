@@ -3,7 +3,7 @@
 Generated from the real router files in `src/routes` and cross-checked against `src/routeTree.gen.ts`.
 
 
-> **Execution status:** the foundation plus 122 route screens are DONE, including Home, Cricket, Football, Live, News, Search, Auth, Admin, utility pages and the full MLB, NBA and NHL modules. The remaining 28 route screens are marked BLOCKED for this session because the per-screen audit/implementation budget was exhausted; the reason is recorded in `BLOCKERS.md` and the recommended order is in `FINAL_REPORT.md`. This is a resource blocker, not a claim that the screen is broken.
+> **Execution status:** all 150 route screens are DONE. The 10 GLB global items (root layout, desktop header, mobile nav, footer, breadcrumbs, search overlay, player sheet, auth shell, 404/error shell, PWA service worker) remain BLOCKED for a dedicated global pass; the reason is recorded in `BLOCKERS.md` and the recommended order is in `FINAL_REPORT.md`. This is a resource blocker, not a claim that those global items are broken.
 
 ## 1. Summary
 
@@ -208,7 +208,7 @@ Generated from the real router files in `src/routes` and cross-checked against `
 |---|---|---|---|---|---|---|---|---|---|---|
 | UTIL-01 | Utility | - | About | Full page | `/about`<br>`src/routes/about.tsx` | About page with DB override | site/LegalLayout, ui/state | static default + site settings | empty, loading | DONE |
 | ADMIN-01 | Admin | - | Admin | Full page | `/admin`<br>`src/routes/admin.tsx` | Role-gated console: overview, SEO, monetise, audience, content, settings, match video library | admin/*, ui/state | Supabase + wc2026.functions | loading, empty, error+retry, unauthorized | DONE |
-| XSPT-01 | Cross-sport | â€” | Archive Sport Year | Full page | `/archive/:sport/:year`<br>`src/routes/archive.$sport.$year.tsx` | SSR loader; JSON-LD; head meta | affiliates/AffiliateStrip, ads/AdSlot | server fn / query | error | BLOCKED |
+| XSPT-01 | Cross-sport | â€” | Archive Sport Year | Full page | `/archive/:sport/:year`<br>`src/routes/archive.$sport.$year.tsx` | SSR loader; JSON-LD; head meta | affiliates/AffiliateStrip, ads/AdSlot | server fn / query | error | DONE |
 | AUTH-01 | Auth | - | Auth | Full page | `/auth`<br>`src/routes/auth.tsx` | Admin email/password sign-in with session redirect | - | Supabase Auth | loading, inline error | DONE |
 | UTIL-02 | Utility | - | Contact | Full page | `/contact`<br>`src/routes/contact.tsx` | Contact form with inline status | site/LegalLayout | contact.functions | error, success | DONE |
 | UTIL-03 | Utility | - | Cookies | Full page | `/cookies`<br>`src/routes/cookies.tsx` | Cookie policy + consent trigger | site/LegalLayout, ui/state | static default + site settings | empty, loading | DONE |
@@ -273,14 +273,14 @@ Generated from the real router files in `src/routes` and cross-checked against `
 | FB-32 | Football | FB-22 | Football Top Scorers | Full page | `/football/top-scorers`<br>`src/routes/football.top-scorers.index.tsx` | All-time feature + yearly top-scorer links | ui/state, seo/withHubLinks | static entities | empty | DONE |
 | FB-33 | Football | FB-22 | Football Tournament Year | Full page | `/football/tournaments/:year`<br>`src/routes/football.tournaments.$year.tsx` | SSR podium/stats/awards; top scorers; year nav | seo/withYearNav, ui/state | static tournaments | error+retry, 404 | DONE |
 | FB-34 | Football | FB-22 | Football Venues | Full page | `/football/venues`<br>`src/routes/football.venues.tsx` | 16 WC2026 host stadiums grouped by country; logistics guide | ui/state | static venues | empty | DONE |
-| GUIDE-01 | Guides | GUIDE-02 | Guides Slug | Full page | `/guides/:slug`<br>`src/routes/guides.$slug.tsx` | SSR loader; JSON-LD; head meta | â€” | server fn / query | error | BLOCKED |
-| GUIDE-02 | Guides | â€” | Guides | Full page | `/guides`<br>`src/routes/guides.index.tsx` | JSON-LD; head meta | â€” | static/local | not verified | BLOCKED |
-| GUIDE-03 | Guides | GUIDE-02 | Highlights Slug | Full page | `/highlights/:slug`<br>`src/routes/highlights.$slug.tsx` | SSR loader; JSON-LD; head meta | â€” | server fn / query | loading, error | BLOCKED |
-| GUIDE-04 | Guides | GUIDE-02 | Highlights | Full page | `/highlights`<br>`src/routes/highlights.index.tsx` | JSON-LD; head meta | â€” | static/local | not verified | BLOCKED |
+| GUIDE-01 | Guides | GUIDE-02 | Guides Slug | Full page | `/guides/:slug`<br>`src/routes/guides.$slug.tsx` | SSR loader; JSON-LD; head meta | â€” | server fn / query | error | DONE |
+| GUIDE-02 | Guides | â€” | Guides | Full page | `/guides`<br>`src/routes/guides.index.tsx` | JSON-LD; head meta | â€” | static/local | not verified | DONE |
+| GUIDE-03 | Guides | GUIDE-02 | Highlights Slug | Full page | `/highlights/:slug`<br>`src/routes/highlights.$slug.tsx` | SSR loader; JSON-LD; head meta | â€” | server fn / query | loading, error | DONE |
+| GUIDE-04 | Guides | GUIDE-02 | Highlights | Full page | `/highlights`<br>`src/routes/highlights.index.tsx` | JSON-LD; head meta | â€” | static/local | not verified | DONE |
 | HOME-01 | Home | â€” | Home dashboard | Full page | `/`<br>`src/routes/index.tsx` | SSR hero feeds; live/upcoming/finals; sport chips; cricket + football slates; sport doors | home/CompactHero, home/StatusBar, home/SportChipTabs, home/ForYouStrip | espn.functions, wc2026.functions, cricket.functions | loading, empty, error+retry | DONE |
 | LIVE-01 | Live | LIVE-02 | Live Sport | Full page | `/live/:sport`<br>`src/routes/live.$sport.tsx` | Sport live-hub entry; 404 for unknown sport; hub CTA | ui/state | static hub map | 404, invalid sport | DONE |
 | LIVE-02 | Live | - | Live Today | Full page | `/live/today`<br>`src/routes/live.today.tsx` | Cross-sport live index | seo/withHubLinks | static | not applicable | DONE |
-| MINE-01 | My Sports | â€” | Mine | Full page | `/mine`<br>`src/routes/mine.tsx` | head meta | common/FavoriteTeamPicker | static/local | loading, empty | BLOCKED |
+| MINE-01 | My Sports | â€” | Mine | Full page | `/mine`<br>`src/routes/mine.tsx` | head meta | common/FavoriteTeamPicker | static/local | loading, empty | DONE |
 | MLB-01 | MLB | MLB-04 | MLB Champions | Full page | `/mlb/champions`<br>`src/routes/mlb.champions.tsx` | World Series winners, title counts, team histories | ui/state | static | empty | DONE |
 | MLB-02 | MLB | MLB-04 | MLB Game Centre | Full page | `/mlb/game/:id`<br>`src/routes/mlb.game.$id.tsx` | Linescore, boxscore, plays, win probability, info | mlb/*, ui/state | mlb.functions | loading, empty, error+retry | DONE |
 | MLB-03 | MLB | MLB-04 | MLB History | Full page | `/mlb/history`<br>`src/routes/mlb.history.tsx` | Timeline plus season leader snapshots | mlb/HistoryTimeline, mlb/MlbSeasonLeaderHistory, ui/state | static + mlb.functions | empty, error+retry | DONE |
@@ -298,21 +298,21 @@ Generated from the real router files in `src/routes` and cross-checked against `
 | MLB-15 | MLB | MLB-04 | MLB Teams | Full page | `/mlb/teams`<br>`src/routes/mlb.teams.tsx` | Searchable 30-franchise directory | mlb/TeamCard, ui/state | mlb.functions | loading, empty, error+retry | DONE |
 | MLB-16 | MLB | MLB-04 | MLB Team Profile | Full page | `/mlb/teams/:slug`<br>`src/routes/mlb.teams_.$slug.tsx` | Schedule, roster, stats, injuries, related teams | mlb/MlbTeamView, ui/state | mlb.functions | empty, error+retry, 404 | DONE |
 | MLB-17 | MLB | MLB-04 | World Series Year | Full page | `/mlb/world-series/:year`<br>`src/routes/mlb.world-series.$year.tsx` | Edition recap: champion, MVP, result, nearby years | seo/withYearNav, ui/state | static | error+retry, 404 | DONE |
-| MLS-01 | MLS | MLS-05 | Mls Champions | Full page | `/mls/champions`<br>`src/routes/mls.champions.tsx` | JSON-LD; head meta | seo/withHubLinks | static/local | not verified | BLOCKED |
-| MLS-02 | MLS | MLS-05 | Mls Cup Year | Full page | `/mls/cup/:year`<br>`src/routes/mls.cup.$year.tsx` | SSR loader; JSON-LD; head meta | seo/withYearNav | server fn / query | error | BLOCKED |
-| MLS-03 | MLS | MLS-05 | Mls Game Id | Full page | `/mls/game/:id`<br>`src/routes/mls.game.$id.tsx` | SSR loader; client query; JSON-LD; head meta | mls/MlsLinescore, mls/MlsBoxScore, mls/MlsPlayByPlay, seo/MatchFaqBlock | mls.functions | loading | BLOCKED |
-| MLS-04 | MLS | MLS-05 | Mls History | Full page | `/mls/history`<br>`src/routes/mls.history.tsx` | JSON-LD; head meta | seo/withHubLinks | static/local | not verified | BLOCKED |
-| MLS-05 | MLS | â€” | Mls | Full page | `/mls`<br>`src/routes/mls.index.tsx` | SSR loader; client query; JSON-LD; head meta | sports/GameCard, mls/MlsLeaderBoard, ads/AdSlot, sports/DateScrubber | mls.functions, espn.functions | loading, empty | BLOCKED |
-| MLS-06 | MLS | MLS-05 | Mls Leaders | Full page | `/mls/leaders`<br>`src/routes/mls.leaders.tsx` | SSR loader; client query; JSON-LD; head meta | mls/MlsLeaderBoard, seo/withHubLinks | mls.functions | loading, empty | BLOCKED |
-| MLS-07 | MLS | MLS-05 | Mls News | Full page | `/mls/news`<br>`src/routes/mls.news.tsx` | client query; JSON-LD; head meta | sports/NewsRail, seo/withHubLinks | espn.functions | loading | BLOCKED |
-| MLS-08 | MLS | MLS-05 | Mls Player Id | Full page | `/mls/player/:id`<br>`src/routes/mls.player.$id.tsx` | SSR loader; client query; JSON-LD; head meta | â€” | mls.functions | loading, empty | BLOCKED |
-| MLS-09 | MLS | MLS-05 | Mls Players Slug | Full page | `/mls/players/:slug`<br>`src/routes/mls.players.$slug.tsx` | SSR loader; JSON-LD; head meta | seo/RelatedLinks | server fn / query | error | BLOCKED |
-| MLS-10 | MLS | MLS-05 | Mls Scores | Full page | `/mls/scores`<br>`src/routes/mls.scores.tsx` | client query; JSON-LD; head meta | sports/GameCard, sports/DateScrubber, seo/withHubLinks | mls.functions | loading, empty | BLOCKED |
-| MLS-11 | MLS | MLS-05 | Mls Standings | Full page | `/mls/standings`<br>`src/routes/mls.standings.tsx` | SSR loader; client query; JSON-LD; head meta | mls/MlsStandingsPro, seo/withHubLinks | mls.functions | loading | BLOCKED |
-| MLS-12 | MLS | MLS-05 | Mls Team History Slug | Full page | `/mls/team-history/:slug`<br>`src/routes/mls.team-history.$slug.tsx` | SSR loader; JSON-LD; head meta | seo/RelatedLinks | server fn / query | empty, error | BLOCKED |
-| MLS-13 | MLS | MLS-05 | Mls Team Id | Full page | `/mls/team/:id`<br>`src/routes/mls.team.$id.tsx` | SSR loader; head meta | mls/MlsTeamView | server fn / query | not verified | BLOCKED |
-| MLS-14 | MLS | MLS-05 | Mls Teams | Full page | `/mls/teams`<br>`src/routes/mls.teams.tsx` | SSR loader; client query; JSON-LD; head meta | mls/MlsTeamCard, seo/withHubLinks | mls.functions | loading | BLOCKED |
-| MLS-15 | MLS | MLS-05 | Mls Teams Slug | Full page | `/mls/teams/:slug`<br>`src/routes/mls.teams_.$slug.tsx` | SSR loader; JSON-LD; head meta | mls/MlsTeamView | server fn / query | loading, error | BLOCKED |
+| MLS-01 | MLS | MLS-05 | Mls Champions | Full page | `/mls/champions`<br>`src/routes/mls.champions.tsx` | JSON-LD; head meta | seo/withHubLinks | static/local | not verified | DONE |
+| MLS-02 | MLS | MLS-05 | Mls Cup Year | Full page | `/mls/cup/:year`<br>`src/routes/mls.cup.$year.tsx` | SSR loader; JSON-LD; head meta | seo/withYearNav | server fn / query | error | DONE |
+| MLS-03 | MLS | MLS-05 | Mls Game Id | Full page | `/mls/game/:id`<br>`src/routes/mls.game.$id.tsx` | SSR loader; client query; JSON-LD; head meta | mls/MlsLinescore, mls/MlsBoxScore, mls/MlsPlayByPlay, seo/MatchFaqBlock | mls.functions | loading | DONE |
+| MLS-04 | MLS | MLS-05 | Mls History | Full page | `/mls/history`<br>`src/routes/mls.history.tsx` | JSON-LD; head meta | seo/withHubLinks | static/local | not verified | DONE |
+| MLS-05 | MLS | â€” | Mls | Full page | `/mls`<br>`src/routes/mls.index.tsx` | SSR loader; client query; JSON-LD; head meta | sports/GameCard, mls/MlsLeaderBoard, ads/AdSlot, sports/DateScrubber | mls.functions, espn.functions | loading, empty | DONE |
+| MLS-06 | MLS | MLS-05 | Mls Leaders | Full page | `/mls/leaders`<br>`src/routes/mls.leaders.tsx` | SSR loader; client query; JSON-LD; head meta | mls/MlsLeaderBoard, seo/withHubLinks | mls.functions | loading, empty | DONE |
+| MLS-07 | MLS | MLS-05 | Mls News | Full page | `/mls/news`<br>`src/routes/mls.news.tsx` | client query; JSON-LD; head meta | sports/NewsRail, seo/withHubLinks | espn.functions | loading | DONE |
+| MLS-08 | MLS | MLS-05 | Mls Player Id | Full page | `/mls/player/:id`<br>`src/routes/mls.player.$id.tsx` | SSR loader; client query; JSON-LD; head meta | â€” | mls.functions | loading, empty | DONE |
+| MLS-09 | MLS | MLS-05 | Mls Players Slug | Full page | `/mls/players/:slug`<br>`src/routes/mls.players.$slug.tsx` | SSR loader; JSON-LD; head meta | seo/RelatedLinks | server fn / query | error | DONE |
+| MLS-10 | MLS | MLS-05 | Mls Scores | Full page | `/mls/scores`<br>`src/routes/mls.scores.tsx` | client query; JSON-LD; head meta | sports/GameCard, sports/DateScrubber, seo/withHubLinks | mls.functions | loading, empty | DONE |
+| MLS-11 | MLS | MLS-05 | Mls Standings | Full page | `/mls/standings`<br>`src/routes/mls.standings.tsx` | SSR loader; client query; JSON-LD; head meta | mls/MlsStandingsPro, seo/withHubLinks | mls.functions | loading | DONE |
+| MLS-12 | MLS | MLS-05 | Mls Team History Slug | Full page | `/mls/team-history/:slug`<br>`src/routes/mls.team-history.$slug.tsx` | SSR loader; JSON-LD; head meta | seo/RelatedLinks | server fn / query | empty, error | DONE |
+| MLS-13 | MLS | MLS-05 | Mls Team Id | Full page | `/mls/team/:id`<br>`src/routes/mls.team.$id.tsx` | SSR loader; head meta | mls/MlsTeamView | server fn / query | not verified | DONE |
+| MLS-14 | MLS | MLS-05 | Mls Teams | Full page | `/mls/teams`<br>`src/routes/mls.teams.tsx` | SSR loader; client query; JSON-LD; head meta | mls/MlsTeamCard, seo/withHubLinks | mls.functions | loading | DONE |
+| MLS-15 | MLS | MLS-05 | Mls Teams Slug | Full page | `/mls/teams/:slug`<br>`src/routes/mls.teams_.$slug.tsx` | SSR loader; JSON-LD; head meta | mls/MlsTeamView | server fn / query | loading, error | DONE |
 | NBA-01 | NBA | NBA-05 | Nba Champions | Full page | `/nba/champions`<br>`src/routes/nba.champions.tsx` | JSON-LD; head meta | seo/withHubLinks | static/local | not verified | DONE |
 | NBA-02 | NBA | NBA-05 | Nba Finals Year | Full page | `/nba/finals/:year`<br>`src/routes/nba.finals.$year.tsx` | SSR loader; JSON-LD; head meta | seo/withYearNav | server fn / query | error | DONE |
 | NBA-03 | NBA | NBA-05 | Nba Game Id | Full page | `/nba/game/:id`<br>`src/routes/nba.game.$id.tsx` | SSR loader; client query; JSON-LD; head meta | nba/NbaLinescore, nba/NbaBoxScore, nba/NbaPlayByPlay, seo/MatchFaqBlock | nba.functions | loading | DONE |
@@ -345,17 +345,17 @@ Generated from the real router files in `src/routes` and cross-checked against `
 | NHL-13 | NHL | NHL-04 | Nhl Team Id | Full page | `/nhl/team/:id`<br>`src/routes/nhl.team.$id.tsx` | SSR loader; head meta | nhl/NhlTeamView | server fn / query | not verified | DONE |
 | NHL-14 | NHL | NHL-04 | Nhl Teams | Full page | `/nhl/teams`<br>`src/routes/nhl.teams.tsx` | SSR loader; client query; JSON-LD; head meta | nhl/NhlTeamCard, seo/withHubLinks | nhl.functions | loading | DONE |
 | NHL-15 | NHL | NHL-04 | Nhl Teams Slug | Full page | `/nhl/teams/:slug`<br>`src/routes/nhl.teams_.$slug.tsx` | SSR loader; JSON-LD; head meta | nhl/NhlTeamView | server fn / query | loading, error | DONE |
-| PLYR-01 | Players | PLYR-02 | Player Sport Slug | Full page | `/player/:sport/:slug`<br>`src/routes/player.$sport.$slug.tsx` | SSR loader; JSON-LD; head meta | affiliates/AffiliateStrip, ads/AdSlot | server fn / query | error | BLOCKED |
-| PLYR-02 | Players | â€” | Players | Full page | `/players`<br>`src/routes/players.tsx` | client query; JSON-LD; head meta | ads/AdSlot, players/PlayerSubNav, players/FilterBar, players/FilterSheet | server fn / query | loading, empty | BLOCKED |
-| PREM-01 | Premium | â€” | Premium | Full page | `/premium`<br>`src/routes/premium.tsx` | head meta | â€” | static/local | not verified | BLOCKED |
+| PLYR-01 | Players | PLYR-02 | Player Sport Slug | Full page | `/player/:sport/:slug`<br>`src/routes/player.$sport.$slug.tsx` | SSR loader; JSON-LD; head meta | affiliates/AffiliateStrip, ads/AdSlot | server fn / query | error | DONE |
+| PLYR-02 | Players | â€” | Players | Full page | `/players`<br>`src/routes/players.tsx` | client query; JSON-LD; head meta | ads/AdSlot, players/PlayerSubNav, players/FilterBar, players/FilterSheet | server fn / query | loading, empty | DONE |
+| PREM-01 | Premium | â€” | Premium | Full page | `/premium`<br>`src/routes/premium.tsx` | head meta | â€” | static/local | not verified | DONE |
 | UTIL-05 | Utility | - | Privacy | Full page | `/privacy`<br>`src/routes/privacy.tsx` | Privacy policy | site/LegalLayout, ui/state | static default + site settings | empty, loading | DONE |
 | SRCH-01 | Search | - | Search | Full page | `/search`<br>`src/routes/search.tsx` | Fuzzy World Cup search; initial/no-results states | ui/state | static entities | empty, no results | DONE |
-| XSPT-02 | Cross-sport | â€” | Team Sport Slug | Full page | `/team/:sport/:slug`<br>`src/routes/team.$sport.$slug.tsx` | SSR loader; JSON-LD; head meta | affiliates/AffiliateStrip, ads/AdSlot | server fn / query | empty, error | BLOCKED |
+| XSPT-02 | Cross-sport | â€” | Team Sport Slug | Full page | `/team/:sport/:slug`<br>`src/routes/team.$sport.$slug.tsx` | SSR loader; JSON-LD; head meta | affiliates/AffiliateStrip, ads/AdSlot | server fn / query | empty, error | DONE |
 | UTIL-06 | Utility | - | Terms | Full page | `/terms`<br>`src/routes/terms.tsx` | Terms of service | site/LegalLayout, ui/state | static default + site settings | empty, loading | DONE |
-| XSPT-03 | Cross-sport | â€” | Tournaments Tournament Leaderboard | Full page | `/tournaments/:tournament/:leaderboard`<br>`src/routes/tournaments.$tournament.$leaderboard.tsx` | SSR loader; JSON-LD; head meta | ads/AdSlot | server fn / query | error | BLOCKED |
-| XSPT-04 | Cross-sport | â€” | Tournaments Fifa World Cup 2026 Stage | Full page | `/tournaments/fifa-world-cup-2026/:stage`<br>`src/routes/tournaments.fifa-world-cup-2026.$stage.tsx` | SSR loader; JSON-LD; head meta | â€” | server fn / query | error | BLOCKED |
+| XSPT-03 | Cross-sport | â€” | Tournaments Tournament Leaderboard | Full page | `/tournaments/:tournament/:leaderboard`<br>`src/routes/tournaments.$tournament.$leaderboard.tsx` | SSR loader; JSON-LD; head meta | ads/AdSlot | server fn / query | error | DONE |
+| XSPT-04 | Cross-sport | â€” | Tournaments Fifa World Cup 2026 Stage | Full page | `/tournaments/fifa-world-cup-2026/:stage`<br>`src/routes/tournaments.fifa-world-cup-2026.$stage.tsx` | SSR loader; JSON-LD; head meta | â€” | server fn / query | error | DONE |
 | UTIL-07 | Utility | - | Unsubscribe | Full page | `/unsubscribe`<br>`src/routes/unsubscribe.tsx` | Token-based digest unsubscribe | ui/state | digest.functions | loading, error+retry, missing token | DONE |
-| XSPT-05 | Cross-sport | â€” | Vs Sport Matchup | Full page | `/vs/:sport/:matchup`<br>`src/routes/vs.$sport.$matchup.tsx` | SSR loader; JSON-LD; head meta | affiliates/AffiliateStrip, ads/AdSlot | server fn / query | empty, error | BLOCKED |
+| XSPT-05 | Cross-sport | â€” | Vs Sport Matchup | Full page | `/vs/:sport/:matchup`<br>`src/routes/vs.$sport.$matchup.tsx` | SSR loader; JSON-LD; head meta | affiliates/AffiliateStrip, ads/AdSlot | server fn / query | empty, error | DONE |
 
 ## 4. Shared / global pieces and overlays
 
