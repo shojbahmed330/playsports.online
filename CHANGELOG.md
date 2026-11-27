@@ -122,6 +122,11 @@
 - Added: CollectionPage JSON-LD.
 - Kept: season cards, Hall of Champions, auction trend/headlines and playoff brackets.
 
+## CRK-20 cricket series detail
+
+- Fixed: query failures now show a retryable shared error state; branded route error/not-found states; shared empty state; standings caption/`scope`; `h2` section titles; reduced-motion live pulse; hidden decorative emoji/icon.
+- Kept: hero, live/upcoming/results grids, derived standings and SportNav live count.
+
 ## Foundation
 
 - Added overhaul documentation: `PROJECT_NOTES.md`, `HEALTH_BASELINE.md`, `SCREEN_INVENTORY.md`, `DESIGN_SYSTEM.md`, `PROGRESS.md`, `DECISIONS.md`, `BLOCKERS.md`, `SECURITY_FINDINGS.md`.

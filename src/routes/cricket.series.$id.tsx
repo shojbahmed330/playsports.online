@@ -8,6 +8,7 @@ import { ArrowLeft, Calendar, Trophy, MapPin } from "lucide-react";
 import { SportNav } from "@/components/sports/SportNav";
 import { GameGridSkeleton } from "@/components/sports/Skeletons";
 import { CricketMatchCard } from "@/components/cricket/CricketMatchCard";
+import { EmptyState, ErrorState } from "@/components/ui/state";
 import { getCricketScoreboard, type CricketMatch } from "@/lib/cricket.functions";
 import { CRICKET_LEAGUE_BY_ID } from "@/lib/cricket-leagues";
 import { breadcrumbList, ldScript, sportsEvent, sportsOrganization } from "@/lib/seo/jsonld";
@@ -58,20 +59,35 @@ export const Route = createFileRoute("/cricket/series/$id")({
   },
 
   component: SeriesPage,
-  errorComponent: ({ error }) => (
-    <div className="min-h-screen grid place-items-center p-6 text-center">
-      <div>
-        <p className="text-lg font-semibold">Couldn't load series</p>
-        <p className="text-xs text-muted-foreground mt-1">{errorMessage(error)}</p>
-        <Link to="/cricket" className="mt-4 inline-block text-emerald-400 hover:underline text-sm">
-          ← Back to cricket
-        </Link>
+  errorComponent: ({ error, reset }) => (
+    <div className="min-h-screen">
+      <SportNav />
+      <div className="mx-auto max-w-3xl px-4 py-10">
+        <ErrorState
+          title="Could not load this series"
+          message={errorMessage(error)}
+          onRetry={reset}
+        />
       </div>
     </div>
   ),
   notFoundComponent: () => (
-    <div className="min-h-screen grid place-items-center p-6 text-center">
-      <p>Series not found.</p>
+    <div className="min-h-screen">
+      <SportNav />
+      <div className="mx-auto max-w-3xl px-4 py-10">
+        <EmptyState
+          title="Series not found"
+          description="This series is not in the cricket directory."
+          action={
+            <Link
+              to="/cricket/series"
+              className="inline-flex min-h-11 items-center rounded-full bg-emerald-500/15 px-4 text-sm font-bold text-emerald-200 ring-1 ring-emerald-500/30"
+            >
+              Browse all series
+            </Link>
+          }
+        />
+      </div>
     </div>
   ),
 });
@@ -132,11 +148,12 @@ function SeriesPage() {
             to="/cricket"
             className="inline-flex items-center gap-1.5 text-xs text-emerald-300/90 hover:text-emerald-200 mb-3"
           >
-            <ArrowLeft className="size-3.5" /> All cricket
+            <ArrowLeft aria-hidden="true" className="size-3.5" /> All cricket
           </Link>
           <div className="flex items-center gap-4">
             <div
               className={`size-16 sm:size-20 rounded-2xl ${meta?.chipBg ?? "bg-emerald-500/15"} ring-1 ${meta?.ring ?? "ring-emerald-500/30"} grid place-items-center text-4xl shrink-0`}
+              aria-hidden="true"
             >
               {meta?.emoji ?? "🏏"}
             </div>
@@ -170,16 +187,20 @@ function SeriesPage() {
       </section>
 
       <main id="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-10">
-        {q.isLoading ? (
+        {q.isError && !q.data ? (
+          <ErrorState
+            title="Could not load this series"
+            message={errorMessage(q.error)}
+            onRetry={() => void q.refetch()}
+          />
+        ) : q.isLoading ? (
           <GameGridSkeleton />
         ) : matches.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-gray-800 p-12 text-center bg-gray-900/40">
-            <Calendar className="mx-auto size-10 opacity-30 mb-3" />
-            <p className="text-sm font-medium">No matches scheduled</p>
-            <p className="text-xs text-muted-foreground mt-1">
-              {q.data?.error ?? "Check back during the next series window."}
-            </p>
-          </div>
+          <EmptyState
+            title="No matches scheduled"
+            description={q.data?.error ?? "Check back during the next series window."}
+            icon={<Calendar aria-hidden="true" className="size-5" />}
+          />
         ) : (
           <>
             {buckets.live.length > 0 && (
@@ -196,18 +217,33 @@ function SeriesPage() {
               <Block
                 title="Standings"
                 tone="muted"
-                icon={<Trophy className="size-4 text-amber-400" />}
+                icon={<Trophy aria-hidden="true" className="size-4 text-amber-400" />}
               >
                 <div className="overflow-x-auto rounded-xl border border-gray-800">
                   <table className="w-full text-sm">
+                    <caption className="sr-only">
+                      Derived series standings from completed matches
+                    </caption>
                     <thead className="bg-gray-900/60 text-[10px] uppercase tracking-wider text-gray-400">
                       <tr>
-                        <th className="text-left px-3 py-2">#</th>
-                        <th className="text-left px-3 py-2">Team</th>
-                        <th className="text-right px-3 py-2">P</th>
-                        <th className="text-right px-3 py-2">W</th>
-                        <th className="text-right px-3 py-2">L</th>
-                        <th className="text-right px-3 py-2">Win %</th>
+                        <th scope="col" className="text-left px-3 py-2">
+                          #
+                        </th>
+                        <th scope="col" className="text-left px-3 py-2">
+                          Team
+                        </th>
+                        <th scope="col" className="text-right px-3 py-2">
+                          P
+                        </th>
+                        <th scope="col" className="text-right px-3 py-2">
+                          W
+                        </th>
+                        <th scope="col" className="text-right px-3 py-2">
+                          L
+                        </th>
+                        <th scope="col" className="text-right px-3 py-2">
+                          Win %
+                        </th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-800">
@@ -274,7 +310,9 @@ function Stat({
     <span
       className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-md ring-1 font-semibold ${cls}`}
     >
-      {tone === "red" && <span className="size-1.5 rounded-full bg-red-500 animate-pulse" />}
+      {tone === "red" && (
+        <span className="size-1.5 rounded-full bg-red-500 animate-pulse motion-reduce:animate-none" />
+      )}
       <span className="text-[10px] uppercase tracking-wider opacity-80">{label}</span>
       <span className="tabular-nums">{value}</span>
     </span>
@@ -296,11 +334,11 @@ function Block({
     tone === "red" ? "text-red-300" : tone === "amber" ? "text-amber-300" : "text-gray-400";
   return (
     <section className="space-y-3">
-      <div
+      <h2
         className={`text-[11px] uppercase tracking-[0.18em] font-bold ${cls} flex items-center gap-2`}
       >
         {icon} {title}
-      </div>
+      </h2>
       {children}
     </section>
   );
