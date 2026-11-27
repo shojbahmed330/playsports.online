@@ -231,6 +231,11 @@
 - Logged: shared `DateScrubber` locale/UTC hydration risk in `BLOCKERS.md`.
 - Kept: Euro/Copa heroes, ticker, date scrubber, jump bar and recap.
 
+## FB-08 football competition players
+
+- Fixed: Euro players canonical now `playsports.online`; shared retryable error/empty states; hidden reduced-motion spinner; focus-visible/reduced-motion leader rows; site/Twitter/breadcrumb JSON-LD.
+- Kept: leader categories and Euro players page.
+
 ## Foundation
 
 - Added overhaul documentation: `PROJECT_NOTES.md`, `HEALTH_BASELINE.md`, `SCREEN_INVENTORY.md`, `DESIGN_SYSTEM.md`, `PROGRESS.md`, `DECISIONS.md`, `BLOCKERS.md`, `SECURITY_FINDINGS.md`.

@@ -6,6 +6,10 @@ import { buildCompetitionHead } from "@/lib/competition-head";
 import { getCompetitionLeaders } from "@/lib/espn.functions";
 import { EuroPlayersPage } from "@/components/football/EuroPlayersPage";
 import { EURO_TOP_SCORERS } from "@/lib/euro-records";
+import { canonical } from "@/lib/seo/canonical";
+import { breadcrumbList, ldScript } from "@/lib/seo/jsonld";
+import { EmptyState, ErrorState } from "@/components/ui/state";
+import { errorMessage } from "@/lib/error-message";
 import { Loader2 } from "lucide-react";
 
 export const Route = createFileRoute("/football/$comp/players/")({
@@ -21,7 +25,7 @@ export const Route = createFileRoute("/football/$comp/players/")({
       const title = "UEFA Euro Players — All-Time Top Scorers, Legends & Rising Stars";
       const description =
         "Every UEFA Euro legend — Cristiano Ronaldo's 14 goals, Platini's 9-goal record, the 2024 Squad of the Tournament and the next generation to watch at Euro 2028.";
-      const url = "https://allsportslive.lovable.app/football/euro/players";
+      const url = canonical("/football/euro/players");
       const itemList = {
         "@context": "https://schema.org",
         "@type": "ItemList",
@@ -40,9 +44,23 @@ export const Route = createFileRoute("/football/$comp/players/")({
           { property: "og:description", content: description },
           { property: "og:url", content: url },
           { property: "og:type", content: "website" },
+          { property: "og:site_name", content: "PlaySports" },
+          { name: "twitter:card", content: "summary_large_image" },
+          { name: "twitter:title", content: title },
+          { name: "twitter:description", content: description },
         ],
         links: [{ rel: "canonical", href: url }],
-        scripts: [{ type: "application/ld+json", children: JSON.stringify(itemList) }],
+        scripts: [
+          ldScript(
+            breadcrumbList([
+              { name: "Home", path: "/" },
+              { name: "Football", path: "/football" },
+              { name: "Euro", path: "/football/euro" },
+              { name: "Players", path: "/football/euro/players" },
+            ]),
+          ),
+          { type: "application/ld+json", children: JSON.stringify(itemList) },
+        ],
       };
     }
     return buildCompetitionHead({
@@ -53,7 +71,19 @@ export const Route = createFileRoute("/football/$comp/players/")({
     });
   },
   component: PlayersRoute,
-  notFoundComponent: () => <div className="p-10 text-center">Competition not found.</div>,
+  errorComponent: ({ error, reset }) => (
+    <div className="mx-auto max-w-3xl px-4 py-10">
+      <ErrorState title="Could not load players" message={errorMessage(error)} onRetry={reset} />
+    </div>
+  ),
+  notFoundComponent: () => (
+    <div className="mx-auto max-w-3xl px-4 py-10">
+      <EmptyState
+        title="Competition not found"
+        description="This competition is not in the football directory."
+      />
+    </div>
+  ),
 });
 
 function PlayersRoute() {
@@ -80,20 +110,41 @@ function GenericPlayersPage() {
       <h2 className="text-lg sm:text-xl font-bold mb-1">{comp.name} Players</h2>
       <p className="text-sm text-muted-foreground mb-6">
         Season-to-date leaders scoped to {comp.shortName}. For all-time career records visit{" "}
-        <Link to="/football/$comp/records" params={{ comp: comp.slug }} className="underline hover:text-foreground">
+        <Link
+          to="/football/$comp/records"
+          params={{ comp: comp.slug }}
+          className="underline hover:text-foreground"
+        >
           {comp.shortName} Records
         </Link>
         .
       </p>
 
-      {q.isLoading ? (
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <Loader2 className="size-4 animate-spin" /> Loading leaders…
+      {q.isError ? (
+        <ErrorState
+          title="Could not load player leaders"
+          message={errorMessage(q.error)}
+          onRetry={() => void q.refetch()}
+          className="border-white/10 bg-white/[0.02]"
+        />
+      ) : q.isLoading ? (
+        <div role="status" className="flex items-center gap-2 text-sm text-muted-foreground">
+          <Loader2 aria-hidden="true" className="size-4 animate-spin motion-reduce:animate-none" />{" "}
+          Loading leaders…
         </div>
-      ) : q.data?.error || cats.length === 0 ? (
-        <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-6 py-10 text-center text-sm text-muted-foreground">
-          {q.data?.error ?? `No live leaders available for ${comp.shortName} right now — check back once the season is underway.`}
-        </div>
+      ) : q.data?.error ? (
+        <ErrorState
+          title="Player leaders temporarily unavailable"
+          message={q.data.error}
+          onRetry={() => void q.refetch()}
+          className="border-white/10 bg-white/[0.02]"
+        />
+      ) : cats.length === 0 ? (
+        <EmptyState
+          title="No live leaders yet"
+          description={`No live leaders available for ${comp.shortName} right now — check back once the season is underway.`}
+          className="border-white/10 bg-white/[0.02]"
+        />
       ) : (
         <div className="grid gap-4 sm:grid-cols-2">
           {cats.map((cat) => (
@@ -108,9 +159,17 @@ function GenericPlayersPage() {
                 {cat.leaders.map((l) => {
                   const row = (
                     <>
-                      <span className="w-6 text-right tabular-nums text-xs text-muted-foreground">{l.rank}</span>
+                      <span className="w-6 text-right tabular-nums text-xs text-muted-foreground">
+                        {l.rank}
+                      </span>
                       {l.teamLogo ? (
-                        <img src={l.teamLogo} alt="" className="size-5 object-contain" loading="lazy"  decoding="async" />
+                        <img
+                          src={l.teamLogo}
+                          alt=""
+                          className="size-5 object-contain"
+                          loading="lazy"
+                          decoding="async"
+                        />
                       ) : (
                         <span className="size-5" />
                       )}
@@ -129,7 +188,7 @@ function GenericPlayersPage() {
                         <Link
                           to="/football/$comp/players/$playerId"
                           params={{ comp: comp.slug, playerId: l.athleteId }}
-                          className="flex items-center gap-3 px-4 py-2 hover:bg-white/[0.04] transition"
+                          className="flex items-center gap-3 px-4 py-2 hover:bg-white/[0.04] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring motion-reduce:transition-none"
                         >
                           {row}
                         </Link>
