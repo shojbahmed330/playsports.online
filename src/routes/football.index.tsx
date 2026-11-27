@@ -186,6 +186,22 @@ const ROUND_HEADER: Record<RoundKey, { label: string; tone: "primary" | "gold" |
   third_place: { label: "3rd Place", tone: "muted" },
 };
 
+const QUERY_TIMEOUT_MS = 12_000;
+
+/**
+ * Supabase builders are thenable but have no timeout. If the database is slow
+ * or unreachable the football hub would sit on "Loading tournament…" forever,
+ * so race every hub query against a hard deadline and let the error state win.
+ */
+function withTimeout<T>(thenable: PromiseLike<T>, ms = QUERY_TIMEOUT_MS): Promise<T> {
+  return Promise.race([
+    Promise.resolve(thenable),
+    new Promise<T>((_, reject) =>
+      setTimeout(() => reject(new Error("Tournament data timed out")), ms),
+    ),
+  ]);
+}
+
 function Index() {
   // header (SportNav) handles admin chip itself
   const navigate = useNavigate({ from: "/football" });
@@ -287,11 +303,9 @@ function Index() {
     staleTime: TEN_MIN,
     gcTime: THIRTY_MIN,
     queryFn: async (): Promise<WCTournament | null> => {
-      const { data, error } = await supabase
-        .from("wc_tournaments")
-        .select("*")
-        .eq("year", year)
-        .maybeSingle();
+      const { data, error } = await withTimeout(
+        supabase.from("wc_tournaments").select("*").eq("year", year).maybeSingle(),
+      );
       if (error) throw error;
       return data as WCTournament | null;
     },
@@ -302,11 +316,13 @@ function Index() {
     staleTime: TEN_MIN,
     gcTime: THIRTY_MIN,
     queryFn: async (): Promise<WCMatch[]> => {
-      const { data, error } = await supabase
-        .from("wc_matches")
-        .select("*")
-        .eq("tournament_year", year)
-        .order("match_number", { ascending: true });
+      const { data, error } = await withTimeout(
+        supabase
+          .from("wc_matches")
+          .select("*")
+          .eq("tournament_year", year)
+          .order("match_number", { ascending: true }),
+      );
       if (error) throw error;
       return (data ?? []) as WCMatch[];
     },
@@ -317,10 +333,9 @@ function Index() {
     staleTime: TEN_MIN,
     gcTime: THIRTY_MIN,
     queryFn: async (): Promise<WCGroup[]> => {
-      const { data, error } = await supabase
-        .from("wc_groups")
-        .select("*")
-        .eq("tournament_year", year);
+      const { data, error } = await withTimeout(
+        supabase.from("wc_groups").select("*").eq("tournament_year", year),
+      );
       if (error) throw error;
       return (data ?? []) as WCGroup[];
     },

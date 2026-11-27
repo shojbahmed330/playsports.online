@@ -69,83 +69,82 @@ export function MobileMatchCard({
   // in-page modal via onClick.
   const isRealEspn = match.tournament_year === 2026 && !match.predicted && match.id > 0;
 
-  const cardClass = `group relative w-full text-left rounded-2xl overflow-hidden bg-gray-950 border transition-all active:scale-[0.99] shadow-lg block
-    ${match.predicted ? "border-dashed border-sky-500/40 hover:border-sky-400/60" : "border-white/[0.08] hover:border-amber-500/40"}`;
+  const cardClass = `group relative block w-full overflow-hidden rounded-2xl border bg-card text-left shadow-[var(--shadow-elevated)] transition-all active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring
+    ${match.predicted ? "border-dashed border-[var(--color-accent-mlb)]/40 hover:border-[var(--color-accent-mlb)]/60" : "border-border hover:border-primary/40"}`;
 
   const inner = (
     <>
-
       {/* dual confederation top-accent */}
-      <div className="flex h-1">
+      <div className="flex h-1" aria-hidden="true">
         <div className={`flex-1 conf-${homeConf}`} />
         <div className={`flex-1 conf-${awayConf}`} />
       </div>
 
       <div className="p-3">
         {/* status row */}
-        <div className="flex items-center justify-between mb-2">
+        <div className="mb-2 flex items-center justify-between">
           <div className="flex items-center gap-1.5">
             {stage && (
-              <span className="text-[9.5px] uppercase tracking-widest text-gray-500 font-bold">
+              <span className="text-micro uppercase text-muted-foreground">
                 {stage}
               </span>
             )}
             {st === "live" && (
-              <span className="inline-flex items-center gap-1 text-[9.5px] font-bold uppercase tracking-widest text-red-300 bg-red-500/15 ring-1 ring-red-500/40 rounded-full px-2 py-0.5 live-pulse">
-                <Radio className="size-2.5 minute-blink" /> Live
+              <span className="live-pulse inline-flex items-center gap-1 rounded-full bg-live/15 px-2 py-0.5 text-micro font-bold uppercase text-live ring-1 ring-live/40">
+                <Radio className="minute-blink size-2.5" aria-hidden="true" /> Live
               </span>
             )}
             {st === "upcoming" && countdown && (
-              <span className="inline-flex items-center gap-1 text-[9.5px] font-bold uppercase tracking-widest text-amber-300 bg-amber-500/15 ring-1 ring-amber-500/30 rounded-full px-2 py-0.5">
-                <Clock className="size-2.5" /> in {countdown}
+              <span className="inline-flex items-center gap-1 rounded-full bg-primary/15 px-2 py-0.5 text-micro font-bold uppercase text-primary ring-1 ring-primary/30">
+                <Clock className="size-2.5" aria-hidden="true" /> in {countdown}
               </span>
             )}
             {st === "finished" && (
-              <span className="text-[9.5px] uppercase tracking-widest text-emerald-400 font-bold">FT</span>
+              <span className="text-micro font-bold uppercase text-positive">FT</span>
             )}
           </div>
           {match.predicted && (
-            <span className="inline-flex items-center gap-1 text-[9px] font-bold bg-sky-500/15 text-sky-300 ring-1 ring-sky-400/40 rounded-full px-1.5 py-0.5">
-              <span className="size-1 rounded-full bg-sky-400 animate-pulse" /> PREDICTED
+            <span className="inline-flex items-center gap-1 rounded-full bg-[var(--color-accent-mlb)]/15 px-1.5 py-0.5 text-micro font-bold text-[var(--color-accent-mlb)] ring-1 ring-[var(--color-accent-mlb)]/40">
+              <span className="size-1 rounded-full bg-[var(--color-accent-mlb)] animate-pulse motion-reduce:animate-none" aria-hidden="true" /> PREDICTED
             </span>
           )}
           {match.video_url && !match.predicted && (
-            <span className="inline-flex items-center gap-0.5 text-[9px] font-bold bg-amber-500/15 text-amber-300 ring-1 ring-amber-500/30 rounded-full px-1.5 py-0.5">
-              <Play className="size-2.5 fill-amber-300" /> HL
+            <span className="inline-flex items-center gap-0.5 rounded-full bg-primary/15 px-1.5 py-0.5 text-micro font-bold text-primary ring-1 ring-primary/30">
+              <Play className="size-2.5 fill-primary" aria-hidden="true" /> HL
             </span>
           )}
         </div>
 
         {/* teams + score */}
         <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
-          <div className={`flex items-center gap-2 min-w-0 ${win === "home" ? "text-white" : "text-gray-400"}`}>
-            <span className="text-2xl shrink-0">{flagOf(match.home_team)}</span>
+          <div className={`flex min-w-0 items-center gap-2 ${win === "home" ? "text-foreground" : "text-muted-foreground"}`}>
+            <span className="shrink-0 text-2xl" aria-hidden="true">{flagOf(match.home_team)}</span>
             <div className="min-w-0">
-              <div className="text-sm font-semibold truncate">{match.home_team}</div>
+              <div className="truncate text-caption font-semibold">{match.home_team}</div>
               {match.predicted && match.home_seed_label && (
-                <div className="text-[9px] text-sky-300/80 truncate uppercase tracking-wider">{match.home_seed_label}</div>
+                <div className="truncate text-micro uppercase text-[var(--color-accent-mlb)]/80">{match.home_seed_label}</div>
               )}
             </div>
           </div>
-          <div className="text-center px-2">
-            <div className={`text-2xl font-black tabular-nums ${st === "live" ? "text-red-300" : "text-white"}`}>
-              {match.home_score ?? "–"}<span className="text-gray-600 mx-1">:</span>{match.away_score ?? "–"}
+          <div className="px-2 text-center">
+            <div className={`text-2xl font-black tabular-nums ${st === "live" ? "text-live" : "text-foreground"}`}>
+              {match.home_score ?? "–"}<span className="mx-1 text-muted-foreground">:</span>{match.away_score ?? "–"}
             </div>
           </div>
-          <div className={`flex items-center gap-2 justify-end min-w-0 ${win === "away" ? "text-white" : "text-gray-400"}`}>
+          <div className={`flex min-w-0 items-center justify-end gap-2 ${win === "away" ? "text-foreground" : "text-muted-foreground"}`}>
             <div className="min-w-0 text-right">
-              <div className="text-sm font-semibold truncate">{match.away_team}</div>
+              <div className="truncate text-caption font-semibold">{match.away_team}</div>
               {match.predicted && match.away_seed_label && (
-                <div className="text-[9px] text-sky-300/80 truncate uppercase tracking-wider">{match.away_seed_label}</div>
+                <div className="truncate text-micro uppercase text-[var(--color-accent-mlb)]/80">{match.away_seed_label}</div>
               )}
             </div>
-            <span className="text-2xl shrink-0">{flagOf(match.away_team)}</span>
+            <span className="shrink-0 text-2xl" aria-hidden="true">{flagOf(match.away_team)}</span>
           </div>
         </div>
 
         {match.home_score_pen != null && match.away_score_pen != null && (
-          <div className="text-center mt-1.5">
-            <span className="text-[10px] text-amber-400 bg-amber-500/10 rounded-full px-2 py-0.5">
+          <div className="mt-1.5 text-center">
+            <span className="rounded-full bg-primary/10 px-2 py-0.5 text-micro text-primary">
               {match.home_score_pen}-{match.away_score_pen} on penalties
             </span>
           </div>
@@ -156,40 +155,39 @@ export function MobileMatchCard({
           const isUnplayed = match.home_score == null && match.away_score == null;
           if (dayStr || timeStr) {
             return (
-              <div className="mt-2 flex items-center justify-between text-[10px] text-gray-500">
+              <div className="mt-2 flex items-center justify-between text-micro text-muted-foreground">
                 <span className="truncate">{[dayStr, timeStr].filter(Boolean).join(" · ")}</span>
-                {match.stadium && <span className="truncate ml-2">{match.stadium}</span>}
+                {match.stadium && <span className="ml-2 truncate">{match.stadium}</span>}
               </div>
             );
           }
           if (isUnplayed) {
             return (
-              <div className="mt-2 flex items-center justify-between text-[10px]">
-                <span className="text-gray-400 font-semibold uppercase tracking-wider">Kickoff TBD</span>
-                {match.stadium && <span className="text-gray-500 truncate ml-2">{match.stadium}</span>}
+              <div className="mt-2 flex items-center justify-between text-micro">
+                <span className="font-semibold uppercase text-muted-foreground">Kickoff TBD</span>
+                {match.stadium && <span className="ml-2 truncate text-muted-foreground">{match.stadium}</span>}
               </div>
             );
           }
           if (match.stadium) {
             return (
-              <div className="mt-2 flex items-center justify-end text-[10px] text-gray-500">
+              <div className="mt-2 flex items-center justify-end text-micro text-muted-foreground">
                 <span className="truncate">{match.stadium}</span>
               </div>
             );
           }
           return null;
         })()}
-
       </div>
 
       {/* Footer hint — kept inside the same card so the whole card is one big tap target */}
       {isRealEspn && (
-        <div className="block text-center text-[10px] py-1.5 bg-gradient-to-r from-amber-500/10 to-amber-500/5 text-amber-300 border-t border-white/5">
+        <div className="block border-t border-border bg-primary/10 py-1.5 text-center text-micro text-primary">
           Open Match Centre →
         </div>
       )}
       {match.predicted && (
-        <div className="text-center text-[10px] py-1.5 bg-sky-500/[0.06] text-sky-300 border-t border-sky-500/20">
+        <div className="border-t border-[var(--color-accent-mlb)]/20 bg-[var(--color-accent-mlb)]/10 py-1.5 text-center text-micro text-[var(--color-accent-mlb)]">
           Tap for fixture preview
         </div>
       )}
@@ -214,4 +212,3 @@ export function MobileMatchCard({
     </button>
   );
 }
-

@@ -12,6 +12,7 @@ import { flagOf } from "@/lib/flags";
 import { Countdown } from "@/components/sports/Countdown";
 import { formatLocalTime, relativeDay } from "@/lib/time";
 import { FootballPitchSkeleton } from "@/components/football/FootballSkeleton";
+import { EmptyState } from "@/components/ui/state";
 
 const LIVE_MS = 20 * 1000;
 
@@ -48,11 +49,11 @@ export function Wc2026TodayView() {
       {pulse.live.length > 0 && (
         <Section
           title="Live now"
-          icon={<Flame className="size-4" />}
-          tone="red"
+          icon={<Flame className="size-4" aria-hidden="true" />}
+          tone="live"
           count={pulse.live.length}
         >
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             {pulse.live.map((f) => (
               <BigCard key={f.id} f={f} kind="live" />
             ))}
@@ -63,11 +64,11 @@ export function Wc2026TodayView() {
       {todayUpcoming.length > 0 && (
         <Section
           title="Later today"
-          icon={<Clock className="size-4" />}
-          tone="amber"
+          icon={<Clock className="size-4" aria-hidden="true" />}
+          tone="next"
           count={todayUpcoming.length}
         >
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {todayUpcoming.map((f) => (
               <SmallCard key={f.id} f={f} kind="upcoming" />
             ))}
@@ -78,11 +79,11 @@ export function Wc2026TodayView() {
       {todayFinished.length > 0 && (
         <Section
           title="Today · finished"
-          icon={<CheckCircle2 className="size-4" />}
-          tone="gray"
+          icon={<CheckCircle2 className="size-4" aria-hidden="true" />}
+          tone="muted"
           count={todayFinished.length}
         >
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {todayFinished.map((f) => (
               <SmallCard key={f.id} f={f} kind="final" />
             ))}
@@ -93,10 +94,10 @@ export function Wc2026TodayView() {
       {pulse.live.length === 0 && todayUpcoming.length === 0 && pulse.next && (
         <Section
           title="Next match"
-          icon={<CalendarClock className="size-4" />}
-          tone="sky"
+          icon={<CalendarClock className="size-4" aria-hidden="true" />}
+          tone="info"
         >
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <BigCard f={pulse.next} kind="next" />
             {pulse.upcoming.slice(1, 4).map((f) => (
               <SmallCard key={f.id} f={f} kind="upcoming" />
@@ -110,11 +111,11 @@ export function Wc2026TodayView() {
         pulse.recent.length > 0 && (
           <Section
             title="Recent results"
-            icon={<CheckCircle2 className="size-4" />}
-            tone="gray"
+            icon={<CheckCircle2 className="size-4" aria-hidden="true" />}
+            tone="muted"
             count={pulse.recent.length}
           >
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {pulse.recent.slice(0, 6).map((f) => (
                 <SmallCard key={f.id} f={f} kind="final" />
               ))}
@@ -123,17 +124,10 @@ export function Wc2026TodayView() {
         )}
 
       {isEmpty && (
-        <div className="rounded-2xl border border-dashed border-gray-800 p-10 sm:p-12 text-center bg-gray-900/40">
-          <div className="text-4xl mb-3">⚽</div>
-          <p className="text-sm font-medium text-gray-200">
-            No matches right now
-          </p>
-          <p className="text-xs text-muted-foreground mt-1">
-            Tap <span className="text-amber-300 font-semibold">Groups</span> or{" "}
-            <span className="text-amber-300 font-semibold">Knockout</span> above
-            for the full schedule.
-          </p>
-        </div>
+        <EmptyState
+          title="No matches right now"
+          description="Tap Groups or Knockout above for the full schedule."
+        />
       )}
     </div>
   );
@@ -150,37 +144,35 @@ function Section({
 }: {
   title: string;
   icon: React.ReactNode;
-  tone: "red" | "amber" | "sky" | "gray";
+  tone: "live" | "next" | "info" | "muted";
   count?: number;
   children: React.ReactNode;
 }) {
   const bar =
-    tone === "red"
-      ? "bg-red-500"
-      : tone === "amber"
-        ? "bg-amber-500"
-        : tone === "sky"
-          ? "bg-sky-500"
-          : "bg-gray-500";
+    tone === "live"
+      ? "bg-live"
+      : tone === "next"
+        ? "bg-primary"
+        : tone === "info"
+          ? "bg-[var(--color-accent-mlb)]"
+          : "bg-muted-foreground/60";
   const text =
-    tone === "red"
-      ? "text-red-300"
-      : tone === "amber"
-        ? "text-amber-300"
-        : tone === "sky"
-          ? "text-sky-300"
-          : "text-gray-300";
+    tone === "live"
+      ? "text-live"
+      : tone === "next"
+        ? "text-primary"
+        : tone === "info"
+          ? "text-[var(--color-accent-mlb)]"
+          : "text-muted-foreground";
   return (
     <section className="space-y-3">
       <div className="flex items-center gap-2">
-        <span className={`block w-1.5 h-6 rounded-full ${bar}`} />
-        <h3
-          className={`text-xs sm:text-sm font-bold uppercase tracking-[0.18em] ${text} inline-flex items-center gap-2`}
-        >
+        <span className={`block h-6 w-1.5 rounded-full ${bar}`} aria-hidden="true" />
+        <h3 className={`inline-flex items-center gap-2 text-micro uppercase sm:text-caption ${text}`}>
           {icon} {title}
         </h3>
         {count != null && (
-          <span className="text-[10px] text-gray-500 tabular-nums">
+          <span className="text-micro tabular-nums text-muted-foreground">
             {count} match{count === 1 ? "" : "es"}
           </span>
         )}
@@ -192,10 +184,10 @@ function Section({
 
 function LiveBadge({ f }: { f: Wc2026Fixture }) {
   return (
-    <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-red-500/20 ring-1 ring-red-500/40 text-[10px] font-bold text-red-300">
-      <span className="relative flex size-1.5">
-        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400/70" />
-        <span className="relative inline-flex size-1.5 rounded-full bg-red-500" />
+    <span className="inline-flex items-center gap-1.5 rounded-full bg-live/15 px-2 py-0.5 text-micro font-bold text-live ring-1 ring-live/40">
+      <span className="relative flex size-1.5" aria-hidden="true">
+        <span className="absolute inline-flex size-full animate-ping rounded-full bg-live/70 motion-reduce:animate-none" />
+        <span className="relative inline-flex size-1.5 rounded-full bg-live" />
       </span>
       {f.minute ? `${f.minute}'` : "LIVE"}
     </span>
@@ -214,17 +206,17 @@ function TeamRow({
   winner?: boolean;
 }) {
   return (
-    <div className="flex items-center gap-2 min-w-0">
-      <span className={big ? "text-2xl sm:text-3xl shrink-0" : "text-xl shrink-0"}>
+    <div className="flex min-w-0 items-center gap-2">
+      <span className={big ? "shrink-0 text-2xl sm:text-3xl" : "shrink-0 text-xl"} aria-hidden="true">
         {flagOf(name)}
       </span>
       <span
-        className={`truncate flex-1 font-bold ${big ? "text-base sm:text-lg" : "text-sm"} ${winner ? "text-amber-300" : "text-white"}`}
+        className={`flex-1 truncate font-bold ${big ? "text-body sm:text-lg" : "text-caption"} ${winner ? "text-primary" : "text-foreground"}`}
       >
         {name}
       </span>
       <span
-        className={`shrink-0 tabular-nums font-black ${big ? "text-2xl sm:text-4xl" : "text-lg"} ${winner ? "text-amber-300" : goals == null ? "text-gray-600" : "text-gray-200"}`}
+        className={`shrink-0 font-black tabular-nums ${big ? "text-2xl sm:text-4xl" : "text-lg"} ${winner ? "text-primary" : goals == null ? "text-muted-foreground/60" : "text-foreground"}`}
       >
         {goals ?? "-"}
       </span>
@@ -241,20 +233,20 @@ function BigCard({ f, kind }: { f: Wc2026Fixture; kind: "live" | "next" }) {
     <Link
       to="/football/match/$id"
       params={{ id: String(f.id) }}
-      className={`group relative block rounded-2xl border p-4 sm:p-5 transition-all hover:-translate-y-0.5 hover:shadow-lg ${
+      className={`group relative block rounded-2xl border p-4 transition-all hover:-translate-y-0.5 hover:shadow-[var(--shadow-elevated)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:p-5 ${
         live
-          ? "border-red-500/40 bg-gradient-to-br from-red-950/40 via-gray-950 to-gray-900 hover:border-red-400/70 shadow-[0_0_40px_rgba(239,68,68,0.15)]"
-          : "border-sky-500/30 bg-gradient-to-br from-sky-950/30 via-gray-950 to-gray-900 hover:border-sky-400/60"
+          ? "border-live/40 bg-[image:var(--gradient-hero)] shadow-[0_0_40px_-16px_var(--live)] hover:border-live/70"
+          : "border-[var(--color-accent-mlb)]/30 bg-[image:var(--gradient-hero)] hover:border-[var(--color-accent-mlb)]/60"
       }`}
     >
-      <div className="flex items-center justify-between mb-4">
-        <span className="text-[10px] uppercase tracking-widest font-bold text-amber-300 truncate min-w-0">
-          ⚽ {f.group}
+      <div className="mb-4 flex items-center justify-between">
+        <span className="min-w-0 truncate text-micro uppercase text-primary">
+          <span aria-hidden="true">⚽</span> {f.group}
         </span>
         {live ? (
           <LiveBadge f={f} />
         ) : (
-          <span className="text-[10px] font-semibold text-sky-200 shrink-0 ml-2">
+          <span className="ml-2 shrink-0 text-micro font-semibold text-[var(--color-accent-mlb)]">
             {relativeDay(startMs)} · {formatLocalTime(startMs)}
           </span>
         )}
@@ -263,8 +255,8 @@ function BigCard({ f, kind }: { f: Wc2026Fixture; kind: "live" | "next" }) {
         <TeamRow name={f.home.name} goals={live ? f.home.goals : null} big winner={live && homeWin} />
         <TeamRow name={f.away.name} goals={live ? f.away.goals : null} big winner={live && awayWin} />
       </div>
-      <div className="mt-4 flex items-center justify-between text-[11px] text-gray-500 gap-2">
-        <span className="truncate min-w-0">{f.venue ?? "Venue TBD"}</span>
+      <div className="mt-4 flex items-center justify-between gap-2 text-micro text-muted-foreground">
+        <span className="min-w-0 truncate">{f.venue ?? "Venue TBD"}</span>
         {!live && <Countdown ts={startMs} />}
       </div>
     </Link>
@@ -286,14 +278,14 @@ function SmallCard({
     <Link
       to="/football/match/$id"
       params={{ id: String(f.id) }}
-      className="group relative block rounded-xl border border-white/10 bg-gray-900/70 p-3 transition-all hover:-translate-y-0.5 hover:border-amber-500/40 hover:bg-gray-900"
+      className="group relative block rounded-xl border border-border bg-card p-3 transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:bg-accent/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
     >
-      <div className="flex items-center justify-between mb-2">
-        <span className="text-[9px] uppercase tracking-widest font-bold text-amber-300 truncate min-w-0">
+      <div className="mb-2 flex items-center justify-between">
+        <span className="min-w-0 truncate text-micro uppercase text-primary">
           {f.group}
         </span>
         <span
-          className={`text-[10px] font-bold shrink-0 ml-2 ${final ? "text-gray-400" : "text-sky-300"}`}
+          className={`ml-2 shrink-0 text-micro font-bold ${final ? "text-muted-foreground" : "text-[var(--color-accent-mlb)]"}`}
         >
           {final ? "FT" : formatLocalTime(startMs)}
         </span>
@@ -303,7 +295,7 @@ function SmallCard({
         <TeamRow name={f.away.name} goals={final ? f.away.goals : null} winner={awayWin} />
       </div>
       {!final && (
-        <div className="mt-2 text-[10px] text-gray-500 text-right">
+        <div className="mt-2 text-right text-micro text-muted-foreground">
           <Countdown ts={startMs} compact />
         </div>
       )}

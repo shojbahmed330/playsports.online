@@ -1,21 +1,19 @@
 import type { WCGroup, WCMatch } from "@/lib/supabase";
 import { flagOf } from "@/lib/flags";
 import { MatchCard } from "./MatchCard";
+import { EmptyState } from "@/components/ui/state";
 
-const GROUP_ACCENT: Record<string, { bar: string; grad: string; ring: string }> = {
-  A: { bar: "bg-amber-500",   grad: "from-amber-500 to-amber-400",     ring: "ring-amber-500/30" },
-  B: { bar: "bg-blue-500",    grad: "from-blue-600 to-blue-500",       ring: "ring-blue-500/30" },
-  C: { bar: "bg-green-500",   grad: "from-green-600 to-green-500",     ring: "ring-green-500/30" },
-  D: { bar: "bg-red-500",     grad: "from-red-600 to-red-500",         ring: "ring-red-500/30" },
-  E: { bar: "bg-purple-500",  grad: "from-purple-600 to-purple-500",   ring: "ring-purple-500/30" },
-  F: { bar: "bg-cyan-500",    grad: "from-cyan-600 to-cyan-500",       ring: "ring-cyan-500/30" },
-  G: { bar: "bg-pink-500",    grad: "from-pink-600 to-pink-500",       ring: "ring-pink-500/30" },
-  H: { bar: "bg-orange-500",  grad: "from-orange-600 to-orange-500",   ring: "ring-orange-500/30" },
-  I: { bar: "bg-teal-500",    grad: "from-teal-600 to-teal-500",       ring: "ring-teal-500/30" },
-  J: { bar: "bg-rose-500",    grad: "from-rose-600 to-rose-500",       ring: "ring-rose-500/30" },
-  K: { bar: "bg-indigo-500",  grad: "from-indigo-600 to-indigo-500",   ring: "ring-indigo-500/30" },
-  L: { bar: "bg-lime-500",    grad: "from-lime-600 to-lime-500",       ring: "ring-lime-500/30" },
-};
+type GroupTone = { bar: string; pill: string };
+
+// Token-based group colours. Twelve groups share five semantic accents so the
+// palette stays inside the design system instead of twelve hardcoded hues.
+const GROUP_TONES: GroupTone[] = [
+  { bar: "bg-primary", pill: "bg-primary/15 text-primary ring-primary/30" },
+  { bar: "bg-[var(--color-accent-mlb)]", pill: "bg-[var(--color-accent-mlb)]/15 text-[var(--color-accent-mlb)] ring-[var(--color-accent-mlb)]/30" },
+  { bar: "bg-[var(--color-accent-nhl)]", pill: "bg-[var(--color-accent-nhl)]/15 text-[var(--color-accent-nhl)] ring-[var(--color-accent-nhl)]/30" },
+  { bar: "bg-gold", pill: "bg-gold/15 text-gold ring-gold/30" },
+  { bar: "bg-positive", pill: "bg-positive/15 text-positive ring-positive/30" },
+];
 const NUM_TO_LETTER: Record<string, string> = {
   "1":"A","2":"B","3":"C","4":"D","5":"E","6":"F","7":"G","8":"H","9":"I","10":"J","11":"K","12":"L",
 };
@@ -32,6 +30,11 @@ function matchGroupLetter(round: string): string | null {
   return NUM_TO_LETTER[tok] ?? tok;
 }
 
+function toneFor(letter: string): GroupTone {
+  const idx = letter.charCodeAt(0) - 65;
+  return GROUP_TONES[((idx % GROUP_TONES.length) + GROUP_TONES.length) % GROUP_TONES.length];
+}
+
 export function GroupStage({
   groups, matches, year, onPick,
 }: {
@@ -42,13 +45,10 @@ export function GroupStage({
 }) {
   if (groups.length === 0) {
     return (
-      <div className="rounded-2xl border border-dashed border-gray-800 p-10 sm:p-12 text-center bg-gray-900/40">
-        <div className="text-5xl mb-3">⚽</div>
-        <div className="text-sm font-semibold text-foreground">Groups not drawn yet for {year}</div>
-        <p className="text-xs text-muted-foreground mt-1 max-w-sm mx-auto">
-          Standings will appear here as soon as FIFA publishes the draw or the first match kicks off.
-        </p>
-      </div>
+      <EmptyState
+        title={`Groups not drawn yet for ${year}`}
+        description="Standings will appear here as soon as FIFA publishes the draw or the first match kicks off."
+      />
     );
   }
   const byGroup = new Map<string, WCGroup[]>();
@@ -67,7 +67,7 @@ export function GroupStage({
   }
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
       {names.map((name, gi) => {
         const teams = byGroup.get(name)!.slice().sort(
           (a, b) =>
@@ -75,7 +75,7 @@ export function GroupStage({
             (b.points ?? 0) - (a.points ?? 0),
         );
         const letter = groupLetterOf(name);
-        const accent = GROUP_ACCENT[letter] ?? GROUP_ACCENT.A;
+        const tone = toneFor(letter);
         const fixtures = (matchesByLetter.get(letter) ?? [])
           .slice()
           .sort((a, b) => (a.match_number ?? 0) - (b.match_number ?? 0));
@@ -84,74 +84,72 @@ export function GroupStage({
           <div
             key={name}
             style={{ animationDelay: `${gi * 60}ms` }}
-            className="wc-card rounded-2xl border border-gray-800 bg-gray-900/70 overflow-hidden"
+            className="wc-card overflow-hidden rounded-2xl border border-border bg-card"
           >
             {/* Group header banner */}
-            <div className="flex items-center justify-between px-5 py-3 border-b border-gray-800/80 bg-gray-900/60">
+            <div className="flex items-center justify-between border-b border-border bg-muted/40 px-5 py-3">
               <div className="flex items-center gap-3">
-                <span className={`block w-1.5 h-6 rounded-full ${accent.bar}`} />
-                <span
-                  className={`bg-gradient-to-r ${accent.grad} text-white font-bold text-[11px] uppercase tracking-widest
-                    rounded-full px-3 py-1 shadow-lg ${accent.ring}`}
-                >
+                <span className={`block h-6 w-1.5 rounded-full ${tone.bar}`} aria-hidden="true" />
+                <span className={`inline-flex items-center rounded-full px-3 py-1 text-micro uppercase ring-1 ${tone.pill}`}>
                   Group {letter}
                 </span>
               </div>
-              <span className="text-[10px] uppercase tracking-[0.18em] text-gray-500">
+              <span className="text-micro uppercase text-muted-foreground">
                 {fixtures.length} matches
               </span>
             </div>
 
             {/* Standings */}
-            <div className="px-5 pt-4 pb-5">
-              <div className="text-[10px] uppercase tracking-[0.18em] text-gray-500 mb-2">
+            <div className="px-5 pb-5 pt-4">
+              <div className="mb-2 text-micro uppercase text-muted-foreground">
                 Standings
               </div>
-              <table className="w-full text-sm">
+              <table className="w-full text-caption">
+                <caption className="sr-only">Group {letter} standings</caption>
                 <thead>
-                  <tr className="text-gray-500 text-[10px] uppercase border-b border-gray-800">
-                    <th className="text-left font-medium pb-2">Team</th>
-                    <th title="Played" className="font-medium pb-2 w-7 cursor-help">P</th>
-                    <th title="Won" className="font-medium pb-2 w-7 cursor-help">W</th>
-                    <th title="Drawn" className="font-medium pb-2 w-7 cursor-help">D</th>
-                    <th title="Lost" className="font-medium pb-2 w-7 cursor-help">L</th>
-                    <th title="Goals For" className="font-medium pb-2 w-8 cursor-help">GF</th>
-                    <th title="Goals Against" className="font-medium pb-2 w-8 cursor-help">GA</th>
-                    <th title="Points (Win = 3, Draw = 1)" className="font-medium pb-2 w-9 cursor-help">Pts</th>
+                  <tr className="border-b border-border text-micro uppercase text-muted-foreground">
+                    <th scope="col" className="pb-2 text-left font-medium">Team</th>
+                    <th scope="col" title="Played" className="w-7 cursor-help pb-2 font-medium">P</th>
+                    <th scope="col" title="Won" className="w-7 cursor-help pb-2 font-medium">W</th>
+                    <th scope="col" title="Drawn" className="w-7 cursor-help pb-2 font-medium">D</th>
+                    <th scope="col" title="Lost" className="w-7 cursor-help pb-2 font-medium">L</th>
+                    <th scope="col" title="Goals For" className="w-8 cursor-help pb-2 font-medium">GF</th>
+                    <th scope="col" title="Goals Against" className="w-8 cursor-help pb-2 font-medium">GA</th>
+                    <th scope="col" title="Points (Win = 3, Draw = 1)" className="w-9 cursor-help pb-2 font-medium">Pts</th>
                   </tr>
                 </thead>
                 <tbody>
                   {teams.map((t, i) => {
                     const prevQ = i > 0 && teams[i - 1].qualified;
                     const showDivider = prevQ && !t.qualified;
+                    const cell = t.qualified ? "text-foreground" : "text-muted-foreground";
                     return (
                       <tr
                         key={t.team}
-                        className={`transition-colors hover:bg-gray-800/50 ${
-                          showDivider ? "border-t-2 border-gray-700" : "border-t border-gray-800/50"
-                        }`}
-                        style={t.qualified ? { background: "rgba(245,158,11,0.08)" } : undefined}
+                        className={`transition-colors hover:bg-accent/40 ${
+                          showDivider ? "border-t-2 border-border" : "border-t border-border/60"
+                        } ${t.qualified ? "bg-primary/5" : ""}`}
                       >
                         <td className="py-2">
                           <span className="flex items-center gap-2">
-                            <span className="text-base leading-none">{flagOf(t.team)}</span>
-                            <span className={`truncate ${t.qualified ? "text-white font-medium" : "text-gray-500"}`}>
+                            <span className="text-base leading-none" aria-hidden="true">{flagOf(t.team)}</span>
+                            <span className={`truncate ${t.qualified ? "font-medium text-foreground" : "text-muted-foreground"}`}>
                               {t.team}
                             </span>
                             {t.qualified && (
-                              <span className="ml-1 text-[9px] font-bold text-green-400 bg-green-500/15 px-1.5 py-0.5 rounded">
+                              <span className="ml-1 rounded bg-positive/15 px-1.5 py-0.5 text-micro font-bold text-positive">
                                 Q
                               </span>
                             )}
                           </span>
                         </td>
-                        <td className={`text-center ${t.qualified ? "text-gray-300" : "text-gray-500"}`}>{t.played ?? 0}</td>
-                        <td className={`text-center ${t.qualified ? "text-gray-300" : "text-gray-500"}`}>{t.won ?? 0}</td>
-                        <td className={`text-center ${t.qualified ? "text-gray-300" : "text-gray-500"}`}>{t.drawn ?? 0}</td>
-                        <td className={`text-center ${t.qualified ? "text-gray-300" : "text-gray-500"}`}>{t.lost ?? 0}</td>
-                        <td className={`text-center ${t.qualified ? "text-gray-300" : "text-gray-500"}`}>{t.goals_for ?? 0}</td>
-                        <td className={`text-center ${t.qualified ? "text-gray-300" : "text-gray-500"}`}>{t.goals_against ?? 0}</td>
-                        <td className="text-center font-bold text-white">{t.points ?? 0}</td>
+                        <td className={`text-center ${cell}`}>{t.played ?? 0}</td>
+                        <td className={`text-center ${cell}`}>{t.won ?? 0}</td>
+                        <td className={`text-center ${cell}`}>{t.drawn ?? 0}</td>
+                        <td className={`text-center ${cell}`}>{t.lost ?? 0}</td>
+                        <td className={`text-center ${cell}`}>{t.goals_for ?? 0}</td>
+                        <td className={`text-center ${cell}`}>{t.goals_against ?? 0}</td>
+                        <td className="text-center font-bold text-foreground">{t.points ?? 0}</td>
                       </tr>
                     );
                   })}
@@ -161,14 +159,14 @@ export function GroupStage({
 
             {/* Fixtures */}
             {fixtures.length > 0 && (
-              <div className="px-5 pb-5 border-t border-gray-800/80 pt-4 bg-gray-950/30">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="text-[10px] uppercase tracking-[0.18em] text-gray-500">
+              <div className="border-t border-border bg-muted/20 px-5 pb-5 pt-4">
+                <div className="mb-3 flex items-center justify-between">
+                  <div className="text-micro uppercase text-muted-foreground">
                     Fixtures &amp; Results
                   </div>
-                  <span className="text-[10px] text-gray-600 italic">tap a match for details</span>
+                  <span className="text-micro italic text-muted-foreground">tap a match for details</span>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                   {fixtures.map((m, i) => (
                     <MatchCard
                       key={m.id}

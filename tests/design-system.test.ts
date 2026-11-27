@@ -63,6 +63,10 @@ describe("design system foundation", () => {
       "src/components/football/FootballSubNav.tsx",
       "src/components/football/FootballFilterBar.tsx",
       "src/components/football/CurrentLeaguesStrip.tsx",
+      "src/components/wc/MatchCard.tsx",
+      "src/components/wc/MobileMatchCard.tsx",
+      "src/components/wc/GroupStage.tsx",
+      "src/components/wc/Wc2026TodayView.tsx",
       "src/lib/sports-config.ts",
     ]) {
       expect(PALETTE.test(read(path)), `${path} hardcodes palette colours`).toBe(false);
