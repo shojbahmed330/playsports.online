@@ -141,11 +141,11 @@ Redesigning 22 pages without primitives will produce 22 new dialects. Build firs
 
 ## 7. Execution order
 
-Status: **Wave 0 done · HOME-01 done · FB-22 in progress (step 1/3)** · next is FB-22 step 2.
+Status: **Wave 0 done · HOME-01 done · FB-22 in progress (steps 1–3 of 4)** · next is the remaining hub components.
 
 - [x] **Foundation** — type scale, colour roles, primitives (`Card`, `StatTile`, `ScoreRow`, `TableShell`, `Hero`), token guard test.
 - [x] **HOME-01** — hero, ForYou (logic fix: only `recent` rendered before), Pulse, SportCard/LeagueCard/FifaCard, SportChipTabs, StatusBar, LiveTicker, TodayInZoneStrip, HallOfChampions, ShowMore. Guarded token-only; 390 px QA has no horizontal overflow.
-- [ ] **FB-22** football hub (1083 lines) — step 1 done: shell, hero, sub-nav, filter bar, hero-adjacent strips; −128 lines dead bracket code. Step 2: `Wc2026TodayView`, `GroupStage`, `MatchCard`, `MobileMatchCard`. Step 3: brackets, `MatchModal`, `WatchLivePanel`, `DateScrubber`.
+- [ ] **FB-22** football hub (1083 lines) — steps 1–3 done: shell/hero/nav/filter, match cards/group table/today view, modal/brackets/date scrubber (hydration fixed). Remaining: `YearDropdown` 29, `TimezonePicker` 28, `Wc2026ScorersPanel` 26, `FootballCoachmark` 24, `MobileGroupDeck` 19, `LiveMatchCenter` 61.
 - [ ] **PLYR-02** players hub (930 lines)
 - [ ] **FB-30** football team
 - [ ] **MINE-01** my feed
