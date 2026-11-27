@@ -1,42 +1,41 @@
 # Progress
 
-Updated: 2026-11-27 (foundation complete, HOME-01 in progress)
+Updated: 2026-11-27 (session 1 closed with a logged resource blocker)
 
 - Branch: `professional-overhaul` (never pushed)
-- Current phase: **CRK-23 planning**
-- Current screen: CRK-23 Cricket team detail
-- Screens done: **6 / 150** (HOME-01, CRK-04, CRK-19, CRK-13, CRK-21, CRK-24)
+- Current phase: **FINAL PASS — session 1 handoff**
+- Current screen: none
+- Screens done: **6 / 150**
+- Screens blocked: **144** (resource, see `BLOCKERS.md`)
 - Screens in progress: 0
-- Screens blocked: 0
 
 ## Completed
 
-- Step 1 baseline captured in `HEALTH_BASELINE.md`.
-- Step 2 inventory generated in `SCREEN_INVENTORY.md` (150 route screens + 10 global/overlay items).
-- Stack and commands written to `PROJECT_NOTES.md`.
-- Design tokens/components documented in `DESIGN_SYSTEM.md`.
-- **Foundation:**
-  - Typecheck 59 → **0 errors**.
-  - Prettier CRLF noise removed via `endOfLine: auto`.
-  - Dependency audit 66 → **6** vulnerabilities; criticals fixed within semver.
-  - PWA `sw.js` + workbox copied into deploy output by `scripts/postbuild-pwa.mjs`.
-  - Security headers added in `vercel.json`.
-  - Shared `EmptyState` / `ErrorState` / `LoadingState` / `SectionHeader` components.
-  - Home SSR now awaits hero feeds and has an error/retry state.
+- Step 1 baseline: `HEALTH_BASELINE.md`.
+- Step 2 inventory: `SCREEN_INVENTORY.md` (150 route screens + 10 global/overlay items).
+- Step 3 foundation: typecheck 59→0, audit 66→6, PWA deploy script, security headers, shared states, clean search URLs, reduced motion, Prettier line-ending fix.
+- Screens:
+  1. HOME-01 Home dashboard
+  2. CRK-04 Cricket hub
+  3. CRK-19 Cricket scores
+  4. CRK-13 Cricket match detail
+  5. CRK-21 Cricket series hub
+  6. CRK-24 Cricket teams
 
-## Next 5 screens
+## Verification (session close)
 
-1. HOME-01 Home dashboard (finish phases 2–8)
-2. CRK-04 Cricket hub
-3. CRK-19 Cricket scores
-4. CRK-13 Cricket match detail
-5. CRK-21 Cricket series
+- `bun run typecheck`: **0 errors**
+- `bun run test`: **27/27 pass**
+- `bun run build`: **PASS** (PWA files copied)
+- Browser: 0 hydration/errors on the six DONE screens
+- No remote push, deploy or production data change
 
-## Foundation queue
+## Next session (recommended order)
 
-- [x] Shared Empty/Error/Loading/SectionHeader components
-- [x] Typecheck baseline cleanup
-- [x] PWA `sw.js` production output
-- [x] Critical dependency audit triage
-- [x] Global security headers
-- [ ] Repo-wide ESLint cleanup (deferred; touched files only)
+1. CRK-23, CRK-16, CRK-15/14, CRK-18/17, CRK-06–12.
+2. FB-22, FB-05, FB-01–21.
+3. NEWS-01/02, LIVE, SRCH, AUTH, ADMIN, UTIL.
+4. MLB/NBA/NHL/MLS archive tier.
+5. Final cross-screen consistency, Lighthouse, dependency/CSP pass.
+
+See `FINAL_REPORT.md` for counts, risks and BREAKING-RISK decisions.
