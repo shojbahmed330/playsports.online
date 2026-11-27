@@ -5,7 +5,14 @@ import { SportNav } from "@/components/sports/SportNav";
 import { CricketSubNav } from "@/components/cricket/CricketSubNav";
 import { breadcrumbList, faqPage, itemList, ldScript } from "@/lib/seo/jsonld";
 import { canonical } from "@/lib/seo/canonical";
-import { getCricketRecordCategory, listCricketRecordCategories } from "@/lib/seo/cricket-entities";
+import {
+  getCricketPlayerBySlug,
+  getCricketRecordCategory,
+  listCricketRecordCategories,
+} from "@/lib/seo/cricket-entities";
+import { slugify } from "@/lib/seo/programmatic";
+import recordsData from "@/data/cricket/records.json";
+import { EmptyState, ErrorState } from "@/components/ui/state";
 
 export const Route = createFileRoute("/cricket/records/$category")({
   loader: ({ params }) => {
@@ -21,6 +28,7 @@ export const Route = createFileRoute("/cricket/records/$category")({
     }
     const { cat } = loaderData;
     const url = canonical(`/cricket/records/${params.category}`);
+    const image = "https://www.playsports.online/og-default.png";
     const title = `${cat.title} — All-time cricket leaderboard`;
     const top = cat.rows[0];
     const desc = top
@@ -34,6 +42,11 @@ export const Route = createFileRoute("/cricket/records/$category")({
         { property: "og:title", content: title },
         { property: "og:description", content: desc.slice(0, 200) },
         { property: "og:url", content: url },
+        { property: "og:image", content: image },
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: desc.slice(0, 200) },
+        { name: "twitter:image", content: image },
       ],
       links: [{ rel: "canonical", href: url }],
       scripts: [
@@ -43,7 +56,7 @@ export const Route = createFileRoute("/cricket/records/$category")({
             path: `/cricket/records/${params.category}`,
             items: cat.rows.map((r) => ({
               name: `${r.player} — ${r.value} ${cat.metric}`,
-              path: `/cricket/players/${r.player.toLowerCase().replace(/\s+/g, "-")}`,
+              path: playerPath(r.player),
             })),
           }),
         ),
@@ -60,26 +73,47 @@ export const Route = createFileRoute("/cricket/records/$category")({
     };
   },
   component: RecordCategoryPage,
-  errorComponent: ({ error }) => (
-    <div className="min-h-screen grid place-items-center p-6 text-center">
-      <p className="text-lg font-semibold">Couldn't load record</p>
-      <p className="text-xs text-muted-foreground mt-1">{errorMessage(error)}</p>
+  errorComponent: ({ error, reset }) => (
+    <div className="min-h-screen">
+      <SportNav />
+      <div className="mx-auto max-w-3xl px-4 py-10">
+        <ErrorState
+          title="Could not load this record"
+          message={errorMessage(error)}
+          onRetry={reset}
+        />
+      </div>
     </div>
   ),
   notFoundComponent: () => (
-    <div className="min-h-screen grid place-items-center p-6 text-center">
-      <div>
-        <p className="text-lg font-semibold">Record not found</p>
-        <Link
-          to="/cricket/records"
-          className="mt-4 inline-block text-emerald-400 hover:underline text-sm"
-        >
-          ← Browse cricket records
-        </Link>
+    <div className="min-h-screen">
+      <SportNav />
+      <div className="mx-auto max-w-3xl px-4 py-10">
+        <EmptyState
+          title="Record not found"
+          description="This record category is not in the cricket registry."
+          action={
+            <Link
+              to="/cricket/records"
+              className="inline-flex min-h-11 items-center rounded-full bg-emerald-500/15 px-4 text-sm font-bold text-emerald-200 ring-1 ring-emerald-500/30"
+            >
+              Browse all records
+            </Link>
+          }
+        />
       </div>
     </div>
   ),
 });
+
+const RECORDS_UPDATED = (recordsData as { updatedAt?: string }).updatedAt;
+
+function playerPath(name: string): string {
+  const slug = slugify(name);
+  return getCricketPlayerBySlug(slug)
+    ? `/cricket/players/${slug}`
+    : `/search?q=${encodeURIComponent(name)}`;
+}
 
 function buildFaqs(
   cat: ReturnType<typeof getCricketRecordCategory>,
@@ -140,37 +174,53 @@ function RecordCategoryPage() {
           <h1 className="text-2xl sm:text-3xl font-bold">{cat.title}</h1>
           <p className="text-sm text-muted-foreground mt-1">
             All-time top {cat.rows.length} · Format: {cat.format.toUpperCase()}
+            {RECORDS_UPDATED ? ` · snapshot ${RECORDS_UPDATED}` : ""}
           </p>
         </header>
 
         <section className="mb-10">
-          <ol className="space-y-2">
-            {cat.rows.map((r, i) => (
-              <li
-                key={r.player}
-                className="flex items-center justify-between rounded-lg border border-border bg-card p-3"
-              >
-                <div className="flex items-center gap-3">
-                  <span className="text-lg font-mono text-muted-foreground w-6">{i + 1}</span>
-                  <span className="text-xl" aria-hidden>
-                    {r.flag}
-                  </span>
-                  <Link
-                    to="/cricket/players/$slug"
-                    params={{ slug: r.player.toLowerCase().replace(/\s+/g, "-") }}
-                    className="font-medium hover:underline"
+          {cat.rows.length === 0 ? (
+            <EmptyState
+              title="No leaderboard entries"
+              description="This record category has no verified entries yet."
+            />
+          ) : (
+            <ol className="space-y-2">
+              {cat.rows.map((r, i) => {
+                const slug = slugify(r.player);
+                const hasProfile = !!getCricketPlayerBySlug(slug);
+                return (
+                  <li
+                    key={`${r.player}-${i}`}
+                    className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-border bg-card p-3"
                   >
-                    {r.player}
-                  </Link>
-                  <span className="text-xs text-muted-foreground">({r.team})</span>
-                </div>
-                <div className="text-right">
-                  <p className="font-mono font-bold">{r.value}</p>
-                  {r.extra && <p className="text-xs text-muted-foreground">{r.extra}</p>}
-                </div>
-              </li>
-            ))}
-          </ol>
+                    <div className="flex min-w-0 items-center gap-3">
+                      <span className="w-6 text-lg font-mono text-muted-foreground">{i + 1}</span>
+                      <span className="text-xl" aria-hidden>
+                        {r.flag}
+                      </span>
+                      {hasProfile ? (
+                        <Link
+                          to="/cricket/players/$slug"
+                          params={{ slug }}
+                          className="inline-flex min-h-9 items-center font-medium hover:underline"
+                        >
+                          {r.player}
+                        </Link>
+                      ) : (
+                        <span className="font-medium">{r.player}</span>
+                      )}
+                      <span className="text-xs text-muted-foreground">({r.team})</span>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-mono font-bold">{r.value}</p>
+                      {r.extra && <p className="text-xs text-muted-foreground">{r.extra}</p>}
+                    </div>
+                  </li>
+                );
+              })}
+            </ol>
+          )}
         </section>
 
         <section className="mb-10">
@@ -194,7 +244,7 @@ function RecordCategoryPage() {
                   <Link
                     to="/cricket/records/$category"
                     params={{ category: o.id }}
-                    className="inline-flex items-center rounded-full border border-border bg-card px-3 py-1.5 text-sm hover:bg-muted/60"
+                    className="inline-flex min-h-11 items-center rounded-full border border-border bg-card px-3 py-1.5 text-sm hover:bg-muted/60"
                   >
                     {o.title}
                   </Link>

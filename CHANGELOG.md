@@ -68,6 +68,12 @@
 - Added: OG/Twitter tags, Explore links, 44 px related links, table caption; player index now links to profiles.
 - Kept: SSR records, athlete/FAQ schema, related players, cached AI FAQs.
 
+## CRK-17 Cricket record category
+
+- Fixed: player links/schema now use the real slug and only link when a profile exists (search fallback otherwise).
+- Added: OG/Twitter tags, snapshot date, branded error/not-found, empty leaderboard state, 44 px related links.
+- Kept: SSR leaderboard, FAQs, ItemList schema and other-record links.
+
 ## Foundation
 
 - Added overhaul documentation: `PROJECT_NOTES.md`, `HEALTH_BASELINE.md`, `SCREEN_INVENTORY.md`, `DESIGN_SYSTEM.md`, `PROGRESS.md`, `DECISIONS.md`, `BLOCKERS.md`, `SECURITY_FINDINGS.md`.
