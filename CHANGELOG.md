@@ -153,6 +153,12 @@
 - Added: OG site name/Twitter meta; privacy-enhanced `youtube-nocookie.com` embed.
 - Kept: video/FAQ/breadcrumb JSON-LD, recap card, team profiles, related highlights.
 
+## CRK-22 cricket team history
+
+- Fixed: missing site header and cricket sub-nav; content now uses a padded max-width `main`; shared not-found/empty/error states; 44 px links; foreground/muted tokens instead of hardcoded white.
+- Added: OG site name/Twitter meta.
+- Kept: trophy/runner-up lists, related teams and JSON-LD.
+
 ## Foundation
 
 - Added overhaul documentation: `PROJECT_NOTES.md`, `HEALTH_BASELINE.md`, `SCREEN_INVENTORY.md`, `DESIGN_SYSTEM.md`, `PROGRESS.md`, `DECISIONS.md`, `BLOCKERS.md`, `SECURITY_FINDINGS.md`.
