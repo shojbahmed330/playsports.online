@@ -261,6 +261,11 @@
 - Fixed: match dates mount-gated; feed errors retryable; shared empty/error/not-found states; hidden icons, reduced-motion spinner, 44 px links.
 - Kept: win/draw summary and completed meetings list.
 
+## FB-03 football history year
+
+- Fixed: shared error/not-found/empty states; hidden stat icons; 44 px links; removed duplicate season label from the head title.
+- Kept: edition recap, awards, squad and notable moments.
+
 ## Foundation
 
 - Added overhaul documentation: `PROJECT_NOTES.md`, `HEALTH_BASELINE.md`, `SCREEN_INVENTORY.md`, `DESIGN_SYSTEM.md`, `PROGRESS.md`, `DECISIONS.md`, `BLOCKERS.md`, `SECURITY_FINDINGS.md`.

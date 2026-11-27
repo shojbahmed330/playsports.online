@@ -3,7 +3,7 @@
 Generated from the real router files in `src/routes` and cross-checked against `src/routeTree.gen.ts`.
 
 
-> **Execution status:** the foundation plus 50 route screens are DONE (Home, the full Cricket module, 7 football programmatic screens and 16 football competition pages). The remaining 100 route screens are marked BLOCKED for this session because the per-screen audit/implementation budget was exhausted; the reason is recorded in `BLOCKERS.md` and the recommended order is in `FINAL_REPORT.md`. This is a resource blocker, not a claim that the screen is broken.
+> **Execution status:** the foundation plus 51 route screens are DONE (Home, the full Cricket module, 7 football programmatic screens and 17 football competition pages). The remaining 99 route screens are marked BLOCKED for this session because the per-screen audit/implementation budget was exhausted; the reason is recorded in `BLOCKERS.md` and the recommended order is in `FINAL_REPORT.md`. This is a resource blocker, not a claim that the screen is broken.
 
 ## 1. Summary
 
@@ -241,7 +241,7 @@ Generated from the real router files in `src/routes` and cross-checked against `
 | UTIL-04 | Utility | — | Disclaimer | Full page | `/disclaimer`<br>`src/routes/disclaimer.tsx` | head meta | site/LegalLayout | static/local | loading, empty, error | BLOCKED |
 | FB-01 | Football | FB-05 | Football Comp Fixtures | Full page | `/football/:comp/fixtures`<br>`src/routes/football.$comp.fixtures.tsx` | Upcoming fixtures; Euro/Copa roadmaps; calendar/month groups | football/CompetitionPageShell, CompetitionMatchList, Euro/Copa fixture widgets, ui/state | espn.functions | loading, empty, error+retry, 404 | DONE |
 | FB-02 | Football | FB-05 | Football Comp H2h Matchup | Full page | `/football/:comp/h2h/:matchup`<br>`src/routes/football.$comp.h2h.$matchup.tsx` | Head-to-head record and completed meetings | football/CompetitionPageShell, ui/state | comp-head-to-head.functions | loading, empty, error+retry, 404 | DONE |
-| FB-03 | Football | FB-05 | Football Comp History Year | Full page | `/football/:comp/history/:year`<br>`src/routes/football.$comp.history.$year.tsx` | SSR loader; JSON-LD; head meta | football/CompetitionPageShell | server fn / query | empty, error | BLOCKED |
+| FB-03 | Football | FB-05 | Football Comp History Year | Full page | `/football/:comp/history/:year`<br>`src/routes/football.$comp.history.$year.tsx` | Edition recap; winner/awards; squad; moments | football/CompetitionPageShell, ui/state | static editions + WC data | empty, error+retry, 404 | DONE |
 | FB-04 | Football | FB-05 | Football Comp History | Full page | `/football/:comp/history`<br>`src/routes/football.$comp.history.index.tsx` | Euro/Copa history experiences; generic decade/edition history | football/CompetitionPageShell, football/Euro* history components, football/CopaHistoryPage, ui/state | static history | empty, error+retry, 404 | DONE |
 | FB-05 | Football | FB-22 | Football Comp | Full page | `/football/:comp`<br>`src/routes/football.$comp.index.tsx` | Competition overview; hero/countdown, facts, honours, scorers, news, H2H | football/CompetitionPageShell, competition widgets, ui/state | espn.functions | loading, error+retry, 404 | DONE |
 | FB-06 | Football | FB-05 | Football Comp Matches MatchId | Full page | `/football/:comp/matches/:matchId`<br>`src/routes/football.$comp.matches.$matchId.tsx` | Match center; score/status, venue, goals, officials, H2H | football/CompetitionPageShell, ui/state | espn.functions | loading, empty, error+retry, 404 | DONE |

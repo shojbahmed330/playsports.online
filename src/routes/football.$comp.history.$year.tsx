@@ -6,6 +6,8 @@ import { getEdition } from "@/data/competition-editions";
 import type { SquadPick, EditionSummary } from "@/data/competition-editions";
 import { getTournament } from "@/data/wc_tournaments";
 import { sportsEvent, ldScript } from "@/lib/seo/jsonld";
+import { EmptyState, ErrorState } from "@/components/ui/state";
+import { errorMessage } from "@/lib/error-message";
 import { Trophy, MapPin, Target, Users, Award, Shield, Sparkles, Calendar } from "lucide-react";
 
 export const Route = createFileRoute("/football/$comp/history/$year")({
@@ -27,9 +29,10 @@ export const Route = createFileRoute("/football/$comp/history/$year")({
           runnerUp: t.runnerUp,
           host: t.host,
           finalScore: t.finalScore,
-          topScorer: t.topScorer && t.topScorer !== "TBD"
-            ? { name: t.topScorer, goals: t.topScorerGoals }
-            : undefined,
+          topScorer:
+            t.topScorer && t.topScorer !== "TBD"
+              ? { name: t.topScorer, goals: t.topScorerGoals }
+              : undefined,
           bestPlayer: t.goldenBall ? { name: t.goldenBall, award: "Golden Ball" } : undefined,
           format: `${t.teams} teams · ${t.matches} matches`,
           teams: t.teams,
@@ -50,11 +53,12 @@ export const Route = createFileRoute("/football/$comp/history/$year")({
     const winner = edition?.winner;
     const base = buildCompetitionHead({
       comp,
-      section: `${label} Edition`,
+      section: "Edition",
       path: `/football/${comp.slug}/history/${loaderData.year}`,
-      descriptionOverride: winner && winner !== "TBD"
-        ? `${comp.name} ${label} — ${winner} won. Full recap: final, top scorer, host and more.`
-        : `${comp.name} ${label} — recap, winners, top scorer and full context.`,
+      descriptionOverride:
+        winner && winner !== "TBD"
+          ? `${comp.name} ${label} — ${winner} won. Full recap: final, top scorer, host and more.`
+          : `${comp.name} ${label} — recap, winners, top scorer and full context.`,
     });
     if (edition && winner && winner !== "TBD") {
       base.scripts = [
@@ -66,7 +70,8 @@ export const Route = createFileRoute("/football/$comp/history/$year")({
             sport: "Football",
             startDate: `${loaderData.year}-01-01`,
             location: edition.host,
-            description: edition.blurb ??
+            description:
+              edition.blurb ??
               `${comp.name} ${label}${edition.host ? ` in ${edition.host}` : ""}: ${winner} won${edition.runnerUp ? ` beating ${edition.runnerUp}` : ""}${edition.finalScore ? ` ${edition.finalScore}` : ""}.`,
             homeTeam: winner,
             awayTeam: edition.runnerUp,
@@ -77,11 +82,25 @@ export const Route = createFileRoute("/football/$comp/history/$year")({
     }
     return base;
   },
-  notFoundComponent: () => <div className="p-10 text-center">Edition not found.</div>,
+  notFoundComponent: () => (
+    <div className="mx-auto max-w-3xl px-4 py-10">
+      <EmptyState
+        title="Edition not found"
+        description="That edition is not in this competition's archive."
+      />
+    </div>
+  ),
+  errorComponent: ({ error, reset }) => (
+    <div className="mx-auto max-w-3xl px-4 py-10">
+      <ErrorState
+        title="Could not load this edition"
+        message={errorMessage(error)}
+        onRetry={reset}
+      />
+    </div>
+  ),
   component: EditionPage,
 });
-
-
 
 function EditionPage() {
   const data = Route.useLoaderData();
@@ -95,45 +114,126 @@ function EditionPage() {
         <Link
           to="/football/$comp/history"
           params={{ comp: comp.slug }}
-          className="text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground"
+          className="inline-flex min-h-11 items-center text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           ← All {comp.shortName} editions
         </Link>
         <h2 className="mt-2 text-2xl sm:text-3xl font-extrabold">
           {comp.shortName} {label}
         </h2>
-        {e?.blurb && (
-          <p className="text-sm text-muted-foreground mt-2 max-w-2xl">{e.blurb}</p>
-        )}
+        {e?.blurb && <p className="text-sm text-muted-foreground mt-2 max-w-2xl">{e.blurb}</p>}
       </div>
 
       {e ? (
         <>
           <div className="grid gap-3 sm:grid-cols-2">
-            <StatCard icon={<Trophy className="size-4 text-amber-300" />} label="Winner" value={e.winner} sub={e.finalScore ? `Final: ${e.finalScore}` : undefined} />
-            {e.runnerUp && <StatCard icon={<Users className="size-4" />} label="Runner-up" value={e.runnerUp} />}
-            {e.host && <StatCard icon={<MapPin className="size-4" />} label="Host" value={e.host} />}
-            {e.topScorer && <StatCard icon={<Target className="size-4" />} label="Top scorer" value={e.topScorer.name} sub={`${e.topScorer.goals} goals`} />}
-            {e.bestPlayer && <StatCard icon={<Award className="size-4 text-amber-300" />} label={e.bestPlayer.award ?? "Best player"} value={e.bestPlayer.name} sub={e.bestPlayer.team} />}
-            {e.bestKeeper && <StatCard icon={<Shield className="size-4" />} label={e.bestKeeper.award ?? "Best keeper"} value={e.bestKeeper.name} sub={e.bestKeeper.team} />}
-            {e.youngPlayer && <StatCard icon={<Sparkles className="size-4" />} label={e.youngPlayer.award ?? "Young player"} value={e.youngPlayer.name} sub={e.youngPlayer.team} />}
-            {e.finalVenue && <StatCard icon={<MapPin className="size-4" />} label="Final venue" value={e.finalVenue} sub={e.finalAttendance ? `${e.finalAttendance.toLocaleString()} attendance` : undefined} />}
-            {e.winningCoach && <StatCard icon={<Users className="size-4" />} label="Winning coach" value={e.winningCoach} sub={e.winningCaptain ? `Captain: ${e.winningCaptain}` : undefined} />}
-            {e.format && <StatCard icon={<Calendar className="size-4" />} label="Format" value={e.format} sub={[e.teams && `${e.teams} teams`, e.matches && `${e.matches} matches`, e.goals && `${e.goals} goals`].filter(Boolean).join(" · ") || undefined} />}
+            <StatCard
+              icon={<Trophy aria-hidden="true" className="size-4 text-amber-300" />}
+              label="Winner"
+              value={e.winner}
+              sub={e.finalScore ? `Final: ${e.finalScore}` : undefined}
+            />
+            {e.runnerUp && (
+              <StatCard
+                icon={<Users aria-hidden="true" className="size-4" />}
+                label="Runner-up"
+                value={e.runnerUp}
+              />
+            )}
+            {e.host && (
+              <StatCard
+                icon={<MapPin aria-hidden="true" className="size-4" />}
+                label="Host"
+                value={e.host}
+              />
+            )}
+            {e.topScorer && (
+              <StatCard
+                icon={<Target aria-hidden="true" className="size-4" />}
+                label="Top scorer"
+                value={e.topScorer.name}
+                sub={`${e.topScorer.goals} goals`}
+              />
+            )}
+            {e.bestPlayer && (
+              <StatCard
+                icon={<Award aria-hidden="true" className="size-4 text-amber-300" />}
+                label={e.bestPlayer.award ?? "Best player"}
+                value={e.bestPlayer.name}
+                sub={e.bestPlayer.team}
+              />
+            )}
+            {e.bestKeeper && (
+              <StatCard
+                icon={<Shield aria-hidden="true" className="size-4" />}
+                label={e.bestKeeper.award ?? "Best keeper"}
+                value={e.bestKeeper.name}
+                sub={e.bestKeeper.team}
+              />
+            )}
+            {e.youngPlayer && (
+              <StatCard
+                icon={<Sparkles aria-hidden="true" className="size-4" />}
+                label={e.youngPlayer.award ?? "Young player"}
+                value={e.youngPlayer.name}
+                sub={e.youngPlayer.team}
+              />
+            )}
+            {e.finalVenue && (
+              <StatCard
+                icon={<MapPin aria-hidden="true" className="size-4" />}
+                label="Final venue"
+                value={e.finalVenue}
+                sub={
+                  e.finalAttendance ? `${e.finalAttendance.toLocaleString()} attendance` : undefined
+                }
+              />
+            )}
+            {e.winningCoach && (
+              <StatCard
+                icon={<Users aria-hidden="true" className="size-4" />}
+                label="Winning coach"
+                value={e.winningCoach}
+                sub={e.winningCaptain ? `Captain: ${e.winningCaptain}` : undefined}
+              />
+            )}
+            {e.format && (
+              <StatCard
+                icon={<Calendar aria-hidden="true" className="size-4" />}
+                label="Format"
+                value={e.format}
+                sub={
+                  [
+                    e.teams && `${e.teams} teams`,
+                    e.matches && `${e.matches} matches`,
+                    e.goals && `${e.goals} goals`,
+                  ]
+                    .filter(Boolean)
+                    .join(" · ") || undefined
+                }
+              />
+            )}
           </div>
 
           {e.squadOfTournament && e.squadOfTournament.length > 0 && (
             <section className="mt-8">
-              <h3 className="text-sm uppercase tracking-widest text-muted-foreground mb-3">Squad of the tournament</h3>
+              <h3 className="text-sm uppercase tracking-widest text-muted-foreground mb-3">
+                Squad of the tournament
+              </h3>
               <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
                 {e.squadOfTournament.map((p: SquadPick) => (
-                  <div key={p.name} className="rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2 flex items-center justify-between">
+                  <div
+                    key={p.name}
+                    className="rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2 flex items-center justify-between"
+                  >
                     <div>
                       <div className="text-sm font-semibold">{p.name}</div>
                       {p.team && <div className="text-xs text-muted-foreground">{p.team}</div>}
                     </div>
                     {p.position && (
-                      <span className="text-[10px] uppercase tracking-widest rounded-full bg-white/10 px-2 py-0.5">{p.position}</span>
+                      <span className="text-[10px] uppercase tracking-widest rounded-full bg-white/10 px-2 py-0.5">
+                        {p.position}
+                      </span>
                     )}
                   </div>
                 ))}
@@ -143,10 +243,15 @@ function EditionPage() {
 
           {e.notableMoments && e.notableMoments.length > 0 && (
             <section className="mt-8">
-              <h3 className="text-sm uppercase tracking-widest text-muted-foreground mb-3">Notable moments</h3>
+              <h3 className="text-sm uppercase tracking-widest text-muted-foreground mb-3">
+                Notable moments
+              </h3>
               <ul className="space-y-2">
                 {e.notableMoments.map((m: string, i: number) => (
-                  <li key={i} className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm">
+                  <li
+                    key={i}
+                    className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm"
+                  >
                     {m}
                   </li>
                 ))}
@@ -157,7 +262,7 @@ function EditionPage() {
       ) : data.year > new Date().getFullYear() ? (
         <div className="rounded-2xl border border-blue-400/20 bg-blue-500/5 px-6 py-8 space-y-3">
           <div className="flex items-center gap-2 text-[11px] uppercase tracking-widest text-blue-200 font-bold">
-            <Calendar className="size-4" /> Future edition
+            <Calendar aria-hidden="true" className="size-4" /> Future edition
           </div>
           <div className="text-lg font-bold">
             {comp.shortName} {label} — recap lands after the tournament.
@@ -171,38 +276,47 @@ function EditionPage() {
             <Link
               to="/football/$comp/history"
               params={{ comp: comp.slug }}
-              className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs hover:bg-white/10"
+              className="inline-flex min-h-11 items-center rounded-full border border-white/10 bg-white/5 px-3 text-xs hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               All {comp.shortName} editions →
             </Link>
             <Link
               to="/football/$comp/records"
               params={{ comp: comp.slug }}
-              className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs hover:bg-white/10"
+              className="inline-flex min-h-11 items-center rounded-full border border-white/10 bg-white/5 px-3 text-xs hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               {comp.shortName} records →
             </Link>
           </div>
         </div>
       ) : (
-        <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-6 py-10 text-center text-sm text-muted-foreground">
-          Detailed recap for {comp.shortName} {label} lands in the next update.
-        </div>
+        <EmptyState
+          title="Detailed recap coming soon"
+          description={`Detailed recap for ${comp.shortName} ${label} lands in the next update.`}
+          action={
+            <Link
+              to="/football/$comp/history"
+              params={{ comp: comp.slug }}
+              className="inline-flex min-h-11 items-center rounded-full bg-primary/15 px-4 text-sm font-bold text-primary ring-1 ring-primary/30"
+            >
+              All {comp.shortName} editions
+            </Link>
+          }
+        />
       )}
-
 
       <div className="mt-8 flex flex-wrap items-center gap-2 text-xs">
         <Link
           to="/football/$comp/records"
           params={{ comp: comp.slug }}
-          className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 hover:bg-white/10"
+          className="inline-flex min-h-11 items-center rounded-full border border-white/10 bg-white/5 px-3 hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           {comp.shortName} records →
         </Link>
         <Link
           to="/football/$comp/standings"
           params={{ comp: comp.slug }}
-          className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 hover:bg-white/10"
+          className="inline-flex min-h-11 items-center rounded-full border border-white/10 bg-white/5 px-3 hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           Current {comp.kind === "league" ? "table" : "groups"} →
         </Link>
@@ -211,7 +325,17 @@ function EditionPage() {
   );
 }
 
-function StatCard({ icon, label, value, sub }: { icon: React.ReactNode; label: string; value: string; sub?: string }) {
+function StatCard({
+  icon,
+  label,
+  value,
+  sub,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+  sub?: string;
+}) {
   return (
     <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
       <div className="flex items-center gap-2 text-[11px] uppercase tracking-widest text-muted-foreground">
