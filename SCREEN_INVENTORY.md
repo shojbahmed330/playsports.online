@@ -3,7 +3,7 @@
 Generated from the real router files in `src/routes` and cross-checked against `src/routeTree.gen.ts`.
 
 
-> **Execution status:** the foundation plus 65 route screens are DONE (Home, Cricket, Football, Live and News modules). The remaining 85 route screens are marked BLOCKED for this session because the per-screen audit/implementation budget was exhausted; the reason is recorded in `BLOCKERS.md` and the recommended order is in `FINAL_REPORT.md`. This is a resource blocker, not a claim that the screen is broken.
+> **Execution status:** the foundation plus 66 route screens are DONE (Home, Cricket, Football, Live, News and Search). The remaining 84 route screens are marked BLOCKED for this session because the per-screen audit/implementation budget was exhausted; the reason is recorded in `BLOCKERS.md` and the recommended order is in `FINAL_REPORT.md`. This is a resource blocker, not a claim that the screen is broken.
 
 ## 1. Summary
 
@@ -349,7 +349,7 @@ Generated from the real router files in `src/routes` and cross-checked against `
 | PLYR-02 | Players | — | Players | Full page | `/players`<br>`src/routes/players.tsx` | client query; JSON-LD; head meta | ads/AdSlot, players/PlayerSubNav, players/FilterBar, players/FilterSheet | server fn / query | loading, empty | BLOCKED |
 | PREM-01 | Premium | — | Premium | Full page | `/premium`<br>`src/routes/premium.tsx` | head meta | — | static/local | not verified | BLOCKED |
 | UTIL-05 | Utility | — | Privacy | Full page | `/privacy`<br>`src/routes/privacy.tsx` | head meta | site/LegalLayout | static/local | loading, empty | BLOCKED |
-| SRCH-01 | Search | — | Search | Full page | `/search`<br>`src/routes/search.tsx` | head meta | — | static/local | empty | BLOCKED |
+| SRCH-01 | Search | - | Search | Full page | `/search`<br>`src/routes/search.tsx` | Fuzzy World Cup search; initial/no-results states | ui/state | static entities | empty, no results | DONE |
 | XSPT-02 | Cross-sport | — | Team Sport Slug | Full page | `/team/:sport/:slug`<br>`src/routes/team.$sport.$slug.tsx` | SSR loader; JSON-LD; head meta | affiliates/AffiliateStrip, ads/AdSlot | server fn / query | empty, error | BLOCKED |
 | UTIL-06 | Utility | — | Terms | Full page | `/terms`<br>`src/routes/terms.tsx` | head meta | site/LegalLayout | static/local | loading, empty, error | BLOCKED |
 | XSPT-03 | Cross-sport | — | Tournaments Tournament Leaderboard | Full page | `/tournaments/:tournament/:leaderboard`<br>`src/routes/tournaments.$tournament.$leaderboard.tsx` | SSR loader; JSON-LD; head meta | ads/AdSlot | server fn / query | error | BLOCKED |

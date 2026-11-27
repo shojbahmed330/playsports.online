@@ -2,10 +2,12 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { zodValidator, fallback } from "@tanstack/zod-adapter";
 import { z } from "zod";
 import { useMemo } from "react";
+import { Search } from "lucide-react";
 import { listTeams, listPlayers } from "@/lib/seo/programmatic";
 import { WC_TOURNAMENTS } from "@/data/wc_tournaments";
 import { canonical } from "@/lib/seo/canonical";
 import { flagOf } from "@/lib/flags";
+import { EmptyState } from "@/components/ui/state";
 
 const searchSchema = z.object({
   q: fallback(z.string(), "").default(""),
@@ -14,7 +16,7 @@ const searchSchema = z.object({
 export const Route = createFileRoute("/search")({
   validateSearch: zodValidator(searchSchema),
   head: () => {
-    const title = "Search — PlaySports";
+    const title = "Search the World Cup Archive — PlaySports";
     const desc = "Search for any FIFA World Cup country, player, tournament or year.";
     return {
       meta: [
@@ -23,6 +25,7 @@ export const Route = createFileRoute("/search")({
         { property: "og:title", content: title },
         { property: "og:description", content: desc },
         { property: "og:url", content: canonical("/search") },
+        { property: "og:site_name", content: "PlaySports" },
         { name: "robots", content: "noindex, follow" },
       ],
       links: [{ rel: "canonical", href: canonical("/search") }],
@@ -69,51 +72,55 @@ function SearchPage() {
     if (yearMatch) {
       const y = Number(yearMatch[0]);
       const tour = WC_TOURNAMENTS.find((t) => t.year === y);
-      if (tour) out.push({
-        kind: "tournament",
-        name: `${tour.year} FIFA World Cup — ${tour.host}`,
-        score: 95,
-        href: `/football/tournaments/${tour.year}`,
-        linkProps: { to: "/football/tournaments/$year", params: { year: String(tour.year) } },
-        meta: `Champion: ${tour.champion}`,
-      });
+      if (tour)
+        out.push({
+          kind: "tournament",
+          name: `${tour.year} FIFA World Cup — ${tour.host}`,
+          score: 95,
+          href: `/football/tournaments/${tour.year}`,
+          linkProps: { to: "/football/tournaments/$year", params: { year: String(tour.year) } },
+          meta: `Champion: ${tour.champion}`,
+        });
     }
 
     for (const team of listTeams()) {
       const s = fuzzyScore(query, team.name);
-      if (s > 0) out.push({
-        kind: "country",
-        name: team.name,
-        score: s,
-        href: `/football/teams/${team.slug}`,
-        linkProps: { to: "/football/teams/$slug", params: { slug: team.slug } },
-        flag: flagOf(team.name),
-      });
+      if (s > 0)
+        out.push({
+          kind: "country",
+          name: team.name,
+          score: s,
+          href: `/football/teams/${team.slug}`,
+          linkProps: { to: "/football/teams/$slug", params: { slug: team.slug } },
+          flag: flagOf(team.name),
+        });
     }
 
     for (const p of listPlayers().slice(0, 3000)) {
       const s = fuzzyScore(query, p.name);
-      if (s >= 60) out.push({
-        kind: "player",
-        name: p.name,
-        score: s - 5,
-        href: `/football/players/${p.slug}`,
-        linkProps: { to: "/football/players/$slug", params: { slug: p.slug } },
-        meta: p.team,
-      });
+      if (s >= 60)
+        out.push({
+          kind: "player",
+          name: p.name,
+          score: s - 5,
+          href: `/football/players/${p.slug}`,
+          linkProps: { to: "/football/players/$slug", params: { slug: p.slug } },
+          meta: p.team,
+        });
     }
 
     for (const t of WC_TOURNAMENTS) {
       const label = `${t.year} World Cup`;
       const s = fuzzyScore(query, label) + fuzzyScore(query, t.host);
-      if (s > 40) out.push({
-        kind: "tournament",
-        name: label,
-        score: s / 2,
-        href: `/football/tournaments/${t.year}`,
-        linkProps: { to: "/football/tournaments/$year", params: { year: String(t.year) } },
-        meta: `Host: ${t.host}`,
-      });
+      if (s > 40)
+        out.push({
+          kind: "tournament",
+          name: label,
+          score: s / 2,
+          href: `/football/tournaments/${t.year}`,
+          linkProps: { to: "/football/tournaments/$year", params: { year: String(t.year) } },
+          meta: `Host: ${t.host}`,
+        });
     }
 
     return out.sort((a, b) => b.score - a.score).slice(0, 40);
@@ -121,43 +128,76 @@ function SearchPage() {
 
   return (
     <div className="min-h-screen bg-background pb-24">
-      <header className="bg-gradient-to-br from-blue-700 via-indigo-700 to-purple-800 py-8 px-4">
+      <header className="border-b border-border bg-gradient-to-br from-primary/20 via-background to-background py-8 px-4">
         <div className="container mx-auto max-w-3xl">
-          <h1 className="text-3xl font-black text-white mb-3">Search PlaySports</h1>
-          <form method="get" action="/search">
+          <h1 className="text-3xl font-black text-foreground mb-3">Search the World Cup archive</h1>
+          <form method="get" action="/search" className="flex gap-2">
+            <label htmlFor="site-search" className="sr-only">
+              Search countries, players, years or tournaments
+            </label>
             <input
+              id="site-search"
               name="q"
+              type="search"
               defaultValue={q}
               placeholder="Try: Argentina, Messi, 1998, world cup 2022…"
-              className="w-full rounded-xl px-4 py-3 text-base bg-white/95 text-slate-900 focus:outline-none focus:ring-4 focus:ring-white/40"
+              autoComplete="off"
+              enterKeyHint="search"
+              className="min-h-11 w-full rounded-xl border border-border bg-background px-4 text-base text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
               autoFocus
             />
+            <button
+              type="submit"
+              className="inline-flex min-h-11 shrink-0 items-center gap-2 rounded-xl bg-primary px-4 text-sm font-bold text-primary-foreground hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              <Search className="size-4" aria-hidden="true" />
+              <span className="hidden sm:inline">Search</span>
+            </button>
           </form>
         </div>
       </header>
 
       <main className="container mx-auto max-w-3xl px-4 pt-6">
         {!query && (
-          <p className="text-muted-foreground text-sm">Enter a country, player, year, or tournament to see matching pages.</p>
+          <EmptyState
+            title="Find a World Cup page"
+            description="Enter a country, player, year or tournament to see matching pages."
+            icon={<Search className="size-5" aria-hidden="true" />}
+          />
         )}
         {query && results.length === 0 && (
-          <p className="text-muted-foreground">No results for "{q}". Try a country or player name.</p>
+          <EmptyState
+            title={`No results for “${q}”`}
+            description="Try a country or player name, a four-digit year, or “world cup” and a host."
+          />
         )}
         {results.length > 0 && (
           <>
-            <p className="text-sm text-muted-foreground mb-3">{results.length} results for "{q}"</p>
+            <p className="mb-3 text-sm text-muted-foreground">
+              {results.length} result{results.length === 1 ? "" : "s"} for “{q}”
+            </p>
             <ul className="space-y-2">
               {results.map((r, i) => (
                 <li key={`${r.kind}-${r.name}-${i}`}>
                   <Link
                     {...(r.linkProps as { to: string })}
-                    className="flex items-center gap-3 rounded-xl bg-card border border-border p-3 hover:border-primary/60 hover:shadow-md transition"
+                    className="group flex min-h-11 items-center gap-3 rounded-xl border border-border bg-card p-3 transition hover:border-primary/60 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   >
-                    {r.flag && <span className="text-2xl">{r.flag}</span>}
+                    {r.flag && (
+                      <span className="text-2xl" aria-hidden="true">
+                        {r.flag}
+                      </span>
+                    )}
                     <div className="min-w-0 flex-1">
                       <div className="font-semibold group-hover:text-primary">{r.name}</div>
                       <div className="text-xs text-muted-foreground uppercase tracking-wide">
-                        {r.kind}{r.meta ? ` · ${r.meta}` : ""}
+                        {r.kind === "country" ? "Team" : r.kind}
+                        {r.meta ? (
+                          <>
+                            <span aria-hidden="true"> · </span>
+                            {r.meta}
+                          </>
+                        ) : null}
                       </div>
                     </div>
                   </Link>

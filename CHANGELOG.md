@@ -326,6 +326,11 @@
 - Fixed: shared error/not-found/empty states; RSS/empty actions 44 px; decorative icons hidden; cards and links focus rings; computed reading time; headline alt text; `bg-muted` badge; OG site name.
 - Kept: recap listing, RSS feed, article metadata, key moments, match link and related recaps.
 
+## SRCH-01 search
+
+- Fixed: shared initial/no-results states; labelled input and submit button; token header/input; hidden flags; 44 px controls/focus rings; World Cup scope copy; consistent result-kind labels; OG site name.
+- Kept: fuzzy country/player/tournament search, year shortcut and capped result list.
+
 ## Foundation
 
 - Added overhaul documentation: `PROJECT_NOTES.md`, `HEALTH_BASELINE.md`, `SCREEN_INVENTORY.md`, `DESIGN_SYSTEM.md`, `PROGRESS.md`, `DECISIONS.md`, `BLOCKERS.md`, `SECURITY_FINDINGS.md`.
