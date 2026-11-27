@@ -30,7 +30,8 @@ export function FootballHero() {
 
   const pulse = derivePulse(hydrated ? q.data?.fixtures : undefined);
 
-  const countdown = hydrated && pulse.next ? formatCountdown(pulse.next.startTs * 1000 - Date.now()) : null;
+  const countdown =
+    hydrated && pulse.next ? formatCountdown(pulse.next.startTs * 1000 - Date.now()) : null;
   // Touch tick so re-renders flow (lint).
   void tick;
 
@@ -38,55 +39,61 @@ export function FootballHero() {
     pulse.phase === "live"
       ? `${pulse.live.length} match${pulse.live.length === 1 ? "" : "es"} live right now`
       : pulse.phase === "today"
-      ? `${pulse.today.length} match${pulse.today.length === 1 ? "" : "es"} today`
-      : pulse.next
-      ? `Next kickoff in ${countdown}`
-      : "Live fixtures, bracket and top scorers.";
+        ? `${pulse.today.length} match${pulse.today.length === 1 ? "" : "es"} today`
+        : pulse.next
+          ? `Next kickoff in ${countdown}`
+          : "Live fixtures, bracket and top scorers.";
 
   return (
-    <section className="relative overflow-hidden border-b border-border">
-      {/* Animated gradient backdrop */}
+    <section className="relative overflow-hidden border-b border-border bg-[image:var(--gradient-hero)]">
       <div
-        aria-hidden
-        className="absolute inset-0 opacity-60"
+        aria-hidden="true"
+        className="absolute inset-0 opacity-50"
         style={{
           background:
-            "radial-gradient(60% 80% at 50% 0%, oklch(0.78 0.18 75 / 0.30), transparent 60%), radial-gradient(40% 70% at 85% 100%, oklch(0.62 0.24 27 / 0.22), transparent 60%), radial-gradient(50% 80% at 15% 100%, oklch(0.58 0.20 250 / 0.18), transparent 60%)",
+            "radial-gradient(60% 80% at 50% 0%, color-mix(in oklch, var(--color-accent-football) 30%, transparent), transparent 60%), radial-gradient(40% 70% at 85% 100%, color-mix(in oklch, var(--color-live) 22%, transparent), transparent 60%)",
         }}
       />
-      <div aria-hidden className="absolute inset-0 bg-[linear-gradient(transparent_95%,rgba(255,255,255,0.04)_100%),linear-gradient(90deg,transparent_95%,rgba(255,255,255,0.04)_100%)] bg-[size:32px_32px] opacity-40" />
 
-      <div className="relative max-w-6xl mx-auto px-4 sm:px-6 py-7 sm:py-10">
+      <div className="relative mx-auto max-w-6xl px-4 py-7 sm:px-6 sm:py-10">
         <div className="flex flex-col items-center text-center">
           {pulse.phase === "live" && (
-            <span className="mb-3 inline-flex items-center gap-1 rounded-full bg-red-600 px-3 py-1 text-[10px] font-extrabold uppercase tracking-widest text-white shadow-lg shadow-red-500/40">
-              <span className="size-1.5 rounded-full bg-white animate-pulse" /> Live now
+            <span className="mb-3 inline-flex items-center gap-1 rounded-full bg-live px-3 py-1 text-micro uppercase text-live-foreground shadow-[var(--shadow-elevated)]">
+              <span className="size-1.5 rounded-full bg-live-foreground animate-pulse motion-reduce:animate-none" aria-hidden="true" />
+              Live now
             </span>
           )}
 
-          <h1 className="text-3xl sm:text-6xl font-extrabold tracking-tight">
-            FIFA World Cup{" "}
-            <span className="bg-gradient-to-r from-amber-300 via-rose-400 to-blue-400 bg-clip-text text-transparent">
-              2026
-            </span>
+          <h1 className="text-h1 text-foreground sm:text-display">
+            FIFA World Cup <span className="text-primary">2026</span>
           </h1>
-          <p className="mt-3 text-sm sm:text-lg text-muted-foreground max-w-xl px-2">
+          <p className="mt-3 max-w-xl px-2 text-body text-muted-foreground sm:text-lg">
             {heroline}
           </p>
 
           {/* STAT PILLS */}
           <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
             <StatPill
-              icon={<Radio className="size-3.5" />}
+              icon={<Radio className="size-3.5" aria-hidden="true" />}
               label="Live"
               value={pulse.live.length}
               tone={pulse.live.length > 0 ? "live" : "muted"}
             />
-            <StatPill icon={<Calendar className="size-3.5" />} label="Today" value={pulse.today.length} tone="info" />
-            <StatPill icon={<Goal className="size-3.5" />} label="Goals today" value={pulse.goalsToday} tone="gold" />
+            <StatPill
+              icon={<Calendar className="size-3.5" aria-hidden="true" />}
+              label="Today"
+              value={pulse.today.length}
+              tone="info"
+            />
+            <StatPill
+              icon={<Goal className="size-3.5" aria-hidden="true" />}
+              label="Goals today"
+              value={pulse.goalsToday}
+              tone="gold"
+            />
             {pulse.next && (
               <StatPill
-                icon={<Clock className="size-3.5" />}
+                icon={<Clock className="size-3.5" aria-hidden="true" />}
                 label="Next"
                 value={countdown ?? "—"}
                 tone="muted"
@@ -95,19 +102,20 @@ export function FootballHero() {
           </div>
 
           {/* CTAs */}
-          <div className="mt-5 grid w-full grid-cols-1 sm:grid-cols-[auto_auto] gap-3 sm:justify-center max-w-md sm:max-w-none">
+          <div className="mt-5 grid w-full max-w-md grid-cols-1 gap-3 sm:max-w-none sm:grid-cols-[auto_auto] sm:justify-center">
             <div className="sm:w-72">
               <WatchLivePanel compact />
             </div>
             {pulse.next && (
               <a
                 href="#fixtures"
-                className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-5 py-3 text-sm font-semibold text-foreground hover:bg-white/10 transition-all"
+                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-2xl border border-border bg-muted px-5 py-3 text-body font-semibold text-foreground transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
-                <Play className="size-4" />
+                <Play className="size-4" aria-hidden="true" />
                 <span className="truncate">
-                  {flagOf(pulse.next.home.name)} {pulse.next.home.code} vs {pulse.next.away.code} {flagOf(pulse.next.away.name)}
-                  <span className="ml-2 text-amber-300">{formatLocalTime(pulse.next.startTs * 1000)}</span>
+                  <span aria-hidden="true">{flagOf(pulse.next.home.name)}</span> {pulse.next.home.code} vs{" "}
+                  {pulse.next.away.code} <span aria-hidden="true">{flagOf(pulse.next.away.name)}</span>
+                  <span className="ml-2 text-primary">{formatLocalTime(pulse.next.startTs * 1000)}</span>
                 </span>
               </a>
             )}
@@ -140,17 +148,19 @@ function StatPill({
 }) {
   const cls =
     tone === "live"
-      ? "border-red-500/40 bg-red-500/10 text-red-200 shadow-[0_0_30px_-12px_rgba(239,68,68,0.6)]"
+      ? "border-live/40 bg-live/10 text-live"
       : tone === "info"
-      ? "border-blue-500/30 bg-blue-500/10 text-blue-200"
-      : tone === "gold"
-      ? "border-amber-500/30 bg-amber-500/10 text-amber-200"
-      : "border-white/10 bg-white/5 text-muted-foreground";
+        ? "border-[var(--color-accent-mlb)]/30 bg-[var(--color-accent-mlb)]/10 text-[var(--color-accent-mlb)]"
+        : tone === "gold"
+          ? "border-gold/30 bg-gold/10 text-gold"
+          : "border-border bg-muted text-muted-foreground";
   return (
-    <span className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold ${cls}`}>
-      {tone === "live" && <span className="size-1.5 rounded-full bg-red-400 animate-pulse" />}
+    <span className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-caption font-semibold ${cls}`}>
+      {tone === "live" && (
+        <span className="size-1.5 rounded-full bg-live animate-pulse motion-reduce:animate-none" aria-hidden="true" />
+      )}
       {icon}
-      <span className="opacity-80 uppercase tracking-wider text-[10px]">{label}</span>
+      <span className="text-micro uppercase opacity-80">{label}</span>
       <span className="tabular-nums text-foreground">{value}</span>
     </span>
   );
@@ -171,38 +181,53 @@ function FootballTicker({
     ...recent.map((f) => ({ f, kind: "ft" as const })),
   ];
   if (items.length === 0) return null;
-  const loop = [...items, ...items];
+  const shouldLoop = items.length >= 4;
+  const loop = shouldLoop ? [...items, ...items] : items;
   return (
-    <div className="relative overflow-hidden border-t border-white/5 bg-gradient-to-r from-amber-950/30 via-gray-950 to-blue-950/30">
+    <div className="relative overflow-hidden border-t border-border bg-muted/30">
       <div className="flex items-center">
-        <div className="shrink-0 z-10 px-3 py-1.5 bg-amber-500 text-black text-[10px] font-extrabold uppercase tracking-widest flex items-center gap-1.5">
-          <Trophy className="size-3" /> WC
+        <div className="z-10 flex shrink-0 items-center gap-1.5 bg-primary px-3 py-2 text-micro font-extrabold uppercase text-primary-foreground">
+          <Trophy className="size-3" aria-hidden="true" /> WC
         </div>
-        <div className="ticker-track flex items-center gap-6 py-1.5 pl-4 whitespace-nowrap">
-          {loop.map(({ f, kind }, i) => (
-            <span key={`${f.id}-${i}-${kind}`} className="inline-flex items-center gap-2 text-xs">
+        <div
+          className="ticker-track flex items-center gap-6 whitespace-nowrap py-1 pl-4"
+          style={shouldLoop ? undefined : { animation: "none" }}
+        >
+          {loop.map(({ f, kind }, i) => {
+            const clone = i >= items.length;
+            return (
               <span
-                className={`text-[10px] font-bold uppercase tracking-wider ${
-                  kind === "live" ? "text-red-400" : kind === "up" ? "text-blue-300" : "text-gray-500"
-                }`}
+                key={`${f.id}-${i}-${kind}`}
+                aria-hidden={clone || undefined}
+                className={`inline-flex min-h-11 items-center gap-2 text-caption ${clone ? "motion-reduce:hidden" : ""}`}
               >
-                {kind === "live" ? "● LIVE" : kind === "up" ? formatLocalTime(f.startTs * 1000) : "FT"}
-              </span>
-              <span className="text-gray-300">
-                {flagOf(f.home.name)} {f.home.code}
-              </span>
-              {kind === "ft" || kind === "live" ? (
-                <span className="font-bold text-amber-300 tabular-nums">
-                  {f.home.goals ?? 0}–{f.away.goals ?? 0}
+                <span
+                  className={`text-micro font-bold uppercase ${
+                    kind === "live"
+                      ? "text-live"
+                      : kind === "up"
+                        ? "text-[var(--color-accent-mlb)]"
+                        : "text-muted-foreground"
+                  }`}
+                >
+                  {kind === "live" ? "● LIVE" : kind === "up" ? formatLocalTime(f.startTs * 1000) : "FT"}
                 </span>
-              ) : (
-                <span className="text-gray-500">vs</span>
-              )}
-              <span className="text-gray-300">
-                {f.away.code} {flagOf(f.away.name)}
+                <span className="text-foreground">
+                  <span aria-hidden="true">{flagOf(f.home.name)}</span> {f.home.code}
+                </span>
+                {kind === "ft" || kind === "live" ? (
+                  <span className="font-bold tabular-nums text-primary">
+                    {f.home.goals ?? 0}–{f.away.goals ?? 0}
+                  </span>
+                ) : (
+                  <span className="text-muted-foreground">vs</span>
+                )}
+                <span className="text-foreground">
+                  {f.away.code} <span aria-hidden="true">{flagOf(f.away.name)}</span>
+                </span>
               </span>
-            </span>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>

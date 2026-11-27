@@ -58,6 +58,11 @@ describe("design system foundation", () => {
       "src/components/home/HallOfChampionsStrip.tsx",
       "src/components/home/ShowMore.tsx",
       "src/components/sports/LiveTicker.tsx",
+      "src/routes/football.index.tsx",
+      "src/components/football/FootballHero.tsx",
+      "src/components/football/FootballSubNav.tsx",
+      "src/components/football/FootballFilterBar.tsx",
+      "src/components/football/CurrentLeaguesStrip.tsx",
       "src/lib/sports-config.ts",
     ]) {
       expect(PALETTE.test(read(path)), `${path} hardcodes palette colours`).toBe(false);

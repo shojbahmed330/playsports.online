@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+﻿import { useState, useMemo, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Trophy, Loader2, ChevronDown, Users, Swords, Goal, Calendar } from "lucide-react";
@@ -83,9 +83,9 @@ export const Route = createFileRoute("/football/")({
 
   head: () => {
     const title =
-      "Live Football Scores, Tables & Fixtures — Premier League, Champions League & More | PlaySports";
+      "Live Football Scores, Tables & Fixtures â€” Premier League, Champions League & More | PlaySports";
     const description =
-      "Live football scores, fixtures and tables for the Premier League, Champions League, La Liga and more — plus the complete FIFA World Cup archive.";
+      "Live football scores, fixtures and tables for the Premier League, Champions League, La Liga and more â€” plus the complete FIFA World Cup archive.";
     return {
       meta: [
         { title },
@@ -128,7 +128,7 @@ export const Route = createFileRoute("/football/")({
             },
             {
               q: "Does PlaySports cover the FIFA World Cup?",
-              a: "Yes — the complete FIFA World Cup archive from 1930 onwards, including the 2026 tournament.",
+              a: "Yes â€” the complete FIFA World Cup archive from 1930 onwards, including the 2026 tournament.",
             },
           ]),
         ),
@@ -177,33 +177,13 @@ function classifyRound(round: string): RoundKey | "group" | null {
   return null;
 }
 
-const ROUND_HEADER: Record<RoundKey, { label: string; grad: string; glow: string }> = {
-  round_of_32: {
-    label: "Round of 32",
-    grad: "from-sky-600 to-cyan-500",
-    glow: "shadow-sky-500/30",
-  },
-  round_of_16: {
-    label: "Round of 16",
-    grad: "from-blue-600 to-blue-500",
-    glow: "shadow-blue-500/30",
-  },
-  quarter_final: {
-    label: "Quarter Final",
-    grad: "from-purple-600 to-purple-500",
-    glow: "shadow-purple-500/30",
-  },
-  semi_final: {
-    label: "Semi Final",
-    grad: "from-orange-600 to-orange-500",
-    glow: "shadow-orange-500/30",
-  },
-  final: { label: "Final", grad: "from-amber-500 to-yellow-400", glow: "shadow-amber-500/30" },
-  third_place: {
-    label: "3rd Place",
-    grad: "from-zinc-600 to-zinc-500",
-    glow: "shadow-zinc-500/20",
-  },
+const ROUND_HEADER: Record<RoundKey, { label: string; tone: "primary" | "gold" | "muted" }> = {
+  round_of_32: { label: "Round of 32", tone: "primary" },
+  round_of_16: { label: "Round of 16", tone: "primary" },
+  quarter_final: { label: "Quarter Final", tone: "primary" },
+  semi_final: { label: "Semi Final", tone: "primary" },
+  final: { label: "Final", tone: "gold" },
+  third_place: { label: "3rd Place", tone: "muted" },
 };
 
 function Index() {
@@ -228,7 +208,7 @@ function Index() {
     navigate({ search: (prev: FootballSearch) => ({ ...prev, date: d }), replace: true });
   };
 
-  // Live pulse — drives tab badges + smart-default selection
+  // Live pulse â€” drives tab badges + smart-default selection
   const pulse = useWc2026Pulse();
 
   // Sync URL ?year= and ?tab= when changed
@@ -241,7 +221,7 @@ function Index() {
       replace: true,
     });
   }, [tab, navigate]);
-  // External tab change (e.g. from MobileTabBar Link) → adopt into state
+  // External tab change (e.g. from MobileTabBar Link) â†’ adopt into state
   useEffect(() => {
     if (search.tab && search.tab !== tab) {
       setTab(search.tab);
@@ -250,7 +230,7 @@ function Index() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search.tab]);
 
-  // Smart-stage auto-detect — only when the user hasn't picked a tab yet.
+  // Smart-stage auto-detect â€” only when the user hasn't picked a tab yet.
   // "Today" is now the default landing when there's any live/today action;
   // otherwise fall back to the most relevant stage tab.
   useEffect(() => {
@@ -267,7 +247,7 @@ function Index() {
       setTab("knockout");
       return;
     }
-    // No live action → keep Today as the default so users see "next match".
+    // No live action â†’ keep Today as the default so users see "next match".
     setTab("today");
   }, [pulse, userPickedTab, year, LIVE_YEAR]);
 
@@ -286,7 +266,7 @@ function Index() {
     navigate({ search: (prev: FootballSearch) => ({ ...prev, team: t }), replace: true });
   };
 
-  // Reset to knockout when leaving the live year — scorers/today tabs are live-year only.
+  // Reset to knockout when leaving the live year â€” scorers/today tabs are live-year only.
   useEffect(() => {
     if (year !== LIVE_YEAR && (tab === "scorers" || tab === "today")) setTab("knockout");
   }, [year, tab, LIVE_YEAR]);
@@ -469,7 +449,7 @@ function Index() {
       <FootballHubSwitcher activeSlug="world-cup" />
       <Breadcrumbs />
 
-      {/* HERO — live-aware for the active WC year, classic for archive years */}
+      {/* HERO â€” live-aware for the active WC year, classic for archive years */}
       {year === LIVE_YEAR ? (
         <>
           <FootballHero />
@@ -622,7 +602,7 @@ function Index() {
           <EmptyState
             icon={
               <span className="text-4xl" aria-hidden="true">
-                ⚽
+                âš½
               </span>
             }
             title={`Tournament data coming soon for ${year}`}
@@ -636,8 +616,8 @@ function Index() {
             <div className="flex justify-center">
               <div className="rounded-full bg-muted px-4 py-1 text-xs text-muted-foreground">
                 {year} World Cup
-                {teamCount ? ` • ${teamCount} teams` : ""}
-                {tournament.data?.host_country ? ` • ${tournament.data.host_country}` : ""}
+                {teamCount ? ` â€¢ ${teamCount} teams` : ""}
+                {tournament.data?.host_country ? ` â€¢ ${tournament.data.host_country}` : ""}
               </div>
             </div>
 
@@ -682,7 +662,7 @@ function Index() {
                   />
                 ) : (
                   <>
-                    {/* Desktop symmetric bracket — full viewport, no horizontal scroll */}
+                    {/* Desktop symmetric bracket â€” full viewport, no horizontal scroll */}
                     <div className="hidden md:block relative left-1/2 -translate-x-1/2 w-screen px-4 lg:px-8">
                       <SymmetricBracket
                         grouped={grouped}
@@ -727,9 +707,9 @@ function FavoritesChip({ onOpen }: { onOpen: () => void }) {
       type="button"
       onClick={onOpen}
       aria-label="Choose favourite teams"
-      className="inline-flex min-h-11 items-center gap-1.5 rounded-xl border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-sm font-bold text-amber-200 transition hover:bg-amber-500/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      className="inline-flex min-h-11 items-center gap-1.5 rounded-xl border border-primary/40 bg-primary/10 px-3 py-2 text-caption font-bold text-primary transition-colors hover:bg-primary/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
     >
-      <Star className="size-4 fill-amber-300 text-amber-300" />
+      <Star className="size-4 fill-primary text-primary" aria-hidden="true" />
       <span className="hidden sm:inline">Favorites</span>
     </button>
   );
@@ -751,144 +731,16 @@ function TabBtn({
       type="button"
       onClick={onClick}
       aria-pressed={active}
-      className={`inline-flex min-h-11 items-center gap-2 rounded-xl px-6 py-2.5 text-sm transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring
+      className={`inline-flex min-h-11 items-center gap-2 rounded-xl px-6 py-2.5 text-body transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring
         ${
           active
-            ? "bg-gradient-to-r from-amber-500 to-amber-600 text-black font-bold shadow-md shadow-amber-500/20"
+            ? "bg-primary font-bold text-primary-foreground"
             : "text-muted-foreground hover:text-foreground"
         }`}
     >
       {icon}
       {children}
     </button>
-  );
-}
-
-function BracketColumn({
-  round,
-  matches,
-  extra,
-  onPick,
-  colIndex,
-  showHint,
-  onDismissHint,
-}: {
-  round: RoundKey;
-  matches: WCMatch[];
-  extra: WCMatch[];
-  onPick: (m: WCMatch) => void;
-  colIndex: number;
-  showHint?: boolean;
-  onDismissHint?: () => void;
-}) {
-  const meta = ROUND_HEADER[round];
-  const isFinal = round === "final";
-  const width = isFinal ? "w-[240px]" : "w-[210px]";
-
-  return (
-    <div
-      className={`wc-col shrink-0 ${width} flex flex-col`}
-      style={{ animationDelay: `${colIndex * 150}ms` }}
-    >
-      <div className="flex justify-center mb-4">
-        <span
-          className={`bg-gradient-to-r ${meta.grad} text-white font-bold text-[11px] uppercase tracking-widest
-            rounded-full px-4 py-1.5 shadow-lg ${meta.glow}`}
-        >
-          {isFinal ? "🏆 World Cup Final" : meta.label}
-        </span>
-      </div>
-
-      <div className="flex-1 flex flex-col justify-around gap-3">
-        {matches.map((m, i) => (
-          <div key={m.id}>
-            <MatchCard
-              match={m}
-              round={round}
-              isFinal={isFinal}
-              index={i}
-              onClick={() => {
-                if (showHint) onDismissHint?.();
-                onPick(m);
-              }}
-            />
-            {showHint && i === 0 && (
-              <div className="text-[10px] text-muted-foreground italic mt-1 text-center">
-                tap any match for details
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
-
-      {extra.length > 0 && (
-        <div className="mt-6">
-          <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground mb-2 text-center">
-            3rd Place Play-off
-          </div>
-          {extra.map((m, i) => (
-            <MatchCard
-              key={m.id}
-              match={m}
-              round="third_place"
-              index={i}
-              onClick={() => onPick(m)}
-            />
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
-
-function MobileRound({
-  round,
-  matches,
-  defaultOpen,
-  onPick,
-}: {
-  round: RoundKey;
-  matches: WCMatch[];
-  defaultOpen: boolean;
-  onPick: (m: WCMatch) => void;
-}) {
-  const [open, setOpen] = useState(defaultOpen);
-  const meta = ROUND_HEADER[round];
-  const panelId = `mobile-round-${round}`;
-  return (
-    <div className="rounded-2xl border border-border bg-card overflow-hidden">
-      <button
-        type="button"
-        onClick={() => setOpen((o) => !o)}
-        aria-expanded={open}
-        aria-controls={panelId}
-        className="w-full px-4 py-3 flex items-center justify-between focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-      >
-        <span
-          className={`bg-gradient-to-r ${meta.grad} text-white font-bold text-[11px] uppercase tracking-widest rounded-full px-3 py-1`}
-        >
-          {meta.label}
-        </span>
-        <ChevronDown
-          aria-hidden="true"
-          className={`size-4 text-muted-foreground transition-transform ${open ? "rotate-180" : ""}`}
-        />
-      </button>
-      {open && (
-        <div id={panelId} className="px-4 pb-4 space-y-3 wc-tab-content">
-          {matches.map((m, i) => (
-            <MatchCard
-              key={m.id}
-              match={m}
-              round={round}
-              isFinal={round === "final"}
-              index={i}
-              onClick={() => onPick(m)}
-            />
-          ))}
-        </div>
-      )}
-    </div>
   );
 }
 
@@ -918,9 +770,9 @@ function BracketSkeleton({ year }: { year: number }) {
         ))}
       </div>
       <div className="absolute inset-0 grid place-items-center pointer-events-none">
-        <div className="flex flex-col items-center gap-2 bg-black/30 backdrop-blur-sm rounded-2xl px-6 py-4">
+        <div className="flex flex-col items-center gap-2 rounded-2xl bg-background/70 px-6 py-4 backdrop-blur-sm">
           <Loader2 aria-hidden="true" className="size-7 text-gold animate-spin" />
-          <div className="text-xs text-muted-foreground">Loading {year} tournament…</div>
+          <div className="text-xs text-muted-foreground">Loading {year} tournamentâ€¦</div>
         </div>
       </div>
     </div>
@@ -930,13 +782,18 @@ function BracketSkeleton({ year }: { year: number }) {
 function RoundLabel({ round }: { round: RoundKey }) {
   const meta = ROUND_HEADER[round];
   const isFinal = round === "final";
+  const tone =
+    meta.tone === "gold"
+      ? "bg-gold/15 text-gold ring-gold/30"
+      : meta.tone === "muted"
+        ? "bg-muted text-muted-foreground ring-border"
+        : "bg-primary/15 text-primary ring-primary/30";
   return (
-    <div className="flex justify-center mb-4">
+    <div className="mb-4 flex justify-center">
       <span
-        className={`bg-gradient-to-r ${meta.grad} text-white font-bold text-[11px] uppercase tracking-widest
-          rounded-full px-4 py-1.5 shadow-lg ${meta.glow}`}
+        className={`inline-flex items-center rounded-full px-4 py-1.5 text-micro uppercase ring-1 ${tone}`}
       >
-        {isFinal ? "🏆 World Cup Final" : meta.label}
+        {isFinal ? "World Cup Final" : meta.label}
       </span>
     </div>
   );
@@ -1035,8 +892,8 @@ function SymmetricBracket({
         <RoundLabel round="final" />
         <div className="flex-1 flex flex-col items-center justify-center gap-6">
           <div className="grid place-items-center">
-            <div className="size-14 rounded-full bg-gradient-to-br from-amber-400/30 to-amber-600/10 grid place-items-center ring-1 ring-amber-400/40 mb-3">
-              <Trophy className="size-7 text-amber-400" />
+            <div className="mb-3 grid size-14 place-items-center rounded-full bg-primary/15 ring-1 ring-primary/30">
+              <Trophy className="size-7 text-primary" aria-hidden="true" />
             </div>
             {fn.map((m, i) => (
               <MatchCard
