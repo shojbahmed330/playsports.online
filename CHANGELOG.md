@@ -171,6 +171,12 @@
 - Added: OG site name/Twitter meta and CollectionPage/itemList JSON-LD.
 - Kept: year/team filtering and all-time featured card.
 
+## FB-21 / FB-28 football directories
+
+- Fixed: labelled breadcrumbs, hidden separators, focus-visible cards, shared empty states; 44 px A–Z letter/player targets; sticky rail offset below nav; truthful country meta copy.
+- Added: OG site name/Twitter meta and CollectionPage/itemList JSON-LD.
+- Kept: nation ranking and A–Z grouping.
+
 ## Foundation
 
 - Added overhaul documentation: `PROJECT_NOTES.md`, `HEALTH_BASELINE.md`, `SCREEN_INVENTORY.md`, `DESIGN_SYSTEM.md`, `PROGRESS.md`, `DECISIONS.md`, `BLOCKERS.md`, `SECURITY_FINDINGS.md`.
