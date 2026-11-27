@@ -8,31 +8,31 @@ type Tagged = { sport: SportConfig; game: SportGame };
 export function PulseStrip({ items }: { items: Tagged[] }) {
   if (items.length === 0) return null;
   return (
-    <section className="border-b border-border bg-gradient-to-r from-red-950/30 via-gray-950 to-orange-950/20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
-        <div className="flex items-center justify-between mb-2.5">
-          <div className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] font-bold text-red-300">
-            <span className="relative flex size-2">
-              <span className="absolute inline-flex h-full w-full animate-ping motion-reduce:animate-none rounded-full bg-red-400/70" />
-              <span className="relative inline-flex size-2 rounded-full bg-red-500" />
+    <section className="border-y border-border bg-muted/30">
+      <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6">
+        <div className="mb-2.5 flex items-center justify-between">
+          <div className="inline-flex items-center gap-2 text-micro uppercase text-live">
+            <span className="relative flex size-2" aria-hidden="true">
+              <span className="absolute inline-flex size-full animate-ping rounded-full bg-live/70 motion-reduce:animate-none" />
+              <span className="relative inline-flex size-2 rounded-full bg-live" />
             </span>
             Pulse · {items.length} live
           </div>
-          <span className="text-[10px] text-gray-500">auto-refreshing</span>
+          <span className="text-micro text-muted-foreground">auto-refreshing</span>
         </div>
-        <div className="flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-none -mx-4 px-4 pb-1">
+        <div className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-1 scrollbar-none sm:mx-0 sm:grid sm:grid-cols-[repeat(auto-fit,minmax(240px,1fr))] sm:overflow-visible sm:px-0">
           {items.map(({ sport, game }) => (
             <Link
               key={`${sport.slug}-${game.id}`}
               to={`/${sport.slug}` as "/mlb" | "/nba" | "/nhl" | "/mls"}
-              className={`snap-start shrink-0 w-[260px] sm:w-[280px] rounded-xl bg-gray-900/80 ring-1 ${sport.ring} hover:ring-2 transition-all p-3 hover:-translate-y-0.5`}
+              className={`w-[260px] shrink-0 snap-start rounded-xl bg-card p-3 ring-1 transition-all hover:-translate-y-0.5 hover:ring-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:w-auto ${sport.ring}`}
             >
-              <div className="flex items-center justify-between mb-2">
-                <span className={`text-[10px] uppercase tracking-wider font-bold ${sport.accent}`}>
-                  {sport.emoji} {sport.label}
+              <div className="mb-2 flex items-center justify-between">
+                <span className={`text-micro uppercase ${sport.accent}`}>
+                  <span aria-hidden="true">{sport.emoji}</span> {sport.label}
                 </span>
-                <span className="inline-flex items-center gap-1 text-[9px] font-bold text-red-300">
-                  <span className="size-1 rounded-full bg-red-500 animate-pulse motion-reduce:animate-none" />
+                <span className="inline-flex items-center gap-1 text-micro font-bold text-live">
+                  <span className="size-1 rounded-full bg-live animate-pulse motion-reduce:animate-none" aria-hidden="true" />
                   {game.shortDetail || "LIVE"}
                 </span>
               </div>
@@ -48,7 +48,7 @@ export function PulseStrip({ items }: { items: Tagged[] }) {
 
 function Row({ team }: { team: SportGame["home"] }) {
   return (
-    <div className="flex items-center gap-2 py-1">
+    <div className="flex min-h-8 items-center gap-2">
       {team.logo ? (
         <img
           loading="lazy"
@@ -58,10 +58,12 @@ function Row({ team }: { team: SportGame["home"] }) {
           className="size-5 shrink-0 object-contain"
         />
       ) : (
-        <span className="size-5 shrink-0 rounded bg-gray-800" />
+        <span className="size-5 shrink-0 rounded bg-muted" aria-hidden="true" />
       )}
-      <span className="flex-1 truncate text-sm font-semibold">{team.shortName || team.name}</span>
-      <span className="text-base font-black text-amber-400 tabular-nums">
+      <span className="flex-1 truncate text-caption font-semibold text-foreground">
+        {team.shortName || team.name}
+      </span>
+      <span className="text-body font-black tabular-nums text-primary">
         <ScoreFlip value={team.score} />
       </span>
     </div>

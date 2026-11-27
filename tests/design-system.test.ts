@@ -48,6 +48,13 @@ describe("design system foundation", () => {
     for (const path of [
       "src/routes/index.tsx",
       "src/components/home/CompactHero.tsx",
+      "src/components/home/ForYouStrip.tsx",
+      "src/components/home/PulseStrip.tsx",
+      "src/components/home/SportCard.tsx",
+      "src/components/home/LeagueCard.tsx",
+      "src/components/home/SportChipTabs.tsx",
+      "src/components/home/StatusBar.tsx",
+      "src/components/sports/LiveTicker.tsx",
       "src/lib/sports-config.ts",
     ]) {
       expect(PALETTE.test(read(path)), `${path} hardcodes palette colours`).toBe(false);

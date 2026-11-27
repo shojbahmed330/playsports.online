@@ -316,14 +316,14 @@ function HubPage() {
                 name="Premier League"
                 emoji="🦁"
                 season="2026/27"
-                gradient="linear-gradient(135deg, #3b0764 0%, #0f172a 65%, #082f49 100%)"
+                accent="pl"
               />
               <LeagueCard
                 slug="champions-league"
                 name="Champions League"
                 emoji="⭐"
                 season="2026/27"
-                gradient="linear-gradient(135deg, #172554 0%, #0f172a 65%, #1e1b4b 100%)"
+                accent="ucl"
               />
               <FifaCard />
               <CricketCard />

@@ -7,6 +7,15 @@ import { flagOf } from "@/lib/flags";
 import { formatLocalTime } from "@/lib/time";
 
 type Tagged = { sport: SportConfig; game: SportGame };
+type Item = { kind: "wc"; f: Wc2026Fixture } | { kind: "espn"; t: Tagged } | null;
+
+type Tone = "live" | "next" | "recent";
+
+const TONE_TEXT: Record<Tone, string> = {
+  live: "text-live",
+  next: "text-primary",
+  recent: "text-muted-foreground",
+};
 
 /**
  * "For You" — 3 smart cards: live now / next up / just finished.
@@ -25,19 +34,19 @@ export function ForYouStrip({
 }) {
   // Live: prefer WC2026 live, else first ESPN live
   const wcLive = wcFixtures.find((f) => f.status === "inprogress") ?? null;
-  const live = wcLive
-    ? { kind: "wc" as const, f: wcLive }
+  const live: Item = wcLive
+    ? { kind: "wc", f: wcLive }
     : liveGames[0]
-      ? { kind: "espn" as const, t: liveGames[0] }
+      ? { kind: "espn", t: liveGames[0] }
       : null;
 
-  // Next: prefer WC2026 upcoming, else first ESPN upcoming
-  const wcNext = wcFixtures
-    .filter((f) => f.status === "notstarted")
-    .sort((a, b) => a.startTs - b.startTs)[0] ?? null;
+  // Next: whichever starts sooner
+  const wcNext =
+    wcFixtures
+      .filter((f) => f.status === "notstarted")
+      .sort((a, b) => a.startTs - b.startTs)[0] ?? null;
   const espnNext = upcomingGames[0] ?? null;
-  // Whichever starts sooner
-  let next: { kind: "wc"; f: Wc2026Fixture } | { kind: "espn"; t: Tagged } | null = null;
+  let next: Item = null;
   if (wcNext && (!espnNext || wcNext.startTs < espnNext.game.startTs)) {
     next = { kind: "wc", f: wcNext };
   } else if (espnNext) {
@@ -45,11 +54,12 @@ export function ForYouStrip({
   }
 
   // Recent: latest finished
-  const wcRecent = wcFixtures
-    .filter((f) => f.status === "finished")
-    .sort((a, b) => b.startTs - a.startTs)[0] ?? null;
+  const wcRecent =
+    wcFixtures
+      .filter((f) => f.status === "finished")
+      .sort((a, b) => b.startTs - a.startTs)[0] ?? null;
   const espnRecent = finalGames[0] ?? null;
-  let recent: { kind: "wc"; f: Wc2026Fixture } | { kind: "espn"; t: Tagged } | null = null;
+  let recent: Item = null;
   if (wcRecent && (!espnRecent || wcRecent.startTs > espnRecent.game.startTs)) {
     recent = { kind: "wc", f: wcRecent };
   } else if (espnRecent) {
@@ -58,22 +68,42 @@ export function ForYouStrip({
 
   if (!live && !next && !recent) return null;
 
+  const slots: { tone: Tone; label: string; icon: React.ReactNode; item: Item; fallback: string }[] = [
+    {
+      tone: "live",
+      label: "Live now",
+      icon: <Flame className="size-4" aria-hidden="true" />,
+      item: live,
+      fallback: "No live matches",
+    },
+    {
+      tone: "next",
+      label: "Next up",
+      icon: <Clock className="size-4" aria-hidden="true" />,
+      item: next,
+      fallback: "Nothing scheduled",
+    },
+    {
+      tone: "recent",
+      label: "Just finished",
+      icon: <CheckCircle2 className="size-4" aria-hidden="true" />,
+      item: recent,
+      fallback: "No recent results",
+    },
+  ];
+
   return (
     <section className="space-y-3" aria-labelledby="for-you-heading">
-      <div className="flex items-center justify-between">
-        <h2 id="for-you-heading" className="text-xs uppercase tracking-[0.2em] font-bold text-muted-foreground">
-          For you
-        </h2>
-      </div>
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <Slot
-          tone="red"
-          icon={<Flame className="size-4" />}
-          label="Live now"
-
-          item={recent}
-          fallback="No recent results"
-        />
+      <h2
+        id="for-you-heading"
+        className="text-micro uppercase text-muted-foreground"
+      >
+        For you
+      </h2>
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+        {slots.map((s) => (
+          <Slot key={s.tone} {...s} />
+        ))}
       </div>
     </section>
   );
@@ -86,26 +116,28 @@ function Slot({
   item,
   fallback,
 }: {
-  tone: "red" | "amber" | "gray";
+  tone: Tone;
   icon: React.ReactNode;
   label: string;
-  item: { kind: "wc"; f: Wc2026Fixture } | { kind: "espn"; t: Tagged } | null;
+  item: Item;
   fallback: string;
 }) {
-  const accent =
-    tone === "red"
-      ? "text-red-300 border-red-500/30 from-red-950/40"
-      : tone === "amber"
-        ? "text-amber-300 border-amber-500/30 from-amber-950/40"
-        : "text-gray-300 border-gray-700/50 from-gray-900/40";
+  const shell =
+    "group relative flex min-h-[128px] flex-col rounded-xl border border-border bg-card/60 p-3.5 transition-transform hover:-translate-y-0.5";
+
+  const head = (
+    <div className={`inline-flex items-center gap-1.5 text-micro uppercase ${TONE_TEXT[tone]}`}>
+      {icon} {label}
+    </div>
+  );
 
   if (!item) {
     return (
-      <div className={`relative rounded-xl border bg-gradient-to-br to-gray-950 p-3 sm:p-4 min-h-[120px] flex flex-col ${accent}`}>
-        <div className={`inline-flex items-center gap-1.5 text-[10px] uppercase tracking-wider font-bold ${tone === "red" ? "text-red-300" : tone === "amber" ? "text-amber-300" : "text-gray-400"}`}>
-          {icon} {label}
+      <div className={shell}>
+        {head}
+        <div className="grid flex-1 place-items-center text-caption text-muted-foreground">
+          {fallback}
         </div>
-        <div className="flex-1 grid place-items-center text-xs text-gray-500">{fallback}</div>
       </div>
     );
   }
@@ -115,37 +147,42 @@ function Slot({
     const deepLink = f.id > 0;
     const body = (
       <>
-        <div className={`inline-flex items-center gap-1.5 text-[10px] uppercase tracking-wider font-bold ${tone === "red" ? "text-red-300" : tone === "amber" ? "text-amber-300" : "text-gray-400"}`}>
-          {icon} {label}
-        </div>
-        <div className="mt-2 flex-1 flex items-center gap-2 min-w-0">
-          <div className="flex flex-col gap-1.5 min-w-0 flex-1">
-            <div className="flex items-center gap-2 min-w-0">
-              <span className="text-lg shrink-0">{flagOf(f.home.name)}</span>
-              <span className="truncate text-sm font-bold">{f.home.name}</span>
-              {f.status !== "notstarted" && <span className="ml-auto text-sm font-black tabular-nums">{f.home.goals ?? 0}</span>}
-            </div>
-            <div className="flex items-center gap-2 min-w-0">
-              <span className="text-lg shrink-0">{flagOf(f.away.name)}</span>
-              <span className="truncate text-sm font-bold">{f.away.name}</span>
-              {f.status !== "notstarted" && <span className="ml-auto text-sm font-black tabular-nums">{f.away.goals ?? 0}</span>}
-            </div>
+        {head}
+        <div className="mt-2 flex min-w-0 flex-1 items-center gap-2">
+          <div className="flex min-w-0 flex-1 flex-col gap-1">
+            <TeamRow name={f.home.name} score={f.status === "notstarted" ? null : f.home.goals} flag />
+            <TeamRow name={f.away.name} score={f.status === "notstarted" ? null : f.away.goals} flag />
           </div>
         </div>
-        <div className="mt-2 flex items-center justify-between text-[10px] text-gray-500">
+        <div className="mt-2 flex items-center justify-between text-micro text-muted-foreground">
           <span className="truncate">WC2026 · {f.group}</span>
-          <span className="font-semibold">
-            {f.status === "notstarted" ? formatLocalTime(f.startTs * 1000) : f.status === "inprogress" ? `${f.minute ?? ""}'` : "FT"}
-            <ArrowRight className="inline ml-1 size-3 group-hover:translate-x-0.5 transition-transform" />
+          <span className="font-semibold text-foreground">
+            {f.status === "notstarted"
+              ? formatLocalTime(f.startTs * 1000)
+              : f.status === "inprogress"
+                ? `${f.minute ?? ""}'`
+                : "FT"}
+            <ArrowRight className="ml-1 inline size-3 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
           </span>
         </div>
       </>
     );
-    const cls = `group relative rounded-xl border bg-gradient-to-br to-gray-950 p-3 sm:p-4 min-h-[120px] flex flex-col hover:-translate-y-0.5 transition-transform ${accent}`;
     return deepLink ? (
-      <Link to="/football/match/$id" params={{ id: String(f.id) }} className={cls}>{body}</Link>
+      <Link
+        to="/football/match/$id"
+        params={{ id: String(f.id) }}
+        className={`${shell} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring`}
+      >
+        {body}
+      </Link>
     ) : (
-      <Link to="/football" search={{ year: 2026 }} className={cls}>{body}</Link>
+      <Link
+        to="/football"
+        search={{ year: 2026 }}
+        className={`${shell} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring`}
+      >
+        {body}
+      </Link>
     );
   }
 
@@ -153,28 +190,48 @@ function Slot({
   return (
     <Link
       to={`/${sport.slug}` as "/mlb" | "/nba" | "/nhl" | "/mls"}
-      className={`group relative rounded-xl border bg-gradient-to-br to-gray-950 p-3 sm:p-4 min-h-[120px] flex flex-col hover:-translate-y-0.5 transition-transform ${accent}`}
+      className={`${shell} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring`}
     >
-      <div className={`inline-flex items-center gap-1.5 text-[10px] uppercase tracking-wider font-bold ${tone === "red" ? "text-red-300" : tone === "amber" ? "text-amber-300" : "text-gray-400"}`}>
-        {icon} {label}
+      {head}
+      <div className="mt-2 flex min-w-0 flex-1 flex-col gap-1">
+        <TeamRow name={game.home.name} score={game.status === "pre" ? null : game.home.score} />
+        <TeamRow name={game.away.name} score={game.status === "pre" ? null : game.away.score} />
       </div>
-      <div className="mt-2 flex-1 flex flex-col gap-1.5 min-w-0">
-        <div className="flex items-center gap-2 min-w-0">
-          <span className="truncate text-sm font-bold flex-1">{game.home.name}</span>
-          {game.status !== "pre" && <span className="text-sm font-black tabular-nums">{game.home.score ?? 0}</span>}
-        </div>
-        <div className="flex items-center gap-2 min-w-0">
-          <span className="truncate text-sm font-bold flex-1">{game.away.name}</span>
-          {game.status !== "pre" && <span className="text-sm font-black tabular-nums">{game.away.score ?? 0}</span>}
-        </div>
-      </div>
-      <div className="mt-2 flex items-center justify-between text-[10px] text-gray-500">
-        <span className="truncate">{sport.emoji} {sport.label}</span>
-        <span className="font-semibold">
-          {game.status === "pre" ? formatLocalTime(game.startTs * 1000) : game.statusDetail || (game.status === "in" ? "Live" : "Final")}
-          <ArrowRight className="inline ml-1 size-3 group-hover:translate-x-0.5 transition-transform" />
+      <div className="mt-2 flex items-center justify-between text-micro text-muted-foreground">
+        <span className="truncate">
+          <span aria-hidden="true">{sport.emoji}</span> {sport.label}
+        </span>
+        <span className="font-semibold text-foreground">
+          {game.status === "pre"
+            ? formatLocalTime(game.startTs * 1000)
+            : game.statusDetail || (game.status === "in" ? "Live" : "Final")}
+          <ArrowRight className="ml-1 inline size-3 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
         </span>
       </div>
     </Link>
+  );
+}
+
+function TeamRow({
+  name,
+  score,
+  flag = false,
+}: {
+  name: string;
+  score?: number | null;
+  flag?: boolean;
+}) {
+  return (
+    <div className="flex min-w-0 items-center gap-2">
+      {flag && (
+        <span className="shrink-0 text-base leading-none" aria-hidden="true">
+          {flagOf(name)}
+        </span>
+      )}
+      <span className="min-w-0 flex-1 truncate text-caption font-bold text-foreground">{name}</span>
+      {score !== null && score !== undefined && (
+        <span className="shrink-0 text-caption font-black tabular-nums text-foreground">{score}</span>
+      )}
+    </div>
   );
 }

@@ -48,6 +48,7 @@
   --color-gold: var(--gold);
   --color-gold-foreground: var(--gold-foreground);
   --color-live: var(--live);
+  --color-live-foreground: var(--live-foreground);
   --color-positive: var(--positive);
   --color-accent-football: var(--accent-football);
   --color-accent-cricket: var(--accent-cricket);
@@ -55,6 +56,8 @@
   --color-accent-nba: var(--accent-nba);
   --color-accent-nhl: var(--accent-nhl);
   --color-accent-mls: var(--accent-mls);
+  --color-accent-pl: var(--accent-pl);
+  --color-accent-ucl: var(--accent-ucl);
   --font-sans: "Inter", system-ui, sans-serif;
   --font-display: "Sora Variable", "Inter", system-ui, sans-serif;
 
@@ -113,6 +116,7 @@
   --gold: oklch(0.78 0.16 75);
   --gold-foreground: oklch(0.18 0.02 264);
   --live: oklch(0.68 0.22 22);
+  --live-foreground: oklch(0.985 0 0);
   --positive: oklch(0.74 0.16 155);
   /* Per-sport accent tokens */
   --accent-football: oklch(0.78 0.16 75);
@@ -121,6 +125,9 @@
   --accent-nba: oklch(0.72 0.18 35);
   --accent-nhl: oklch(0.72 0.18 320);
   --accent-mls: oklch(0.74 0.16 155);
+  /* Competition accents used by home league cards */
+  --accent-pl: oklch(0.55 0.2 305);
+  --accent-ucl: oklch(0.55 0.18 255);
   /* Shadows & gradients */
   --shadow-elevated: 0 10px 30px -10px rgb(0 0 0 / 0.55);
   --gradient-hero: linear-gradient(135deg, oklch(0.22 0.04 260) 0%, oklch(0.16 0.02 255) 60%);
