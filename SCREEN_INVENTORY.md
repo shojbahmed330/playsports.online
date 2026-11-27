@@ -272,7 +272,7 @@ Generated from the real router files in `src/routes` and cross-checked against `
 | FB-31 | Football | FB-22 | Football Top Scorers Year | Full page | `/football/top-scorers/:year`<br>`src/routes/football.top-scorers.$year.tsx` | SSR loader; JSON-LD; head meta | ads/AdSlot, seo/withYearNav | server fn / query | empty, error | BLOCKED |
 | FB-32 | Football | FB-22 | Football Top Scorers | Full page | `/football/top-scorers`<br>`src/routes/football.top-scorers.index.tsx` | All-time feature + yearly top-scorer links | ui/state, seo/withHubLinks | static entities | empty | DONE |
 | FB-33 | Football | FB-22 | Football Tournaments Year | Full page | `/football/tournaments/:year`<br>`src/routes/football.tournaments.$year.tsx` | SSR loader; JSON-LD; head meta | seo/withYearNav | server fn / query | error | BLOCKED |
-| FB-34 | Football | FB-22 | Football Venues | Full page | `/football/venues`<br>`src/routes/football.venues.tsx` | JSON-LD; head meta | — | static/local | not verified | BLOCKED |
+| FB-34 | Football | FB-22 | Football Venues | Full page | `/football/venues`<br>`src/routes/football.venues.tsx` | 16 WC2026 host stadiums grouped by country; logistics guide | ui/state | static venues | empty | DONE |
 | GUIDE-01 | Guides | GUIDE-02 | Guides Slug | Full page | `/guides/:slug`<br>`src/routes/guides.$slug.tsx` | SSR loader; JSON-LD; head meta | — | server fn / query | error | BLOCKED |
 | GUIDE-02 | Guides | — | Guides | Full page | `/guides`<br>`src/routes/guides.index.tsx` | JSON-LD; head meta | — | static/local | not verified | BLOCKED |
 | GUIDE-03 | Guides | GUIDE-02 | Highlights Slug | Full page | `/highlights/:slug`<br>`src/routes/highlights.$slug.tsx` | SSR loader; JSON-LD; head meta | — | server fn / query | loading, error | BLOCKED |

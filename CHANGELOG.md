@@ -177,6 +177,11 @@
 - Added: OG site name/Twitter meta and CollectionPage/itemList JSON-LD.
 - Kept: nation ranking and A–Z grouping.
 
+## FB-34 football venues
+
+- Fixed: stale future-tense copy after the 2026 tournament; labelled breadcrumb; hidden separators/icons/flags; 44 px related links; reduced-motion cards; shared empty state.
+- Kept: 16-stadium country grouping, metadata and JSON-LD.
+
 ## Foundation
 
 - Added overhaul documentation: `PROJECT_NOTES.md`, `HEALTH_BASELINE.md`, `SCREEN_INVENTORY.md`, `DESIGN_SYSTEM.md`, `PROGRESS.md`, `DECISIONS.md`, `BLOCKERS.md`, `SECURITY_FINDINGS.md`.
