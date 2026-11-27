@@ -86,6 +86,12 @@
 - Added: filtered/total count, labelled season select, `aria-pressed`, 44 px status chips.
 - Kept: SSR season loader, URL filters, match grid.
 
+## CRK-10 IPL standings
+
+- Fixed: feed Retry; franchise links; labelled season picker; shared empty state.
+- Added: season in subtitle, table caption and `scope`.
+- Kept: SSR table, top-4 highlighting, NRR and form chips.
+
 ## Foundation
 
 - Added overhaul documentation: `PROJECT_NOTES.md`, `HEALTH_BASELINE.md`, `SCREEN_INVENTORY.md`, `DESIGN_SYSTEM.md`, `PROGRESS.md`, `DECISIONS.md`, `BLOCKERS.md`, `SECURITY_FINDINGS.md`.
