@@ -10,6 +10,7 @@ import { readCachedFaqs } from "@/lib/ai-faqs.server";
 import { FaqSection } from "@/components/seo/FaqSection";
 import { RelatedLinks } from "@/components/seo/RelatedLinks";
 import { relatedForCricketPlayer } from "@/lib/seo/related";
+import { EmptyState, ErrorState } from "@/components/ui/state";
 
 export const Route = createFileRoute("/cricket/players/$slug")({
   loader: async ({ params }) => {
@@ -26,6 +27,7 @@ export const Route = createFileRoute("/cricket/players/$slug")({
     }
     const p = loaderData.player;
     const url = canonical(`/cricket/players/${params.slug}`);
+    const image = "https://www.playsports.online/og-default.png";
     const title = `${p.name} — cricket career records, stats & history`;
     const summary = p.records
       .slice(0, 2)
@@ -40,6 +42,11 @@ export const Route = createFileRoute("/cricket/players/$slug")({
         { property: "og:description", content: desc.slice(0, 200) },
         { property: "og:url", content: url },
         { property: "og:type", content: "profile" },
+        { property: "og:image", content: image },
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: desc.slice(0, 200) },
+        { name: "twitter:image", content: image },
       ],
       links: [{ rel: "canonical", href: url }],
       scripts: [
@@ -66,22 +73,42 @@ export const Route = createFileRoute("/cricket/players/$slug")({
     };
   },
   component: CricketPlayerProfile,
-  errorComponent: ({ error }) => (
-    <div className="min-h-screen grid place-items-center p-6 text-center">
-      <p className="text-lg font-semibold">Couldn't load player</p>
-      <p className="text-xs text-muted-foreground mt-1">{errorMessage(error)}</p>
+  errorComponent: ({ error, reset }) => (
+    <div className="min-h-screen">
+      <SportNav />
+      <div className="mx-auto max-w-3xl px-4 py-10">
+        <ErrorState
+          title="Could not load this player"
+          message={errorMessage(error)}
+          onRetry={reset}
+        />
+      </div>
     </div>
   ),
   notFoundComponent: () => (
-    <div className="min-h-screen grid place-items-center p-6 text-center">
-      <div>
-        <p className="text-lg font-semibold">Player not found</p>
-        <Link
-          to="/cricket/players"
-          className="mt-4 inline-block text-emerald-400 hover:underline text-sm"
-        >
-          ← Browse cricket players
-        </Link>
+    <div className="min-h-screen">
+      <SportNav />
+      <div className="mx-auto max-w-3xl px-4 py-10">
+        <EmptyState
+          title="Player not found"
+          description="This player is not in the cricket registry yet."
+          action={
+            <>
+              <Link
+                to="/cricket/players"
+                className="inline-flex min-h-11 items-center rounded-full bg-emerald-500/15 px-4 text-sm font-bold text-emerald-200 ring-1 ring-emerald-500/30"
+              >
+                Browse players
+              </Link>
+              <Link
+                to="/cricket"
+                className="inline-flex min-h-11 items-center rounded-full border border-border px-4 text-sm font-semibold text-foreground"
+              >
+                Cricket hub
+              </Link>
+            </>
+          }
+        />
       </div>
     </div>
   ),
@@ -141,26 +168,70 @@ function CricketPlayerProfile() {
 
         <section className="mb-10">
           <h2 className="text-lg font-semibold mb-3">Career records ({player.records.length})</h2>
-          <div className="overflow-x-auto rounded-lg border border-border">
-            <table className="w-full text-sm">
-              <thead className="bg-muted/40 text-xs uppercase tracking-wide">
-                <tr>
-                  <th className="text-left px-3 py-2">Record</th>
-                  <th className="text-left px-3 py-2">Value</th>
-                  <th className="text-left px-3 py-2">Context</th>
-                </tr>
-              </thead>
-              <tbody>
-                {player.records.map((r, i) => (
-                  <tr key={i} className="border-t border-border">
-                    <td className="px-3 py-2">{r.category}</td>
-                    <td className="px-3 py-2 font-mono font-semibold">{r.value}</td>
-                    <td className="px-3 py-2 text-muted-foreground">{r.extra ?? "—"}</td>
+          {player.records.length === 0 ? (
+            <EmptyState
+              title="No career records yet"
+              description="Records for this player are being compiled. Check back soon."
+            />
+          ) : (
+            <div className="overflow-x-auto rounded-lg border border-border">
+              <table className="w-full text-sm">
+                <caption className="sr-only">Career records for {player.name}</caption>
+                <thead className="bg-muted/40 text-xs uppercase tracking-wide">
+                  <tr>
+                    <th scope="col" className="text-left px-3 py-2">
+                      Record
+                    </th>
+                    <th scope="col" className="text-left px-3 py-2">
+                      Value
+                    </th>
+                    <th scope="col" className="text-left px-3 py-2">
+                      Context
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {player.records.map((r, i) => (
+                    <tr key={i} className="border-t border-border">
+                      <td className="px-3 py-2">{r.category}</td>
+                      <td className="px-3 py-2 font-mono font-semibold">{r.value}</td>
+                      <td className="px-3 py-2 text-muted-foreground">{r.extra ?? "—"}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </section>
+
+        <section className="mb-10">
+          <h2 className="mb-3 text-lg font-semibold">Explore cricket</h2>
+          <nav className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4" aria-label="Explore cricket">
+            <Link
+              to="/cricket/rankings"
+              className="inline-flex min-h-11 items-center rounded-xl border border-border bg-card px-4 text-sm font-semibold transition hover:border-emerald-500/40 hover:bg-white/[0.04]"
+            >
+              ICC rankings →
+            </Link>
+            <Link
+              to="/cricket/records"
+              className="inline-flex min-h-11 items-center rounded-xl border border-border bg-card px-4 text-sm font-semibold transition hover:border-emerald-500/40 hover:bg-white/[0.04]"
+            >
+              All-time records →
+            </Link>
+            <Link
+              to="/cricket/teams"
+              className="inline-flex min-h-11 items-center rounded-xl border border-border bg-card px-4 text-sm font-semibold transition hover:border-emerald-500/40 hover:bg-white/[0.04]"
+            >
+              Team profiles →
+            </Link>
+            <Link
+              to="/cricket/players"
+              className="inline-flex min-h-11 items-center rounded-xl border border-border bg-card px-4 text-sm font-semibold transition hover:border-emerald-500/40 hover:bg-white/[0.04]"
+            >
+              All players →
+            </Link>
+          </nav>
         </section>
 
         <FaqSection
@@ -181,7 +252,9 @@ function CricketPlayerProfile() {
                   },
                   {
                     q: `Which country does ${player.name} play for?`,
-                    a: `${player.name} represents ${player.country} in international cricket.`,
+                    a: player.country
+                      ? `${player.name} represents ${player.country} in international cricket.`
+                      : `${player.name}'s international team is not recorded in this profile.`,
                   },
                 ]
           }
@@ -196,7 +269,7 @@ function CricketPlayerProfile() {
                   <Link
                     to="/cricket/players/$slug"
                     params={{ slug: r.slug }}
-                    className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5 text-sm hover:bg-muted/60"
+                    className="inline-flex min-h-11 items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5 text-sm hover:bg-muted/60"
                   >
                     {r.flag ?? ""} {r.name}
                   </Link>

@@ -7,6 +7,8 @@ import { PlayerLink } from "@/components/cricket/PlayerLink";
 import rankings from "@/data/cricket/rankings.json";
 import { breadcrumbList, collectionPage, ldScript } from "@/lib/seo/jsonld";
 import { EmptyState } from "@/components/ui/state";
+import { getCricketPlayerBySlug } from "@/lib/seo/cricket-entities";
+import { slugify } from "@/lib/seo/programmatic";
 
 import { withHubLinks } from "@/components/seo/withHubLinks";
 export const Route = createFileRoute("/cricket/players/")({
@@ -231,10 +233,21 @@ function PlayersPage() {
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className="text-[10px] text-gray-500 uppercase tracking-wider">Rating</div>
+                  <div className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                    Rating
+                  </div>
                   <div className="text-lg font-extrabold tabular-nums text-emerald-300">
                     {r.rating}
                   </div>
+                  {getCricketPlayerBySlug(slugify(r.player)) && (
+                    <Link
+                      to="/cricket/players/$slug"
+                      params={{ slug: slugify(r.player) }}
+                      className="mt-1 inline-flex min-h-9 items-center text-[11px] font-bold text-fuchsia-300 hover:text-fuchsia-200"
+                    >
+                      Profile →
+                    </Link>
+                  )}
                 </div>
               </div>
             ))}

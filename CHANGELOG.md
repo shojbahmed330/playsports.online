@@ -62,6 +62,12 @@
 - Added: visible count, snapshot date, full-rankings link, shared empty state, labelled search, `aria-pressed`, 44 px chips.
 - Kept: player search, role/format filters, cards and player links.
 
+## CRK-14 Cricket player profile
+
+- Fixed: country FAQ no longer prints “null”; bare error/not-found replaced; empty records explained.
+- Added: OG/Twitter tags, Explore links, 44 px related links, table caption; player index now links to profiles.
+- Kept: SSR records, athlete/FAQ schema, related players, cached AI FAQs.
+
 ## Foundation
 
 - Added overhaul documentation: `PROJECT_NOTES.md`, `HEALTH_BASELINE.md`, `SCREEN_INVENTORY.md`, `DESIGN_SYSTEM.md`, `PROGRESS.md`, `DECISIONS.md`, `BLOCKERS.md`, `SECURITY_FINDINGS.md`.
