@@ -108,7 +108,7 @@ export const Route = createFileRoute("/news/$slug")({
 function NewsArticlePage() {
   const { article, related } = Route.useLoaderData();
   const html = markdownToHtml(article.fullArticle);
-  const matchPath = recapMatchPath(article.sport, article.matchKey);
+  const matchPath = article.matchPath ?? recapMatchPath(article.sport, article.matchKey);
   const wordCount = article.fullArticle.trim().split(/\s+/).filter(Boolean).length;
   const readMinutes = Math.max(1, Math.round(wordCount / 200));
 

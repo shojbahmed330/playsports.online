@@ -411,58 +411,65 @@ export const getCricketScoreboard = createServerFn({ method: "GET" })
 // Multi-series aggregator for the homepage / hub.
 // Always merges in ESPN's global cricket scoreboard so we never show stale
 // data when a curated series id has rolled over to a new season.
+export async function fetchMultiCricketToday(input: {
+  leagueIds: string[];
+}): Promise<CricketMatch[]> {
+  const seenIds = new Set<string>();
+  const all: CricketMatch[] = [];
+
+  // Fan out curated leagues + only the bilateral series that are live or
+  // near a match (from the generated catalogue). Fetching the first 30 IDs
+  // in file order missed every current tour once those old England tours
+  // finished; the catalogue keeps this list date-aware.
+  const catalogueIds = getRelevantSeriesIds();
+  const fallbackIds = catalogueIds.length > 0 ? catalogueIds : BILATERAL_SERIES_IDS.slice(0, 30);
+  const seriesToFetch = Array.from(new Set([...input.leagueIds, ...fallbackIds]));
+
+  const CONCURRENCY = 16;
+  const seriesTask = (async () => {
+    const out: CricketMatch[][] = [];
+    for (let i = 0; i < seriesToFetch.length; i += CONCURRENCY) {
+      const batch = seriesToFetch.slice(i, i + CONCURRENCY);
+      const part = await Promise.all(
+        batch.map(async (id) => {
+          try {
+            const raw = (await apiGet(`/${id}/scoreboard`, 30_000)) as any;
+            const leagueMeta = raw?.leagues?.[0] ?? {};
+            const league = {
+              id: String(leagueMeta.id ?? id),
+              name: leagueMeta.name ?? "",
+              abbr: leagueMeta.abbreviation ?? "",
+            };
+            const events: any[] = raw?.events ?? [];
+            return events.map((e) => mapMatch(e, league));
+          } catch {
+            return [] as CricketMatch[];
+          }
+        }),
+      );
+      out.push(...part);
+    }
+    return out;
+  })();
+
+  const seriesLists = await seriesTask;
+
+  for (const list of seriesLists) {
+    for (const m of list) {
+      if (!m.id || seenIds.has(m.id)) continue;
+      seenIds.add(m.id);
+      all.push(m);
+    }
+  }
+
+  all.sort((a, b) => a.startTs - b.startTs);
+  return all;
+}
+
 export const getMultiCricketToday = createServerFn({ method: "GET" })
   .inputValidator((d: { leagueIds: string[] }) => d)
   .handler(async ({ data }) => {
-    const seenIds = new Set<string>();
-    const all: CricketMatch[] = [];
-
-    // Fan out curated leagues + only the bilateral series that are live or
-    // near a match (from the generated catalogue). Fetching the first 30 IDs
-    // in file order missed every current tour once those old England tours
-    // finished; the catalogue keeps this list date-aware.
-    const catalogueIds = getRelevantSeriesIds();
-    const fallbackIds = catalogueIds.length > 0 ? catalogueIds : BILATERAL_SERIES_IDS.slice(0, 30);
-    const seriesToFetch = Array.from(new Set([...data.leagueIds, ...fallbackIds]));
-
-    const CONCURRENCY = 16;
-    const seriesTask = (async () => {
-      const out: CricketMatch[][] = [];
-      for (let i = 0; i < seriesToFetch.length; i += CONCURRENCY) {
-        const batch = seriesToFetch.slice(i, i + CONCURRENCY);
-        const part = await Promise.all(
-          batch.map(async (id) => {
-            try {
-              const raw = (await apiGet(`/${id}/scoreboard`, 30_000)) as any;
-              const leagueMeta = raw?.leagues?.[0] ?? {};
-              const league = {
-                id: String(leagueMeta.id ?? id),
-                name: leagueMeta.name ?? "",
-                abbr: leagueMeta.abbreviation ?? "",
-              };
-              const events: any[] = raw?.events ?? [];
-              return events.map((e) => mapMatch(e, league));
-            } catch {
-              return [] as CricketMatch[];
-            }
-          }),
-        );
-        out.push(...part);
-      }
-      return out;
-    })();
-
-    const seriesLists = await seriesTask;
-
-    for (const list of seriesLists) {
-      for (const m of list) {
-        if (!m.id || seenIds.has(m.id)) continue;
-        seenIds.add(m.id);
-        all.push(m);
-      }
-    }
-
-    all.sort((a, b) => a.startTs - b.startTs);
+    const all = await fetchMultiCricketToday(data);
     setEdgeCache(all.some((m) => m.status === "in"));
     return { matches: all };
   });
@@ -1151,6 +1158,7 @@ async function fetchStatsguruRow(
         accept: "text/html,application/xhtml+xml",
         "accept-language": "en-US,en;q=0.9",
       },
+      signal: AbortSignal.timeout(8_000),
     });
     if (!res.ok) return null;
     const html = await res.text();
@@ -1184,8 +1192,12 @@ async function fetchStatsguruRow(
   return null;
 }
 
+const careerCache = new Map<string, { at: number; data: CricketCareerStat[] }>();
+
 async function fetchStatsguruCareer(playerId: string): Promise<CricketCareerStat[]> {
   if (!/^\d+$/.test(playerId)) return [];
+  const cached = careerCache.get(playerId);
+  if (cached && Date.now() - cached.at < 24 * 60 * 60_000) return cached.data;
   const FORMATS = [
     { cls: 1, label: "Test" },
     { cls: 2, label: "ODI" },
@@ -1240,9 +1252,11 @@ async function fetchStatsguruCareer(playerId: string): Promise<CricketCareerStat
     byFmt.set(r.fmt, cur);
   }
   const order = ["Test", "ODI", "T20I"];
-  return [...byFmt.values()]
+  const data = [...byFmt.values()]
     .filter((c) => c.runs != null || c.wickets != null || (c.matches != null && c.matches > 0))
     .sort((a, b) => order.indexOf(a.format) - order.indexOf(b.format));
+  if (data.length) careerCache.set(playerId, { at: Date.now(), data });
+  return data;
 }
 
 /**

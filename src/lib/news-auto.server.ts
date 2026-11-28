@@ -16,6 +16,8 @@ export type SeedCandidate = {
   match_date: string | null;
   tournament: string | null;
   context?: string;
+  matchPath?: string | null;
+  recent?: boolean;
 };
 
 const FEATURED_FOOTBALL = new Set([
@@ -92,7 +94,7 @@ function resultOf(candidate: SeedCandidate): string | null {
   return match ? match[1].trim() : null;
 }
 
-function buildArticle(candidate: SeedCandidate): NewsArticle {
+export function buildRecapArticle(candidate: SeedCandidate): NewsArticle {
   const score =
     candidate.home_score != null && candidate.away_score != null
       ? `${candidate.home_score}-${candidate.away_score}`
@@ -117,7 +119,10 @@ function buildArticle(candidate: SeedCandidate): NewsArticle {
           : `the match finished ${score}`
       : "the match produced a memorable result");
 
-  const summary = `${outcome}. ${candidate.home_team} and ${candidate.away_team} met in ${tournament}${date ? ` on ${date}` : ""}${venue ? ` at ${venue}` : ""}, a fixture that still shapes how both teams are remembered.`;
+  const angle = candidate.recent
+    ? "a result that will shape the next round of fixtures"
+    : "a fixture that still shapes how both teams are remembered";
+  const summary = `${outcome}. ${candidate.home_team} and ${candidate.away_team} met in ${tournament}${date ? ` on ${date}` : ""}${venue ? ` at ${venue}` : ""}, ${angle}.`;
 
   const factLines = [
     `- **Match:** ${candidate.home_team} vs ${candidate.away_team}`,
@@ -137,7 +142,7 @@ ${factLines}
 
 ## The result
 
-${outcome}. The scoreline is the headline fact of this fixture, and it is the part of the record that matters most when the match is revisited. ${candidate.sport === "football" ? "Group-stage points and goal difference can decide a tournament, so every result carries context beyond the ninety minutes." : "Tournament finals and classic Test matches are remembered for the result first, then for the passages of play that produced it."}
+${outcome}. The scoreline is the headline fact of this fixture, and it is the part of the record that matters most when the match is revisited. ${candidate.sport === "football" ? "League points and goal difference can decide a season, so every result carries context beyond the ninety minutes." : "Tournament finals and classic Test matches are remembered for the result first, then for the passages of play that produced it."}
 
 ## Context
 
@@ -145,7 +150,7 @@ ${tournament}${date ? ` in ${date}` : ""} brought ${candidate.home_team} and ${c
 
 ## What it means
 
-Results like this are part of the archive that makes ${tournament} worth following. They explain why the fixture remains relevant years later and why the two teams' paths are still compared. For the latest tables, fixtures and player numbers, use the football and cricket hubs.`;
+${candidate.recent ? "The result feeds straight into the current table, form guide and the next round of fixtures." : "Results like this are part of the archive that makes " + tournament + " worth following. They explain why the fixture remains relevant years later and why the two teams' paths are still compared."} For the latest tables, fixtures and player numbers, use the football and cricket hubs.`;
 
   return {
     slug: candidate.slug,
@@ -164,10 +169,11 @@ Results like this are part of the archive that makes ${tournament} worth followi
     metaDescription: summary.slice(0, 158),
     keyMoments: [],
     matchKey: candidate.match_key,
+    matchPath: candidate.matchPath ?? null,
   };
 }
 
-const AUTO_RECAPS = listSeedCandidates().map(buildArticle);
+const AUTO_RECAPS = listSeedCandidates().map(buildRecapArticle);
 const AUTO_BY_SLUG = new Map(AUTO_RECAPS.map((article) => [article.slug, article]));
 
 export function listAutoRecaps(): NewsSummary[] {

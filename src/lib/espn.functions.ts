@@ -314,6 +314,21 @@ export const getMultiSportToday = createServerFn({ method: "GET" })
     return { byLeague: out };
   });
 
+/** Plain helper for server-side callers (e.g. current news recaps). */
+export async function fetchSportGamesOnDate(
+  sportPath: string,
+  date: string,
+  label: string,
+): Promise<SportGame[]> {
+  try {
+    const raw = (await apiGet(`/${sportPath}/scoreboard?dates=${date}`, 60_000)) as any;
+    const events: any[] = raw?.events ?? [];
+    return events.map((e) => mapEvent(e, label));
+  } catch {
+    return [];
+  }
+}
+
 // ───────────── COMPETITION TEAMS + LEADERS ─────────────
 export type CompetitionTeamDTO = {
   id: string;

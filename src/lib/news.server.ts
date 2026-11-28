@@ -4,6 +4,7 @@ import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
 import type { KeyMoment } from "./match-recaps.functions";
 import { findAutoRecapForMatch, getAutoRecap, listAutoRecaps } from "./news-auto.server";
+import { getLiveRecap, listLiveRecaps } from "./news-live.server";
 
 export type NewsSummary = {
   slug: string;
@@ -25,6 +26,7 @@ export type NewsArticle = NewsSummary & {
   metaDescription: string | null;
   keyMoments: KeyMoment[];
   matchKey: string | null;
+  matchPath?: string | null;
 };
 
 export type RecapLink = {
@@ -98,12 +100,23 @@ async function listDbRecaps(limit = 30): Promise<NewsSummary[]> {
   }
 }
 
-/** DB recaps first, then data-grounded fallback recaps, newest first. */
+/** DB recaps first, then live recaps, then data-grounded fallback recaps. */
 export async function listNewsRecaps(limit = 30): Promise<NewsSummary[]> {
-  const db = await listDbRecaps(limit);
-  const seen = new Set(db.map((article) => article.slug));
-  const auto = listAutoRecaps().filter((article) => !seen.has(article.slug));
-  return [...db, ...auto]
+  const [db, live] = await Promise.all([
+    listDbRecaps(limit),
+    Promise.race([
+      listLiveRecaps(),
+      new Promise<NewsArticle[]>((resolve) => setTimeout(() => resolve([]), 4_000)),
+    ]).catch(() => [] as NewsArticle[]),
+  ]);
+  const seen = new Set<string>();
+  const merged: NewsSummary[] = [];
+  for (const article of [...db, ...live, ...listAutoRecaps()]) {
+    if (seen.has(article.slug)) continue;
+    seen.add(article.slug);
+    merged.push(article);
+  }
+  return merged
     .sort((a, b) => Date.parse(b.updatedAt) - Date.parse(a.updatedAt))
     .slice(0, Math.min(Math.max(limit, 1), 100));
 }
@@ -135,7 +148,7 @@ async function getDbRecap(slug: string): Promise<NewsArticle | null> {
 
 /** DB article first; fall back to the deterministic archive recap. */
 export async function getNewsRecap(slug: string): Promise<NewsArticle | null> {
-  return (await getDbRecap(slug)) ?? getAutoRecap(slug);
+  return (await getDbRecap(slug)) ?? getAutoRecap(slug) ?? (await getLiveRecap(slug));
 }
 /** Compact recap lookup for match/highlight pages (no full article body). */
 export async function getRecapLinkForMatch(
