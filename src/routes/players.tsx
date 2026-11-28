@@ -343,22 +343,19 @@ function PlayersPage() {
             </Link>
             <Link
               to="/players"
-              className="relative inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs sm:text-sm font-extrabold text-black shadow-md shadow-amber-500/20 bg-gradient-to-r from-amber-300 via-yellow-300 to-amber-400 ring-1 ring-amber-200/60"
+              aria-current="page"
+              className="relative inline-flex min-h-11 items-center gap-1.5 rounded-xl bg-primary px-3 text-caption font-extrabold text-primary-foreground ring-1 ring-primary/60 transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
-              <span
-                aria-hidden
-                className="absolute -inset-px rounded-xl bg-gradient-to-r from-amber-300/40 to-yellow-200/40 blur-sm -z-10"
-              />
-              <Trophy className="size-3.5" />
+              <Trophy className="size-3.5" aria-hidden="true" />
               <span>Players</span>
-              <span className="ml-0.5 inline-flex size-1.5 rounded-full bg-black/70 animate-pulse" />
+              <span className="ml-0.5 inline-flex size-1.5 rounded-full bg-primary-foreground/70 animate-pulse motion-reduce:animate-none" aria-hidden="true" />
             </Link>
             {isAdmin && (
               <Link
                 to="/admin"
-                className="inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs sm:text-sm font-semibold text-emerald-300 ring-1 ring-emerald-400/30 bg-emerald-500/10 hover:bg-emerald-500/15 transition-all"
+                className="inline-flex min-h-11 items-center gap-1.5 rounded-xl bg-positive/10 px-3 text-caption font-semibold text-positive ring-1 ring-positive/30 transition-colors hover:bg-positive/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
-                <ShieldCheck className="size-3.5" /> Admin
+                <ShieldCheck className="size-3.5" aria-hidden="true" /> Admin
               </Link>
             )}
           </nav>
@@ -482,7 +479,7 @@ function KpiStrip({
           <div className="text-2xl sm:text-3xl font-extrabold tabular-nums text-gold flex items-center gap-2">
             {i.value}
             {i.live && Number(i.value) > 0 && (
-              <span className="size-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="size-2 rounded-full bg-live animate-pulse motion-reduce:animate-none" aria-hidden="true" />
             )}
           </div>
           <div className="text-[11px] uppercase tracking-wider text-muted-foreground mt-1">
@@ -590,17 +587,18 @@ function OverviewTab({
       </div>
 
       {live2026Count > 0 && (
-        <div className="rounded-2xl border border-emerald-500/30 bg-emerald-500/5 p-5 flex items-center gap-3">
-          <span className="size-2.5 rounded-full bg-emerald-400 animate-pulse" />
+        <div className="flex items-center gap-3 rounded-2xl border border-live/30 bg-live/5 p-5">
+          <span className="size-2.5 rounded-full bg-live animate-pulse motion-reduce:animate-none" aria-hidden="true" />
           <div className="flex-1">
             <div className="font-bold">2026 World Cup is live</div>
-            <div className="text-sm text-muted-foreground">
+            <div className="text-caption text-muted-foreground">
               {live2026Count} active scorers are merged into the leaderboards above.
             </div>
           </div>
           <button
+            type="button"
             onClick={() => go("scorers")}
-            className="text-xs text-emerald-300 hover:underline"
+            className="inline-flex min-h-11 items-center text-caption text-live hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             View leaderboard →
           </button>
@@ -667,11 +665,11 @@ function ScorerRowItem({
   const medal = rank === 1 ? "🥇" : rank === 2 ? "🥈" : rank === 3 ? "🥉" : null;
   const tint =
     rank === 1
-      ? "bg-gradient-to-r from-amber-500/15 via-amber-500/[0.03] to-transparent"
+      ? "bg-gradient-to-r from-gold/15 via-gold/[0.03] to-transparent"
       : rank === 2
-        ? "bg-gradient-to-r from-zinc-300/10 to-transparent"
+        ? "bg-gradient-to-r from-muted-foreground/10 to-transparent"
         : rank === 3
-          ? "bg-gradient-to-r from-orange-700/15 to-transparent"
+          ? "bg-gradient-to-r from-primary/15 to-transparent"
           : "";
 
   return (
@@ -680,14 +678,14 @@ function ScorerRowItem({
       className={`grid grid-cols-[44px_1fr_auto] md:grid-cols-[60px_1fr_180px_80px_90px_110px_1fr] gap-3 md:gap-4 items-center px-4 md:px-5 py-3 cursor-pointer hover:bg-accent/40 transition-colors ${tint}`}
     >
       <div className="text-base md:text-lg font-extrabold text-muted-foreground flex items-center">
-        {medal ? <span className="text-2xl">{medal}</span> : `#${rank}`}
+        {medal ? <span className="text-2xl" aria-hidden="true">{medal}</span> : `#${rank}`}
       </div>
       <div className="min-w-0">
         <div className="font-semibold truncate flex items-center gap-2">
           {row.name}
           {row.live2026 > 0 && (
-            <span className="inline-flex items-center gap-1 text-[10px] uppercase font-bold text-emerald-300 bg-emerald-500/15 ring-1 ring-emerald-500/30 px-1.5 py-0.5 rounded">
-              <span className="size-1 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="inline-flex items-center gap-1 rounded bg-live/15 px-1.5 py-0.5 text-micro font-bold uppercase text-live ring-1 ring-live/30">
+              <span className="size-1 rounded-full bg-live animate-pulse motion-reduce:animate-none" aria-hidden="true" />
               {row.live2026} · 2026
             </span>
           )}
@@ -745,7 +743,7 @@ function CardTable({
   accent: "yellow" | "red";
   rows: { name: string; country: string; total: number }[];
 }) {
-  const badge = accent === "yellow" ? "bg-yellow-400" : "bg-red-600";
+  const badge = accent === "yellow" ? "bg-gold" : "bg-live";
   return (
     <div className="rounded-2xl border border-border bg-card/60 overflow-hidden">
       <div className="px-4 py-3 border-b border-border flex items-center justify-between">
@@ -770,8 +768,8 @@ function CardTable({
               <span
                 className={`inline-flex items-center justify-center min-w-[36px] px-2 py-0.5 rounded text-xs font-bold ${
                   accent === "yellow"
-                    ? "bg-yellow-400/15 text-yellow-300 ring-1 ring-yellow-400/40"
-                    : "bg-red-500/15 text-red-300 ring-1 ring-red-500/40"
+                    ? "bg-gold/15 text-gold ring-1 ring-gold/40"
+                    : "bg-live/15 text-live ring-1 ring-live/40"
                 }`}
               >
                 {r.total}

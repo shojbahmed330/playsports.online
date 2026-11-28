@@ -80,6 +80,7 @@ describe("design system foundation", () => {
       "src/components/football/FootballCoachmark.tsx",
       "src/components/football/FormationPitch.tsx",
       "src/components/football/CommentaryFeed.tsx",
+      "src/routes/players.tsx",
       "src/lib/sports-config.ts",
     ]) {
       expect(PALETTE.test(read(path)), `${path} hardcodes palette colours`).toBe(false);
