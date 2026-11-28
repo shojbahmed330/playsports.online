@@ -10,11 +10,11 @@
 |---|---|
 | DONE (audit + phases 1–8 + verification) | **150 route screens** |
 | DONE (global items, each with `plans/GLB-*.md`) | **10** |
-| Redesign DONE (token/system pass) | **21 / 22 mandatory screens** |
-| Redesign BLOCKED (owner decision) | **1 — PREM-01 pricing** |
+| Redesign DONE (token/system pass) | **22 / 22 mandatory screens** |
+| Redesign blocked | **0** (PREM-01 pricing/checkout remains an owner decision; visuals shipped, billing unchanged) |
 | Total route screens | **150** |
 
-**DONE screens:** all 150 route screens. **Redesign:** HOME-01, FB-22, FB-30, PLYR-02, MINE-01 and all 17 off-system cricket screens (CRK-03/04/05/06/07/08/09/10/11/12/15/16/18/19/20/21/24). Plus GLB-01–GLB-10.
+**DONE screens:** all 150 route screens. **Redesign:** HOME-01, FB-22, FB-30, PLYR-02, MINE-01, PREM-01 and all 17 off-system cricket screens (CRK-03/04/05/06/07/08/09/10/11/12/15/16/18/19/20/21/24). Plus GLB-01–GLB-10.
 
 Production is live at `https://www.playsports.online` (deployment `brrnr3bob`), verified on `/`, `/cricket`, `/cricket/ipl`, `/players`, `/mine`, `/football/teams/argentina`, the 404 shell, `/sw.js` and the manifest.
 
@@ -59,8 +59,8 @@ This is a **completed overhaul of every route screen and every global item in sc
 
 ## 5. Remaining risks
 
-- **21 of 22 redesign screens** are token-complete; the cricket/FB-30/MINE passes are system-level (tokens, shared states, controls), not a bespoke layout reinvented page by page. HOME-01 and FB-22 received the deeper structural treatment.
-- **PREM-01** is blocked on the price/checkout decision ($3 mailto vs $5 Google Play Billing).
+- **22 of 22 redesign screens** are token-complete; most cricket/FB-30/MINE/PREM passes are system-level (tokens, shared states, controls), not a bespoke layout reinvented page by page. HOME-01 and FB-22 received the deeper structural treatment.
+- **PREM-01** visuals are done but the price/checkout decision ($3 mailto vs $5 Google Play Billing) is still open; no billing logic changed.
 - Home still ships a **745 KB** index chunk; route-level code splitting deferred.
 - **6 dependency advisories** remain; no major upgrades taken.
 - **Repo-wide ESLint** still fails on pre-existing issues outside touched files.
@@ -69,7 +69,7 @@ This is a **completed overhaul of every route screen and every global item in sc
 
 ## 6. Recommended next order
 
-1. Decide the premium price/checkout path, then redesign PREM-01.
+1. Decide the premium price/checkout path ($3 mailto vs $5 Google Play Billing) and wire the chosen flow into PREM-01.
 2. Final Lighthouse + 390 px/1280 px visual QA on the deployed build.
 3. Run the 6-template Tier B pass (match centre, team, player, scores, standings, leaders).
 4. Fix the Home 745 KB chunk and the 6 remaining advisories.

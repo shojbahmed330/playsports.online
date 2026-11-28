@@ -386,6 +386,8 @@
 - Tokenised every cricket and IPL file (51 files, palette → 0) plus FB-30 football team and MINE-01; guard test now scans the whole cricket module dynamically.
 - Cricket player links are now real SEO URLs (`/cricket/players/<name>`) resolved through the historical registry or ESPN, with athlete-id fast path from scorecards; the old loading sheet got a timeout, retry and "Open full profile" link.
 - Extracted the players hub tabs into `components/players/PlayersTabs.tsx` (route 930 → 504 lines).
+- Premium page (PREM-01) got the token/type-scale pass and joined the design-system guard; pricing/checkout untouched.
+- `fetchCricketPlayer` now retries ESPN 5xx/429 up to three times, so intermittent 503s no longer turn real player pages into 404s; transient failures render a retryable error instead of not-found.
 - Fixed `DateScrubber` hydration (mount gate + UTC formatting).
 - Production deployed and verified: `/`, `/cricket`, `/cricket/ipl`, `/players`, `/mine`, `/football/teams/argentina`, 404 shell, `/sw.js`, manifest.
 

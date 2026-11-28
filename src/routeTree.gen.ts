@@ -85,6 +85,7 @@ import { Route as NhlScoresRouteImport } from './routes/nhl.scores'
 import { Route as NhlStandingsRouteImport } from './routes/nhl.standings'
 import { Route as NhlTeamsRouteImport } from './routes/nhl.teams'
 import { Route as RobotsTxtRouteImport } from './routes/robots.txt'
+import { Route as ApiPublicEspnProbeRouteImport } from './routes/api/public/espn-probe'
 import { Route as ApiPublicIndexnowAutoRouteImport } from './routes/api/public/indexnow-auto'
 import { Route as ApiPublicIndexnowKeyDottxtRouteImport } from './routes/api/public/indexnow-key[.]txt'
 import { Route as ApiPublicIndexnowPingRouteImport } from './routes/api/public/indexnow-ping'
@@ -568,6 +569,11 @@ const NhlTeamsRoute = NhlTeamsRouteImport.update({
 const RobotsTxtRoute = RobotsTxtRouteImport.update({
   id: '/robots/txt',
   path: '/robots/txt',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicEspnProbeRoute = ApiPublicEspnProbeRouteImport.update({
+  id: '/api/public/espn-probe',
+  path: '/api/public/espn-probe',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPublicIndexnowAutoRoute = ApiPublicIndexnowAutoRouteImport.update({
@@ -1179,6 +1185,7 @@ export interface FileRoutesByFullPath {
   '/nba/': typeof NbaIndexRoute
   '/news/': typeof NewsIndexRoute
   '/nhl/': typeof NhlIndexRoute
+  '/api/public/espn-probe': typeof ApiPublicEspnProbeRoute
   '/api/public/indexnow-auto': typeof ApiPublicIndexnowAutoRoute
   '/api/public/indexnow-key.txt': typeof ApiPublicIndexnowKeyDottxtRoute
   '/api/public/indexnow-ping': typeof ApiPublicIndexnowPingRoute
@@ -1353,6 +1360,7 @@ export interface FileRoutesByTo {
   '/nba': typeof NbaIndexRoute
   '/news': typeof NewsIndexRoute
   '/nhl': typeof NhlIndexRoute
+  '/api/public/espn-probe': typeof ApiPublicEspnProbeRoute
   '/api/public/indexnow-auto': typeof ApiPublicIndexnowAutoRoute
   '/api/public/indexnow-key.txt': typeof ApiPublicIndexnowKeyDottxtRoute
   '/api/public/indexnow-ping': typeof ApiPublicIndexnowPingRoute
@@ -1529,6 +1537,7 @@ export interface FileRoutesById {
   '/nba/': typeof NbaIndexRoute
   '/news/': typeof NewsIndexRoute
   '/nhl/': typeof NhlIndexRoute
+  '/api/public/espn-probe': typeof ApiPublicEspnProbeRoute
   '/api/public/indexnow-auto': typeof ApiPublicIndexnowAutoRoute
   '/api/public/indexnow-key.txt': typeof ApiPublicIndexnowKeyDottxtRoute
   '/api/public/indexnow-ping': typeof ApiPublicIndexnowPingRoute
@@ -1712,6 +1721,7 @@ export interface FileRouteTypes {
     | '/nba/'
     | '/news/'
     | '/nhl/'
+    | '/api/public/espn-probe'
     | '/api/public/indexnow-auto'
     | '/api/public/indexnow-key.txt'
     | '/api/public/indexnow-ping'
@@ -1886,6 +1896,7 @@ export interface FileRouteTypes {
     | '/nba'
     | '/news'
     | '/nhl'
+    | '/api/public/espn-probe'
     | '/api/public/indexnow-auto'
     | '/api/public/indexnow-key.txt'
     | '/api/public/indexnow-ping'
@@ -2061,6 +2072,7 @@ export interface FileRouteTypes {
     | '/nba/'
     | '/news/'
     | '/nhl/'
+    | '/api/public/espn-probe'
     | '/api/public/indexnow-auto'
     | '/api/public/indexnow-key.txt'
     | '/api/public/indexnow-ping'
@@ -2202,6 +2214,7 @@ export interface RootRouteChildren {
   GuidesIndexRoute: typeof GuidesIndexRoute
   HighlightsIndexRoute: typeof HighlightsIndexRoute
   NewsIndexRoute: typeof NewsIndexRoute
+  ApiPublicEspnProbeRoute: typeof ApiPublicEspnProbeRoute
   ApiPublicIndexnowAutoRoute: typeof ApiPublicIndexnowAutoRoute
   ApiPublicIndexnowKeyDottxtRoute: typeof ApiPublicIndexnowKeyDottxtRoute
   ApiPublicIndexnowPingRoute: typeof ApiPublicIndexnowPingRoute
@@ -2751,6 +2764,13 @@ declare module '@tanstack/react-router' {
       path: '/robots/txt'
       fullPath: '/robots/txt'
       preLoaderRoute: typeof RobotsTxtRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/espn-probe': {
+      id: '/api/public/espn-probe'
+      path: '/api/public/espn-probe'
+      fullPath: '/api/public/espn-probe'
+      preLoaderRoute: typeof ApiPublicEspnProbeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/indexnow-auto': {
@@ -3902,6 +3922,7 @@ const rootRouteChildren: RootRouteChildren = {
   GuidesIndexRoute: GuidesIndexRoute,
   HighlightsIndexRoute: HighlightsIndexRoute,
   NewsIndexRoute: NewsIndexRoute,
+  ApiPublicEspnProbeRoute: ApiPublicEspnProbeRoute,
   ApiPublicIndexnowAutoRoute: ApiPublicIndexnowAutoRoute,
   ApiPublicIndexnowKeyDottxtRoute: ApiPublicIndexnowKeyDottxtRoute,
   ApiPublicIndexnowPingRoute: ApiPublicIndexnowPingRoute,

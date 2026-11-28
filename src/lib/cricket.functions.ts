@@ -1158,14 +1158,40 @@ async function fetchStatsguruCareer(playerId: string): Promise<CricketCareerStat
     .sort((a, b) => order.indexOf(a.format) - order.indexOf(b.format));
 }
 
+/**
+ * ESPN's public athlete endpoint intermittently answers 503 from edge
+ * networks. Retry 5xx/429 and network failures a few times before giving up
+ * so a transient blip does not turn a real player page into a 404.
+ */
+async function fetchEspnAthlete(
+  athleteId: string,
+): Promise<{ raw: any | null; error: string | null }> {
+  const url = `https://site.web.api.espn.com/apis/common/v3/sports/cricket/athletes/${athleteId}`;
+  let lastError = "ESPN unavailable";
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    try {
+      const res = await fetch(url, {
+        headers: { accept: "application/json" },
+        signal: AbortSignal.timeout(10_000),
+      });
+      if (res.ok) return { raw: (await res.json()) as any, error: null };
+      lastError = `ESPN ${res.status}`;
+      if (res.status < 500 && res.status !== 429) return { raw: null, error: lastError };
+    } catch (e) {
+      lastError = e instanceof Error ? e.message : "ESPN request failed";
+    }
+    if (attempt < 3) await new Promise((r) => setTimeout(r, 300 * attempt));
+  }
+  return { raw: null, error: lastError };
+}
+
 export async function fetchCricketPlayer(athleteId: string): Promise<{
   profile: CricketPlayerProfile | null;
   error: string | null;
 }> {
   try {
-    const url = `https://site.web.api.espn.com/apis/common/v3/sports/cricket/athletes/${athleteId}`;
-    const [bioRes, career] = await Promise.all([
-      fetch(url, { headers: { accept: "application/json" }, signal: AbortSignal.timeout(15_000) }),
+    const [bio, career] = await Promise.all([
+      fetchEspnAthlete(athleteId),
       Promise.race([
         fetchStatsguruCareer(athleteId),
         new Promise<never>((_, reject) =>
@@ -1173,10 +1199,10 @@ export async function fetchCricketPlayer(athleteId: string): Promise<{
         ),
       ]).catch(() => []),
     ]);
-    if (!bioRes.ok) {
-      return { profile: null, error: `ESPN ${bioRes.status}` };
+    if (!bio.raw) {
+      return { profile: null, error: bio.error };
     }
-    const raw = (await bioRes.json()) as any;
+    const raw = bio.raw;
     const a = raw?.athlete ?? raw ?? {};
     const team = a?.team ?? {};
     const bat = Array.isArray(a.batStyle) ? a.batStyle[0]?.description : a.batStyle?.description ?? a.batStyle;

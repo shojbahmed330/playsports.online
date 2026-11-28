@@ -6,9 +6,9 @@ Updated: 2026-11-28 (session 2 — redesign pass + production deploy)
 - Current phase: **redesign wave complete (21 / 22 mandatory screens)**
 - Current screen: final verification / PREM-01 owner decision
 - Screens done: **150 / 150 route screens** (audit/fix)
-- Redesign done: **21 / 22 mandatory** (HOME-01, FB-22, FB-30, PLYR-02, MINE-01 + 17 cricket screens)
+- Redesign done: **22 / 22 mandatory screens** (HOME-01, FB-22, FB-30, PLYR-02, MINE-01, PREM-01 + 17 cricket screens)
 - Global items done: **10 / 10 (GLB-01–GLB-10)**
-- Blocked: **1 (PREM-01, pricing decision)**; 6 templates recommended, not mandatory
+- Blocked: **0 screens**; PREM-01 pricing/checkout is an open owner decision (visual pass shipped, billing unchanged)
 - Production: `www.playsports.online` — deployment `brrnr3bob` (2026-11-28)
 - Screens in progress: 0
 

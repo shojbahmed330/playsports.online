@@ -29,11 +29,13 @@ export const Route = createFileRoute("/cricket/players/$slug")({
 
     // Current players are not in the historical registry. Prefer the athlete
     // id carried by scorecard links; fall back to a name search.
+    let lastError: string | null = null;
     if (deps.athlete) {
       const direct = await fetchCricketPlayer(deps.athlete);
       if (direct.profile) {
         return { kind: "live" as const, profile: direct.profile, slug: params.slug };
       }
+      lastError = direct.error;
     }
 
     const name = cricketPlayerNameFromSlug(params.slug);
@@ -41,7 +43,14 @@ export const Route = createFileRoute("/cricket/players/$slug")({
     const athleteId = await findCricketAthleteByName(name);
     if (!athleteId) throw notFound();
     const res = await fetchCricketPlayer(athleteId);
-    if (!res.profile) throw notFound();
+    if (!res.profile) {
+      // A transient ESPN failure is not a missing player: surface a retryable
+      // error instead of telling search engines the profile does not exist.
+      if (res.error && !res.error.includes("404") && lastError !== "ESPN 404") {
+        throw new Error(res.error || lastError || "Player data unavailable");
+      }
+      throw notFound();
+    }
     return { kind: "live" as const, profile: res.profile, slug: params.slug };
   },
   head: ({ params, loaderData }) => {
