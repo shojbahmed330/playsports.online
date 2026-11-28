@@ -35,6 +35,7 @@ import { AffiliateLinksCard } from "@/components/admin/AffiliateLinksCard";
 import { SponsoredSlotsCard } from "@/components/admin/SponsoredSlotsCard";
 import { NewsletterDigestCard } from "@/components/admin/NewsletterDigestCard";
 import { MembershipsCard } from "@/components/admin/MembershipsCard";
+import { CryptoPaymentsCard } from "@/components/admin/CryptoPaymentsCard";
 import { AdminSidebar, type AdminSection } from "@/components/admin/AdminSidebar";
 import { OverviewPanel } from "@/components/admin/OverviewPanel";
 import { SeoAnalyticsPanel } from "@/components/admin/SeoAnalyticsPanel";
@@ -326,6 +327,7 @@ function AdminShell() {
               <AffiliateLinksCard />
               <SponsoredSlotsCard />
               <MembershipsCard />
+              <CryptoPaymentsCard />
             </SectionShell>
           )}
 

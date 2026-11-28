@@ -1,7 +1,7 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { Check, Crown, Heart, Sparkles } from "lucide-react";
 import { useMembership } from "@/hooks/use-membership";
-import { useAuth } from "@/hooks/use-auth";
+import { CryptoCheckout } from "@/components/premium/CryptoCheckout";
 import { canonical } from "@/lib/seo/canonical";
 
 export const Route = createFileRoute("/premium")({
@@ -34,7 +34,6 @@ export const Route = createFileRoute("/premium")({
 });
 
 function PremiumPage() {
-  const { session } = useAuth();
   const { membership } = useMembership();
 
   return (
@@ -96,28 +95,22 @@ function PremiumPage() {
             "Cancel anytime",
           ]}
           cta={
-            session ? (
-              <a
-                href="mailto:rajshahi.jibon@gmail.com?subject=PlaySports Supporter"
-                className="flex min-h-11 w-full items-center justify-center rounded-xl bg-primary px-4 text-center font-medium text-primary-foreground hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              >
-                <Heart className="mr-1 inline size-4" aria-hidden="true" /> Become a Supporter
-              </a>
-            ) : (
-              <Link
-                to="/auth"
-                className="flex min-h-11 w-full items-center justify-center rounded-xl bg-primary px-4 text-center font-medium text-primary-foreground hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              >
-                Sign in to support
-              </Link>
-            )
+            <a
+              href="#crypto-checkout"
+              className="flex min-h-11 w-full items-center justify-center rounded-xl bg-primary px-4 text-center font-medium text-primary-foreground hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              <Heart className="mr-1 inline size-4" aria-hidden="true" /> Pay with USDT (BEP20)
+            </a>
           }
         />
       </div>
 
+      <div className="mt-10">
+        <CryptoCheckout />
+      </div>
+
       <p className="mt-8 text-center text-caption text-muted-foreground">
-        Online checkout activates once payments are connected. Until then, contact us to be added
-        manually — instant ad-free access.
+        Crypto payments are verified manually by an admin. Premium activates after approval.
       </p>
     </main>
   );
