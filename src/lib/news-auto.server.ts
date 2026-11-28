@@ -141,7 +141,7 @@ ${outcome}. The scoreline is the headline fact of this fixture, and it is the pa
 
 ## Context
 
-${tournament}${date ? ` in ${date}` : ""} brought ${candidate.home_team} and ${candidate.away_team} together with plenty at stake. ${venue ? `The match was played at ${venue}.` : ""} This recap sticks to the confirmed result and match facts; player-level detail and turning points will be added when the full scorecard is available.
+${tournament}${date ? ` in ${date}` : ""} brought ${candidate.home_team} and ${candidate.away_team} together with plenty at stake. ${venue ? `The match was played at ${venue}.` : ""} This recap sticks to the confirmed result and match facts; player-level detail is only added when it is present in the verified scorecard.
 
 ## What it means
 
