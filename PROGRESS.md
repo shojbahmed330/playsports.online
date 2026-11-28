@@ -48,3 +48,18 @@ Updated: 2026-11-28 (session 2 — redesign pass + production deploy)
 - Live checks: `/` 200, `/football` 200, `/cricket` 200, `/players` 200, `/premium` 200, player profiles 200 (Devdutt Padikkal, KL Rahul, Pat Cummins), `/no-such-page` 404 branded, `/sw.js` 200 with `Service-Worker-Allowed: /`, manifest with `id` + `shortcuts`.
 - Production HTML verified: no mojibake, correct em dashes, flag rendered as an image, no raw ESPN URL text.
 - CLI auth: `shojbahmed330`; `.env.local` is gitignored and was not committed.
+
+## News section (2026-11-28)
+
+- `/news` was fully built but served an empty state because `match_recaps` had 0 rows.
+- Added a protected generator at `POST/GET /api/public/news-generate` (header `x-news-secret`, env `NEWS_ADMIN_SECRET`). It generates one recap per call with the free `google/gemma-4-31b-it:free` model and upserts it, so it stays inside the serverless timeout.
+- Curated 20 seed recaps: 8 notable World Cup group matches + 12 cricket finals/classics.
+- Extracted the prompt + upsert into `src/lib/match-recaps.generate.server.ts`; the admin server functions use the same code.
+- `/news` is already enumerated in the dynamic sitemap and RSS feed.
+
+## Final hardening
+
+- 2026 leaderboard URL collision fixed: the stage route now serves known leaderboard slugs itself (empty state + all-time links) instead of letting them 404.
+- Removed the unused `satori` dependency and ran `bun audit fix` (seroval). Advisories: 6 -> 3 (zod 3 build-time path, glob/minimatch dev tooling).
+- Tested vendor `manualChunks`; it regressed the entry chunk to ~2.2 MB, so it was reverted. Entry stays ~587 KB raw (Vercel compresses it).
+- Branch pushed: `origin/professional-overhaul`.

@@ -28,7 +28,7 @@ This is a **completed overhaul of every route screen and every global item in sc
 | `bun run test` | 24/24 | **34/34** |
 | `bun run typecheck` | 59 errors | **0 errors** |
 | `bun run lint` | 84,235 problems | ~9,194 (mainly pre-existing formatting/any/hooks outside touched files) |
-| `bun audit` | 66 vulnerabilities | **6** (1 high, 5 moderate) |
+| `bun audit` | 66 vulnerabilities | **3** (zod 3 build-time path, glob/minimatch dev tooling) |
 | Production `/sw.js` | 404 | **200** with `Service-Worker-Allowed: /`; manifest `id` + 4 shortcuts |
 | SSR spot checks (session 2) | — | 200 on every cricket route + 7 football screens; 404 paths return branded states |
 | Source/live encoding | Mojibake in 48 files | **0** corrupted sequences in source or live HTML; `tests/encoding.test.ts` guards it |
@@ -64,7 +64,9 @@ This is a **completed overhaul of every route screen and every global item in sc
 - **PREM-01** visuals are done but the price/checkout decision ($3 mailto vs $5 Google Play Billing) is still open; no billing logic changed.
 - **Encoding regression fixed:** a bulk class rewrite had corrupted UTF-8 punctuation/emoji in 48 source files; they were rebuilt from the pre-rewrite commit with a UTF-8-safe mapper, docs repaired, and `tests/encoding.test.ts` added. Live HTML now verifies zero `â€`/`ðŸ`/`Γ`.
 - **Player profiles:** ESPN athlete fetch rotates between two hosts and retries 4×, so transient 503s no longer 404 real players; the error state is friendly, and the flag URL renders as an image.
-- **Branch not pushed:** local git is authenticated as `shojibahmed24`, which gets 403 on `shojbahmed330/playsports.online`; needs owner credentials.
+- **News:** a protected generator now seeds `match_recaps` with data-grounded recaps using a free OpenRouter model; `/news`, `/news/$slug`, RSS and the dynamic sitemap are all live.
+- **Route collision:** `/tournaments/fifa-world-cup-2026/<leaderboard>` now renders a leaderboard/empty state instead of 404ing.
+- **Branch pushed:** `origin/professional-overhaul` (push used the `shojbahmed330` gh account, then switched back).
 - Home still ships a **745 KB** index chunk; route-level code splitting deferred.
 - **6 dependency advisories** remain; no major upgrades taken.
 - **Repo-wide ESLint** still fails on pre-existing issues outside touched files.

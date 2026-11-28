@@ -1,5 +1,13 @@
 # Changelog
 
+## News generator + final hardening (2026-11-28)
+
+- Added protected `GET/POST /api/public/news-generate` (`x-news-secret` / `NEWS_ADMIN_SECRET`) to generate and upsert one recap per call with the free `google/gemma-4-31b-it:free` model; curated 8 football + 12 cricket seed matches.
+- Extracted the recap prompt/upsert into `src/lib/match-recaps.generate.server.ts`; admin server functions now share it.
+- Fixed the `/tournaments/fifa-world-cup-2026/<leaderboard>` collision: known boards render inside the stage route instead of 404ing.
+- Removed the unused `satori` dependency; `bun audit fix` cleared seroval. Advisories 6 → 3.
+- Vendor `manualChunks` experiment reverted (entry grew to ~2.2 MB); entry remains ~587 KB raw.
+
 ## Encoding repair and player-profile hardening (2026-11-28)
 
 - Repaired UTF-8 → CP1252 mojibake across 48 source files and 3 docs (em dashes, middots, emoji, arrows) and removed stray BOMs; production HTML now has zero corrupted sequences.

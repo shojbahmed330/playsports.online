@@ -3,6 +3,7 @@
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
 import type { KeyMoment } from "./match-recaps.functions";
+import { findAutoRecapForMatch, getAutoRecap, listAutoRecaps } from "./news-auto.server";
 
 export type NewsSummary = {
   slug: string;
@@ -81,7 +82,7 @@ function toSummary(row: {
   };
 }
 
-export async function listNewsRecaps(limit = 30): Promise<NewsSummary[]> {
+async function listDbRecaps(limit = 30): Promise<NewsSummary[]> {
   const supabase = getClient();
   if (!supabase) return [];
   try {
@@ -97,7 +98,17 @@ export async function listNewsRecaps(limit = 30): Promise<NewsSummary[]> {
   }
 }
 
-export async function getNewsRecap(slug: string): Promise<NewsArticle | null> {
+/** DB recaps first, then data-grounded fallback recaps, newest first. */
+export async function listNewsRecaps(limit = 30): Promise<NewsSummary[]> {
+  const db = await listDbRecaps(limit);
+  const seen = new Set(db.map((article) => article.slug));
+  const auto = listAutoRecaps().filter((article) => !seen.has(article.slug));
+  return [...db, ...auto]
+    .sort((a, b) => Date.parse(b.updatedAt) - Date.parse(a.updatedAt))
+    .slice(0, Math.min(Math.max(limit, 1), 100));
+}
+
+async function getDbRecap(slug: string): Promise<NewsArticle | null> {
   const supabase = getClient();
   if (!supabase) return null;
   try {
@@ -122,13 +133,27 @@ export async function getNewsRecap(slug: string): Promise<NewsArticle | null> {
   }
 }
 
+/** DB article first; fall back to the deterministic archive recap. */
+export async function getNewsRecap(slug: string): Promise<NewsArticle | null> {
+  return (await getDbRecap(slug)) ?? getAutoRecap(slug);
+}
 /** Compact recap lookup for match/highlight pages (no full article body). */
 export async function getRecapLinkForMatch(
   sport: string,
   matchKey: string,
 ): Promise<RecapLink | null> {
+  const auto = findAutoRecapForMatch(sport, matchKey);
+  const fallback: RecapLink | null = auto
+    ? {
+        slug: auto.slug,
+        headline: auto.headline,
+        summary: auto.summary,
+        metaDescription: auto.metaDescription,
+        updatedAt: auto.updatedAt,
+      }
+    : null;
   const supabase = getClient();
-  if (!supabase || !matchKey) return null;
+  if (!supabase || !matchKey) return fallback;
   try {
     const { data, error } = await supabase
       .from("match_recaps")
@@ -136,7 +161,7 @@ export async function getRecapLinkForMatch(
       .eq("sport", sport)
       .eq("match_key", matchKey)
       .maybeSingle();
-    if (error || !data) return null;
+    if (error || !data) return fallback;
     return {
       slug: data.slug,
       headline: data.headline,
@@ -145,6 +170,6 @@ export async function getRecapLinkForMatch(
       updatedAt: data.updated_at,
     };
   } catch {
-    return null;
+    return fallback;
   }
 }
