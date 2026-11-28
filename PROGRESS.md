@@ -39,3 +39,10 @@ Updated: 2026-11-28 (session 2 — all route screens + all global items complete
 - `DateScrubber` hydration determinism (BLK-HYDRATION-01).
 - 6 remaining dependency advisories; Home bundle ~745 KB.
 - `/news` has no recaps because `match_recaps` has 0 rows.
+## Deployed to production (2026-11-28)
+
+- Vercel project: `allsportslive-878f2a0c` (production URL `https://www.playsports.online`).
+- Preview deployment verified (200s, 404, SW headers), then promoted.
+- Production deployment `p1zhpdq2a` Ready; `www` now serves the new build.
+- Live checks: `/` 200 (one header, one h1), `/football` 200 (new `aria-pressed` subnav), `/search` 200, `/no-such-page` 404 branded, `/sw.js` 200 with `Service-Worker-Allowed: /`, manifest with `id` + `shortcuts`.
+- CLI auth: `shojbahmed330`; `.env.local` is gitignored and was not committed.
