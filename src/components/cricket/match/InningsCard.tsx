@@ -1,4 +1,4 @@
-﻿import type { ReactNode } from "react";
+import type { ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
 import type { CricketInningsDetail } from "@/lib/cricket.functions";
 import { cricketPlayerSlug } from "@/lib/cricket-player-slug";
@@ -10,9 +10,23 @@ export function InningsCard({
   inn: CricketInningsDetail;
   accentColor?: string | null;
 }) {
-  const PlayerLinkName = ({ name, athleteId, children }: { name: string; athleteId?: string; children?: ReactNode }) => {
+  const PlayerLinkName = ({
+    name,
+    athleteId,
+    children,
+  }: {
+    name: string;
+    athleteId?: string;
+    children?: ReactNode;
+  }) => {
     const slug = cricketPlayerSlug(name);
-    if (!slug) return <span className="truncate">{name}{children}</span>;
+    if (!slug)
+      return (
+        <span className="truncate">
+          {name}
+          {children}
+        </span>
+      );
     return (
       <Link
         to="/cricket/players/$slug"
@@ -38,7 +52,7 @@ export function InningsCard({
       >
         <h3 className="text-sm font-bold truncate">
           {inn.battingTeamName}{" "}
-          <span className="text-muted-foreground font-normal">â€” Innings {inn.period}</span>
+          <span className="text-muted-foreground font-normal">— Innings {inn.period}</span>
         </h3>
         <span className="text-base font-extrabold tabular-nums shrink-0">
           {inn.runs}
@@ -73,7 +87,7 @@ export function InningsCard({
                         {b.notOut && <span className="ml-1 text-positive">*</span>}
                       </PlayerLinkName>
                       <div className="text-[10px] text-muted-foreground mt-0.5 truncate">
-                        {b.dismissal || (b.notOut ? "not out" : "â€”")}
+                        {b.dismissal || (b.notOut ? "not out" : "—")}
                       </div>
                     </div>
                   </td>
@@ -88,7 +102,7 @@ export function InningsCard({
                     {b.sixes}
                   </td>
                   <td className="px-3 py-2 text-right tabular-nums text-foreground whitespace-nowrap">
-                    {b.strikeRate || "â€”"}
+                    {b.strikeRate || "—"}
                   </td>
                 </tr>
               ))}
@@ -148,7 +162,7 @@ export function InningsCard({
                     {b.wickets}
                   </td>
                   <td className="px-3 py-2 text-right tabular-nums text-foreground whitespace-nowrap">
-                    {b.economy || "â€”"}
+                    {b.economy || "—"}
                   </td>
                 </tr>
               ))}

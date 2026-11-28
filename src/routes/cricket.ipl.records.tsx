@@ -1,4 +1,4 @@
-﻿import { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, queryOptions } from "@tanstack/react-query";
 import { Search, Trophy } from "lucide-react";
@@ -20,17 +20,17 @@ type Record = {
 };
 
 const SECTIONS: { key: keyof typeof records; title: string; emoji: string; accent: string }[] = [
-  { key: "batting", title: "Batting Records", emoji: "ðŸ", accent: "from-[var(--color-gold)] to-[var(--color-gold)]" },
+  { key: "batting", title: "Batting Records", emoji: "🏏", accent: "from-[var(--color-gold)] to-[var(--color-gold)]" },
   {
     key: "bowling",
     title: "Bowling Records",
-    emoji: "ðŸŽ¯",
+    emoji: "🎯",
     accent: "from-[var(--color-accent-nhl)] to-[var(--color-accent-nhl)]",
   },
-  { key: "partnerships", title: "Partnerships", emoji: "ðŸ¤", accent: "from-[var(--color-accent-nhl)] to-[var(--color-live)]" },
-  { key: "captaincy", title: "Captaincy", emoji: "ðŸ‘‘", accent: "from-[var(--color-gold)] to-[var(--color-gold)]" },
-  { key: "team", title: "Team Records", emoji: "ðŸ›¡ï¸", accent: "from-[var(--color-accent-mlb)] to-[var(--color-accent-mlb)]" },
-  { key: "fielding", title: "Fielding & MVP", emoji: "ðŸ§¤", accent: "from-[var(--color-accent-cricket)] to-[var(--color-accent-cricket)]" },
+  { key: "partnerships", title: "Partnerships", emoji: "🤝", accent: "from-[var(--color-accent-nhl)] to-[var(--color-live)]" },
+  { key: "captaincy", title: "Captaincy", emoji: "👑", accent: "from-[var(--color-gold)] to-[var(--color-gold)]" },
+  { key: "team", title: "Team Records", emoji: "🛡️", accent: "from-[var(--color-accent-mlb)] to-[var(--color-accent-mlb)]" },
+  { key: "fielding", title: "Fielding & MVP", emoji: "🧤", accent: "from-[var(--color-accent-cricket)] to-[var(--color-accent-cricket)]" },
 ];
 
 type SortMode = "default" | "team" | "az";
@@ -38,7 +38,7 @@ type SortMode = "default" | "team" | "az";
 export const Route = createFileRoute("/cricket/ipl/records")({
   head: () => ({
     meta: [
-      { title: "IPL Records â€” Batting, Bowling, Team & Fielding" },
+      { title: "IPL Records — Batting, Bowling, Team & Fielding" },
       {
         name: "description",
         content:
@@ -47,13 +47,13 @@ export const Route = createFileRoute("/cricket/ipl/records")({
       { property: "og:title", content: "IPL Records" },
       {
         property: "og:description",
-        content: "Every key IPL record â€” batting, bowling, team and fielding.",
+        content: "Every key IPL record — batting, bowling, team and fielding.",
       },
       { property: "og:url", content: "https://www.playsports.online/cricket/ipl/records" },
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "PlaySports" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "IPL Records â€” Batting, Bowling, Team & Fielding" },
+      { name: "twitter:title", content: "IPL Records — Batting, Bowling, Team & Fielding" },
       {
         name: "twitter:description",
         content:
@@ -65,7 +65,7 @@ export const Route = createFileRoute("/cricket/ipl/records")({
       ldScript(
         collectionPage({
           name: "IPL Records",
-          description: "Every key IPL record â€” batting, bowling, team and fielding.",
+          description: "Every key IPL record — batting, bowling, team and fielding.",
           path: "/cricket/ipl/records",
         }),
       ),
@@ -133,7 +133,7 @@ function RecordsPage() {
             value={q}
             onChange={(e) => setQ(e.target.value)}
             aria-label="Search IPL records"
-            placeholder="Search player, team, recordâ€¦"
+            placeholder="Search player, team, record…"
             className="min-h-11 w-full rounded-lg border border-border bg-background py-2 pl-9 pr-3 text-sm text-foreground placeholder:text-foreground focus:border-[var(--color-gold)]/40 focus:outline-none focus:ring-2 focus:ring-[var(--color-gold)]/30"
           />
         </div>
@@ -145,7 +145,7 @@ function RecordsPage() {
         >
           <option value="default">Sort: Featured</option>
           <option value="team">Sort: Team</option>
-          <option value="az">Sort: Aâ€“Z</option>
+          <option value="az">Sort: A–Z</option>
         </select>
       </div>
 
@@ -254,7 +254,7 @@ function RecordsPage() {
   );
 }
 
-// â”€â”€â”€ Live per-season leaders â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Live per-season leaders ──────────────────────────────
 type Metric = "runs" | "wickets" | "sixes";
 const METRICS: { id: Metric; label: string; accent: string }[] = [
   { id: "runs", label: "Orange Cap (Runs)", accent: "from-[var(--color-gold)] to-[var(--color-gold)]" },
@@ -326,7 +326,7 @@ function SeasonLeadersPanel() {
         />
       ) : q.isLoading ? (
         <div role="status" className="py-6 text-center text-xs text-foreground">
-          Crunching scorecardsâ€¦
+          Crunching scorecards…
         </div>
       ) : leaders.length === 0 ? (
         <EmptyState

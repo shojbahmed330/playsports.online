@@ -50,13 +50,16 @@ export const Route = createFileRoute("/players")({
   },
   head: () => ({
     meta: [
-      { title: "Player Statistics â€” FIFA World Cup Archive (1930â€“2026)" },
+      { title: "Player Statistics — FIFA World Cup Archive (1930–2026)" },
       {
         name: "description",
         content:
           "FIFA World Cup player statistics including the live 2026 Golden Boot race, top scorers, hat-tricks, card leaders, country stats and player comparisons across every edition from 1930 to 2026.",
       },
-      { property: "og:title", content: "Player Statistics & Records â€” FIFA World Cup 1930â€“2026" },
+      {
+        property: "og:title",
+        content: "Player Statistics & Records — FIFA World Cup 1930–2026",
+      },
       {
         property: "og:description",
         content:
@@ -65,7 +68,10 @@ export const Route = createFileRoute("/players")({
       { property: "og:url", content: "https://www.playsports.online/players" },
       { property: "og:site_name", content: "PlaySports" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Player Statistics & Records â€” FIFA World Cup 1930â€“2026" },
+      {
+        name: "twitter:title",
+        content: "Player Statistics & Records — FIFA World Cup 1930–2026",
+      },
       {
         name: "twitter:description",
         content:
@@ -76,7 +82,7 @@ export const Route = createFileRoute("/players")({
     scripts: [
       ldScript(
         collectionPage({
-          name: "Player Statistics â€” FIFA World Cup",
+          name: "Player Statistics — FIFA World Cup",
           description:
             "All-time and live FIFA World Cup top scorers, card leaders and player records.",
           path: "/players",
@@ -110,7 +116,7 @@ export const Route = createFileRoute("/players")({
           },
           {
             "@type": "Question",
-            name: "How many World Cup goals does Cristiano Ronaldo have (2006â€“2026)?",
+            name: "How many World Cup goals does Cristiano Ronaldo have (2006–2026)?",
             acceptedAnswer: {
               "@type": "Answer",
               text: "Career totals on this page combine the verified historical World Cup dataset with live 2026 ESPN scoring events when available.",
@@ -145,7 +151,7 @@ function PlayersPage() {
     return Array.from(s).sort();
   }, [GOALS]);
 
-  // (Live 2026 scorers come from useMergedGoals above â€” shared query cache.)
+  // (Live 2026 scorers come from useMergedGoals above — shared query cache.)
 
   // Resolve filters
   const selectedYears = useMemo(() => {
@@ -200,7 +206,7 @@ function PlayersPage() {
     });
   }, [search.pos, search.q, selectedYears, selectedCountries, selectedConfeds]);
 
-  // Top scorers â€” GOALS already includes live 2026 rows from useMergedGoals.
+  // Top scorers — GOALS already includes live 2026 rows from useMergedGoals.
   const topScorers = useMemo(() => {
     const agg = new Map<
       string,
@@ -321,7 +327,9 @@ function PlayersPage() {
   const sharePage = async () => {
     try {
       await navigator.clipboard.writeText(window.location.href);
-    } catch {}
+    } catch {
+      // Clipboard access can be blocked by the browser; sharing still works.
+    }
   };
 
   return (
@@ -343,7 +351,7 @@ function PlayersPage() {
               to="/"
               className="group relative inline-flex min-h-11 items-center gap-1.5 rounded-xl px-3 text-xs font-semibold text-muted-foreground ring-1 ring-border bg-muted hover:text-foreground hover:bg-accent hover:ring-ring/40 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
-              <span aria-hidden>ðŸ </span>
+              <span aria-hidden>🏠</span>
               <span>Home</span>
             </Link>
             <Link
@@ -353,7 +361,10 @@ function PlayersPage() {
             >
               <Trophy className="size-3.5" aria-hidden="true" />
               <span>Players</span>
-              <span className="ml-0.5 inline-flex size-1.5 rounded-full bg-primary-foreground/70 animate-pulse motion-reduce:animate-none" aria-hidden="true" />
+              <span
+                className="ml-0.5 inline-flex size-1.5 rounded-full bg-primary-foreground/70 animate-pulse motion-reduce:animate-none"
+                aria-hidden="true"
+              />
             </Link>
             {isAdmin && (
               <Link
@@ -378,7 +389,7 @@ function PlayersPage() {
                 The World Cup, <span className="text-gold">player by player.</span>
               </h1>
               <p className="text-sm sm:text-base text-muted-foreground mt-2 max-w-2xl">
-                Every goal and card from 1930â€“2022, merged live with the 2026 tournament.
+                Every goal and card from 1930–2022, merged live with the 2026 tournament.
               </p>
             </div>
             <button
@@ -459,7 +470,7 @@ function countCountUnique(rows: GoalRow[]): number {
   return s.size;
 }
 
-/* â”€â”€â”€â”€â”€â”€â”€â”€â”€ KPI strip â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ---- KPI strip ---- */
 function KpiStrip({
   totalPlayers,
   totalGoals,
@@ -484,7 +495,10 @@ function KpiStrip({
           <div className="text-2xl sm:text-3xl font-extrabold tabular-nums text-gold flex items-center gap-2">
             {i.value}
             {i.live && Number(i.value) > 0 && (
-              <span className="size-2 rounded-full bg-live animate-pulse motion-reduce:animate-none" aria-hidden="true" />
+              <span
+                className="size-2 rounded-full bg-live animate-pulse motion-reduce:animate-none"
+                aria-hidden="true"
+              />
             )}
           </div>
           <div className="text-[11px] uppercase tracking-wider text-muted-foreground mt-1">

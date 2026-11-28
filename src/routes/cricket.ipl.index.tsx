@@ -1,4 +1,4 @@
-﻿import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { TeamCrest } from "@/components/cricket/TeamCrest";
 import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
 import { IplHero } from "@/components/ipl/IplHero";
@@ -38,13 +38,13 @@ const purpleQO = queryOptions({
 export const Route = createFileRoute("/cricket/ipl/")({
   head: () => ({
     meta: [
-      { title: "Indian Premier League â€” Live IPL Scores, Standings & Stats" },
+      { title: "Indian Premier League — Live IPL Scores, Standings & Stats" },
       {
         name: "description",
         content:
           "IPL hub with live scores, standings, Orange & Purple Cap leaderboards, franchise titles and full season history from 2008.",
       },
-      { property: "og:title", content: "IPL â€” Live Scores, Standings & Records" },
+      { property: "og:title", content: "IPL — Live Scores, Standings & Records" },
       {
         property: "og:description",
         content:
@@ -56,7 +56,7 @@ export const Route = createFileRoute("/cricket/ipl/")({
       { name: "twitter:card", content: "summary_large_image" },
       {
         name: "twitter:title",
-        content: "Indian Premier League â€” Live IPL Scores, Standings & Stats",
+        content: "Indian Premier League — Live IPL Scores, Standings & Stats",
       },
       {
         name: "twitter:description",
@@ -68,7 +68,7 @@ export const Route = createFileRoute("/cricket/ipl/")({
     scripts: [
       ldScript(
         collectionPage({
-          name: "Indian Premier League â€” Live Scores & Stats",
+          name: "Indian Premier League — Live Scores & Stats",
           description: "IPL live scores, standings, Orange & Purple Cap leaders and history.",
           path: "/cricket/ipl",
         }),
@@ -101,7 +101,7 @@ function IplHome() {
 
   const next = overview.next;
   const nextLabel = next
-    ? `${next.away.abbr || next.away.shortName} v ${next.home.abbr || next.home.shortName} Â· ${relativeDay(next.startTs)} ${formatLocalTime(next.startTs)}`
+    ? `${next.away.abbr || next.away.shortName} v ${next.home.abbr || next.home.shortName} · ${relativeDay(next.startTs)} ${formatLocalTime(next.startTs)}`
     : null;
   const lastSeason = historyData.seasons[0];
 
@@ -124,7 +124,7 @@ function IplHome() {
             className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-[var(--color-gold)]/30 bg-[var(--color-gold)]/10 px-4 py-3 text-sm text-[var(--color-gold)]"
           >
             <span>
-              Live IPL feed temporarily unavailable â€” historical sections remain available.
+              Live IPL feed temporarily unavailable — historical sections remain available.
             </span>
             <button
               type="button"
@@ -141,7 +141,7 @@ function IplHome() {
             title="Live now"
             accent="text-[var(--color-live)]"
             linkTo="/cricket/ipl/scores"
-            linkLabel="All scores â†’"
+            linkLabel="All scores →"
           >
             <Grid>
               {overview.live.map((m) => (
@@ -159,7 +159,7 @@ function IplHome() {
             title="Upcoming"
             accent="text-[var(--color-gold)]"
             linkTo="/cricket/ipl/scores"
-            linkLabel="Full schedule â†’"
+            linkLabel="Full schedule →"
           >
             <Grid>
               {overview.upcoming.slice(0, 3).map((m) => (
@@ -177,7 +177,7 @@ function IplHome() {
             title="Recent results"
             accent="text-[var(--color-accent-cricket)]"
             linkTo="/cricket/ipl/scores"
-            linkLabel="All results â†’"
+            linkLabel="All results →"
           >
             <Grid>
               {overview.recent.slice(0, 3).map((m) => (
@@ -194,7 +194,7 @@ function IplHome() {
           title="Orange & Purple Cap"
           accent="text-[var(--color-gold)]"
           linkTo="/cricket/ipl/players"
-          linkLabel="Full leaderboards â†’"
+          linkLabel="Full leaderboards →"
         >
           <OrangePurpleCap
             seasonYear="current"
@@ -207,10 +207,10 @@ function IplHome() {
 
         {overview.standings.length > 0 && (
           <Section
-            title="Points table â€” preview"
+            title="Points table — preview"
             accent="text-[var(--color-accent-mlb)]"
             linkTo="/cricket/ipl/standings"
-            linkLabel="Full standings â†’"
+            linkLabel="Full standings →"
           >
             <MiniStandings rows={overview.standings.slice(0, 6)} />
           </Section>
@@ -220,7 +220,7 @@ function IplHome() {
           title="Champions through the years"
           accent="text-[var(--color-gold)]"
           linkTo="/cricket/ipl/history"
-          linkLabel="Complete history â†’"
+          linkLabel="Complete history →"
         >
           <div className="overflow-hidden rounded-xl border border-border bg-background">
             <ul className="divide-y divide-border">

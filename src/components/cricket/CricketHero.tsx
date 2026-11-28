@@ -1,10 +1,10 @@
-﻿import { Link } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { TeamCrest } from "./TeamCrest";
 import { Flame, Clock, MapPin, ArrowRight, Trophy } from "lucide-react";
 import type { CricketMatch } from "@/lib/cricket.functions";
 
 /**
- * CricketHero â€” spotlight for the next/live featured match.
+ * CricketHero — spotlight for the next/live featured match.
  * - If any match is live, picks the first live match.
  * - Else picks the soonest upcoming match.
  * - Else shows a generic welcome card.
@@ -44,7 +44,7 @@ export function CricketHero({
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
         <div className="grid lg:grid-cols-[1.1fr_1fr] gap-6 lg:gap-10 items-center">
-          {/* left â€” branding */}
+          {/* left — branding */}
           <div>
             <div className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.22em] font-bold text-[var(--color-gold)] mb-3 px-2.5 py-1 rounded-full bg-[var(--color-gold)]/10 ring-1 ring-[var(--color-gold)]/30">
               <span className="size-1.5 rounded-full bg-[var(--color-gold)] animate-pulse motion-reduce:animate-none" />
@@ -60,7 +60,7 @@ export function CricketHero({
             </h1>
 
             <p className="mt-3 text-sm sm:text-base text-[var(--color-accent-cricket)]/75 max-w-xl">
-              Live scoreboards, fixtures, standings, player profiles and records â€” from IPL and the
+              Live scoreboards, fixtures, standings, player profiles and records — from IPL and the
               ICC World Cup to Big Bash, PSL and the international calendar.
             </p>
             <div className="mt-5 flex flex-wrap gap-2">
@@ -91,7 +91,7 @@ export function CricketHero({
             </div>
           </div>
 
-          {/* right â€” featured match card */}
+          {/* right — featured match card */}
           <div>{featured ? <FeaturedCard match={featured} /> : <EmptyFeatured />}</div>
         </div>
       </div>
@@ -135,7 +135,9 @@ function FeaturedCard({ match }: { match: CricketMatch }) {
           <div className="text-[10px] uppercase tracking-[0.18em] font-bold text-[var(--color-accent-cricket)]/90 truncate">
             {match.leagueName || match.leagueAbbr || "Cricket"}
           </div>
-          <div className="text-[11px] text-[var(--color-accent-cricket)]/70 mt-0.5 truncate">{match.description}</div>
+          <div className="text-[11px] text-[var(--color-accent-cricket)]/70 mt-0.5 truncate">
+            {match.description}
+          </div>
         </div>
         {isLive ? (
           <span className="shrink-0 inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-[var(--color-live)] bg-[var(--color-live)]/20 ring-1 ring-[var(--color-live)]/40 px-2 py-1 rounded-full">
@@ -193,7 +195,9 @@ function TeamRow({ side }: { side: CricketMatch["home"] }) {
           rounded
         />
         <div className="min-w-0">
-          <div className="text-sm font-bold text-foreground truncate">{side.name || side.shortName}</div>
+          <div className="text-sm font-bold text-foreground truncate">
+            {side.name || side.shortName}
+          </div>
           {side.scoreSummary && (
             <div className="text-[11px] text-[var(--color-accent-cricket)]/70 truncate font-mono">
               {side.scoreSummary}

@@ -1,4 +1,4 @@
-﻿import type { CricketInningsDetail, CricketMatch } from "@/lib/cricket.functions";
+import type { CricketInningsDetail, CricketMatch } from "@/lib/cricket.functions";
 import { InningsCard } from "./InningsCard";
 import { EmptyState } from "./ScorecardTab";
 import { displayScore } from "@/lib/cricket-score-display";
@@ -42,19 +42,21 @@ export function SummaryTab({
                 {d.kind === "innings" ? (
                   <>
                     {d.runs}
-                    {!d.allOut && <span className="text-base text-muted-foreground">/{d.wickets}</span>}
+                    {!d.allOut && (
+                      <span className="text-base text-muted-foreground">/{d.wickets}</span>
+                    )}
                   </>
                 ) : d.kind === "did-not-bat" ? (
                   <span className="text-sm text-foreground font-semibold">Did not bat</span>
                 ) : d.kind === "yet-to-bat" ? (
                   <span className="text-sm text-foreground font-semibold">Yet to bat</span>
                 ) : (
-                  <span className="text-muted-foreground">â€”</span>
+                  <span className="text-muted-foreground">—</span>
                 )}
               </div>
               {d.kind === "innings" && d.overs != null && d.overs > 0 && (
                 <div className="text-[10px] text-muted-foreground tabular-nums mt-0.5">
-                  {d.overs} ov{d.allOut ? " Â· all out" : ""}
+                  {d.overs} ov{d.allOut ? " · all out" : ""}
                 </div>
               )}
             </div>

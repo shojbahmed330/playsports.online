@@ -1,4 +1,4 @@
-﻿import { Trophy } from "lucide-react";
+import { Trophy } from "lucide-react";
 
 type Franchise = {
   id: string;
@@ -45,7 +45,8 @@ export function IplTitlesBoard({ teams }: { teams: Franchise[] }) {
                   alt=""
                   className="h-9 w-9 shrink-0 rounded-md bg-background object-contain p-1 ring-1 ring-border"
                   loading="lazy"
-                 decoding="async" />
+                  decoding="async"
+                />
               )}
             </div>
             <div className="mt-3 flex items-end justify-between">
@@ -54,7 +55,7 @@ export function IplTitlesBoard({ teams }: { teams: Franchise[] }) {
                 {t.titles} {t.titles === 1 ? "title" : "titles"}
               </div>
               <div className="text-[10px] opacity-70">
-                {t.titleYears.length ? t.titleYears.join(", ") : "â€”"}
+                {t.titleYears.length ? t.titleYears.join(", ") : "—"}
               </div>
             </div>
             <div className="pointer-events-none absolute inset-x-0 -bottom-2 h-10 rounded-full bg-muted blur-2xl" />

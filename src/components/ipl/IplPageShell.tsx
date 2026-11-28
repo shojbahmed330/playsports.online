@@ -1,4 +1,4 @@
-﻿import type { ReactNode } from "react";
+import type { ReactNode } from "react";
 import { SportNav } from "@/components/sports/SportNav";
 import { IplSubNav } from "@/components/ipl/IplSubNav";
 

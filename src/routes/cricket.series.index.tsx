@@ -1,4 +1,4 @@
-﻿import { createFileRoute, Link, stripSearchParams } from "@tanstack/react-router";
+import { createFileRoute, Link, stripSearchParams } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useMemo } from "react";
@@ -41,7 +41,7 @@ export const Route = createFileRoute("/cricket/series/")({
   },
   head: () => ({
     meta: [
-      { title: "Cricket Series â€” IPL, BBL, World Cups & more" },
+      { title: "Cricket Series — IPL, BBL, World Cups & more" },
       { name: "description", content: "All major cricket series, live counts, and fixtures." },
       { property: "og:title", content: "Cricket Series Hub" },
       {
@@ -52,7 +52,7 @@ export const Route = createFileRoute("/cricket/series/")({
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "PlaySports" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Cricket Series â€” IPL, BBL, World Cups & more" },
+      { name: "twitter:title", content: "Cricket Series — IPL, BBL, World Cups & more" },
       {
         name: "twitter:description",
         content: "All major cricket series, live counts, and fixtures.",
@@ -126,7 +126,7 @@ function SeriesIndex() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
           <div className="flex items-center gap-3">
             <div className="size-12 rounded-2xl bg-[var(--color-gold)]/15 ring-1 ring-[var(--color-gold)]/30 grid place-items-center text-2xl">
-              ðŸ†
+              🏆
             </div>
             <div>
               <div className="text-[11px] uppercase tracking-[0.2em] text-[var(--color-gold)] font-bold">
@@ -168,7 +168,7 @@ function SeriesIndex() {
                   className="group relative overflow-hidden rounded-xl border border-border bg-gradient-to-br from-background to-background p-3 hover:border-[var(--color-accent-mlb)]/40 hover:-translate-y-0.5 transition"
                 >
                   <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.18em] font-bold text-[var(--color-accent-mlb)]">
-                    ðŸŒ Bilateral{t.format ? ` Â· ${t.format}` : ""}
+                    🌍 Bilateral{t.format ? ` · ${t.format}` : ""}
                   </div>
                   <div className="font-bold leading-tight mt-1 line-clamp-2">{t.name}</div>
                   <div className="mt-2 flex items-center gap-1.5 text-[11px]">
@@ -275,7 +275,7 @@ function SeriesIndex() {
                         <div
                           className={`text-[10px] uppercase tracking-[0.18em] font-bold ${meta?.accent ?? "text-[var(--color-accent-cricket)]"}`}
                         >
-                          {s.label} Â· {s.format.toUpperCase()}
+                          {s.label} · {s.format.toUpperCase()}
                         </div>
                         <div className="font-bold leading-tight truncate">{s.longName}</div>
                         <div className="text-[11px] text-muted-foreground mt-0.5 line-clamp-1">

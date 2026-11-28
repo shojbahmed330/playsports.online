@@ -8,17 +8,21 @@ export function toCricketMatch(
   leagueName: string,
 ): CricketMatch {
   const mapSide = (s: IplTeamScore) => {
-    const innings = s.totalRuns > 0 ? [{ runs: s.totalRuns, wickets: s.wickets, overs: s.overs }] : [];
+    const innings =
+      s.totalRuns > 0 ? [{ runs: s.totalRuns, wickets: s.wickets, overs: s.overs }] : [];
     const parsedScore: ParsedScore = {
-      innings: s.totalRuns > 0
-        ? [{
-            runs: s.totalRuns,
-            wickets: s.wickets,
-            overs: s.overs || null,
-            declared: false,
-            allOut: s.wickets >= 10,
-          }]
-        : [],
+      innings:
+        s.totalRuns > 0
+          ? [
+              {
+                runs: s.totalRuns,
+                wickets: s.wickets,
+                overs: s.overs || null,
+                declared: false,
+                allOut: s.wickets >= 10,
+              },
+            ]
+          : [],
       totalRuns: s.totalRuns,
       didNotBat: s.totalRuns === 0,
       raw: s.scoreSummary ?? null,
@@ -56,10 +60,14 @@ export function toCricketMatch(
     format: "T20",
     home,
     away,
-    result: m.status === "post"
-      ? { kind: "unknown", winnerAbbr: winnerTeam?.abbr ?? null, marginText: m.note ?? (winnerTeam ? `${winnerTeam.name} won` : "Result") }
-      : null,
+    result:
+      m.status === "post"
+        ? {
+            kind: "unknown",
+            winnerAbbr: winnerTeam?.abbr ?? null,
+            marginText: m.note ?? (winnerTeam ? `${winnerTeam.name} won` : "Result"),
+          }
+        : null,
     dataIncomplete: false,
   } as unknown as CricketMatch;
 }
-

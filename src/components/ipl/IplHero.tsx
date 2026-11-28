@@ -1,4 +1,4 @@
-﻿import { Link } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { Trophy, Sparkles } from "lucide-react";
 
 type Props = {
@@ -8,7 +8,7 @@ type Props = {
   totalTitles: number;
 };
 
-/** IPL Home hero â€” trophy-shine gradient, live pulse + next-match chip. */
+/** IPL Home hero — trophy-shine gradient, live pulse + next-match chip. */
 export function IplHero({ seasonLabel, liveCount, nextMatchLabel, totalTitles }: Props) {
   return (
     <section className="relative overflow-hidden ipl-hero-grad ipl-trophy-ring rounded-2xl mx-3 sm:mx-6 mt-4 px-5 py-6 sm:px-8 sm:py-8">
@@ -41,14 +41,14 @@ export function IplHero({ seasonLabel, liveCount, nextMatchLabel, totalTitles }:
             )}
             {nextMatchLabel && (
               <span className="inline-flex items-center gap-1.5 rounded-full bg-[var(--color-gold)]/15 px-3 py-1 text-[11px] font-semibold text-[var(--color-gold)] ring-1 ring-[var(--color-gold)]/30">
-                Next Â· {nextMatchLabel}
+                Next · {nextMatchLabel}
               </span>
             )}
             <Link
               to="/cricket"
               className="inline-flex items-center gap-1.5 rounded-full bg-muted px-3 py-1 text-[11px] font-semibold text-foreground ring-1 ring-border hover:bg-muted"
             >
-              â† Cricket hub
+              ← Cricket hub
             </Link>
           </div>
         </div>

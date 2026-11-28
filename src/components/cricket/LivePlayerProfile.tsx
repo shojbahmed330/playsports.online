@@ -26,20 +26,40 @@ export function LivePlayerProfile({
 
   return (
     <main className="mx-auto max-w-4xl px-4 py-6 sm:py-10">
-      <nav aria-label="Breadcrumb" className="mb-4 flex flex-wrap items-center text-caption text-muted-foreground">
-        <Link to="/" className="inline-flex min-h-11 items-center hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+      <nav
+        aria-label="Breadcrumb"
+        className="mb-4 flex flex-wrap items-center text-caption text-muted-foreground"
+      >
+        <Link
+          to="/"
+          className="inline-flex min-h-11 items-center hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
           Home
         </Link>
-        <span className="mx-1" aria-hidden="true">/</span>
-        <Link to="/cricket" className="inline-flex min-h-11 items-center hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+        <span className="mx-1" aria-hidden="true">
+          /
+        </span>
+        <Link
+          to="/cricket"
+          className="inline-flex min-h-11 items-center hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
           Cricket
         </Link>
-        <span className="mx-1" aria-hidden="true">/</span>
-        <Link to="/cricket/players" className="inline-flex min-h-11 items-center hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+        <span className="mx-1" aria-hidden="true">
+          /
+        </span>
+        <Link
+          to="/cricket/players"
+          className="inline-flex min-h-11 items-center hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
           Players
         </Link>
-        <span className="mx-1" aria-hidden="true">/</span>
-        <span className="text-foreground" aria-current="page">{profile.name}</span>
+        <span className="mx-1" aria-hidden="true">
+          /
+        </span>
+        <span className="text-foreground" aria-current="page">
+          {profile.name}
+        </span>
       </nav>
 
       <header className="mb-8 flex items-center gap-4">
@@ -62,7 +82,18 @@ export function LivePlayerProfile({
         <div className="min-w-0">
           <h1 className="truncate text-h1 text-foreground">{profile.name}</h1>
           <p className="mt-1 flex flex-wrap items-center gap-2 text-caption text-muted-foreground">
-            {profile.flag && <span aria-hidden="true">{profile.flag}</span>}
+            {profile.flag &&
+              (/^https?:\/\//.test(profile.flag) ? (
+                <img
+                  src={profile.flag}
+                  alt=""
+                  className="h-4 w-6 rounded-sm object-cover"
+                  loading="eager"
+                  decoding="async"
+                />
+              ) : (
+                <span aria-hidden="true">{profile.flag}</span>
+              ))}
             {profile.team ?? profile.country ?? "Cricket"}
             {profile.jersey && (
               <span className="rounded-full bg-muted px-2 py-0.5 text-micro font-bold">
@@ -84,7 +115,10 @@ export function LivePlayerProfile({
           <h2 className="mb-3 text-h3 text-foreground">Player facts</h2>
           <ul className="grid gap-2 sm:grid-cols-2">
             {facts.map((f) => (
-              <li key={f.label} className="flex items-center gap-2 rounded-xl border border-border bg-card/60 px-3 py-2 text-caption">
+              <li
+                key={f.label}
+                className="flex items-center gap-2 rounded-xl border border-border bg-card/60 px-3 py-2 text-caption"
+              >
                 <f.icon className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
                 <span className="truncate">{f.label}</span>
               </li>
@@ -106,15 +140,33 @@ export function LivePlayerProfile({
               <caption className="sr-only">Career statistics for {profile.name}</caption>
               <thead className="bg-muted/50 text-micro uppercase text-muted-foreground">
                 <tr>
-                  <th scope="col" className="px-3 py-2 text-left">Format</th>
-                  <th scope="col" className="px-3 py-2 text-right">M</th>
-                  <th scope="col" className="px-3 py-2 text-right">Runs</th>
-                  <th scope="col" className="px-3 py-2 text-right">Avg</th>
-                  <th scope="col" className="px-3 py-2 text-right">SR</th>
-                  <th scope="col" className="px-3 py-2 text-right">100</th>
-                  <th scope="col" className="px-3 py-2 text-right">50</th>
-                  <th scope="col" className="px-3 py-2 text-right">Wkts</th>
-                  <th scope="col" className="px-3 py-2 text-right">Econ</th>
+                  <th scope="col" className="px-3 py-2 text-left">
+                    Format
+                  </th>
+                  <th scope="col" className="px-3 py-2 text-right">
+                    M
+                  </th>
+                  <th scope="col" className="px-3 py-2 text-right">
+                    Runs
+                  </th>
+                  <th scope="col" className="px-3 py-2 text-right">
+                    Avg
+                  </th>
+                  <th scope="col" className="px-3 py-2 text-right">
+                    SR
+                  </th>
+                  <th scope="col" className="px-3 py-2 text-right">
+                    100
+                  </th>
+                  <th scope="col" className="px-3 py-2 text-right">
+                    50
+                  </th>
+                  <th scope="col" className="px-3 py-2 text-right">
+                    Wkts
+                  </th>
+                  <th scope="col" className="px-3 py-2 text-right">
+                    Econ
+                  </th>
                 </tr>
               </thead>
               <tbody>

@@ -1,4 +1,4 @@
-﻿import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
 import { IplPageShell } from "@/components/ipl/IplPageShell";
 import { TeamCrest } from "@/components/cricket/TeamCrest";
@@ -17,7 +17,7 @@ const teamsQO = queryOptions({
 export const Route = createFileRoute("/cricket/ipl/teams/")({
   head: () => ({
     meta: [
-      { title: "IPL Teams â€” Franchises, Captains & Titles" },
+      { title: "IPL Teams — Franchises, Captains & Titles" },
       {
         name: "description",
         content:
@@ -32,7 +32,7 @@ export const Route = createFileRoute("/cricket/ipl/teams/")({
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "PlaySports" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "IPL Teams â€” Franchises, Captains & Titles" },
+      { name: "twitter:title", content: "IPL Teams — Franchises, Captains & Titles" },
       {
         name: "twitter:description",
         content: "Every IPL franchise with full team metadata and title history.",
@@ -75,7 +75,7 @@ function TeamsPage() {
   return (
     <IplPageShell
       title="Franchises"
-      subtitle={`${data.teams.length} teams Â· tap a card for full profile`}
+      subtitle={`${data.teams.length} teams · tap a card for full profile`}
     >
       {sorted.length === 0 ? (
         <EmptyState
@@ -124,9 +124,9 @@ function TeamsPage() {
               </div>
               {t.titleYears.length > 0 && (
                 <div className="mt-2 text-[11px] font-semibold opacity-90">
-                  <span aria-hidden="true">ðŸ† </span>
+                  <span aria-hidden="true">🏆 </span>
                   <span className="sr-only">Title years: </span>
-                  {t.titleYears.join(" Â· ")}
+                  {t.titleYears.join(" · ")}
                 </div>
               )}
               <div className="pointer-events-none absolute -bottom-6 right-0 h-20 w-20 rounded-full bg-muted blur-2xl" />

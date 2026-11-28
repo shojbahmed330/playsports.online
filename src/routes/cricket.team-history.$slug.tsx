@@ -1,4 +1,4 @@
-﻿// Phase 3 â€” Cricket per-team international/tournament history programmatic SEO page.
+// Phase 3 — Cricket per-team international/tournament history programmatic SEO page.
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { canonical } from "@/lib/seo/canonical";
 import { breadcrumbList, faqPage, ldScript } from "@/lib/seo/jsonld";
@@ -20,12 +20,12 @@ export const Route = createFileRoute("/cricket/team-history/$slug")({
   head: ({ params, loaderData }) => {
     if (!loaderData)
       return {
-        meta: [{ title: "Team history â€” Cricket" }, { name: "robots", content: "noindex" }],
+        meta: [{ title: "Team history — Cricket" }, { name: "robots", content: "noindex" }],
       };
     const { h } = loaderData;
     const url = canonical(`/cricket/team-history/${params.slug}`);
     const wins = h.championships.length;
-    const title = `${h.name} Trophy History â€” ${wins} title${wins === 1 ? "" : "s"} across ICC & T20 events`;
+    const title = `${h.name} Trophy History — ${wins} title${wins === 1 ? "" : "s"} across ICC & T20 events`;
     const desc = `${h.name} in major cricket tournaments: ${wins} title${wins === 1 ? "" : "s"}, ${h.runnerUps.length} runner-up finish${h.runnerUps.length === 1 ? "" : "es"}. Full trophy history on PlaySports.`;
     const latest = h.championships[0];
     const faqs = [
@@ -115,12 +115,12 @@ function CricketTeamHistoryPage() {
       <main className="mx-auto max-w-4xl px-4 py-6 sm:py-10 pb-16 space-y-6">
         <header className="rounded-2xl bg-card ring-1 ring-border p-6">
           <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground font-bold">
-            Cricket Â· Trophy history
+            Cricket · Trophy history
           </div>
           <h1 className="text-3xl font-extrabold text-foreground mt-1">{h.name}</h1>
           <p className="text-sm text-muted-foreground mt-1">
             <b className="text-primary">{h.championships.length}</b> title
-            {h.championships.length === 1 ? "" : "s"} Â· <b>{h.runnerUps.length}</b> runner-up Â·{" "}
+            {h.championships.length === 1 ? "" : "s"} · <b>{h.runnerUps.length}</b> runner-up ·{" "}
             <b>{h.appearances}</b> total appearance{h.appearances === 1 ? "" : "s"}
           </p>
           {team ? (
@@ -129,7 +129,7 @@ function CricketTeamHistoryPage() {
               params={{ slug: team.slug }}
               className="mt-3 inline-flex min-h-11 items-center text-xs text-primary font-semibold hover:underline"
             >
-              â†’ {team.name} squad & fixtures
+              → {team.name} squad & fixtures
             </Link>
           ) : null}
         </header>
@@ -146,7 +146,7 @@ function CricketTeamHistoryPage() {
                   <span className="text-foreground">{c.seasonLabel}</span>
                   <span className="text-muted-foreground">
                     def. {c.runnerUp}
-                    {c.result ? ` Â· ${c.result}` : ""}
+                    {c.result ? ` · ${c.result}` : ""}
                   </span>
                 </li>
               ))}
@@ -167,7 +167,7 @@ function CricketTeamHistoryPage() {
                   <span className="text-foreground">{c.seasonLabel}</span>
                   <span className="text-muted-foreground">
                     lost to {c.champion}
-                    {c.result ? ` Â· ${c.result}` : ""}
+                    {c.result ? ` · ${c.result}` : ""}
                   </span>
                 </li>
               ))}
@@ -185,7 +185,7 @@ function CricketTeamHistoryPage() {
             to="/cricket/history"
             className="inline-flex min-h-11 items-center text-primary font-semibold hover:underline"
           >
-            â† Cricket history
+            ← Cricket history
           </Link>
         </div>
         <RelatedLinks title="Explore more cricket teams" links={relatedForCricketTeam(h.slug)} />

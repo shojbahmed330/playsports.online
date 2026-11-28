@@ -1,4 +1,4 @@
-﻿import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { Crown, Search } from "lucide-react";
 import { SportNav } from "@/components/sports/SportNav";
@@ -12,7 +12,7 @@ import { withHubLinks } from "@/components/seo/withHubLinks";
 export const Route = createFileRoute("/cricket/records/")({
   head: () => ({
     meta: [
-      { title: "All-time Cricket Records â€” Runs, Wickets & Centuries" },
+      { title: "All-time Cricket Records — Runs, Wickets & Centuries" },
       { name: "description", content: "All-time cricket records across Test, ODI and T20I." },
       { property: "og:title", content: "All-time Cricket Records" },
       {
@@ -23,7 +23,7 @@ export const Route = createFileRoute("/cricket/records/")({
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "PlaySports" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "All-time Cricket Records â€” Runs, Wickets & Centuries" },
+      { name: "twitter:title", content: "All-time Cricket Records — Runs, Wickets & Centuries" },
       {
         name: "twitter:description",
         content: "All-time cricket records across Test, ODI and T20I.",
@@ -103,7 +103,7 @@ function RecordsPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
           <div className="flex items-center gap-3">
             <div className="size-12 rounded-2xl bg-[var(--color-gold)]/15 ring-1 ring-[var(--color-gold)]/30 grid place-items-center text-2xl">
-              ðŸ“œ
+              📜
             </div>
             <div>
               <div className="text-[11px] uppercase tracking-[0.2em] text-[var(--color-gold)] font-bold flex items-center gap-1.5">
@@ -111,7 +111,7 @@ function RecordsPage() {
               </div>
               <h1 className="text-2xl sm:text-3xl font-extrabold">International Cricket Records</h1>
               <p className="text-xs text-muted-foreground mt-1">
-                Test, ODI and T20I career and innings records Â· snapshot {recordsData.updatedAt}
+                Test, ODI and T20I career and innings records · snapshot {recordsData.updatedAt}
               </p>
             </div>
           </div>
@@ -125,7 +125,7 @@ function RecordsPage() {
             <input
               value={q}
               onChange={(e) => setQ(e.target.value)}
-              placeholder="Search records or playersâ€¦"
+              placeholder="Search records or players…"
               type="search"
               aria-label="Search cricket records or players"
               className="min-h-11 w-full rounded-full bg-muted py-2 pl-9 pr-3 text-sm outline-none ring-1 ring-border focus:ring-[var(--color-gold)]/50"
@@ -189,13 +189,13 @@ function RecordsPage() {
                       params={{ category: c.id }}
                       className="inline-flex min-h-11 items-center text-[11px] font-bold text-[var(--color-gold)] hover:text-[var(--color-gold)]"
                     >
-                      Full record â†’
+                      Full record →
                     </Link>
                   </div>
                 </div>
                 <table className="w-full text-sm">
                   <caption className="sr-only">
-                    {c.title} â€” top {c.metric.toLowerCase()} leaders
+                    {c.title} — top {c.metric.toLowerCase()} leaders
                   </caption>
                   <tbody className="divide-y divide-border">
                     {c.rows.map((r, i) => (

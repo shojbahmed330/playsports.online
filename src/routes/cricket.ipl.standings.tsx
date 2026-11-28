@@ -1,4 +1,4 @@
-﻿import { createFileRoute, Link, useNavigate, stripSearchParams } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate, stripSearchParams } from "@tanstack/react-router";
 import { TeamCrest } from "@/components/cricket/TeamCrest";
 import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
 import { zodValidator } from "@tanstack/zod-adapter";
@@ -27,7 +27,7 @@ export const Route = createFileRoute("/cricket/ipl/standings")({
   },
   head: () => ({
     meta: [
-      { title: "IPL Standings â€” Points Table & Form Guide" },
+      { title: "IPL Standings — Points Table & Form Guide" },
       {
         name: "description",
         content:
@@ -39,7 +39,7 @@ export const Route = createFileRoute("/cricket/ipl/standings")({
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "PlaySports" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "IPL Standings â€” Points Table & Form Guide" },
+      { name: "twitter:title", content: "IPL Standings — Points Table & Form Guide" },
       {
         name: "twitter:description",
         content:
@@ -73,7 +73,7 @@ function StandingsPage() {
   return (
     <IplPageShell
       title="Points Table"
-      subtitle={`${year === "current" ? "Current season" : year} Â· Top 4 advance to the playoffs`}
+      subtitle={`${year === "current" ? "Current season" : year} · Top 4 advance to the playoffs`}
       right={
         <select
           aria-label="IPL season"
@@ -188,7 +188,7 @@ function StandingsPage() {
                     <td className="py-2.5 pr-3 text-right">
                       <div className="inline-flex gap-0.5">
                         {r.form.length === 0 ? (
-                          <span className="text-foreground">â€”</span>
+                          <span className="text-foreground">—</span>
                         ) : (
                           r.form
                             .slice()

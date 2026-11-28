@@ -83,9 +83,9 @@ export const Route = createFileRoute("/football/")({
 
   head: () => {
     const title =
-      "Live Football Scores, Tables & Fixtures â€” Premier League, Champions League & More | PlaySports";
+      "Live Football Scores, Tables & Fixtures — Premier League, Champions League & More | PlaySports";
     const description =
-      "Live football scores, fixtures and tables for the Premier League, Champions League, La Liga and more â€” plus the complete FIFA World Cup archive.";
+      "Live football scores, fixtures and tables for the Premier League, Champions League, La Liga and more — plus the complete FIFA World Cup archive.";
     return {
       meta: [
         { title },
@@ -128,7 +128,7 @@ export const Route = createFileRoute("/football/")({
             },
             {
               q: "Does PlaySports cover the FIFA World Cup?",
-              a: "Yes â€” the complete FIFA World Cup archive from 1930 onwards, including the 2026 tournament.",
+              a: "Yes — the complete FIFA World Cup archive from 1930 onwards, including the 2026 tournament.",
             },
           ]),
         ),
@@ -224,7 +224,7 @@ function Index() {
     navigate({ search: (prev: FootballSearch) => ({ ...prev, date: d }), replace: true });
   };
 
-  // Live pulse â€” drives tab badges + smart-default selection
+  // Live pulse — drives tab badges + smart-default selection
   const pulse = useWc2026Pulse();
 
   // Sync URL ?year= and ?tab= when changed
@@ -237,7 +237,7 @@ function Index() {
       replace: true,
     });
   }, [tab, navigate]);
-  // External tab change (e.g. from MobileTabBar Link) â†’ adopt into state
+  // External tab change (e.g. from MobileTabBar Link) → adopt into state
   useEffect(() => {
     if (search.tab && search.tab !== tab) {
       setTab(search.tab);
@@ -246,7 +246,7 @@ function Index() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search.tab]);
 
-  // Smart-stage auto-detect â€” only when the user hasn't picked a tab yet.
+  // Smart-stage auto-detect — only when the user hasn't picked a tab yet.
   // "Today" is now the default landing when there's any live/today action;
   // otherwise fall back to the most relevant stage tab.
   useEffect(() => {
@@ -263,7 +263,7 @@ function Index() {
       setTab("knockout");
       return;
     }
-    // No live action â†’ keep Today as the default so users see "next match".
+    // No live action → keep Today as the default so users see "next match".
     setTab("today");
   }, [pulse, userPickedTab, year, LIVE_YEAR]);
 
@@ -282,7 +282,7 @@ function Index() {
     navigate({ search: (prev: FootballSearch) => ({ ...prev, team: t }), replace: true });
   };
 
-  // Reset to knockout when leaving the live year â€” scorers/today tabs are live-year only.
+  // Reset to knockout when leaving the live year — scorers/today tabs are live-year only.
   useEffect(() => {
     if (year !== LIVE_YEAR && (tab === "scorers" || tab === "today")) setTab("knockout");
   }, [year, tab, LIVE_YEAR]);
@@ -464,7 +464,7 @@ function Index() {
       <FootballHubSwitcher activeSlug="world-cup" />
       <Breadcrumbs />
 
-      {/* HERO â€” live-aware for the active WC year, classic for archive years */}
+      {/* HERO — live-aware for the active WC year, classic for archive years */}
       {year === LIVE_YEAR ? (
         <>
           <FootballHero />
@@ -617,7 +617,7 @@ function Index() {
           <EmptyState
             icon={
               <span className="text-4xl" aria-hidden="true">
-                âš½
+                ⚽
               </span>
             }
             title={`Tournament data coming soon for ${year}`}
@@ -631,8 +631,8 @@ function Index() {
             <div className="flex justify-center">
               <div className="rounded-full bg-muted px-4 py-1 text-xs text-muted-foreground">
                 {year} World Cup
-                {teamCount ? ` â€¢ ${teamCount} teams` : ""}
-                {tournament.data?.host_country ? ` â€¢ ${tournament.data.host_country}` : ""}
+                {teamCount ? ` • ${teamCount} teams` : ""}
+                {tournament.data?.host_country ? ` • ${tournament.data.host_country}` : ""}
               </div>
             </div>
 
@@ -677,7 +677,7 @@ function Index() {
                   />
                 ) : (
                   <>
-                    {/* Desktop symmetric bracket â€” full viewport, no horizontal scroll */}
+                    {/* Desktop symmetric bracket — full viewport, no horizontal scroll */}
                     <div className="hidden md:block relative left-1/2 -translate-x-1/2 w-screen px-4 lg:px-8">
                       <SymmetricBracket
                         grouped={grouped}
@@ -787,7 +787,7 @@ function BracketSkeleton({ year }: { year: number }) {
       <div className="absolute inset-0 grid place-items-center pointer-events-none">
         <div className="flex flex-col items-center gap-2 rounded-2xl bg-background/70 px-6 py-4 backdrop-blur-sm">
           <Loader2 aria-hidden="true" className="size-7 text-gold animate-spin" />
-          <div className="text-xs text-muted-foreground">Loading {year} tournamentâ€¦</div>
+          <div className="text-xs text-muted-foreground">Loading {year} tournament…</div>
         </div>
       </div>
     </div>

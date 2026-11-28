@@ -1,4 +1,4 @@
-﻿import { errorMessage } from "@/lib/error-message";
+import { errorMessage } from "@/lib/error-message";
 import { createFileRoute, notFound, Link } from "@tanstack/react-router";
 import { findTeam, teamStats, listTeams, slugify } from "@/lib/seo/programmatic";
 import { canonical } from "@/lib/seo/canonical";
@@ -36,7 +36,7 @@ export const Route = createFileRoute("/football/teams/$slug")({
     }
     const { team, stats, aiFaqs } = loaderData;
     const path = `/football/teams/${params.slug}`;
-    const title = `${team.name} â€” FIFA World Cup History, Stats & Top Scorers | PlaySports`;
+    const title = `${team.name} — FIFA World Cup History, Stats & Top Scorers | PlaySports`;
     const desc = `${team.name} at the FIFA World Cup: ${stats.matchesPlayed} matches, ${stats.w}W-${stats.d}D-${stats.l}L, ${stats.goalsTotal} goals. Appearances, top scorers, recent results.`;
     return {
       meta: [
@@ -191,7 +191,10 @@ const TEAM_GRADIENT: Record<string, string> = {
 };
 
 function gradientFor(name: string) {
-  return TEAM_GRADIENT[name] ?? "from-[var(--color-accent-cricket)] via-[var(--color-gold)] to-[var(--color-live)]";
+  return (
+    TEAM_GRADIENT[name] ??
+    "from-[var(--color-accent-cricket)] via-[var(--color-gold)] to-[var(--color-live)]"
+  );
 }
 
 function FootballTeamPage() {
@@ -248,20 +251,20 @@ function FootballTeamPage() {
             </div>
             <div className="min-w-0">
               <div className="text-[10px] sm:text-xs uppercase tracking-[0.25em] font-bold text-foreground">
-                FIFA World Cup Â· National Team
+                FIFA World Cup · National Team
               </div>
               <h1 className="mt-1 text-3xl sm:text-5xl font-black text-foreground drop-shadow-lg truncate">
                 {team.name}
               </h1>
               <p className="mt-1.5 text-sm sm:text-base text-foreground font-medium">
-                <span className="tabular-nums">{stats.matchesPlayed}</span> matches Â·{" "}
-                <span className="tabular-nums">{stats.years.length}</span> tournaments Â·{" "}
+                <span className="tabular-nums">{stats.matchesPlayed}</span> matches ·{" "}
+                <span className="tabular-nums">{stats.years.length}</span> tournaments ·{" "}
                 <span className="tabular-nums">{winPct}%</span> win rate
               </p>
             </div>
           </div>
 
-          {/* Stat pills â€” mobile scroll, desktop grid */}
+          {/* Stat pills — mobile scroll, desktop grid */}
           <div className="mt-6 grid grid-cols-2 sm:grid-cols-5 gap-2 sm:gap-3">
             <StatCard label="Played" value={stats.matchesPlayed} tone="slate" />
             <StatCard label="Wins" value={stats.w} tone="emerald" />
@@ -270,7 +273,7 @@ function FootballTeamPage() {
             <StatCard
               label="Goal Diff"
               value={`${gd >= 0 ? "+" : ""}${gd}`}
-              sub={`${stats.gf}â€“${stats.ga}`}
+              sub={`${stats.gf}–${stats.ga}`}
               tone={gd >= 0 ? "sky" : "rose"}
               className="col-span-2 sm:col-span-1"
             />
@@ -373,7 +376,7 @@ function FootballTeamPage() {
                       </span>
                       <div className="min-w-0">
                         <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold">
-                          {[formatMatchDate(m.match_date), m.round].filter(Boolean).join(" Â· ")}
+                          {[formatMatchDate(m.match_date), m.round].filter(Boolean).join(" · ")}
                         </div>
                         <div className="text-sm font-semibold truncate">
                           {isHome ? "vs" : "@"}{" "}
@@ -385,7 +388,7 @@ function FootballTeamPage() {
                       </div>
                       <div className="shrink-0 font-mono font-black text-lg tabular-nums">
                         {teamScore}
-                        <span className="mx-0.5 text-muted-foreground">â€“</span>
+                        <span className="mx-0.5 text-muted-foreground">–</span>
                         {oppScore}
                       </div>
                     </li>
@@ -538,7 +541,8 @@ function StatCard({
 }) {
   const tones: Record<string, string> = {
     slate: "from-background to-background text-foreground",
-    emerald: "from-[var(--color-accent-cricket)]/40 to-[var(--color-accent-cricket)]/10 text-[var(--color-accent-cricket)]",
+    emerald:
+      "from-[var(--color-accent-cricket)]/40 to-[var(--color-accent-cricket)]/10 text-[var(--color-accent-cricket)]",
     amber: "from-[var(--color-gold)]/40 to-[var(--color-gold)]/10 text-[var(--color-gold)]",
     rose: "from-[var(--color-live)]/40 to-[var(--color-live)]/10 text-[var(--color-live)]",
     sky: "from-[var(--color-accent-mlb)]/40 to-[var(--color-accent-mlb)]/10 text-[var(--color-accent-mlb)]",

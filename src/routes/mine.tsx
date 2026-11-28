@@ -1,4 +1,4 @@
-﻿import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { Star, ChevronLeft, Plus, Bell, BellOff, X, Circle } from "lucide-react";
 import { readAllStarred, useStarred, type Sport } from "@/lib/starred";
@@ -14,11 +14,11 @@ import { EmptyState as SharedEmptyState } from "@/components/ui/state";
 export const Route = createFileRoute("/mine")({
   head: () => ({
     meta: [
-      { title: "My Feed â€” Favorite Teams & Reminders | PlaySports" },
+      { title: "My Feed — Favorite Teams & Reminders | PlaySports" },
       {
         name: "description",
         content:
-          "Your personal cross-sport feed on PlaySports: favorite teams' live matches, upcoming fixtures with kickoff reminders and recent results â€” football, cricket, NBA, NHL, MLB, MLS.",
+          "Your personal cross-sport feed on PlaySports: favorite teams' live matches, upcoming fixtures with kickoff reminders and recent results — football, cricket, NBA, NHL, MLB, MLS.",
       },
       { name: "robots", content: "noindex" },
     ],
@@ -67,7 +67,7 @@ function MinePage() {
   // Auto-schedule reminders + fire result notifications when notify is on.
   useEffect(() => {
     if (!notify || typeof window === "undefined") return;
-    // Upcoming â†’ auto-remind (football only for now; matches Reminder shape).
+    // Upcoming → auto-remind (football only for now; matches Reminder shape).
     upcoming.forEach((m) => {
       if (m.sport !== "football") return;
       if (typeof m.matchId !== "number") return;
@@ -80,7 +80,7 @@ function MinePage() {
         url: m.href,
       });
     });
-    // Recent results â†’ fire once per match transition
+    // Recent results → fire once per match transition
     if (window.localStorage.getItem(NOTIFY_RESULTS_KEY) === "off") return;
     recent.forEach((m) => {
       const cacheK = LAST_RESULT_KEY + m.key;
@@ -88,11 +88,11 @@ function MinePage() {
       const now = `${m.home.score ?? "-"}-${m.away.score ?? "-"}`;
       if (prev === now) return;
       window.localStorage.setItem(cacheK, now);
-      if (prev == null) return; // first-time seen â†’ don't notify
+      if (prev == null) return; // first-time seen → don't notify
       try {
         if ("Notification" in window && Notification.permission === "granted") {
           const n = new Notification("Full-time", {
-            body: `${m.home.name} ${m.home.score ?? ""}â€“${m.away.score ?? ""} ${m.away.name}`,
+            body: `${m.home.name} ${m.home.score ?? ""}–${m.away.score ?? ""} ${m.away.name}`,
             tag: m.key,
           });
           n.onclick = () => {
@@ -125,7 +125,7 @@ function MinePage() {
     }
     window.localStorage.setItem(NOTIFY_KEY, "on");
     setNotify(true);
-    toast("Notifications on Â· we'll ping you 15 min before kickoff");
+    toast("Notifications on · we'll ping you 15 min before kickoff");
   };
 
   const openPicker = (s: Sport) => {
@@ -179,7 +179,7 @@ function MinePage() {
         </div>
         {notify && (
           <div className="text-[10px] text-center text-[var(--color-accent-cricket)]/70 pb-1.5">
-            Reminders fire 15 min before kickoff Â· works only while a tab is open
+            Reminders fire 15 min before kickoff · works only while a tab is open
           </div>
         )}
       </header>
@@ -188,7 +188,7 @@ function MinePage() {
         {totalStarred === 0 && (
           <SharedEmptyState
             title="Choose your favorite teams"
-            description="Pick teams across sports and we'll build a personal feed â€” live matches, upcoming fixtures and recent results."
+            description="Pick teams across sports and we'll build a personal feed — live matches, upcoming fixtures and recent results."
             action={
               <button
                 type="button"
@@ -206,7 +206,7 @@ function MinePage() {
             className="flex items-center justify-center py-6 text-sm text-muted-foreground"
             role="status"
           >
-            Loading your feedâ€¦
+            Loading your feed…
           </div>
         )}
 
@@ -268,7 +268,10 @@ function MinePage() {
           )}
 
         {reminders.length > 0 && (
-          <FeedSection title={`Active reminders (${reminders.length})`} tone="text-[var(--color-gold)]">
+          <FeedSection
+            title={`Active reminders (${reminders.length})`}
+            tone="text-[var(--color-gold)]"
+          >
             {reminders.map((r) => (
               <li
                 key={r.matchId}
@@ -326,7 +329,10 @@ function FeedSection({
         className={`mb-2 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] ${tone}`}
       >
         {pulse && (
-          <span className="inline-block size-1.5 rounded-full bg-[var(--color-live)]" aria-hidden="true" />
+          <span
+            className="inline-block size-1.5 rounded-full bg-[var(--color-live)]"
+            aria-hidden="true"
+          />
         )}
         {title}
       </div>
@@ -363,7 +369,7 @@ function MatchRow({
   return (
     <li className="rounded-xl border border-border bg-card/40 transition hover:bg-accent/40">
       <Link
-        to={m.href as any}
+        to={m.href as never}
         className="flex min-h-11 items-center gap-3 px-3 py-2.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       >
         <span className="shrink-0 text-base leading-none" aria-hidden="true">
@@ -372,7 +378,7 @@ function MatchRow({
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-widest text-muted-foreground">
             <span className={meta.tone}>{meta.label}</span>
-            <span aria-hidden="true">Â·</span>
+            <span aria-hidden="true">·</span>
             <span className="truncate">{m.label}</span>
           </div>
           <div className="flex items-center gap-1.5 truncate text-sm font-semibold text-foreground">
@@ -417,7 +423,11 @@ function MatchRow({
           )}
           {m.status === "live" ? (
             <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest text-[var(--color-live)]">
-              <Circle className="size-1.5 fill-[var(--color-live)] text-[var(--color-live)]" aria-hidden="true" /> Live
+              <Circle
+                className="size-1.5 fill-[var(--color-live)] text-[var(--color-live)]"
+                aria-hidden="true"
+              />{" "}
+              Live
             </span>
           ) : (
             <span className="text-[11px] tabular-nums text-muted-foreground">
@@ -488,7 +498,7 @@ function SportRow({ sport, items, onAdd }: { sport: Sport; items: string[]; onAd
           {meta.label}
         </span>
         <Link
-          to={meta.hub as any}
+          to={meta.hub as never}
           className="ml-auto inline-flex min-h-11 items-center text-[10px] uppercase tracking-widest text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           Open

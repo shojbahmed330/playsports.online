@@ -1,5 +1,13 @@
 # Changelog
 
+## Encoding repair and player-profile hardening (2026-11-28)
+
+- Repaired UTF-8 → CP1252 mojibake across 48 source files and 3 docs (em dashes, middots, emoji, arrows) and removed stray BOMs; production HTML now has zero corrupted sequences.
+- Added `tests/encoding.test.ts` so a future bulk rewrite cannot reintroduce mojibake.
+- ESPN athlete fetch now rotates between two public hosts and retries 4×; transient 503s no longer produce a false 404, and failures show a friendly retry state instead of a raw "ESPN 503".
+- Live player profiles render the flag URL as an image (it was printed as raw text) and keep the headshot fallback.
+- `mine.tsx` / `players.tsx` lint fixes (`as never` casts, commented empty catch).
+
 ## HOME-01 Home dashboard
 
 - Kept: compact now-first hero, live ticker, sport chips, cricket/football slates, sport doors, newsletter.

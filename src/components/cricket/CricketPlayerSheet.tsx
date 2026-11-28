@@ -1,4 +1,4 @@
-﻿import { useEffect } from "react";
+import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { X, User, Calendar, MapPin, Shirt, Activity, Loader2, AlertCircle } from "lucide-react";
@@ -81,19 +81,27 @@ export function CricketPlayerSheet({ athleteId, leagueId, onClose }: Props) {
         </header>
 
         {q.isLoading && (
-          <div className="grid place-items-center py-20 text-sm text-[var(--color-accent-cricket)]/70" role="status">
+          <div
+            className="grid place-items-center py-20 text-sm text-[var(--color-accent-cricket)]/70"
+            role="status"
+          >
             <Loader2
               className="mb-2 size-6 animate-spin motion-reduce:animate-none"
               aria-hidden="true"
             />
-            Loading profileâ€¦
+            Loading profile…
           </div>
         )}
 
         {!q.isLoading && (!p || q.data?.error || q.isError) && (
           <div className="space-y-3 px-4 py-16 text-center">
-            <AlertCircle className="mx-auto size-10 text-[var(--color-gold)]/80" aria-hidden="true" />
-            <div className="text-sm font-semibold text-[var(--color-gold)]/90">Profile unavailable</div>
+            <AlertCircle
+              className="mx-auto size-10 text-[var(--color-gold)]/80"
+              aria-hidden="true"
+            />
+            <div className="text-sm font-semibold text-[var(--color-gold)]/90">
+              Profile unavailable
+            </div>
             <p className="mx-auto max-w-xs text-caption text-muted-foreground">
               ESPN didn't return data for this player. Bilateral and older series sometimes ship
               without athlete records.
@@ -133,7 +141,7 @@ export function CricketPlayerSheet({ athleteId, leagueId, onClose }: Props) {
                     />
                   ) : (
                     <div className="size-24 rounded-2xl bg-[var(--color-accent-cricket)]/60 ring-2 ring-[var(--color-accent-cricket)]/30 grid place-items-center text-3xl">
-                      ðŸ
+                      🏏
                     </div>
                   )}
                 </div>
@@ -177,7 +185,7 @@ export function CricketPlayerSheet({ athleteId, leagueId, onClose }: Props) {
                 onClick={onClose}
                 className="inline-flex min-h-11 w-full items-center justify-center rounded-xl bg-primary px-4 text-caption font-bold text-primary-foreground transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
-                Open full profile â†’
+                Open full profile →
               </Link>
             </div>
 
@@ -246,7 +254,9 @@ function Pill({ icon, children }: { icon?: React.ReactNode; children: React.Reac
 function MetaCell({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-lg bg-muted ring-1 ring-border px-3 py-2">
-      <div className="text-[9px] uppercase tracking-wider text-muted-foreground font-bold">{label}</div>
+      <div className="text-[9px] uppercase tracking-wider text-muted-foreground font-bold">
+        {label}
+      </div>
       <div className="text-xs font-semibold text-foreground truncate">{value}</div>
     </div>
   );
@@ -274,7 +284,7 @@ function CareerRow({ row }: { row: CricketCareerStat }) {
         <Stat label="Runs" value={row.runs} />
         <Stat label="Avg" value={row.battingAvg} fmt={(v) => v.toFixed(2)} />
         <Stat label="SR" value={row.strikeRate} fmt={(v) => v.toFixed(1)} />
-        <Stat label="HS" value={row.highScore ?? "â€”"} />
+        <Stat label="HS" value={row.highScore ?? "—"} />
       </div>
       {(row.wickets != null ||
         row.bowlingAvg != null ||
@@ -284,7 +294,7 @@ function CareerRow({ row }: { row: CricketCareerStat }) {
           <Stat label="Wkts" value={row.wickets} />
           <Stat label="Avg" value={row.bowlingAvg} fmt={(v) => v.toFixed(2)} />
           <Stat label="Econ" value={row.economy} fmt={(v) => v.toFixed(2)} />
-          <Stat label="Best" value={row.bestBowling ?? "â€”"} />
+          <Stat label="Best" value={row.bestBowling ?? "—"} />
         </div>
       )}
     </div>
@@ -300,7 +310,7 @@ function Stat({
   value: number | string | null;
   fmt?: (v: number) => string;
 }) {
-  let display: string = "â€”";
+  let display: string = "—";
   if (value != null && value !== "") {
     display = typeof value === "number" ? (fmt ? fmt(value) : String(value)) : value;
   }

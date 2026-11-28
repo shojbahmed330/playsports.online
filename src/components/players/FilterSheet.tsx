@@ -1,13 +1,7 @@
 import { useState } from "react";
 import { SlidersHorizontal } from "lucide-react";
 import { useSearch } from "@tanstack/react-router";
-import {
-  Sheet,
-  SheetTrigger,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
+import { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { FilterBar } from "./FilterBar";
 import { activeFilterCount } from "@/lib/players-filters";
@@ -30,10 +24,7 @@ export function FilterSheet({ countries }: { countries: string[] }) {
           )}
         </Button>
       </SheetTrigger>
-      <SheetContent
-        side="bottom"
-        className="h-[85vh] overflow-y-auto p-4 pt-6"
-      >
+      <SheetContent side="bottom" className="h-[85vh] overflow-y-auto p-4 pt-6">
         <SheetHeader className="text-left mb-4 px-0">
           <SheetTitle>Filter players</SheetTitle>
         </SheetHeader>

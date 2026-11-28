@@ -1,5 +1,5 @@
-﻿import { errorMessage } from "@/lib/error-message";
-// Phase 2.1 (cricket) â€” SSR record leaderboard page (long-tail SEO target).
+import { errorMessage } from "@/lib/error-message";
+// Phase 2.1 (cricket) — SSR record leaderboard page (long-tail SEO target).
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { SportNav } from "@/components/sports/SportNav";
 import { CricketSubNav } from "@/components/cricket/CricketSubNav";
@@ -23,17 +23,17 @@ export const Route = createFileRoute("/cricket/records/$category")({
   head: ({ params, loaderData }) => {
     if (!loaderData) {
       return {
-        meta: [{ title: "Record not found â€” Cricket" }, { name: "robots", content: "noindex" }],
+        meta: [{ title: "Record not found — Cricket" }, { name: "robots", content: "noindex" }],
       };
     }
     const { cat } = loaderData;
     const url = canonical(`/cricket/records/${params.category}`);
     const image = "https://www.playsports.online/og-default.png";
-    const title = `${cat.title} â€” All-time cricket leaderboard`;
+    const title = `${cat.title} — All-time cricket leaderboard`;
     const top = cat.rows[0];
     const desc = top
       ? `${cat.title}: ${top.player} (${top.team}) leads with ${top.value}${top.extra ? ` (${top.extra})` : ""}. Full top-10 leaderboard.`
-      : `${cat.title} â€” top-10 all-time cricket leaderboard.`;
+      : `${cat.title} — top-10 all-time cricket leaderboard.`;
     const faqs = buildFaqs(cat);
     return {
       meta: [
@@ -55,7 +55,7 @@ export const Route = createFileRoute("/cricket/records/$category")({
             name: cat.title,
             path: `/cricket/records/${params.category}`,
             items: cat.rows.map((r) => ({
-              name: `${r.player} â€” ${r.value} ${cat.metric}`,
+              name: `${r.player} — ${r.value} ${cat.metric}`,
               path: playerPath(r.player),
             })),
           }),
@@ -173,8 +173,8 @@ function RecordCategoryPage() {
         <header className="mb-6">
           <h1 className="text-2xl sm:text-3xl font-bold">{cat.title}</h1>
           <p className="text-sm text-muted-foreground mt-1">
-            All-time top {cat.rows.length} Â· Format: {cat.format.toUpperCase()}
-            {RECORDS_UPDATED ? ` Â· snapshot ${RECORDS_UPDATED}` : ""}
+            All-time top {cat.rows.length} · Format: {cat.format.toUpperCase()}
+            {RECORDS_UPDATED ? ` · snapshot ${RECORDS_UPDATED}` : ""}
           </p>
         </header>
 

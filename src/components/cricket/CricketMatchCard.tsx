@@ -1,4 +1,4 @@
-﻿import { Link } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { TeamCrest } from "./TeamCrest";
 import { MapPin, Tv, Trophy } from "lucide-react";
 import type { CricketMatch } from "@/lib/cricket.functions";
@@ -60,7 +60,7 @@ export function CricketMatchCard({
           {isLive ? (
             <span className="flex items-center gap-1.5 text-[var(--color-live)] font-bold truncate">
               <span className="size-1.5 rounded-full bg-[var(--color-live)] animate-pulse motion-reduce:animate-none cricket-live-ring" />
-              <span className="truncate">Live Â· {match.statusDetail || "In progress"}</span>
+              <span className="truncate">Live · {match.statusDetail || "In progress"}</span>
             </span>
           ) : isFinal ? (
             <span className="text-foreground font-semibold truncate">
@@ -69,7 +69,7 @@ export function CricketMatchCard({
           ) : (
             <span className="text-foreground font-semibold flex items-center gap-1.5 truncate">
               <span className="text-[var(--color-gold)]">{relativeDay(match.startTs)}</span>
-              <span className="text-muted-foreground">Â·</span>
+              <span className="text-muted-foreground">·</span>
               <span>{formatLocalTime(match.startTs)}</span>
             </span>
           )}
@@ -104,10 +104,10 @@ export function CricketMatchCard({
         />
       </div>
 
-      {/* Data-incomplete banner (rare â€” completed match with no numeric scores). */}
+      {/* Data-incomplete banner (rare — completed match with no numeric scores). */}
       {match.dataIncomplete && (
         <div className="px-3 py-2 text-[11px] text-[var(--color-gold)]/90 bg-[var(--color-gold)]/[0.07] border-t border-[var(--color-gold)]/20">
-          Score data unavailable â€” refreshing shortly.
+          Score data unavailable — refreshing shortly.
         </div>
       )}
 
@@ -133,7 +133,7 @@ export function CricketMatchCard({
         )}
         {match.kind === "bilateral" ? (
           <span className="shrink-0 inline-flex items-center gap-1 px-1.5 py-0.5 rounded font-bold tracking-wider bg-[var(--color-accent-mlb)]/15 text-[var(--color-accent-mlb)] ring-1 ring-[var(--color-accent-mlb)]/30 text-[9px]">
-            BILATERAL{match.format ? ` Â· ${match.format.toUpperCase()}` : ""}
+            BILATERAL{match.format ? ` · ${match.format.toUpperCase()}` : ""}
           </span>
         ) : (
           <span className="text-[var(--color-accent-cricket)]/70 font-semibold shrink-0">
@@ -188,7 +188,9 @@ function TeamRow({
                 {!score.allOut && (
                   <span className="text-sm font-bold text-muted-foreground">/{score.wickets}</span>
                 )}
-                {score.declared && <span className="text-xs text-[var(--color-gold)] ml-0.5">d</span>}
+                {score.declared && (
+                  <span className="text-xs text-[var(--color-gold)] ml-0.5">d</span>
+                )}
               </div>
               <div className="mt-0.5 flex items-center justify-end gap-1 text-[9px] tabular-nums text-muted-foreground">
                 {score.allOut && (
@@ -204,9 +206,11 @@ function TeamRow({
               Yet to bat
             </div>
           ) : score.kind === "did-not-bat" ? (
-            <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold">DNB</div>
+            <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold">
+              DNB
+            </div>
           ) : (
-            <div className="text-muted-foreground text-lg">â€”</div>
+            <div className="text-muted-foreground text-lg">—</div>
           )}
         </div>
       ) : (

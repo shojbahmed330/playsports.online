@@ -1,4 +1,4 @@
-﻿import { Link, useLocation } from "@tanstack/react-router";
+import { Link, useLocation } from "@tanstack/react-router";
 import {
   Flame,
   CalendarDays,
@@ -35,7 +35,7 @@ const TABS: Tab[] = [
   {
     to: "/cricket",
     label: "Hub",
-    emoji: "ðŸ",
+    emoji: "🏏",
     Icon: Flame,
     grad: "from-[var(--color-accent-cricket)] to-[var(--color-accent-cricket)]",
     accent: "text-[var(--color-accent-cricket)]",
@@ -44,7 +44,7 @@ const TABS: Tab[] = [
   {
     to: "/cricket/scores",
     label: "Scores",
-    emoji: "ðŸ”´",
+    emoji: "🔴",
     Icon: CalendarDays,
     grad: "from-[var(--color-live)] to-[var(--color-live)]",
     accent: "text-[var(--color-live)]",
@@ -53,7 +53,7 @@ const TABS: Tab[] = [
   {
     to: "/cricket/series",
     label: "Series",
-    emoji: "ðŸ†",
+    emoji: "🏆",
     Icon: Trophy,
     grad: "from-[var(--color-gold)] to-[var(--color-gold)]",
     accent: "text-[var(--color-gold)]",
@@ -62,7 +62,7 @@ const TABS: Tab[] = [
   {
     to: "/cricket/teams",
     label: "Teams",
-    emoji: "ðŸ›¡ï¸",
+    emoji: "🛡️",
     Icon: Users,
     grad: "from-[var(--color-accent-mlb)] to-[var(--color-accent-mlb)]",
     accent: "text-[var(--color-accent-mlb)]",
@@ -71,7 +71,7 @@ const TABS: Tab[] = [
   {
     to: "/cricket/players",
     label: "Players",
-    emoji: "ðŸ‘¤",
+    emoji: "👤",
     Icon: User,
     grad: "from-[var(--color-accent-nhl)] to-[var(--color-accent-nhl)]",
     accent: "text-[var(--color-accent-nhl)]",
@@ -80,7 +80,7 @@ const TABS: Tab[] = [
   {
     to: "/cricket/rankings",
     label: "Rankings",
-    emoji: "ðŸ“Š",
+    emoji: "📊",
     Icon: BarChart3,
     grad: "from-[var(--color-accent-nhl)] to-[var(--color-accent-nhl)]",
     accent: "text-[var(--color-accent-nhl)]",
@@ -89,7 +89,7 @@ const TABS: Tab[] = [
   {
     to: "/cricket/records",
     label: "Records",
-    emoji: "ðŸ“œ",
+    emoji: "📜",
     Icon: Crown,
     grad: "from-[var(--color-gold)] to-[var(--color-gold)]",
     accent: "text-[var(--color-gold)]",
@@ -98,7 +98,7 @@ const TABS: Tab[] = [
   {
     to: "/cricket/history",
     label: "History",
-    emoji: "ðŸ•°ï¸",
+    emoji: "🕰️",
     Icon: Crown,
     grad: "from-background to-background",
     accent: "text-foreground",
@@ -195,7 +195,7 @@ function LeaguesDropdown() {
         <DropdownMenuItem asChild>
           <Link to="/cricket/ipl" className="flex items-center justify-between cursor-pointer">
             <span className="flex items-center gap-2">
-              <span aria-hidden>ðŸ‡®ðŸ‡³</span> Indian Premier League
+              <span aria-hidden>🇮🇳</span> Indian Premier League
             </span>
             <span className="text-[9px] font-black rounded-full bg-[var(--color-live)]/20 text-[var(--color-live)] px-1.5 py-0.5 ring-1 ring-[var(--color-live)]/30">
               LIVE
@@ -205,7 +205,7 @@ function LeaguesDropdown() {
         <DropdownMenuSeparator />
         <DropdownMenuItem disabled className="flex items-center justify-between">
           <span className="flex items-center gap-2 opacity-60">
-            <span>ðŸ‡¦ðŸ‡º</span> Big Bash League
+            <span>🇦🇺</span> Big Bash League
           </span>
           <span className="text-[9px] font-black rounded-full bg-muted text-foreground px-1.5 py-0.5">
             SOON
@@ -213,7 +213,7 @@ function LeaguesDropdown() {
         </DropdownMenuItem>
         <DropdownMenuItem disabled className="flex items-center justify-between">
           <span className="flex items-center gap-2 opacity-60">
-            <span>ðŸ‡µðŸ‡°</span> Pakistan Super League
+            <span>🇵🇰</span> Pakistan Super League
           </span>
           <span className="text-[9px] font-black rounded-full bg-muted text-foreground px-1.5 py-0.5">
             SOON
@@ -221,7 +221,7 @@ function LeaguesDropdown() {
         </DropdownMenuItem>
         <DropdownMenuItem disabled className="flex items-center justify-between">
           <span className="flex items-center gap-2 opacity-60">
-            <span>ðŸŒ´</span> Caribbean Premier League
+            <span>🌴</span> Caribbean Premier League
           </span>
           <span className="text-[9px] font-black rounded-full bg-muted text-foreground px-1.5 py-0.5">
             SOON

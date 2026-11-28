@@ -1,4 +1,4 @@
-﻿import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, Link, stripSearchParams } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -43,13 +43,13 @@ export const Route = createFileRoute("/cricket/scores")({
   },
   head: () => ({
     meta: [
-      { title: "Cricket Scores â€” Live, Today, Upcoming & Results" },
+      { title: "Cricket Scores — Live, Today, Upcoming & Results" },
       {
         name: "description",
         content:
           "Live cricket scores plus today's fixtures, upcoming matches and recent results across IPL, ICC events, BBL, PSL and more.",
       },
-      { property: "og:title", content: "Cricket Scores â€” Live & Fixtures" },
+      { property: "og:title", content: "Cricket Scores — Live & Fixtures" },
       {
         property: "og:description",
         content: "Auto-refreshing cricket scores and fixtures by date, format and series.",
@@ -58,7 +58,7 @@ export const Route = createFileRoute("/cricket/scores")({
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "PlaySports" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Cricket Scores â€” Live, Today, Upcoming & Results" },
+      { name: "twitter:title", content: "Cricket Scores — Live, Today, Upcoming & Results" },
       {
         name: "twitter:description",
         content:
@@ -167,7 +167,7 @@ function CricketScoresPage() {
         .filter((m) => sameDay(m.startTs, effectiveDate))
         .sort((a, b) => a.startTs - b.startTs);
     }
-    // upcoming without explicit date â€” soonest first, future only
+    // upcoming without explicit date — soonest first, future only
     const now = Date.now();
     return filtered
       .filter((m) => m.status === "pre" && m.startTs > now)
@@ -238,13 +238,13 @@ function CricketScoresPage() {
                 Cricket scores
               </div>
               <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight truncate">
-                Cricket â€” Live, today, upcoming & results
+                Cricket — Live, today, upcoming & results
               </h1>
             </div>
             {mounted && q.isFetching && !q.isLoading && (
               <span className="shrink-0 text-[10px] text-[var(--color-accent-cricket)]/70 inline-flex items-center gap-1.5">
                 <span className="size-1.5 rounded-full bg-[var(--color-gold)] animate-pulse motion-reduce:animate-none" />{" "}
-                Updatingâ€¦
+                Updating…
               </span>
             )}
           </div>
@@ -289,7 +289,7 @@ function CricketScoresPage() {
             })}
           </div>
 
-          {/* DATE STRIP â€” visible on Upcoming & Today */}
+          {/* DATE STRIP — visible on Upcoming & Today */}
           {(tab === "upcoming" || tab === "today") && (
             <div className="mt-4">
               <div className="flex items-center gap-2">
@@ -368,11 +368,11 @@ function CricketScoresPage() {
             </div>
           )}
 
-          {/* FILTERS â€” series + format */}
+          {/* FILTERS — series + format */}
           <div className="mt-4 flex flex-wrap items-center gap-1.5">
             <FilterButton
               label="All series"
-              emoji="ðŸ"
+              emoji="🏏"
               active={league === "all"}
               onClick={() =>
                 navigate({
@@ -387,7 +387,7 @@ function CricketScoresPage() {
             />
             <FilterButton
               label="Internationals"
-              emoji="ðŸŒ"
+              emoji="🌍"
               active={league === "internationals"}
               onClick={() =>
                 navigate({
@@ -484,7 +484,7 @@ function CricketScoresPage() {
               <section key={g.leagueId || g.leagueName || "cricket"} className="space-y-3">
                 <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
                   <h2 className="text-sm sm:text-base font-bold text-foreground truncate">
-                    <span className="text-[var(--color-gold)]">â—</span>{" "}
+                    <span className="text-[var(--color-gold)]">●</span>{" "}
                     {g.leagueName || g.leagueAbbr || "Cricket"}
                     <span className="ml-2 text-xs text-muted-foreground font-normal">
                       ({g.items.length})

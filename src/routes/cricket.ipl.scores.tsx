@@ -1,4 +1,4 @@
-﻿import { createFileRoute, useNavigate, stripSearchParams } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, stripSearchParams } from "@tanstack/react-router";
 import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
 import { zodValidator } from "@tanstack/zod-adapter";
 import { z } from "zod";
@@ -26,7 +26,7 @@ const qo = (year: "current" | number) =>
 export const Route = createFileRoute("/cricket/ipl/scores")({
   head: () => ({
     meta: [
-      { title: "IPL Scores â€” Live, Upcoming & Results" },
+      { title: "IPL Scores — Live, Upcoming & Results" },
       {
         name: "description",
         content: "Live IPL scores, upcoming fixtures and full results for every season.",
@@ -40,7 +40,7 @@ export const Route = createFileRoute("/cricket/ipl/scores")({
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "PlaySports" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "IPL Scores â€” Live, Upcoming & Results" },
+      { name: "twitter:title", content: "IPL Scores — Live, Upcoming & Results" },
       {
         name: "twitter:description",
         content: "Live IPL scores, upcoming fixtures and full results for every season.",
@@ -78,7 +78,7 @@ function ScoresPage() {
   return (
     <IplPageShell
       title="Scores & Fixtures"
-      subtitle={`${data.matches.length} matches Â· season ${String(year)}`}
+      subtitle={`${data.matches.length} matches · season ${String(year)}`}
       right={
         <SeasonPicker
           year={year}
@@ -106,7 +106,7 @@ function ScoresPage() {
           role="alert"
           className="mt-4 flex flex-wrap items-center justify-between gap-2 rounded-lg border border-[var(--color-gold)]/30 bg-[var(--color-gold)]/10 px-4 py-3 text-sm text-[var(--color-gold)]"
         >
-          <span>Unable to reach the live feed right now â€” try refreshing in a moment.</span>
+          <span>Unable to reach the live feed right now — try refreshing in a moment.</span>
           <button
             type="button"
             onClick={() => void seasonQuery.refetch()}

@@ -1,4 +1,4 @@
-﻿# Screen Inventory
+# Screen Inventory
 
 Generated from the real router files in `src/routes` and cross-checked against `src/routeTree.gen.ts`.
 
@@ -34,173 +34,173 @@ Generated from the real router files in `src/routes` and cross-checked against `
 ## 2. Module tree
 
 - **Utility** (7)
-    - UTIL-01 About â€” `/about`
-    - UTIL-02 Contact â€” `/contact`
-    - UTIL-03 Cookies â€” `/cookies`
-    - UTIL-04 Disclaimer â€” `/disclaimer`
-    - UTIL-05 Privacy â€” `/privacy`
-    - UTIL-06 Terms â€” `/terms`
-    - UTIL-07 Unsubscribe â€” `/unsubscribe`
+    - UTIL-01 About — `/about`
+    - UTIL-02 Contact — `/contact`
+    - UTIL-03 Cookies — `/cookies`
+    - UTIL-04 Disclaimer — `/disclaimer`
+    - UTIL-05 Privacy — `/privacy`
+    - UTIL-06 Terms — `/terms`
+    - UTIL-07 Unsubscribe — `/unsubscribe`
 - **Admin** (1)
-    - ADMIN-01 Admin â€” `/admin`
+    - ADMIN-01 Admin — `/admin`
 - **Cross-sport** (5)
-    - XSPT-01 Archive Sport Year â€” `/archive/:sport/:year`
-    - XSPT-02 Team Sport Slug â€” `/team/:sport/:slug`
-    - XSPT-03 Tournaments Tournament Leaderboard â€” `/tournaments/:tournament/:leaderboard`
-    - XSPT-04 Tournaments Fifa World Cup 2026 Stage â€” `/tournaments/fifa-world-cup-2026/:stage`
-    - XSPT-05 Vs Sport Matchup â€” `/vs/:sport/:matchup`
+    - XSPT-01 Archive Sport Year — `/archive/:sport/:year`
+    - XSPT-02 Team Sport Slug — `/team/:sport/:slug`
+    - XSPT-03 Tournaments Tournament Leaderboard — `/tournaments/:tournament/:leaderboard`
+    - XSPT-04 Tournaments Fifa World Cup 2026 Stage — `/tournaments/fifa-world-cup-2026/:stage`
+    - XSPT-05 Vs Sport Matchup — `/vs/:sport/:matchup`
 - **Auth** (1)
-    - AUTH-01 Auth â€” `/auth`
+    - AUTH-01 Auth — `/auth`
 - **Cricket** (26)
-    - CRK-01 Cricket Highlights Slug â€” `/cricket/highlights/:slug`
-    - CRK-02 Cricket Highlights â€” `/cricket/highlights`
-    - CRK-03 Cricket History â€” `/cricket/history`
-    - CRK-04 Cricket â€” `/cricket`
-    - CRK-05 Cricket Ipl History â€” `/cricket/ipl/history`
-    - CRK-06 Cricket Ipl â€” `/cricket/ipl`
-    - CRK-07 Cricket Ipl Players â€” `/cricket/ipl/players`
-    - CRK-08 Cricket Ipl Records â€” `/cricket/ipl/records`
-    - CRK-09 Cricket Ipl Scores â€” `/cricket/ipl/scores`
-    - CRK-10 Cricket Ipl Standings â€” `/cricket/ipl/standings`
-    - CRK-11 Cricket Ipl Teams TeamId â€” `/cricket/ipl/teams/:teamId`
-    - CRK-12 Cricket Ipl Teams â€” `/cricket/ipl/teams`
-    - CRK-13 Cricket Match Id â€” `/cricket/match/:id`
-    - CRK-14 Cricket Players Slug â€” `/cricket/players/:slug`
-    - CRK-15 Cricket Players â€” `/cricket/players`
-    - CRK-16 Cricket Rankings â€” `/cricket/rankings`
-    - CRK-17 Cricket Records Category â€” `/cricket/records/:category`
-    - CRK-18 Cricket Records â€” `/cricket/records`
-    - CRK-19 Cricket Scores â€” `/cricket/scores`
-    - CRK-20 Cricket Series Id â€” `/cricket/series/:id`
-    - CRK-21 Cricket Series â€” `/cricket/series`
-    - CRK-22 Cricket Team History Slug â€” `/cricket/team-history/:slug`
-    - CRK-23 Cricket Teams Slug â€” `/cricket/teams/:slug`
-    - CRK-24 Cricket Teams â€” `/cricket/teams`
-    - CRK-25 Cricket Tournaments Slug â€” `/cricket/tournaments/:slug`
-    - CRK-26 Cricket Tournaments â€” `/cricket/tournaments`
+    - CRK-01 Cricket Highlights Slug — `/cricket/highlights/:slug`
+    - CRK-02 Cricket Highlights — `/cricket/highlights`
+    - CRK-03 Cricket History — `/cricket/history`
+    - CRK-04 Cricket — `/cricket`
+    - CRK-05 Cricket Ipl History — `/cricket/ipl/history`
+    - CRK-06 Cricket Ipl — `/cricket/ipl`
+    - CRK-07 Cricket Ipl Players — `/cricket/ipl/players`
+    - CRK-08 Cricket Ipl Records — `/cricket/ipl/records`
+    - CRK-09 Cricket Ipl Scores — `/cricket/ipl/scores`
+    - CRK-10 Cricket Ipl Standings — `/cricket/ipl/standings`
+    - CRK-11 Cricket Ipl Teams TeamId — `/cricket/ipl/teams/:teamId`
+    - CRK-12 Cricket Ipl Teams — `/cricket/ipl/teams`
+    - CRK-13 Cricket Match Id — `/cricket/match/:id`
+    - CRK-14 Cricket Players Slug — `/cricket/players/:slug`
+    - CRK-15 Cricket Players — `/cricket/players`
+    - CRK-16 Cricket Rankings — `/cricket/rankings`
+    - CRK-17 Cricket Records Category — `/cricket/records/:category`
+    - CRK-18 Cricket Records — `/cricket/records`
+    - CRK-19 Cricket Scores — `/cricket/scores`
+    - CRK-20 Cricket Series Id — `/cricket/series/:id`
+    - CRK-21 Cricket Series — `/cricket/series`
+    - CRK-22 Cricket Team History Slug — `/cricket/team-history/:slug`
+    - CRK-23 Cricket Teams Slug — `/cricket/teams/:slug`
+    - CRK-24 Cricket Teams — `/cricket/teams`
+    - CRK-25 Cricket Tournaments Slug — `/cricket/tournaments/:slug`
+    - CRK-26 Cricket Tournaments — `/cricket/tournaments`
 - **Football** (34)
-    - FB-01 Football Comp Fixtures â€” `/football/:comp/fixtures`
-    - FB-02 Football Comp H2h Matchup â€” `/football/:comp/h2h/:matchup`
-    - FB-03 Football Comp History Year â€” `/football/:comp/history/:year`
-    - FB-04 Football Comp History â€” `/football/:comp/history`
-    - FB-05 Football Comp â€” `/football/:comp`
-    - FB-06 Football Comp Matches MatchId â€” `/football/:comp/matches/:matchId`
-    - FB-07 Football Comp Players PlayerId â€” `/football/:comp/players/:playerId`
-    - FB-08 Football Comp Players â€” `/football/:comp/players`
-    - FB-09 Football Comp Records Category â€” `/football/:comp/records/:category`
-    - FB-10 Football Comp Records Decades â€” `/football/:comp/records/decades`
-    - FB-11 Football Comp Records â€” `/football/:comp/records`
-    - FB-12 Football Comp Scores â€” `/football/:comp/scores`
-    - FB-13 Football Comp Seasons Year â€” `/football/:comp/seasons/:year`
-    - FB-14 Football Comp Standings â€” `/football/:comp/standings`
-    - FB-15 Football Comp Teams TeamId â€” `/football/:comp/teams/:teamId`
-    - FB-16 Football Comp Teams TeamId Season Year â€” `/football/:comp/teams/:teamId/season-:year`
-    - FB-17 Football Comp Teams â€” `/football/:comp/teams`
-    - FB-18 Football Campaigns Slug â€” `/football/campaigns/:slug`
-    - FB-19 Football Campaigns â€” `/football/campaigns`
-    - FB-20 Football Countries Slug World Cup Year â€” `/football/countries/:slug/world-cup-:year`
-    - FB-21 Football Countries â€” `/football/countries`
-    - FB-22 Football â€” `/football`
-    - FB-23 Football Match Id â€” `/football/match/:id`
-    - FB-24 Football Matches Slug â€” `/football/matches/:slug`
-    - FB-25 Football Mine â€” `/football/mine`
-    - FB-26 Football Players Slug â€” `/football/players/:slug`
-    - FB-27 Football Players Slug World Cup Year â€” `/football/players/:slug/world-cup-:year`
-    - FB-28 Football Players â€” `/football/players`
-    - FB-29 Football Records Category â€” `/football/records/:category`
-    - FB-30 Football Teams Slug â€” `/football/teams/:slug`
-    - FB-31 Football Top Scorers Year â€” `/football/top-scorers/:year`
-    - FB-32 Football Top Scorers â€” `/football/top-scorers`
-    - FB-33 Football Tournaments Year â€” `/football/tournaments/:year`
-    - FB-34 Football Venues â€” `/football/venues`
+    - FB-01 Football Comp Fixtures — `/football/:comp/fixtures`
+    - FB-02 Football Comp H2h Matchup — `/football/:comp/h2h/:matchup`
+    - FB-03 Football Comp History Year — `/football/:comp/history/:year`
+    - FB-04 Football Comp History — `/football/:comp/history`
+    - FB-05 Football Comp — `/football/:comp`
+    - FB-06 Football Comp Matches MatchId — `/football/:comp/matches/:matchId`
+    - FB-07 Football Comp Players PlayerId — `/football/:comp/players/:playerId`
+    - FB-08 Football Comp Players — `/football/:comp/players`
+    - FB-09 Football Comp Records Category — `/football/:comp/records/:category`
+    - FB-10 Football Comp Records Decades — `/football/:comp/records/decades`
+    - FB-11 Football Comp Records — `/football/:comp/records`
+    - FB-12 Football Comp Scores — `/football/:comp/scores`
+    - FB-13 Football Comp Seasons Year — `/football/:comp/seasons/:year`
+    - FB-14 Football Comp Standings — `/football/:comp/standings`
+    - FB-15 Football Comp Teams TeamId — `/football/:comp/teams/:teamId`
+    - FB-16 Football Comp Teams TeamId Season Year — `/football/:comp/teams/:teamId/season-:year`
+    - FB-17 Football Comp Teams — `/football/:comp/teams`
+    - FB-18 Football Campaigns Slug — `/football/campaigns/:slug`
+    - FB-19 Football Campaigns — `/football/campaigns`
+    - FB-20 Football Countries Slug World Cup Year — `/football/countries/:slug/world-cup-:year`
+    - FB-21 Football Countries — `/football/countries`
+    - FB-22 Football — `/football`
+    - FB-23 Football Match Id — `/football/match/:id`
+    - FB-24 Football Matches Slug — `/football/matches/:slug`
+    - FB-25 Football Mine — `/football/mine`
+    - FB-26 Football Players Slug — `/football/players/:slug`
+    - FB-27 Football Players Slug World Cup Year — `/football/players/:slug/world-cup-:year`
+    - FB-28 Football Players — `/football/players`
+    - FB-29 Football Records Category — `/football/records/:category`
+    - FB-30 Football Teams Slug — `/football/teams/:slug`
+    - FB-31 Football Top Scorers Year — `/football/top-scorers/:year`
+    - FB-32 Football Top Scorers — `/football/top-scorers`
+    - FB-33 Football Tournaments Year — `/football/tournaments/:year`
+    - FB-34 Football Venues — `/football/venues`
 - **Guides** (4)
-    - GUIDE-01 Guides Slug â€” `/guides/:slug`
-    - GUIDE-02 Guides â€” `/guides`
-    - GUIDE-03 Highlights Slug â€” `/highlights/:slug`
-    - GUIDE-04 Highlights â€” `/highlights`
+    - GUIDE-01 Guides Slug — `/guides/:slug`
+    - GUIDE-02 Guides — `/guides`
+    - GUIDE-03 Highlights Slug — `/highlights/:slug`
+    - GUIDE-04 Highlights — `/highlights`
 - **Home** (1)
-    - HOME-01 Index â€” `/`
+    - HOME-01 Index — `/`
 - **Live** (2)
-    - LIVE-01 Live Sport â€” `/live/:sport`
-    - LIVE-02 Live Today â€” `/live/today`
+    - LIVE-01 Live Sport — `/live/:sport`
+    - LIVE-02 Live Today — `/live/today`
 - **My Sports** (1)
-    - MINE-01 Mine â€” `/mine`
+    - MINE-01 Mine — `/mine`
 - **MLB** (17)
-    - MLB-01 Mlb Champions â€” `/mlb/champions`
-    - MLB-02 Mlb Game Id â€” `/mlb/game/:id`
-    - MLB-03 Mlb History â€” `/mlb/history`
-    - MLB-04 Mlb â€” `/mlb`
-    - MLB-05 Mlb News â€” `/mlb/news`
-    - MLB-06 Mlb Player Id â€” `/mlb/player/:id`
-    - MLB-07 Mlb Players Slug â€” `/mlb/players/:slug`
-    - MLB-08 Mlb Players â€” `/mlb/players`
-    - MLB-09 Mlb Postseason â€” `/mlb/postseason`
-    - MLB-10 Mlb Records Category â€” `/mlb/records/:category`
-    - MLB-11 Mlb Scores â€” `/mlb/scores`
-    - MLB-12 Mlb Standings â€” `/mlb/standings`
-    - MLB-13 Mlb Team History Slug â€” `/mlb/team-history/:slug`
-    - MLB-14 Mlb Team Id â€” `/mlb/team/:id`
-    - MLB-15 Mlb Teams â€” `/mlb/teams`
-    - MLB-16 Mlb Teams Slug â€” `/mlb/teams/:slug`
-    - MLB-17 Mlb World Series Year â€” `/mlb/world-series/:year`
+    - MLB-01 Mlb Champions — `/mlb/champions`
+    - MLB-02 Mlb Game Id — `/mlb/game/:id`
+    - MLB-03 Mlb History — `/mlb/history`
+    - MLB-04 Mlb — `/mlb`
+    - MLB-05 Mlb News — `/mlb/news`
+    - MLB-06 Mlb Player Id — `/mlb/player/:id`
+    - MLB-07 Mlb Players Slug — `/mlb/players/:slug`
+    - MLB-08 Mlb Players — `/mlb/players`
+    - MLB-09 Mlb Postseason — `/mlb/postseason`
+    - MLB-10 Mlb Records Category — `/mlb/records/:category`
+    - MLB-11 Mlb Scores — `/mlb/scores`
+    - MLB-12 Mlb Standings — `/mlb/standings`
+    - MLB-13 Mlb Team History Slug — `/mlb/team-history/:slug`
+    - MLB-14 Mlb Team Id — `/mlb/team/:id`
+    - MLB-15 Mlb Teams — `/mlb/teams`
+    - MLB-16 Mlb Teams Slug — `/mlb/teams/:slug`
+    - MLB-17 Mlb World Series Year — `/mlb/world-series/:year`
 - **MLS** (15)
-    - MLS-01 Mls Champions â€” `/mls/champions`
-    - MLS-02 Mls Cup Year â€” `/mls/cup/:year`
-    - MLS-03 Mls Game Id â€” `/mls/game/:id`
-    - MLS-04 Mls History â€” `/mls/history`
-    - MLS-05 Mls â€” `/mls`
-    - MLS-06 Mls Leaders â€” `/mls/leaders`
-    - MLS-07 Mls News â€” `/mls/news`
-    - MLS-08 Mls Player Id â€” `/mls/player/:id`
-    - MLS-09 Mls Players Slug â€” `/mls/players/:slug`
-    - MLS-10 Mls Scores â€” `/mls/scores`
-    - MLS-11 Mls Standings â€” `/mls/standings`
-    - MLS-12 Mls Team History Slug â€” `/mls/team-history/:slug`
-    - MLS-13 Mls Team Id â€” `/mls/team/:id`
-    - MLS-14 Mls Teams â€” `/mls/teams`
-    - MLS-15 Mls Teams Slug â€” `/mls/teams/:slug`
+    - MLS-01 Mls Champions — `/mls/champions`
+    - MLS-02 Mls Cup Year — `/mls/cup/:year`
+    - MLS-03 Mls Game Id — `/mls/game/:id`
+    - MLS-04 Mls History — `/mls/history`
+    - MLS-05 Mls — `/mls`
+    - MLS-06 Mls Leaders — `/mls/leaders`
+    - MLS-07 Mls News — `/mls/news`
+    - MLS-08 Mls Player Id — `/mls/player/:id`
+    - MLS-09 Mls Players Slug — `/mls/players/:slug`
+    - MLS-10 Mls Scores — `/mls/scores`
+    - MLS-11 Mls Standings — `/mls/standings`
+    - MLS-12 Mls Team History Slug — `/mls/team-history/:slug`
+    - MLS-13 Mls Team Id — `/mls/team/:id`
+    - MLS-14 Mls Teams — `/mls/teams`
+    - MLS-15 Mls Teams Slug — `/mls/teams/:slug`
 - **NBA** (15)
-    - NBA-01 Nba Champions â€” `/nba/champions`
-    - NBA-02 Nba Finals Year â€” `/nba/finals/:year`
-    - NBA-03 Nba Game Id â€” `/nba/game/:id`
-    - NBA-04 Nba History â€” `/nba/history`
-    - NBA-05 Nba â€” `/nba`
-    - NBA-06 Nba Leaders â€” `/nba/leaders`
-    - NBA-07 Nba News â€” `/nba/news`
-    - NBA-08 Nba Player Id â€” `/nba/player/:id`
-    - NBA-09 Nba Players Slug â€” `/nba/players/:slug`
-    - NBA-10 Nba Scores â€” `/nba/scores`
-    - NBA-11 Nba Standings â€” `/nba/standings`
-    - NBA-12 Nba Team History Slug â€” `/nba/team-history/:slug`
-    - NBA-13 Nba Team Id â€” `/nba/team/:id`
-    - NBA-14 Nba Teams â€” `/nba/teams`
-    - NBA-15 Nba Teams Slug â€” `/nba/teams/:slug`
+    - NBA-01 Nba Champions — `/nba/champions`
+    - NBA-02 Nba Finals Year — `/nba/finals/:year`
+    - NBA-03 Nba Game Id — `/nba/game/:id`
+    - NBA-04 Nba History — `/nba/history`
+    - NBA-05 Nba — `/nba`
+    - NBA-06 Nba Leaders — `/nba/leaders`
+    - NBA-07 Nba News — `/nba/news`
+    - NBA-08 Nba Player Id — `/nba/player/:id`
+    - NBA-09 Nba Players Slug — `/nba/players/:slug`
+    - NBA-10 Nba Scores — `/nba/scores`
+    - NBA-11 Nba Standings — `/nba/standings`
+    - NBA-12 Nba Team History Slug — `/nba/team-history/:slug`
+    - NBA-13 Nba Team Id — `/nba/team/:id`
+    - NBA-14 Nba Teams — `/nba/teams`
+    - NBA-15 Nba Teams Slug — `/nba/teams/:slug`
 - **News** (2)
-    - NEWS-01 News Slug â€” `/news/:slug`
-    - NEWS-02 News â€” `/news`
+    - NEWS-01 News Slug — `/news/:slug`
+    - NEWS-02 News — `/news`
 - **NHL** (15)
-    - NHL-01 Nhl Champions â€” `/nhl/champions`
-    - NHL-02 Nhl Game Id â€” `/nhl/game/:id`
-    - NHL-03 Nhl History â€” `/nhl/history`
-    - NHL-04 Nhl â€” `/nhl`
-    - NHL-05 Nhl Leaders â€” `/nhl/leaders`
-    - NHL-06 Nhl News â€” `/nhl/news`
-    - NHL-07 Nhl Player Id â€” `/nhl/player/:id`
-    - NHL-08 Nhl Players Slug â€” `/nhl/players/:slug`
-    - NHL-09 Nhl Scores â€” `/nhl/scores`
-    - NHL-10 Nhl Standings â€” `/nhl/standings`
-    - NHL-11 Nhl Stanley Cup Year â€” `/nhl/stanley-cup/:year`
-    - NHL-12 Nhl Team History Slug â€” `/nhl/team-history/:slug`
-    - NHL-13 Nhl Team Id â€” `/nhl/team/:id`
-    - NHL-14 Nhl Teams â€” `/nhl/teams`
-    - NHL-15 Nhl Teams Slug â€” `/nhl/teams/:slug`
+    - NHL-01 Nhl Champions — `/nhl/champions`
+    - NHL-02 Nhl Game Id — `/nhl/game/:id`
+    - NHL-03 Nhl History — `/nhl/history`
+    - NHL-04 Nhl — `/nhl`
+    - NHL-05 Nhl Leaders — `/nhl/leaders`
+    - NHL-06 Nhl News — `/nhl/news`
+    - NHL-07 Nhl Player Id — `/nhl/player/:id`
+    - NHL-08 Nhl Players Slug — `/nhl/players/:slug`
+    - NHL-09 Nhl Scores — `/nhl/scores`
+    - NHL-10 Nhl Standings — `/nhl/standings`
+    - NHL-11 Nhl Stanley Cup Year — `/nhl/stanley-cup/:year`
+    - NHL-12 Nhl Team History Slug — `/nhl/team-history/:slug`
+    - NHL-13 Nhl Team Id — `/nhl/team/:id`
+    - NHL-14 Nhl Teams — `/nhl/teams`
+    - NHL-15 Nhl Teams Slug — `/nhl/teams/:slug`
 - **Players** (2)
-    - PLYR-01 Player Sport Slug â€” `/player/:sport/:slug`
-    - PLYR-02 Players â€” `/players`
+    - PLYR-01 Player Sport Slug — `/player/:sport/:slug`
+    - PLYR-02 Players — `/players`
 - **Premium** (1)
-    - PREM-01 Premium â€” `/premium`
+    - PREM-01 Premium — `/premium`
 - **Search** (1)
-    - SRCH-01 Search â€” `/search`
+    - SRCH-01 Search — `/search`
 
 ## 3. Master table
 
@@ -208,14 +208,14 @@ Generated from the real router files in `src/routes` and cross-checked against `
 |---|---|---|---|---|---|---|---|---|---|---|
 | UTIL-01 | Utility | - | About | Full page | `/about`<br>`src/routes/about.tsx` | About page with DB override | site/LegalLayout, ui/state | static default + site settings | empty, loading | DONE |
 | ADMIN-01 | Admin | - | Admin | Full page | `/admin`<br>`src/routes/admin.tsx` | Role-gated console: overview, SEO, monetise, audience, content, settings, match video library | admin/*, ui/state | Supabase + wc2026.functions | loading, empty, error+retry, unauthorized | DONE |
-| XSPT-01 | Cross-sport | â€” | Archive Sport Year | Full page | `/archive/:sport/:year`<br>`src/routes/archive.$sport.$year.tsx` | SSR loader; JSON-LD; head meta | affiliates/AffiliateStrip, ads/AdSlot | server fn / query | error | DONE |
+| XSPT-01 | Cross-sport | — | Archive Sport Year | Full page | `/archive/:sport/:year`<br>`src/routes/archive.$sport.$year.tsx` | SSR loader; JSON-LD; head meta | affiliates/AffiliateStrip, ads/AdSlot | server fn / query | error | DONE |
 | AUTH-01 | Auth | - | Auth | Full page | `/auth`<br>`src/routes/auth.tsx` | Admin email/password sign-in with session redirect | - | Supabase Auth | loading, inline error | DONE |
 | UTIL-02 | Utility | - | Contact | Full page | `/contact`<br>`src/routes/contact.tsx` | Contact form with inline status | site/LegalLayout | contact.functions | error, success | DONE |
 | UTIL-03 | Utility | - | Cookies | Full page | `/cookies`<br>`src/routes/cookies.tsx` | Cookie policy + consent trigger | site/LegalLayout, ui/state | static default + site settings | empty, loading | DONE |
 | CRK-01 | Cricket | CRK-04 | Cricket Highlight Detail | Full page | `/cricket/highlights/:slug`<br>`src/routes/cricket.highlights.$slug.tsx` | SSR video page; recap link; team profiles; related highlights | sports/SportNav, cricket/CricketSubNav, news/MatchRecapCard, ui/state | static entities + recap | error+retry, 404 | DONE |
 | CRK-02 | Cricket | CRK-04 | Cricket Highlights | Full page | `/cricket/highlights`<br>`src/routes/cricket.highlights.index.tsx` | Static tournament-grouped highlight cards | sports/SportNav, cricket/CricketSubNav, ui/state | static entities | empty | DONE |
 | CRK-03 | Cricket | CRK-04 | Cricket History | Full page | `/cricket/history`<br>`src/routes/cricket.history.tsx` | Tournament switcher; champions table; run/wicket leaders | sports/SportNav, cricket/CricketSubNav, cricket/PlayerLink, ui/state | static history JSON | empty | DONE |
-| CRK-04 | Cricket | â€” | Cricket hub | Full page | `/cricket`<br>`src/routes/cricket.index.tsx` | SSR slate; hero/pulse; internationals; featured + discovered series; live/today/upcoming/results | sports/SportNav, cricket/CricketSubNav, cricket/CricketHero, cricket/LivePulseStrip | cricket.functions | loading, empty, error+retry | DONE |
+| CRK-04 | Cricket | — | Cricket hub | Full page | `/cricket`<br>`src/routes/cricket.index.tsx` | SSR slate; hero/pulse; internationals; featured + discovered series; live/today/upcoming/results | sports/SportNav, cricket/CricketSubNav, cricket/CricketHero, cricket/LivePulseStrip | cricket.functions | loading, empty, error+retry | DONE |
 | CRK-05 | Cricket | CRK-06 | IPL History | Full page | `/cricket/ipl/history`<br>`src/routes/cricket.ipl.history.tsx` | SSR champions/awards/auctions; era/team/search filters; brackets | ipl/IplPageShell, cricket/PlayerLink, ui/state | ipl.functions | empty, error+retry | DONE |
 | CRK-06 | Cricket | CRK-04 | IPL Hub | Full page | `/cricket/ipl`<br>`src/routes/cricket.ipl.index.tsx` | SSR live/upcoming/recent, caps, standings preview, champions | ipl/IplHero, ipl/IplSubNav, ipl/OrangePurpleCap, cricket/CricketMatchCard | ipl.functions | empty, error+retry | DONE |
 | CRK-07 | Cricket | CRK-06 | IPL Players | Full page | `/cricket/ipl/players`<br>`src/routes/cricket.ipl.players.tsx` | SSR leaderboards; caps; season-aware sixes | ipl/IplPageShell, ipl/OrangePurpleCap, cricket/PlayerLink, ui/state | ipl.functions | empty, error+retry | DONE |
@@ -266,21 +266,21 @@ Generated from the real router files in `src/routes` and cross-checked against `
 | FB-25 | Football | FB-22 | Football Mine | Full page | `/football/mine`<br>`src/routes/football.mine.tsx` | Starred-team live/upcoming/recent feed; reminders | ui/state | wc2026.functions + local storage | loading, empty, error+retry | DONE |
 | FB-26 | Football | FB-22 | Football Player Profile | Full page | `/football/players/:slug`<br>`src/routes/football.players.$slug.index.tsx` | Career stats; tournament breakdown; about; FAQs; team-mates | ads/AdSlot, seo/FaqSection, seo/RelatedLinks, ui/state | static player data + merged goals/cards | empty, error+retry, 404 | DONE |
 | FB-27 | Football | FB-22 | Football Player World Cup Year | Full page | `/football/players/:slug/world-cup-:year`<br>`src/routes/football.players.$slug.world-cup-{$year}.tsx` | Per-year stats plus career goals/cards aliases | seo/RelatedLinks, ui/state | static player data | empty, error+retry, 404 | DONE |
-| FB-28 | Football | FB-22 | Football Players | Full page | `/football/players`<br>`src/routes/football.players.index.tsx` | SSR Aâ€“Z goalscorer index with letter anchors | ui/state, seo/withHubLinks | programmatic entities | empty | DONE |
+| FB-28 | Football | FB-22 | Football Players | Full page | `/football/players`<br>`src/routes/football.players.index.tsx` | SSR A–Z goalscorer index with letter anchors | ui/state, seo/withHubLinks | programmatic entities | empty | DONE |
 | FB-29 | Football | FB-22 | Football Records Category | Full page | `/football/records/:category`<br>`src/routes/football.records.$category.tsx` | Four records views: all-time scorers, iconic records, 2026 live totals, tournament totals | ui/state | static record data + merged live goals/cards | empty, error+retry, 404 | DONE |
 | FB-30 | Football | FB-22 | Football Team Profile | Full page | `/football/teams/:slug`<br>`src/routes/football.teams.$slug.tsx` | Team hero stats; top scorers; recent matches; appearances; squad links | ads/AdSlot, seo/FaqSection, seo/RelatedLinks, ui/state | static team data | empty, error+retry, 404 | DONE |
 | FB-31 | Football | FB-22 | Football Top Scorers Year | Full page | `/football/top-scorers/:year`<br>`src/routes/football.top-scorers.$year.tsx` | SSR year/all-time scorer table; FAQ; year nav | ads/AdSlot, seo/withYearNav, ui/state | static entities | empty, error+retry, 404 | DONE |
 | FB-32 | Football | FB-22 | Football Top Scorers | Full page | `/football/top-scorers`<br>`src/routes/football.top-scorers.index.tsx` | All-time feature + yearly top-scorer links | ui/state, seo/withHubLinks | static entities | empty | DONE |
 | FB-33 | Football | FB-22 | Football Tournament Year | Full page | `/football/tournaments/:year`<br>`src/routes/football.tournaments.$year.tsx` | SSR podium/stats/awards; top scorers; year nav | seo/withYearNav, ui/state | static tournaments | error+retry, 404 | DONE |
 | FB-34 | Football | FB-22 | Football Venues | Full page | `/football/venues`<br>`src/routes/football.venues.tsx` | 16 WC2026 host stadiums grouped by country; logistics guide | ui/state | static venues | empty | DONE |
-| GUIDE-01 | Guides | GUIDE-02 | Guides Slug | Full page | `/guides/:slug`<br>`src/routes/guides.$slug.tsx` | SSR loader; JSON-LD; head meta | â€” | server fn / query | error | DONE |
-| GUIDE-02 | Guides | â€” | Guides | Full page | `/guides`<br>`src/routes/guides.index.tsx` | JSON-LD; head meta | â€” | static/local | not verified | DONE |
-| GUIDE-03 | Guides | GUIDE-02 | Highlights Slug | Full page | `/highlights/:slug`<br>`src/routes/highlights.$slug.tsx` | SSR loader; JSON-LD; head meta | â€” | server fn / query | loading, error | DONE |
-| GUIDE-04 | Guides | GUIDE-02 | Highlights | Full page | `/highlights`<br>`src/routes/highlights.index.tsx` | JSON-LD; head meta | â€” | static/local | not verified | DONE |
-| HOME-01 | Home | â€” | Home dashboard | Full page | `/`<br>`src/routes/index.tsx` | SSR hero feeds; live/upcoming/finals; sport chips; cricket + football slates; sport doors | home/CompactHero, home/StatusBar, home/SportChipTabs, home/ForYouStrip | espn.functions, wc2026.functions, cricket.functions | loading, empty, error+retry | DONE |
+| GUIDE-01 | Guides | GUIDE-02 | Guides Slug | Full page | `/guides/:slug`<br>`src/routes/guides.$slug.tsx` | SSR loader; JSON-LD; head meta | — | server fn / query | error | DONE |
+| GUIDE-02 | Guides | — | Guides | Full page | `/guides`<br>`src/routes/guides.index.tsx` | JSON-LD; head meta | — | static/local | not verified | DONE |
+| GUIDE-03 | Guides | GUIDE-02 | Highlights Slug | Full page | `/highlights/:slug`<br>`src/routes/highlights.$slug.tsx` | SSR loader; JSON-LD; head meta | — | server fn / query | loading, error | DONE |
+| GUIDE-04 | Guides | GUIDE-02 | Highlights | Full page | `/highlights`<br>`src/routes/highlights.index.tsx` | JSON-LD; head meta | — | static/local | not verified | DONE |
+| HOME-01 | Home | — | Home dashboard | Full page | `/`<br>`src/routes/index.tsx` | SSR hero feeds; live/upcoming/finals; sport chips; cricket + football slates; sport doors | home/CompactHero, home/StatusBar, home/SportChipTabs, home/ForYouStrip | espn.functions, wc2026.functions, cricket.functions | loading, empty, error+retry | DONE |
 | LIVE-01 | Live | LIVE-02 | Live Sport | Full page | `/live/:sport`<br>`src/routes/live.$sport.tsx` | Sport live-hub entry; 404 for unknown sport; hub CTA | ui/state | static hub map | 404, invalid sport | DONE |
 | LIVE-02 | Live | - | Live Today | Full page | `/live/today`<br>`src/routes/live.today.tsx` | Cross-sport live index | seo/withHubLinks | static | not applicable | DONE |
-| MINE-01 | My Sports | â€” | Mine | Full page | `/mine`<br>`src/routes/mine.tsx` | head meta | common/FavoriteTeamPicker | static/local | loading, empty | DONE |
+| MINE-01 | My Sports | — | Mine | Full page | `/mine`<br>`src/routes/mine.tsx` | head meta | common/FavoriteTeamPicker | static/local | loading, empty | DONE |
 | MLB-01 | MLB | MLB-04 | MLB Champions | Full page | `/mlb/champions`<br>`src/routes/mlb.champions.tsx` | World Series winners, title counts, team histories | ui/state | static | empty | DONE |
 | MLB-02 | MLB | MLB-04 | MLB Game Centre | Full page | `/mlb/game/:id`<br>`src/routes/mlb.game.$id.tsx` | Linescore, boxscore, plays, win probability, info | mlb/*, ui/state | mlb.functions | loading, empty, error+retry | DONE |
 | MLB-03 | MLB | MLB-04 | MLB History | Full page | `/mlb/history`<br>`src/routes/mlb.history.tsx` | Timeline plus season leader snapshots | mlb/HistoryTimeline, mlb/MlbSeasonLeaderHistory, ui/state | static + mlb.functions | empty, error+retry | DONE |
@@ -302,10 +302,10 @@ Generated from the real router files in `src/routes` and cross-checked against `
 | MLS-02 | MLS | MLS-05 | Mls Cup Year | Full page | `/mls/cup/:year`<br>`src/routes/mls.cup.$year.tsx` | SSR loader; JSON-LD; head meta | seo/withYearNav | server fn / query | error | DONE |
 | MLS-03 | MLS | MLS-05 | Mls Game Id | Full page | `/mls/game/:id`<br>`src/routes/mls.game.$id.tsx` | SSR loader; client query; JSON-LD; head meta | mls/MlsLinescore, mls/MlsBoxScore, mls/MlsPlayByPlay, seo/MatchFaqBlock | mls.functions | loading | DONE |
 | MLS-04 | MLS | MLS-05 | Mls History | Full page | `/mls/history`<br>`src/routes/mls.history.tsx` | JSON-LD; head meta | seo/withHubLinks | static/local | not verified | DONE |
-| MLS-05 | MLS | â€” | Mls | Full page | `/mls`<br>`src/routes/mls.index.tsx` | SSR loader; client query; JSON-LD; head meta | sports/GameCard, mls/MlsLeaderBoard, ads/AdSlot, sports/DateScrubber | mls.functions, espn.functions | loading, empty | DONE |
+| MLS-05 | MLS | — | Mls | Full page | `/mls`<br>`src/routes/mls.index.tsx` | SSR loader; client query; JSON-LD; head meta | sports/GameCard, mls/MlsLeaderBoard, ads/AdSlot, sports/DateScrubber | mls.functions, espn.functions | loading, empty | DONE |
 | MLS-06 | MLS | MLS-05 | Mls Leaders | Full page | `/mls/leaders`<br>`src/routes/mls.leaders.tsx` | SSR loader; client query; JSON-LD; head meta | mls/MlsLeaderBoard, seo/withHubLinks | mls.functions | loading, empty | DONE |
 | MLS-07 | MLS | MLS-05 | Mls News | Full page | `/mls/news`<br>`src/routes/mls.news.tsx` | client query; JSON-LD; head meta | sports/NewsRail, seo/withHubLinks | espn.functions | loading | DONE |
-| MLS-08 | MLS | MLS-05 | Mls Player Id | Full page | `/mls/player/:id`<br>`src/routes/mls.player.$id.tsx` | SSR loader; client query; JSON-LD; head meta | â€” | mls.functions | loading, empty | DONE |
+| MLS-08 | MLS | MLS-05 | Mls Player Id | Full page | `/mls/player/:id`<br>`src/routes/mls.player.$id.tsx` | SSR loader; client query; JSON-LD; head meta | — | mls.functions | loading, empty | DONE |
 | MLS-09 | MLS | MLS-05 | Mls Players Slug | Full page | `/mls/players/:slug`<br>`src/routes/mls.players.$slug.tsx` | SSR loader; JSON-LD; head meta | seo/RelatedLinks | server fn / query | error | DONE |
 | MLS-10 | MLS | MLS-05 | Mls Scores | Full page | `/mls/scores`<br>`src/routes/mls.scores.tsx` | client query; JSON-LD; head meta | sports/GameCard, sports/DateScrubber, seo/withHubLinks | mls.functions | loading, empty | DONE |
 | MLS-11 | MLS | MLS-05 | Mls Standings | Full page | `/mls/standings`<br>`src/routes/mls.standings.tsx` | SSR loader; client query; JSON-LD; head meta | mls/MlsStandingsPro, seo/withHubLinks | mls.functions | loading | DONE |
@@ -317,10 +317,10 @@ Generated from the real router files in `src/routes` and cross-checked against `
 | NBA-02 | NBA | NBA-05 | Nba Finals Year | Full page | `/nba/finals/:year`<br>`src/routes/nba.finals.$year.tsx` | SSR loader; JSON-LD; head meta | seo/withYearNav | server fn / query | error | DONE |
 | NBA-03 | NBA | NBA-05 | Nba Game Id | Full page | `/nba/game/:id`<br>`src/routes/nba.game.$id.tsx` | SSR loader; client query; JSON-LD; head meta | nba/NbaLinescore, nba/NbaBoxScore, nba/NbaPlayByPlay, seo/MatchFaqBlock | nba.functions | loading | DONE |
 | NBA-04 | NBA | NBA-05 | Nba History | Full page | `/nba/history`<br>`src/routes/nba.history.tsx` | JSON-LD; head meta | seo/withHubLinks | static/local | not verified | DONE |
-| NBA-05 | NBA | â€” | Nba | Full page | `/nba`<br>`src/routes/nba.index.tsx` | SSR loader; client query; JSON-LD; head meta | sports/GameCard, nba/NbaLeaderBoard, ads/AdSlot, sports/DateScrubber | nba.functions, espn.functions | loading, empty | DONE |
+| NBA-05 | NBA | — | Nba | Full page | `/nba`<br>`src/routes/nba.index.tsx` | SSR loader; client query; JSON-LD; head meta | sports/GameCard, nba/NbaLeaderBoard, ads/AdSlot, sports/DateScrubber | nba.functions, espn.functions | loading, empty | DONE |
 | NBA-06 | NBA | NBA-05 | Nba Leaders | Full page | `/nba/leaders`<br>`src/routes/nba.leaders.tsx` | SSR loader; client query; JSON-LD; head meta | nba/NbaLeaderBoard, seo/withHubLinks | nba.functions | loading, empty | DONE |
 | NBA-07 | NBA | NBA-05 | Nba News | Full page | `/nba/news`<br>`src/routes/nba.news.tsx` | client query; JSON-LD; head meta | sports/NewsRail, seo/withHubLinks | espn.functions | loading | DONE |
-| NBA-08 | NBA | NBA-05 | Nba Player Id | Full page | `/nba/player/:id`<br>`src/routes/nba.player.$id.tsx` | SSR loader; client query; JSON-LD; head meta | â€” | nba.functions | loading, empty | DONE |
+| NBA-08 | NBA | NBA-05 | Nba Player Id | Full page | `/nba/player/:id`<br>`src/routes/nba.player.$id.tsx` | SSR loader; client query; JSON-LD; head meta | — | nba.functions | loading, empty | DONE |
 | NBA-09 | NBA | NBA-05 | Nba Players Slug | Full page | `/nba/players/:slug`<br>`src/routes/nba.players.$slug.tsx` | SSR loader; JSON-LD; head meta | seo/RelatedLinks | server fn / query | error | DONE |
 | NBA-10 | NBA | NBA-05 | Nba Scores | Full page | `/nba/scores`<br>`src/routes/nba.scores.tsx` | client query; JSON-LD; head meta | sports/GameCard, sports/DateScrubber, seo/withHubLinks | nba.functions | loading, empty | DONE |
 | NBA-11 | NBA | NBA-05 | Nba Standings | Full page | `/nba/standings`<br>`src/routes/nba.standings.tsx` | SSR loader; client query; JSON-LD; head meta | nba/NbaStandingsPro, seo/withHubLinks | nba.functions | loading | DONE |
@@ -333,10 +333,10 @@ Generated from the real router files in `src/routes` and cross-checked against `
 | NHL-01 | NHL | NHL-04 | Nhl Champions | Full page | `/nhl/champions`<br>`src/routes/nhl.champions.tsx` | JSON-LD; head meta | seo/withHubLinks | static/local | not verified | DONE |
 | NHL-02 | NHL | NHL-04 | Nhl Game Id | Full page | `/nhl/game/:id`<br>`src/routes/nhl.game.$id.tsx` | SSR loader; client query; JSON-LD; head meta | nhl/NhlLinescore, nhl/NhlBoxScore, nhl/NhlPlayByPlay, seo/MatchFaqBlock | nhl.functions | loading | DONE |
 | NHL-03 | NHL | NHL-04 | Nhl History | Full page | `/nhl/history`<br>`src/routes/nhl.history.tsx` | JSON-LD; head meta | seo/withHubLinks | static/local | not verified | DONE |
-| NHL-04 | NHL | â€” | Nhl | Full page | `/nhl`<br>`src/routes/nhl.index.tsx` | SSR loader; client query; JSON-LD; head meta | sports/GameCard, nhl/NhlLeaderBoard, ads/AdSlot, sports/DateScrubber | nhl.functions, espn.functions | loading, empty | DONE |
+| NHL-04 | NHL | — | Nhl | Full page | `/nhl`<br>`src/routes/nhl.index.tsx` | SSR loader; client query; JSON-LD; head meta | sports/GameCard, nhl/NhlLeaderBoard, ads/AdSlot, sports/DateScrubber | nhl.functions, espn.functions | loading, empty | DONE |
 | NHL-05 | NHL | NHL-04 | Nhl Leaders | Full page | `/nhl/leaders`<br>`src/routes/nhl.leaders.tsx` | SSR loader; client query; JSON-LD; head meta | nhl/NhlLeaderBoard, seo/withHubLinks | nhl.functions | loading, empty | DONE |
 | NHL-06 | NHL | NHL-04 | Nhl News | Full page | `/nhl/news`<br>`src/routes/nhl.news.tsx` | client query; JSON-LD; head meta | sports/NewsRail, seo/withHubLinks | espn.functions | loading | DONE |
-| NHL-07 | NHL | NHL-04 | Nhl Player Id | Full page | `/nhl/player/:id`<br>`src/routes/nhl.player.$id.tsx` | SSR loader; client query; JSON-LD; head meta | â€” | nhl.functions | loading, empty | DONE |
+| NHL-07 | NHL | NHL-04 | Nhl Player Id | Full page | `/nhl/player/:id`<br>`src/routes/nhl.player.$id.tsx` | SSR loader; client query; JSON-LD; head meta | — | nhl.functions | loading, empty | DONE |
 | NHL-08 | NHL | NHL-04 | Nhl Players Slug | Full page | `/nhl/players/:slug`<br>`src/routes/nhl.players.$slug.tsx` | SSR loader; JSON-LD; head meta | seo/RelatedLinks | server fn / query | error | DONE |
 | NHL-09 | NHL | NHL-04 | Nhl Scores | Full page | `/nhl/scores`<br>`src/routes/nhl.scores.tsx` | client query; JSON-LD; head meta | sports/GameCard, sports/DateScrubber, seo/withHubLinks | nhl.functions | loading, empty | DONE |
 | NHL-10 | NHL | NHL-04 | Nhl Standings | Full page | `/nhl/standings`<br>`src/routes/nhl.standings.tsx` | SSR loader; client query; JSON-LD; head meta | nhl/NhlStandingsPro, seo/withHubLinks | nhl.functions | loading | DONE |
@@ -346,16 +346,16 @@ Generated from the real router files in `src/routes` and cross-checked against `
 | NHL-14 | NHL | NHL-04 | Nhl Teams | Full page | `/nhl/teams`<br>`src/routes/nhl.teams.tsx` | SSR loader; client query; JSON-LD; head meta | nhl/NhlTeamCard, seo/withHubLinks | nhl.functions | loading | DONE |
 | NHL-15 | NHL | NHL-04 | Nhl Teams Slug | Full page | `/nhl/teams/:slug`<br>`src/routes/nhl.teams_.$slug.tsx` | SSR loader; JSON-LD; head meta | nhl/NhlTeamView | server fn / query | loading, error | DONE |
 | PLYR-01 | Players | PLYR-02 | Player Sport Slug | Full page | `/player/:sport/:slug`<br>`src/routes/player.$sport.$slug.tsx` | SSR loader; JSON-LD; head meta | affiliates/AffiliateStrip, ads/AdSlot | server fn / query | error | DONE |
-| PLYR-02 | Players | â€” | Players | Full page | `/players`<br>`src/routes/players.tsx` | client query; JSON-LD; head meta | ads/AdSlot, players/PlayerSubNav, players/FilterBar, players/FilterSheet | server fn / query | loading, empty | DONE |
-| PREM-01 | Premium | â€” | Premium | Full page | `/premium`<br>`src/routes/premium.tsx` | head meta | â€” | static/local | not verified | DONE |
+| PLYR-02 | Players | — | Players | Full page | `/players`<br>`src/routes/players.tsx` | client query; JSON-LD; head meta | ads/AdSlot, players/PlayerSubNav, players/FilterBar, players/FilterSheet | server fn / query | loading, empty | DONE |
+| PREM-01 | Premium | — | Premium | Full page | `/premium`<br>`src/routes/premium.tsx` | head meta | — | static/local | not verified | DONE |
 | UTIL-05 | Utility | - | Privacy | Full page | `/privacy`<br>`src/routes/privacy.tsx` | Privacy policy | site/LegalLayout, ui/state | static default + site settings | empty, loading | DONE |
 | SRCH-01 | Search | - | Search | Full page | `/search`<br>`src/routes/search.tsx` | Fuzzy World Cup search; initial/no-results states | ui/state | static entities | empty, no results | DONE |
-| XSPT-02 | Cross-sport | â€” | Team Sport Slug | Full page | `/team/:sport/:slug`<br>`src/routes/team.$sport.$slug.tsx` | SSR loader; JSON-LD; head meta | affiliates/AffiliateStrip, ads/AdSlot | server fn / query | empty, error | DONE |
+| XSPT-02 | Cross-sport | — | Team Sport Slug | Full page | `/team/:sport/:slug`<br>`src/routes/team.$sport.$slug.tsx` | SSR loader; JSON-LD; head meta | affiliates/AffiliateStrip, ads/AdSlot | server fn / query | empty, error | DONE |
 | UTIL-06 | Utility | - | Terms | Full page | `/terms`<br>`src/routes/terms.tsx` | Terms of service | site/LegalLayout, ui/state | static default + site settings | empty, loading | DONE |
-| XSPT-03 | Cross-sport | â€” | Tournaments Tournament Leaderboard | Full page | `/tournaments/:tournament/:leaderboard`<br>`src/routes/tournaments.$tournament.$leaderboard.tsx` | SSR loader; JSON-LD; head meta | ads/AdSlot | server fn / query | error | DONE |
-| XSPT-04 | Cross-sport | â€” | Tournaments Fifa World Cup 2026 Stage | Full page | `/tournaments/fifa-world-cup-2026/:stage`<br>`src/routes/tournaments.fifa-world-cup-2026.$stage.tsx` | SSR loader; JSON-LD; head meta | â€” | server fn / query | error | DONE |
+| XSPT-03 | Cross-sport | — | Tournaments Tournament Leaderboard | Full page | `/tournaments/:tournament/:leaderboard`<br>`src/routes/tournaments.$tournament.$leaderboard.tsx` | SSR loader; JSON-LD; head meta | ads/AdSlot | server fn / query | error | DONE |
+| XSPT-04 | Cross-sport | — | Tournaments Fifa World Cup 2026 Stage | Full page | `/tournaments/fifa-world-cup-2026/:stage`<br>`src/routes/tournaments.fifa-world-cup-2026.$stage.tsx` | SSR loader; JSON-LD; head meta | — | server fn / query | error | DONE |
 | UTIL-07 | Utility | - | Unsubscribe | Full page | `/unsubscribe`<br>`src/routes/unsubscribe.tsx` | Token-based digest unsubscribe | ui/state | digest.functions | loading, error+retry, missing token | DONE |
-| XSPT-05 | Cross-sport | â€” | Vs Sport Matchup | Full page | `/vs/:sport/:matchup`<br>`src/routes/vs.$sport.$matchup.tsx` | SSR loader; JSON-LD; head meta | affiliates/AffiliateStrip, ads/AdSlot | server fn / query | empty, error | DONE |
+| XSPT-05 | Cross-sport | — | Vs Sport Matchup | Full page | `/vs/:sport/:matchup`<br>`src/routes/vs.$sport.$matchup.tsx` | SSR loader; JSON-LD; head meta | affiliates/AffiliateStrip, ads/AdSlot | server fn / query | empty, error | DONE |
 
 ## 4. Shared / global pieces and overlays
 

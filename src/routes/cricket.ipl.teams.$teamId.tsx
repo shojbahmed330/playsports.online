@@ -1,4 +1,4 @@
-﻿import { errorMessage } from "@/lib/error-message";
+import { errorMessage } from "@/lib/error-message";
 import { useMemo, useState } from "react";
 import { TeamCrest } from "@/components/cricket/TeamCrest";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
@@ -44,12 +44,12 @@ export const Route = createFileRoute("/cricket/ipl/teams/$teamId")({
     return {
       meta: loaderData?.team
         ? [
-            { title: `${loaderData.team.name} â€” IPL Franchise` },
+            { title: `${loaderData.team.name} — IPL Franchise` },
             {
               name: "description",
               content: `${loaderData.team.name} squad, fixtures, titles and franchise stats.`,
             },
-            { property: "og:title", content: `${loaderData.team.name} â€” IPL` },
+            { property: "og:title", content: `${loaderData.team.name} — IPL` },
             {
               property: "og:description",
               content: `Squad, fixtures and title history for ${loaderData.team.name}.`,
@@ -59,7 +59,7 @@ export const Route = createFileRoute("/cricket/ipl/teams/$teamId")({
             { property: "og:type", content: "website" },
             { property: "og:site_name", content: "PlaySports" },
             { name: "twitter:card", content: "summary_large_image" },
-            { name: "twitter:title", content: `${loaderData.team.name} â€” IPL` },
+            { name: "twitter:title", content: `${loaderData.team.name} — IPL` },
             {
               name: "twitter:description",
               content: `Squad, fixtures and title history for ${loaderData.team.name}.`,
@@ -182,13 +182,13 @@ function TeamPage() {
   return (
     <IplPageShell
       title={t.name}
-      subtitle={`${t.city} Â· founded ${t.founded}`}
+      subtitle={`${t.city} · founded ${t.founded}`}
       right={
         <Link
           to="/cricket/ipl/teams"
           className="rounded-full bg-muted px-3 py-1.5 text-xs font-semibold text-foreground ring-1 ring-border hover:bg-muted"
         >
-          â† All teams
+          ← All teams
         </Link>
       }
     >
@@ -213,7 +213,7 @@ function TeamPage() {
           <div className="min-w-0">
             <div className="inline-flex items-center gap-2 rounded-full bg-background px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.22em] ring-1 ring-border">
               <span className="size-1.5 rounded-full bg-muted animate-pulse motion-reduce:animate-none" />{" "}
-              {t.short} Â· IPL Franchise
+              {t.short} · IPL Franchise
             </div>
             <h2 className="mt-2 truncate text-2xl sm:text-4xl font-black drop-shadow-[0_2px_8px_rgba(0,0,0,0.45)]">
               {t.name}
@@ -261,7 +261,7 @@ function TeamPage() {
             </option>
           ))}
         </select>
-        {squadQ.isFetching && <span className="text-[10px] text-foreground">Loadingâ€¦</span>}
+        {squadQ.isFetching && <span className="text-[10px] text-foreground">Loading…</span>}
       </div>
 
       {/* Tabs */}
@@ -269,10 +269,10 @@ function TeamPage() {
         {(
           [
             { id: "overview", label: "Overview" },
-            { id: "squad", label: `Squad${squadQ.data ? ` Â· ${squadQ.data.players.length}` : ""}` },
-            { id: "fixtures", label: `Fixtures Â· ${data.fixtures.length}` },
+            { id: "squad", label: `Squad${squadQ.data ? ` · ${squadQ.data.players.length}` : ""}` },
+            { id: "fixtures", label: `Fixtures · ${data.fixtures.length}` },
             { id: "h2h", label: "Head-to-head" },
-            { id: "titles", label: `Titles Â· ${titleSeasons.length}` },
+            { id: "titles", label: `Titles · ${titleSeasons.length}` },
           ] as const
         ).map((opt) => (
           <button
@@ -306,7 +306,7 @@ function TeamPage() {
                 rel="noopener noreferrer"
                 className="mt-3 inline-flex items-center gap-1 rounded-full bg-muted px-2.5 py-1 text-[11px] font-semibold text-foreground ring-1 ring-border hover:bg-muted"
               >
-                Open in Maps â†—
+                Open in Maps ↗
               </a>
             </div>
             <div className="rounded-2xl border border-border bg-background p-4">
@@ -329,8 +329,8 @@ function TeamPage() {
                         {c.years}
                         {c.titles > 0 ? (
                           <>
-                            <span aria-hidden="true"> Â· ðŸ†</span>
-                            <span className="sr-only"> Â· titles: </span>
+                            <span aria-hidden="true"> · 🏆</span>
+                            <span className="sr-only"> · titles: </span>
                             {c.titles}
                           </>
                         ) : null}
@@ -351,7 +351,7 @@ function TeamPage() {
             <h3 className="text-base font-black tracking-tight text-foreground">Squad</h3>
             <span className="text-[11px] text-foreground">
               {squadQ.isLoading
-                ? "Loadingâ€¦"
+                ? "Loading…"
                 : `${squadQ.data?.players.length ?? 0} players this season`}
             </span>
           </div>
@@ -416,7 +416,7 @@ function TeamPage() {
                       </div>
                       <div className="mt-0.5 text-[10px] uppercase tracking-wide text-foreground">
                         {p.position ?? "Player"}
-                        {p.jersey ? ` Â· #${p.jersey}` : ""}
+                        {p.jersey ? ` · #${p.jersey}` : ""}
                       </div>
                       <div className="mt-1 text-[10px] text-[var(--color-gold)]/80">
                         {p.appearances} match{p.appearances === 1 ? "" : "es"}
@@ -450,7 +450,7 @@ function TeamPage() {
                 >
                   <div className="flex items-baseline justify-between">
                     <span className="font-black text-[var(--color-gold)]">{s.year}</span>
-                    <span className="text-[11px] text-foreground">MoF Â· {s.mom}</span>
+                    <span className="text-[11px] text-foreground">MoF · {s.mom}</span>
                   </div>
                 </li>
               ))}
@@ -511,7 +511,7 @@ function TeamPage() {
                       <div className="min-w-0 flex-1">
                         <div className="truncate text-sm font-bold text-foreground">vs {o.name}</div>
                         <div className="text-[11px] text-foreground">
-                          {total} meeting{total === 1 ? "" : "s"} Â· {winPct}% win rate
+                          {total} meeting{total === 1 ? "" : "s"} · {winPct}% win rate
                         </div>
                       </div>
                       <div className="flex shrink-0 items-center gap-1 text-[11px] font-black">

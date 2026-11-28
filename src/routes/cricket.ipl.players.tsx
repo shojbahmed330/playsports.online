@@ -1,4 +1,4 @@
-﻿import { createFileRoute, useNavigate, stripSearchParams } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, stripSearchParams } from "@tanstack/react-router";
 import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
 import { zodValidator } from "@tanstack/zod-adapter";
 import { z } from "zod";
@@ -46,11 +46,11 @@ export const Route = createFileRoute("/cricket/ipl/players")({
   },
   head: () => ({
     meta: [
-      { title: "IPL Players â€” Orange Cap, Purple Cap & Six-hitters" },
+      { title: "IPL Players — Orange Cap, Purple Cap & Six-hitters" },
       {
         name: "description",
         content:
-          "IPL player leaderboards: most runs (Orange Cap), most wickets (Purple Cap), most sixes â€” by season.",
+          "IPL player leaderboards: most runs (Orange Cap), most wickets (Purple Cap), most sixes — by season.",
       },
       { property: "og:title", content: "IPL Player Leaderboards" },
       {
@@ -61,11 +61,11 @@ export const Route = createFileRoute("/cricket/ipl/players")({
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "PlaySports" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "IPL Players â€” Orange Cap, Purple Cap & Six-hitters" },
+      { name: "twitter:title", content: "IPL Players — Orange Cap, Purple Cap & Six-hitters" },
       {
         name: "twitter:description",
         content:
-          "IPL player leaderboards: most runs (Orange Cap), most wickets (Purple Cap), most sixes â€” by season.",
+          "IPL player leaderboards: most runs (Orange Cap), most wickets (Purple Cap), most sixes — by season.",
       },
     ],
     links: [{ rel: "canonical", href: "https://www.playsports.online/cricket/ipl/players" }],
@@ -183,7 +183,7 @@ function PlayersPage() {
       <section className="mt-8">
         <div className="mb-3 flex items-baseline justify-between gap-2 px-1">
           <h2 className="text-base sm:text-lg font-black tracking-tight text-foreground">
-            Most sixes â€” {seasonLabel}
+            Most sixes — {seasonLabel}
           </h2>
           <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--color-accent-nhl)]">
             Six-Hitters

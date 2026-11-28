@@ -1,4 +1,4 @@
-﻿import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { Search, User } from "lucide-react";
 import { SportNav } from "@/components/sports/SportNav";
@@ -14,12 +14,12 @@ import { withHubLinks } from "@/components/seo/withHubLinks";
 export const Route = createFileRoute("/cricket/players/")({
   head: () => ({
     meta: [
-      { title: "Cricket Players â€” Top batters, bowlers & all-rounders" },
+      { title: "Cricket Players — Top batters, bowlers & all-rounders" },
       {
         name: "description",
         content: "Top-ranked cricket players across T20I, ODI and Test formats.",
       },
-      { property: "og:title", content: "Cricket Players â€” Top Performers" },
+      { property: "og:title", content: "Cricket Players — Top Performers" },
       {
         property: "og:description",
         content: "Top-ranked batters, bowlers and all-rounders across formats.",
@@ -28,7 +28,7 @@ export const Route = createFileRoute("/cricket/players/")({
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "PlaySports" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Cricket Players â€” Top batters, bowlers & all-rounders" },
+      { name: "twitter:title", content: "Cricket Players — Top batters, bowlers & all-rounders" },
       {
         name: "twitter:description",
         content: "Top-ranked cricket players across T20I, ODI and Test formats.",
@@ -38,7 +38,7 @@ export const Route = createFileRoute("/cricket/players/")({
     scripts: [
       ldScript(
         collectionPage({
-          name: "Cricket Players â€” Top Performers",
+          name: "Cricket Players — Top Performers",
           description: "Top-ranked cricket batters, bowlers and all-rounders across formats.",
           path: "/cricket/players",
         }),
@@ -115,7 +115,7 @@ function PlayersPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
           <div className="flex items-center gap-3">
             <div className="size-12 rounded-2xl bg-[var(--color-accent-nhl)]/15 ring-1 ring-[var(--color-accent-nhl)]/30 grid place-items-center text-2xl">
-              ðŸ‘¤
+              👤
             </div>
             <div>
               <div className="text-[11px] uppercase tracking-[0.2em] text-[var(--color-accent-nhl)] font-bold">
@@ -123,14 +123,14 @@ function PlayersPage() {
               </div>
               <h1 className="text-2xl sm:text-3xl font-extrabold">International Cricket Players</h1>
               <p className="text-xs text-muted-foreground mt-1">
-                Top-ranked players across all formats Â· snapshot {rankingsData.updatedAt}
+                Top-ranked players across all formats · snapshot {rankingsData.updatedAt}
               </p>
             </div>
             <Link
               to="/cricket/rankings"
               className="ml-auto inline-flex min-h-11 items-center rounded-full border border-border px-3 text-xs font-bold text-[var(--color-accent-nhl)] hover:bg-muted"
             >
-              Full rankings â†’
+              Full rankings →
             </Link>
           </div>
         </div>
@@ -143,7 +143,7 @@ function PlayersPage() {
             <input
               value={q}
               onChange={(e) => setQ(e.target.value)}
-              placeholder="Search playersâ€¦"
+              placeholder="Search players…"
               type="search"
               aria-label="Search cricket players"
               className="min-h-11 w-full rounded-full bg-muted py-2 pl-9 pr-3 text-sm outline-none ring-1 ring-border focus:ring-[var(--color-accent-nhl)]/50"
@@ -219,7 +219,7 @@ function PlayersPage() {
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-wider font-bold">
                     <span className="text-[var(--color-accent-nhl)]">{cap(r.role)}</span>
-                    <span className="text-muted-foreground">Â·</span>
+                    <span className="text-muted-foreground">·</span>
                     <span className="text-foreground">{r.format.toUpperCase()}</span>
                   </div>
                   <PlayerLink
@@ -245,7 +245,7 @@ function PlayersPage() {
                       params={{ slug: slugify(r.player) }}
                       className="mt-1 inline-flex min-h-9 items-center text-[11px] font-bold text-[var(--color-accent-nhl)] hover:text-[var(--color-accent-nhl)]"
                     >
-                      Profile â†’
+                      Profile →
                     </Link>
                   )}
                 </div>

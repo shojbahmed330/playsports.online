@@ -1,4 +1,4 @@
-﻿import { createFileRoute, stripSearchParams } from "@tanstack/react-router";
+import { createFileRoute, stripSearchParams } from "@tanstack/react-router";
 import { useState } from "react";
 import { zodValidator, fallback } from "@tanstack/zod-adapter";
 import { z } from "zod";
@@ -23,7 +23,7 @@ export const Route = createFileRoute("/cricket/rankings")({
   },
   head: () => ({
     meta: [
-      { title: "ICC Cricket Rankings â€” Player & Team Rankings" },
+      { title: "ICC Cricket Rankings — Player & Team Rankings" },
       { name: "description", content: "Official ICC rankings across T20I, ODI and Test." },
       { property: "og:title", content: "ICC Cricket Rankings" },
       {
@@ -34,7 +34,7 @@ export const Route = createFileRoute("/cricket/rankings")({
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "PlaySports" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "ICC Cricket Rankings â€” Player & Team Rankings" },
+      { name: "twitter:title", content: "ICC Cricket Rankings — Player & Team Rankings" },
       { name: "twitter:description", content: "Official ICC rankings across T20I, ODI and Test." },
     ],
     links: [{ rel: "canonical", href: "https://www.playsports.online/cricket/rankings" }],
@@ -55,10 +55,10 @@ type Cat = "teams" | "batters" | "bowlers" | "allrounders";
 type Fmt = "t20i" | "odi" | "test";
 
 const CATS: { id: Cat; label: string; emoji: string; grad: string }[] = [
-  { id: "teams", label: "Teams", emoji: "ðŸ›¡ï¸", grad: "from-[var(--color-accent-mlb)] to-[var(--color-accent-mlb)]" },
-  { id: "batters", label: "Batters", emoji: "ðŸ", grad: "from-[var(--color-gold)] to-[var(--color-gold)]" },
-  { id: "bowlers", label: "Bowlers", emoji: "ðŸŽ¯", grad: "from-[var(--color-live)] to-[var(--color-live)]" },
-  { id: "allrounders", label: "All-rounders", emoji: "âš¡", grad: "from-[var(--color-accent-nhl)] to-[var(--color-accent-nhl)]" },
+  { id: "teams", label: "Teams", emoji: "🛡️", grad: "from-[var(--color-accent-mlb)] to-[var(--color-accent-mlb)]" },
+  { id: "batters", label: "Batters", emoji: "🏏", grad: "from-[var(--color-gold)] to-[var(--color-gold)]" },
+  { id: "bowlers", label: "Bowlers", emoji: "🎯", grad: "from-[var(--color-live)] to-[var(--color-live)]" },
+  { id: "allrounders", label: "All-rounders", emoji: "⚡", grad: "from-[var(--color-accent-nhl)] to-[var(--color-accent-nhl)]" },
 ];
 
 const FORMATS: { id: Fmt; label: string }[] = [
@@ -102,7 +102,7 @@ function RankingsPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
           <div className="flex items-center gap-3">
             <div className="size-12 rounded-2xl bg-[var(--color-accent-nhl)]/15 ring-1 ring-[var(--color-accent-nhl)]/30 grid place-items-center text-2xl">
-              ðŸ“Š
+              📊
             </div>
             <div>
               <div className="text-[11px] uppercase tracking-[0.2em] text-[var(--color-accent-nhl)] font-bold">

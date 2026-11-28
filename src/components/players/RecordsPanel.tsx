@@ -5,7 +5,12 @@ import { flagOf } from "@/lib/flags";
 import { useMergedGoals } from "@/lib/use-merged-goals";
 import { useMergedCards } from "@/lib/use-merged-cards";
 
-const TOURNAMENT_TOTALS = (records as { tournamentTotals?: { year: number; goals: number; matches: number; note?: string }[] }).tournamentTotals ?? [];
+const TOURNAMENT_TOTALS =
+  (
+    records as {
+      tournamentTotals?: { year: number; goals: number; matches: number; note?: string }[];
+    }
+  ).tournamentTotals ?? [];
 
 export function RecordsPanel() {
   const { goals: GOALS } = useMergedGoals();
@@ -32,12 +37,18 @@ export function RecordsPanel() {
     const yellow2026 = CARDS.filter((c) => c.year === 2026 && c.type === "yellow").length;
     const red2026 = CARDS.filter((c) => c.year === 2026 && c.type === "red").length;
     const top2026 = goldenBoot2026[0] ?? null;
-    const leaders = top2026 ? goldenBoot2026.filter((p) => p.goals === top2026.goals).slice(0, 3) : [];
+    const leaders = top2026
+      ? goldenBoot2026.filter((p) => p.goals === top2026.goals).slice(0, 3)
+      : [];
     const liveCards = [
       {
         title: "2026 Golden Boot leader",
-        value: top2026 ? `${top2026.goals} — ${leaders.map((p) => p.name).join(" / ")}` : "No goals yet",
-        context: leaders.length ? leaders.map((p) => p.country).join(" / ") : "Waiting for official match events",
+        value: top2026
+          ? `${top2026.goals} — ${leaders.map((p) => p.name).join(" / ")}`
+          : "No goals yet",
+        context: leaders.length
+          ? leaders.map((p) => p.country).join(" / ")
+          : "Waiting for official match events",
       },
       {
         title: "2026 goals recorded",
@@ -58,7 +69,9 @@ export function RecordsPanel() {
 
     const totals = [...TOURNAMENT_TOTALS]
       .filter((t) => t.year !== 2026)
-      .concat([{ year: 2026, goals: goals2026.length, matches: 104, note: "Live from ESPN events" }])
+      .concat([
+        { year: 2026, goals: goals2026.length, matches: 104, note: "Live from ESPN events" },
+      ])
       .sort((a, b) => b.goals - a.goals)
       .slice(0, 6);
 
@@ -85,7 +98,9 @@ export function RecordsPanel() {
               key={r.title}
               className="rounded-xl bg-background/80 border border-border p-4 hover:border-gold/60 transition-colors"
             >
-              <div className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">{r.title}</div>
+              <div className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">
+                {r.title}
+              </div>
               <div className="text-base font-extrabold text-gold leading-tight">{r.value}</div>
               <div className="text-xs text-muted-foreground mt-1.5">{r.context}</div>
             </div>
@@ -105,7 +120,9 @@ export function RecordsPanel() {
               key={r.title}
               className="rounded-xl bg-background border border-border p-4 hover:border-gold/40 transition-colors"
             >
-              <div className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">{r.title}</div>
+              <div className="text-[10px] uppercase tracking-wider text-muted-foreground mb-1">
+                {r.title}
+              </div>
               <div className="text-base font-extrabold text-gold leading-tight">{r.value}</div>
               <div className="text-xs text-muted-foreground mt-1.5">{r.context}</div>
             </div>
@@ -131,7 +148,9 @@ export function RecordsPanel() {
             <ol className="divide-y divide-border">
               {derived.goldenBoot2026.map((p, i) => (
                 <li key={i} className="flex items-center gap-3 py-2 text-sm">
-                  <span className="w-6 text-muted-foreground font-semibold tabular-nums">{i + 1}</span>
+                  <span className="w-6 text-muted-foreground font-semibold tabular-nums">
+                    {i + 1}
+                  </span>
                   <span className="text-base">{flagOf(p.country)}</span>
                   <span className="flex-1 truncate font-medium">{p.name}</span>
                   <span className="text-xs text-muted-foreground truncate">{p.country}</span>
@@ -150,7 +169,9 @@ export function RecordsPanel() {
           <ol className="divide-y divide-border">
             {derived.totals.map((t, i) => (
               <li key={t.year} className="flex items-center gap-3 py-2 text-sm">
-                <span className="w-6 text-muted-foreground font-semibold tabular-nums">{i + 1}</span>
+                <span className="w-6 text-muted-foreground font-semibold tabular-nums">
+                  {i + 1}
+                </span>
                 <span className="flex-1 font-medium tabular-nums flex items-center gap-2">
                   {t.year} World Cup
                   {t.year === 2026 && (
@@ -159,8 +180,12 @@ export function RecordsPanel() {
                     </span>
                   )}
                 </span>
-                <span className="text-xs text-muted-foreground tabular-nums">{t.matches} matches</span>
-                <span className="text-gold font-bold tabular-nums w-16 text-right">{t.goals} goals</span>
+                <span className="text-xs text-muted-foreground tabular-nums">
+                  {t.matches} matches
+                </span>
+                <span className="text-gold font-bold tabular-nums w-16 text-right">
+                  {t.goals} goals
+                </span>
               </li>
             ))}
           </ol>
@@ -204,15 +229,14 @@ export function RecordsPanel() {
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
           {derived.hatTrick.map((p, i) => (
-            <div
-              key={i}
-              className="rounded-lg bg-background border border-border p-3 text-center"
-            >
+            <div key={i} className="rounded-lg bg-background border border-border p-3 text-center">
               <div className="text-2xl">{flagOf(p.country)}</div>
               <div className="text-sm font-semibold truncate mt-1">{p.name}</div>
               <div className="text-[11px] text-muted-foreground flex items-center justify-center gap-1">
                 {p.year}
-                {p.year === 2026 && <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />}
+                {p.year === 2026 && (
+                  <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                )}
               </div>
               <div className="text-gold font-bold tabular-nums">{p.goals} ⚽</div>
             </div>

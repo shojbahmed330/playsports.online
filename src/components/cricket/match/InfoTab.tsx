@@ -1,20 +1,20 @@
-﻿import type { CricketMatch } from "@/lib/cricket.functions";
+import type { CricketMatch } from "@/lib/cricket.functions";
 import { MapPin, Tv, Info, Calendar } from "lucide-react";
 import { formatLocalTime, relativeDay } from "@/lib/time";
 
 export function InfoTab({ match }: { match: CricketMatch }) {
   const rows: { label: string; value: string; icon?: React.ElementType }[] = [
-    { label: "Series", value: match.leagueName || match.leagueAbbr || "â€”" },
-    { label: "Format", value: match.format || "â€”" },
-    { label: "Match", value: match.description || "â€”" },
+    { label: "Series", value: match.leagueName || match.leagueAbbr || "—" },
+    { label: "Format", value: match.format || "—" },
+    { label: "Match", value: match.description || "—" },
     {
       label: "Start",
-      value: `${relativeDay(match.startTs)} Â· ${formatLocalTime(match.startTs)}`,
+      value: `${relativeDay(match.startTs)} · ${formatLocalTime(match.startTs)}`,
       icon: Calendar,
     },
     {
       label: "Venue",
-      value: [match.venue, match.city, match.country].filter(Boolean).join(", ") || "â€”",
+      value: [match.venue, match.city, match.country].filter(Boolean).join(", ") || "—",
       icon: MapPin,
     },
     ...(match.note ? [{ label: "Note", value: match.note, icon: Info }] : []),
@@ -38,7 +38,9 @@ export function InfoTab({ match }: { match: CricketMatch }) {
                 {r.label}
               </dt>
               <dd className="text-foreground min-w-0 flex items-start gap-2">
-                {Icon && <Icon className="size-4 shrink-0 mt-0.5 text-[var(--color-accent-cricket)]" />}
+                {Icon && (
+                  <Icon className="size-4 shrink-0 mt-0.5 text-[var(--color-accent-cricket)]" />
+                )}
                 <span className="min-w-0 break-words">{r.value}</span>
               </dd>
             </div>

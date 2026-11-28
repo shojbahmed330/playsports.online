@@ -1,4 +1,4 @@
-﻿import { Link } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { TeamCrest } from "@/components/cricket/TeamCrest";
 import { ArrowLeft, MapPin, Tv, Trophy, Share2 } from "lucide-react";
 import type { CricketMatch } from "@/lib/cricket.functions";
@@ -46,14 +46,14 @@ export function MatchHero({ match }: { match: CricketMatch }) {
             )}
             {match.description && (
               <span className="text-[var(--color-accent-cricket)]/70 normal-case font-medium tracking-normal truncate">
-                Â· {match.description}
+                · {match.description}
               </span>
             )}
           </div>
           {isLive ? (
             <span className="inline-flex items-center gap-1.5 text-[var(--color-live)] text-xs font-bold shrink-0">
               <span className="size-1.5 rounded-full bg-[var(--color-live)] animate-pulse motion-reduce:animate-none cricket-live-ring" />{" "}
-              LIVE Â· {match.statusDetail}
+              LIVE · {match.statusDetail}
             </span>
           ) : isFinal ? (
             <span className="text-xs font-bold text-[var(--color-gold)] inline-flex items-center gap-1 shrink-0">
@@ -61,7 +61,7 @@ export function MatchHero({ match }: { match: CricketMatch }) {
             </span>
           ) : (
             <span className="text-xs font-bold text-[var(--color-accent-cricket)] shrink-0">
-              {relativeDay(match.startTs)} Â· {formatLocalTime(match.startTs)}
+              {relativeDay(match.startTs)} · {formatLocalTime(match.startTs)}
             </span>
           )}
         </div>
@@ -79,7 +79,7 @@ export function MatchHero({ match }: { match: CricketMatch }) {
         {/* Result banner */}
         {match.dataIncomplete ? (
           <div className="mt-4 inline-block px-3 py-1.5 rounded-md bg-[var(--color-gold)]/15 ring-1 ring-[var(--color-gold)]/30 text-[var(--color-gold)] text-xs font-semibold">
-            Score data unavailable â€” refreshing shortly.
+            Score data unavailable — refreshing shortly.
           </div>
         ) : match.result?.marginText || match.note ? (
           <div className="mt-4 inline-block px-3 py-1.5 rounded-md bg-[var(--color-accent-cricket)]/15 ring-1 ring-[var(--color-accent-cricket)]/30 text-[var(--color-accent-cricket)] text-xs font-semibold">
@@ -118,16 +118,22 @@ function TeamScoreRow({
   return (
     <div
       className={`grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 rounded-xl p-3 sm:p-4 ring-1 ${
-        won ? "bg-[var(--color-accent-cricket)]/15 ring-[var(--color-accent-cricket)]/40" : "bg-background ring-border"
+        won
+          ? "bg-[var(--color-accent-cricket)]/15 ring-[var(--color-accent-cricket)]/40"
+          : "bg-background ring-border"
       }`}
     >
       <TeamCrest src={t.logo} abbr={t.abbr} name={t.name} className="size-11 sm:size-12 shrink-0" />
       <div className="min-w-0">
         <div className="text-sm sm:text-base font-extrabold text-foreground truncate">{t.name}</div>
         {score.kind === "innings" && score.multi ? (
-          <div className="text-[11px] text-[var(--color-accent-cricket)]/70 tabular-nums truncate">{score.multi}</div>
+          <div className="text-[11px] text-[var(--color-accent-cricket)]/70 tabular-nums truncate">
+            {score.multi}
+          </div>
         ) : t.scoreSummary ? (
-          <div className="text-[11px] text-[var(--color-accent-cricket)]/60 truncate">{t.scoreSummary}</div>
+          <div className="text-[11px] text-[var(--color-accent-cricket)]/60 truncate">
+            {t.scoreSummary}
+          </div>
         ) : null}
       </div>
       <div className="shrink-0 text-right text-foreground min-w-[70px]">
@@ -144,7 +150,9 @@ function TeamScoreRow({
             </div>
             <div className="mt-1 flex items-center justify-end gap-1.5 text-[10px] tabular-nums text-[var(--color-accent-cricket)]/70">
               {score.allOut && (
-                <span className="uppercase tracking-wider text-[var(--color-gold)] font-bold">all out</span>
+                <span className="uppercase tracking-wider text-[var(--color-gold)] font-bold">
+                  all out
+                </span>
               )}
               {score.overs != null && score.overs > 0 && <span>{score.overs} ov</span>}
             </div>
@@ -154,9 +162,11 @@ function TeamScoreRow({
             Yet to bat
           </div>
         ) : score.kind === "did-not-bat" ? (
-          <div className="text-xs uppercase tracking-wider font-bold text-[var(--color-accent-cricket)]/70">DNB</div>
+          <div className="text-xs uppercase tracking-wider font-bold text-[var(--color-accent-cricket)]/70">
+            DNB
+          </div>
         ) : (
-          <div className="text-2xl text-[var(--color-accent-cricket)]/40">â€”</div>
+          <div className="text-2xl text-[var(--color-accent-cricket)]/40">—</div>
         )}
       </div>
     </div>

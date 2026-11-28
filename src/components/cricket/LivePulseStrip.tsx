@@ -1,8 +1,8 @@
-﻿import { Link } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import type { CricketMatch } from "@/lib/cricket.functions";
 
 /**
- * LivePulseStrip â€” auto-scrolling marquee of currently live matches.
+ * LivePulseStrip — auto-scrolling marquee of currently live matches.
  * Duplicates content for seamless loop. Pauses on hover.
  */
 export function LivePulseStrip({ matches }: { matches: CricketMatch[] }) {
@@ -47,18 +47,24 @@ function PulseItem({ match }: { match: CricketMatch }) {
       className="shrink-0 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-background hover:bg-background ring-1 ring-[var(--color-live)]/20 hover:ring-[var(--color-live)]/40 transition-all text-xs"
     >
       <span className="text-[10px] uppercase tracking-wider font-bold text-[var(--color-gold)]/80">
-        {match.leagueAbbr || match.leagueName?.slice(0, 4) || "â€”"}
+        {match.leagueAbbr || match.leagueName?.slice(0, 4) || "—"}
       </span>
-      <span className="font-semibold text-foreground">{home.abbr || home.shortName?.slice(0, 3)}</span>
+      <span className="font-semibold text-foreground">
+        {home.abbr || home.shortName?.slice(0, 3)}
+      </span>
       <span className="font-mono text-[var(--color-accent-cricket)]/90">
-        {home.scoreSummary || (home.totalRuns ? String(home.totalRuns) : "â€”")}
+        {home.scoreSummary || (home.totalRuns ? String(home.totalRuns) : "—")}
       </span>
       <span className="text-muted-foreground">vs</span>
-      <span className="font-semibold text-foreground">{away.abbr || away.shortName?.slice(0, 3)}</span>
-      <span className="font-mono text-[var(--color-accent-cricket)]/90">
-        {away.scoreSummary || (away.totalRuns ? String(away.totalRuns) : "â€”")}
+      <span className="font-semibold text-foreground">
+        {away.abbr || away.shortName?.slice(0, 3)}
       </span>
-      <span className="text-[10px] text-[var(--color-live)]/90">Â· {match.shortDetail || "live"}</span>
+      <span className="font-mono text-[var(--color-accent-cricket)]/90">
+        {away.scoreSummary || (away.totalRuns ? String(away.totalRuns) : "—")}
+      </span>
+      <span className="text-[10px] text-[var(--color-live)]/90">
+        · {match.shortDetail || "live"}
+      </span>
     </Link>
   );
 }

@@ -1,4 +1,4 @@
-﻿import { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { EmptyState } from "./ScorecardTab";
 
 export type Comment = { text: string; period: number; scoreValue: number; time: string };
@@ -75,7 +75,7 @@ export function CommentaryTab({ commentary }: { commentary: Comment[] }) {
                     </span>
                   )}
                   {c.time && <span className="tabular-nums">{c.time}</span>}
-                  {c.period > 0 && <span>Â· Innings {c.period}</span>}
+                  {c.period > 0 && <span>· Innings {c.period}</span>}
                 </div>
                 <p className="text-foreground">{c.text}</p>
               </li>

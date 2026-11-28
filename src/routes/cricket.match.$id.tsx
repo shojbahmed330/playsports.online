@@ -1,4 +1,4 @@
-﻿import { errorMessage } from "@/lib/error-message";
+import { errorMessage } from "@/lib/error-message";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -54,15 +54,15 @@ export const Route = createFileRoute("/cricket/match/$id")({
       leagueId !== "8048" ? `?leagueId=${encodeURIComponent(leagueId)}` : ""
     }`;
     const m = loaderData?.match;
-    let title = "Live Cricket Scorecard â€” PlaySports";
+    let title = "Live Cricket Scorecard — PlaySports";
     let desc = "Live cricket scorecard, batting and bowling figures, commentary and lineups.";
     const jsonld: unknown[] = [];
     if (m) {
       const vs = `${m.away.abbr || m.away.name} vs ${m.home.abbr || m.home.name}`;
       const ctx = m.leagueAbbr || m.leagueName || "Cricket";
       const statusTag = m.status === "in" ? "Live" : m.status === "post" ? "Result" : "Preview";
-      const rawTitle = `${vs} â€” ${ctx} ${statusTag} Scorecard`;
-      title = rawTitle.length > 60 ? rawTitle.slice(0, 57) + "â€¦" : rawTitle;
+      const rawTitle = `${vs} — ${ctx} ${statusTag} Scorecard`;
+      title = rawTitle.length > 60 ? rawTitle.slice(0, 57) + "…" : rawTitle;
       const resultPart =
         m.status === "post" && m.result?.marginText
           ? `${m.result.marginText}. `
@@ -72,7 +72,7 @@ export const Route = createFileRoute("/cricket/match/$id")({
       desc = `${m.away.name} vs ${m.home.name} in ${m.leagueName || ctx}${m.venue ? ` at ${m.venue}${m.city ? `, ${m.city}` : ""}` : ""}. ${resultPart}Live scorecard, batting/bowling figures, commentary and lineups.`;
       jsonld.push(
         sportsEvent({
-          name: `${vs} â€” ${ctx}`,
+          name: `${vs} — ${ctx}`,
           path: `/cricket/match/${params.id}`,
           sport: "Cricket",
           startDate: m.startTs ? new Date(m.startTs).toISOString() : undefined,
@@ -124,7 +124,7 @@ export const Route = createFileRoute("/cricket/match/$id")({
         <p className="text-lg font-semibold">Couldn't load match</p>
         <p className="text-xs text-muted-foreground mt-1">{errorMessage(error)}</p>
         <Link to="/cricket" className="mt-4 inline-block text-[var(--color-accent-cricket)] hover:underline text-sm">
-          â† Back to cricket
+          ← Back to cricket
         </Link>
       </div>
     </div>

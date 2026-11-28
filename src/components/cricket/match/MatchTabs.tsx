@@ -1,4 +1,4 @@
-﻿import { useState, type ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 
 export type TabDef = { id: string; label: string; badge?: string | number };
 
@@ -38,7 +38,9 @@ export function MatchTabs({
                 {t.badge != null && (
                   <span
                     className={`ml-1.5 rounded-full px-1.5 py-0.5 text-[10px] font-bold ${
-                      isActive ? "bg-[var(--color-accent-cricket)]/25 text-[var(--color-accent-cricket)]" : "bg-card text-foreground"
+                      isActive
+                        ? "bg-[var(--color-accent-cricket)]/25 text-[var(--color-accent-cricket)]"
+                        : "bg-card text-foreground"
                     }`}
                   >
                     {t.badge}

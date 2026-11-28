@@ -2,11 +2,7 @@
  * Tiny dependency-free SVG sparkline for a player's goals across World Cup years.
  * Renders bars with the current 2026 year highlighted live-green.
  */
-export function CareerSparkline({
-  data,
-}: {
-  data: { year: number; goals: number }[];
-}) {
+export function CareerSparkline({ data }: { data: { year: number; goals: number }[] }) {
   if (data.length === 0) return null;
   const max = Math.max(1, ...data.map((d) => d.goals));
   const W = 280;

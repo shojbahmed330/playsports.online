@@ -25,9 +25,7 @@ export function CompareChart({ rows }: { rows: Row[] }) {
   return (
     <div className="rounded-2xl border border-border bg-card/60 p-5 space-y-5">
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-bold flex items-center gap-2">
-          📊 Side-by-side breakdown
-        </h3>
+        <h3 className="text-sm font-bold flex items-center gap-2">📊 Side-by-side breakdown</h3>
         <span className="text-[10px] uppercase tracking-widest text-muted-foreground">
           {rows.length} players
         </span>
@@ -50,7 +48,9 @@ export function CompareChart({ rows }: { rows: Row[] }) {
                     <div key={r.name + r.country} className="flex items-center gap-2 text-xs">
                       <div className="w-24 sm:w-32 flex items-center gap-1.5 shrink-0">
                         <span className="text-sm leading-none">{flagOf(r.country)}</span>
-                        <span className="truncate font-medium">{r.name.split(" ").slice(-1)[0]}</span>
+                        <span className="truncate font-medium">
+                          {r.name.split(" ").slice(-1)[0]}
+                        </span>
                       </div>
                       <div className="flex-1 h-3 rounded-full bg-white/5 overflow-hidden">
                         <div

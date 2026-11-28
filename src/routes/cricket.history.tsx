@@ -1,4 +1,4 @@
-﻿import { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Trophy, Award, Target } from "lucide-react";
 import { SportNav } from "@/components/sports/SportNav";
@@ -41,11 +41,11 @@ const SLUGS = Object.keys(DATA);
 export const Route = createFileRoute("/cricket/history")({
   head: () => ({
     meta: [
-      { title: "Cricket History & Records â€” World Cup, IPL, BBL, PSL" },
+      { title: "Cricket History & Records — World Cup, IPL, BBL, PSL" },
       {
         name: "description",
         content:
-          "Champions, runs and wickets records for the ICC World Cup, T20 World Cup, IPL, BBL and PSL â€” full hall of fame.",
+          "Champions, runs and wickets records for the ICC World Cup, T20 World Cup, IPL, BBL and PSL — full hall of fame.",
       },
       { property: "og:title", content: "Cricket History & Records" },
       {
@@ -56,11 +56,11 @@ export const Route = createFileRoute("/cricket/history")({
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "PlaySports" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Cricket History & Records â€” World Cup, IPL, BBL, PSL" },
+      { name: "twitter:title", content: "Cricket History & Records — World Cup, IPL, BBL, PSL" },
       {
         name: "twitter:description",
         content:
-          "Champions, runs and wickets records for the ICC World Cup, T20 World Cup, IPL, BBL and PSL â€” full hall of fame.",
+          "Champions, runs and wickets records for the ICC World Cup, T20 World Cup, IPL, BBL and PSL — full hall of fame.",
       },
     ],
     links: [{ rel: "canonical", href: "https://www.playsports.online/cricket/history" }],
@@ -107,7 +107,7 @@ function HistoryPage() {
       <SportNav />
       <CricketSubNav />
 
-      {/* Tournament selector â€” horizontal snap rail */}
+      {/* Tournament selector — horizontal snap rail */}
       <div className="sticky top-16 z-20 border-b border-border bg-background/85 backdrop-blur">
         <div className="max-w-7xl mx-auto px-3 sm:px-6">
           <div className="flex items-center gap-1.5 py-2 overflow-x-auto no-scrollbar snap-x snap-mandatory">
@@ -152,7 +152,7 @@ function HistoryPage() {
               </div>
               <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight">{t.label}</h1>
               <p className="text-sm text-[var(--color-accent-cricket)]/80 mt-1">
-                {t.champions.length} editions Â· {new Set(t.champions.map((c) => c.champion)).size}{" "}
+                {t.champions.length} editions · {new Set(t.champions.map((c) => c.champion)).size}{" "}
                 different winners
               </p>
             </div>
@@ -169,13 +169,13 @@ function HistoryPage() {
                 icon={<Award aria-hidden="true" className="size-4 text-[var(--color-accent-mlb)]" />}
                 label="Most recent runner-up"
                 value={lastChamp.runnerUp}
-                sub={lastChamp.venue ?? "â€”"}
+                sub={lastChamp.venue ?? "—"}
               />
               <Mini
                 icon={<Target aria-hidden="true" className="size-4 text-[var(--color-accent-cricket)]" />}
                 label="Editions held"
                 value={String(t.champions.length)}
-                sub={`${t.champions[0].year} â†’ ${lastChamp.year}`}
+                sub={`${t.champions[0].year} → ${lastChamp.year}`}
               />
             </div>
           )}
@@ -204,7 +204,7 @@ function HistoryPage() {
                       Champion
                     </th>
                     <th scope="col" className="px-3 py-2 text-left">
-                      Runner-up Â· Result
+                      Runner-up · Result
                     </th>
                   </tr>
                 </thead>
@@ -220,7 +220,7 @@ function HistoryPage() {
                         <td className="px-3 py-2.5 text-muted-foreground">
                           <span className="text-foreground/80">{c.runnerUp}</span>
                           {c.result && (
-                            <span className="text-[11px] ml-2 opacity-70">Â· {c.result}</span>
+                            <span className="text-[11px] ml-2 opacity-70">· {c.result}</span>
                           )}
                         </td>
                       </tr>
@@ -243,7 +243,7 @@ function HistoryPage() {
             to="/cricket"
             className="inline-flex min-h-11 items-center text-[var(--color-accent-cricket)] hover:underline"
           >
-            Back to live scores â†’
+            Back to live scores →
           </Link>
         </p>
       </main>
@@ -320,13 +320,13 @@ function Leaderboard({
                 {p.player}
               </PlayerLink>
               <div className="text-[11px] text-muted-foreground truncate">
-                {p.country} Â· {p.matches} matches Â· avg {p.avg}
+                {p.country} · {p.matches} matches · avg {p.avg}
               </div>
             </div>
             <div className="text-right tabular-nums shrink-0">
               <div className="text-base font-extrabold">{kind === "runs" ? p.runs : p.wickets}</div>
               {kind === "runs" && p.hundreds != null && (
-                <div className="text-[10px] text-muted-foreground">{p.hundreds} Ã— 100</div>
+                <div className="text-[10px] text-muted-foreground">{p.hundreds} × 100</div>
               )}
             </div>
           </div>

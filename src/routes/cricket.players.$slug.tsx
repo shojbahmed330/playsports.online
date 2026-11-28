@@ -1,5 +1,4 @@
-﻿import { errorMessage } from "@/lib/error-message";
-// Phase 2.1 (cricket) â€” SSR-friendly player profile.
+// Phase 2.1 (cricket) — SSR-friendly player profile.
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { z } from "zod";
 import { zodValidator } from "@tanstack/zod-adapter";
@@ -56,7 +55,7 @@ export const Route = createFileRoute("/cricket/players/$slug")({
   head: ({ params, loaderData }) => {
     if (!loaderData) {
       return {
-        meta: [{ title: "Player not found â€” Cricket" }, { name: "robots", content: "noindex" }],
+        meta: [{ title: "Player not found — Cricket" }, { name: "robots", content: "noindex" }],
       };
     }
     const live = loaderData.kind === "live";
@@ -66,7 +65,7 @@ export const Route = createFileRoute("/cricket/players/$slug")({
       : loaderData.player.country;
     const url = canonical(`/cricket/players/${params.slug}`);
     const image = "https://www.playsports.online/og-default.png";
-    const title = `${name} â€” cricket profile, stats & career`;
+    const title = `${name} — cricket profile, stats & career`;
     const summary = !live
       ? loaderData.player.records
           .slice(0, 2)
@@ -74,8 +73,8 @@ export const Route = createFileRoute("/cricket/players/$slug")({
           .join("; ")
       : "";
     const desc = live
-      ? `${name}${country ? ` (${country})` : ""} â€” cricket bio, career statistics and match records.`
-      : `${name}${country ? ` (${country})` : ""} â€” records: ${summary || "career cricket profile"}.`;
+      ? `${name}${country ? ` (${country})` : ""} — cricket bio, career statistics and match records.`
+      : `${name}${country ? ` (${country})` : ""} — records: ${summary || "career cricket profile"}.`;
 
     const scripts = [
       ldScript(
@@ -97,9 +96,7 @@ export const Route = createFileRoute("/cricket/players/$slug")({
     ];
     if (!live) {
       const faqs =
-        loaderData.aiFaqs && loaderData.aiFaqs.length
-          ? loaderData.aiFaqs
-          : loaderData.player.faqs;
+        loaderData.aiFaqs && loaderData.aiFaqs.length ? loaderData.aiFaqs : loaderData.player.faqs;
       scripts.push(ldScript(faqPage(faqs)));
     }
 
@@ -122,13 +119,13 @@ export const Route = createFileRoute("/cricket/players/$slug")({
     };
   },
   component: CricketPlayerProfile,
-  errorComponent: ({ error, reset }) => (
+  errorComponent: ({ reset }) => (
     <div className="min-h-screen">
       <SportNav />
       <div className="mx-auto max-w-3xl px-4 py-10">
         <ErrorState
-          title="Could not load this player"
-          message={errorMessage(error)}
+          title="Player data is temporarily unavailable"
+          message="We could not reach the live cricket feed. Please try again in a moment."
           onRetry={reset}
         />
       </div>
@@ -253,7 +250,7 @@ function CricketPlayerProfile() {
                     <tr key={i} className="border-t border-border">
                       <td className="px-3 py-2">{r.category}</td>
                       <td className="px-3 py-2 font-mono font-semibold">{r.value}</td>
-                      <td className="px-3 py-2 text-muted-foreground">{r.extra ?? "â€”"}</td>
+                      <td className="px-3 py-2 text-muted-foreground">{r.extra ?? "—"}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -269,25 +266,25 @@ function CricketPlayerProfile() {
               to="/cricket/rankings"
               className="inline-flex min-h-11 items-center rounded-xl border border-border bg-card px-4 text-sm font-semibold transition hover:border-[var(--color-accent-cricket)]/40 hover:bg-muted"
             >
-              ICC rankings â†’
+              ICC rankings →
             </Link>
             <Link
               to="/cricket/records"
               className="inline-flex min-h-11 items-center rounded-xl border border-border bg-card px-4 text-sm font-semibold transition hover:border-[var(--color-accent-cricket)]/40 hover:bg-muted"
             >
-              All-time records â†’
+              All-time records →
             </Link>
             <Link
               to="/cricket/teams"
               className="inline-flex min-h-11 items-center rounded-xl border border-border bg-card px-4 text-sm font-semibold transition hover:border-[var(--color-accent-cricket)]/40 hover:bg-muted"
             >
-              Team profiles â†’
+              Team profiles →
             </Link>
             <Link
               to="/cricket/players"
               className="inline-flex min-h-11 items-center rounded-xl border border-border bg-card px-4 text-sm font-semibold transition hover:border-[var(--color-accent-cricket)]/40 hover:bg-muted"
             >
-              All players â†’
+              All players →
             </Link>
           </nav>
         </section>

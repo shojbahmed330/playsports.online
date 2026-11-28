@@ -1,4 +1,4 @@
-﻿import { errorMessage } from "@/lib/error-message";
+import { errorMessage } from "@/lib/error-message";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { TeamCrest } from "@/components/cricket/TeamCrest";
 import { useQuery } from "@tanstack/react-query";
@@ -18,19 +18,19 @@ export const Route = createFileRoute("/cricket/series/$id")({
     const l = CRICKET_LEAGUE_BY_ID[params.id];
     const name = l?.longName ?? "Cricket Series";
     const url = `https://www.playsports.online/cricket/series/${params.id}`;
-    const title = `${name} â€” Fixtures, Results & Squads`;
+    const title = `${name} — Fixtures, Results & Squads`;
     const desc = `Complete ${name} fixtures, live scores, standings and recent results on PlaySports.`;
     return {
       meta: [
         { title },
         { name: "description", content: desc },
-        { property: "og:title", content: `${name} â€” Cricket Hub` },
+        { property: "og:title", content: `${name} — Cricket Hub` },
         { property: "og:description", content: desc },
         { property: "og:url", content: url },
         { property: "og:type", content: "website" },
         { property: "og:site_name", content: "PlaySports" },
         { name: "twitter:card", content: "summary_large_image" },
-        { name: "twitter:title", content: `${name} â€” Cricket Hub` },
+        { name: "twitter:title", content: `${name} — Cricket Hub` },
         { name: "twitter:description", content: desc },
       ],
       links: [{ rel: "canonical", href: url }],
@@ -155,7 +155,7 @@ function SeriesPage() {
               className={`size-16 sm:size-20 rounded-2xl ${meta?.chipBg ?? "bg-[var(--color-accent-cricket)]/15"} ring-1 ${meta?.ring ?? "ring-[var(--color-accent-cricket)]/30"} grid place-items-center text-4xl shrink-0`}
               aria-hidden="true"
             >
-              {meta?.emoji ?? "ðŸ"}
+              {meta?.emoji ?? "🏏"}
             </div>
             <div className="min-w-0">
               <div

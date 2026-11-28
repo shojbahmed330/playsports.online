@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import type { CricketMatch } from "@/lib/cricket.functions";
 import { displayScore, scoreLine } from "@/lib/cricket-score-display";
 
@@ -41,7 +41,7 @@ export function MatchStickyBar({ match }: { match: CricketMatch }) {
         </div>
         {match.result?.marginText && (
           <span className="hidden sm:inline text-[var(--color-accent-cricket)] truncate">
-            Â· {match.result.marginText}
+            · {match.result.marginText}
           </span>
         )}
       </div>

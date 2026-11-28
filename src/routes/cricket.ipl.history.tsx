@@ -1,4 +1,4 @@
-﻿import { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useSuspenseQuery, useQuery, queryOptions } from "@tanstack/react-query";
 import { Trophy, Award, Search, ChevronDown, Sparkles, GitBranch } from "lucide-react";
@@ -35,9 +35,9 @@ const KNOWN_BRACKET_YEARS = new Set<number | "current">(IPL_SEASON_IDS.map((s) =
 type Era = { id: string; label: string; range: [number, number] };
 const ERAS: Era[] = [
   { id: "all", label: "All Eras", range: [2008, 2099] },
-  { id: "early", label: "2008â€“2014", range: [2008, 2014] },
-  { id: "golden", label: "2015â€“2021", range: [2015, 2021] },
-  { id: "modern", label: "2022â€“Now", range: [2022, 2099] },
+  { id: "early", label: "2008–2014", range: [2008, 2014] },
+  { id: "golden", label: "2015–2021", range: [2015, 2021] },
+  { id: "modern", label: "2022–Now", range: [2022, 2099] },
 ];
 
 type AuctionHeadline = (typeof auctions.headlines)[number];
@@ -46,13 +46,13 @@ const auctionByYear = new Map<number, AuctionHeadline>(auctions.headlines.map((a
 export const Route = createFileRoute("/cricket/ipl/history")({
   head: () => ({
     meta: [
-      { title: "IPL History â€” Champions, Finals, Awards & Auctions" },
+      { title: "IPL History — Champions, Finals, Awards & Auctions" },
       {
         name: "description",
         content:
           "Every IPL final, champion, runner-up, orange/purple cap winner, MoF and auction headline since 2008.",
       },
-      { property: "og:title", content: "IPL â€” Complete History" },
+      { property: "og:title", content: "IPL — Complete History" },
       {
         property: "og:description",
         content: "Every IPL final and award winner with era filters and a Hall of Champions.",
@@ -61,7 +61,7 @@ export const Route = createFileRoute("/cricket/ipl/history")({
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "PlaySports" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "IPL History â€” Champions, Finals, Awards & Auctions" },
+      { name: "twitter:title", content: "IPL History — Champions, Finals, Awards & Auctions" },
       {
         name: "twitter:description",
         content:
@@ -207,13 +207,13 @@ function HistoryPage() {
               <span className="flex items-baseline gap-0.5">
                 <span className="text-lg font-black leading-none">{h.titles}</span>
                 <span className="text-[10px] font-bold opacity-80" aria-hidden="true">
-                  Ã—
+                  ×
                 </span>
                 <Trophy aria-hidden="true" className="size-3 opacity-90" />
                 <span className="sr-only">titles</span>
               </span>
               <span className="hidden sm:inline text-[10px] font-semibold opacity-85">
-                {[...h.years].sort().join(" Â· ")}
+                {[...h.years].sort().join(" · ")}
               </span>
             </Link>
           ))}
@@ -247,7 +247,7 @@ function HistoryPage() {
             value={q}
             onChange={(e) => setQ(e.target.value)}
             aria-label="Search IPL history"
-            placeholder="Search year, team, player, venueâ€¦"
+            placeholder="Search year, team, player, venue…"
             className="min-h-11 w-full rounded-lg border border-border bg-background py-2 pl-9 pr-3 text-sm text-foreground placeholder:text-foreground focus:border-[var(--color-gold)]/40 focus:outline-none focus:ring-2 focus:ring-[var(--color-gold)]/30"
           />
         </div>
@@ -477,7 +477,7 @@ function BracketPanel({ year }: { year: number }) {
   if (q.isLoading) {
     return (
       <div role="status" className="px-4 pb-4 text-[11px] text-foreground">
-        Loading bracketâ€¦
+        Loading bracket…
       </div>
     );
   }
@@ -531,7 +531,7 @@ function BracketCell({ b }: { b: IplBracketMatch }) {
   );
 }
 
-// â”€â”€â”€ Auction spend trend â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Auction spend trend ─────────────────────────────────
 function parsePrice(s: string): number {
   // returns USD in millions
   const m = s.replace(/[$,]/g, "").trim();
@@ -562,7 +562,7 @@ function AuctionSpendChart() {
       <div className="mb-3 flex items-center gap-2">
         <Sparkles aria-hidden="true" className="size-4 text-[var(--color-accent-nhl)]" />
         <h2 className="text-sm font-black uppercase tracking-widest text-[var(--color-accent-nhl)]">
-          Auction spend â€” top buy per season
+          Auction spend — top buy per season
         </h2>
         <span className="ml-auto text-[10px] font-bold text-foreground">USD millions</span>
       </div>
@@ -577,7 +577,7 @@ function AuctionSpendChart() {
               <div
                 className="w-full rounded-md bg-gradient-to-t from-[var(--color-accent-nhl)] via-[var(--color-accent-nhl)] to-[var(--color-gold)] ring-1 ring-border transition group-hover:from-[var(--color-accent-nhl)]"
                 style={{ height: `${h}px` }}
-                title={`${r.year} â€” ${r.player} (${r.team}) ${r.priceLabel}`}
+                title={`${r.year} — ${r.player} (${r.team}) ${r.priceLabel}`}
               />
               <span className="sr-only">
                 {r.year}: {r.player}, {r.team}, {r.priceLabel}

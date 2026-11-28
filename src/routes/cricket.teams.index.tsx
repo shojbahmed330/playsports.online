@@ -1,4 +1,4 @@
-﻿import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { TeamCrest } from "@/components/cricket/TeamCrest";
 import { useQueries } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -29,7 +29,7 @@ export const Route = createFileRoute("/cricket/teams/")({
   },
   head: () => ({
     meta: [
-      { title: "Cricket Teams â€” Squads across IPL, BBL, PSL & World Cups" },
+      { title: "Cricket Teams — Squads across IPL, BBL, PSL & World Cups" },
       {
         name: "description",
         content: "Browse cricket teams across major leagues and international series.",
@@ -45,7 +45,7 @@ export const Route = createFileRoute("/cricket/teams/")({
       { name: "twitter:card", content: "summary_large_image" },
       {
         name: "twitter:title",
-        content: "Cricket Teams â€” Squads across IPL, BBL, PSL & World Cups",
+        content: "Cricket Teams — Squads across IPL, BBL, PSL & World Cups",
       },
       {
         name: "twitter:description",
@@ -117,7 +117,7 @@ function TeamsIndex() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
           <div className="flex items-center gap-3">
             <div className="size-12 rounded-2xl bg-[var(--color-accent-mlb)]/15 ring-1 ring-[var(--color-accent-mlb)]/30 grid place-items-center text-2xl">
-              ðŸ›¡ï¸
+              🛡️
             </div>
             <div>
               <div className="text-[11px] uppercase tracking-[0.2em] text-[var(--color-accent-mlb)] font-bold">
@@ -139,7 +139,7 @@ function TeamsIndex() {
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search teamsâ€¦"
+              placeholder="Search teams…"
               type="search"
               aria-label="Search cricket teams"
               className="min-h-11 w-full rounded-full bg-muted py-2 pl-9 pr-3 text-sm outline-none ring-1 ring-border focus:ring-[var(--color-accent-cricket)]/50"

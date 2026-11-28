@@ -1,5 +1,5 @@
-﻿import { errorMessage } from "@/lib/error-message";
-// Phase 2.1 (cricket) â€” SSR tournament landing page.
+import { errorMessage } from "@/lib/error-message";
+// Phase 2.1 (cricket) — SSR tournament landing page.
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { SportNav } from "@/components/sports/SportNav";
 import { CricketSubNav } from "@/components/cricket/CricketSubNav";
@@ -18,15 +18,15 @@ export const Route = createFileRoute("/cricket/tournaments/$slug")({
   head: ({ params, loaderData }) => {
     if (!loaderData) {
       return {
-        meta: [{ title: "Tournament not found â€” Cricket" }, { name: "robots", content: "noindex" }],
+        meta: [{ title: "Tournament not found — Cricket" }, { name: "robots", content: "noindex" }],
       };
     }
     const { t } = loaderData;
     const url = canonical(`/cricket/tournaments/${params.slug}`);
-    const title = `${t.longName} â€” champions, records & full history`;
+    const title = `${t.longName} — champions, records & full history`;
     const desc = t.history
       ? `${t.longName}: ${t.history.champions.length} editions since ${t.history.champions[0]?.year}. Latest winner: ${t.latestChampion}. Complete winners list, top scorers and record wicket-takers.`
-      : `${t.longName} â€” fixtures, live scores, standings and records.`;
+      : `${t.longName} — fixtures, live scores, standings and records.`;
     const faqs = buildFaqs(t);
     return {
       meta: [
@@ -65,7 +65,7 @@ export const Route = createFileRoute("/cricket/tournaments/$slug")({
                   name: `${t.longName} champions`,
                   path: `/cricket/tournaments/${params.slug}`,
                   items: t.history.champions.map((c) => ({
-                    name: `${c.year} â€” ${c.champion}`,
+                    name: `${c.year} — ${c.champion}`,
                     path: `/cricket/tournaments/${params.slug}`,
                   })),
                 }),
@@ -188,8 +188,8 @@ function TournamentPage() {
             <div>
               <h1 className="text-2xl sm:text-3xl font-bold">{t.longName}</h1>
               <p className="text-sm text-muted-foreground mt-1">
-                {t.format.toUpperCase()} Â· {t.group}
-                {t.totalEditions ? ` Â· ${t.totalEditions} editions` : ""}
+                {t.format.toUpperCase()} · {t.group}
+                {t.totalEditions ? ` · ${t.totalEditions} editions` : ""}
               </p>
             </div>
           </div>
@@ -202,7 +202,7 @@ function TournamentPage() {
             params={{ id: t.id }}
             className="inline-flex min-h-11 items-center gap-2 rounded-lg bg-[var(--color-accent-cricket)] px-4 py-2 text-sm font-medium hover:bg-[var(--color-accent-cricket)]"
           >
-            View live fixtures & results â†’
+            View live fixtures & results →
           </Link>
         </div>
 
@@ -237,8 +237,8 @@ function TournamentPage() {
                       <td className="px-3 py-2 font-mono">{c.year}</td>
                       <td className="px-3 py-2 font-medium">{c.champion}</td>
                       <td className="px-3 py-2 text-muted-foreground">{c.runnerUp}</td>
-                      <td className="px-3 py-2 text-muted-foreground">{c.venue ?? "â€”"}</td>
-                      <td className="px-3 py-2 text-xs text-muted-foreground">{c.result ?? "â€”"}</td>
+                      <td className="px-3 py-2 text-muted-foreground">{c.venue ?? "—"}</td>
+                      <td className="px-3 py-2 text-xs text-muted-foreground">{c.result ?? "—"}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -272,7 +272,7 @@ function TournamentPage() {
                     {r.player} <span className="text-xs text-muted-foreground">({r.country})</span>
                   </Link>
                   <span className="font-mono text-sm">
-                    {r.runs} runs Â· {r.matches} m Â· avg {r.avg}
+                    {r.runs} runs · {r.matches} m · avg {r.avg}
                   </span>
                 </li>
               ))}
@@ -297,7 +297,7 @@ function TournamentPage() {
                     {w.player} <span className="text-xs text-muted-foreground">({w.country})</span>
                   </Link>
                   <span className="font-mono text-sm">
-                    {w.wickets} wkts Â· {w.matches} m Â· avg {w.avg}
+                    {w.wickets} wkts · {w.matches} m · avg {w.avg}
                   </span>
                 </li>
               ))}

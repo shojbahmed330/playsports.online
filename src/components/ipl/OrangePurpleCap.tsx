@@ -1,7 +1,6 @@
-﻿import { Trophy, Flame } from "lucide-react";
+import { Trophy, Flame } from "lucide-react";
 import type { IplLeader } from "@/lib/ipl.functions";
 import { PlayerLink } from "@/components/cricket/PlayerLink";
-
 
 type Props = {
   orange: IplLeader[];
@@ -11,7 +10,13 @@ type Props = {
   seasonYear: number | "current";
 };
 
-export function OrangePurpleCap({ orange, purple, fallbackOrange, fallbackPurple, seasonYear }: Props) {
+export function OrangePurpleCap({
+  orange,
+  purple,
+  fallbackOrange,
+  fallbackPurple,
+  seasonYear,
+}: Props) {
   return (
     <div className="grid gap-4 md:grid-cols-2">
       <CapCard
@@ -37,7 +42,11 @@ export function OrangePurpleCap({ orange, purple, fallbackOrange, fallbackPurple
         unit="wkts"
         emptyFallback={
           fallbackPurple
-            ? { name: fallbackPurple.player, team: fallbackPurple.team, value: fallbackPurple.wickets }
+            ? {
+                name: fallbackPurple.player,
+                team: fallbackPurple.team,
+                value: fallbackPurple.wickets,
+              }
             : null
         }
         seasonYear={seasonYear}
@@ -69,9 +78,13 @@ function CapCard({
   const rest = leaders.slice(1, 5);
   return (
     <article className="overflow-hidden rounded-2xl border border-border bg-background shadow-xl">
-      <header className={`grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-5 py-3 ${className}`}>
+      <header
+        className={`grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-5 py-3 ${className}`}
+      >
         <div className="min-w-0">
-          <div className="text-[10px] font-black uppercase tracking-[0.18em] opacity-90">{subtitle}</div>
+          <div className="text-[10px] font-black uppercase tracking-[0.18em] opacity-90">
+            {subtitle}
+          </div>
           <h3 className="truncate text-lg font-black">{title}</h3>
         </div>
         <div className="shrink-0 grid h-10 w-10 place-items-center rounded-full bg-muted ring-1 ring-border">
@@ -88,14 +101,21 @@ function CapCard({
                 alt={top.athleteName}
                 className="h-14 w-14 shrink-0 rounded-full object-cover bg-card ring-2 ring-border"
                 loading="lazy"
-               decoding="async" />
+                decoding="async"
+              />
             ) : (
               <div className="h-14 w-14 shrink-0 rounded-full bg-card ring-2 ring-border grid place-items-center text-lg font-black text-foreground">
                 {top.athleteName.slice(0, 1)}
               </div>
             )}
             <div className="min-w-0 flex-1">
-              <PlayerLink name={top.athleteName} athleteId={top.athleteId} className="truncate text-base font-bold text-foreground block">{top.athleteName}</PlayerLink>
+              <PlayerLink
+                name={top.athleteName}
+                athleteId={top.athleteId}
+                className="truncate text-base font-bold text-foreground block"
+              >
+                {top.athleteName}
+              </PlayerLink>
               <div className="text-xs text-foreground">{top.teamName || top.teamAbbr}</div>
             </div>
 
@@ -107,11 +127,16 @@ function CapCard({
         ) : emptyFallback ? (
           <div className="rounded-xl bg-muted p-3 ring-1 ring-border">
             <div className="text-[10px] uppercase tracking-widest text-foreground">
-              Reigning leader Â· {typeof seasonYear === "number" ? seasonYear - 1 : "last season"}
+              Reigning leader · {typeof seasonYear === "number" ? seasonYear - 1 : "last season"}
             </div>
             <div className="mt-1 flex items-baseline justify-between gap-3">
               <div className="min-w-0">
-                <PlayerLink name={emptyFallback.name} className="truncate text-base font-bold text-foreground block">{emptyFallback.name}</PlayerLink>
+                <PlayerLink
+                  name={emptyFallback.name}
+                  className="truncate text-base font-bold text-foreground block"
+                >
+                  {emptyFallback.name}
+                </PlayerLink>
                 <div className="text-xs text-foreground">{emptyFallback.team}</div>
               </div>
 
@@ -134,9 +159,17 @@ function CapCard({
                 <span className="w-5 shrink-0 text-center text-[11px] font-black text-foreground">
                   {p.rank}
                 </span>
-                <PlayerLink name={p.athleteName} athleteId={p.athleteId} className="min-w-0 flex-1 truncate text-sm text-foreground">{p.athleteName}</PlayerLink>
+                <PlayerLink
+                  name={p.athleteName}
+                  athleteId={p.athleteId}
+                  className="min-w-0 flex-1 truncate text-sm text-foreground"
+                >
+                  {p.athleteName}
+                </PlayerLink>
                 <span className="shrink-0 text-[11px] text-foreground">{p.teamAbbr}</span>
-                <span className="w-12 shrink-0 text-right text-sm font-bold text-foreground">{p.value}</span>
+                <span className="w-12 shrink-0 text-right text-sm font-bold text-foreground">
+                  {p.value}
+                </span>
               </li>
             ))}
           </ul>

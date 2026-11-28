@@ -8,11 +8,7 @@ import { useMergedGoals } from "@/lib/use-merged-goals";
  * with a flowing race rail for the next 4–10. Pure visual polish, fed by the
  * same merged-goals query used elsewhere on /players (no extra fetch).
  */
-export function Wc2026Podium({
-  onPick,
-}: {
-  onPick?: (name: string, country: string) => void;
-}) {
+export function Wc2026Podium({ onPick }: { onPick?: (name: string, country: string) => void }) {
   const { live2026Goals } = useMergedGoals();
 
   const ranked = useMemo(() => {
@@ -32,7 +28,9 @@ export function Wc2026Podium({
         <div className="inline-flex items-center gap-2 rounded-full bg-amber-500/15 ring-1 ring-amber-400/30 px-3 py-1 text-[10px] uppercase tracking-widest text-amber-200 font-bold">
           <Trophy className="size-3" /> Golden Boot 2026
         </div>
-        <div className="mt-3 text-sm font-bold text-white">Live race starts once matches kick off</div>
+        <div className="mt-3 text-sm font-bold text-white">
+          Live race starts once matches kick off
+        </div>
         <div className="text-xs text-white/60 mt-1">
           2026 scorers will appear from official ESPN scoring events.
         </div>
@@ -50,8 +48,13 @@ export function Wc2026Podium({
 
   return (
     <section className="relative overflow-hidden rounded-2xl border border-amber-500/30 bg-gradient-to-br from-amber-500/10 via-rose-500/5 to-transparent p-5">
-      <div className="absolute inset-0 pointer-events-none opacity-40"
-        style={{ background: "radial-gradient(60% 90% at 50% 0%, oklch(0.78 0.18 75 / 0.25), transparent 60%)" }} />
+      <div
+        className="absolute inset-0 pointer-events-none opacity-40"
+        style={{
+          background:
+            "radial-gradient(60% 90% at 50% 0%, oklch(0.78 0.18 75 / 0.25), transparent 60%)",
+        }}
+      />
       <div className="relative flex items-center justify-between mb-5">
         <div className="flex items-center gap-2">
           <div className="size-8 grid place-items-center rounded-full bg-amber-500/20 ring-1 ring-amber-400/40">
@@ -79,8 +82,8 @@ export function Wc2026Podium({
             rank === 1
               ? "from-amber-400 to-yellow-500 shadow-[0_0_40px_-8px_rgba(245,158,11,0.7)]"
               : rank === 2
-              ? "from-zinc-300 to-zinc-500"
-              : "from-orange-600 to-amber-800";
+                ? "from-zinc-300 to-zinc-500"
+                : "from-orange-600 to-amber-800";
           const medal = rank === 1 ? "🥇" : rank === 2 ? "🥈" : "🥉";
 
           return (
@@ -96,7 +99,9 @@ export function Wc2026Podium({
               <div className="text-[9px] uppercase tracking-wider text-muted-foreground truncate max-w-full">
                 {p.country}
               </div>
-              <div className={`mt-1.5 w-full rounded-t-lg bg-gradient-to-b ${tone} ${height} relative transition-transform group-hover:-translate-y-0.5`}>
+              <div
+                className={`mt-1.5 w-full rounded-t-lg bg-gradient-to-b ${tone} ${height} relative transition-transform group-hover:-translate-y-0.5`}
+              >
                 <div className="absolute inset-x-0 top-1.5 text-center">
                   <span className="text-xl sm:text-2xl">{medal}</span>
                 </div>

@@ -1,4 +1,4 @@
-﻿import { useMemo } from "react";
+import { useMemo } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -26,13 +26,13 @@ import { withHubLinks } from "@/components/seo/withHubLinks";
 export const Route = createFileRoute("/cricket/")({
   head: () => ({
     meta: [
-      { title: "Live Cricket Scores, Fixtures & Stats â€” PlaySports" },
+      { title: "Live Cricket Scores, Fixtures & Stats — PlaySports" },
       {
         name: "description",
         content:
           "Live cricket scoreboards, fixtures, series, players, rankings and records across IPL, ICC World Cup, Big Bash, PSL and more.",
       },
-      { property: "og:title", content: "Cricket â€” Live Scores, Series & Players" },
+      { property: "og:title", content: "Cricket — Live Scores, Series & Players" },
       {
         property: "og:description",
         content:
@@ -42,7 +42,7 @@ export const Route = createFileRoute("/cricket/")({
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "PlaySports" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Live Cricket Scores, Fixtures & Stats â€” PlaySports" },
+      { name: "twitter:title", content: "Live Cricket Scores, Fixtures & Stats — PlaySports" },
       {
         name: "twitter:description",
         content:
@@ -53,7 +53,7 @@ export const Route = createFileRoute("/cricket/")({
     scripts: [
       ldScript(
         collectionPage({
-          name: "Cricket â€” Live Scores, Series & Players",
+          name: "Cricket — Live Scores, Series & Players",
           description: "Cricket hub: live scores, series, players, rankings and records.",
           path: "/cricket",
         }),
@@ -75,11 +75,11 @@ export const Route = createFileRoute("/cricket/")({
           },
           {
             q: "How often do cricket scores update?",
-            a: "Live cricket scorecards on PlaySports refresh every 10â€“15 seconds while play is in progress, with ball-by-ball commentary when available.",
+            a: "Live cricket scorecards on PlaySports refresh every 10–15 seconds while play is in progress, with ball-by-ball commentary when available.",
           },
           {
             q: "Can I see player career stats?",
-            a: "Yes â€” batting and bowling career records from ESPNcricinfo Statsguru are shown on every player profile linked from live scorecards.",
+            a: "Yes — batting and bowling career records from ESPNcricinfo Statsguru are shown on every player profile linked from live scorecards.",
           },
         ]),
       ),
@@ -198,7 +198,7 @@ function CricketIndex() {
           />
         )}
 
-        {/* International Cricket â€” bilateral tours */}
+        {/* International Cricket — bilateral tours */}
         {(internationals.live.length > 0 || internationals.next.length > 0) && (
           <section className="relative overflow-hidden rounded-2xl border border-[var(--color-accent-mlb)]/20 bg-gradient-to-br from-[var(--color-accent-mlb)]/40 via-background to-[var(--color-accent-cricket)]/30 p-4 sm:p-5">
             <div className="absolute -top-16 -right-16 size-48 rounded-full bg-[var(--color-accent-mlb)]/10 blur-3xl pointer-events-none" />
@@ -222,7 +222,7 @@ function CricketIndex() {
               </Link>
             </div>
             <p className="relative text-xs text-muted-foreground mb-4">
-              Country vs country tours â€” NZ v ENG, IND v AUS, and every bilateral series.
+              Country vs country tours — NZ v ENG, IND v AUS, and every bilateral series.
             </p>
             <div className="relative grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
               {[...internationals.live, ...internationals.next].slice(0, 3).map((m) => (
@@ -306,7 +306,7 @@ function CricketIndex() {
         {q.isLoading ? (
           <Section
             icon={<Clock className="size-5 text-[var(--color-gold)]" />}
-            title="Loading cricket slateâ€¦"
+            title="Loading cricket slate…"
           >
             <GameGridSkeleton />
           </Section>

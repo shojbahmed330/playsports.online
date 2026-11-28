@@ -1,5 +1,5 @@
-﻿import { errorMessage } from "@/lib/error-message";
-// Phase 2.1 (cricket) â€” SSR-friendly team profile.
+import { errorMessage } from "@/lib/error-message";
+// Phase 2.1 (cricket) — SSR-friendly team profile.
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { SportNav } from "@/components/sports/SportNav";
 import { CricketSubNav } from "@/components/cricket/CricketSubNav";
@@ -20,19 +20,19 @@ export const Route = createFileRoute("/cricket/teams/$slug")({
   head: ({ params, loaderData }) => {
     if (!loaderData) {
       return {
-        meta: [{ title: "Team not found â€” Cricket" }, { name: "robots", content: "noindex" }],
+        meta: [{ title: "Team not found — Cricket" }, { name: "robots", content: "noindex" }],
       };
     }
     const { team } = loaderData;
     const url = canonical(`/cricket/teams/${params.slug}`);
     const image = team.logo ?? "https://www.playsports.online/og-default.png";
     const title = team.isFranchise
-      ? `${team.name} â€” IPL squad, captains, titles & home ground`
-      : `${team.name} Cricket â€” ICC rankings, squad & recent form`;
+      ? `${team.name} — IPL squad, captains, titles & home ground`
+      : `${team.name} Cricket — ICC rankings, squad & recent form`;
     const desc =
       team.isFranchise && team.franchise
         ? `${team.name}: ${team.franchise.titles} IPL title${team.franchise.titles === 1 ? "" : "s"}, captained by ${team.franchise.captain}, home ground ${team.franchise.homeGround}.`
-        : `${team.name} â€” current ICC rankings across T20I, ODI and Test formats plus recent form.`;
+        : `${team.name} — current ICC rankings across T20I, ODI and Test formats plus recent form.`;
     return {
       meta: [
         { title },
@@ -167,7 +167,7 @@ function CricketTeamProfile() {
             <h1 className="text-2xl sm:text-3xl font-bold">{team.name}</h1>
             <p className="text-sm text-muted-foreground mt-1">
               {team.isFranchise ? "IPL franchise" : "International cricket team"}
-              {team.code ? ` Â· ${team.code}` : ""}
+              {team.code ? ` · ${team.code}` : ""}
             </p>
           </div>
         </header>
@@ -181,7 +181,7 @@ function CricketTeamProfile() {
             <Info label="Founded" value={String(team.franchise.founded)} />
             <Info
               label={`IPL titles (${team.franchise.titles})`}
-              value={team.franchise.titleYears.join(", ") || "â€”"}
+              value={team.franchise.titleYears.join(", ") || "—"}
             />
           </section>
         ) : team.formats.length > 0 ? (
@@ -215,25 +215,25 @@ function CricketTeamProfile() {
               params={{ slug: team.slug }}
               className="inline-flex min-h-11 items-center rounded-xl border border-border bg-card px-4 text-sm font-semibold transition hover:border-[var(--color-accent-cricket)]/40 hover:bg-muted"
             >
-              Team history â†’
+              Team history →
             </Link>
             <Link
               to="/cricket/rankings"
               className="inline-flex min-h-11 items-center rounded-xl border border-border bg-card px-4 text-sm font-semibold transition hover:border-[var(--color-accent-cricket)]/40 hover:bg-muted"
             >
-              ICC rankings â†’
+              ICC rankings →
             </Link>
             <Link
               to="/cricket/series"
               className="inline-flex min-h-11 items-center rounded-xl border border-border bg-card px-4 text-sm font-semibold transition hover:border-[var(--color-accent-cricket)]/40 hover:bg-muted"
             >
-              Series & fixtures â†’
+              Series & fixtures →
             </Link>
             <Link
               to="/cricket/players"
               className="inline-flex min-h-11 items-center rounded-xl border border-border bg-card px-4 text-sm font-semibold transition hover:border-[var(--color-accent-cricket)]/40 hover:bg-muted"
             >
-              Player profiles â†’
+              Player profiles →
             </Link>
           </nav>
         </section>

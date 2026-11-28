@@ -75,7 +75,9 @@ export function OverviewTab({
                 className="-mx-2 flex cursor-pointer items-center gap-3 rounded-md px-2 py-2.5 hover:bg-accent/40"
               >
                 <span className="w-6 font-bold tabular-nums text-muted-foreground">{i + 1}</span>
-                <span className="text-xl" aria-hidden="true">{flagOf(s.country)}</span>
+                <span className="text-xl" aria-hidden="true">
+                  {flagOf(s.country)}
+                </span>
                 <div className="min-w-0 flex-1">
                   <div className="truncate font-semibold">{s.name}</div>
                   <div className="truncate text-micro text-muted-foreground">
@@ -106,7 +108,9 @@ export function OverviewTab({
             {topCountries.map((c) => (
               <div key={c.country} className="rounded-lg border border-border bg-background p-3">
                 <div className="mb-1 flex items-center gap-2">
-                  <span className="text-xl" aria-hidden="true">{flagOf(c.country)}</span>
+                  <span className="text-xl" aria-hidden="true">
+                    {flagOf(c.country)}
+                  </span>
                   <span className="truncate text-caption font-semibold">{c.country}</span>
                 </div>
                 <div className="text-micro text-muted-foreground">
@@ -120,7 +124,10 @@ export function OverviewTab({
 
       {live2026Count > 0 && (
         <div className="flex items-center gap-3 rounded-2xl border border-live/30 bg-live/5 p-5">
-          <span className="size-2.5 rounded-full bg-live animate-pulse motion-reduce:animate-none" aria-hidden="true" />
+          <span
+            className="size-2.5 rounded-full bg-live animate-pulse motion-reduce:animate-none"
+            aria-hidden="true"
+          />
           <div className="flex-1">
             <div className="font-bold">2026 World Cup is live</div>
             <div className="text-caption text-muted-foreground">
@@ -155,7 +162,9 @@ export function ScorersTab({
         <h2 className="text-xl font-bold sm:text-2xl">
           <span aria-hidden="true">🥇</span> Top Scorers
         </h2>
-        <span className="text-caption tabular-nums text-muted-foreground">Showing {rows.length}</span>
+        <span className="text-caption tabular-nums text-muted-foreground">
+          Showing {rows.length}
+        </span>
       </div>
       {rows.length === 0 ? (
         <EmptyBlock label="No goal data matches the current filters." />
@@ -212,14 +221,23 @@ function ScorerRowItem({
       className={`grid cursor-pointer grid-cols-[44px_1fr_auto] items-center gap-3 px-4 py-3 transition-colors hover:bg-accent/40 md:grid-cols-[60px_1fr_180px_80px_90px_110px_1fr] md:gap-4 md:px-5 ${tint}`}
     >
       <div className="flex items-center text-base font-extrabold text-muted-foreground md:text-lg">
-        {medal ? <span className="text-2xl" aria-hidden="true">{medal}</span> : `#${rank}`}
+        {medal ? (
+          <span className="text-2xl" aria-hidden="true">
+            {medal}
+          </span>
+        ) : (
+          `#${rank}`
+        )}
       </div>
       <div className="min-w-0">
         <div className="flex items-center gap-2 truncate font-semibold">
           {row.name}
           {row.live2026 > 0 && (
             <span className="inline-flex items-center gap-1 rounded bg-live/15 px-1.5 py-0.5 text-micro font-bold uppercase text-live ring-1 ring-live/30">
-              <span className="size-1 rounded-full bg-live animate-pulse motion-reduce:animate-none" aria-hidden="true" />
+              <span
+                className="size-1 rounded-full bg-live animate-pulse motion-reduce:animate-none"
+                aria-hidden="true"
+              />
               {row.live2026} · 2026
             </span>
           )}
@@ -229,7 +247,9 @@ function ScorerRowItem({
         </div>
       </div>
       <div className="hidden min-w-0 items-center gap-2 text-caption text-muted-foreground md:flex">
-        <span className="text-base" aria-hidden="true">{flagOf(row.country)}</span>
+        <span className="text-base" aria-hidden="true">
+          {flagOf(row.country)}
+        </span>
         <span className="truncate">{row.country}</span>
       </div>
       <div className="text-right text-lg font-extrabold tabular-nums text-gold md:text-xl">
@@ -310,7 +330,9 @@ function CardTable({
               className="flex items-center gap-3 px-4 py-2.5 text-caption hover:bg-accent/40"
             >
               <span className="w-6 font-semibold tabular-nums text-muted-foreground">{i + 1}</span>
-              <span className="text-base" aria-hidden="true">{flagOf(r.country)}</span>
+              <span className="text-base" aria-hidden="true">
+                {flagOf(r.country)}
+              </span>
               <span className="flex-1 truncate font-medium">{r.name}</span>
               <span className="hidden max-w-[120px] truncate text-micro text-muted-foreground sm:inline">
                 {r.country}
@@ -351,7 +373,9 @@ export function CountriesTab({ rows }: { rows: CountryStat[] }) {
             className="rounded-2xl border border-border bg-card/60 p-5 transition-all hover:-translate-y-0.5 hover:border-gold/30"
           >
             <div className="mb-4 flex items-center gap-3">
-              <span className="text-3xl" aria-hidden="true">{flagOf(c.country)}</span>
+              <span className="text-3xl" aria-hidden="true">
+                {flagOf(c.country)}
+              </span>
               <h3 className="truncate text-body font-bold">{c.country}</h3>
             </div>
             <div className="mb-3 grid grid-cols-3 gap-2 text-center">
@@ -392,7 +416,9 @@ export function RankingsTab() {
         <h2 className="text-xl font-bold sm:text-2xl">
           <span aria-hidden="true">🏆</span> Current FIFA Rankings
         </h2>
-        <span className="text-caption text-muted-foreground">Updated June 2026 · Source: FIFA.com</span>
+        <span className="text-caption text-muted-foreground">
+          Updated June 2026 · Source: FIFA.com
+        </span>
       </div>
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <div className="rounded-2xl border border-border bg-card/60 p-4">
@@ -404,8 +430,12 @@ export function RankingsTab() {
                 className="flex items-center justify-between gap-2 border-b border-border/60 py-1"
               >
                 <div className="flex min-w-0 items-center gap-2">
-                  <span className="w-6 text-micro tabular-nums text-muted-foreground">#{c.rank}</span>
-                  <span className="text-lg" aria-hidden="true">{flagOf(c.country)}</span>
+                  <span className="w-6 text-micro tabular-nums text-muted-foreground">
+                    #{c.rank}
+                  </span>
+                  <span className="text-lg" aria-hidden="true">
+                    {flagOf(c.country)}
+                  </span>
                   <span className="truncate">{c.country}</span>
                 </div>
                 <span className="text-micro tabular-nums text-gold">{c.points}</span>
@@ -423,8 +453,12 @@ export function RankingsTab() {
                 className="flex items-center justify-between gap-2 border-b border-border/60 py-1"
               >
                 <div className="flex min-w-0 items-center gap-2">
-                  <span className="w-6 text-micro tabular-nums text-muted-foreground">#{p.rank}</span>
-                  <span className="text-lg" aria-hidden="true">{flagOf(p.country)}</span>
+                  <span className="w-6 text-micro tabular-nums text-muted-foreground">
+                    #{p.rank}
+                  </span>
+                  <span className="text-lg" aria-hidden="true">
+                    {flagOf(p.country)}
+                  </span>
                   <span className="truncate font-medium">{p.name}</span>
                 </div>
                 <span className="truncate text-micro text-muted-foreground">{p.club}</span>

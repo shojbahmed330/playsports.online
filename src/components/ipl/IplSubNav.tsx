@@ -1,5 +1,14 @@
-﻿import { Link, useLocation } from "@tanstack/react-router";
-import { Home, CalendarDays, BarChart3, Shield, User, Trophy, Crown, ChevronLeft } from "lucide-react";
+import { Link, useLocation } from "@tanstack/react-router";
+import {
+  Home,
+  CalendarDays,
+  BarChart3,
+  Shield,
+  User,
+  Trophy,
+  Crown,
+  ChevronLeft,
+} from "lucide-react";
 import { useEffect, useRef, type ComponentType } from "react";
 import { Breadcrumbs } from "@/components/nav/Breadcrumbs";
 
@@ -14,13 +23,69 @@ type Tab = {
 };
 
 const TABS: Tab[] = [
-  { to: "/cricket/ipl",           label: "Home",      emoji: "ðŸ ", Icon: Home,         grad: "from-[var(--color-gold)] to-[var(--color-gold)]",   accent: "text-[var(--color-gold)]",   match: (p) => p === "/cricket/ipl" || p === "/cricket/ipl/" },
-  { to: "/cricket/ipl/scores",    label: "Scores",    emoji: "ðŸ”´", Icon: CalendarDays, grad: "from-[var(--color-live)] to-[var(--color-live)]",       accent: "text-[var(--color-live)]",    match: (p) => p.startsWith("/cricket/ipl/scores") },
-  { to: "/cricket/ipl/standings", label: "Standings", emoji: "ðŸ“Š", Icon: BarChart3,    grad: "from-[var(--color-accent-mlb)] to-[var(--color-accent-mlb)]",       accent: "text-[var(--color-accent-mlb)]",     match: (p) => p.startsWith("/cricket/ipl/standings") },
-  { to: "/cricket/ipl/teams",     label: "Teams",     emoji: "ðŸ›¡ï¸", Icon: Shield,       grad: "from-[var(--color-accent-cricket)] to-[var(--color-accent-cricket)]",   accent: "text-[var(--color-accent-cricket)]", match: (p) => p.startsWith("/cricket/ipl/teams") },
-  { to: "/cricket/ipl/players",   label: "Players",   emoji: "ðŸ‘¤", Icon: User,         grad: "from-[var(--color-accent-nhl)] to-[var(--color-accent-nhl)]", accent: "text-[var(--color-accent-nhl)]", match: (p) => p.startsWith("/cricket/ipl/players") },
-  { to: "/cricket/ipl/history",   label: "History",   emoji: "ðŸ†", Icon: Trophy,       grad: "from-[var(--color-gold)] to-[var(--color-gold)]",   accent: "text-[var(--color-gold)]",  match: (p) => p.startsWith("/cricket/ipl/history") },
-  { to: "/cricket/ipl/records",   label: "Records",   emoji: "ðŸ‘‘", Icon: Crown,        grad: "from-[var(--color-accent-nhl)] to-[var(--color-accent-nhl)]",  accent: "text-[var(--color-accent-nhl)]",  match: (p) => p.startsWith("/cricket/ipl/records") },
+  {
+    to: "/cricket/ipl",
+    label: "Home",
+    emoji: "🏠",
+    Icon: Home,
+    grad: "from-[var(--color-gold)] to-[var(--color-gold)]",
+    accent: "text-[var(--color-gold)]",
+    match: (p) => p === "/cricket/ipl" || p === "/cricket/ipl/",
+  },
+  {
+    to: "/cricket/ipl/scores",
+    label: "Scores",
+    emoji: "🔴",
+    Icon: CalendarDays,
+    grad: "from-[var(--color-live)] to-[var(--color-live)]",
+    accent: "text-[var(--color-live)]",
+    match: (p) => p.startsWith("/cricket/ipl/scores"),
+  },
+  {
+    to: "/cricket/ipl/standings",
+    label: "Standings",
+    emoji: "📊",
+    Icon: BarChart3,
+    grad: "from-[var(--color-accent-mlb)] to-[var(--color-accent-mlb)]",
+    accent: "text-[var(--color-accent-mlb)]",
+    match: (p) => p.startsWith("/cricket/ipl/standings"),
+  },
+  {
+    to: "/cricket/ipl/teams",
+    label: "Teams",
+    emoji: "🛡️",
+    Icon: Shield,
+    grad: "from-[var(--color-accent-cricket)] to-[var(--color-accent-cricket)]",
+    accent: "text-[var(--color-accent-cricket)]",
+    match: (p) => p.startsWith("/cricket/ipl/teams"),
+  },
+  {
+    to: "/cricket/ipl/players",
+    label: "Players",
+    emoji: "👤",
+    Icon: User,
+    grad: "from-[var(--color-accent-nhl)] to-[var(--color-accent-nhl)]",
+    accent: "text-[var(--color-accent-nhl)]",
+    match: (p) => p.startsWith("/cricket/ipl/players"),
+  },
+  {
+    to: "/cricket/ipl/history",
+    label: "History",
+    emoji: "🏆",
+    Icon: Trophy,
+    grad: "from-[var(--color-gold)] to-[var(--color-gold)]",
+    accent: "text-[var(--color-gold)]",
+    match: (p) => p.startsWith("/cricket/ipl/history"),
+  },
+  {
+    to: "/cricket/ipl/records",
+    label: "Records",
+    emoji: "👑",
+    Icon: Crown,
+    grad: "from-[var(--color-accent-nhl)] to-[var(--color-accent-nhl)]",
+    accent: "text-[var(--color-accent-nhl)]",
+    match: (p) => p.startsWith("/cricket/ipl/records"),
+  },
 ];
 
 // Mobile bottom nav is mounted globally via <GlobalMobileNav /> in __root.tsx.
@@ -79,7 +144,9 @@ export function IplSubNav() {
                         : `bg-muted hover:bg-muted ${t.accent} ring-border hover:ring-border hover:-translate-y-0.5`,
                     ].join(" ")}
                   >
-                    <span aria-hidden className="text-sm leading-none">{t.emoji}</span>
+                    <span aria-hidden className="text-sm leading-none">
+                      {t.emoji}
+                    </span>
                     <Icon className="size-3.5 hidden sm:inline-block" />
                     <span className="tracking-wide">{t.label}</span>
                   </Link>
