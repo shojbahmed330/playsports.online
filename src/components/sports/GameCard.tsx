@@ -2,7 +2,7 @@ import type { SportGame } from "@/lib/espn.functions";
 import { Link } from "@tanstack/react-router";
 import { Countdown } from "./Countdown";
 import { ScoreFlip } from "./ScoreFlip";
-import { formatLocalTime, relativeDay } from "@/lib/time";
+import { LocalTime } from "@/components/ui/local-time";
 import { MapPin, Tv } from "lucide-react";
 
 export function GameCard({ game, linkTo }: { game: SportGame; linkTo?: string }) {
@@ -35,9 +35,9 @@ export function GameCard({ game, linkTo }: { game: SportGame; linkTo?: string })
           <span className="text-gray-400 font-semibold">{game.shortDetail || "Final"}</span>
         ) : (
           <span className="text-gray-300 font-semibold flex items-center gap-1.5">
-            <span className="text-amber-400">{relativeDay(game.startTs)}</span>
+            <span className="text-amber-400"><LocalTime ts={game.startTs} mode="day" /></span>
             <span className="text-gray-500">·</span>
-            <span>{formatLocalTime(game.startTs)}</span>
+            <span><LocalTime ts={game.startTs} /></span>
           </span>
         )}
         {isPre && <Countdown ts={game.startTs} />}

@@ -10,8 +10,9 @@
 - `/news` splits Latest results from the archive; aged-out `current-...` URLs redirect to `/news`; empty 2026 leaderboards are `noindex,follow`; long player names wrap on mobile.
 - Extracted the recap prompt/upsert into `src/lib/match-recaps.generate.server.ts`; admin server functions now share it.
 - Fixed the `/tournaments/fifa-world-cup-2026/<leaderboard>` collision: known boards render inside the stage route instead of 404ing.
-- Removed the unused `satori` dependency; `bun audit fix` cleared seroval. Advisories 6 → 3.
-- Vendor `manualChunks` experiment reverted (entry grew to ~2.2 MB); entry remains ~587 KB raw.
+- Removed the unused `satori` dependency, replaced `@tanstack/zod-adapter` with a local zod 4 validator and pinned zod/minimatch/glob; `bun audit` is now **0**.
+- Selective `manualChunks` splits react/radix/icons; entry is ~401 KB raw (was ~587 KB).
+- Hydration: `LocalTime` + mount gates for count badges/zone strip/status bar/cricket slate; the last `GameCard` time labels were fixed. `/` and `/cricket` browser consoles are clean.
 
 ## Encoding repair and player-profile hardening (2026-11-28)
 

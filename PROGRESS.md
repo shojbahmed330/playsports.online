@@ -84,4 +84,4 @@ Updated: 2026-11-28 (session 2 — redesign pass + production deploy)
 ## Hydration pass (2026-11-28)
 
 - Added `LocalTime` + `useHydrated`; time/day labels no longer differ between SSR UTC and the viewer's zone. Gated the zone strip, count badges, status bar and cricket slate; removed the unawaited cricket prefetch that raced the dehydrated cache.
-- `/cricket` browser console is clean. Home still reports one React #418 text mismatch (page renders) — likely live score/status text, not layout; logged as open in BLK-HYDRATION-02.
+- `/` and `/cricket` browser consoles are clean after fixing the last `GameCard` time labels; BLK-HYDRATION-02 closed.
