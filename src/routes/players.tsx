@@ -1,17 +1,14 @@
-import { useMemo, lazy, Suspense } from "react";
+﻿import { useMemo, lazy, Suspense } from "react";
 import { createFileRoute, Link, useNavigate, stripSearchParams } from "@tanstack/react-router";
 import { zodValidator } from "@tanstack/zod-adapter";
 import { useQuery } from "@tanstack/react-query";
 
-import { Trophy, ShieldCheck, Share2, TrendingUp } from "lucide-react";
+import { Trophy, ShieldCheck, Share2 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
-import { EmptyState } from "@/components/ui/state";
-import { flagOf } from "@/lib/flags";
 import { AdSlot } from "@/components/ads/AdSlot";
-import fifaRankings from "@/data/fifa_rankings.json";
 
 import { useMergedGoals, type GoalRow } from "@/lib/use-merged-goals";
-import { useMergedCards, type CardRow } from "@/lib/use-merged-cards";
+import { useMergedCards } from "@/lib/use-merged-cards";
 import { breadcrumbList, collectionPage, ldScript } from "@/lib/seo/jsonld";
 
 import {
@@ -29,7 +26,15 @@ import { PlayerSubNav } from "@/components/players/PlayerSubNav";
 import { FilterBar, ActiveFilterChips } from "@/components/players/FilterBar";
 import { FilterSheet } from "@/components/players/FilterSheet";
 import { PlayerProfileSheet } from "@/components/players/PlayerProfileSheet";
-import { Wc2026Podium } from "@/components/players/Wc2026Podium";
+import {
+  OverviewTab,
+  ScorersTab,
+  DisciplineTab,
+  CountriesTab,
+  RankingsTab,
+  buildCardLeaderboard,
+  type ScorerRow,
+} from "@/components/players/PlayersTabs";
 
 const CompareView = lazy(() =>
   import("@/components/players/CompareView").then((m) => ({ default: m.CompareView })),
@@ -45,13 +50,13 @@ export const Route = createFileRoute("/players")({
   },
   head: () => ({
     meta: [
-      { title: "Player Statistics — FIFA World Cup Archive (1930–2026)" },
+      { title: "Player Statistics â€” FIFA World Cup Archive (1930â€“2026)" },
       {
         name: "description",
         content:
           "FIFA World Cup player statistics including the live 2026 Golden Boot race, top scorers, hat-tricks, card leaders, country stats and player comparisons across every edition from 1930 to 2026.",
       },
-      { property: "og:title", content: "Player Statistics & Records — FIFA World Cup 1930–2026" },
+      { property: "og:title", content: "Player Statistics & Records â€” FIFA World Cup 1930â€“2026" },
       {
         property: "og:description",
         content:
@@ -60,7 +65,7 @@ export const Route = createFileRoute("/players")({
       { property: "og:url", content: "https://www.playsports.online/players" },
       { property: "og:site_name", content: "PlaySports" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Player Statistics & Records — FIFA World Cup 1930–2026" },
+      { name: "twitter:title", content: "Player Statistics & Records â€” FIFA World Cup 1930â€“2026" },
       {
         name: "twitter:description",
         content:
@@ -71,7 +76,7 @@ export const Route = createFileRoute("/players")({
     scripts: [
       ldScript(
         collectionPage({
-          name: "Player Statistics — FIFA World Cup",
+          name: "Player Statistics â€” FIFA World Cup",
           description:
             "All-time and live FIFA World Cup top scorers, card leaders and player records.",
           path: "/players",
@@ -105,7 +110,7 @@ export const Route = createFileRoute("/players")({
           },
           {
             "@type": "Question",
-            name: "How many World Cup goals does Cristiano Ronaldo have (2006–2026)?",
+            name: "How many World Cup goals does Cristiano Ronaldo have (2006â€“2026)?",
             acceptedAnswer: {
               "@type": "Answer",
               text: "Career totals on this page combine the verified historical World Cup dataset with live 2026 ESPN scoring events when available.",
@@ -140,7 +145,7 @@ function PlayersPage() {
     return Array.from(s).sort();
   }, [GOALS]);
 
-  // (Live 2026 scorers come from useMergedGoals above — shared query cache.)
+  // (Live 2026 scorers come from useMergedGoals above â€” shared query cache.)
 
   // Resolve filters
   const selectedYears = useMemo(() => {
@@ -195,7 +200,7 @@ function PlayersPage() {
     });
   }, [search.pos, search.q, selectedYears, selectedCountries, selectedConfeds]);
 
-  // Top scorers — GOALS already includes live 2026 rows from useMergedGoals.
+  // Top scorers â€” GOALS already includes live 2026 rows from useMergedGoals.
   const topScorers = useMemo(() => {
     const agg = new Map<
       string,
@@ -338,7 +343,7 @@ function PlayersPage() {
               to="/"
               className="group relative inline-flex min-h-11 items-center gap-1.5 rounded-xl px-3 text-xs font-semibold text-muted-foreground ring-1 ring-border bg-muted hover:text-foreground hover:bg-accent hover:ring-ring/40 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
-              <span aria-hidden>🏠</span>
+              <span aria-hidden>ðŸ </span>
               <span>Home</span>
             </Link>
             <Link
@@ -373,7 +378,7 @@ function PlayersPage() {
                 The World Cup, <span className="text-gold">player by player.</span>
               </h1>
               <p className="text-sm sm:text-base text-muted-foreground mt-2 max-w-2xl">
-                Every goal and card from 1930–2022, merged live with the 2026 tournament.
+                Every goal and card from 1930â€“2022, merged live with the 2026 tournament.
               </p>
             </div>
             <button
@@ -454,7 +459,7 @@ function countCountUnique(rows: GoalRow[]): number {
   return s.size;
 }
 
-/* ───────── KPI strip ───────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€ KPI strip â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 function KpiStrip({
   totalPlayers,
   totalGoals,
@@ -489,430 +494,6 @@ function KpiStrip({
       ))}
     </div>
   );
-}
-
-/* ───────── Overview tab ───────── */
-type ScorerRow = {
-  name: string;
-  country: string;
-  goals: number;
-  tournaments: number;
-  yearsList: number[];
-  live2026: number;
-  gpt: number;
-};
-
-function OverviewTab({
-  topScorers,
-  countryStats,
-  onPickPlayer,
-  live2026Count,
-}: {
-  topScorers: ScorerRow[];
-  countryStats: {
-    country: string;
-    tournaments: number;
-    goals: number;
-    playerCount: number;
-    topScorer: { name: string; goals: number } | null;
-  }[];
-  onPickPlayer: (n: string, c: string) => void;
-  live2026Count: number;
-}) {
-  const navigate = useNavigate({ from: "/players" });
-  const go = (tab: PlayersSearch["tab"]) =>
-    navigate({ search: (prev: PlayersSearch) => ({ ...prev, tab }), replace: true });
-
-  const top5 = topScorers.slice(0, 5);
-  const topCountries = countryStats.slice(0, 6);
-
-  return (
-    <div className="space-y-6">
-      <Wc2026Podium onPick={onPickPlayer} />
-      {void live2026Count}
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <div className="rounded-2xl border border-border bg-card/60 p-5">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-bold flex items-center gap-2">
-              <TrendingUp className="size-4 text-gold" /> Top 5 scorers
-            </h3>
-            <button onClick={() => go("scorers")} className="text-xs text-gold hover:underline">
-              See all →
-            </button>
-          </div>
-          <ol className="divide-y divide-border">
-            {top5.map((s, i) => (
-              <li
-                key={s.name + s.country}
-                onClick={() => onPickPlayer(s.name, s.country)}
-                className="flex items-center gap-3 py-2.5 cursor-pointer hover:bg-accent/40 -mx-2 px-2 rounded-md"
-              >
-                <span className="w-6 text-muted-foreground font-bold tabular-nums">{i + 1}</span>
-                <span className="text-xl">{flagOf(s.country)}</span>
-                <div className="flex-1 min-w-0">
-                  <div className="font-semibold truncate">{s.name}</div>
-                  <div className="text-[11px] text-muted-foreground truncate">
-                    {s.country} • {s.tournaments} WC
-                  </div>
-                </div>
-                <span className="text-gold font-extrabold text-lg tabular-nums">{s.goals}</span>
-              </li>
-            ))}
-            {top5.length === 0 && <EmptyBlock label="No data for current filters." />}
-          </ol>
-        </div>
-
-        <div className="rounded-2xl border border-border bg-card/60 p-5">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-bold">🌍 Top nations</h3>
-            <button onClick={() => go("countries")} className="text-xs text-gold hover:underline">
-              See all →
-            </button>
-          </div>
-          <div className="grid grid-cols-2 gap-2">
-            {topCountries.map((c) => (
-              <div key={c.country} className="rounded-lg bg-background border border-border p-3">
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="text-xl">{flagOf(c.country)}</span>
-                  <span className="font-semibold text-sm truncate">{c.country}</span>
-                </div>
-                <div className="text-[11px] text-muted-foreground">
-                  {c.tournaments} WC · <span className="text-gold font-bold">{c.goals}</span> goals
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {live2026Count > 0 && (
-        <div className="flex items-center gap-3 rounded-2xl border border-live/30 bg-live/5 p-5">
-          <span className="size-2.5 rounded-full bg-live animate-pulse motion-reduce:animate-none" aria-hidden="true" />
-          <div className="flex-1">
-            <div className="font-bold">2026 World Cup is live</div>
-            <div className="text-caption text-muted-foreground">
-              {live2026Count} active scorers are merged into the leaderboards above.
-            </div>
-          </div>
-          <button
-            type="button"
-            onClick={() => go("scorers")}
-            className="inline-flex min-h-11 items-center text-caption text-live hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          >
-            View leaderboard →
-          </button>
-        </div>
-      )}
-    </div>
-  );
-}
-
-/* ───────── Scorers tab ───────── */
-function ScorersTab({
-  rows,
-  onPick,
-}: {
-  rows: ScorerRow[];
-  onPick: (n: string, c: string) => void;
-}) {
-  return (
-    <section className="space-y-4">
-      <Wc2026Podium onPick={onPick} />
-      <div className="flex items-baseline justify-between flex-wrap gap-2">
-        <h2 className="text-xl sm:text-2xl font-bold">🥇 Top Scorers</h2>
-        <span className="text-xs text-muted-foreground tabular-nums">Showing {rows.length}</span>
-      </div>
-      {rows.length === 0 ? (
-        <EmptyBlock label="No goal data matches the current filters." />
-      ) : (
-        <div className="rounded-2xl border border-border overflow-hidden bg-card/40">
-          {/* Desktop header */}
-          <div className="hidden md:grid grid-cols-[60px_1fr_180px_80px_90px_110px_1fr] gap-4 px-5 py-3 bg-muted/50 text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">
-            <div>Rank</div>
-            <div>Player</div>
-            <div>Country</div>
-            <div className="text-right">Goals</div>
-            <div className="text-right">G/WC</div>
-            <div className="text-right">Tournaments</div>
-            <div>Years</div>
-          </div>
-          <ul className="divide-y divide-border">
-            {rows.map((r, i) => (
-              <ScorerRowItem
-                key={r.name + r.country + i}
-                rank={i + 1}
-                row={r}
-                onPick={() => onPick(r.name, r.country)}
-              />
-            ))}
-          </ul>
-        </div>
-      )}
-    </section>
-  );
-}
-
-function ScorerRowItem({
-  rank,
-  row,
-  onPick,
-}: {
-  rank: number;
-  row: ScorerRow;
-  onPick: () => void;
-}) {
-  const medal = rank === 1 ? "🥇" : rank === 2 ? "🥈" : rank === 3 ? "🥉" : null;
-  const tint =
-    rank === 1
-      ? "bg-gradient-to-r from-gold/15 via-gold/[0.03] to-transparent"
-      : rank === 2
-        ? "bg-gradient-to-r from-muted-foreground/10 to-transparent"
-        : rank === 3
-          ? "bg-gradient-to-r from-primary/15 to-transparent"
-          : "";
-
-  return (
-    <li
-      onClick={onPick}
-      className={`grid grid-cols-[44px_1fr_auto] md:grid-cols-[60px_1fr_180px_80px_90px_110px_1fr] gap-3 md:gap-4 items-center px-4 md:px-5 py-3 cursor-pointer hover:bg-accent/40 transition-colors ${tint}`}
-    >
-      <div className="text-base md:text-lg font-extrabold text-muted-foreground flex items-center">
-        {medal ? <span className="text-2xl" aria-hidden="true">{medal}</span> : `#${rank}`}
-      </div>
-      <div className="min-w-0">
-        <div className="font-semibold truncate flex items-center gap-2">
-          {row.name}
-          {row.live2026 > 0 && (
-            <span className="inline-flex items-center gap-1 rounded bg-live/15 px-1.5 py-0.5 text-micro font-bold uppercase text-live ring-1 ring-live/30">
-              <span className="size-1 rounded-full bg-live animate-pulse motion-reduce:animate-none" aria-hidden="true" />
-              {row.live2026} · 2026
-            </span>
-          )}
-        </div>
-        <div className="md:hidden text-xs text-muted-foreground truncate">
-          {flagOf(row.country)} {row.country} • {row.tournaments} WC
-        </div>
-      </div>
-      <div className="hidden md:flex items-center gap-2 text-muted-foreground text-sm min-w-0">
-        <span className="text-base">{flagOf(row.country)}</span>
-        <span className="truncate">{row.country}</span>
-      </div>
-      <div className="text-right text-gold font-extrabold text-lg md:text-xl tabular-nums">
-        {row.goals}
-        <span className="md:hidden text-[10px] uppercase text-muted-foreground ml-1">G</span>
-      </div>
-      <div className="hidden md:block text-right text-foreground/80 tabular-nums">
-        {row.gpt.toFixed(1)}
-      </div>
-      <div className="hidden md:block text-right text-muted-foreground tabular-nums">
-        {row.tournaments}
-      </div>
-      <div className="hidden md:block text-xs text-muted-foreground truncate">
-        {row.yearsList.join(", ")}
-      </div>
-    </li>
-  );
-}
-
-/* ───────── Discipline tab ───────── */
-function DisciplineTab({
-  yellow,
-  red,
-}: {
-  yellow: { name: string; country: string; total: number }[];
-  red: { name: string; country: string; total: number }[];
-}) {
-  return (
-    <section className="space-y-4">
-      <h2 className="text-xl sm:text-2xl font-bold">🟨 Most Disciplined Players</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <CardTable title="Most Yellow Cards" accent="yellow" rows={yellow} />
-        <CardTable title="Most Red Cards" accent="red" rows={red} />
-      </div>
-    </section>
-  );
-}
-
-function CardTable({
-  title,
-  accent,
-  rows,
-}: {
-  title: string;
-  accent: "yellow" | "red";
-  rows: { name: string; country: string; total: number }[];
-}) {
-  const badge = accent === "yellow" ? "bg-gold" : "bg-live";
-  return (
-    <div className="rounded-2xl border border-border bg-card/60 overflow-hidden">
-      <div className="px-4 py-3 border-b border-border flex items-center justify-between">
-        <h3 className="text-sm font-bold">{title}</h3>
-        <span className={`w-5 h-7 rounded-sm shadow ${badge}`} aria-hidden />
-      </div>
-      {rows.length === 0 ? (
-        <div className="px-4 py-6 text-xs text-muted-foreground text-center">No data.</div>
-      ) : (
-        <ol className="divide-y divide-border">
-          {rows.map((r, i) => (
-            <li
-              key={r.name + r.country + i}
-              className="flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-accent/40"
-            >
-              <span className="w-6 text-muted-foreground font-semibold tabular-nums">{i + 1}</span>
-              <span className="text-base">{flagOf(r.country)}</span>
-              <span className="font-medium truncate flex-1">{r.name}</span>
-              <span className="text-xs text-muted-foreground hidden sm:inline truncate max-w-[120px]">
-                {r.country}
-              </span>
-              <span
-                className={`inline-flex items-center justify-center min-w-[36px] px-2 py-0.5 rounded text-xs font-bold ${
-                  accent === "yellow"
-                    ? "bg-gold/15 text-gold ring-1 ring-gold/40"
-                    : "bg-live/15 text-live ring-1 ring-live/40"
-                }`}
-              >
-                {r.total}
-              </span>
-            </li>
-          ))}
-        </ol>
-      )}
-    </div>
-  );
-}
-
-function buildCardLeaderboard(rows: CardRow[], type: "yellow" | "red", limit: number) {
-  const agg = new Map<string, { name: string; country: string; total: number }>();
-  for (const r of rows) {
-    if (r.type !== type) continue;
-    const key = `${r.pid}|${r.team}`;
-    const ex = agg.get(key);
-    if (ex) ex.total++;
-    else agg.set(key, { name: r.name, country: r.team, total: 1 });
-  }
-  return Array.from(agg.values())
-    .sort((a, b) => b.total - a.total || a.name.localeCompare(b.name))
-    .slice(0, limit);
-}
-
-/* ───────── Countries tab ───────── */
-function CountriesTab({
-  rows,
-}: {
-  rows: {
-    country: string;
-    tournaments: number;
-    goals: number;
-    playerCount: number;
-    topScorer: { name: string; goals: number } | null;
-  }[];
-}) {
-  return (
-    <section className="space-y-4">
-      <div className="flex items-baseline justify-between flex-wrap gap-2">
-        <h2 className="text-xl sm:text-2xl font-bold">🌍 Country Statistics</h2>
-        <span className="text-xs text-muted-foreground">
-          All-time totals · {rows.length} nations
-        </span>
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {rows.map((c) => (
-          <div
-            key={c.country}
-            className="rounded-2xl border border-border bg-card/60 p-5 hover:border-gold/30 hover:-translate-y-0.5 transition-all"
-          >
-            <div className="flex items-center gap-3 mb-4">
-              <span className="text-3xl">{flagOf(c.country)}</span>
-              <h3 className="text-base font-bold truncate">{c.country}</h3>
-            </div>
-            <div className="grid grid-cols-3 gap-2 text-center mb-3">
-              <CStat label="WC" value={c.tournaments} />
-              <CStat label="Goals" value={c.goals} accent />
-              <CStat label="Players" value={c.playerCount} />
-            </div>
-            {c.topScorer && (
-              <div className="pt-3 border-t border-border text-xs text-muted-foreground">
-                <span>Top scorer: </span>
-                <span className="text-foreground font-semibold">{c.topScorer.name}</span>
-                <span className="text-gold font-bold ml-1.5">{c.topScorer.goals}⚽</span>
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function CStat({ label, value, accent }: { label: string; value: number; accent?: boolean }) {
-  return (
-    <div>
-      <div className={`text-xl font-extrabold tabular-nums ${accent ? "text-gold" : ""}`}>
-        {value}
-      </div>
-      <div className="text-[10px] uppercase tracking-wider text-muted-foreground">{label}</div>
-    </div>
-  );
-}
-
-/* ───────── Rankings tab ───────── */
-function RankingsTab() {
-  return (
-    <section className="space-y-4">
-      <div className="flex items-baseline justify-between flex-wrap gap-2">
-        <h2 className="text-xl sm:text-2xl font-bold">🏆 Current FIFA Rankings</h2>
-        <span className="text-xs text-muted-foreground">Updated June 2026 · Source: FIFA.com</span>
-      </div>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <div className="rounded-2xl border border-border bg-card/60 p-4">
-          <h3 className="text-sm font-bold mb-3 text-gold">Men's National Teams</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1.5 text-sm">
-            {fifaRankings.countries.map((c) => (
-              <div
-                key={c.rank}
-                className="flex items-center justify-between gap-2 py-1 border-b border-border/60"
-              >
-                <div className="flex items-center gap-2 min-w-0">
-                  <span className="text-xs text-muted-foreground w-6 tabular-nums">#{c.rank}</span>
-                  <span className="text-lg">{flagOf(c.country)}</span>
-                  <span className="truncate">{c.country}</span>
-                </div>
-                <span className="text-xs text-gold tabular-nums">{c.points}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="rounded-2xl border border-border bg-card/60 p-4">
-          <h3 className="text-sm font-bold mb-3 text-gold">Top Current Players</h3>
-          <div className="space-y-1.5 text-sm">
-            {fifaRankings.players.map((p) => (
-              <div
-                key={p.rank}
-                className="flex items-center justify-between gap-2 py-1 border-b border-border/60"
-              >
-                <div className="flex items-center gap-2 min-w-0">
-                  <span className="text-xs text-muted-foreground w-6 tabular-nums">#{p.rank}</span>
-                  <span className="text-lg">{flagOf(p.country)}</span>
-                  <span className="font-medium truncate">{p.name}</span>
-                </div>
-                <span className="text-xs text-muted-foreground truncate">{p.club}</span>
-              </div>
-            ))}
-          </div>
-          <p className="text-[10px] text-muted-foreground mt-3">
-            Curated from 2024 Ballon d'Or shortlist + recent form. FIFA does not publish an official
-            player ranking.
-          </p>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function EmptyBlock({ label }: { label: string }) {
-  return <EmptyState title="No data" description={label} />;
 }
 
 function SectionSkeleton() {
