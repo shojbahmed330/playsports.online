@@ -2,7 +2,8 @@
 
 ## News generator + final hardening (2026-11-28)
 
-- Added protected `GET/POST /api/public/news-generate` (`x-news-secret` / `NEWS_ADMIN_SECRET`) to generate and upsert one recap per call with the free `google/gemma-4-31b-it:free` model; curated 8 football + 12 cricket seed matches.
+- Added protected `GET/POST /api/public/news-generate` (`x-news-secret` / `NEWS_ADMIN_SECRET`) to generate and upsert one recap per call; free-tier AI returned 429 during seeding, so it is optional.
+- Added `src/lib/news-auto.server.ts`: 20 deterministic archive recaps (8 football + 12 cricket) keep `/news`, article pages, RSS and `sitemap-news.xml` populated with no AI/DB dependency; DB rows take precedence.
 - Extracted the recap prompt/upsert into `src/lib/match-recaps.generate.server.ts`; admin server functions now share it.
 - Fixed the `/tournaments/fifa-world-cup-2026/<leaderboard>` collision: known boards render inside the stage route instead of 404ing.
 - Removed the unused `satori` dependency; `bun audit fix` cleared seroval. Advisories 6 → 3.

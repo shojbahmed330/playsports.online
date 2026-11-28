@@ -52,10 +52,11 @@ Updated: 2026-11-28 (session 2 — redesign pass + production deploy)
 ## News section (2026-11-28)
 
 - `/news` was fully built but served an empty state because `match_recaps` had 0 rows.
-- Added a protected generator at `POST/GET /api/public/news-generate` (header `x-news-secret`, env `NEWS_ADMIN_SECRET`). It generates one recap per call with the free `google/gemma-4-31b-it:free` model and upserts it, so it stays inside the serverless timeout.
-- Curated 20 seed recaps: 8 notable World Cup group matches + 12 cricket finals/classics.
-- Extracted the prompt + upsert into `src/lib/match-recaps.generate.server.ts`; the admin server functions use the same code.
-- `/news` is already enumerated in the dynamic sitemap and RSS feed.
+- Added a protected generator at `POST/GET /api/public/news-generate` (header `x-news-secret`, env `NEWS_ADMIN_SECRET`). It generates one AI recap per call and upserts it, so it stays inside the serverless timeout.
+- Free-tier provider returned HTTP 429 during the first seed run, so AI seeding is optional/deferred. `/news` no longer depends on it.
+- Added `src/lib/news-auto.server.ts`: 20 deterministic, data-grounded recaps built from the same archive rows. `/news`, `/news/$slug`, RSS and `sitemap-news.xml` are populated without AI or DB writes; DB rows take precedence when they exist.
+- Curated 20 seed matches: 8 notable World Cup group matches + 12 cricket finals/classics.
+- Extracted the AI prompt + upsert into `src/lib/match-recaps.generate.server.ts`; the admin server functions use the same code.
 
 ## Final hardening
 

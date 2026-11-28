@@ -64,7 +64,7 @@ This is a **completed overhaul of every route screen and every global item in sc
 - **PREM-01** visuals are done but the price/checkout decision ($3 mailto vs $5 Google Play Billing) is still open; no billing logic changed.
 - **Encoding regression fixed:** a bulk class rewrite had corrupted UTF-8 punctuation/emoji in 48 source files; they were rebuilt from the pre-rewrite commit with a UTF-8-safe mapper, docs repaired, and `tests/encoding.test.ts` added. Live HTML now verifies zero `â€`/`ðŸ`/`Γ`.
 - **Player profiles:** ESPN athlete fetch rotates between two hosts and retries 4×, so transient 503s no longer 404 real players; the error state is friendly, and the flag URL renders as an image.
-- **News:** a protected generator now seeds `match_recaps` with data-grounded recaps using a free OpenRouter model; `/news`, `/news/$slug`, RSS and the dynamic sitemap are all live.
+- **News:** `/news` is populated by 20 deterministic, data-grounded archive recaps, with optional AI generation via the protected `/api/public/news-generate` endpoint (free-tier provider rate-limited during seeding). Article pages, RSS and `sitemap-news.xml` are live and verified.
 - **Route collision:** `/tournaments/fifa-world-cup-2026/<leaderboard>` now renders a leaderboard/empty state instead of 404ing.
 - **Branch pushed:** `origin/professional-overhaul` (push used the `shojbahmed330` gh account, then switched back).
 - Home still ships a **745 KB** index chunk; route-level code splitting deferred.
