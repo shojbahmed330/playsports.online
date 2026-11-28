@@ -1,4 +1,4 @@
-# Final Report — professional overhaul (sessions 1–2)
+﻿# Final Report â€” professional overhaul (sessions 1â€“2)
 
 **Date:** 2026-11-28
 **Branch:** `professional-overhaul` (deployed to production via Vercel CLI; not pushed to GitHub)
@@ -8,19 +8,19 @@
 
 | Status | Count |
 |---|---|
-| DONE (audit + phases 1–8 + verification) | **150 route screens** |
+| DONE (audit + phases 1â€“8 + verification) | **150 route screens** |
 | DONE (global items, each with `plans/GLB-*.md`) | **10** |
 | Redesign DONE (token/system pass) | **22 / 22 mandatory screens** |
 | Redesign blocked | **0** (PREM-01 pricing/checkout remains an owner decision; visuals shipped, billing unchanged) |
 | Total route screens | **150** |
 
-**DONE screens:** all 150 route screens. **Redesign:** HOME-01, FB-22, FB-30, PLYR-02, MINE-01, PREM-01 and all 17 off-system cricket screens (CRK-03/04/05/06/07/08/09/10/11/12/15/16/18/19/20/21/24). Plus GLB-01–GLB-10.
+**DONE screens:** all 150 route screens. **Redesign:** HOME-01, FB-22, FB-30, PLYR-02, MINE-01, PREM-01 and all 17 off-system cricket screens (CRK-03/04/05/06/07/08/09/10/11/12/15/16/18/19/20/21/24). Plus GLB-01â€“GLB-10.
 
-Production is live at `https://www.playsports.online` (deployment `brrnr3bob`), verified on `/`, `/cricket`, `/cricket/ipl`, `/players`, `/mine`, `/football/teams/argentina`, the 404 shell, `/sw.js` and the manifest.
+Production is live at `https://www.playsports.online` (latest deployment promoted and verified 2026-11-28), verified on `/`, `/cricket`, `/cricket/ipl`, `/players`, `/mine`, `/football/teams/argentina`, the 404 shell, `/sw.js` and the manifest.
 
-This is a **completed overhaul of every route screen and every global item in scope**. Remaining work is owner-gated or deploy-gated, not code-blocked (see §5).
+This is a **completed overhaul of every route screen and every global item in scope**. Remaining work is owner-gated or deploy-gated, not code-blocked (see Â§5).
 
-## 2. Baseline → current
+## 2. Baseline â†’ current
 
 | Check | Before | After |
 |---|---|---|
@@ -30,12 +30,12 @@ This is a **completed overhaul of every route screen and every global item in sc
 | `bun run lint` | 84,235 problems | ~9,194 (mainly pre-existing formatting/any/hooks outside touched files) |
 | `bun audit` | 66 vulnerabilities | **6** (1 high, 5 moderate) |
 | Production `/sw.js` | 404 | Fixed in build output (`.output/public/sw.js`); deploy not run by rule |
-| SSR spot checks (session 2) | — | 200 on every cricket route + 7 football screens; 404 paths return branded states |
+| SSR spot checks (session 2) | â€” | 200 on every cricket route + 7 football screens; 404 paths return branded states |
 
 ## 3. Top fixes
 
 ### Foundation (global)
-1. **Typecheck 59 → 0** and search-serialiser/PWA/security-header fixes (session 1).
+1. **Typecheck 59 â†’ 0** and search-serialiser/PWA/security-header fixes (session 1).
 2. **Shared states** (`EmptyState`, `ErrorState`, `LoadingState`) used across every completed screen.
 3. **Football layout navigation:** `SportNav` now renders once from `src/routes/football.tsx`; removed duplicate headers from the hub and competition shell. Every football child route (campaigns, countries, players, venues, tournaments, top scorers) now has navigation.
 4. **Skip-link integrity:** removed duplicate `id="main-content"` from 24 page/component roots; the `__root` wrapper is the single target.
@@ -47,8 +47,8 @@ This is a **completed overhaul of every route screen and every global item in sc
 - Fixed concrete bugs: empty match IDs resolving to `/cricket`, ad-hoc player slugs on tournament pages, discarded Hall filter writes, raw ISO dates, stale `void itemList` dead code.
 
 ### Football (7 programmatic routes)
-- Campaigns, countries, players A–Z, venues, tournament years and top-scorer years.
-- Fixed stale future-tense 2026 copy, tiny A–Z/year links, sticky rail overlap, missing collection/item-list JSON-LD, missing labels and untruthful country meta copy.
+- Campaigns, countries, players Aâ€“Z, venues, tournament years and top-scorer years.
+- Fixed stale future-tense 2026 copy, tiny Aâ€“Z/year links, sticky rail overlap, missing collection/item-list JSON-LD, missing labels and untruthful country meta copy.
 
 ## 4. BREAKING-RISK decisions to review
 
