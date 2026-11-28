@@ -94,6 +94,7 @@ describe("design system foundation", () => {
       "src/routes/players.tsx",
       "src/routes/football.teams.$slug.tsx",
       "src/routes/mine.tsx",
+      "src/routes/premium.tsx",
       "src/lib/sports-config.ts",
     ]) {
       expect(PALETTE.test(read(path)), `${path} hardcodes palette colours`).toBe(false);

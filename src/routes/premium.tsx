@@ -40,10 +40,10 @@ function PremiumPage() {
   return (
     <main className="mx-auto max-w-5xl px-4 py-12">
       <header className="text-center mb-12">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 text-amber-400 text-xs font-medium mb-4">
+        <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-caption font-medium text-primary">
           <Sparkles className="size-3.5" aria-hidden="true" /> Independent sports coverage
         </div>
-        <h1 className="text-4xl md:text-5xl font-bold mb-3">Support PlaySports</h1>
+        <h1 className="mb-3 text-h1 text-foreground md:text-display">Support PlaySports</h1>
         <p className="text-muted-foreground max-w-xl mx-auto">
           Keep live scores, player stats, and World Cup coverage free and ad-light for everyone.
           Supporters get an ad-free experience across the entire site.
@@ -51,13 +51,13 @@ function PremiumPage() {
       </header>
 
       {membership.active && (
-        <div className="rounded-2xl border border-emerald-500/30 bg-emerald-500/5 p-6 text-center mb-8">
-          <Crown className="size-8 text-amber-400 mx-auto mb-2" aria-hidden="true" />
+        <div className="mb-8 rounded-2xl border border-positive/30 bg-positive/5 p-6 text-center">
+          <Crown className="mx-auto mb-2 size-8 text-primary" aria-hidden="true" />
           <p className="font-semibold">
             You're a {membership.tier === "pro" ? "Pro" : "Supporter"} — thank you!
           </p>
           {membership.premium_until && (
-            <p className="text-xs text-muted-foreground mt-1">
+            <p className="mt-1 text-caption text-muted-foreground">
               Active until{" "}
               {new Date(membership.premium_until).toLocaleDateString("en-GB", {
                 timeZone: "UTC",
@@ -115,7 +115,7 @@ function PremiumPage() {
         />
       </div>
 
-      <p className="text-center text-xs text-muted-foreground mt-8">
+      <p className="mt-8 text-center text-caption text-muted-foreground">
         Online checkout activates once payments are connected. Until then, contact us to be added
         manually — instant ad-free access.
       </p>
@@ -144,14 +144,14 @@ function Plan({
     >
       <div className="flex items-baseline justify-between mb-4">
         <h2 className="text-xl font-bold">{name}</h2>
-        <div className={`text-2xl font-bold ${tone === "primary" ? "text-primary" : ""}`}>
+        <div className={`text-h2 font-bold ${tone === "primary" ? "text-primary" : ""}`}>
           {price}
         </div>
       </div>
       <ul className="space-y-2 mb-6">
         {features.map((f) => (
-          <li key={f} className="flex gap-2 text-sm">
-            <Check className="size-4 text-emerald-500 shrink-0 mt-0.5" aria-hidden="true" /> {f}
+          <li key={f} className="flex gap-2 text-body">
+            <Check className="mt-0.5 size-4 shrink-0 text-positive" aria-hidden="true" /> {f}
           </li>
         ))}
       </ul>
