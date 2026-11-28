@@ -16,6 +16,18 @@ export default defineConfig({
       },
   nitro: isVercel ? { preset: "vercel" } : undefined,
   vite: {
+    build: {
+      rollupOptions: {
+        output: {
+          manualChunks(id: string) {
+            if (!id.includes("node_modules")) return;
+            if (/[\\/]node_modules[\\/](react|react-dom|scheduler)[\\/]/.test(id)) return "react";
+            if (id.includes("node_modules/@radix-ui/")) return "radix";
+            if (id.includes("node_modules/lucide-react/")) return "icons";
+          },
+        },
+      },
+    },
     plugins: [
       VitePWA({
         registerType: "autoUpdate",
