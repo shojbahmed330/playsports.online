@@ -88,6 +88,7 @@ import { Route as RobotsTxtRouteImport } from './routes/robots.txt'
 import { Route as ApiPublicIndexnowAutoRouteImport } from './routes/api/public/indexnow-auto'
 import { Route as ApiPublicIndexnowKeyDottxtRouteImport } from './routes/api/public/indexnow-key[.]txt'
 import { Route as ApiPublicIndexnowPingRouteImport } from './routes/api/public/indexnow-ping'
+import { Route as ApiPublicNewsGenerateRouteImport } from './routes/api/public/news-generate'
 import { Route as ApiPublicSeoHealthRouteImport } from './routes/api/public/seo-health'
 import { Route as ApiPublicSyncSportsRouteImport } from './routes/api/public/sync-sports'
 import { Route as ApiPublicTrackClickRouteImport } from './routes/api/public/track-click'
@@ -584,6 +585,11 @@ const ApiPublicIndexnowKeyDottxtRoute =
 const ApiPublicIndexnowPingRoute = ApiPublicIndexnowPingRouteImport.update({
   id: '/api/public/indexnow-ping',
   path: '/api/public/indexnow-ping',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicNewsGenerateRoute = ApiPublicNewsGenerateRouteImport.update({
+  id: '/api/public/news-generate',
+  path: '/api/public/news-generate',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPublicSeoHealthRoute = ApiPublicSeoHealthRouteImport.update({
@@ -1182,6 +1188,7 @@ export interface FileRoutesByFullPath {
   '/api/public/indexnow-auto': typeof ApiPublicIndexnowAutoRoute
   '/api/public/indexnow-key.txt': typeof ApiPublicIndexnowKeyDottxtRoute
   '/api/public/indexnow-ping': typeof ApiPublicIndexnowPingRoute
+  '/api/public/news-generate': typeof ApiPublicNewsGenerateRoute
   '/api/public/seo-health': typeof ApiPublicSeoHealthRoute
   '/api/public/sync-sports': typeof ApiPublicSyncSportsRoute
   '/api/public/track-click': typeof ApiPublicTrackClickRoute
@@ -1356,6 +1363,7 @@ export interface FileRoutesByTo {
   '/api/public/indexnow-auto': typeof ApiPublicIndexnowAutoRoute
   '/api/public/indexnow-key.txt': typeof ApiPublicIndexnowKeyDottxtRoute
   '/api/public/indexnow-ping': typeof ApiPublicIndexnowPingRoute
+  '/api/public/news-generate': typeof ApiPublicNewsGenerateRoute
   '/api/public/seo-health': typeof ApiPublicSeoHealthRoute
   '/api/public/sync-sports': typeof ApiPublicSyncSportsRoute
   '/api/public/track-click': typeof ApiPublicTrackClickRoute
@@ -1532,6 +1540,7 @@ export interface FileRoutesById {
   '/api/public/indexnow-auto': typeof ApiPublicIndexnowAutoRoute
   '/api/public/indexnow-key.txt': typeof ApiPublicIndexnowKeyDottxtRoute
   '/api/public/indexnow-ping': typeof ApiPublicIndexnowPingRoute
+  '/api/public/news-generate': typeof ApiPublicNewsGenerateRoute
   '/api/public/seo-health': typeof ApiPublicSeoHealthRoute
   '/api/public/sync-sports': typeof ApiPublicSyncSportsRoute
   '/api/public/track-click': typeof ApiPublicTrackClickRoute
@@ -1715,6 +1724,7 @@ export interface FileRouteTypes {
     | '/api/public/indexnow-auto'
     | '/api/public/indexnow-key.txt'
     | '/api/public/indexnow-ping'
+    | '/api/public/news-generate'
     | '/api/public/seo-health'
     | '/api/public/sync-sports'
     | '/api/public/track-click'
@@ -1889,6 +1899,7 @@ export interface FileRouteTypes {
     | '/api/public/indexnow-auto'
     | '/api/public/indexnow-key.txt'
     | '/api/public/indexnow-ping'
+    | '/api/public/news-generate'
     | '/api/public/seo-health'
     | '/api/public/sync-sports'
     | '/api/public/track-click'
@@ -2064,6 +2075,7 @@ export interface FileRouteTypes {
     | '/api/public/indexnow-auto'
     | '/api/public/indexnow-key.txt'
     | '/api/public/indexnow-ping'
+    | '/api/public/news-generate'
     | '/api/public/seo-health'
     | '/api/public/sync-sports'
     | '/api/public/track-click'
@@ -2205,6 +2217,7 @@ export interface RootRouteChildren {
   ApiPublicIndexnowAutoRoute: typeof ApiPublicIndexnowAutoRoute
   ApiPublicIndexnowKeyDottxtRoute: typeof ApiPublicIndexnowKeyDottxtRoute
   ApiPublicIndexnowPingRoute: typeof ApiPublicIndexnowPingRoute
+  ApiPublicNewsGenerateRoute: typeof ApiPublicNewsGenerateRoute
   ApiPublicSeoHealthRoute: typeof ApiPublicSeoHealthRoute
   ApiPublicSyncSportsRoute: typeof ApiPublicSyncSportsRoute
   ApiPublicTrackClickRoute: typeof ApiPublicTrackClickRoute
@@ -2772,6 +2785,13 @@ declare module '@tanstack/react-router' {
       path: '/api/public/indexnow-ping'
       fullPath: '/api/public/indexnow-ping'
       preLoaderRoute: typeof ApiPublicIndexnowPingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/news-generate': {
+      id: '/api/public/news-generate'
+      path: '/api/public/news-generate'
+      fullPath: '/api/public/news-generate'
+      preLoaderRoute: typeof ApiPublicNewsGenerateRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/seo-health': {
@@ -3905,6 +3925,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicIndexnowAutoRoute: ApiPublicIndexnowAutoRoute,
   ApiPublicIndexnowKeyDottxtRoute: ApiPublicIndexnowKeyDottxtRoute,
   ApiPublicIndexnowPingRoute: ApiPublicIndexnowPingRoute,
+  ApiPublicNewsGenerateRoute: ApiPublicNewsGenerateRoute,
   ApiPublicSeoHealthRoute: ApiPublicSeoHealthRoute,
   ApiPublicSyncSportsRoute: ApiPublicSyncSportsRoute,
   ApiPublicTrackClickRoute: ApiPublicTrackClickRoute,

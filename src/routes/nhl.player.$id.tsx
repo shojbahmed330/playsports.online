@@ -117,7 +117,10 @@ function NhlPlayer() {
       <EmptyState title="Player not found" description="This player is not in the NHL directory." />
     );
   }
-  const career = q.data?.career ?? { headers: [], rows: [] };
+  const career = (q.data?.career ?? { headers: [], rows: [] }) as {
+    headers: string[];
+    rows: Array<{ season: string; team: string; stats: Record<string, string | number> }>;
+  };
 
   return (
     <div className="space-y-6">

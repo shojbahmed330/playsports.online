@@ -1,6 +1,7 @@
 import { errorMessage } from "@/lib/error-message";
 import { createFileRoute, notFound, Link } from "@tanstack/react-router";
 import { getStageBySlug, WC2026_STAGES } from "@/lib/seo/entities";
+import { computeLeaderboard, getLeaderboard } from "@/lib/seo/leaderboards";
 import { canonical } from "@/lib/seo/canonical";
 import { breadcrumbList, sportsEvent, itemList, faqPage, ldScript } from "@/lib/seo/jsonld";
 import { EmptyState, ErrorState } from "@/components/ui/state";
@@ -32,12 +33,52 @@ const STAGE_DESCRIPTIONS: Record<string, string> = {
 export const Route = createFileRoute("/tournaments/fifa-world-cup-2026/$stage")({
   loader: ({ params }) => {
     const stage = getStageBySlug(params.stage);
-    if (!stage) throw notFound();
-    return { stage };
+    if (stage) return { kind: "stage" as const, stage };
+    // `/tournaments/fifa-world-cup-2026/<slug>` also owns the leaderboard URL
+    // shape. Serve known boards here instead of letting the stage route 404.
+    const board = getLeaderboard(params.stage);
+    if (board) {
+      const rows = computeLeaderboard("fifa-world-cup-2026", board.slug, 50);
+      return { kind: "board" as const, board, rows };
+    }
+    throw notFound();
   },
   head: ({ params, loaderData }) => {
     if (!loaderData) {
       return { meta: [{ title: "Stage not found" }, { name: "robots", content: "noindex" }] };
+    }
+    if (loaderData.kind === "board") {
+      const { board, rows } = loaderData;
+      const path = `/tournaments/fifa-world-cup-2026/${params.stage}`;
+      const title = `FIFA World Cup 2026 ${board.name} — Full List | PlaySports`;
+      const desc = rows.length
+        ? `${board.name} at the FIFA World Cup 2026. ${rows[0].name} leads with ${rows[0].count} ${board.metric.toLowerCase()}. Full ranked list.`
+        : `FIFA World Cup 2026 ${board.name.toLowerCase()}. The 2026 leaderboard updates as matches are played; browse the all-time list in the meantime.`;
+      return {
+        meta: [
+          { title },
+          { name: "description", content: desc },
+          { property: "og:title", content: title },
+          { property: "og:description", content: desc },
+          { property: "og:url", content: canonical(path) },
+          { property: "og:type", content: "website" },
+          { property: "og:site_name", content: "PlaySports" },
+          { name: "twitter:card", content: "summary_large_image" },
+          { name: "twitter:title", content: title },
+          { name: "twitter:description", content: desc },
+        ],
+        links: [{ rel: "canonical", href: canonical(path) }],
+        scripts: [
+          ldScript(
+            breadcrumbList([
+              { name: "Home", path: "/" },
+              { name: "Football", path: "/football" },
+              { name: "FIFA World Cup 2026", path: "/football" },
+              { name: board.name, path },
+            ]),
+          ),
+        ],
+      };
     }
     const { stage } = loaderData;
     const path = `/tournaments/fifa-world-cup-2026/${params.stage}`;
@@ -126,7 +167,9 @@ export const Route = createFileRoute("/tournaments/fifa-world-cup-2026/$stage")(
 });
 
 function StagePage() {
-  const { stage } = Route.useLoaderData();
+  const data = Route.useLoaderData();
+  if (data.kind === "board") return <BoardPage board={data.board} rows={data.rows} />;
+  const { stage } = data;
   const idx = WC2026_STAGES.findIndex((s) => s.slug === stage.slug);
   const prev = idx > 0 ? WC2026_STAGES[idx - 1] : null;
   const next = idx < WC2026_STAGES.length - 1 ? WC2026_STAGES[idx + 1] : null;
@@ -256,6 +299,122 @@ function StagePage() {
           ))}
         </div>
       </section>
+    </div>
+  );
+}
+
+type BoardRow = {
+  rank: number;
+  name: string;
+  team: string;
+  count: number;
+};
+
+function BoardPage({
+  board,
+  rows,
+}: {
+  board: { slug: string; name: string; metric: string };
+  rows: BoardRow[];
+}) {
+  return (
+    <div className="container mx-auto px-4 py-6 pb-20 max-w-4xl">
+      <nav
+        aria-label="Breadcrumb"
+        className="mb-3 flex flex-wrap items-center text-xs text-muted-foreground"
+      >
+        <Link
+          to="/"
+          className="inline-flex min-h-11 items-center hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          Home
+        </Link>
+        <span aria-hidden="true"> / </span>
+        <Link
+          to="/football"
+          className="inline-flex min-h-11 items-center hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          Football
+        </Link>
+        <span aria-hidden="true"> / </span>
+        <span>FIFA World Cup 2026</span>
+        <span aria-hidden="true"> / </span>
+        <span className="text-foreground" aria-current="page">
+          {board.name}
+        </span>
+      </nav>
+
+      <h1 className="text-3xl font-bold mb-2">FIFA World Cup 2026 — {board.name}</h1>
+      <p className="text-muted-foreground mb-6">
+        {rows.length
+          ? `${rows[0].name} leads with ${rows[0].count} ${board.metric.toLowerCase()}.`
+          : "The 2026 leaderboard updates as matches are played."}
+      </p>
+
+      {rows.length === 0 ? (
+        <EmptyState
+          title="2026 leaderboard not available yet"
+          description={`No ${board.metric.toLowerCase()} recorded for the 2026 tournament so far. Browse the all-time list in the meantime.`}
+          action={
+            <Link
+              to="/tournaments/$tournament/$leaderboard"
+              params={{ tournament: "fifa-world-cup-all-time", leaderboard: board.slug }}
+              className="inline-flex min-h-11 items-center rounded-full bg-primary px-4 text-sm font-bold text-primary-foreground hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              All-time {board.name.toLowerCase()}
+            </Link>
+          }
+        />
+      ) : (
+        <div className="overflow-x-auto rounded-xl border border-border">
+          <table className="w-full text-sm">
+            <caption className="sr-only">FIFA World Cup 2026 {board.name}</caption>
+            <thead className="bg-muted/50 text-xs uppercase tracking-wide text-muted-foreground">
+              <tr>
+                <th scope="col" className="px-3 py-2 text-left">
+                  #
+                </th>
+                <th scope="col" className="px-3 py-2 text-left">
+                  Player
+                </th>
+                <th scope="col" className="px-3 py-2 text-left">
+                  Team
+                </th>
+                <th scope="col" className="px-3 py-2 text-right">
+                  {board.metric}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((row) => (
+                <tr key={`${row.rank}-${row.name}`} className="border-t border-border">
+                  <td className="px-3 py-2 tabular-nums text-muted-foreground">{row.rank}</td>
+                  <td className="px-3 py-2 font-semibold">{row.name}</td>
+                  <td className="px-3 py-2 text-muted-foreground">{row.team}</td>
+                  <td className="px-3 py-2 text-right font-mono font-semibold">{row.count}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      <nav className="mt-8 flex flex-wrap gap-2">
+        <Link
+          to="/tournaments/$tournament/$leaderboard"
+          params={{ tournament: "fifa-world-cup-2022", leaderboard: board.slug }}
+          className="inline-flex min-h-11 items-center rounded-full border border-border px-4 text-sm hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          2022 {board.name}
+        </Link>
+        <Link
+          to="/tournaments/$tournament/$leaderboard"
+          params={{ tournament: "fifa-world-cup-all-time", leaderboard: board.slug }}
+          className="inline-flex min-h-11 items-center rounded-full border border-border px-4 text-sm hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          All-time {board.name}
+        </Link>
+      </nav>
     </div>
   );
 }

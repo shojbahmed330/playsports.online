@@ -64,7 +64,7 @@ function NhlScores() {
     },
   });
 
-  const games = sbQ.data?.games ?? [];
+  const games = (sbQ.data?.games ?? []) as Array<{ id: string; status: string }>;
   const filtered = useMemo(() => {
     if (filter === "all") return games;
     if (filter === "live") return games.filter((g) => g.status === "in");
