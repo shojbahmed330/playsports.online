@@ -1,6 +1,7 @@
 ﻿import { createServerFn } from "@tanstack/react-start";
 import { setResponseHeader } from "@tanstack/react-start/server";
 import { isCuratedLeague, BILATERAL_SERIES_IDS } from "./cricket-leagues";
+import { getCachedOrFetch } from "./sports-cache";
 import {
   getCatalogueSeriesLabel,
   getRelevantSeriesIds,
@@ -1082,6 +1083,7 @@ export type CricketPlayerProfile = {
   jersey: string | null;
   description: string | null;
   career: CricketCareerStat[];
+  careerPending?: boolean;
   error: string | null;
 };
 
@@ -1194,10 +1196,8 @@ async function fetchStatsguruRow(
 
 const careerCache = new Map<string, { at: number; data: CricketCareerStat[] }>();
 
-async function fetchStatsguruCareer(playerId: string): Promise<CricketCareerStat[]> {
+async function fetchStatsguruCareerRaw(playerId: string): Promise<CricketCareerStat[]> {
   if (!/^\d+$/.test(playerId)) return [];
-  const cached = careerCache.get(playerId);
-  if (cached && Date.now() - cached.at < 24 * 60 * 60_000) return cached.data;
   const FORMATS = [
     { cls: 1, label: "Test" },
     { cls: 2, label: "ODI" },
@@ -1252,11 +1252,42 @@ async function fetchStatsguruCareer(playerId: string): Promise<CricketCareerStat
     byFmt.set(r.fmt, cur);
   }
   const order = ["Test", "ODI", "T20I"];
-  const data = [...byFmt.values()]
+  return [...byFmt.values()]
     .filter((c) => c.runs != null || c.wickets != null || (c.matches != null && c.matches > 0))
     .sort((a, b) => order.indexOf(a.format) - order.indexOf(b.format));
-  if (data.length) careerCache.set(playerId, { at: Date.now(), data });
-  return data;
+}
+
+/**
+ * Career stats: memory → Supabase `sports_data_cache` → Statsguru scrape.
+ * The persistent layer survives cold starts and Statsguru rate limits; an
+ * empty scrape is never cached, so it retries next time.
+ */
+async function fetchStatsguruCareer(playerId: string): Promise<CricketCareerStat[]> {
+  if (!/^\d+$/.test(playerId)) return [];
+  const memory = careerCache.get(playerId);
+  if (memory && Date.now() - memory.at < 24 * 60 * 60_000) return memory.data;
+  try {
+    const result = await getCachedOrFetch<CricketCareerStat[]>(
+      {
+        key: `cricinfo:career:${playerId}`,
+        sport: "cricket",
+        category: "stats",
+        ttlMs: 7 * 24 * 60 * 60_000,
+        source: "cricinfo",
+      },
+      async () => {
+        const data = await fetchStatsguruCareerRaw(playerId);
+        if (!data.length) throw new Error("No career stats available");
+        return data;
+      },
+    );
+    if (result.data.length) {
+      careerCache.set(playerId, { at: Date.now(), data: result.data });
+    }
+    return result.data;
+  } catch {
+    return memory?.data ?? [];
+  }
 }
 
 /**
@@ -1290,20 +1321,31 @@ async function fetchEspnAthlete(
   return { raw: null, error: lastError };
 }
 
-export async function fetchCricketPlayer(athleteId: string): Promise<{
+export async function fetchCricketPlayer(
+  athleteId: string,
+  options: { awaitCareer?: boolean } = {},
+): Promise<{
   profile: CricketPlayerProfile | null;
   error: string | null;
 }> {
   try {
+    const cachedCareer = careerCache.get(athleteId)?.data;
+    const careerPromise = cachedCareer
+      ? Promise.resolve(cachedCareer)
+      : fetchStatsguruCareer(athleteId).catch(() => [] as CricketCareerStat[]);
+    const awaitCareer = options.awaitCareer !== false || Boolean(cachedCareer);
     const [bio, career] = await Promise.all([
       fetchEspnAthlete(athleteId),
-      Promise.race([
-        fetchStatsguruCareer(athleteId),
-        new Promise<never>((_, reject) =>
-          setTimeout(() => reject(new Error("Career stats timed out")), 15_000),
-        ),
-      ]).catch(() => []),
+      awaitCareer
+        ? Promise.race([
+            careerPromise,
+            new Promise<never>((_, reject) =>
+              setTimeout(() => reject(new Error("Career stats timed out")), 15_000),
+            ),
+          ]).catch(() => [] as CricketCareerStat[])
+        : Promise.resolve(cachedCareer ?? []),
     ]);
+    if (!awaitCareer) void careerPromise; // warm the cache for the next request
     if (!bio.raw) {
       return { profile: null, error: bio.error };
     }
@@ -1341,6 +1383,7 @@ export async function fetchCricketPlayer(athleteId: string): Promise<{
       jersey: a.jersey ?? null,
       description: a.description ?? a.bio ?? null,
       career,
+      careerPending: !awaitCareer && !cachedCareer,
       error: null,
     };
     return { profile, error: null };
@@ -1352,6 +1395,16 @@ export async function fetchCricketPlayer(athleteId: string): Promise<{
 export const getCricketPlayer = createServerFn({ method: "GET" })
   .inputValidator((d: { athleteId: string; leagueId?: string }) => d)
   .handler(async ({ data }) => fetchCricketPlayer(data.athleteId));
+
+/** Client-side stats fill for the live player profile. */
+export const getCricketPlayerCareer = createServerFn({ method: "GET" })
+  .inputValidator((d: { athleteId: string }) => d)
+  .handler(async ({ data }) => fetchStatsguruCareer(data.athleteId));
+
+/** Plain helper, also used by the server function and local checks. */
+export async function fetchCricketCareer(athleteId: string): Promise<CricketCareerStat[]> {
+  return fetchStatsguruCareer(athleteId);
+}
 
 // ---- Athlete search (name id) ----
 

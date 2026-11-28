@@ -65,3 +65,12 @@ Updated: 2026-11-28 (session 2 — redesign pass + production deploy)
 - Removed the unused `satori` dependency and ran `bun audit fix` (seroval). Advisories: 6 -> 3 (zod 3 build-time path, glob/minimatch dev tooling).
 - Tested vendor `manualChunks`; it regressed the entry chunk to ~2.2 MB, so it was reverted. Entry stays ~587 KB raw (Vercel compresses it).
 - Branch pushed: `origin/professional-overhaul`.
+
+## P1 audit fixes (2026-11-28)
+
+- Live player clean URLs now resolve for known name mismatches (`kannaur-lokesh` → athlete `422108`). Canonical is the clean URL when it resolves; otherwise it carries `?athlete=<id>` so it never points at a 404.
+- Player profile TTFB cut from ~9 s to ~0.4–0.7 s: the loader fetches the bio only, career stats load client-side with a skeleton, and successful Statsguru tables persist in the existing `sports_data_cache` for 7 days (plus 24 h memory).
+- `/news` now separates **Latest results** from **From the archive**; aged-out `current-...` URLs 307-redirect to `/news` instead of 404ing.
+- Empty 2026 leaderboard pages are `noindex,follow` (no thin-content indexing).
+- Long player names wrap instead of truncating on mobile.
+- `NEWS_ADMIN_SECRET` rotated; the generator returns 401 without the new secret.

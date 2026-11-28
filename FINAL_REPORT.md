@@ -64,14 +64,14 @@ This is a **completed overhaul of every route screen and every global item in sc
 - **PREM-01** visuals are done but the price/checkout decision ($3 mailto vs $5 Google Play Billing) is still open; no billing logic changed.
 - **Encoding regression fixed:** a bulk class rewrite had corrupted UTF-8 punctuation/emoji in 48 source files; they were rebuilt from the pre-rewrite commit with a UTF-8-safe mapper, docs repaired, and `tests/encoding.test.ts` added. Live HTML now verifies zero `â€`/`ðŸ`/`Γ`.
 - **Player profiles:** ESPN athlete fetch rotates between two hosts and retries 4×, so transient 503s no longer 404 real players; the error state is friendly, and the flag URL renders as an image.
-- **News:** `/news` leads with current completed ESPN matches (`current-...`, 10 min cache), then 20 deterministic archive recaps; DB/AI recaps override both. Article pages, RSS and `sitemap-news.xml` are live. AI generation remains optional via the protected endpoint.
-- **Career stats:** Statsguru requests now time out individually (8 s) and cache for 24 h, so one slow format no longer blanks every column; KL Rahul/Kannaur Lokesh shows Test/ODI/T20I rows.
-- **Route collision:** `/tournaments/fifa-world-cup-2026/<leaderboard>` now renders a leaderboard/empty state instead of 404ing.
+- **News:** `/news` leads with current completed ESPN matches (`current-...`, 10 min cache), then 20 deterministic archive recaps; DB/AI recaps override both. Aged-out current URLs redirect to `/news`, sections are labelled, and RSS/sitemap are live.
+- **Career stats:** profile TTFB is ~0.4–0.7 s; stats load client-side with a skeleton, persist in `sports_data_cache` for 7 days (24 h memory), and each Statsguru request has its own timeout. Verified in a JS-rendered browser.
+- **Player URLs:** known name mismatches get an alias (`kannaur-lokesh`); canonical is clean when it resolves, otherwise `?athlete=<id>`. No canonical points at a 404.
+- **Route collision:** `/tournaments/fifa-world-cup-2026/<leaderboard>` renders a leaderboard/empty state instead of 404ing; empty boards are `noindex,follow`.
 - **Branch pushed:** `origin/professional-overhaul` (push used the `shojbahmed330` gh account, then switched back).
-- Home still ships a **745 KB** index chunk; route-level code splitting deferred.
-- **6 dependency advisories** remain; no major upgrades taken.
+- Home entry is **~587 KB raw** (Vercel compresses); deeper lazy loading is deferred.
+- **3 dependency advisories** remain (zod 3 build-time path, glob/minimatch dev tooling).
 - **Repo-wide ESLint** still fails on pre-existing issues outside touched files.
-- **`/news` is empty** (0 `match_recaps` rows).
 - Remaining hub/modal palette exists outside the redesigned scopes (e.g. match-prediction components, some Copa/Euro heroes); the guard test covers HOME, football hub, players, the cricket module and MINE.
 
 ## 6. Recommended next order

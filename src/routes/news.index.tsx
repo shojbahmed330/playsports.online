@@ -5,7 +5,8 @@ import { Breadcrumbs } from "@/components/nav/Breadcrumbs";
 import { listNewsRecaps } from "@/lib/news.server";
 import { formatNewsDate } from "@/lib/news-date";
 import { breadcrumbList, collectionPage, ldScript } from "@/lib/seo/jsonld";
-import { EmptyState, ErrorState } from "@/components/ui/state";
+import { EmptyState, ErrorState, SectionHeader } from "@/components/ui/state";
+import type { NewsSummary } from "@/lib/news.server";
 import { errorMessage } from "@/lib/error-message";
 
 export const Route = createFileRoute("/news/")({
@@ -63,6 +64,8 @@ export const Route = createFileRoute("/news/")({
 
 function NewsIndex() {
   const { articles } = Route.useLoaderData();
+  const latest = articles.filter((article) => article.slug.startsWith("current-"));
+  const archive = articles.filter((article) => !article.slug.startsWith("current-"));
 
   return (
     <div className="min-h-screen">
@@ -84,8 +87,7 @@ function NewsIndex() {
           </div>
           <h1 className="mt-3 text-3xl sm:text-4xl font-extrabold">Match recaps &amp; analysis</h1>
           <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
-            Data-grounded recaps from cricket and football — results, key moments and what they
-            mean.
+            Data-grounded recaps from cricket and football — results, context and what they mean.
           </p>
         </header>
 
@@ -111,38 +113,68 @@ function NewsIndex() {
             }
           />
         ) : (
-          <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {articles.map((article) => (
-              <Link
-                key={article.slug}
-                to="/news/$slug"
-                params={{ slug: article.slug }}
-                className="group flex flex-col rounded-2xl border border-border bg-card p-4 transition-all hover:-translate-y-0.5 hover:border-sky-500/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              >
-                <div className="flex items-center justify-between gap-2 text-[10px] uppercase tracking-wider text-muted-foreground">
-                  <span className="font-bold text-sky-300">{article.sport}</span>
-                  <span className="inline-flex items-center gap-1">
-                    <CalendarDays className="size-3" aria-hidden="true" />
-                    {formatNewsDate(article.updatedAt)}
-                  </span>
-                </div>
-                <h2 className="mt-3 text-base font-extrabold leading-snug line-clamp-3">
-                  {article.headline}
-                </h2>
-                <p className="mt-2 text-xs text-muted-foreground line-clamp-3">{article.summary}</p>
-                <div className="mt-auto pt-4 flex items-center justify-between text-[11px] text-muted-foreground">
-                  <span className="truncate">
-                    {article.homeTeam} v {article.awayTeam}
-                  </span>
-                  <span className="inline-flex items-center gap-0.5 font-bold text-sky-300 group-hover:gap-1.5 transition-all">
-                    Read <ChevronRight className="size-3" aria-hidden="true" />
-                  </span>
-                </div>
-              </Link>
-            ))}
-          </section>
+          <div className="space-y-10">
+            {latest.length > 0 && (
+              <section>
+                <SectionHeader
+                  title="Latest results"
+                  description="Matches completed in the last few days."
+                />
+                <NewsGrid articles={latest} />
+              </section>
+            )}
+            {archive.length > 0 && (
+              <section>
+                <SectionHeader
+                  title="From the archive"
+                  description="Classic finals and tournament moments."
+                />
+                <NewsGrid articles={archive} />
+              </section>
+            )}
+          </div>
         )}
       </main>
     </div>
+  );
+}
+
+function NewsGrid({ articles }: { articles: NewsSummary[] }) {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {articles.map((article) => (
+        <NewsCard key={article.slug} article={article} />
+      ))}
+    </div>
+  );
+}
+
+function NewsCard({ article }: { article: NewsSummary }) {
+  return (
+    <Link
+      to="/news/$slug"
+      params={{ slug: article.slug }}
+      className="group flex flex-col rounded-2xl border border-border bg-card p-4 transition-all hover:-translate-y-0.5 hover:border-sky-500/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+    >
+      <div className="flex items-center justify-between gap-2 text-[10px] uppercase tracking-wider text-muted-foreground">
+        <span className="font-bold text-sky-300">{article.sport}</span>
+        <span className="inline-flex items-center gap-1">
+          <CalendarDays className="size-3" aria-hidden="true" />
+          {formatNewsDate(article.updatedAt)}
+        </span>
+      </div>
+      <h2 className="mt-3 text-base font-extrabold leading-snug line-clamp-3">
+        {article.headline}
+      </h2>
+      <p className="mt-2 text-xs text-muted-foreground line-clamp-3">{article.summary}</p>
+      <div className="mt-auto pt-4 flex items-center justify-between text-[11px] text-muted-foreground">
+        <span className="truncate">
+          {article.homeTeam} v {article.awayTeam}
+        </span>
+        <span className="inline-flex items-center gap-0.5 font-bold text-sky-300 group-hover:gap-1.5 transition-all">
+          Read <ChevronRight className="size-3" aria-hidden="true" />
+        </span>
+      </div>
+    </Link>
   );
 }

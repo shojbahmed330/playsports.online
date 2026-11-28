@@ -8,7 +8,7 @@ import { athlete, breadcrumbList, faqPage, ldScript } from "@/lib/seo/jsonld";
 import { canonical } from "@/lib/seo/canonical";
 import { getCricketPlayerBySlug, listCricketPlayers } from "@/lib/seo/cricket-entities";
 import { fetchCricketPlayer, findCricketAthleteByName } from "@/lib/cricket.functions";
-import { cricketPlayerNameFromSlug } from "@/lib/cricket-player-slug";
+import { cricketPlayerAliasId, cricketPlayerNameFromSlug } from "@/lib/cricket-player-slug";
 import { LivePlayerProfile } from "@/components/cricket/LivePlayerProfile";
 import { readCachedFaqs } from "@/lib/ai-faqs.server";
 import { FaqSection } from "@/components/seo/FaqSection";
@@ -27,21 +27,63 @@ export const Route = createFileRoute("/cricket/players/$slug")({
     }
 
     // Current players are not in the historical registry. Prefer the athlete
-    // id carried by scorecard links; fall back to a name search.
+    // id carried by scorecard links; fall back to a name search. Clean URLs
+    // are canonical only when they actually resolve.
+    const name = cricketPlayerNameFromSlug(params.slug);
+    const aliasId = cricketPlayerAliasId(params.slug);
     let lastError: string | null = null;
-    if (deps.athlete) {
-      const direct = await fetchCricketPlayer(deps.athlete);
-      if (direct.profile) {
-        return { kind: "live" as const, profile: direct.profile, slug: params.slug };
+
+    const resolveDirect = async (id: string, canonicalClean: boolean) => {
+      const res = await fetchCricketPlayer(id, { awaitCareer: false });
+      if (res.profile) {
+        return {
+          kind: "live" as const,
+          profile: res.profile,
+          slug: params.slug,
+          athleteId: id,
+          canonicalClean,
+        };
       }
-      lastError = direct.error;
+      lastError = res.error ?? lastError;
+      return null;
+    };
+
+    if (aliasId) {
+      const hit = await resolveDirect(aliasId, true);
+      if (hit) return hit;
     }
 
-    const name = cricketPlayerNameFromSlug(params.slug);
+    if (deps.athlete) {
+      const [direct, searched] = await Promise.all([
+        fetchCricketPlayer(deps.athlete, { awaitCareer: false }),
+        name ? findCricketAthleteByName(name) : Promise.resolve(null),
+      ]);
+      if (direct.profile) {
+        return {
+          kind: "live" as const,
+          profile: direct.profile,
+          slug: params.slug,
+          athleteId: deps.athlete,
+          canonicalClean: searched === deps.athlete,
+        };
+      }
+      lastError = direct.error ?? lastError;
+      if (searched && searched !== deps.athlete) {
+        const hit = await resolveDirect(searched, true);
+        if (hit) return hit;
+      }
+      if (direct.error && !direct.error.includes("404")) {
+        throw new Error(direct.error);
+      }
+    }
+
     if (!name) throw notFound();
     const athleteId = await findCricketAthleteByName(name);
-    if (!athleteId) throw notFound();
-    const res = await fetchCricketPlayer(athleteId);
+    if (!athleteId) {
+      if (lastError && !lastError.includes("404")) throw new Error(lastError);
+      throw notFound();
+    }
+    const res = await fetchCricketPlayer(athleteId, { awaitCareer: false });
     if (!res.profile) {
       // A transient ESPN failure is not a missing player: surface a retryable
       // error instead of telling search engines the profile does not exist.
@@ -50,7 +92,13 @@ export const Route = createFileRoute("/cricket/players/$slug")({
       }
       throw notFound();
     }
-    return { kind: "live" as const, profile: res.profile, slug: params.slug };
+    return {
+      kind: "live" as const,
+      profile: res.profile,
+      slug: params.slug,
+      athleteId,
+      canonicalClean: true,
+    };
   },
   head: ({ params, loaderData }) => {
     if (!loaderData) {
@@ -63,7 +111,12 @@ export const Route = createFileRoute("/cricket/players/$slug")({
     const country = live
       ? (loaderData.profile.country ?? loaderData.profile.team)
       : loaderData.player.country;
-    const url = canonical(`/cricket/players/${params.slug}`);
+    const cleanPath = `/cricket/players/${params.slug}`;
+    const profilePath =
+      loaderData.kind === "live" && !loaderData.canonicalClean
+        ? `${cleanPath}?athlete=${loaderData.athleteId}`
+        : cleanPath;
+    const url = canonical(profilePath);
     const image = "https://www.playsports.online/og-default.png";
     const title = `${name} — cricket profile, stats & career`;
     const summary = !live
@@ -80,7 +133,7 @@ export const Route = createFileRoute("/cricket/players/$slug")({
       ldScript(
         athlete({
           name,
-          path: `/cricket/players/${params.slug}`,
+          path: profilePath,
           sport: "Cricket",
           team: country ?? undefined,
         }),
@@ -90,7 +143,7 @@ export const Route = createFileRoute("/cricket/players/$slug")({
           { name: "Home", path: "/" },
           { name: "Cricket", path: "/cricket" },
           { name: "Players", path: "/cricket/players" },
-          { name: name, path: `/cricket/players/${params.slug}` },
+          { name: name, path: profilePath },
         ]),
       ),
     ];

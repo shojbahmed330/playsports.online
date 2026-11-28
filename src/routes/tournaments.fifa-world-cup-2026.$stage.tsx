@@ -58,6 +58,9 @@ export const Route = createFileRoute("/tournaments/fifa-world-cup-2026/$stage")(
         meta: [
           { title },
           { name: "description", content: desc },
+          ...(rows.length === 0
+            ? [{ name: "robots", content: "noindex,follow" } as const]
+            : []),
           { property: "og:title", content: title },
           { property: "og:description", content: desc },
           { property: "og:url", content: canonical(path) },

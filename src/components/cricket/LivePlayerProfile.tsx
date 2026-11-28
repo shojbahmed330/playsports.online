@@ -1,6 +1,9 @@
 import { Link } from "@tanstack/react-router";
 import { CalendarDays, MapPin, Shield, User } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import type { CricketPlayerProfile } from "@/lib/cricket.functions";
+import { getCricketPlayerCareer } from "@/lib/cricket.functions";
 import { EmptyState } from "@/components/ui/state";
 
 /**
@@ -15,7 +18,17 @@ export function LivePlayerProfile({
   profile: CricketPlayerProfile;
   slug: string;
 }) {
-  const career = profile.career ?? [];
+  const careerFn = useServerFn(getCricketPlayerCareer);
+  const careerPending = profile.careerPending === true;
+  const careerQuery = useQuery({
+    queryKey: ["cricket-career", profile.id],
+    queryFn: () => careerFn({ data: { athleteId: profile.id } }),
+    enabled: careerPending && profile.career.length === 0,
+    staleTime: 24 * 60 * 60_000,
+    gcTime: 24 * 60 * 60_000,
+  });
+  const career = profile.career.length ? profile.career : (careerQuery.data ?? []);
+  const loadingCareer = careerPending && careerQuery.isLoading;
   const facts = [
     profile.position && { icon: Shield, label: profile.position },
     profile.batStyle && { icon: User, label: profile.batStyle },
@@ -80,7 +93,7 @@ export function LivePlayerProfile({
           )}
         </div>
         <div className="min-w-0">
-          <h1 className="truncate text-h1 text-foreground">{profile.name}</h1>
+          <h1 className="break-words text-h1 leading-tight text-foreground">{profile.name}</h1>
           <p className="mt-1 flex flex-wrap items-center gap-2 text-caption text-muted-foreground">
             {profile.flag &&
               (/^https?:\/\//.test(profile.flag) ? (
@@ -129,7 +142,20 @@ export function LivePlayerProfile({
 
       <section className="mb-10">
         <h2 className="mb-3 text-h3 text-foreground">Career statistics</h2>
-        {career.length === 0 ? (
+        {loadingCareer ? (
+          <div
+            className="space-y-2"
+            aria-busy="true"
+            aria-label="Loading career statistics"
+          >
+            {[0, 1, 2].map((row) => (
+              <div
+                key={row}
+                className="h-10 animate-pulse rounded-lg bg-muted motion-reduce:animate-none"
+              />
+            ))}
+          </div>
+        ) : career.length === 0 ? (
           <EmptyState
             title="Career stats unavailable"
             description="ESPN has no career splits for this player yet. Match scorecards still list their performances."

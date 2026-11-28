@@ -1,4 +1,4 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { createFileRoute, Link, notFound, redirect } from "@tanstack/react-router";
 import { CalendarDays, ChevronRight, Clock3 } from "lucide-react";
 import { SportNav } from "@/components/sports/SportNav";
 import { Breadcrumbs } from "@/components/nav/Breadcrumbs";
@@ -13,7 +13,12 @@ import { errorMessage } from "@/lib/error-message";
 export const Route = createFileRoute("/news/$slug")({
   loader: async ({ params }) => {
     const article = await getNewsRecap(params.slug);
-    if (!article) throw notFound();
+    if (!article) {
+      // Current recaps age out of the ESPN window; send old links to the hub
+      // instead of returning a soft 404 for an indexed URL.
+      if (params.slug.startsWith("current-")) throw redirect({ to: "/news" });
+      throw notFound();
+    }
     const related = pickRelatedNews(article.slug, article.sport, await listNewsRecaps(12), 3);
     return { article, related };
   },

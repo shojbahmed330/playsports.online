@@ -76,7 +76,7 @@ async function buildLiveRecaps(): Promise<NewsArticle[]> {
   );
 
   const cricketTask = withTimeout(
-    fetchMultiCricketToday({ leagueIds: CRICKET_LEAGUES.slice(0, 8).map((l) => l.id) }),
+    fetchMultiCricketToday({ leagueIds: CRICKET_LEAGUES.map((l) => l.id) }),
     8_000,
     [],
   ).then((matches) => {
