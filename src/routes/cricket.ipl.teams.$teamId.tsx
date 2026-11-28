@@ -1,4 +1,4 @@
-import { errorMessage } from "@/lib/error-message";
+﻿import { errorMessage } from "@/lib/error-message";
 import { useMemo, useState } from "react";
 import { TeamCrest } from "@/components/cricket/TeamCrest";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
@@ -44,12 +44,12 @@ export const Route = createFileRoute("/cricket/ipl/teams/$teamId")({
     return {
       meta: loaderData?.team
         ? [
-            { title: `${loaderData.team.name} — IPL Franchise` },
+            { title: `${loaderData.team.name} â€” IPL Franchise` },
             {
               name: "description",
               content: `${loaderData.team.name} squad, fixtures, titles and franchise stats.`,
             },
-            { property: "og:title", content: `${loaderData.team.name} — IPL` },
+            { property: "og:title", content: `${loaderData.team.name} â€” IPL` },
             {
               property: "og:description",
               content: `Squad, fixtures and title history for ${loaderData.team.name}.`,
@@ -59,7 +59,7 @@ export const Route = createFileRoute("/cricket/ipl/teams/$teamId")({
             { property: "og:type", content: "website" },
             { property: "og:site_name", content: "PlaySports" },
             { name: "twitter:card", content: "summary_large_image" },
-            { name: "twitter:title", content: `${loaderData.team.name} — IPL` },
+            { name: "twitter:title", content: `${loaderData.team.name} â€” IPL` },
             {
               name: "twitter:description",
               content: `Squad, fixtures and title history for ${loaderData.team.name}.`,
@@ -97,7 +97,7 @@ export const Route = createFileRoute("/cricket/ipl/teams/$teamId")({
         action={
           <Link
             to="/cricket/ipl/teams"
-            className="inline-flex min-h-11 items-center rounded-full bg-white/10 px-4 text-sm font-bold text-white ring-1 ring-white/15"
+            className="inline-flex min-h-11 items-center rounded-full bg-muted px-4 text-sm font-bold text-foreground ring-1 ring-border"
           >
             Back to all teams
           </Link>
@@ -182,19 +182,19 @@ function TeamPage() {
   return (
     <IplPageShell
       title={t.name}
-      subtitle={`${t.city} · founded ${t.founded}`}
+      subtitle={`${t.city} Â· founded ${t.founded}`}
       right={
         <Link
           to="/cricket/ipl/teams"
-          className="rounded-full bg-white/[0.06] px-3 py-1.5 text-xs font-semibold text-white/80 ring-1 ring-white/10 hover:bg-white/[0.12]"
+          className="rounded-full bg-muted px-3 py-1.5 text-xs font-semibold text-foreground ring-1 ring-border hover:bg-muted"
         >
-          ← All teams
+          â† All teams
         </Link>
       }
     >
       {/* Animated franchise hero */}
       <section
-        className="relative overflow-hidden rounded-2xl p-5 sm:p-7 ring-1 ring-white/10"
+        className="relative overflow-hidden rounded-2xl p-5 sm:p-7 ring-1 ring-border"
         style={{
           background: `
             radial-gradient(110% 140% at 0% 0%, ${t.primary} 0%, transparent 55%),
@@ -207,13 +207,13 @@ function TeamPage() {
         {/* shine sweep */}
         <span
           aria-hidden
-          className="pointer-events-none absolute inset-0 -translate-x-full animate-[iplShine_3.6s_ease-in-out_infinite] bg-gradient-to-r from-transparent via-white/15 to-transparent motion-reduce:animate-none"
+          className="pointer-events-none absolute inset-0 -translate-x-full animate-[iplShine_3.6s_ease-in-out_infinite] bg-gradient-to-r from-transparent via-background to-transparent motion-reduce:animate-none"
         />
         <div className="relative grid grid-cols-[minmax(0,1fr)_auto] items-center gap-4 sm:flex sm:justify-between">
           <div className="min-w-0">
-            <div className="inline-flex items-center gap-2 rounded-full bg-black/25 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.22em] ring-1 ring-white/15">
-              <span className="size-1.5 rounded-full bg-white animate-pulse motion-reduce:animate-none" />{" "}
-              {t.short} · IPL Franchise
+            <div className="inline-flex items-center gap-2 rounded-full bg-background px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.22em] ring-1 ring-border">
+              <span className="size-1.5 rounded-full bg-muted animate-pulse motion-reduce:animate-none" />{" "}
+              {t.short} Â· IPL Franchise
             </div>
             <h2 className="mt-2 truncate text-2xl sm:text-4xl font-black drop-shadow-[0_2px_8px_rgba(0,0,0,0.45)]">
               {t.name}
@@ -226,7 +226,7 @@ function TeamPage() {
               decoding="async"
               src={t.logo}
               alt=""
-              className="h-24 w-24 sm:h-28 sm:w-28 shrink-0 rounded-2xl bg-black/30 object-contain p-2 ring-1 ring-white/25 shadow-[0_12px_30px_-10px_rgba(0,0,0,0.7)]"
+              className="h-24 w-24 sm:h-28 sm:w-28 shrink-0 rounded-2xl bg-background object-contain p-2 ring-1 ring-border shadow-[0_12px_30px_-10px_rgba(0,0,0,0.7)]"
             />
           )}
         </div>
@@ -240,10 +240,10 @@ function TeamPage() {
 
       {/* Season selector */}
       <div className="mt-6 flex items-center gap-2">
-        <Calendar aria-hidden="true" className="size-3.5 text-white/40" />
+        <Calendar aria-hidden="true" className="size-3.5 text-foreground" />
         <label
           htmlFor="ipl-team-season"
-          className="text-[10px] font-black uppercase tracking-widest text-white/40"
+          className="text-[10px] font-black uppercase tracking-widest text-foreground"
         >
           Season
         </label>
@@ -253,7 +253,7 @@ function TeamPage() {
           onChange={(e) =>
             setSeasonYear(e.target.value === "current" ? "current" : Number(e.target.value))
           }
-          className="min-h-11 rounded-md border border-white/10 bg-gray-900/70 px-2.5 py-1 text-xs font-bold text-white focus:border-white/30 focus:outline-none focus:ring-2 focus:ring-white/30"
+          className="min-h-11 rounded-md border border-border bg-background px-2.5 py-1 text-xs font-bold text-foreground focus:border-border focus:outline-none focus:ring-2 focus:ring-border"
         >
           {IPL_SEASON_IDS.map((s) => (
             <option key={String(s.year)} value={String(s.year)}>
@@ -261,18 +261,18 @@ function TeamPage() {
             </option>
           ))}
         </select>
-        {squadQ.isFetching && <span className="text-[10px] text-white/40">Loading…</span>}
+        {squadQ.isFetching && <span className="text-[10px] text-foreground">Loadingâ€¦</span>}
       </div>
 
       {/* Tabs */}
-      <div className="mt-6 flex gap-1 overflow-x-auto rounded-full bg-white/[0.04] p-1 ring-1 ring-white/10 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      <div className="mt-6 flex gap-1 overflow-x-auto rounded-full bg-muted p-1 ring-1 ring-border [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {(
           [
             { id: "overview", label: "Overview" },
-            { id: "squad", label: `Squad${squadQ.data ? ` · ${squadQ.data.players.length}` : ""}` },
-            { id: "fixtures", label: `Fixtures · ${data.fixtures.length}` },
+            { id: "squad", label: `Squad${squadQ.data ? ` Â· ${squadQ.data.players.length}` : ""}` },
+            { id: "fixtures", label: `Fixtures Â· ${data.fixtures.length}` },
             { id: "h2h", label: "Head-to-head" },
-            { id: "titles", label: `Titles · ${titleSeasons.length}` },
+            { id: "titles", label: `Titles Â· ${titleSeasons.length}` },
           ] as const
         ).map((opt) => (
           <button
@@ -281,7 +281,7 @@ function TeamPage() {
             aria-pressed={tab === opt.id}
             onClick={() => setTab(opt.id)}
             className={`inline-flex min-h-11 shrink-0 items-center rounded-full px-3.5 text-[12px] font-bold transition ${
-              tab === opt.id ? "bg-white text-gray-950 shadow-sm" : "text-white/65 hover:text-white"
+              tab === opt.id ? "bg-muted text-muted-foreground shadow-sm" : "text-foreground hover:text-foreground"
             }`}
             style={tab === opt.id ? { background: t.primary, color: t.ink } : undefined}
           >
@@ -294,43 +294,43 @@ function TeamPage() {
       {tab === "overview" && (
         <>
           <section className="mt-6 grid gap-3 sm:grid-cols-2">
-            <div className="rounded-2xl border border-white/5 bg-gray-900/60 p-4">
-              <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-white/40">
+            <div className="rounded-2xl border border-border bg-background p-4">
+              <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-foreground">
                 <MapPin aria-hidden="true" className="size-3.5" /> Home venue
               </div>
-              <h3 className="mt-2 text-base font-black text-white">{t.homeGround}</h3>
-              <p className="mt-1 text-xs text-white/55">{t.city}</p>
+              <h3 className="mt-2 text-base font-black text-foreground">{t.homeGround}</h3>
+              <p className="mt-1 text-xs text-foreground">{t.city}</p>
               <a
                 href={`https://www.google.com/maps/search/${encodeURIComponent(t.homeGround + ", " + t.city)}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-3 inline-flex items-center gap-1 rounded-full bg-white/[0.06] px-2.5 py-1 text-[11px] font-semibold text-white/80 ring-1 ring-white/10 hover:bg-white/[0.12]"
+                className="mt-3 inline-flex items-center gap-1 rounded-full bg-muted px-2.5 py-1 text-[11px] font-semibold text-foreground ring-1 ring-border hover:bg-muted"
               >
-                Open in Maps ↗
+                Open in Maps â†—
               </a>
             </div>
-            <div className="rounded-2xl border border-white/5 bg-gray-900/60 p-4">
-              <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-white/40">
+            <div className="rounded-2xl border border-border bg-background p-4">
+              <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-foreground">
                 <Crown aria-hidden="true" className="size-3.5" /> Captain timeline
               </div>
               {captainTimeline.length === 0 ? (
-                <p className="mt-3 text-sm text-white/55">Captain timeline coming soon.</p>
+                <p className="mt-3 text-sm text-foreground">Captain timeline coming soon.</p>
               ) : (
                 <ol className="mt-3 grid gap-1.5">
                   {captainTimeline.map((c, i) => (
                     <li
                       key={`${c.name}-${i}`}
-                      className="flex items-baseline justify-between gap-2 rounded-lg bg-white/[0.03] px-3 py-1.5 text-xs ring-1 ring-white/5"
+                      className="flex items-baseline justify-between gap-2 rounded-lg bg-muted px-3 py-1.5 text-xs ring-1 ring-border"
                     >
-                      <PlayerLink name={c.name} className="truncate font-semibold text-white">
+                      <PlayerLink name={c.name} className="truncate font-semibold text-foreground">
                         {c.name}
                       </PlayerLink>
-                      <span className="shrink-0 text-[11px] text-white/55">
+                      <span className="shrink-0 text-[11px] text-foreground">
                         {c.years}
                         {c.titles > 0 ? (
                           <>
-                            <span aria-hidden="true"> · 🏆</span>
-                            <span className="sr-only"> · titles: </span>
+                            <span aria-hidden="true"> Â· ðŸ†</span>
+                            <span className="sr-only"> Â· titles: </span>
                             {c.titles}
                           </>
                         ) : null}
@@ -348,10 +348,10 @@ function TeamPage() {
       {tab === "squad" && (
         <section className="mt-6">
           <div className="mb-3 flex items-end justify-between px-1">
-            <h3 className="text-base font-black tracking-tight text-white">Squad</h3>
-            <span className="text-[11px] text-white/50">
+            <h3 className="text-base font-black tracking-tight text-foreground">Squad</h3>
+            <span className="text-[11px] text-foreground">
               {squadQ.isLoading
-                ? "Loading…"
+                ? "Loadingâ€¦"
                 : `${squadQ.data?.players.length ?? 0} players this season`}
             </span>
           </div>
@@ -370,7 +370,7 @@ function TeamPage() {
               {Array.from({ length: 12 }).map((_, i) => (
                 <div
                   key={i}
-                  className="h-28 animate-pulse rounded-xl bg-white/[0.04] ring-1 ring-white/10 motion-reduce:animate-none"
+                  className="h-28 animate-pulse rounded-xl bg-muted ring-1 ring-border motion-reduce:animate-none"
                 />
               ))}
             </div>
@@ -386,7 +386,7 @@ function TeamPage() {
                   <button
                     type="button"
                     onClick={() => setActiveAthlete(p.athleteId)}
-                    className="group relative w-full overflow-hidden rounded-xl bg-white/[0.04] p-3 ring-1 ring-white/10 transition hover:-translate-y-0.5 hover:bg-white/[0.08] hover:ring-white/20 focus:outline-none focus:ring-2 focus:ring-amber-300/60 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
+                    className="group relative w-full overflow-hidden rounded-xl bg-muted p-3 ring-1 ring-border transition hover:-translate-y-0.5 hover:bg-muted hover:ring-border focus:outline-none focus:ring-2 focus:ring-[var(--color-gold)]/60 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
                   >
                     <span
                       aria-hidden
@@ -399,11 +399,11 @@ function TeamPage() {
                           src={p.headshot}
                           alt=""
                           loading="lazy"
-                          className="size-14 rounded-full bg-black/30 object-cover ring-1 ring-white/15"
+                          className="size-14 rounded-full bg-background object-cover ring-1 ring-border"
                           decoding="async"
                         />
                       ) : (
-                        <div className="grid size-14 place-items-center rounded-full bg-black/30 text-sm font-black text-white/60 ring-1 ring-white/15">
+                        <div className="grid size-14 place-items-center rounded-full bg-background text-sm font-black text-foreground ring-1 ring-border">
                           {p.name
                             .split(" ")
                             .map((n) => n[0])
@@ -411,14 +411,14 @@ function TeamPage() {
                             .join("")}
                         </div>
                       )}
-                      <div className="mt-2 line-clamp-2 text-[12px] font-bold text-white">
+                      <div className="mt-2 line-clamp-2 text-[12px] font-bold text-foreground">
                         {p.name}
                       </div>
-                      <div className="mt-0.5 text-[10px] uppercase tracking-wide text-white/50">
+                      <div className="mt-0.5 text-[10px] uppercase tracking-wide text-foreground">
                         {p.position ?? "Player"}
-                        {p.jersey ? ` · #${p.jersey}` : ""}
+                        {p.jersey ? ` Â· #${p.jersey}` : ""}
                       </div>
-                      <div className="mt-1 text-[10px] text-amber-300/80">
+                      <div className="mt-1 text-[10px] text-[var(--color-gold)]/80">
                         {p.appearances} match{p.appearances === 1 ? "" : "es"}
                       </div>
                     </div>
@@ -433,7 +433,7 @@ function TeamPage() {
       {/* ===== TITLES ===== */}
       {tab === "titles" && (
         <section className="mt-6">
-          <h3 className="mb-3 px-1 text-base font-black tracking-tight text-white">
+          <h3 className="mb-3 px-1 text-base font-black tracking-tight text-foreground">
             Title-winning seasons
           </h3>
           {titleSeasons.length === 0 ? (
@@ -446,11 +446,11 @@ function TeamPage() {
               {titleSeasons.map((s) => (
                 <li
                   key={s.year}
-                  className="rounded-xl border border-amber-300/20 bg-amber-400/5 px-3 py-2.5 text-sm"
+                  className="rounded-xl border border-[var(--color-gold)]/20 bg-[var(--color-gold)]/5 px-3 py-2.5 text-sm"
                 >
                   <div className="flex items-baseline justify-between">
-                    <span className="font-black text-amber-200">{s.year}</span>
-                    <span className="text-[11px] text-white/60">MoF · {s.mom}</span>
+                    <span className="font-black text-[var(--color-gold)]">{s.year}</span>
+                    <span className="text-[11px] text-foreground">MoF Â· {s.mom}</span>
                   </div>
                 </li>
               ))}
@@ -462,7 +462,7 @@ function TeamPage() {
       {/* ===== FIXTURES ===== */}
       {tab === "fixtures" && (
         <section className="mt-6">
-          <h3 className="mb-3 px-1 text-base font-black tracking-tight text-white">
+          <h3 className="mb-3 px-1 text-base font-black tracking-tight text-foreground">
             This season's fixtures
           </h3>
           {data.fixtures.length === 0 ? (
@@ -483,7 +483,7 @@ function TeamPage() {
       {/* ===== HEAD-TO-HEAD ===== */}
       {tab === "h2h" && (
         <section className="mt-6">
-          <h3 className="mb-3 px-1 text-base font-black tracking-tight text-white">
+          <h3 className="mb-3 px-1 text-base font-black tracking-tight text-foreground">
             Head-to-head this season
           </h3>
           {h2h.length === 0 ? (
@@ -499,7 +499,7 @@ function TeamPage() {
                 return (
                   <li
                     key={o.id}
-                    className="overflow-hidden rounded-xl bg-white/[0.04] p-3 ring-1 ring-white/10"
+                    className="overflow-hidden rounded-xl bg-muted p-3 ring-1 ring-border"
                   >
                     <div className="flex items-center gap-3">
                       <TeamCrest
@@ -509,27 +509,27 @@ function TeamPage() {
                         className="size-9 shrink-0"
                       />
                       <div className="min-w-0 flex-1">
-                        <div className="truncate text-sm font-bold text-white">vs {o.name}</div>
-                        <div className="text-[11px] text-white/55">
-                          {total} meeting{total === 1 ? "" : "s"} · {winPct}% win rate
+                        <div className="truncate text-sm font-bold text-foreground">vs {o.name}</div>
+                        <div className="text-[11px] text-foreground">
+                          {total} meeting{total === 1 ? "" : "s"} Â· {winPct}% win rate
                         </div>
                       </div>
                       <div className="flex shrink-0 items-center gap-1 text-[11px] font-black">
-                        <span className="rounded bg-emerald-500/15 px-1.5 py-0.5 text-emerald-300">
+                        <span className="rounded bg-[var(--color-accent-cricket)]/15 px-1.5 py-0.5 text-[var(--color-accent-cricket)]">
                           {o.w}W
                         </span>
-                        <span className="rounded bg-rose-500/15 px-1.5 py-0.5 text-rose-300">
+                        <span className="rounded bg-[var(--color-live)]/15 px-1.5 py-0.5 text-[var(--color-live)]">
                           {o.l}L
                         </span>
                         {o.nr > 0 && (
-                          <span className="rounded bg-white/10 px-1.5 py-0.5 text-white/70">
+                          <span className="rounded bg-muted px-1.5 py-0.5 text-foreground">
                             {o.nr}NR
                           </span>
                         )}
                       </div>
                     </div>
                     {/* Win rate bar */}
-                    <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-white/10">
+                    <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-muted">
                       <div
                         className="h-full"
                         style={{
@@ -539,7 +539,7 @@ function TeamPage() {
                       />
                     </div>
                     {o.last && (
-                      <div className="mt-1.5 text-[10px] text-white/50">
+                      <div className="mt-1.5 text-[10px] text-foreground">
                         Last: {o.last.shortDetail || o.last.statusDetail}
                       </div>
                     )}
@@ -562,7 +562,7 @@ function TeamPage() {
 
 function Stat({ label, value, highlight }: { label: string; value: string; highlight?: boolean }) {
   return (
-    <div className="rounded-md bg-black/25 px-2 py-1.5 ring-1 ring-white/15 backdrop-blur-sm">
+    <div className="rounded-md bg-background px-2 py-1.5 ring-1 ring-border backdrop-blur-sm">
       <dt className="text-[9px] font-black uppercase tracking-widest opacity-75">{label}</dt>
       <dd className={`mt-0.5 truncate ${highlight ? "text-base font-black" : "font-semibold"}`}>
         {value}

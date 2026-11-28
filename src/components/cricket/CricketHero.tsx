@@ -1,10 +1,10 @@
-import { Link } from "@tanstack/react-router";
+﻿import { Link } from "@tanstack/react-router";
 import { TeamCrest } from "./TeamCrest";
 import { Flame, Clock, MapPin, ArrowRight, Trophy } from "lucide-react";
 import type { CricketMatch } from "@/lib/cricket.functions";
 
 /**
- * CricketHero — spotlight for the next/live featured match.
+ * CricketHero â€” spotlight for the next/live featured match.
  * - If any match is live, picks the first live match.
  * - Else picks the soonest upcoming match.
  * - Else shows a generic welcome card.
@@ -44,23 +44,23 @@ export function CricketHero({
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
         <div className="grid lg:grid-cols-[1.1fr_1fr] gap-6 lg:gap-10 items-center">
-          {/* left — branding */}
+          {/* left â€” branding */}
           <div>
-            <div className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.22em] font-bold text-amber-300 mb-3 px-2.5 py-1 rounded-full bg-amber-500/10 ring-1 ring-amber-500/30">
-              <span className="size-1.5 rounded-full bg-amber-400 animate-pulse motion-reduce:animate-none" />
+            <div className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.22em] font-bold text-[var(--color-gold)] mb-3 px-2.5 py-1 rounded-full bg-[var(--color-gold)]/10 ring-1 ring-[var(--color-gold)]/30">
+              <span className="size-1.5 rounded-full bg-[var(--color-gold)] animate-pulse motion-reduce:animate-none" />
               {liveCount > 0
                 ? `${liveCount} match${liveCount === 1 ? "" : "es"} live`
                 : "Cricket hub"}
             </div>
             <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight leading-[1.05]">
-              <span className="bg-gradient-to-r from-emerald-300 via-amber-300 to-rose-300 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-[var(--color-accent-cricket)] via-[var(--color-gold)] to-[var(--color-live)] bg-clip-text text-transparent">
                 Live Cricket Scores,
               </span>{" "}
-              <span className="text-white">Series & Rankings</span>
+              <span className="text-foreground">Series & Rankings</span>
             </h1>
 
-            <p className="mt-3 text-sm sm:text-base text-emerald-100/75 max-w-xl">
-              Live scoreboards, fixtures, standings, player profiles and records — from IPL and the
+            <p className="mt-3 text-sm sm:text-base text-[var(--color-accent-cricket)]/75 max-w-xl">
+              Live scoreboards, fixtures, standings, player profiles and records â€” from IPL and the
               ICC World Cup to Big Bash, PSL and the international calendar.
             </p>
             <div className="mt-5 flex flex-wrap gap-2">
@@ -68,30 +68,30 @@ export function CricketHero({
                 to="/cricket/scores"
                 label="Scores"
                 icon={<Flame className="size-3.5" />}
-                grad="from-rose-500 to-red-500"
+                grad="from-[var(--color-live)] to-[var(--color-live)]"
               />
               <HeroChip
                 to="/cricket/series"
                 label="Series"
                 icon={<Trophy className="size-3.5" />}
-                grad="from-amber-500 to-orange-500"
+                grad="from-[var(--color-gold)] to-[var(--color-gold)]"
               />
               <HeroChip
                 to="/cricket/players"
                 label="Players"
                 icon={<ArrowRight className="size-3.5" />}
-                grad="from-fuchsia-500 to-purple-500"
+                grad="from-[var(--color-accent-nhl)] to-[var(--color-accent-nhl)]"
               />
               <HeroChip
                 to="/cricket/rankings"
                 label="Rankings"
                 icon={<ArrowRight className="size-3.5" />}
-                grad="from-indigo-500 to-violet-500"
+                grad="from-[var(--color-accent-nhl)] to-[var(--color-accent-nhl)]"
               />
             </div>
           </div>
 
-          {/* right — featured match card */}
+          {/* right â€” featured match card */}
           <div>{featured ? <FeaturedCard match={featured} /> : <EmptyFeatured />}</div>
         </div>
       </div>
@@ -113,7 +113,7 @@ function HeroChip({
   return (
     <Link
       to={to}
-      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-white bg-gradient-to-r ${grad} ring-1 ring-white/15 hover:-translate-y-0.5 shadow-[0_6px_18px_-6px_rgba(0,0,0,0.55)] transition-transform`}
+      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-foreground bg-gradient-to-r ${grad} ring-1 ring-border hover:-translate-y-0.5 shadow-[0_6px_18px_-6px_rgba(0,0,0,0.55)] transition-transform`}
     >
       {icon} {label}
     </Link>
@@ -128,37 +128,37 @@ function FeaturedCard({ match }: { match: CricketMatch }) {
       to="/cricket/match/$id"
       params={{ id: match.id }}
       search={{ leagueId: match.leagueId }}
-      className="group block relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-black/60 via-emerald-950/40 to-black/70 backdrop-blur p-5 sm:p-6 hover:border-emerald-400/40 transition-all hover:-translate-y-0.5 shadow-[0_20px_60px_-20px_rgba(0,0,0,0.7)]"
+      className="group block relative overflow-hidden rounded-3xl border border-border bg-gradient-to-br bg-background via-[var(--color-accent-cricket)]/40 bg-background backdrop-blur p-5 sm:p-6 hover:border-[var(--color-accent-cricket)]/40 transition-all hover:-translate-y-0.5 shadow-[0_20px_60px_-20px_rgba(0,0,0,0.7)]"
     >
       <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3 mb-4">
         <div className="min-w-0">
-          <div className="text-[10px] uppercase tracking-[0.18em] font-bold text-emerald-300/90 truncate">
+          <div className="text-[10px] uppercase tracking-[0.18em] font-bold text-[var(--color-accent-cricket)]/90 truncate">
             {match.leagueName || match.leagueAbbr || "Cricket"}
           </div>
-          <div className="text-[11px] text-emerald-100/70 mt-0.5 truncate">{match.description}</div>
+          <div className="text-[11px] text-[var(--color-accent-cricket)]/70 mt-0.5 truncate">{match.description}</div>
         </div>
         {isLive ? (
-          <span className="shrink-0 inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-red-200 bg-red-500/20 ring-1 ring-red-400/40 px-2 py-1 rounded-full">
-            <span className="size-1.5 rounded-full bg-red-400 animate-pulse motion-reduce:animate-none" />{" "}
+          <span className="shrink-0 inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-[var(--color-live)] bg-[var(--color-live)]/20 ring-1 ring-[var(--color-live)]/40 px-2 py-1 rounded-full">
+            <span className="size-1.5 rounded-full bg-[var(--color-live)] animate-pulse motion-reduce:animate-none" />{" "}
             Live
           </span>
         ) : isPre ? (
-          <span className="shrink-0 inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-amber-200 bg-amber-500/15 ring-1 ring-amber-500/30 px-2 py-1 rounded-full">
+          <span className="shrink-0 inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-[var(--color-gold)] bg-[var(--color-gold)]/15 ring-1 ring-[var(--color-gold)]/30 px-2 py-1 rounded-full">
             <Clock className="size-3" /> Upcoming
           </span>
         ) : (
-          <span className="shrink-0 text-[10px] font-bold uppercase text-gray-400">FT</span>
+          <span className="shrink-0 text-[10px] font-bold uppercase text-foreground">FT</span>
         )}
       </div>
 
       <div className="space-y-3">
         <TeamRow side={match.home} />
-        <div className="h-px bg-white/5" />
+        <div className="h-px bg-muted" />
         <TeamRow side={match.away} />
       </div>
 
       <div className="mt-4 flex items-center justify-between gap-3">
-        <div className="min-w-0 text-[11px] text-emerald-100/70 truncate">
+        <div className="min-w-0 text-[11px] text-[var(--color-accent-cricket)]/70 truncate">
           {match.venue ? (
             <span className="inline-flex items-center gap-1">
               <MapPin className="size-3" /> {match.venue}
@@ -173,7 +173,7 @@ function FeaturedCard({ match }: { match: CricketMatch }) {
             match.statusDetail
           )}
         </div>
-        <span className="shrink-0 inline-flex items-center gap-1 text-xs font-bold text-emerald-300 group-hover:gap-2 transition-all">
+        <span className="shrink-0 inline-flex items-center gap-1 text-xs font-bold text-[var(--color-accent-cricket)] group-hover:gap-2 transition-all">
           Open <ArrowRight className="size-3.5" />
         </span>
       </div>
@@ -193,16 +193,16 @@ function TeamRow({ side }: { side: CricketMatch["home"] }) {
           rounded
         />
         <div className="min-w-0">
-          <div className="text-sm font-bold text-white truncate">{side.name || side.shortName}</div>
+          <div className="text-sm font-bold text-foreground truncate">{side.name || side.shortName}</div>
           {side.scoreSummary && (
-            <div className="text-[11px] text-emerald-200/70 truncate font-mono">
+            <div className="text-[11px] text-[var(--color-accent-cricket)]/70 truncate font-mono">
               {side.scoreSummary}
             </div>
           )}
         </div>
       </div>
       {side.totalRuns > 0 && !side.scoreSummary && (
-        <div className="shrink-0 text-lg font-extrabold tabular-nums text-white">
+        <div className="shrink-0 text-lg font-extrabold tabular-nums text-foreground">
           {side.totalRuns}
         </div>
       )}
@@ -212,12 +212,12 @@ function TeamRow({ side }: { side: CricketMatch["home"] }) {
 
 function EmptyFeatured() {
   return (
-    <div className="rounded-3xl border border-dashed border-white/10 bg-white/[0.02] p-8 text-center">
-      <Trophy className="mx-auto size-10 text-emerald-300/60 mb-2" />
-      <div className="text-sm font-semibold text-emerald-100/80">
+    <div className="rounded-3xl border border-dashed border-border bg-muted p-8 text-center">
+      <Trophy className="mx-auto size-10 text-[var(--color-accent-cricket)]/60 mb-2" />
+      <div className="text-sm font-semibold text-[var(--color-accent-cricket)]/80">
         No live or upcoming match right now
       </div>
-      <div className="text-xs text-emerald-100/50 mt-1">
+      <div className="text-xs text-[var(--color-accent-cricket)]/50 mt-1">
         Check the scores tab for recent results.
       </div>
     </div>

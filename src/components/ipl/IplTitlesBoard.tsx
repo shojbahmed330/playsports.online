@@ -1,4 +1,4 @@
-import { Trophy } from "lucide-react";
+﻿import { Trophy } from "lucide-react";
 
 type Franchise = {
   id: string;
@@ -17,16 +17,16 @@ export function IplTitlesBoard({ teams }: { teams: Franchise[] }) {
   return (
     <section>
       <div className="mb-3 flex items-baseline justify-between gap-3 px-1">
-        <h2 className="text-base sm:text-lg font-black tracking-tight text-white">
+        <h2 className="text-base sm:text-lg font-black tracking-tight text-foreground">
           Franchise Titles Board
         </h2>
-        <span className="text-[11px] text-white/50">All-time champions</span>
+        <span className="text-[11px] text-foreground">All-time champions</span>
       </div>
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
         {sorted.map((t) => (
           <article
             key={t.id}
-            className="group relative overflow-hidden rounded-xl border border-white/5 p-3 transition-transform hover:-translate-y-0.5"
+            className="group relative overflow-hidden rounded-xl border border-border p-3 transition-transform hover:-translate-y-0.5"
             style={{
               background: `linear-gradient(160deg, ${t.primary} 0%, color-mix(in oklab, ${t.primary} 65%, #0a0a0f) 100%)`,
               color: t.ink,
@@ -43,7 +43,7 @@ export function IplTitlesBoard({ teams }: { teams: Franchise[] }) {
                 <img
                   src={t.logo}
                   alt=""
-                  className="h-9 w-9 shrink-0 rounded-md bg-black/20 object-contain p-1 ring-1 ring-white/20"
+                  className="h-9 w-9 shrink-0 rounded-md bg-background object-contain p-1 ring-1 ring-border"
                   loading="lazy"
                  decoding="async" />
               )}
@@ -54,10 +54,10 @@ export function IplTitlesBoard({ teams }: { teams: Franchise[] }) {
                 {t.titles} {t.titles === 1 ? "title" : "titles"}
               </div>
               <div className="text-[10px] opacity-70">
-                {t.titleYears.length ? t.titleYears.join(", ") : "—"}
+                {t.titleYears.length ? t.titleYears.join(", ") : "â€”"}
               </div>
             </div>
-            <div className="pointer-events-none absolute inset-x-0 -bottom-2 h-10 rounded-full bg-white/10 blur-2xl" />
+            <div className="pointer-events-none absolute inset-x-0 -bottom-2 h-10 rounded-full bg-muted blur-2xl" />
           </article>
         ))}
       </div>

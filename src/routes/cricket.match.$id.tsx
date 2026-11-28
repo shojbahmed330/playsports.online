@@ -1,4 +1,4 @@
-import { errorMessage } from "@/lib/error-message";
+﻿import { errorMessage } from "@/lib/error-message";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -54,15 +54,15 @@ export const Route = createFileRoute("/cricket/match/$id")({
       leagueId !== "8048" ? `?leagueId=${encodeURIComponent(leagueId)}` : ""
     }`;
     const m = loaderData?.match;
-    let title = "Live Cricket Scorecard — PlaySports";
+    let title = "Live Cricket Scorecard â€” PlaySports";
     let desc = "Live cricket scorecard, batting and bowling figures, commentary and lineups.";
     const jsonld: unknown[] = [];
     if (m) {
       const vs = `${m.away.abbr || m.away.name} vs ${m.home.abbr || m.home.name}`;
       const ctx = m.leagueAbbr || m.leagueName || "Cricket";
       const statusTag = m.status === "in" ? "Live" : m.status === "post" ? "Result" : "Preview";
-      const rawTitle = `${vs} — ${ctx} ${statusTag} Scorecard`;
-      title = rawTitle.length > 60 ? rawTitle.slice(0, 57) + "…" : rawTitle;
+      const rawTitle = `${vs} â€” ${ctx} ${statusTag} Scorecard`;
+      title = rawTitle.length > 60 ? rawTitle.slice(0, 57) + "â€¦" : rawTitle;
       const resultPart =
         m.status === "post" && m.result?.marginText
           ? `${m.result.marginText}. `
@@ -72,7 +72,7 @@ export const Route = createFileRoute("/cricket/match/$id")({
       desc = `${m.away.name} vs ${m.home.name} in ${m.leagueName || ctx}${m.venue ? ` at ${m.venue}${m.city ? `, ${m.city}` : ""}` : ""}. ${resultPart}Live scorecard, batting/bowling figures, commentary and lineups.`;
       jsonld.push(
         sportsEvent({
-          name: `${vs} — ${ctx}`,
+          name: `${vs} â€” ${ctx}`,
           path: `/cricket/match/${params.id}`,
           sport: "Cricket",
           startDate: m.startTs ? new Date(m.startTs).toISOString() : undefined,
@@ -123,8 +123,8 @@ export const Route = createFileRoute("/cricket/match/$id")({
       <div>
         <p className="text-lg font-semibold">Couldn't load match</p>
         <p className="text-xs text-muted-foreground mt-1">{errorMessage(error)}</p>
-        <Link to="/cricket" className="mt-4 inline-block text-emerald-400 hover:underline text-sm">
-          ← Back to cricket
+        <Link to="/cricket" className="mt-4 inline-block text-[var(--color-accent-cricket)] hover:underline text-sm">
+          â† Back to cricket
         </Link>
       </div>
     </div>
@@ -140,7 +140,7 @@ export const Route = createFileRoute("/cricket/match/$id")({
             <>
               <Link
                 to="/cricket/scores"
-                className="inline-flex min-h-11 items-center rounded-full bg-emerald-500/15 px-4 text-sm font-bold text-emerald-200 ring-1 ring-emerald-500/30"
+                className="inline-flex min-h-11 items-center rounded-full bg-[var(--color-accent-cricket)]/15 px-4 text-sm font-bold text-[var(--color-accent-cricket)] ring-1 ring-[var(--color-accent-cricket)]/30"
               >
                 Cricket scores
               </Link>
@@ -189,7 +189,7 @@ function MatchPage() {
           <div className="mt-4 text-center">
             <Link
               to="/cricket/scores"
-              className="inline-flex min-h-11 items-center gap-1 rounded-full border border-border px-4 text-sm font-semibold text-foreground hover:bg-white/5"
+              className="inline-flex min-h-11 items-center gap-1 rounded-full border border-border px-4 text-sm font-semibold text-foreground hover:bg-muted"
             >
               Browse cricket scores
             </Link>

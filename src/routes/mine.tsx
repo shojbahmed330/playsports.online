@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+﻿import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { Star, ChevronLeft, Plus, Bell, BellOff, X, Circle } from "lucide-react";
 import { readAllStarred, useStarred, type Sport } from "@/lib/starred";
@@ -14,11 +14,11 @@ import { EmptyState as SharedEmptyState } from "@/components/ui/state";
 export const Route = createFileRoute("/mine")({
   head: () => ({
     meta: [
-      { title: "My Feed — Favorite Teams & Reminders | PlaySports" },
+      { title: "My Feed â€” Favorite Teams & Reminders | PlaySports" },
       {
         name: "description",
         content:
-          "Your personal cross-sport feed on PlaySports: favorite teams' live matches, upcoming fixtures with kickoff reminders and recent results — football, cricket, NBA, NHL, MLB, MLS.",
+          "Your personal cross-sport feed on PlaySports: favorite teams' live matches, upcoming fixtures with kickoff reminders and recent results â€” football, cricket, NBA, NHL, MLB, MLS.",
       },
       { name: "robots", content: "noindex" },
     ],
@@ -67,7 +67,7 @@ function MinePage() {
   // Auto-schedule reminders + fire result notifications when notify is on.
   useEffect(() => {
     if (!notify || typeof window === "undefined") return;
-    // Upcoming → auto-remind (football only for now; matches Reminder shape).
+    // Upcoming â†’ auto-remind (football only for now; matches Reminder shape).
     upcoming.forEach((m) => {
       if (m.sport !== "football") return;
       if (typeof m.matchId !== "number") return;
@@ -80,7 +80,7 @@ function MinePage() {
         url: m.href,
       });
     });
-    // Recent results → fire once per match transition
+    // Recent results â†’ fire once per match transition
     if (window.localStorage.getItem(NOTIFY_RESULTS_KEY) === "off") return;
     recent.forEach((m) => {
       const cacheK = LAST_RESULT_KEY + m.key;
@@ -88,11 +88,11 @@ function MinePage() {
       const now = `${m.home.score ?? "-"}-${m.away.score ?? "-"}`;
       if (prev === now) return;
       window.localStorage.setItem(cacheK, now);
-      if (prev == null) return; // first-time seen → don't notify
+      if (prev == null) return; // first-time seen â†’ don't notify
       try {
         if ("Notification" in window && Notification.permission === "granted") {
           const n = new Notification("Full-time", {
-            body: `${m.home.name} ${m.home.score ?? ""}–${m.away.score ?? ""} ${m.away.name}`,
+            body: `${m.home.name} ${m.home.score ?? ""}â€“${m.away.score ?? ""} ${m.away.name}`,
             tag: m.key,
           });
           n.onclick = () => {
@@ -125,7 +125,7 @@ function MinePage() {
     }
     window.localStorage.setItem(NOTIFY_KEY, "on");
     setNotify(true);
-    toast("Notifications on · we'll ping you 15 min before kickoff");
+    toast("Notifications on Â· we'll ping you 15 min before kickoff");
   };
 
   const openPicker = (s: Sport) => {
@@ -145,7 +145,7 @@ function MinePage() {
           </Link>
           <h1 className="min-w-0 flex-1 truncate text-center text-sm font-bold text-foreground">
             <Star
-              className="mr-1 -mt-0.5 inline size-4 fill-amber-300 text-amber-300"
+              className="mr-1 -mt-0.5 inline size-4 fill-[var(--color-gold)] text-[var(--color-gold)]"
               aria-hidden="true"
             />
             My Feed
@@ -158,7 +158,7 @@ function MinePage() {
             title={notify ? "Turn notifications off" : "Turn notifications on"}
             className={`inline-flex min-h-11 items-center gap-1 rounded-full border px-2 text-[10px] font-bold uppercase tracking-widest transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
               notify
-                ? "border-emerald-400/40 bg-emerald-500/15 text-emerald-200"
+                ? "border-[var(--color-accent-cricket)]/40 bg-[var(--color-accent-cricket)]/15 text-[var(--color-accent-cricket)]"
                 : "border-border bg-muted text-muted-foreground hover:bg-accent"
             }`}
           >
@@ -172,14 +172,14 @@ function MinePage() {
           <button
             type="button"
             onClick={() => openPicker("football")}
-            className="inline-flex min-h-11 items-center gap-1 rounded-full border border-amber-500/40 bg-amber-500/15 px-2 text-[10px] font-bold uppercase tracking-widest text-amber-200 hover:bg-amber-500/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="inline-flex min-h-11 items-center gap-1 rounded-full border border-[var(--color-gold)]/40 bg-[var(--color-gold)]/15 px-2 text-[10px] font-bold uppercase tracking-widest text-[var(--color-gold)] hover:bg-[var(--color-gold)]/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             <Plus className="size-3" aria-hidden="true" /> Add
           </button>
         </div>
         {notify && (
-          <div className="text-[10px] text-center text-emerald-300/70 pb-1.5">
-            Reminders fire 15 min before kickoff · works only while a tab is open
+          <div className="text-[10px] text-center text-[var(--color-accent-cricket)]/70 pb-1.5">
+            Reminders fire 15 min before kickoff Â· works only while a tab is open
           </div>
         )}
       </header>
@@ -188,12 +188,12 @@ function MinePage() {
         {totalStarred === 0 && (
           <SharedEmptyState
             title="Choose your favorite teams"
-            description="Pick teams across sports and we'll build a personal feed — live matches, upcoming fixtures and recent results."
+            description="Pick teams across sports and we'll build a personal feed â€” live matches, upcoming fixtures and recent results."
             action={
               <button
                 type="button"
                 onClick={() => openPicker("football")}
-                className="inline-flex min-h-11 items-center gap-2 rounded-full bg-amber-500 px-4 text-sm font-bold text-black hover:bg-amber-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="inline-flex min-h-11 items-center gap-2 rounded-full bg-[var(--color-gold)] px-4 text-sm font-bold text-background hover:bg-[var(--color-gold)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 <Plus className="size-4" aria-hidden="true" /> Add favorite teams
               </button>
@@ -206,19 +206,19 @@ function MinePage() {
             className="flex items-center justify-center py-6 text-sm text-muted-foreground"
             role="status"
           >
-            Loading your feed…
+            Loading your feedâ€¦
           </div>
         )}
 
         {live.length > 0 && (
-          <FeedSection title="Live now" tone="text-red-300" pulse>
+          <FeedSection title="Live now" tone="text-[var(--color-live)]" pulse>
             {live.map((m) => (
               <MatchRow key={m.key} m={m} />
             ))}
           </FeedSection>
         )}
         {upcoming.length > 0 && (
-          <FeedSection title="Upcoming" tone="text-sky-300">
+          <FeedSection title="Upcoming" tone="text-[var(--color-accent-mlb)]">
             {upcoming.map((m) => (
               <MatchRow
                 key={m.key}
@@ -250,7 +250,7 @@ function MinePage() {
           </FeedSection>
         )}
         {recent.length > 0 && (
-          <FeedSection title="Recent results" tone="text-emerald-300">
+          <FeedSection title="Recent results" tone="text-[var(--color-accent-cricket)]">
             {recent.map((m) => (
               <MatchRow key={m.key} m={m} showResult />
             ))}
@@ -268,7 +268,7 @@ function MinePage() {
           )}
 
         {reminders.length > 0 && (
-          <FeedSection title={`Active reminders (${reminders.length})`} tone="text-amber-300">
+          <FeedSection title={`Active reminders (${reminders.length})`} tone="text-[var(--color-gold)]">
             {reminders.map((r) => (
               <li
                 key={r.matchId}
@@ -277,7 +277,7 @@ function MinePage() {
                 <Link
                   to="/football/match/$id"
                   params={{ id: String(r.matchId) }}
-                  className="inline-flex min-h-11 min-w-0 flex-1 items-center truncate font-semibold text-foreground hover:text-amber-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  className="inline-flex min-h-11 min-w-0 flex-1 items-center truncate font-semibold text-foreground hover:text-[var(--color-gold)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   {r.title}
                 </Link>
@@ -326,7 +326,7 @@ function FeedSection({
         className={`mb-2 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] ${tone}`}
       >
         {pulse && (
-          <span className="inline-block size-1.5 rounded-full bg-red-500" aria-hidden="true" />
+          <span className="inline-block size-1.5 rounded-full bg-[var(--color-live)]" aria-hidden="true" />
         )}
         {title}
       </div>
@@ -372,7 +372,7 @@ function MatchRow({
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-widest text-muted-foreground">
             <span className={meta.tone}>{meta.label}</span>
-            <span aria-hidden="true">·</span>
+            <span aria-hidden="true">Â·</span>
             <span className="truncate">{m.label}</span>
           </div>
           <div className="flex items-center gap-1.5 truncate text-sm font-semibold text-foreground">
@@ -381,7 +381,7 @@ function MatchRow({
                 {flagOf(m.home.name)}
               </span>
             )}
-            <span className={m.home.name === m.starredTeam ? "text-amber-200" : ""}>
+            <span className={m.home.name === m.starredTeam ? "text-[var(--color-gold)]" : ""}>
               {m.home.name}
             </span>
             {m.home.score != null && (
@@ -391,7 +391,7 @@ function MatchRow({
             {m.away.score != null && (
               <span className="mr-1 tabular-nums text-muted-foreground">{m.away.score}</span>
             )}
-            <span className={m.away.name === m.starredTeam ? "text-amber-200" : ""}>
+            <span className={m.away.name === m.starredTeam ? "text-[var(--color-gold)]" : ""}>
               {m.away.name}
             </span>
             {isTeamGame && (
@@ -406,9 +406,9 @@ function MatchRow({
             <span
               className={`inline-flex size-5 items-center justify-center rounded text-[10px] font-extrabold ${
                 teamWon === "W"
-                  ? "bg-emerald-500/20 text-emerald-300"
+                  ? "bg-[var(--color-accent-cricket)]/20 text-[var(--color-accent-cricket)]"
                   : teamWon === "L"
-                    ? "bg-red-500/20 text-red-300"
+                    ? "bg-[var(--color-live)]/20 text-[var(--color-live)]"
                     : "bg-muted text-muted-foreground"
               }`}
             >
@@ -416,8 +416,8 @@ function MatchRow({
             </span>
           )}
           {m.status === "live" ? (
-            <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest text-red-300">
-              <Circle className="size-1.5 fill-red-500 text-red-500" aria-hidden="true" /> Live
+            <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest text-[var(--color-live)]">
+              <Circle className="size-1.5 fill-[var(--color-live)] text-[var(--color-live)]" aria-hidden="true" /> Live
             </span>
           ) : (
             <span className="text-[11px] tabular-nums text-muted-foreground">
@@ -442,7 +442,7 @@ function ReminderButton({ active, onToggle }: { active: boolean; onToggle: () =>
       }}
       className={`inline-flex min-h-11 items-center gap-1 rounded-full border px-2 text-[10px] font-bold uppercase tracking-widest focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
         active
-          ? "border-emerald-400/40 bg-emerald-500/15 text-emerald-200"
+          ? "border-[var(--color-accent-cricket)]/40 bg-[var(--color-accent-cricket)]/15 text-[var(--color-accent-cricket)]"
           : "border-border bg-muted text-muted-foreground hover:bg-accent"
       }`}
     >
@@ -496,7 +496,7 @@ function SportRow({ sport, items, onAdd }: { sport: Sport; items: string[]; onAd
         <button
           type="button"
           onClick={onAdd}
-          className="inline-flex min-h-11 items-center gap-1 text-[10px] uppercase tracking-widest text-amber-300 hover:text-amber-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="inline-flex min-h-11 items-center gap-1 text-[10px] uppercase tracking-widest text-[var(--color-gold)] hover:text-[var(--color-gold)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           <Plus className="size-3" aria-hidden="true" /> Add
         </button>
@@ -511,7 +511,7 @@ function SportRow({ sport, items, onAdd }: { sport: Sport; items: string[]; onAd
               type="button"
               onClick={() => toggle(name)}
               aria-label={`Remove ${name} from favourites`}
-              className="group inline-flex min-h-11 items-center gap-1.5 rounded-full border border-border bg-card px-2.5 text-xs text-foreground hover:border-red-400/40 hover:text-red-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="group inline-flex min-h-11 items-center gap-1.5 rounded-full border border-border bg-card px-2.5 text-xs text-foreground hover:border-[var(--color-live)]/40 hover:text-[var(--color-live)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               title={`Unstar ${name}`}
             >
               {showFlag && (

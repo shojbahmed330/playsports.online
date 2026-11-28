@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate, stripSearchParams } from "@tanstack/react-router";
+﻿import { createFileRoute, useNavigate, stripSearchParams } from "@tanstack/react-router";
 import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
 import { zodValidator } from "@tanstack/zod-adapter";
 import { z } from "zod";
@@ -26,7 +26,7 @@ const qo = (year: "current" | number) =>
 export const Route = createFileRoute("/cricket/ipl/scores")({
   head: () => ({
     meta: [
-      { title: "IPL Scores — Live, Upcoming & Results" },
+      { title: "IPL Scores â€” Live, Upcoming & Results" },
       {
         name: "description",
         content: "Live IPL scores, upcoming fixtures and full results for every season.",
@@ -40,7 +40,7 @@ export const Route = createFileRoute("/cricket/ipl/scores")({
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "PlaySports" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "IPL Scores — Live, Upcoming & Results" },
+      { name: "twitter:title", content: "IPL Scores â€” Live, Upcoming & Results" },
       {
         name: "twitter:description",
         content: "Live IPL scores, upcoming fixtures and full results for every season.",
@@ -78,7 +78,7 @@ function ScoresPage() {
   return (
     <IplPageShell
       title="Scores & Fixtures"
-      subtitle={`${data.matches.length} matches · season ${String(year)}`}
+      subtitle={`${data.matches.length} matches Â· season ${String(year)}`}
       right={
         <SeasonPicker
           year={year}
@@ -104,20 +104,20 @@ function ScoresPage() {
       {data.error && (
         <div
           role="alert"
-          className="mt-4 flex flex-wrap items-center justify-between gap-2 rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-200"
+          className="mt-4 flex flex-wrap items-center justify-between gap-2 rounded-lg border border-[var(--color-gold)]/30 bg-[var(--color-gold)]/10 px-4 py-3 text-sm text-[var(--color-gold)]"
         >
-          <span>Unable to reach the live feed right now — try refreshing in a moment.</span>
+          <span>Unable to reach the live feed right now â€” try refreshing in a moment.</span>
           <button
             type="button"
             onClick={() => void seasonQuery.refetch()}
-            className="inline-flex min-h-10 items-center rounded-full border border-amber-400/40 px-3 text-xs font-bold text-amber-100 hover:bg-amber-500/20"
+            className="inline-flex min-h-10 items-center rounded-full border border-[var(--color-gold)]/40 px-3 text-xs font-bold text-[var(--color-gold)] hover:bg-[var(--color-gold)]/20"
           >
             Retry
           </button>
         </div>
       )}
 
-      <p className="mt-4 text-xs text-white/50">
+      <p className="mt-4 text-xs text-foreground">
         Showing {filtered.length} of {data.matches.length} matches
       </p>
 
@@ -135,7 +135,7 @@ function ScoresPage() {
                     search: (p: z.infer<typeof searchSchema>) => ({ ...p, status: "all" }),
                   })
                 }
-                className="inline-flex min-h-11 items-center rounded-full bg-amber-500/15 px-4 text-sm font-bold text-amber-200 ring-1 ring-amber-500/30"
+                className="inline-flex min-h-11 items-center rounded-full bg-[var(--color-gold)]/15 px-4 text-sm font-bold text-[var(--color-gold)] ring-1 ring-[var(--color-gold)]/30"
               >
                 Show all matches
               </button>
@@ -170,10 +170,10 @@ function FilterChips({
   counts: Record<string, number>;
 }) {
   const items: { id: "all" | "live" | "upcoming" | "finished"; label: string; cls: string }[] = [
-    { id: "all", label: "All", cls: "from-slate-500 to-slate-600" },
-    { id: "live", label: "Live", cls: "from-rose-500 to-red-500" },
-    { id: "upcoming", label: "Upcoming", cls: "from-amber-500 to-orange-500" },
-    { id: "finished", label: "Results", cls: "from-emerald-500 to-teal-500" },
+    { id: "all", label: "All", cls: "from-background to-background" },
+    { id: "live", label: "Live", cls: "from-[var(--color-live)] to-[var(--color-live)]" },
+    { id: "upcoming", label: "Upcoming", cls: "from-[var(--color-gold)] to-[var(--color-gold)]" },
+    { id: "finished", label: "Results", cls: "from-[var(--color-accent-cricket)] to-[var(--color-accent-cricket)]" },
   ];
   return (
     <div className="mt-4 flex flex-wrap gap-2">
@@ -188,12 +188,12 @@ function FilterChips({
             className={[
               "inline-flex min-h-11 items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold ring-1 transition sm:min-h-8",
               active
-                ? `bg-gradient-to-r ${it.cls} text-white ring-white/20`
-                : "bg-white/[0.04] text-white/70 ring-white/10 hover:bg-white/10",
+                ? `bg-gradient-to-r ${it.cls} text-foreground ring-border`
+                : "bg-muted text-foreground ring-border hover:bg-muted",
             ].join(" ")}
           >
             {it.label}
-            <span className="rounded-full bg-black/30 px-1.5 text-[10px] font-black">
+            <span className="rounded-full bg-background px-1.5 text-[10px] font-black">
               {counts[it.id] ?? 0}
             </span>
           </button>
@@ -218,10 +218,10 @@ function SeasonPicker({
         const v = e.target.value;
         onChange(v === "current" ? "current" : Number(v));
       }}
-      className="min-h-11 rounded-full border border-white/10 bg-gray-900/80 px-3 py-1.5 text-xs font-bold text-white focus:outline-none focus:ring-2 focus:ring-amber-400/40"
+      className="min-h-11 rounded-full border border-border bg-background px-3 py-1.5 text-xs font-bold text-foreground focus:outline-none focus:ring-2 focus:ring-[var(--color-gold)]/40"
     >
       {IPL_SEASON_IDS.map((s) => (
-        <option key={String(s.year)} value={String(s.year)} className="bg-gray-900">
+        <option key={String(s.year)} value={String(s.year)} className="bg-background">
           {s.year === "current" ? "Current season" : s.year}
         </option>
       ))}

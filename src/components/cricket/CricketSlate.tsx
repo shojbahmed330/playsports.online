@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { Link } from "@tanstack/react-router";
@@ -41,9 +41,9 @@ export function CricketSlate() {
   if (q.isLoading) {
     return (
       <section className="space-y-3">
-        <div className="text-lg font-bold text-emerald-300 flex items-center gap-2">🏏 Cricket</div>
-        <div className="rounded-xl border border-dashed border-gray-800 p-6 text-center text-xs text-gray-500 bg-gray-900/40">
-          Loading cricket slate…
+        <div className="text-lg font-bold text-[var(--color-accent-cricket)] flex items-center gap-2">ðŸ Cricket</div>
+        <div className="rounded-xl border border-dashed border-border p-6 text-center text-xs text-muted-foreground bg-background">
+          Loading cricket slateâ€¦
         </div>
       </section>
     );
@@ -55,20 +55,20 @@ export function CricketSlate() {
       <div className="flex items-center justify-between flex-wrap gap-2">
         <Link
           to="/cricket"
-          className="group inline-flex items-center gap-2 text-lg font-bold text-emerald-300 hover:underline"
+          className="group inline-flex items-center gap-2 text-lg font-bold text-[var(--color-accent-cricket)] hover:underline"
         >
-          <span className="text-base">🏏</span> Cricket — live & upcoming
+          <span className="text-base">ðŸ</span> Cricket â€” live & upcoming
           <ArrowRight className="size-3.5 group-hover:translate-x-0.5 transition-transform" />
         </Link>
         <div className="flex items-center gap-2 text-[11px]">
           {live.length > 0 && (
-            <span className="inline-flex items-center gap-1 text-red-300 bg-red-500/15 ring-1 ring-red-500/30 rounded-full px-2 py-0.5 font-bold">
-              <span className="size-1.5 rounded-full bg-red-500 animate-pulse motion-reduce:animate-none" />{" "}
+            <span className="inline-flex items-center gap-1 text-[var(--color-live)] bg-[var(--color-live)]/15 ring-1 ring-[var(--color-live)]/30 rounded-full px-2 py-0.5 font-bold">
+              <span className="size-1.5 rounded-full bg-[var(--color-live)] animate-pulse motion-reduce:animate-none" />{" "}
               {live.length} live
             </span>
           )}
-          <span className="text-gray-500">
-            {matches.length} total · {CRICKET_LEAGUES.length} series
+          <span className="text-muted-foreground">
+            {matches.length} total Â· {CRICKET_LEAGUES.length} series
           </span>
         </div>
       </div>

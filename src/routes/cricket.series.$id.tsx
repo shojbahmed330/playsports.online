@@ -1,4 +1,4 @@
-import { errorMessage } from "@/lib/error-message";
+﻿import { errorMessage } from "@/lib/error-message";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { TeamCrest } from "@/components/cricket/TeamCrest";
 import { useQuery } from "@tanstack/react-query";
@@ -18,19 +18,19 @@ export const Route = createFileRoute("/cricket/series/$id")({
     const l = CRICKET_LEAGUE_BY_ID[params.id];
     const name = l?.longName ?? "Cricket Series";
     const url = `https://www.playsports.online/cricket/series/${params.id}`;
-    const title = `${name} — Fixtures, Results & Squads`;
+    const title = `${name} â€” Fixtures, Results & Squads`;
     const desc = `Complete ${name} fixtures, live scores, standings and recent results on PlaySports.`;
     return {
       meta: [
         { title },
         { name: "description", content: desc },
-        { property: "og:title", content: `${name} — Cricket Hub` },
+        { property: "og:title", content: `${name} â€” Cricket Hub` },
         { property: "og:description", content: desc },
         { property: "og:url", content: url },
         { property: "og:type", content: "website" },
         { property: "og:site_name", content: "PlaySports" },
         { name: "twitter:card", content: "summary_large_image" },
-        { name: "twitter:title", content: `${name} — Cricket Hub` },
+        { name: "twitter:title", content: `${name} â€” Cricket Hub` },
         { name: "twitter:description", content: desc },
       ],
       links: [{ rel: "canonical", href: url }],
@@ -81,7 +81,7 @@ export const Route = createFileRoute("/cricket/series/$id")({
           action={
             <Link
               to="/cricket/series"
-              className="inline-flex min-h-11 items-center rounded-full bg-emerald-500/15 px-4 text-sm font-bold text-emerald-200 ring-1 ring-emerald-500/30"
+              className="inline-flex min-h-11 items-center rounded-full bg-[var(--color-accent-cricket)]/15 px-4 text-sm font-bold text-[var(--color-accent-cricket)] ring-1 ring-[var(--color-accent-cricket)]/30"
             >
               Browse all series
             </Link>
@@ -134,7 +134,7 @@ function SeriesPage() {
   }, [buckets.finished]);
 
   const liveCount = buckets.live.length;
-  const heroBg = meta?.bgGrad ?? "from-emerald-900/40 via-slate-900 to-amber-900/20";
+  const heroBg = meta?.bgGrad ?? "from-[var(--color-accent-cricket)]/40 via-background to-[var(--color-gold)]/20";
 
   return (
     <div className="min-h-screen">
@@ -146,20 +146,20 @@ function SeriesPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
           <Link
             to="/cricket"
-            className="inline-flex items-center gap-1.5 text-xs text-emerald-300/90 hover:text-emerald-200 mb-3"
+            className="inline-flex items-center gap-1.5 text-xs text-[var(--color-accent-cricket)]/90 hover:text-[var(--color-accent-cricket)] mb-3"
           >
             <ArrowLeft aria-hidden="true" className="size-3.5" /> All cricket
           </Link>
           <div className="flex items-center gap-4">
             <div
-              className={`size-16 sm:size-20 rounded-2xl ${meta?.chipBg ?? "bg-emerald-500/15"} ring-1 ${meta?.ring ?? "ring-emerald-500/30"} grid place-items-center text-4xl shrink-0`}
+              className={`size-16 sm:size-20 rounded-2xl ${meta?.chipBg ?? "bg-[var(--color-accent-cricket)]/15"} ring-1 ${meta?.ring ?? "ring-[var(--color-accent-cricket)]/30"} grid place-items-center text-4xl shrink-0`}
               aria-hidden="true"
             >
-              {meta?.emoji ?? "🏏"}
+              {meta?.emoji ?? "ðŸ"}
             </div>
             <div className="min-w-0">
               <div
-                className={`text-[11px] uppercase tracking-[0.2em] ${meta?.accent ?? "text-emerald-300"} font-bold`}
+                className={`text-[11px] uppercase tracking-[0.2em] ${meta?.accent ?? "text-[var(--color-accent-cricket)]"} font-bold`}
               >
                 {q.data?.league.abbr || meta?.label || "Cricket"}
               </div>
@@ -217,14 +217,14 @@ function SeriesPage() {
               <Block
                 title="Standings"
                 tone="muted"
-                icon={<Trophy aria-hidden="true" className="size-4 text-amber-400" />}
+                icon={<Trophy aria-hidden="true" className="size-4 text-[var(--color-gold)]" />}
               >
-                <div className="overflow-x-auto rounded-xl border border-gray-800">
+                <div className="overflow-x-auto rounded-xl border border-border">
                   <table className="w-full text-sm">
                     <caption className="sr-only">
                       Derived series standings from completed matches
                     </caption>
-                    <thead className="bg-gray-900/60 text-[10px] uppercase tracking-wider text-gray-400">
+                    <thead className="bg-background text-[10px] uppercase tracking-wider text-foreground">
                       <tr>
                         <th scope="col" className="text-left px-3 py-2">
                           #
@@ -246,12 +246,12 @@ function SeriesPage() {
                         </th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-800">
+                    <tbody className="divide-y divide-border">
                       {table.map((r, i) => {
                         const pct = r.played ? Math.round((r.wins / r.played) * 100) : 0;
                         return (
-                          <tr key={r.team.id} className="hover:bg-gray-900/40">
-                            <td className="px-3 py-2 text-gray-500 tabular-nums">{i + 1}</td>
+                          <tr key={r.team.id} className="hover:bg-background">
+                            <td className="px-3 py-2 text-muted-foreground tabular-nums">{i + 1}</td>
                             <td className="px-3 py-2 flex items-center gap-2">
                               <TeamCrest
                                 src={r.team.logo}
@@ -262,10 +262,10 @@ function SeriesPage() {
                               <span className="font-medium">{r.team.shortName || r.team.name}</span>
                             </td>
                             <td className="px-3 py-2 text-right tabular-nums">{r.played}</td>
-                            <td className="px-3 py-2 text-right tabular-nums text-emerald-300 font-bold">
+                            <td className="px-3 py-2 text-right tabular-nums text-[var(--color-accent-cricket)] font-bold">
                               {r.wins}
                             </td>
-                            <td className="px-3 py-2 text-right tabular-nums text-red-300">
+                            <td className="px-3 py-2 text-right tabular-nums text-[var(--color-live)]">
                               {r.losses}
                             </td>
                             <td className="px-3 py-2 text-right tabular-nums">{pct}%</td>
@@ -300,18 +300,18 @@ function Stat({
 }) {
   const cls =
     tone === "red"
-      ? "bg-red-500/15 text-red-300 ring-red-500/30"
+      ? "bg-[var(--color-live)]/15 text-[var(--color-live)] ring-[var(--color-live)]/30"
       : tone === "amber"
-        ? "bg-amber-500/15 text-amber-300 ring-amber-500/30"
+        ? "bg-[var(--color-gold)]/15 text-[var(--color-gold)] ring-[var(--color-gold)]/30"
         : tone === "muted"
-          ? "bg-gray-800/60 text-gray-400 ring-gray-700/60"
-          : "bg-white/5 text-gray-200 ring-white/10";
+          ? "bg-card text-foreground ring-border"
+          : "bg-muted text-foreground ring-border";
   return (
     <span
       className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-md ring-1 font-semibold ${cls}`}
     >
       {tone === "red" && (
-        <span className="size-1.5 rounded-full bg-red-500 animate-pulse motion-reduce:animate-none" />
+        <span className="size-1.5 rounded-full bg-[var(--color-live)] animate-pulse motion-reduce:animate-none" />
       )}
       <span className="text-[10px] uppercase tracking-wider opacity-80">{label}</span>
       <span className="tabular-nums">{value}</span>
@@ -331,7 +331,7 @@ function Block({
   children: React.ReactNode;
 }) {
   const cls =
-    tone === "red" ? "text-red-300" : tone === "amber" ? "text-amber-300" : "text-gray-400";
+    tone === "red" ? "text-[var(--color-live)]" : tone === "amber" ? "text-[var(--color-gold)]" : "text-foreground";
   return (
     <section className="space-y-3">
       <h2

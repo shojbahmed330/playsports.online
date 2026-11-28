@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+﻿import { useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useSuspenseQuery, useQuery, queryOptions } from "@tanstack/react-query";
 import { Trophy, Award, Search, ChevronDown, Sparkles, GitBranch } from "lucide-react";
@@ -35,9 +35,9 @@ const KNOWN_BRACKET_YEARS = new Set<number | "current">(IPL_SEASON_IDS.map((s) =
 type Era = { id: string; label: string; range: [number, number] };
 const ERAS: Era[] = [
   { id: "all", label: "All Eras", range: [2008, 2099] },
-  { id: "early", label: "2008–2014", range: [2008, 2014] },
-  { id: "golden", label: "2015–2021", range: [2015, 2021] },
-  { id: "modern", label: "2022–Now", range: [2022, 2099] },
+  { id: "early", label: "2008â€“2014", range: [2008, 2014] },
+  { id: "golden", label: "2015â€“2021", range: [2015, 2021] },
+  { id: "modern", label: "2022â€“Now", range: [2022, 2099] },
 ];
 
 type AuctionHeadline = (typeof auctions.headlines)[number];
@@ -46,13 +46,13 @@ const auctionByYear = new Map<number, AuctionHeadline>(auctions.headlines.map((a
 export const Route = createFileRoute("/cricket/ipl/history")({
   head: () => ({
     meta: [
-      { title: "IPL History — Champions, Finals, Awards & Auctions" },
+      { title: "IPL History â€” Champions, Finals, Awards & Auctions" },
       {
         name: "description",
         content:
           "Every IPL final, champion, runner-up, orange/purple cap winner, MoF and auction headline since 2008.",
       },
-      { property: "og:title", content: "IPL — Complete History" },
+      { property: "og:title", content: "IPL â€” Complete History" },
       {
         property: "og:description",
         content: "Every IPL final and award winner with era filters and a Hall of Champions.",
@@ -61,7 +61,7 @@ export const Route = createFileRoute("/cricket/ipl/history")({
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "PlaySports" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "IPL History — Champions, Finals, Awards & Auctions" },
+      { name: "twitter:title", content: "IPL History â€” Champions, Finals, Awards & Auctions" },
       {
         name: "twitter:description",
         content:
@@ -182,10 +182,10 @@ function HistoryPage() {
       <AuctionSpendChart />
 
       {/* Hall of Champions */}
-      <section className="mb-6 overflow-hidden rounded-2xl border border-amber-300/15 bg-gradient-to-br from-amber-950/30 via-gray-900/60 to-gray-900/30 p-4">
+      <section className="mb-6 overflow-hidden rounded-2xl border border-[var(--color-gold)]/15 bg-gradient-to-br from-[var(--color-gold)]/30 via-background to-background p-4">
         <div className="mb-3 flex items-center gap-2">
-          <Trophy aria-hidden="true" className="size-4 text-amber-300" />
-          <h2 className="text-sm font-black uppercase tracking-widest text-amber-200">
+          <Trophy aria-hidden="true" className="size-4 text-[var(--color-gold)]" />
+          <h2 className="text-sm font-black uppercase tracking-widest text-[var(--color-gold)]">
             Hall of Champions
           </h2>
         </div>
@@ -195,7 +195,7 @@ function HistoryPage() {
               key={h.id}
               to="/cricket/ipl/teams/$teamId"
               params={{ teamId: h.id }}
-              className="group flex min-h-11 shrink-0 items-center gap-2 rounded-xl px-3 py-2 ring-1 ring-white/10 transition hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
+              className="group flex min-h-11 shrink-0 items-center gap-2 rounded-xl px-3 py-2 ring-1 ring-border transition hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border motion-reduce:transition-none motion-reduce:hover:translate-y-0"
               style={{
                 background: `linear-gradient(135deg, ${h.primary} 0%, color-mix(in oklab, ${h.primary} 50%, #07080f) 100%)`,
                 color: h.ink,
@@ -207,13 +207,13 @@ function HistoryPage() {
               <span className="flex items-baseline gap-0.5">
                 <span className="text-lg font-black leading-none">{h.titles}</span>
                 <span className="text-[10px] font-bold opacity-80" aria-hidden="true">
-                  ×
+                  Ã—
                 </span>
                 <Trophy aria-hidden="true" className="size-3 opacity-90" />
                 <span className="sr-only">titles</span>
               </span>
               <span className="hidden sm:inline text-[10px] font-semibold opacity-85">
-                {[...h.years].sort().join(" · ")}
+                {[...h.years].sort().join(" Â· ")}
               </span>
             </Link>
           ))}
@@ -230,8 +230,8 @@ function HistoryPage() {
             onClick={() => setEra(e.id)}
             className={`inline-flex min-h-11 items-center rounded-full px-3 text-[11px] font-bold uppercase tracking-wider transition ${
               era === e.id
-                ? "bg-amber-400 text-gray-950"
-                : "bg-white/5 text-white/70 hover:bg-white/10"
+                ? "bg-[var(--color-gold)] text-muted-foreground"
+                : "bg-muted text-foreground hover:bg-muted"
             }`}
           >
             {e.label}
@@ -242,20 +242,20 @@ function HistoryPage() {
       {/* Search + team filter */}
       <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center">
         <div className="relative flex-1">
-          <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-white/40" />
+          <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-foreground" />
           <input
             value={q}
             onChange={(e) => setQ(e.target.value)}
             aria-label="Search IPL history"
-            placeholder="Search year, team, player, venue…"
-            className="min-h-11 w-full rounded-lg border border-white/10 bg-gray-900/60 py-2 pl-9 pr-3 text-sm text-white placeholder:text-white/40 focus:border-amber-400/40 focus:outline-none focus:ring-2 focus:ring-amber-400/30"
+            placeholder="Search year, team, player, venueâ€¦"
+            className="min-h-11 w-full rounded-lg border border-border bg-background py-2 pl-9 pr-3 text-sm text-foreground placeholder:text-foreground focus:border-[var(--color-gold)]/40 focus:outline-none focus:ring-2 focus:ring-[var(--color-gold)]/30"
           />
         </div>
         <select
           aria-label="Filter by team"
           value={team}
           onChange={(e) => setTeam(e.target.value)}
-          className="min-h-11 rounded-lg border border-white/10 bg-gray-900/60 px-3 py-2 text-sm text-white focus:border-amber-400/40 focus:outline-none focus:ring-2 focus:ring-amber-400/30"
+          className="min-h-11 rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:border-[var(--color-gold)]/40 focus:outline-none focus:ring-2 focus:ring-[var(--color-gold)]/30"
         >
           <option value="all">All teams</option>
           {teams.map((t) => (
@@ -278,7 +278,7 @@ function HistoryPage() {
                 setTeam("all");
                 setEra("all");
               }}
-              className="inline-flex min-h-11 items-center rounded-full bg-amber-500/15 px-4 text-sm font-bold text-amber-200 ring-1 ring-amber-500/30"
+              className="inline-flex min-h-11 items-center rounded-full bg-[var(--color-gold)]/15 px-4 text-sm font-bold text-[var(--color-gold)] ring-1 ring-[var(--color-gold)]/30"
             >
               Clear filters
             </button>
@@ -293,30 +293,30 @@ function HistoryPage() {
           return (
             <li
               key={s.year}
-              className="overflow-hidden rounded-2xl border border-white/5 bg-gradient-to-br from-amber-950/40 via-gray-900/70 to-gray-900/40 shadow-xl"
+              className="overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-[var(--color-gold)]/40 via-background to-background shadow-xl"
             >
-              <header className="grid grid-cols-[60px_minmax(0,1fr)_auto] items-center gap-3 border-b border-white/5 px-4 py-3">
-                <div className="text-2xl font-black text-amber-300">{s.year}</div>
+              <header className="grid grid-cols-[60px_minmax(0,1fr)_auto] items-center gap-3 border-b border-border px-4 py-3">
+                <div className="text-2xl font-black text-[var(--color-gold)]">{s.year}</div>
                 <div className="min-w-0">
-                  <div className="flex items-center gap-2 text-sm font-bold text-white">
-                    <Trophy aria-hidden="true" className="size-4 text-amber-300" />
+                  <div className="flex items-center gap-2 text-sm font-bold text-foreground">
+                    <Trophy aria-hidden="true" className="size-4 text-[var(--color-gold)]" />
                     <span className="truncate">{s.champion}</span>
                   </div>
-                  <div className="truncate text-xs text-white/60">def. {s.runnerUp}</div>
+                  <div className="truncate text-xs text-foreground">def. {s.runnerUp}</div>
                 </div>
-                <span className="shrink-0 rounded-full bg-amber-400/15 px-2.5 py-1 text-[10px] font-black text-amber-200 ring-1 ring-amber-300/30">
+                <span className="shrink-0 rounded-full bg-[var(--color-gold)]/15 px-2.5 py-1 text-[10px] font-black text-[var(--color-gold)] ring-1 ring-[var(--color-gold)]/30">
                   CHAMPION
                 </span>
               </header>
 
               <div className="grid gap-3 px-4 py-3 sm:grid-cols-2">
                 <div>
-                  <div className="text-[10px] font-black uppercase tracking-widest text-white/40">
+                  <div className="text-[10px] font-black uppercase tracking-widest text-foreground">
                     Final
                   </div>
-                  <p className="mt-1 text-sm text-white/90">{s.finalScore}</p>
-                  <p className="mt-0.5 text-[11px] text-white/50">{s.finalVenue}</p>
-                  <p className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-white/[0.06] px-2.5 py-1 text-[11px] font-semibold text-white/80 ring-1 ring-white/10">
+                  <p className="mt-1 text-sm text-foreground">{s.finalScore}</p>
+                  <p className="mt-0.5 text-[11px] text-foreground">{s.finalVenue}</p>
+                  <p className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-muted px-2.5 py-1 text-[11px] font-semibold text-foreground ring-1 ring-border">
                     <Award aria-hidden="true" className="size-3" /> Player of the Final:{" "}
                     <PlayerLink name={s.mom} className="font-semibold">
                       {s.mom}
@@ -344,16 +344,16 @@ function HistoryPage() {
 
               {/* Expandable: auction headlines */}
               {auction && (
-                <div className="border-t border-white/5">
+                <div className="border-t border-border">
                   <button
                     type="button"
                     aria-expanded={open}
                     aria-controls={`auction-${s.year}`}
                     onClick={() => setOpenYear(open ? null : s.year)}
-                    className="flex min-h-11 w-full items-center justify-between gap-2 px-4 py-2.5 text-[11px] font-bold uppercase tracking-widest text-white/60 hover:bg-white/[0.03]"
+                    className="flex min-h-11 w-full items-center justify-between gap-2 px-4 py-2.5 text-[11px] font-bold uppercase tracking-widest text-foreground hover:bg-muted"
                   >
                     <span className="flex items-center gap-1.5">
-                      <Sparkles aria-hidden="true" className="size-3.5 text-amber-300" /> Auction
+                      <Sparkles aria-hidden="true" className="size-3.5 text-[var(--color-gold)]" /> Auction
                       headlines
                     </span>
                     <ChevronDown
@@ -372,16 +372,16 @@ function HistoryPage() {
 
               {/* Expandable: playoff bracket */}
               {KNOWN_BRACKET_YEARS.has(s.year) && (
-                <div className="border-t border-white/5">
+                <div className="border-t border-border">
                   <button
                     type="button"
                     aria-expanded={openBracket === s.year}
                     aria-controls={`bracket-${s.year}`}
                     onClick={() => setOpenBracket(openBracket === s.year ? null : s.year)}
-                    className="flex min-h-11 w-full items-center justify-between gap-2 px-4 py-2.5 text-[11px] font-bold uppercase tracking-widest text-white/60 hover:bg-white/[0.03]"
+                    className="flex min-h-11 w-full items-center justify-between gap-2 px-4 py-2.5 text-[11px] font-bold uppercase tracking-widest text-foreground hover:bg-muted"
                   >
                     <span className="flex items-center gap-1.5">
-                      <GitBranch aria-hidden="true" className="size-3.5 text-fuchsia-300" /> Playoff
+                      <GitBranch aria-hidden="true" className="size-3.5 text-[var(--color-accent-nhl)]" /> Playoff
                       bracket
                     </span>
                     <ChevronDown
@@ -441,21 +441,21 @@ function AuctionCard({
   h: { player: string; team: string; price: string; note?: string };
 }) {
   const ring =
-    tone === "amber" ? "ring-amber-300/30 bg-amber-400/10" : "ring-violet-300/25 bg-violet-500/10";
-  const accent = tone === "amber" ? "text-amber-200" : "text-violet-200";
+    tone === "amber" ? "ring-[var(--color-gold)]/30 bg-[var(--color-gold)]/10" : "ring-[var(--color-accent-nhl)]/25 bg-[var(--color-accent-nhl)]/10";
+  const accent = tone === "amber" ? "text-[var(--color-gold)]" : "text-[var(--color-accent-nhl)]";
   return (
     <div className={`rounded-lg p-3 ring-1 ${ring}`}>
       <div className={`text-[9px] font-black uppercase tracking-widest ${accent}`}>{label}</div>
       <div className="mt-1 flex items-baseline justify-between gap-2">
         <div className="min-w-0">
-          <PlayerLink name={h.player} className="truncate text-sm font-bold text-white block">
+          <PlayerLink name={h.player} className="truncate text-sm font-bold text-foreground block">
             {h.player}
           </PlayerLink>
-          <div className="truncate text-[11px] text-white/55">{h.team}</div>
+          <div className="truncate text-[11px] text-foreground">{h.team}</div>
         </div>
         <div className={`shrink-0 text-base font-black ${accent}`}>{h.price}</div>
       </div>
-      {h.note && <div className="mt-1 text-[11px] text-white/55">{h.note}</div>}
+      {h.note && <div className="mt-1 text-[11px] text-foreground">{h.note}</div>}
     </div>
   );
 }
@@ -469,15 +469,15 @@ function BracketPanel({ year }: { year: number }) {
           title="Could not load the bracket"
           message={errorMessage(q.error)}
           onRetry={() => void q.refetch()}
-          className="border-white/10 bg-white/[0.02]"
+          className="border-border bg-muted"
         />
       </div>
     );
   }
   if (q.isLoading) {
     return (
-      <div role="status" className="px-4 pb-4 text-[11px] text-white/50">
-        Loading bracket…
+      <div role="status" className="px-4 pb-4 text-[11px] text-foreground">
+        Loading bracketâ€¦
       </div>
     );
   }
@@ -489,7 +489,7 @@ function BracketPanel({ year }: { year: number }) {
         <EmptyState
           title="No playoff matches available"
           description="The bracket appears once this season's playoffs are scheduled."
-          className="border-white/10 bg-white/[0.02]"
+          className="border-border bg-muted"
         />
       </div>
     );
@@ -507,31 +507,31 @@ function BracketCell({ b }: { b: IplBracketMatch }) {
   const m = b.match;
   const stageTone =
     b.stage === "Final"
-      ? "ring-amber-300/40 bg-amber-400/10 text-amber-100"
+      ? "ring-[var(--color-gold)]/40 bg-[var(--color-gold)]/10 text-[var(--color-gold)]"
       : b.stage === "Eliminator"
-        ? "ring-rose-300/30 bg-rose-500/10 text-rose-100"
-        : "ring-fuchsia-300/30 bg-fuchsia-500/10 text-fuchsia-100";
+        ? "ring-[var(--color-live)]/30 bg-[var(--color-live)]/10 text-[var(--color-live)]"
+        : "ring-[var(--color-accent-nhl)]/30 bg-[var(--color-accent-nhl)]/10 text-[var(--color-accent-nhl)]";
   return (
     <div className={`rounded-lg p-3 ring-1 ${stageTone}`}>
       <div className="text-[9px] font-black uppercase tracking-widest opacity-90">{b.stage}</div>
       {m ? (
         <>
-          <div className="mt-1 flex items-center justify-between gap-2 text-xs font-bold text-white">
+          <div className="mt-1 flex items-center justify-between gap-2 text-xs font-bold text-foreground">
             <span className="truncate">{m.home.shortName || m.home.name || "TBD"}</span>
             <span className="opacity-60">vs</span>
             <span className="truncate text-right">{m.away.shortName || m.away.name || "TBD"}</span>
           </div>
-          <div className="mt-1 text-[10px] text-white/65">{m.shortDetail || m.statusDetail}</div>
-          {m.venue && <div className="text-[10px] text-white/45">{m.venue}</div>}
+          <div className="mt-1 text-[10px] text-foreground">{m.shortDetail || m.statusDetail}</div>
+          {m.venue && <div className="text-[10px] text-foreground">{m.venue}</div>}
         </>
       ) : (
-        <div className="mt-1 text-[11px] text-white/50">Not scheduled.</div>
+        <div className="mt-1 text-[11px] text-foreground">Not scheduled.</div>
       )}
     </div>
   );
 }
 
-// ─── Auction spend trend ─────────────────────────────────
+// â”€â”€â”€ Auction spend trend â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function parsePrice(s: string): number {
   // returns USD in millions
   const m = s.replace(/[$,]/g, "").trim();
@@ -558,36 +558,36 @@ function AuctionSpendChart() {
   );
   const max = Math.max(...rows.map((r) => r.top), 1);
   return (
-    <section className="mb-6 overflow-hidden rounded-2xl border border-violet-300/15 bg-gradient-to-br from-violet-950/30 via-gray-900/60 to-gray-900/30 p-4">
+    <section className="mb-6 overflow-hidden rounded-2xl border border-[var(--color-accent-nhl)]/15 bg-gradient-to-br from-[var(--color-accent-nhl)]/30 via-background to-background p-4">
       <div className="mb-3 flex items-center gap-2">
-        <Sparkles aria-hidden="true" className="size-4 text-violet-300" />
-        <h2 className="text-sm font-black uppercase tracking-widest text-violet-200">
-          Auction spend — top buy per season
+        <Sparkles aria-hidden="true" className="size-4 text-[var(--color-accent-nhl)]" />
+        <h2 className="text-sm font-black uppercase tracking-widest text-[var(--color-accent-nhl)]">
+          Auction spend â€” top buy per season
         </h2>
-        <span className="ml-auto text-[10px] font-bold text-white/35">USD millions</span>
+        <span className="ml-auto text-[10px] font-bold text-foreground">USD millions</span>
       </div>
       <div className="flex items-end gap-1.5 overflow-x-auto pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {rows.map((r) => {
           const h = Math.max(8, Math.round((r.top / max) * 100));
           return (
             <div key={r.year} className="group flex w-[34px] shrink-0 flex-col items-center gap-1">
-              <div className="text-[9px] font-black tabular-nums text-violet-200/90">
+              <div className="text-[9px] font-black tabular-nums text-[var(--color-accent-nhl)]/90">
                 {r.priceLabel}
               </div>
               <div
-                className="w-full rounded-md bg-gradient-to-t from-violet-700 via-fuchsia-500 to-amber-300 ring-1 ring-white/10 transition group-hover:from-violet-500"
+                className="w-full rounded-md bg-gradient-to-t from-[var(--color-accent-nhl)] via-[var(--color-accent-nhl)] to-[var(--color-gold)] ring-1 ring-border transition group-hover:from-[var(--color-accent-nhl)]"
                 style={{ height: `${h}px` }}
-                title={`${r.year} — ${r.player} (${r.team}) ${r.priceLabel}`}
+                title={`${r.year} â€” ${r.player} (${r.team}) ${r.priceLabel}`}
               />
               <span className="sr-only">
                 {r.year}: {r.player}, {r.team}, {r.priceLabel}
               </span>
-              <div className="text-[9px] font-bold text-white/55">{String(r.year).slice(2)}</div>
+              <div className="text-[9px] font-bold text-foreground">{String(r.year).slice(2)}</div>
             </div>
           );
         })}
       </div>
-      <p className="mt-2 text-[10px] text-white/45">
+      <p className="mt-2 text-[10px] text-foreground">
         Hover any bar for player and franchise. Trend shows escalation across the {rows.length} IPL
         auctions.
       </p>

@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 
 type Props = {
   src?: string | null;
@@ -35,7 +35,7 @@ export function TeamCrest({ src, abbr, name, className = "size-8", rounded = fal
   return (
     <span
       aria-label={name ?? label}
-      className={`${className} inline-flex items-center justify-center ${rounded ? "rounded-full" : "rounded-md"} text-[10px] font-bold text-white ring-1 ring-white/15`}
+      className={`${className} inline-flex items-center justify-center ${rounded ? "rounded-full" : "rounded-md"} text-[10px] font-bold text-foreground ring-1 ring-border`}
       style={{
         background: `linear-gradient(135deg, hsl(${hue} 70% 35%), hsl(${(hue + 40) % 360} 70% 25%))`,
       }}

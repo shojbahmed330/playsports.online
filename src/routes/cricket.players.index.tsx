@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+﻿import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { Search, User } from "lucide-react";
 import { SportNav } from "@/components/sports/SportNav";
@@ -14,12 +14,12 @@ import { withHubLinks } from "@/components/seo/withHubLinks";
 export const Route = createFileRoute("/cricket/players/")({
   head: () => ({
     meta: [
-      { title: "Cricket Players — Top batters, bowlers & all-rounders" },
+      { title: "Cricket Players â€” Top batters, bowlers & all-rounders" },
       {
         name: "description",
         content: "Top-ranked cricket players across T20I, ODI and Test formats.",
       },
-      { property: "og:title", content: "Cricket Players — Top Performers" },
+      { property: "og:title", content: "Cricket Players â€” Top Performers" },
       {
         property: "og:description",
         content: "Top-ranked batters, bowlers and all-rounders across formats.",
@@ -28,7 +28,7 @@ export const Route = createFileRoute("/cricket/players/")({
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "PlaySports" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Cricket Players — Top batters, bowlers & all-rounders" },
+      { name: "twitter:title", content: "Cricket Players â€” Top batters, bowlers & all-rounders" },
       {
         name: "twitter:description",
         content: "Top-ranked cricket players across T20I, ODI and Test formats.",
@@ -38,7 +38,7 @@ export const Route = createFileRoute("/cricket/players/")({
     scripts: [
       ldScript(
         collectionPage({
-          name: "Cricket Players — Top Performers",
+          name: "Cricket Players â€” Top Performers",
           description: "Top-ranked cricket batters, bowlers and all-rounders across formats.",
           path: "/cricket/players",
         }),
@@ -111,26 +111,26 @@ function PlayersPage() {
       <SportNav />
       <CricketSubNav />
 
-      <section className="border-b border-border bg-gradient-to-br from-fuchsia-950/40 via-background to-purple-950/30">
+      <section className="border-b border-border bg-gradient-to-br from-[var(--color-accent-nhl)]/40 via-background to-[var(--color-accent-nhl)]/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
           <div className="flex items-center gap-3">
-            <div className="size-12 rounded-2xl bg-fuchsia-500/15 ring-1 ring-fuchsia-500/30 grid place-items-center text-2xl">
-              👤
+            <div className="size-12 rounded-2xl bg-[var(--color-accent-nhl)]/15 ring-1 ring-[var(--color-accent-nhl)]/30 grid place-items-center text-2xl">
+              ðŸ‘¤
             </div>
             <div>
-              <div className="text-[11px] uppercase tracking-[0.2em] text-fuchsia-300 font-bold">
+              <div className="text-[11px] uppercase tracking-[0.2em] text-[var(--color-accent-nhl)] font-bold">
                 Cricket
               </div>
               <h1 className="text-2xl sm:text-3xl font-extrabold">International Cricket Players</h1>
               <p className="text-xs text-muted-foreground mt-1">
-                Top-ranked players across all formats · snapshot {rankingsData.updatedAt}
+                Top-ranked players across all formats Â· snapshot {rankingsData.updatedAt}
               </p>
             </div>
             <Link
               to="/cricket/rankings"
-              className="ml-auto inline-flex min-h-11 items-center rounded-full border border-border px-3 text-xs font-bold text-fuchsia-200 hover:bg-white/5"
+              className="ml-auto inline-flex min-h-11 items-center rounded-full border border-border px-3 text-xs font-bold text-[var(--color-accent-nhl)] hover:bg-muted"
             >
-              Full rankings →
+              Full rankings â†’
             </Link>
           </div>
         </div>
@@ -139,14 +139,14 @@ function PlayersPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-5 space-y-4">
         <div className="flex flex-wrap items-center gap-2">
           <div className="relative flex-1 min-w-[200px] max-w-sm">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-gray-500" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
             <input
               value={q}
               onChange={(e) => setQ(e.target.value)}
-              placeholder="Search players…"
+              placeholder="Search playersâ€¦"
               type="search"
               aria-label="Search cricket players"
-              className="min-h-11 w-full rounded-full bg-white/5 py-2 pl-9 pr-3 text-sm outline-none ring-1 ring-white/10 focus:ring-fuchsia-500/50"
+              className="min-h-11 w-full rounded-full bg-muted py-2 pl-9 pr-3 text-sm outline-none ring-1 ring-border focus:ring-[var(--color-accent-nhl)]/50"
             />
           </div>
           <div className="flex flex-wrap gap-1">
@@ -162,7 +162,7 @@ function PlayersPage() {
               </button>
             ))}
           </div>
-          <div className="flex gap-1 bg-white/5 ring-1 ring-white/10 rounded-full p-1">
+          <div className="flex gap-1 bg-muted ring-1 ring-border rounded-full p-1">
             {(["any", "t20i", "odi", "test"] as const).map((f) => (
               <button
                 key={f}
@@ -171,7 +171,7 @@ function PlayersPage() {
                 onClick={() => setFmt(f)}
                 className={[
                   "min-h-11 rounded-full px-3 py-1 text-[11px] font-bold transition sm:min-h-8",
-                  fmt === f ? "bg-white text-slate-900" : "text-gray-300 hover:text-white",
+                  fmt === f ? "bg-muted text-muted-foreground" : "text-foreground hover:text-foreground",
                 ].join(" ")}
               >
                 {f === "any" ? "All" : f.toUpperCase()}
@@ -200,7 +200,7 @@ function PlayersPage() {
                   setRole("any");
                   setFmt("any");
                 }}
-                className="inline-flex min-h-11 items-center rounded-full bg-fuchsia-500/15 px-4 text-sm font-bold text-fuchsia-200 ring-1 ring-fuchsia-500/30"
+                className="inline-flex min-h-11 items-center rounded-full bg-[var(--color-accent-nhl)]/15 px-4 text-sm font-bold text-[var(--color-accent-nhl)] ring-1 ring-[var(--color-accent-nhl)]/30"
               >
                 Clear filters
               </button>
@@ -211,16 +211,16 @@ function PlayersPage() {
             {filtered.map((r, i) => (
               <div
                 key={`${r.role}-${r.format}-${r.player}-${i}`}
-                className="rounded-2xl border border-white/10 bg-gray-900/60 hover:bg-gray-900 transition p-4 flex items-center gap-3"
+                className="rounded-2xl border border-border bg-background hover:bg-background transition p-4 flex items-center gap-3"
               >
-                <div className="size-12 rounded-xl bg-gradient-to-br from-fuchsia-500/30 to-purple-500/30 ring-1 ring-fuchsia-500/30 grid place-items-center text-2xl shrink-0">
+                <div className="size-12 rounded-xl bg-gradient-to-br from-[var(--color-accent-nhl)]/30 to-[var(--color-accent-nhl)]/30 ring-1 ring-[var(--color-accent-nhl)]/30 grid place-items-center text-2xl shrink-0">
                   {r.flag}
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-wider font-bold">
-                    <span className="text-fuchsia-300">{cap(r.role)}</span>
-                    <span className="text-gray-600">·</span>
-                    <span className="text-gray-400">{r.format.toUpperCase()}</span>
+                    <span className="text-[var(--color-accent-nhl)]">{cap(r.role)}</span>
+                    <span className="text-muted-foreground">Â·</span>
+                    <span className="text-foreground">{r.format.toUpperCase()}</span>
                   </div>
                   <PlayerLink
                     name={r.player}
@@ -236,16 +236,16 @@ function PlayersPage() {
                   <div className="text-[10px] uppercase tracking-wider text-muted-foreground">
                     Rating
                   </div>
-                  <div className="text-lg font-extrabold tabular-nums text-emerald-300">
+                  <div className="text-lg font-extrabold tabular-nums text-[var(--color-accent-cricket)]">
                     {r.rating}
                   </div>
                   {getCricketPlayerBySlug(slugify(r.player)) && (
                     <Link
                       to="/cricket/players/$slug"
                       params={{ slug: slugify(r.player) }}
-                      className="mt-1 inline-flex min-h-9 items-center text-[11px] font-bold text-fuchsia-300 hover:text-fuchsia-200"
+                      className="mt-1 inline-flex min-h-9 items-center text-[11px] font-bold text-[var(--color-accent-nhl)] hover:text-[var(--color-accent-nhl)]"
                     >
-                      Profile →
+                      Profile â†’
                     </Link>
                   )}
                 </div>
@@ -265,7 +265,7 @@ function chip(active: boolean, _color: "fuchsia") {
   return [
     "inline-flex min-h-11 items-center rounded-full px-3 py-1 text-[11px] font-bold ring-1 transition sm:min-h-8",
     active
-      ? "bg-gradient-to-r from-fuchsia-500 to-purple-500 text-white ring-white/20"
-      : "bg-white/5 text-gray-300 ring-white/10 hover:bg-white/10",
+      ? "bg-gradient-to-r from-[var(--color-accent-nhl)] to-[var(--color-accent-nhl)] text-foreground ring-border"
+      : "bg-muted text-foreground ring-border hover:bg-muted",
   ].join(" ");
 }

@@ -1,4 +1,4 @@
-import { errorMessage } from "@/lib/error-message";
+﻿import { errorMessage } from "@/lib/error-message";
 import { createFileRoute, notFound, Link } from "@tanstack/react-router";
 import { findTeam, teamStats, listTeams, slugify } from "@/lib/seo/programmatic";
 import { canonical } from "@/lib/seo/canonical";
@@ -36,7 +36,7 @@ export const Route = createFileRoute("/football/teams/$slug")({
     }
     const { team, stats, aiFaqs } = loaderData;
     const path = `/football/teams/${params.slug}`;
-    const title = `${team.name} — FIFA World Cup History, Stats & Top Scorers | PlaySports`;
+    const title = `${team.name} â€” FIFA World Cup History, Stats & Top Scorers | PlaySports`;
     const desc = `${team.name} at the FIFA World Cup: ${stats.matchesPlayed} matches, ${stats.w}W-${stats.d}D-${stats.l}L, ${stats.goalsTotal} goals. Appearances, top scorers, recent results.`;
     return {
       meta: [
@@ -191,7 +191,7 @@ const TEAM_GRADIENT: Record<string, string> = {
 };
 
 function gradientFor(name: string) {
-  return TEAM_GRADIENT[name] ?? "from-emerald-600 via-amber-400 to-rose-600";
+  return TEAM_GRADIENT[name] ?? "from-[var(--color-accent-cricket)] via-[var(--color-gold)] to-[var(--color-live)]";
 }
 
 function FootballTeamPage() {
@@ -214,11 +214,11 @@ function FootballTeamPage() {
         <div className="relative container mx-auto px-4 pt-6 pb-8 max-w-5xl">
           <nav
             aria-label="Breadcrumb"
-            className="text-[11px] uppercase tracking-widest font-semibold text-white/85 mb-5 flex items-center gap-1.5"
+            className="text-[11px] uppercase tracking-widest font-semibold text-foreground mb-5 flex items-center gap-1.5"
           >
             <Link
               to="/"
-              className="inline-flex min-h-11 items-center hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
+              className="inline-flex min-h-11 items-center hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border"
             >
               Home
             </Link>
@@ -227,41 +227,41 @@ function FootballTeamPage() {
             </span>
             <Link
               to="/football"
-              className="inline-flex min-h-11 items-center hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
+              className="inline-flex min-h-11 items-center hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border"
             >
               Football
             </Link>
             <span className="opacity-60" aria-hidden="true">
               /
             </span>
-            <span className="text-white" aria-current="page">
+            <span className="text-foreground" aria-current="page">
               Teams
             </span>
           </nav>
 
           <div className="flex items-center gap-4 sm:gap-6">
             <div
-              className="shrink-0 grid place-items-center h-20 w-20 sm:h-28 sm:w-28 rounded-3xl bg-white/15 backdrop-blur-md ring-2 ring-white/30 text-5xl sm:text-7xl shadow-2xl"
+              className="shrink-0 grid place-items-center h-20 w-20 sm:h-28 sm:w-28 rounded-3xl bg-muted backdrop-blur-md ring-2 ring-border text-5xl sm:text-7xl shadow-2xl"
               aria-hidden
             >
               {flag}
             </div>
             <div className="min-w-0">
-              <div className="text-[10px] sm:text-xs uppercase tracking-[0.25em] font-bold text-white/80">
-                FIFA World Cup · National Team
+              <div className="text-[10px] sm:text-xs uppercase tracking-[0.25em] font-bold text-foreground">
+                FIFA World Cup Â· National Team
               </div>
-              <h1 className="mt-1 text-3xl sm:text-5xl font-black text-white drop-shadow-lg truncate">
+              <h1 className="mt-1 text-3xl sm:text-5xl font-black text-foreground drop-shadow-lg truncate">
                 {team.name}
               </h1>
-              <p className="mt-1.5 text-sm sm:text-base text-white/90 font-medium">
-                <span className="tabular-nums">{stats.matchesPlayed}</span> matches ·{" "}
-                <span className="tabular-nums">{stats.years.length}</span> tournaments ·{" "}
+              <p className="mt-1.5 text-sm sm:text-base text-foreground font-medium">
+                <span className="tabular-nums">{stats.matchesPlayed}</span> matches Â·{" "}
+                <span className="tabular-nums">{stats.years.length}</span> tournaments Â·{" "}
                 <span className="tabular-nums">{winPct}%</span> win rate
               </p>
             </div>
           </div>
 
-          {/* Stat pills — mobile scroll, desktop grid */}
+          {/* Stat pills â€” mobile scroll, desktop grid */}
           <div className="mt-6 grid grid-cols-2 sm:grid-cols-5 gap-2 sm:gap-3">
             <StatCard label="Played" value={stats.matchesPlayed} tone="slate" />
             <StatCard label="Wins" value={stats.w} tone="emerald" />
@@ -270,7 +270,7 @@ function FootballTeamPage() {
             <StatCard
               label="Goal Diff"
               value={`${gd >= 0 ? "+" : ""}${gd}`}
-              sub={`${stats.gf}–${stats.ga}`}
+              sub={`${stats.gf}â€“${stats.ga}`}
               tone={gd >= 0 ? "sky" : "rose"}
               className="col-span-2 sm:col-span-1"
             />
@@ -298,11 +298,11 @@ function FootballTeamPage() {
                     <span
                       className={`grid place-items-center h-9 w-9 shrink-0 rounded-full font-black text-sm ${
                         i === 0
-                          ? "bg-amber-400 text-black"
+                          ? "bg-[var(--color-gold)] text-background"
                           : i === 1
-                            ? "bg-slate-300 text-black"
+                            ? "bg-muted text-background"
                             : i === 2
-                              ? "bg-orange-400 text-black"
+                              ? "bg-[var(--color-gold)] text-background"
                               : "bg-muted text-muted-foreground"
                       }`}
                     >
@@ -354,10 +354,10 @@ function FootballTeamPage() {
                   const result = teamScore > oppScore ? "W" : teamScore < oppScore ? "L" : "D";
                   const resultColor =
                     result === "W"
-                      ? "bg-emerald-500/20 text-emerald-400 ring-emerald-500/40"
+                      ? "bg-[var(--color-accent-cricket)]/20 text-[var(--color-accent-cricket)] ring-[var(--color-accent-cricket)]/40"
                       : result === "L"
-                        ? "bg-rose-500/20 text-rose-400 ring-rose-500/40"
-                        : "bg-amber-500/20 text-amber-400 ring-amber-500/40";
+                        ? "bg-[var(--color-live)]/20 text-[var(--color-live)] ring-[var(--color-live)]/40"
+                        : "bg-[var(--color-gold)]/20 text-[var(--color-gold)] ring-[var(--color-gold)]/40";
                   return (
                     <li
                       key={i}
@@ -373,7 +373,7 @@ function FootballTeamPage() {
                       </span>
                       <div className="min-w-0">
                         <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold">
-                          {[formatMatchDate(m.match_date), m.round].filter(Boolean).join(" · ")}
+                          {[formatMatchDate(m.match_date), m.round].filter(Boolean).join(" Â· ")}
                         </div>
                         <div className="text-sm font-semibold truncate">
                           {isHome ? "vs" : "@"}{" "}
@@ -385,7 +385,7 @@ function FootballTeamPage() {
                       </div>
                       <div className="shrink-0 font-mono font-black text-lg tabular-nums">
                         {teamScore}
-                        <span className="mx-0.5 text-muted-foreground">–</span>
+                        <span className="mx-0.5 text-muted-foreground">â€“</span>
                         {oppScore}
                       </div>
                     </li>
@@ -537,15 +537,15 @@ function StatCard({
   className?: string;
 }) {
   const tones: Record<string, string> = {
-    slate: "from-slate-500/30 to-slate-700/10 text-slate-100",
-    emerald: "from-emerald-500/40 to-emerald-800/10 text-emerald-50",
-    amber: "from-amber-500/40 to-amber-800/10 text-amber-50",
-    rose: "from-rose-500/40 to-rose-800/10 text-rose-50",
-    sky: "from-sky-500/40 to-sky-800/10 text-sky-50",
+    slate: "from-background to-background text-foreground",
+    emerald: "from-[var(--color-accent-cricket)]/40 to-[var(--color-accent-cricket)]/10 text-[var(--color-accent-cricket)]",
+    amber: "from-[var(--color-gold)]/40 to-[var(--color-gold)]/10 text-[var(--color-gold)]",
+    rose: "from-[var(--color-live)]/40 to-[var(--color-live)]/10 text-[var(--color-live)]",
+    sky: "from-[var(--color-accent-mlb)]/40 to-[var(--color-accent-mlb)]/10 text-[var(--color-accent-mlb)]",
   };
   return (
     <div
-      className={`relative rounded-2xl p-3 sm:p-4 bg-gradient-to-br ${tones[tone]} ring-1 ring-white/10 backdrop-blur-sm shadow-lg ${className}`}
+      className={`relative rounded-2xl p-3 sm:p-4 bg-gradient-to-br ${tones[tone]} ring-1 ring-border backdrop-blur-sm shadow-lg ${className}`}
     >
       <div className="text-[10px] sm:text-[11px] uppercase tracking-wider font-bold opacity-80">
         {label}

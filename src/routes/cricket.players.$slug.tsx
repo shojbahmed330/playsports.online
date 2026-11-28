@@ -1,5 +1,5 @@
-import { errorMessage } from "@/lib/error-message";
-// Phase 2.1 (cricket) — SSR-friendly player profile.
+﻿import { errorMessage } from "@/lib/error-message";
+// Phase 2.1 (cricket) â€” SSR-friendly player profile.
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { z } from "zod";
 import { zodValidator } from "@tanstack/zod-adapter";
@@ -47,7 +47,7 @@ export const Route = createFileRoute("/cricket/players/$slug")({
   head: ({ params, loaderData }) => {
     if (!loaderData) {
       return {
-        meta: [{ title: "Player not found — Cricket" }, { name: "robots", content: "noindex" }],
+        meta: [{ title: "Player not found â€” Cricket" }, { name: "robots", content: "noindex" }],
       };
     }
     const live = loaderData.kind === "live";
@@ -57,7 +57,7 @@ export const Route = createFileRoute("/cricket/players/$slug")({
       : loaderData.player.country;
     const url = canonical(`/cricket/players/${params.slug}`);
     const image = "https://www.playsports.online/og-default.png";
-    const title = `${name} — cricket profile, stats & career`;
+    const title = `${name} â€” cricket profile, stats & career`;
     const summary = !live
       ? loaderData.player.records
           .slice(0, 2)
@@ -65,8 +65,8 @@ export const Route = createFileRoute("/cricket/players/$slug")({
           .join("; ")
       : "";
     const desc = live
-      ? `${name}${country ? ` (${country})` : ""} — cricket bio, career statistics and match records.`
-      : `${name}${country ? ` (${country})` : ""} — records: ${summary || "career cricket profile"}.`;
+      ? `${name}${country ? ` (${country})` : ""} â€” cricket bio, career statistics and match records.`
+      : `${name}${country ? ` (${country})` : ""} â€” records: ${summary || "career cricket profile"}.`;
 
     const scripts = [
       ldScript(
@@ -136,7 +136,7 @@ export const Route = createFileRoute("/cricket/players/$slug")({
             <>
               <Link
                 to="/cricket/players"
-                className="inline-flex min-h-11 items-center rounded-full bg-emerald-500/15 px-4 text-sm font-bold text-emerald-200 ring-1 ring-emerald-500/30"
+                className="inline-flex min-h-11 items-center rounded-full bg-[var(--color-accent-cricket)]/15 px-4 text-sm font-bold text-[var(--color-accent-cricket)] ring-1 ring-[var(--color-accent-cricket)]/30"
               >
                 Browse players
               </Link>
@@ -196,7 +196,7 @@ function CricketPlayerProfile() {
 
         <header className="flex items-center gap-4 mb-8">
           <div
-            className="w-16 h-16 rounded-full bg-gradient-to-br from-emerald-600 to-blue-600 grid place-items-center text-2xl font-bold"
+            className="w-16 h-16 rounded-full bg-gradient-to-br from-[var(--color-accent-cricket)] to-[var(--color-accent-mlb)] grid place-items-center text-2xl font-bold"
             aria-hidden
           >
             {player.name
@@ -244,7 +244,7 @@ function CricketPlayerProfile() {
                     <tr key={i} className="border-t border-border">
                       <td className="px-3 py-2">{r.category}</td>
                       <td className="px-3 py-2 font-mono font-semibold">{r.value}</td>
-                      <td className="px-3 py-2 text-muted-foreground">{r.extra ?? "—"}</td>
+                      <td className="px-3 py-2 text-muted-foreground">{r.extra ?? "â€”"}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -258,27 +258,27 @@ function CricketPlayerProfile() {
           <nav className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4" aria-label="Explore cricket">
             <Link
               to="/cricket/rankings"
-              className="inline-flex min-h-11 items-center rounded-xl border border-border bg-card px-4 text-sm font-semibold transition hover:border-emerald-500/40 hover:bg-white/[0.04]"
+              className="inline-flex min-h-11 items-center rounded-xl border border-border bg-card px-4 text-sm font-semibold transition hover:border-[var(--color-accent-cricket)]/40 hover:bg-muted"
             >
-              ICC rankings →
+              ICC rankings â†’
             </Link>
             <Link
               to="/cricket/records"
-              className="inline-flex min-h-11 items-center rounded-xl border border-border bg-card px-4 text-sm font-semibold transition hover:border-emerald-500/40 hover:bg-white/[0.04]"
+              className="inline-flex min-h-11 items-center rounded-xl border border-border bg-card px-4 text-sm font-semibold transition hover:border-[var(--color-accent-cricket)]/40 hover:bg-muted"
             >
-              All-time records →
+              All-time records â†’
             </Link>
             <Link
               to="/cricket/teams"
-              className="inline-flex min-h-11 items-center rounded-xl border border-border bg-card px-4 text-sm font-semibold transition hover:border-emerald-500/40 hover:bg-white/[0.04]"
+              className="inline-flex min-h-11 items-center rounded-xl border border-border bg-card px-4 text-sm font-semibold transition hover:border-[var(--color-accent-cricket)]/40 hover:bg-muted"
             >
-              Team profiles →
+              Team profiles â†’
             </Link>
             <Link
               to="/cricket/players"
-              className="inline-flex min-h-11 items-center rounded-xl border border-border bg-card px-4 text-sm font-semibold transition hover:border-emerald-500/40 hover:bg-white/[0.04]"
+              className="inline-flex min-h-11 items-center rounded-xl border border-border bg-card px-4 text-sm font-semibold transition hover:border-[var(--color-accent-cricket)]/40 hover:bg-muted"
             >
-              All players →
+              All players â†’
             </Link>
           </nav>
         </section>

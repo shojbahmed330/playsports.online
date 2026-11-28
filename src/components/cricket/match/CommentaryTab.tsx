@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+﻿import { useMemo, useState } from "react";
 import { EmptyState } from "./ScorecardTab";
 
 export type Comment = { text: string; period: number; scoreValue: number; time: string };
@@ -40,8 +40,8 @@ export function CommentaryTab({ commentary }: { commentary: Comment[] }) {
             onClick={() => setFilter(f.id)}
             className={`min-h-[36px] px-3 rounded-full text-xs font-semibold ring-1 transition ${
               filter === f.id
-                ? "bg-emerald-500/20 text-emerald-100 ring-emerald-400/50"
-                : "bg-gray-900 text-gray-400 ring-gray-800 hover:text-gray-200"
+                ? "bg-[var(--color-accent-cricket)]/20 text-[var(--color-accent-cricket)] ring-[var(--color-accent-cricket)]/50"
+                : "bg-background text-foreground ring-border hover:text-foreground"
             }`}
           >
             {f.label}
@@ -61,23 +61,23 @@ export function CommentaryTab({ commentary }: { commentary: Comment[] }) {
                 key={i}
                 className={`rounded-lg border p-3 text-sm leading-relaxed ${
                   isWicket
-                    ? "border-red-500/30 bg-red-500/[0.06]"
+                    ? "border-[var(--color-live)]/30 bg-[var(--color-live)]/[0.06]"
                     : isBoundary
-                      ? "border-amber-500/25 bg-amber-500/[0.05]"
-                      : "border-gray-800 bg-gray-900/40"
+                      ? "border-[var(--color-gold)]/25 bg-[var(--color-gold)]/[0.05]"
+                      : "border-border bg-background"
                 }`}
               >
-                <div className="flex items-center gap-2 text-[10px] uppercase tracking-wider text-gray-400 mb-1">
-                  {isWicket && <span className="text-red-300 font-bold">Wicket</span>}
+                <div className="flex items-center gap-2 text-[10px] uppercase tracking-wider text-foreground mb-1">
+                  {isWicket && <span className="text-[var(--color-live)] font-bold">Wicket</span>}
                   {!isWicket && isBoundary && (
-                    <span className="text-amber-300 font-bold">
+                    <span className="text-[var(--color-gold)] font-bold">
                       {c.scoreValue === 6 ? "SIX" : "FOUR"}
                     </span>
                   )}
                   {c.time && <span className="tabular-nums">{c.time}</span>}
-                  {c.period > 0 && <span>· Innings {c.period}</span>}
+                  {c.period > 0 && <span>Â· Innings {c.period}</span>}
                 </div>
-                <p className="text-gray-100">{c.text}</p>
+                <p className="text-foreground">{c.text}</p>
               </li>
             );
           })}

@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate, stripSearchParams } from "@tanstack/react-router";
+﻿import { createFileRoute, useNavigate, stripSearchParams } from "@tanstack/react-router";
 import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
 import { zodValidator } from "@tanstack/zod-adapter";
 import { z } from "zod";
@@ -46,11 +46,11 @@ export const Route = createFileRoute("/cricket/ipl/players")({
   },
   head: () => ({
     meta: [
-      { title: "IPL Players — Orange Cap, Purple Cap & Six-hitters" },
+      { title: "IPL Players â€” Orange Cap, Purple Cap & Six-hitters" },
       {
         name: "description",
         content:
-          "IPL player leaderboards: most runs (Orange Cap), most wickets (Purple Cap), most sixes — by season.",
+          "IPL player leaderboards: most runs (Orange Cap), most wickets (Purple Cap), most sixes â€” by season.",
       },
       { property: "og:title", content: "IPL Player Leaderboards" },
       {
@@ -61,11 +61,11 @@ export const Route = createFileRoute("/cricket/ipl/players")({
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "PlaySports" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "IPL Players — Orange Cap, Purple Cap & Six-hitters" },
+      { name: "twitter:title", content: "IPL Players â€” Orange Cap, Purple Cap & Six-hitters" },
       {
         name: "twitter:description",
         content:
-          "IPL player leaderboards: most runs (Orange Cap), most wickets (Purple Cap), most sixes — by season.",
+          "IPL player leaderboards: most runs (Orange Cap), most wickets (Purple Cap), most sixes â€” by season.",
       },
     ],
     links: [{ rel: "canonical", href: "https://www.playsports.online/cricket/ipl/players" }],
@@ -146,10 +146,10 @@ function PlayersPage() {
               }),
             });
           }}
-          className="min-h-11 rounded-full border border-white/10 bg-gray-900/80 px-3 py-1.5 text-xs font-bold text-white focus:outline-none focus:ring-2 focus:ring-fuchsia-400/40"
+          className="min-h-11 rounded-full border border-border bg-background px-3 py-1.5 text-xs font-bold text-foreground focus:outline-none focus:ring-2 focus:ring-[var(--color-accent-nhl)]/40"
         >
           {IPL_SEASON_IDS.map((s) => (
-            <option key={String(s.year)} value={String(s.year)} className="bg-gray-900">
+            <option key={String(s.year)} value={String(s.year)} className="bg-background">
               {s.year === "current" ? "Current season" : s.year}
             </option>
           ))}
@@ -159,13 +159,13 @@ function PlayersPage() {
       {feedError && (
         <div
           role="alert"
-          className="mb-4 flex flex-wrap items-center justify-between gap-2 rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-200"
+          className="mb-4 flex flex-wrap items-center justify-between gap-2 rounded-lg border border-[var(--color-gold)]/30 bg-[var(--color-gold)]/10 px-4 py-3 text-sm text-[var(--color-gold)]"
         >
           <span>The IPL leaderboard feed is temporarily unavailable.</span>
           <button
             type="button"
             onClick={retryFeeds}
-            className="inline-flex min-h-10 items-center rounded-full border border-amber-400/40 px-3 text-xs font-bold text-amber-100 hover:bg-amber-500/20"
+            className="inline-flex min-h-10 items-center rounded-full border border-[var(--color-gold)]/40 px-3 text-xs font-bold text-[var(--color-gold)] hover:bg-[var(--color-gold)]/20"
           >
             Retry
           </button>
@@ -182,10 +182,10 @@ function PlayersPage() {
 
       <section className="mt-8">
         <div className="mb-3 flex items-baseline justify-between gap-2 px-1">
-          <h2 className="text-base sm:text-lg font-black tracking-tight text-white">
-            Most sixes — {seasonLabel}
+          <h2 className="text-base sm:text-lg font-black tracking-tight text-foreground">
+            Most sixes â€” {seasonLabel}
           </h2>
-          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-violet-300">
+          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--color-accent-nhl)]">
             Six-Hitters
           </span>
         </div>
@@ -195,35 +195,35 @@ function PlayersPage() {
             description="The six-hitting leaderboard appears once matches start."
           />
         ) : (
-          <ul className="divide-y divide-white/5 rounded-xl border border-white/5 bg-gray-900/60">
+          <ul className="divide-y divide-border rounded-xl border border-border bg-background">
             {sixes.leaders.map((p) => (
               <li
                 key={p.athleteId}
                 className="grid grid-cols-[28px_44px_minmax(0,1fr)_60px_56px] items-center gap-2 px-3 py-2 text-sm"
               >
-                <span className="text-center text-[11px] font-black text-white/50">{p.rank}</span>
+                <span className="text-center text-[11px] font-black text-foreground">{p.rank}</span>
                 {p.headshot ? (
                   <img
                     src={p.headshot}
                     alt=""
-                    className="h-9 w-9 rounded-full object-cover bg-gray-800 ring-1 ring-white/10"
+                    className="h-9 w-9 rounded-full object-cover bg-card ring-1 ring-border"
                     loading="lazy"
                     decoding="async"
                   />
                 ) : (
-                  <span className="grid h-9 w-9 place-items-center rounded-full bg-gray-800 text-xs font-black text-white/70 ring-1 ring-white/10">
+                  <span className="grid h-9 w-9 place-items-center rounded-full bg-card text-xs font-black text-foreground ring-1 ring-border">
                     {p.athleteName.slice(0, 1)}
                   </span>
                 )}
                 <PlayerLink
                   name={p.athleteName}
                   athleteId={p.athleteId}
-                  className="min-w-0 truncate font-semibold text-white"
+                  className="min-w-0 truncate font-semibold text-foreground"
                 >
                   {p.athleteName}
                 </PlayerLink>
-                <span className="text-[11px] text-white/60">{p.teamAbbr}</span>
-                <span className="text-right font-black text-white">{p.value} 6s</span>
+                <span className="text-[11px] text-foreground">{p.teamAbbr}</span>
+                <span className="text-right font-black text-foreground">{p.value} 6s</span>
               </li>
             ))}
           </ul>

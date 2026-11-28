@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+﻿import { createFileRoute, Link } from "@tanstack/react-router";
 import { TeamCrest } from "@/components/cricket/TeamCrest";
 import { useQueries } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -29,7 +29,7 @@ export const Route = createFileRoute("/cricket/teams/")({
   },
   head: () => ({
     meta: [
-      { title: "Cricket Teams — Squads across IPL, BBL, PSL & World Cups" },
+      { title: "Cricket Teams â€” Squads across IPL, BBL, PSL & World Cups" },
       {
         name: "description",
         content: "Browse cricket teams across major leagues and international series.",
@@ -45,7 +45,7 @@ export const Route = createFileRoute("/cricket/teams/")({
       { name: "twitter:card", content: "summary_large_image" },
       {
         name: "twitter:title",
-        content: "Cricket Teams — Squads across IPL, BBL, PSL & World Cups",
+        content: "Cricket Teams â€” Squads across IPL, BBL, PSL & World Cups",
       },
       {
         name: "twitter:description",
@@ -113,14 +113,14 @@ function TeamsIndex() {
       <SportNav />
       <CricketSubNav />
 
-      <section className="border-b border-border bg-gradient-to-br from-sky-950/40 via-background to-blue-950/30">
+      <section className="border-b border-border bg-gradient-to-br from-[var(--color-accent-mlb)]/40 via-background to-[var(--color-accent-mlb)]/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
           <div className="flex items-center gap-3">
-            <div className="size-12 rounded-2xl bg-sky-500/15 ring-1 ring-sky-500/30 grid place-items-center text-2xl">
-              🛡️
+            <div className="size-12 rounded-2xl bg-[var(--color-accent-mlb)]/15 ring-1 ring-[var(--color-accent-mlb)]/30 grid place-items-center text-2xl">
+              ðŸ›¡ï¸
             </div>
             <div>
-              <div className="text-[11px] uppercase tracking-[0.2em] text-sky-300 font-bold">
+              <div className="text-[11px] uppercase tracking-[0.2em] text-[var(--color-accent-mlb)] font-bold">
                 Cricket
               </div>
               <h1 className="text-2xl sm:text-3xl font-extrabold">Teams</h1>
@@ -135,14 +135,14 @@ function TeamsIndex() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-5 space-y-4">
         <div className="flex flex-wrap items-center gap-2">
           <div className="relative flex-1 min-w-[200px] max-w-md">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-gray-500" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search teams…"
+              placeholder="Search teamsâ€¦"
               type="search"
               aria-label="Search cricket teams"
-              className="min-h-11 w-full rounded-full bg-white/5 py-2 pl-9 pr-3 text-sm outline-none ring-1 ring-white/10 focus:ring-emerald-500/50"
+              className="min-h-11 w-full rounded-full bg-muted py-2 pl-9 pr-3 text-sm outline-none ring-1 ring-border focus:ring-[var(--color-accent-cricket)]/50"
             />
           </div>
           <div className="flex flex-wrap gap-1">
@@ -192,7 +192,7 @@ function TeamsIndex() {
             {Array.from({ length: 10 }).map((_, i) => (
               <div
                 key={i}
-                className="h-24 animate-pulse rounded-2xl bg-gray-900/50 motion-reduce:animate-none"
+                className="h-24 animate-pulse rounded-2xl bg-background motion-reduce:animate-none"
               />
             ))}
           </div>
@@ -207,7 +207,7 @@ function TeamsIndex() {
                   setQuery("");
                   setLeagueId("any");
                 }}
-                className="inline-flex min-h-11 items-center rounded-full bg-sky-500/15 px-4 text-sm font-bold text-sky-200 ring-1 ring-sky-500/30"
+                className="inline-flex min-h-11 items-center rounded-full bg-[var(--color-accent-mlb)]/15 px-4 text-sm font-bold text-[var(--color-accent-mlb)] ring-1 ring-[var(--color-accent-mlb)]/30"
               >
                 Clear filters
               </button>
@@ -217,7 +217,7 @@ function TeamsIndex() {
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
             {filtered.map((t) => {
               const cardClass =
-                "group flex items-center gap-3 rounded-2xl border border-white/10 bg-gray-900/60 p-4 transition hover:-translate-y-0.5 hover:bg-gray-900";
+                "group flex items-center gap-3 rounded-2xl border border-border bg-background p-4 transition hover:-translate-y-0.5 hover:bg-background";
               const cardBody = (
                 <>
                   <TeamCrest
@@ -270,7 +270,7 @@ function chip(active: boolean) {
   return [
     "inline-flex min-h-11 items-center px-3 py-1 rounded-full text-[11px] font-bold ring-1 transition sm:min-h-8",
     active
-      ? "bg-gradient-to-r from-sky-500 to-blue-500 text-white ring-white/20"
-      : "bg-white/5 text-gray-300 ring-white/10 hover:bg-white/10",
+      ? "bg-gradient-to-r from-[var(--color-accent-mlb)] to-[var(--color-accent-mlb)] text-foreground ring-border"
+      : "bg-muted text-foreground ring-border hover:bg-muted",
   ].join(" ");
 }

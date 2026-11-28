@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+﻿import { useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, queryOptions } from "@tanstack/react-query";
 import { Search, Trophy } from "lucide-react";
@@ -20,17 +20,17 @@ type Record = {
 };
 
 const SECTIONS: { key: keyof typeof records; title: string; emoji: string; accent: string }[] = [
-  { key: "batting", title: "Batting Records", emoji: "🏏", accent: "from-amber-500 to-orange-500" },
+  { key: "batting", title: "Batting Records", emoji: "ðŸ", accent: "from-[var(--color-gold)] to-[var(--color-gold)]" },
   {
     key: "bowling",
     title: "Bowling Records",
-    emoji: "🎯",
-    accent: "from-violet-500 to-purple-600",
+    emoji: "ðŸŽ¯",
+    accent: "from-[var(--color-accent-nhl)] to-[var(--color-accent-nhl)]",
   },
-  { key: "partnerships", title: "Partnerships", emoji: "🤝", accent: "from-pink-500 to-rose-500" },
-  { key: "captaincy", title: "Captaincy", emoji: "👑", accent: "from-yellow-500 to-amber-600" },
-  { key: "team", title: "Team Records", emoji: "🛡️", accent: "from-sky-500 to-blue-600" },
-  { key: "fielding", title: "Fielding & MVP", emoji: "🧤", accent: "from-emerald-500 to-teal-500" },
+  { key: "partnerships", title: "Partnerships", emoji: "ðŸ¤", accent: "from-[var(--color-accent-nhl)] to-[var(--color-live)]" },
+  { key: "captaincy", title: "Captaincy", emoji: "ðŸ‘‘", accent: "from-[var(--color-gold)] to-[var(--color-gold)]" },
+  { key: "team", title: "Team Records", emoji: "ðŸ›¡ï¸", accent: "from-[var(--color-accent-mlb)] to-[var(--color-accent-mlb)]" },
+  { key: "fielding", title: "Fielding & MVP", emoji: "ðŸ§¤", accent: "from-[var(--color-accent-cricket)] to-[var(--color-accent-cricket)]" },
 ];
 
 type SortMode = "default" | "team" | "az";
@@ -38,7 +38,7 @@ type SortMode = "default" | "team" | "az";
 export const Route = createFileRoute("/cricket/ipl/records")({
   head: () => ({
     meta: [
-      { title: "IPL Records — Batting, Bowling, Team & Fielding" },
+      { title: "IPL Records â€” Batting, Bowling, Team & Fielding" },
       {
         name: "description",
         content:
@@ -47,13 +47,13 @@ export const Route = createFileRoute("/cricket/ipl/records")({
       { property: "og:title", content: "IPL Records" },
       {
         property: "og:description",
-        content: "Every key IPL record — batting, bowling, team and fielding.",
+        content: "Every key IPL record â€” batting, bowling, team and fielding.",
       },
       { property: "og:url", content: "https://www.playsports.online/cricket/ipl/records" },
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "PlaySports" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "IPL Records — Batting, Bowling, Team & Fielding" },
+      { name: "twitter:title", content: "IPL Records â€” Batting, Bowling, Team & Fielding" },
       {
         name: "twitter:description",
         content:
@@ -65,7 +65,7 @@ export const Route = createFileRoute("/cricket/ipl/records")({
       ldScript(
         collectionPage({
           name: "IPL Records",
-          description: "Every key IPL record — batting, bowling, team and fielding.",
+          description: "Every key IPL record â€” batting, bowling, team and fielding.",
           path: "/cricket/ipl/records",
         }),
       ),
@@ -128,24 +128,24 @@ function RecordsPage() {
 
       <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center">
         <div className="relative flex-1">
-          <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-white/40" />
+          <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-foreground" />
           <input
             value={q}
             onChange={(e) => setQ(e.target.value)}
             aria-label="Search IPL records"
-            placeholder="Search player, team, record…"
-            className="min-h-11 w-full rounded-lg border border-white/10 bg-gray-900/60 py-2 pl-9 pr-3 text-sm text-white placeholder:text-white/40 focus:border-amber-400/40 focus:outline-none focus:ring-2 focus:ring-amber-400/30"
+            placeholder="Search player, team, recordâ€¦"
+            className="min-h-11 w-full rounded-lg border border-border bg-background py-2 pl-9 pr-3 text-sm text-foreground placeholder:text-foreground focus:border-[var(--color-gold)]/40 focus:outline-none focus:ring-2 focus:ring-[var(--color-gold)]/30"
           />
         </div>
         <select
           aria-label="Sort records"
           value={sort}
           onChange={(e) => setSort(e.target.value as SortMode)}
-          className="min-h-11 rounded-lg border border-white/10 bg-gray-900/60 px-3 py-2 text-xs font-semibold text-white focus:border-amber-400/40 focus:outline-none focus:ring-2 focus:ring-amber-400/30"
+          className="min-h-11 rounded-lg border border-border bg-background px-3 py-2 text-xs font-semibold text-foreground focus:border-[var(--color-gold)]/40 focus:outline-none focus:ring-2 focus:ring-[var(--color-gold)]/30"
         >
           <option value="default">Sort: Featured</option>
           <option value="team">Sort: Team</option>
-          <option value="az">Sort: A–Z</option>
+          <option value="az">Sort: Aâ€“Z</option>
         </select>
       </div>
 
@@ -158,8 +158,8 @@ function RecordsPage() {
             onClick={() => setCat(s.key)}
             className={`inline-flex min-h-11 items-center rounded-full px-3 text-[11px] font-bold uppercase tracking-wider transition ${
               cat === s.key
-                ? "bg-amber-400 text-gray-950"
-                : "bg-white/5 text-white/70 hover:bg-white/10"
+                ? "bg-[var(--color-gold)] text-muted-foreground"
+                : "bg-muted text-foreground hover:bg-muted"
             }`}
           >
             {s.title}
@@ -179,7 +179,7 @@ function RecordsPage() {
                 setCat("all");
                 setSort("default");
               }}
-              className="inline-flex min-h-11 items-center rounded-full bg-amber-500/15 px-4 text-sm font-bold text-amber-200 ring-1 ring-amber-500/30"
+              className="inline-flex min-h-11 items-center rounded-full bg-[var(--color-gold)]/15 px-4 text-sm font-bold text-[var(--color-gold)] ring-1 ring-[var(--color-gold)]/30"
             >
               Clear filters
             </button>
@@ -195,15 +195,15 @@ function RecordsPage() {
                 <span aria-hidden className="text-base">
                   {sec.emoji}
                 </span>
-                <h2 className="text-base sm:text-lg font-black tracking-tight text-white">
+                <h2 className="text-base sm:text-lg font-black tracking-tight text-foreground">
                   {sec.title}
                 </h2>
                 <span
-                  className={`ml-1 rounded-full bg-gradient-to-r ${sec.accent} px-2 py-0.5 text-[9px] font-black uppercase tracking-widest text-white`}
+                  className={`ml-1 rounded-full bg-gradient-to-r ${sec.accent} px-2 py-0.5 text-[9px] font-black uppercase tracking-widest text-foreground`}
                 >
                   IPL
                 </span>
-                <span className="ml-auto text-[10px] font-bold text-white/35">
+                <span className="ml-auto text-[10px] font-bold text-foreground">
                   {list.length}
                   <span className="sr-only"> records</span>
                 </span>
@@ -212,9 +212,9 @@ function RecordsPage() {
                 {list.map((r, i) => (
                   <li
                     key={`${sec.key}-${i}`}
-                    className="rounded-xl border border-white/5 bg-gray-900/60 px-4 py-3 transition hover:-translate-y-0.5 hover:border-white/15 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
+                    className="rounded-xl border border-border bg-background px-4 py-3 transition hover:-translate-y-0.5 hover:border-border motion-reduce:transition-none motion-reduce:hover:translate-y-0"
                   >
-                    <div className="text-[10px] font-black uppercase tracking-widest text-white/40">
+                    <div className="text-[10px] font-black uppercase tracking-widest text-foreground">
                       {r.label}
                     </div>
                     <div className="mt-1 flex items-baseline justify-between gap-3">
@@ -222,22 +222,22 @@ function RecordsPage() {
                         {r.player ? (
                           <PlayerLink
                             name={r.player}
-                            className="truncate text-sm font-bold text-white block"
+                            className="truncate text-sm font-bold text-foreground block"
                           >
                             {r.player}
                           </PlayerLink>
                         ) : (
-                          <div className="truncate text-sm font-bold text-white">{r.team}</div>
+                          <div className="truncate text-sm font-bold text-foreground">{r.team}</div>
                         )}
                         {r.player && r.team && (
-                          <div className="truncate text-[11px] text-white/55">{r.team}</div>
+                          <div className="truncate text-[11px] text-foreground">{r.team}</div>
                         )}
                       </div>
 
-                      <div className="shrink-0 text-lg font-black text-amber-300">{r.value}</div>
+                      <div className="shrink-0 text-lg font-black text-[var(--color-gold)]">{r.value}</div>
                     </div>
                     {r.context && (
-                      <div className="mt-1 truncate text-[11px] text-white/45">{r.context}</div>
+                      <div className="mt-1 truncate text-[11px] text-foreground">{r.context}</div>
                     )}
                   </li>
                 ))}
@@ -246,7 +246,7 @@ function RecordsPage() {
           );
         })}
       </div>
-      <p className="mt-6 px-1 text-[11px] text-white/40">
+      <p className="mt-6 px-1 text-[11px] text-foreground">
         All-time records reflect publicly published IPL data through the most recent completed
         season. Season leaders above are derived live from per-match scorecards.
       </p>
@@ -254,12 +254,12 @@ function RecordsPage() {
   );
 }
 
-// ─── Live per-season leaders ──────────────────────────────
+// â”€â”€â”€ Live per-season leaders â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 type Metric = "runs" | "wickets" | "sixes";
 const METRICS: { id: Metric; label: string; accent: string }[] = [
-  { id: "runs", label: "Orange Cap (Runs)", accent: "from-amber-500 to-orange-500" },
-  { id: "wickets", label: "Purple Cap (Wickets)", accent: "from-violet-500 to-purple-600" },
-  { id: "sixes", label: "Most Sixes", accent: "from-emerald-500 to-teal-500" },
+  { id: "runs", label: "Orange Cap (Runs)", accent: "from-[var(--color-gold)] to-[var(--color-gold)]" },
+  { id: "wickets", label: "Purple Cap (Wickets)", accent: "from-[var(--color-accent-nhl)] to-[var(--color-accent-nhl)]" },
+  { id: "sixes", label: "Most Sixes", accent: "from-[var(--color-accent-cricket)] to-[var(--color-accent-cricket)]" },
 ];
 
 function SeasonLeadersPanel() {
@@ -278,12 +278,12 @@ function SeasonLeadersPanel() {
   const accent = METRICS.find((m) => m.id === metric)!.accent;
 
   return (
-    <section className="mb-6 overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-gray-900/80 via-gray-900/60 to-gray-900/40 p-4">
+    <section className="mb-6 overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-background via-background to-background p-4">
       <div className="mb-3 flex flex-wrap items-center gap-2">
-        <Trophy className="size-4 text-amber-300" />
-        <h2 className="text-sm font-black uppercase tracking-widest text-white">Season Leaders</h2>
+        <Trophy className="size-4 text-[var(--color-gold)]" />
+        <h2 className="text-sm font-black uppercase tracking-widest text-foreground">Season Leaders</h2>
         <span
-          className={`rounded-full bg-gradient-to-r ${accent} px-2 py-0.5 text-[9px] font-black uppercase tracking-widest text-white`}
+          className={`rounded-full bg-gradient-to-r ${accent} px-2 py-0.5 text-[9px] font-black uppercase tracking-widest text-foreground`}
         >
           Season
         </span>
@@ -294,7 +294,7 @@ function SeasonLeadersPanel() {
             onChange={(e) =>
               setYear(e.target.value === "current" ? "current" : Number(e.target.value))
             }
-            className="min-h-11 rounded-lg border border-white/10 bg-gray-950/70 px-2 py-1 text-[11px] font-bold text-white focus:outline-none focus:ring-2 focus:ring-amber-400/30"
+            className="min-h-11 rounded-lg border border-border bg-background px-2 py-1 text-[11px] font-bold text-foreground focus:outline-none focus:ring-2 focus:ring-[var(--color-gold)]/30"
           >
             {years.map((y) => (
               <option key={String(y)} value={String(y)}>
@@ -306,7 +306,7 @@ function SeasonLeadersPanel() {
             aria-label="Leaderboard metric"
             value={metric}
             onChange={(e) => setMetric(e.target.value as Metric)}
-            className="min-h-11 rounded-lg border border-white/10 bg-gray-950/70 px-2 py-1 text-[11px] font-bold text-white focus:outline-none focus:ring-2 focus:ring-amber-400/30"
+            className="min-h-11 rounded-lg border border-border bg-background px-2 py-1 text-[11px] font-bold text-foreground focus:outline-none focus:ring-2 focus:ring-[var(--color-gold)]/30"
           >
             {METRICS.map((m) => (
               <option key={m.id} value={m.id}>
@@ -322,53 +322,53 @@ function SeasonLeadersPanel() {
           title="Could not load season leaders"
           message={errorMessage(q.error)}
           onRetry={() => void q.refetch()}
-          className="border-white/10 bg-white/[0.02]"
+          className="border-border bg-muted"
         />
       ) : q.isLoading ? (
-        <div role="status" className="py-6 text-center text-xs text-white/50">
-          Crunching scorecards…
+        <div role="status" className="py-6 text-center text-xs text-foreground">
+          Crunching scorecardsâ€¦
         </div>
       ) : leaders.length === 0 ? (
         <EmptyState
           title="No leaderboard data for this season"
           description="The season leaderboard appears once matches are played."
-          className="border-white/10 bg-white/[0.02]"
+          className="border-border bg-muted"
         />
       ) : (
         <ol className="grid gap-1.5 sm:grid-cols-2">
           {leaders.map((l, i) => (
             <li
               key={l.athleteId}
-              className="flex items-center gap-3 rounded-lg bg-white/[0.04] px-3 py-2 ring-1 ring-white/5"
+              className="flex items-center gap-3 rounded-lg bg-muted px-3 py-2 ring-1 ring-border"
             >
-              <span className="w-6 shrink-0 text-center text-xs font-black text-white/55">
+              <span className="w-6 shrink-0 text-center text-xs font-black text-foreground">
                 {i + 1}
               </span>
               {l.headshot ? (
                 <img
                   src={l.headshot}
                   alt=""
-                  className="size-8 shrink-0 rounded-full object-cover ring-1 ring-white/10"
+                  className="size-8 shrink-0 rounded-full object-cover ring-1 ring-border"
                   loading="lazy"
                   decoding="async"
                 />
               ) : (
-                <div className="size-8 shrink-0 rounded-full bg-white/10" />
+                <div className="size-8 shrink-0 rounded-full bg-muted" />
               )}
               <div className="min-w-0 flex-1">
                 <PlayerLink
                   name={l.athleteName}
                   athleteId={l.athleteId}
-                  className="truncate text-sm font-bold text-white block"
+                  className="truncate text-sm font-bold text-foreground block"
                 >
                   {l.athleteName}
                 </PlayerLink>
-                <div className="truncate text-[10px] uppercase tracking-wider text-white/50">
+                <div className="truncate text-[10px] uppercase tracking-wider text-foreground">
                   {l.teamAbbr || l.teamName}
                 </div>
               </div>
 
-              <span className="shrink-0 font-black tabular-nums text-amber-300">
+              <span className="shrink-0 font-black tabular-nums text-[var(--color-gold)]">
                 {l.displayValue}
               </span>
             </li>

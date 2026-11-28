@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+﻿import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, Link, stripSearchParams } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -43,13 +43,13 @@ export const Route = createFileRoute("/cricket/scores")({
   },
   head: () => ({
     meta: [
-      { title: "Cricket Scores — Live, Today, Upcoming & Results" },
+      { title: "Cricket Scores â€” Live, Today, Upcoming & Results" },
       {
         name: "description",
         content:
           "Live cricket scores plus today's fixtures, upcoming matches and recent results across IPL, ICC events, BBL, PSL and more.",
       },
-      { property: "og:title", content: "Cricket Scores — Live & Fixtures" },
+      { property: "og:title", content: "Cricket Scores â€” Live & Fixtures" },
       {
         property: "og:description",
         content: "Auto-refreshing cricket scores and fixtures by date, format and series.",
@@ -58,7 +58,7 @@ export const Route = createFileRoute("/cricket/scores")({
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "PlaySports" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Cricket Scores — Live, Today, Upcoming & Results" },
+      { name: "twitter:title", content: "Cricket Scores â€” Live, Today, Upcoming & Results" },
       {
         name: "twitter:description",
         content:
@@ -167,7 +167,7 @@ function CricketScoresPage() {
         .filter((m) => sameDay(m.startTs, effectiveDate))
         .sort((a, b) => a.startTs - b.startTs);
     }
-    // upcoming without explicit date — soonest first, future only
+    // upcoming without explicit date â€” soonest first, future only
     const now = Date.now();
     return filtered
       .filter((m) => m.status === "pre" && m.startTs > now)
@@ -200,28 +200,28 @@ function CricketScoresPage() {
       label: "Live",
       icon: <Flame className="size-3.5" />,
       count: allMatches.filter((m) => m.status === "in").length,
-      tone: "from-rose-500 to-red-500",
+      tone: "from-[var(--color-live)] to-[var(--color-live)]",
     },
     {
       id: "today",
       label: "Today",
       icon: <Calendar className="size-3.5" />,
       count: allMatches.filter((m) => sameDay(m.startTs, todayIso)).length,
-      tone: "from-emerald-500 to-teal-500",
+      tone: "from-[var(--color-accent-cricket)] to-[var(--color-accent-cricket)]",
     },
     {
       id: "upcoming",
       label: "Upcoming",
       icon: <Clock className="size-3.5" />,
       count: allMatches.filter((m) => m.status === "pre").length,
-      tone: "from-amber-500 to-orange-500",
+      tone: "from-[var(--color-gold)] to-[var(--color-gold)]",
     },
     {
       id: "results",
       label: "Results",
       icon: <CheckCircle2 className="size-3.5" />,
       count: allMatches.filter((m) => m.status === "post").length,
-      tone: "from-indigo-500 to-violet-500",
+      tone: "from-[var(--color-accent-nhl)] to-[var(--color-accent-nhl)]",
     },
   ];
 
@@ -230,21 +230,21 @@ function CricketScoresPage() {
       <SportNav liveCount={liveAll} />
       <CricketSubNav />
 
-      <section className="border-b border-border bg-gradient-to-r from-emerald-950/30 via-background to-amber-950/20">
+      <section className="border-b border-border bg-gradient-to-r from-[var(--color-accent-cricket)]/30 via-background to-[var(--color-gold)]/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
           <div className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-3">
             <div className="min-w-0">
-              <div className="text-[10px] uppercase tracking-[0.2em] font-bold text-emerald-300/80 mb-1">
+              <div className="text-[10px] uppercase tracking-[0.2em] font-bold text-[var(--color-accent-cricket)]/80 mb-1">
                 Cricket scores
               </div>
               <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight truncate">
-                Cricket — Live, today, upcoming & results
+                Cricket â€” Live, today, upcoming & results
               </h1>
             </div>
             {mounted && q.isFetching && !q.isLoading && (
-              <span className="shrink-0 text-[10px] text-emerald-200/70 inline-flex items-center gap-1.5">
-                <span className="size-1.5 rounded-full bg-amber-400 animate-pulse motion-reduce:animate-none" />{" "}
-                Updating…
+              <span className="shrink-0 text-[10px] text-[var(--color-accent-cricket)]/70 inline-flex items-center gap-1.5">
+                <span className="size-1.5 rounded-full bg-[var(--color-gold)] animate-pulse motion-reduce:animate-none" />{" "}
+                Updatingâ€¦
               </span>
             )}
           </div>
@@ -273,14 +273,14 @@ function CricketScoresPage() {
                   className={[
                     "inline-flex items-center gap-1.5 min-h-11 sm:min-h-8 px-3 py-1.5 rounded-full text-xs font-bold ring-1 transition-all",
                     active
-                      ? `bg-gradient-to-r ${t.tone} text-white ring-white/20 shadow-[0_6px_18px_-6px_rgba(0,0,0,0.5)]`
-                      : "bg-white/[0.04] hover:bg-white/[0.09] text-gray-300 ring-white/10",
+                      ? `bg-gradient-to-r ${t.tone} text-foreground ring-border shadow-[0_6px_18px_-6px_rgba(0,0,0,0.5)]`
+                      : "bg-muted hover:bg-muted text-foreground ring-border",
                   ].join(" ")}
                 >
                   {t.icon}
                   <span>{t.label}</span>
                   <span
-                    className={`tabular-nums text-[10px] px-1.5 py-0.5 rounded-full ${active ? "bg-black/20" : "bg-white/10 text-gray-400"}`}
+                    className={`tabular-nums text-[10px] px-1.5 py-0.5 rounded-full ${active ? "bg-background" : "bg-muted text-foreground"}`}
                   >
                     {t.count}
                   </span>
@@ -289,7 +289,7 @@ function CricketScoresPage() {
             })}
           </div>
 
-          {/* DATE STRIP — visible on Upcoming & Today */}
+          {/* DATE STRIP â€” visible on Upcoming & Today */}
           {(tab === "upcoming" || tab === "today") && (
             <div className="mt-4">
               <div className="flex items-center gap-2">
@@ -307,7 +307,7 @@ function CricketScoresPage() {
                       }) => ({ ...prev, date: isoDate(cur), tab: "upcoming" }),
                     });
                   }}
-                  className="shrink-0 size-11 rounded-full grid place-items-center bg-white/[0.06] hover:bg-white/[0.12] ring-1 ring-white/10"
+                  className="shrink-0 size-11 rounded-full grid place-items-center bg-muted hover:bg-muted ring-1 ring-border"
                 >
                   <ChevronLeft className="size-4" />
                 </button>
@@ -331,10 +331,10 @@ function CricketScoresPage() {
                           className={[
                             "flex flex-col items-center min-h-12 min-w-[56px] px-2.5 py-1.5 rounded-xl ring-1 transition-all",
                             active
-                              ? "bg-gradient-to-b from-emerald-500 to-emerald-700 ring-emerald-300/40 text-white shadow-[0_6px_18px_-6px_rgba(16,185,129,0.55)]"
+                              ? "bg-gradient-to-b from-[var(--color-accent-cricket)] to-[var(--color-accent-cricket)] ring-[var(--color-accent-cricket)]/40 text-foreground shadow-[0_6px_18px_-6px_rgba(16,185,129,0.55)]"
                               : d.isToday
-                                ? "bg-amber-500/15 ring-amber-500/30 text-amber-200 hover:bg-amber-500/25"
-                                : "bg-white/[0.04] ring-white/10 text-gray-300 hover:bg-white/[0.09]",
+                                ? "bg-[var(--color-gold)]/15 ring-[var(--color-gold)]/30 text-[var(--color-gold)] hover:bg-[var(--color-gold)]/25"
+                                : "bg-muted ring-border text-foreground hover:bg-muted",
                           ].join(" ")}
                         >
                           <span className="text-[10px] uppercase tracking-wider font-bold opacity-80">
@@ -360,7 +360,7 @@ function CricketScoresPage() {
                       }) => ({ ...prev, date: isoDate(cur), tab: "upcoming" }),
                     });
                   }}
-                  className="shrink-0 size-11 rounded-full grid place-items-center bg-white/[0.06] hover:bg-white/[0.12] ring-1 ring-white/10"
+                  className="shrink-0 size-11 rounded-full grid place-items-center bg-muted hover:bg-muted ring-1 ring-border"
                 >
                   <ChevronRight className="size-4" />
                 </button>
@@ -368,11 +368,11 @@ function CricketScoresPage() {
             </div>
           )}
 
-          {/* FILTERS — series + format */}
+          {/* FILTERS â€” series + format */}
           <div className="mt-4 flex flex-wrap items-center gap-1.5">
             <FilterButton
               label="All series"
-              emoji="🏏"
+              emoji="ðŸ"
               active={league === "all"}
               onClick={() =>
                 navigate({
@@ -387,7 +387,7 @@ function CricketScoresPage() {
             />
             <FilterButton
               label="Internationals"
-              emoji="🌍"
+              emoji="ðŸŒ"
               active={league === "internationals"}
               onClick={() =>
                 navigate({
@@ -399,7 +399,7 @@ function CricketScoresPage() {
                   }) => ({ ...prev, league: "internationals" }),
                 })
               }
-              accent="text-sky-300"
+              accent="text-[var(--color-accent-mlb)]"
             />
             {CRICKET_LEAGUES.map((l) => (
               <FilterButton
@@ -421,7 +421,7 @@ function CricketScoresPage() {
               />
             ))}
 
-            <span className="mx-1 h-5 w-px bg-white/10" />
+            <span className="mx-1 h-5 w-px bg-muted" />
             {(["any", "t20", "odi", "test"] as const).map((f) => {
               const meta = FORMAT_META[f];
               const active = fmt === f;
@@ -442,7 +442,7 @@ function CricketScoresPage() {
                     "inline-flex items-center min-h-11 sm:min-h-8 px-2.5 py-1.5 rounded-full text-[11px] font-bold ring-1 transition-all",
                     active
                       ? `${meta.color} ring-1`
-                      : "bg-white/[0.04] hover:bg-white/[0.09] text-gray-300 ring-white/10",
+                      : "bg-muted hover:bg-muted text-foreground ring-border",
                   ].join(" ")}
                 >
                   {meta.label}
@@ -470,7 +470,7 @@ function CricketScoresPage() {
             action={
               <Link
                 to="/cricket/scores"
-                className="inline-flex min-h-11 items-center rounded-full bg-emerald-500/15 px-4 text-sm font-bold text-emerald-200 ring-1 ring-emerald-500/30 hover:bg-emerald-500/25"
+                className="inline-flex min-h-11 items-center rounded-full bg-[var(--color-accent-cricket)]/15 px-4 text-sm font-bold text-[var(--color-accent-cricket)] ring-1 ring-[var(--color-accent-cricket)]/30 hover:bg-[var(--color-accent-cricket)]/25"
               >
                 Reset filters
               </Link>
@@ -483,8 +483,8 @@ function CricketScoresPage() {
             return (
               <section key={g.leagueId || g.leagueName || "cricket"} className="space-y-3">
                 <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
-                  <h2 className="text-sm sm:text-base font-bold text-white truncate">
-                    <span className="text-amber-300">●</span>{" "}
+                  <h2 className="text-sm sm:text-base font-bold text-foreground truncate">
+                    <span className="text-[var(--color-gold)]">â—</span>{" "}
                     {g.leagueName || g.leagueAbbr || "Cricket"}
                     <span className="ml-2 text-xs text-muted-foreground font-normal">
                       ({g.items.length})
@@ -494,7 +494,7 @@ function CricketScoresPage() {
                     <Link
                       to="/cricket/series/$id"
                       params={{ id: seriesId }}
-                      className="inline-flex min-h-11 shrink-0 items-center gap-0.5 px-2 text-xs font-bold text-emerald-300 hover:text-emerald-200"
+                      className="inline-flex min-h-11 shrink-0 items-center gap-0.5 px-2 text-xs font-bold text-[var(--color-accent-cricket)] hover:text-[var(--color-accent-cricket)]"
                     >
                       Series page <ChevronRight className="size-3" />
                     </Link>
@@ -533,8 +533,8 @@ function FilterButton({
       className={[
         "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold ring-1 transition-all",
         active
-          ? "bg-gradient-to-r from-emerald-500 to-amber-500 text-black ring-amber-300 shadow-[0_4px_14px_-4px_rgba(245,158,11,0.5)]"
-          : `bg-white/[0.04] hover:bg-white/[0.09] ring-white/10 ${accent ?? "text-gray-200"}`,
+          ? "bg-gradient-to-r from-[var(--color-accent-cricket)] to-[var(--color-gold)] text-background ring-[var(--color-gold)] shadow-[0_4px_14px_-4px_rgba(245,158,11,0.5)]"
+          : `bg-muted hover:bg-muted ring-border ${accent ?? "text-foreground"}`,
       ].join(" ")}
     >
       <span aria-hidden>{emoji}</span>

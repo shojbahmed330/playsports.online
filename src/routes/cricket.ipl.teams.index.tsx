@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+﻿import { createFileRoute, Link } from "@tanstack/react-router";
 import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
 import { IplPageShell } from "@/components/ipl/IplPageShell";
 import { TeamCrest } from "@/components/cricket/TeamCrest";
@@ -17,7 +17,7 @@ const teamsQO = queryOptions({
 export const Route = createFileRoute("/cricket/ipl/teams/")({
   head: () => ({
     meta: [
-      { title: "IPL Teams — Franchises, Captains & Titles" },
+      { title: "IPL Teams â€” Franchises, Captains & Titles" },
       {
         name: "description",
         content:
@@ -32,7 +32,7 @@ export const Route = createFileRoute("/cricket/ipl/teams/")({
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "PlaySports" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "IPL Teams — Franchises, Captains & Titles" },
+      { name: "twitter:title", content: "IPL Teams â€” Franchises, Captains & Titles" },
       {
         name: "twitter:description",
         content: "Every IPL franchise with full team metadata and title history.",
@@ -75,7 +75,7 @@ function TeamsPage() {
   return (
     <IplPageShell
       title="Franchises"
-      subtitle={`${data.teams.length} teams · tap a card for full profile`}
+      subtitle={`${data.teams.length} teams Â· tap a card for full profile`}
     >
       {sorted.length === 0 ? (
         <EmptyState
@@ -89,7 +89,7 @@ function TeamsPage() {
               key={t.id}
               to="/cricket/ipl/teams/$teamId"
               params={{ teamId: t.id }}
-              className="group relative overflow-hidden rounded-2xl border border-white/5 p-5 transition-transform hover:-translate-y-0.5 hover:shadow-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
+              className="group relative overflow-hidden rounded-2xl border border-border p-5 transition-transform hover:-translate-y-0.5 hover:shadow-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border motion-reduce:transition-none motion-reduce:hover:translate-y-0"
               style={{
                 background: `linear-gradient(160deg, ${t.primary} 0%, color-mix(in oklab, ${t.primary} 55%, #07080f) 100%)`,
                 color: t.ink,
@@ -107,7 +107,7 @@ function TeamsPage() {
                   src={t.logo}
                   abbr={t.short}
                   name={t.name}
-                  className="h-14 w-14 shrink-0 bg-black/20 p-1.5 ring-1 ring-white/20 rounded-lg"
+                  className="h-14 w-14 shrink-0 bg-background p-1.5 ring-1 ring-border rounded-lg"
                 />
               </div>
 
@@ -124,12 +124,12 @@ function TeamsPage() {
               </div>
               {t.titleYears.length > 0 && (
                 <div className="mt-2 text-[11px] font-semibold opacity-90">
-                  <span aria-hidden="true">🏆 </span>
+                  <span aria-hidden="true">ðŸ† </span>
                   <span className="sr-only">Title years: </span>
-                  {t.titleYears.join(" · ")}
+                  {t.titleYears.join(" Â· ")}
                 </div>
               )}
-              <div className="pointer-events-none absolute -bottom-6 right-0 h-20 w-20 rounded-full bg-white/10 blur-2xl" />
+              <div className="pointer-events-none absolute -bottom-6 right-0 h-20 w-20 rounded-full bg-muted blur-2xl" />
             </Link>
           ))}
         </div>
@@ -140,7 +140,7 @@ function TeamsPage() {
 
 function Stat({ label, value, highlight }: { label: string; value: string; highlight?: boolean }) {
   return (
-    <div className="rounded-md bg-black/15 px-2 py-1.5 ring-1 ring-white/10">
+    <div className="rounded-md bg-background px-2 py-1.5 ring-1 ring-border">
       <dt className="text-[9px] font-black uppercase tracking-widest opacity-70">{label}</dt>
       <dd className={`mt-0.5 truncate ${highlight ? "text-base font-black" : "font-semibold"}`}>
         {value}

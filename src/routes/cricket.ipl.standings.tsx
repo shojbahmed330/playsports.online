@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate, stripSearchParams } from "@tanstack/react-router";
+﻿import { createFileRoute, Link, useNavigate, stripSearchParams } from "@tanstack/react-router";
 import { TeamCrest } from "@/components/cricket/TeamCrest";
 import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
 import { zodValidator } from "@tanstack/zod-adapter";
@@ -27,7 +27,7 @@ export const Route = createFileRoute("/cricket/ipl/standings")({
   },
   head: () => ({
     meta: [
-      { title: "IPL Standings — Points Table & Form Guide" },
+      { title: "IPL Standings â€” Points Table & Form Guide" },
       {
         name: "description",
         content:
@@ -39,7 +39,7 @@ export const Route = createFileRoute("/cricket/ipl/standings")({
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "PlaySports" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "IPL Standings — Points Table & Form Guide" },
+      { name: "twitter:title", content: "IPL Standings â€” Points Table & Form Guide" },
       {
         name: "twitter:description",
         content:
@@ -73,7 +73,7 @@ function StandingsPage() {
   return (
     <IplPageShell
       title="Points Table"
-      subtitle={`${year === "current" ? "Current season" : year} · Top 4 advance to the playoffs`}
+      subtitle={`${year === "current" ? "Current season" : year} Â· Top 4 advance to the playoffs`}
       right={
         <select
           aria-label="IPL season"
@@ -87,10 +87,10 @@ function StandingsPage() {
               }),
             });
           }}
-          className="min-h-11 rounded-full border border-white/10 bg-gray-900/80 px-3 py-1.5 text-xs font-bold text-white focus:outline-none focus:ring-2 focus:ring-sky-400/40"
+          className="min-h-11 rounded-full border border-border bg-background px-3 py-1.5 text-xs font-bold text-foreground focus:outline-none focus:ring-2 focus:ring-[var(--color-accent-mlb)]/40"
         >
           {IPL_SEASON_IDS.map((s) => (
-            <option key={String(s.year)} value={String(s.year)} className="bg-gray-900">
+            <option key={String(s.year)} value={String(s.year)} className="bg-background">
               {s.year === "current" ? "Current season" : s.year}
             </option>
           ))}
@@ -100,13 +100,13 @@ function StandingsPage() {
       {data.error && (
         <div
           role="alert"
-          className="mt-4 flex flex-wrap items-center justify-between gap-2 rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-200"
+          className="mt-4 flex flex-wrap items-center justify-between gap-2 rounded-lg border border-[var(--color-gold)]/30 bg-[var(--color-gold)]/10 px-4 py-3 text-sm text-[var(--color-gold)]"
         >
           <span>The IPL standings feed is temporarily unavailable.</span>
           <button
             type="button"
             onClick={() => void standingsQuery.refetch()}
-            className="inline-flex min-h-10 items-center rounded-full border border-amber-400/40 px-3 text-xs font-bold text-amber-100 hover:bg-amber-500/20"
+            className="inline-flex min-h-10 items-center rounded-full border border-[var(--color-gold)]/40 px-3 text-xs font-bold text-[var(--color-gold)] hover:bg-[var(--color-gold)]/20"
           >
             Retry
           </button>
@@ -120,13 +120,13 @@ function StandingsPage() {
           description="The points table fills in as the season progresses."
         />
       ) : (
-        <div className="mt-4 overflow-x-auto rounded-xl border border-white/5 bg-gray-900/60">
+        <div className="mt-4 overflow-x-auto rounded-xl border border-border bg-background">
           <table className="w-full min-w-[680px] text-sm">
             <caption className="sr-only">
               IPL points table for {year === "current" ? "the current season" : year}
             </caption>
             <thead>
-              <tr className="border-b border-white/5 bg-white/[0.03] text-[10px] font-black uppercase tracking-widest text-white/50">
+              <tr className="border-b border-border bg-muted text-[10px] font-black uppercase tracking-widest text-foreground">
                 <th scope="col" className="py-2 pl-3 text-left">
                   #
                 </th>
@@ -156,12 +156,12 @@ function StandingsPage() {
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/5">
+            <tbody className="divide-y divide-border">
               {data.standings.map((r, i) => {
                 const playoff = i < 4;
                 return (
-                  <tr key={r.teamId} className={playoff ? "bg-emerald-500/5" : ""}>
-                    <td className="py-2.5 pl-3 font-black text-white/70">{i + 1}</td>
+                  <tr key={r.teamId} className={playoff ? "bg-[var(--color-accent-cricket)]/5" : ""}>
+                    <td className="py-2.5 pl-3 font-black text-foreground">{i + 1}</td>
                     <td className="py-2.5">
                       <div className="flex items-center gap-2 min-w-0">
                         <TeamCrest
@@ -173,22 +173,22 @@ function StandingsPage() {
                         <Link
                           to="/cricket/ipl/teams/$teamId"
                           params={{ teamId: r.teamId }}
-                          className="truncate font-semibold text-white hover:underline"
+                          className="truncate font-semibold text-foreground hover:underline"
                         >
                           {r.teamName}
                         </Link>
                       </div>
                     </td>
-                    <td className="py-2.5 text-right text-white/80">{r.played}</td>
-                    <td className="py-2.5 text-right text-emerald-300 font-bold">{r.wins}</td>
-                    <td className="py-2.5 text-right text-rose-300 font-bold">{r.losses}</td>
-                    <td className="py-2.5 text-right text-white/70">{r.ties}</td>
-                    <td className="py-2.5 text-right text-white/70">{r.nrr.toFixed(2)}</td>
-                    <td className="py-2.5 text-right pr-2 font-black text-white">{r.points}</td>
+                    <td className="py-2.5 text-right text-foreground">{r.played}</td>
+                    <td className="py-2.5 text-right text-[var(--color-accent-cricket)] font-bold">{r.wins}</td>
+                    <td className="py-2.5 text-right text-[var(--color-live)] font-bold">{r.losses}</td>
+                    <td className="py-2.5 text-right text-foreground">{r.ties}</td>
+                    <td className="py-2.5 text-right text-foreground">{r.nrr.toFixed(2)}</td>
+                    <td className="py-2.5 text-right pr-2 font-black text-foreground">{r.points}</td>
                     <td className="py-2.5 pr-3 text-right">
                       <div className="inline-flex gap-0.5">
                         {r.form.length === 0 ? (
-                          <span className="text-white/30">—</span>
+                          <span className="text-foreground">â€”</span>
                         ) : (
                           r.form
                             .slice()
@@ -199,10 +199,10 @@ function StandingsPage() {
                                 className={[
                                   "inline-grid h-5 w-5 place-items-center rounded text-[10px] font-black",
                                   f === "W"
-                                    ? "bg-emerald-500/20 text-emerald-300"
+                                    ? "bg-[var(--color-accent-cricket)]/20 text-[var(--color-accent-cricket)]"
                                     : f === "L"
-                                      ? "bg-rose-500/20 text-rose-300"
-                                      : "bg-white/10 text-white/70",
+                                      ? "bg-[var(--color-live)]/20 text-[var(--color-live)]"
+                                      : "bg-muted text-foreground",
                                 ].join(" ")}
                               >
                                 {f}
@@ -219,7 +219,7 @@ function StandingsPage() {
         </div>
       )}
 
-      <p className="mt-4 px-1 text-[11px] text-white/40">
+      <p className="mt-4 px-1 text-[11px] text-foreground">
         Highlighted rows = current playoff positions (top 4). NRR is approximate when matches are in
         progress.
       </p>

@@ -1,9 +1,20 @@
-import { readFileSync, existsSync } from "node:fs";
+import { readFileSync, existsSync, readdirSync, statSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 
 const root = resolve(__dirname, "..");
 const read = (p: string) => readFileSync(resolve(root, p), "utf8");
+
+function walk(dir: string): string[] {
+  const out: string[] = [];
+  for (const entry of readdirSync(resolve(root, dir))) {
+    const rel = `${dir}/${entry}`;
+    const full = resolve(root, rel);
+    if (statSync(full).isDirectory()) out.push(...walk(rel));
+    else if (entry.endsWith(".tsx")) out.push(rel);
+  }
+  return out;
+}
 
 const PALETTE =
   /(?:bg|text|border|from|via|to|ring|shadow)-(?:white|black|gray|slate|zinc|neutral|stone|emerald|amber|sky|fuchsia|indigo|red|green|blue|purple|teal|orange|rose|lime|cyan|violet|pink|yellow)(?:-|\/|\b)/;
@@ -81,9 +92,25 @@ describe("design system foundation", () => {
       "src/components/football/FormationPitch.tsx",
       "src/components/football/CommentaryFeed.tsx",
       "src/routes/players.tsx",
+      "src/routes/football.teams.$slug.tsx",
+      "src/routes/mine.tsx",
       "src/lib/sports-config.ts",
     ]) {
       expect(PALETTE.test(read(path)), `${path} hardcodes palette colours`).toBe(false);
+    }
+  });
+
+  it("keeps the cricket module token-only", () => {
+    const files = [
+      ...walk("src/components/cricket"),
+      ...walk("src/components/ipl"),
+      ...readdirSync(resolve(root, "src/routes"))
+        .filter((f) => f.startsWith("cricket") && f.endsWith(".tsx"))
+        .map((f) => `src/routes/${f}`),
+    ];
+    expect(files.length).toBeGreaterThan(10);
+    for (const file of files) {
+      expect(PALETTE.test(read(file)), `${file} hardcodes palette colours`).toBe(false);
     }
   });
 

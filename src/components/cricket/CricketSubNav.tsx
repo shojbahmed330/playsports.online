@@ -1,4 +1,4 @@
-import { Link, useLocation } from "@tanstack/react-router";
+﻿import { Link, useLocation } from "@tanstack/react-router";
 import {
   Flame,
   CalendarDays,
@@ -35,73 +35,73 @@ const TABS: Tab[] = [
   {
     to: "/cricket",
     label: "Hub",
-    emoji: "🏏",
+    emoji: "ðŸ",
     Icon: Flame,
-    grad: "from-emerald-500 to-teal-500",
-    accent: "text-emerald-200",
+    grad: "from-[var(--color-accent-cricket)] to-[var(--color-accent-cricket)]",
+    accent: "text-[var(--color-accent-cricket)]",
     match: (p) => p === "/cricket" || p === "/cricket/",
   },
   {
     to: "/cricket/scores",
     label: "Scores",
-    emoji: "🔴",
+    emoji: "ðŸ”´",
     Icon: CalendarDays,
-    grad: "from-rose-500 to-red-500",
-    accent: "text-rose-200",
+    grad: "from-[var(--color-live)] to-[var(--color-live)]",
+    accent: "text-[var(--color-live)]",
     match: (p) => p.startsWith("/cricket/scores"),
   },
   {
     to: "/cricket/series",
     label: "Series",
-    emoji: "🏆",
+    emoji: "ðŸ†",
     Icon: Trophy,
-    grad: "from-amber-500 to-orange-500",
-    accent: "text-amber-200",
+    grad: "from-[var(--color-gold)] to-[var(--color-gold)]",
+    accent: "text-[var(--color-gold)]",
     match: (p) => p.startsWith("/cricket/series"),
   },
   {
     to: "/cricket/teams",
     label: "Teams",
-    emoji: "🛡️",
+    emoji: "ðŸ›¡ï¸",
     Icon: Users,
-    grad: "from-sky-500 to-blue-600",
-    accent: "text-sky-200",
+    grad: "from-[var(--color-accent-mlb)] to-[var(--color-accent-mlb)]",
+    accent: "text-[var(--color-accent-mlb)]",
     match: (p) => p.startsWith("/cricket/teams"),
   },
   {
     to: "/cricket/players",
     label: "Players",
-    emoji: "👤",
+    emoji: "ðŸ‘¤",
     Icon: User,
-    grad: "from-fuchsia-500 to-purple-500",
-    accent: "text-fuchsia-200",
+    grad: "from-[var(--color-accent-nhl)] to-[var(--color-accent-nhl)]",
+    accent: "text-[var(--color-accent-nhl)]",
     match: (p) => p.startsWith("/cricket/players"),
   },
   {
     to: "/cricket/rankings",
     label: "Rankings",
-    emoji: "📊",
+    emoji: "ðŸ“Š",
     Icon: BarChart3,
-    grad: "from-indigo-500 to-violet-500",
-    accent: "text-indigo-200",
+    grad: "from-[var(--color-accent-nhl)] to-[var(--color-accent-nhl)]",
+    accent: "text-[var(--color-accent-nhl)]",
     match: (p) => p.startsWith("/cricket/rankings"),
   },
   {
     to: "/cricket/records",
     label: "Records",
-    emoji: "📜",
+    emoji: "ðŸ“œ",
     Icon: Crown,
-    grad: "from-yellow-500 to-amber-600",
-    accent: "text-yellow-200",
+    grad: "from-[var(--color-gold)] to-[var(--color-gold)]",
+    accent: "text-[var(--color-gold)]",
     match: (p) => p.startsWith("/cricket/records"),
   },
   {
     to: "/cricket/history",
     label: "History",
-    emoji: "🕰️",
+    emoji: "ðŸ•°ï¸",
     Icon: Crown,
-    grad: "from-stone-500 to-zinc-600",
-    accent: "text-stone-200",
+    grad: "from-background to-background",
+    accent: "text-foreground",
     match: (p) => p.startsWith("/cricket/history"),
   },
 ];
@@ -130,7 +130,7 @@ export function CricketSubNav() {
 
   return (
     <>
-      <div className="border-b border-border bg-gradient-to-r from-emerald-950/40 via-background to-amber-950/30">
+      <div className="border-b border-border bg-gradient-to-r from-[var(--color-accent-cricket)]/40 via-background to-[var(--color-gold)]/30">
         <div className="max-w-7xl mx-auto px-3 sm:px-6 py-2.5 flex items-center gap-2">
           <div className="relative flex-1 min-w-0">
             <div
@@ -151,8 +151,8 @@ export function CricketSubNav() {
                     className={[
                       "tap-target shrink-0 snap-start group inline-flex items-center justify-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] sm:text-xs font-bold ring-1 transition-all duration-200",
                       active
-                        ? `bg-gradient-to-r ${t.grad} text-white ring-white/15 shadow-[0_6px_18px_-6px_rgba(0,0,0,0.55)] scale-[1.02]`
-                        : `bg-white/[0.04] hover:bg-white/[0.09] ${t.accent} ring-white/10 hover:ring-white/20 hover:-translate-y-0.5`,
+                        ? `bg-gradient-to-r ${t.grad} text-foreground ring-border shadow-[0_6px_18px_-6px_rgba(0,0,0,0.55)] scale-[1.02]`
+                        : `bg-muted hover:bg-muted ${t.accent} ring-border hover:ring-border hover:-translate-y-0.5`,
                     ].join(" ")}
                   >
                     <span aria-hidden className="text-sm leading-none">
@@ -181,7 +181,7 @@ function LeaguesDropdown() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
-        className="shrink-0 inline-flex items-center gap-1 rounded-full bg-amber-500/15 px-3 py-1.5 text-[11px] sm:text-xs font-bold text-amber-200 ring-1 ring-amber-400/30 hover:bg-amber-500/25 transition-colors"
+        className="shrink-0 inline-flex items-center gap-1 rounded-full bg-[var(--color-gold)]/15 px-3 py-1.5 text-[11px] sm:text-xs font-bold text-[var(--color-gold)] ring-1 ring-[var(--color-gold)]/30 hover:bg-[var(--color-gold)]/25 transition-colors"
         aria-label="Cricket leagues"
       >
         <Trophy className="size-3.5" />
@@ -189,15 +189,15 @@ function LeaguesDropdown() {
         <ChevronDown className="size-3" />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">
-        <DropdownMenuLabel className="text-[10px] uppercase tracking-[0.2em] text-amber-300">
+        <DropdownMenuLabel className="text-[10px] uppercase tracking-[0.2em] text-[var(--color-gold)]">
           T20 Leagues
         </DropdownMenuLabel>
         <DropdownMenuItem asChild>
           <Link to="/cricket/ipl" className="flex items-center justify-between cursor-pointer">
             <span className="flex items-center gap-2">
-              <span aria-hidden>🇮🇳</span> Indian Premier League
+              <span aria-hidden>ðŸ‡®ðŸ‡³</span> Indian Premier League
             </span>
-            <span className="text-[9px] font-black rounded-full bg-rose-500/20 text-rose-300 px-1.5 py-0.5 ring-1 ring-rose-400/30">
+            <span className="text-[9px] font-black rounded-full bg-[var(--color-live)]/20 text-[var(--color-live)] px-1.5 py-0.5 ring-1 ring-[var(--color-live)]/30">
               LIVE
             </span>
           </Link>
@@ -205,25 +205,25 @@ function LeaguesDropdown() {
         <DropdownMenuSeparator />
         <DropdownMenuItem disabled className="flex items-center justify-between">
           <span className="flex items-center gap-2 opacity-60">
-            <span>🇦🇺</span> Big Bash League
+            <span>ðŸ‡¦ðŸ‡º</span> Big Bash League
           </span>
-          <span className="text-[9px] font-black rounded-full bg-white/10 text-white/50 px-1.5 py-0.5">
+          <span className="text-[9px] font-black rounded-full bg-muted text-foreground px-1.5 py-0.5">
             SOON
           </span>
         </DropdownMenuItem>
         <DropdownMenuItem disabled className="flex items-center justify-between">
           <span className="flex items-center gap-2 opacity-60">
-            <span>🇵🇰</span> Pakistan Super League
+            <span>ðŸ‡µðŸ‡°</span> Pakistan Super League
           </span>
-          <span className="text-[9px] font-black rounded-full bg-white/10 text-white/50 px-1.5 py-0.5">
+          <span className="text-[9px] font-black rounded-full bg-muted text-foreground px-1.5 py-0.5">
             SOON
           </span>
         </DropdownMenuItem>
         <DropdownMenuItem disabled className="flex items-center justify-between">
           <span className="flex items-center gap-2 opacity-60">
-            <span>🌴</span> Caribbean Premier League
+            <span>ðŸŒ´</span> Caribbean Premier League
           </span>
-          <span className="text-[9px] font-black rounded-full bg-white/10 text-white/50 px-1.5 py-0.5">
+          <span className="text-[9px] font-black rounded-full bg-muted text-foreground px-1.5 py-0.5">
             SOON
           </span>
         </DropdownMenuItem>

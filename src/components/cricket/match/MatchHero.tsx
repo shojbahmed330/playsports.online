@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+﻿import { Link } from "@tanstack/react-router";
 import { TeamCrest } from "@/components/cricket/TeamCrest";
 import { ArrowLeft, MapPin, Tv, Trophy, Share2 } from "lucide-react";
 import type { CricketMatch } from "@/lib/cricket.functions";
@@ -24,7 +24,7 @@ export function MatchHero({ match }: { match: CricketMatch }) {
       <div className="relative max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
         <Link
           to="/cricket"
-          className="inline-flex items-center gap-1.5 text-xs text-emerald-200 hover:text-white mb-3"
+          className="inline-flex items-center gap-1.5 text-xs text-[var(--color-accent-cricket)] hover:text-foreground mb-3"
         >
           <ArrowLeft className="size-3.5" /> All cricket
         </Link>
@@ -35,33 +35,33 @@ export function MatchHero({ match }: { match: CricketMatch }) {
             <Link
               to="/cricket/series/$id"
               params={{ id: match.leagueId }}
-              className="text-amber-300 hover:underline truncate"
+              className="text-[var(--color-gold)] hover:underline truncate"
             >
               {match.leagueName || match.leagueAbbr}
             </Link>
             {match.format && (
-              <span className="shrink-0 px-1.5 py-0.5 rounded text-[9px] font-bold tracking-wide bg-white/15 text-white">
+              <span className="shrink-0 px-1.5 py-0.5 rounded text-[9px] font-bold tracking-wide bg-muted text-foreground">
                 {match.format.toUpperCase()}
               </span>
             )}
             {match.description && (
-              <span className="text-emerald-100/70 normal-case font-medium tracking-normal truncate">
-                · {match.description}
+              <span className="text-[var(--color-accent-cricket)]/70 normal-case font-medium tracking-normal truncate">
+                Â· {match.description}
               </span>
             )}
           </div>
           {isLive ? (
-            <span className="inline-flex items-center gap-1.5 text-red-300 text-xs font-bold shrink-0">
-              <span className="size-1.5 rounded-full bg-red-500 animate-pulse motion-reduce:animate-none cricket-live-ring" />{" "}
-              LIVE · {match.statusDetail}
+            <span className="inline-flex items-center gap-1.5 text-[var(--color-live)] text-xs font-bold shrink-0">
+              <span className="size-1.5 rounded-full bg-[var(--color-live)] animate-pulse motion-reduce:animate-none cricket-live-ring" />{" "}
+              LIVE Â· {match.statusDetail}
             </span>
           ) : isFinal ? (
-            <span className="text-xs font-bold text-amber-300 inline-flex items-center gap-1 shrink-0">
+            <span className="text-xs font-bold text-[var(--color-gold)] inline-flex items-center gap-1 shrink-0">
               <Trophy className="size-3.5" /> Result
             </span>
           ) : (
-            <span className="text-xs font-bold text-emerald-200 shrink-0">
-              {relativeDay(match.startTs)} · {formatLocalTime(match.startTs)}
+            <span className="text-xs font-bold text-[var(--color-accent-cricket)] shrink-0">
+              {relativeDay(match.startTs)} Â· {formatLocalTime(match.startTs)}
             </span>
           )}
         </div>
@@ -78,16 +78,16 @@ export function MatchHero({ match }: { match: CricketMatch }) {
 
         {/* Result banner */}
         {match.dataIncomplete ? (
-          <div className="mt-4 inline-block px-3 py-1.5 rounded-md bg-amber-500/15 ring-1 ring-amber-500/30 text-amber-200 text-xs font-semibold">
-            Score data unavailable — refreshing shortly.
+          <div className="mt-4 inline-block px-3 py-1.5 rounded-md bg-[var(--color-gold)]/15 ring-1 ring-[var(--color-gold)]/30 text-[var(--color-gold)] text-xs font-semibold">
+            Score data unavailable â€” refreshing shortly.
           </div>
         ) : match.result?.marginText || match.note ? (
-          <div className="mt-4 inline-block px-3 py-1.5 rounded-md bg-emerald-500/15 ring-1 ring-emerald-500/30 text-emerald-200 text-xs font-semibold">
+          <div className="mt-4 inline-block px-3 py-1.5 rounded-md bg-[var(--color-accent-cricket)]/15 ring-1 ring-[var(--color-accent-cricket)]/30 text-[var(--color-accent-cricket)] text-xs font-semibold">
             {match.result?.marginText || match.note}
           </div>
         ) : null}
 
-        <div className="mt-4 flex flex-wrap items-center gap-3 text-[11px] text-emerald-100/70">
+        <div className="mt-4 flex flex-wrap items-center gap-3 text-[11px] text-[var(--color-accent-cricket)]/70">
           {match.venue && (
             <span className="inline-flex items-center gap-1">
               <MapPin className="size-3" /> {match.venue}
@@ -118,45 +118,45 @@ function TeamScoreRow({
   return (
     <div
       className={`grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 rounded-xl p-3 sm:p-4 ring-1 ${
-        won ? "bg-emerald-500/15 ring-emerald-400/40" : "bg-black/30 ring-white/10"
+        won ? "bg-[var(--color-accent-cricket)]/15 ring-[var(--color-accent-cricket)]/40" : "bg-background ring-border"
       }`}
     >
       <TeamCrest src={t.logo} abbr={t.abbr} name={t.name} className="size-11 sm:size-12 shrink-0" />
       <div className="min-w-0">
-        <div className="text-sm sm:text-base font-extrabold text-white truncate">{t.name}</div>
+        <div className="text-sm sm:text-base font-extrabold text-foreground truncate">{t.name}</div>
         {score.kind === "innings" && score.multi ? (
-          <div className="text-[11px] text-emerald-100/70 tabular-nums truncate">{score.multi}</div>
+          <div className="text-[11px] text-[var(--color-accent-cricket)]/70 tabular-nums truncate">{score.multi}</div>
         ) : t.scoreSummary ? (
-          <div className="text-[11px] text-emerald-100/60 truncate">{t.scoreSummary}</div>
+          <div className="text-[11px] text-[var(--color-accent-cricket)]/60 truncate">{t.scoreSummary}</div>
         ) : null}
       </div>
-      <div className="shrink-0 text-right text-white min-w-[70px]">
+      <div className="shrink-0 text-right text-foreground min-w-[70px]">
         {score.kind === "innings" ? (
           <>
             <div className="text-[28px] sm:text-4xl font-black tabular-nums leading-none">
               <ScoreFlip value={score.runs} />
               {!score.allOut && (
-                <span className="text-lg sm:text-2xl text-emerald-200/80 font-bold">
+                <span className="text-lg sm:text-2xl text-[var(--color-accent-cricket)]/80 font-bold">
                   /{score.wickets}
                 </span>
               )}
-              {score.declared && <span className="text-sm text-amber-300 ml-0.5">d</span>}
+              {score.declared && <span className="text-sm text-[var(--color-gold)] ml-0.5">d</span>}
             </div>
-            <div className="mt-1 flex items-center justify-end gap-1.5 text-[10px] tabular-nums text-emerald-100/70">
+            <div className="mt-1 flex items-center justify-end gap-1.5 text-[10px] tabular-nums text-[var(--color-accent-cricket)]/70">
               {score.allOut && (
-                <span className="uppercase tracking-wider text-amber-300 font-bold">all out</span>
+                <span className="uppercase tracking-wider text-[var(--color-gold)] font-bold">all out</span>
               )}
               {score.overs != null && score.overs > 0 && <span>{score.overs} ov</span>}
             </div>
           </>
         ) : score.kind === "yet-to-bat" ? (
-          <div className="text-xs uppercase tracking-wider font-bold text-emerald-100/70">
+          <div className="text-xs uppercase tracking-wider font-bold text-[var(--color-accent-cricket)]/70">
             Yet to bat
           </div>
         ) : score.kind === "did-not-bat" ? (
-          <div className="text-xs uppercase tracking-wider font-bold text-emerald-100/70">DNB</div>
+          <div className="text-xs uppercase tracking-wider font-bold text-[var(--color-accent-cricket)]/70">DNB</div>
         ) : (
-          <div className="text-2xl text-emerald-100/40">—</div>
+          <div className="text-2xl text-[var(--color-accent-cricket)]/40">â€”</div>
         )}
       </div>
     </div>
@@ -176,7 +176,7 @@ function ShareButton() {
           navigator.clipboard?.writeText(url).catch(() => {});
         }
       }}
-      className="ml-auto inline-flex items-center gap-1 rounded-full bg-white/10 hover:bg-white/15 px-2.5 py-1 text-[11px] font-semibold text-white"
+      className="ml-auto inline-flex items-center gap-1 rounded-full bg-muted hover:bg-muted px-2.5 py-1 text-[11px] font-semibold text-foreground"
     >
       <Share2 className="size-3" /> Share
     </button>

@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+﻿import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { Crown, Search } from "lucide-react";
 import { SportNav } from "@/components/sports/SportNav";
@@ -12,7 +12,7 @@ import { withHubLinks } from "@/components/seo/withHubLinks";
 export const Route = createFileRoute("/cricket/records/")({
   head: () => ({
     meta: [
-      { title: "All-time Cricket Records — Runs, Wickets & Centuries" },
+      { title: "All-time Cricket Records â€” Runs, Wickets & Centuries" },
       { name: "description", content: "All-time cricket records across Test, ODI and T20I." },
       { property: "og:title", content: "All-time Cricket Records" },
       {
@@ -23,7 +23,7 @@ export const Route = createFileRoute("/cricket/records/")({
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "PlaySports" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "All-time Cricket Records — Runs, Wickets & Centuries" },
+      { name: "twitter:title", content: "All-time Cricket Records â€” Runs, Wickets & Centuries" },
       {
         name: "twitter:description",
         content: "All-time cricket records across Test, ODI and T20I.",
@@ -99,19 +99,19 @@ function RecordsPage() {
       <SportNav />
       <CricketSubNav />
 
-      <section className="border-b border-border bg-gradient-to-br from-yellow-950/40 via-background to-amber-950/30">
+      <section className="border-b border-border bg-gradient-to-br from-[var(--color-gold)]/40 via-background to-[var(--color-gold)]/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
           <div className="flex items-center gap-3">
-            <div className="size-12 rounded-2xl bg-yellow-500/15 ring-1 ring-yellow-500/30 grid place-items-center text-2xl">
-              📜
+            <div className="size-12 rounded-2xl bg-[var(--color-gold)]/15 ring-1 ring-[var(--color-gold)]/30 grid place-items-center text-2xl">
+              ðŸ“œ
             </div>
             <div>
-              <div className="text-[11px] uppercase tracking-[0.2em] text-yellow-300 font-bold flex items-center gap-1.5">
+              <div className="text-[11px] uppercase tracking-[0.2em] text-[var(--color-gold)] font-bold flex items-center gap-1.5">
                 <Crown className="size-3.5" /> All-time Records
               </div>
               <h1 className="text-2xl sm:text-3xl font-extrabold">International Cricket Records</h1>
               <p className="text-xs text-muted-foreground mt-1">
-                Test, ODI and T20I career and innings records · snapshot {recordsData.updatedAt}
+                Test, ODI and T20I career and innings records Â· snapshot {recordsData.updatedAt}
               </p>
             </div>
           </div>
@@ -121,17 +121,17 @@ function RecordsPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-5 space-y-4">
         <div className="flex flex-wrap items-center gap-2">
           <div className="relative flex-1 min-w-[200px] max-w-sm">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-gray-500" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
             <input
               value={q}
               onChange={(e) => setQ(e.target.value)}
-              placeholder="Search records or players…"
+              placeholder="Search records or playersâ€¦"
               type="search"
               aria-label="Search cricket records or players"
-              className="min-h-11 w-full rounded-full bg-white/5 py-2 pl-9 pr-3 text-sm outline-none ring-1 ring-white/10 focus:ring-yellow-500/50"
+              className="min-h-11 w-full rounded-full bg-muted py-2 pl-9 pr-3 text-sm outline-none ring-1 ring-border focus:ring-[var(--color-gold)]/50"
             />
           </div>
-          <div className="flex gap-1 bg-white/5 ring-1 ring-white/10 rounded-full p-1">
+          <div className="flex gap-1 bg-muted ring-1 ring-border rounded-full p-1">
             {FORMATS.map((f) => (
               <button
                 key={f.id}
@@ -140,7 +140,7 @@ function RecordsPage() {
                 onClick={() => setFmt(f.id)}
                 className={[
                   "min-h-11 rounded-full px-3 py-1 text-[11px] font-bold transition sm:min-h-8",
-                  fmt === f.id ? "bg-yellow-500 text-slate-900" : "text-gray-300 hover:text-white",
+                  fmt === f.id ? "bg-[var(--color-gold)] text-muted-foreground" : "text-foreground hover:text-foreground",
                 ].join(" ")}
               >
                 {f.label}
@@ -160,7 +160,7 @@ function RecordsPage() {
                   setQ("");
                   setFmt("any");
                 }}
-                className="inline-flex min-h-11 items-center rounded-full bg-yellow-500/15 px-4 text-sm font-bold text-yellow-200 ring-1 ring-yellow-500/30"
+                className="inline-flex min-h-11 items-center rounded-full bg-[var(--color-gold)]/15 px-4 text-sm font-bold text-[var(--color-gold)] ring-1 ring-[var(--color-gold)]/30"
               >
                 Clear filters
               </button>
@@ -171,11 +171,11 @@ function RecordsPage() {
             {cats.map((c) => (
               <div
                 key={c.id}
-                className="overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-gray-900/80 to-gray-950"
+                className="overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-background to-background"
               >
                 <div className="flex items-center justify-between gap-2 border-b border-border px-4 py-3">
                   <div className="min-w-0">
-                    <div className="text-[10px] uppercase tracking-wider text-yellow-300 font-bold">
+                    <div className="text-[10px] uppercase tracking-wider text-[var(--color-gold)] font-bold">
                       {c.format}
                     </div>
                     <div className="truncate font-extrabold leading-tight">{c.title}</div>
@@ -187,20 +187,20 @@ function RecordsPage() {
                     <Link
                       to="/cricket/records/$category"
                       params={{ category: c.id }}
-                      className="inline-flex min-h-11 items-center text-[11px] font-bold text-yellow-300 hover:text-yellow-200"
+                      className="inline-flex min-h-11 items-center text-[11px] font-bold text-[var(--color-gold)] hover:text-[var(--color-gold)]"
                     >
-                      Full record →
+                      Full record â†’
                     </Link>
                   </div>
                 </div>
                 <table className="w-full text-sm">
                   <caption className="sr-only">
-                    {c.title} — top {c.metric.toLowerCase()} leaders
+                    {c.title} â€” top {c.metric.toLowerCase()} leaders
                   </caption>
-                  <tbody className="divide-y divide-gray-800/60">
+                  <tbody className="divide-y divide-border">
                     {c.rows.map((r, i) => (
-                      <tr key={i} className="hover:bg-white/[0.03]">
-                        <td className="px-3 py-2 w-8 text-xs text-gray-500 tabular-nums">
+                      <tr key={i} className="hover:bg-muted">
+                        <td className="px-3 py-2 w-8 text-xs text-muted-foreground tabular-nums">
                           {i + 1}
                         </td>
                         <td className="px-3 py-2">
@@ -214,12 +214,12 @@ function RecordsPage() {
                                 {r.player}
                               </PlayerLink>
                               {r.extra && (
-                                <div className="text-[10px] text-gray-500 truncate">{r.extra}</div>
+                                <div className="text-[10px] text-muted-foreground truncate">{r.extra}</div>
                               )}
                             </div>
                           </div>
                         </td>
-                        <td className="px-3 py-2 text-right tabular-nums font-extrabold text-yellow-300">
+                        <td className="px-3 py-2 text-right tabular-nums font-extrabold text-[var(--color-gold)]">
                           {r.value}
                         </td>
                       </tr>

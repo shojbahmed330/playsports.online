@@ -1,5 +1,5 @@
-import { errorMessage } from "@/lib/error-message";
-// Phase 2.1 (cricket) — /cricket/highlights/:slug SSR landing.
+﻿import { errorMessage } from "@/lib/error-message";
+// Phase 2.1 (cricket) â€” /cricket/highlights/:slug SSR landing.
 import { createFileRoute, notFound, Link } from "@tanstack/react-router";
 import {
   getCricketHighlightBySlug,
@@ -42,7 +42,7 @@ export const Route = createFileRoute("/cricket/highlights/$slug")({
     const { highlight: h } = loaderData;
     const path = `/cricket/highlights/${params.slug}`;
     const url = canonical(path);
-    const title = `${h.teamA} vs ${h.teamB} — ${h.tournament} ${h.stage} Highlights | PlaySports`;
+    const title = `${h.teamA} vs ${h.teamB} â€” ${h.tournament} ${h.stage} Highlights | PlaySports`;
     const desc = `Watch ${h.teamA} vs ${h.teamB} from the ${h.tournament} ${h.stage} at ${h.venue} on ${formatDate(h.date)}. ${h.result}. Full match highlights and key moments.`;
     const thumb = h.youtubeId
       ? `https://i.ytimg.com/vi/${h.youtubeId}/hqdefault.jpg`
@@ -67,7 +67,7 @@ export const Route = createFileRoute("/cricket/highlights/$slug")({
       scripts: [
         ldScript(
           videoObject({
-            name: `${h.teamA} vs ${h.teamB} — ${h.tournament} ${h.stage}`,
+            name: `${h.teamA} vs ${h.teamB} â€” ${h.tournament} ${h.stage}`,
             description: desc,
             path,
             thumbnailUrl: thumb,
@@ -128,7 +128,7 @@ export const Route = createFileRoute("/cricket/highlights/$slug")({
           action={
             <Link
               to="/cricket/highlights"
-              className="inline-flex min-h-11 items-center rounded-full bg-emerald-500/15 px-4 text-sm font-bold text-emerald-200 ring-1 ring-emerald-500/30"
+              className="inline-flex min-h-11 items-center rounded-full bg-[var(--color-accent-cricket)]/15 px-4 text-sm font-bold text-[var(--color-accent-cricket)] ring-1 ring-[var(--color-accent-cricket)]/30"
             >
               Browse all highlights
             </Link>
@@ -172,10 +172,10 @@ function CricketHighlightPage() {
         </nav>
 
         <h1 className="text-2xl md:text-3xl font-bold mb-2">
-          {h.teamA} vs {h.teamB} — {h.tournament} {h.stage}
+          {h.teamA} vs {h.teamB} â€” {h.tournament} {h.stage}
         </h1>
         <p className="text-muted-foreground mb-4">
-          {h.venue} · {formatDate(h.date)} · <span className="uppercase">{h.format}</span> —{" "}
+          {h.venue} Â· {formatDate(h.date)} Â· <span className="uppercase">{h.format}</span> â€”{" "}
           {h.result}
         </p>
 

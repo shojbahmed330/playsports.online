@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+﻿import type { ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
 import type { CricketInningsDetail } from "@/lib/cricket.functions";
 import { cricketPlayerSlug } from "@/lib/cricket-player-slug";
@@ -31,20 +31,20 @@ export function InningsCard({
     : undefined;
 
   return (
-    <section className="rounded-2xl border border-gray-800 overflow-hidden">
+    <section className="rounded-2xl border border-border overflow-hidden">
       <header
-        className="sticky top-[80px] z-10 flex items-center justify-between gap-2 px-4 py-3 bg-gray-900/95 backdrop-blur border-b border-gray-800"
+        className="sticky top-[80px] z-10 flex items-center justify-between gap-2 px-4 py-3 bg-background backdrop-blur border-b border-border"
         style={headerStyle}
       >
         <h3 className="text-sm font-bold truncate">
           {inn.battingTeamName}{" "}
-          <span className="text-gray-500 font-normal">— Innings {inn.period}</span>
+          <span className="text-muted-foreground font-normal">â€” Innings {inn.period}</span>
         </h3>
         <span className="text-base font-extrabold tabular-nums shrink-0">
           {inn.runs}
-          <span className="text-gray-500 font-bold">/{inn.wickets}</span>
+          <span className="text-muted-foreground font-bold">/{inn.wickets}</span>
           {inn.overs > 0 && (
-            <span className="text-xs text-gray-500 font-normal ml-2 tabular-nums">
+            <span className="text-xs text-muted-foreground font-normal ml-2 tabular-nums">
               ({inn.overs} ov)
             </span>
           )}
@@ -54,7 +54,7 @@ export function InningsCard({
       {inn.batters.length > 0 && (
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="bg-gray-950/40 text-[10px] uppercase tracking-wider text-gray-400">
+            <thead className="bg-background text-[10px] uppercase tracking-wider text-foreground">
               <tr>
                 <th className="text-left px-3 py-2">Batter</th>
                 <th className="text-right px-3 py-2">R</th>
@@ -64,16 +64,16 @@ export function InningsCard({
                 <th className="text-right px-3 py-2">SR</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-800">
+            <tbody className="divide-y divide-border">
               {inn.batters.map((b) => (
-                <tr key={b.id || b.name} className="hover:bg-gray-900/40 align-top">
+                <tr key={b.id || b.name} className="hover:bg-background align-top">
                   <td className="px-3 py-2 font-medium">
                     <div className="min-w-0">
                       <PlayerLinkName name={b.name} athleteId={b.id}>
                         {b.notOut && <span className="ml-1 text-positive">*</span>}
                       </PlayerLinkName>
-                      <div className="text-[10px] text-gray-500 mt-0.5 truncate">
-                        {b.dismissal || (b.notOut ? "not out" : "—")}
+                      <div className="text-[10px] text-muted-foreground mt-0.5 truncate">
+                        {b.dismissal || (b.notOut ? "not out" : "â€”")}
                       </div>
                     </div>
                   </td>
@@ -87,8 +87,8 @@ export function InningsCard({
                   <td className="px-3 py-2 text-right tabular-nums hidden xs:table-cell whitespace-nowrap">
                     {b.sixes}
                   </td>
-                  <td className="px-3 py-2 text-right tabular-nums text-gray-400 whitespace-nowrap">
-                    {b.strikeRate || "—"}
+                  <td className="px-3 py-2 text-right tabular-nums text-foreground whitespace-nowrap">
+                    {b.strikeRate || "â€”"}
                   </td>
                 </tr>
               ))}
@@ -98,19 +98,19 @@ export function InningsCard({
       )}
 
       {inn.extras != null && inn.extras > 0 && (
-        <div className="px-4 py-2 text-[11px] text-gray-400 border-t border-gray-800 bg-gray-950/30">
-          <span className="font-semibold text-gray-300">Extras</span> {inn.extras}
+        <div className="px-4 py-2 text-[11px] text-foreground border-t border-border bg-background">
+          <span className="font-semibold text-foreground">Extras</span> {inn.extras}
         </div>
       )}
 
       {inn.fallOfWickets.length > 0 && (
-        <div className="px-4 py-3 text-[11px] text-gray-400 border-t border-gray-800 bg-gray-950/30">
-          <div className="font-semibold text-gray-300 mb-1">Fall of wickets</div>
+        <div className="px-4 py-3 text-[11px] text-foreground border-t border-border bg-background">
+          <div className="font-semibold text-foreground mb-1">Fall of wickets</div>
           <div className="flex flex-wrap gap-x-3 gap-y-1 tabular-nums">
             {inn.fallOfWickets.map((f) => (
               <span key={`${f.wicket}-${f.player}`} className="whitespace-nowrap">
                 {f.score}/{f.wicket}{" "}
-                <span className="text-gray-500">
+                <span className="text-muted-foreground">
                   ({f.player}
                   {f.over != null ? `, ${f.over}` : ""})
                 </span>
@@ -121,9 +121,9 @@ export function InningsCard({
       )}
 
       {inn.bowlers.length > 0 && (
-        <div className="overflow-x-auto border-t border-gray-800">
+        <div className="overflow-x-auto border-t border-border">
           <table className="w-full text-sm">
-            <thead className="bg-gray-950/40 text-[10px] uppercase tracking-wider text-gray-400">
+            <thead className="bg-background text-[10px] uppercase tracking-wider text-foreground">
               <tr>
                 <th className="text-left px-3 py-2">Bowler</th>
                 <th className="text-right px-3 py-2">O</th>
@@ -133,9 +133,9 @@ export function InningsCard({
                 <th className="text-right px-3 py-2">Econ</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-800">
+            <tbody className="divide-y divide-border">
               {inn.bowlers.map((b) => (
-                <tr key={b.id || b.name} className="hover:bg-gray-900/40">
+                <tr key={b.id || b.name} className="hover:bg-background">
                   <td className="px-3 py-2 font-medium">
                     <PlayerLinkName name={b.name} athleteId={b.id} />
                   </td>
@@ -144,11 +144,11 @@ export function InningsCard({
                     {b.maidens}
                   </td>
                   <td className="px-3 py-2 text-right tabular-nums whitespace-nowrap">{b.runs}</td>
-                  <td className="px-3 py-2 text-right tabular-nums font-bold text-emerald-300 whitespace-nowrap">
+                  <td className="px-3 py-2 text-right tabular-nums font-bold text-[var(--color-accent-cricket)] whitespace-nowrap">
                     {b.wickets}
                   </td>
-                  <td className="px-3 py-2 text-right tabular-nums text-gray-400 whitespace-nowrap">
-                    {b.economy || "—"}
+                  <td className="px-3 py-2 text-right tabular-nums text-foreground whitespace-nowrap">
+                    {b.economy || "â€”"}
                   </td>
                 </tr>
               ))}

@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+﻿import { useMemo } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -26,13 +26,13 @@ import { withHubLinks } from "@/components/seo/withHubLinks";
 export const Route = createFileRoute("/cricket/")({
   head: () => ({
     meta: [
-      { title: "Live Cricket Scores, Fixtures & Stats — PlaySports" },
+      { title: "Live Cricket Scores, Fixtures & Stats â€” PlaySports" },
       {
         name: "description",
         content:
           "Live cricket scoreboards, fixtures, series, players, rankings and records across IPL, ICC World Cup, Big Bash, PSL and more.",
       },
-      { property: "og:title", content: "Cricket — Live Scores, Series & Players" },
+      { property: "og:title", content: "Cricket â€” Live Scores, Series & Players" },
       {
         property: "og:description",
         content:
@@ -42,7 +42,7 @@ export const Route = createFileRoute("/cricket/")({
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "PlaySports" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Live Cricket Scores, Fixtures & Stats — PlaySports" },
+      { name: "twitter:title", content: "Live Cricket Scores, Fixtures & Stats â€” PlaySports" },
       {
         name: "twitter:description",
         content:
@@ -53,7 +53,7 @@ export const Route = createFileRoute("/cricket/")({
     scripts: [
       ldScript(
         collectionPage({
-          name: "Cricket — Live Scores, Series & Players",
+          name: "Cricket â€” Live Scores, Series & Players",
           description: "Cricket hub: live scores, series, players, rankings and records.",
           path: "/cricket",
         }),
@@ -75,11 +75,11 @@ export const Route = createFileRoute("/cricket/")({
           },
           {
             q: "How often do cricket scores update?",
-            a: "Live cricket scorecards on PlaySports refresh every 10–15 seconds while play is in progress, with ball-by-ball commentary when available.",
+            a: "Live cricket scorecards on PlaySports refresh every 10â€“15 seconds while play is in progress, with ball-by-ball commentary when available.",
           },
           {
             q: "Can I see player career stats?",
-            a: "Yes — batting and bowling career records from ESPNcricinfo Statsguru are shown on every player profile linked from live scorecards.",
+            a: "Yes â€” batting and bowling career records from ESPNcricinfo Statsguru are shown on every player profile linked from live scorecards.",
           },
         ]),
       ),
@@ -198,17 +198,17 @@ function CricketIndex() {
           />
         )}
 
-        {/* International Cricket — bilateral tours */}
+        {/* International Cricket â€” bilateral tours */}
         {(internationals.live.length > 0 || internationals.next.length > 0) && (
-          <section className="relative overflow-hidden rounded-2xl border border-sky-500/20 bg-gradient-to-br from-sky-950/40 via-background to-emerald-950/30 p-4 sm:p-5">
-            <div className="absolute -top-16 -right-16 size-48 rounded-full bg-sky-500/10 blur-3xl pointer-events-none" />
+          <section className="relative overflow-hidden rounded-2xl border border-[var(--color-accent-mlb)]/20 bg-gradient-to-br from-[var(--color-accent-mlb)]/40 via-background to-[var(--color-accent-cricket)]/30 p-4 sm:p-5">
+            <div className="absolute -top-16 -right-16 size-48 rounded-full bg-[var(--color-accent-mlb)]/10 blur-3xl pointer-events-none" />
             <div className="relative flex items-center justify-between gap-3 mb-3">
               <h2 className="text-lg font-bold flex items-center gap-2">
-                <Globe2 className="size-5 text-sky-300" />
+                <Globe2 className="size-5 text-[var(--color-accent-mlb)]" />
                 International Cricket
                 {internationals.live.length > 0 && (
-                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-500/20 ring-1 ring-red-500/40 text-[10px] font-bold text-red-300">
-                    <span className="size-1 rounded-full bg-red-500 animate-pulse motion-reduce:animate-none" />{" "}
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[var(--color-live)]/20 ring-1 ring-[var(--color-live)]/40 text-[10px] font-bold text-[var(--color-live)]">
+                    <span className="size-1 rounded-full bg-[var(--color-live)] animate-pulse motion-reduce:animate-none" />{" "}
                     {internationals.live.length} live
                   </span>
                 )}
@@ -216,13 +216,13 @@ function CricketIndex() {
               <Link
                 to="/cricket/scores"
                 search={{ tab: "live", date: "", league: "internationals", fmt: "any" }}
-                className="text-xs font-bold text-sky-300 hover:text-sky-200 inline-flex items-center gap-1 shrink-0"
+                className="text-xs font-bold text-[var(--color-accent-mlb)] hover:text-[var(--color-accent-mlb)] inline-flex items-center gap-1 shrink-0"
               >
                 All internationals <ChevronRight className="size-3.5" />
               </Link>
             </div>
             <p className="relative text-xs text-muted-foreground mb-4">
-              Country vs country tours — NZ v ENG, IND v AUS, and every bilateral series.
+              Country vs country tours â€” NZ v ENG, IND v AUS, and every bilateral series.
             </p>
             <div className="relative grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
               {[...internationals.live, ...internationals.next].slice(0, 3).map((m) => (
@@ -236,11 +236,11 @@ function CricketIndex() {
         <section>
           <div className="flex items-center justify-between mb-3">
             <h2 className="text-lg font-bold flex items-center gap-2">
-              <Trophy className="size-5 text-amber-400" /> Featured series
+              <Trophy className="size-5 text-[var(--color-gold)]" /> Featured series
             </h2>
             <Link
               to="/cricket/series"
-              className="text-xs font-bold text-emerald-300 hover:text-emerald-200 inline-flex items-center gap-1"
+              className="text-xs font-bold text-[var(--color-accent-cricket)] hover:text-[var(--color-accent-cricket)] inline-flex items-center gap-1"
             >
               All series <ChevronRight className="size-3.5" />
             </Link>
@@ -264,14 +264,14 @@ function CricketIndex() {
           <section>
             <div className="flex items-center justify-between mb-3">
               <h2 className="text-lg font-bold flex items-center gap-2">
-                <Globe2 className="size-5 text-sky-300" /> Also active now
-                <span className="text-[10px] uppercase tracking-wider font-bold text-sky-300/80 px-1.5 py-0.5 rounded bg-sky-500/10 ring-1 ring-sky-500/30">
+                <Globe2 className="size-5 text-[var(--color-accent-mlb)]" /> Also active now
+                <span className="text-[10px] uppercase tracking-wider font-bold text-[var(--color-accent-mlb)]/80 px-1.5 py-0.5 rounded bg-[var(--color-accent-mlb)]/10 ring-1 ring-[var(--color-accent-mlb)]/30">
                   auto
                 </span>
               </h2>
               <Link
                 to="/cricket/series"
-                className="text-xs font-bold text-sky-300 hover:text-sky-200 inline-flex items-center gap-1"
+                className="text-xs font-bold text-[var(--color-accent-mlb)] hover:text-[var(--color-accent-mlb)] inline-flex items-center gap-1"
               >
                 All series <ChevronRight className="size-3.5" />
               </Link>
@@ -282,19 +282,19 @@ function CricketIndex() {
                   key={d.id}
                   to="/cricket/series/$id"
                   params={{ id: d.id }}
-                  className="group relative overflow-hidden rounded-2xl p-4 bg-gradient-to-br from-sky-950/40 via-slate-900 to-emerald-950/30 border border-gray-800 hover:border-sky-500/40 transition-all hover:-translate-y-0.5"
+                  className="group relative overflow-hidden rounded-2xl p-4 bg-gradient-to-br from-[var(--color-accent-mlb)]/40 via-background to-[var(--color-accent-cricket)]/30 border border-border hover:border-[var(--color-accent-mlb)]/40 transition-all hover:-translate-y-0.5"
                 >
                   {d.live > 0 && (
-                    <span className="absolute top-2.5 right-2.5 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-500/20 ring-1 ring-red-500/40 text-[10px] font-bold text-red-300">
-                      <span className="size-1 rounded-full bg-red-500 animate-pulse motion-reduce:animate-none" />{" "}
+                    <span className="absolute top-2.5 right-2.5 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[var(--color-live)]/20 ring-1 ring-[var(--color-live)]/40 text-[10px] font-bold text-[var(--color-live)]">
+                      <span className="size-1 rounded-full bg-[var(--color-live)] animate-pulse motion-reduce:animate-none" />{" "}
                       {d.live} live
                     </span>
                   )}
-                  <div className="text-[10px] uppercase tracking-wider font-bold text-sky-300 mb-1">
+                  <div className="text-[10px] uppercase tracking-wider font-bold text-[var(--color-accent-mlb)] mb-1">
                     {d.abbr || "Series"}
                   </div>
                   <div className="text-sm font-extrabold leading-tight line-clamp-2">{d.name}</div>
-                  <div className="mt-2 inline-flex items-center gap-1 text-[10px] font-bold text-sky-300 group-hover:gap-2 transition-all">
+                  <div className="mt-2 inline-flex items-center gap-1 text-[10px] font-bold text-[var(--color-accent-mlb)] group-hover:gap-2 transition-all">
                     {d.total} match{d.total === 1 ? "" : "es"} <ChevronRight className="size-3" />
                   </div>
                 </Link>
@@ -305,8 +305,8 @@ function CricketIndex() {
 
         {q.isLoading ? (
           <Section
-            icon={<Clock className="size-5 text-amber-400" />}
-            title="Loading cricket slate…"
+            icon={<Clock className="size-5 text-[var(--color-gold)]" />}
+            title="Loading cricket slateâ€¦"
           >
             <GameGridSkeleton />
           </Section>
@@ -314,7 +314,7 @@ function CricketIndex() {
           <>
             {buckets.live.length > 0 && (
               <Section
-                icon={<Flame className="size-5 text-red-400" />}
+                icon={<Flame className="size-5 text-[var(--color-live)]" />}
                 title="Live right now"
                 badge={`${buckets.live.length}`}
                 badgeTone="red"
@@ -328,7 +328,7 @@ function CricketIndex() {
 
             {buckets.today.length > 0 && (
               <Section
-                icon={<Calendar className="size-5 text-emerald-400" />}
+                icon={<Calendar className="size-5 text-[var(--color-accent-cricket)]" />}
                 title="Today"
                 badge={`${buckets.today.length}`}
                 badgeTone="emerald"
@@ -340,7 +340,7 @@ function CricketIndex() {
 
             {buckets.upcoming.length > 0 && (
               <Section
-                icon={<Clock className="size-5 text-amber-400" />}
+                icon={<Clock className="size-5 text-[var(--color-gold)]" />}
                 title="Upcoming"
                 badge={`${buckets.upcoming.length}`}
                 badgeTone="amber"
@@ -352,7 +352,7 @@ function CricketIndex() {
 
             {buckets.finished.length > 0 && (
               <Section
-                icon={<CheckCircle2 className="size-5 text-gray-400" />}
+                icon={<CheckCircle2 className="size-5 text-foreground" />}
                 title="Recent results"
                 badge={`${Math.min(buckets.finished.length, 6)}`}
                 badgeTone="muted"
@@ -374,13 +374,13 @@ function CricketIndex() {
                     <>
                       <Link
                         to="/cricket/scores"
-                        className="inline-flex min-h-11 items-center rounded-full bg-emerald-500/15 px-4 text-sm font-bold text-emerald-200 ring-1 ring-emerald-500/30 hover:bg-emerald-500/25"
+                        className="inline-flex min-h-11 items-center rounded-full bg-[var(--color-accent-cricket)]/15 px-4 text-sm font-bold text-[var(--color-accent-cricket)] ring-1 ring-[var(--color-accent-cricket)]/30 hover:bg-[var(--color-accent-cricket)]/25"
                       >
                         Cricket scores
                       </Link>
                       <Link
                         to="/cricket/series"
-                        className="inline-flex min-h-11 items-center rounded-full border border-border px-4 text-sm font-semibold text-foreground hover:bg-white/5"
+                        className="inline-flex min-h-11 items-center rounded-full border border-border px-4 text-sm font-semibold text-foreground hover:bg-muted"
                       >
                         Browse series
                       </Link>
@@ -408,12 +408,12 @@ function SeriesTile({
 }) {
   const isIpl =
     league.slug === "ipl" || league.id === "8048" || /indian premier league/i.test(league.longName);
-  const className = `group relative overflow-hidden rounded-2xl p-4 bg-gradient-to-br ${league.bgGrad} border border-gray-800 hover:border-emerald-500/40 transition-all hover:-translate-y-0.5`;
+  const className = `group relative overflow-hidden rounded-2xl p-4 bg-gradient-to-br ${league.bgGrad} border border-border hover:border-[var(--color-accent-cricket)]/40 transition-all hover:-translate-y-0.5`;
   const inner = (
     <>
       {liveCount > 0 && (
-        <span className="absolute top-2.5 right-2.5 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-500/20 ring-1 ring-red-500/40 text-[10px] font-bold text-red-300">
-          <span className="size-1 rounded-full bg-red-500 animate-pulse motion-reduce:animate-none" />{" "}
+        <span className="absolute top-2.5 right-2.5 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[var(--color-live)]/20 ring-1 ring-[var(--color-live)]/40 text-[10px] font-bold text-[var(--color-live)]">
+          <span className="size-1 rounded-full bg-[var(--color-live)] animate-pulse motion-reduce:animate-none" />{" "}
           {liveCount} live
         </span>
       )}
@@ -430,7 +430,7 @@ function SeriesTile({
           <div className="text-sm font-extrabold leading-tight truncate">{league.label}</div>
         </div>
       </div>
-      <div className="text-[11px] text-gray-400 leading-snug line-clamp-2">{league.tagline}</div>
+      <div className="text-[11px] text-foreground leading-snug line-clamp-2">{league.tagline}</div>
       <div
         className={`mt-2 inline-flex items-center gap-1 text-[10px] font-bold ${league.accent} group-hover:gap-2 transition-all`}
       >
@@ -470,12 +470,12 @@ function Section({
 }) {
   const tone =
     badgeTone === "red"
-      ? "text-red-300 bg-red-500/15 ring-red-500/30"
+      ? "text-[var(--color-live)] bg-[var(--color-live)]/15 ring-[var(--color-live)]/30"
       : badgeTone === "amber"
-        ? "text-amber-300 bg-amber-500/15 ring-amber-500/30"
+        ? "text-[var(--color-gold)] bg-[var(--color-gold)]/15 ring-[var(--color-gold)]/30"
         : badgeTone === "emerald"
-          ? "text-emerald-300 bg-emerald-500/15 ring-emerald-500/30"
-          : "text-muted-foreground bg-white/[0.04] ring-border";
+          ? "text-[var(--color-accent-cricket)] bg-[var(--color-accent-cricket)]/15 ring-[var(--color-accent-cricket)]/30"
+          : "text-muted-foreground bg-muted ring-border";
   return (
     <section className="space-y-4">
       <SectionHeader
@@ -497,7 +497,7 @@ function Section({
             {seeAll && (
               <Link
                 to={seeAll}
-                className="inline-flex min-h-11 items-center gap-0.5 text-xs font-bold text-emerald-300 hover:text-emerald-200"
+                className="inline-flex min-h-11 items-center gap-0.5 text-xs font-bold text-[var(--color-accent-cricket)] hover:text-[var(--color-accent-cricket)]"
               >
                 See all <ChevronRight className="size-3" />
               </Link>

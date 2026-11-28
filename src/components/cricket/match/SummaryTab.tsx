@@ -1,4 +1,4 @@
-import type { CricketInningsDetail, CricketMatch } from "@/lib/cricket.functions";
+﻿import type { CricketInningsDetail, CricketMatch } from "@/lib/cricket.functions";
 import { InningsCard } from "./InningsCard";
 import { EmptyState } from "./ScorecardTab";
 import { displayScore } from "@/lib/cricket-score-display";
@@ -19,7 +19,7 @@ export function SummaryTab({
     <div className="space-y-4">
       {/* Mini result banner */}
       {match.result?.marginText && (
-        <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/[0.08] px-4 py-3 text-sm text-emerald-100 font-semibold">
+        <div className="rounded-xl border border-[var(--color-accent-cricket)]/30 bg-[var(--color-accent-cricket)]/[0.08] px-4 py-3 text-sm text-[var(--color-accent-cricket)] font-semibold">
           {match.result.marginText}
         </div>
       )}
@@ -33,28 +33,28 @@ export function SummaryTab({
           return (
             <div
               key={side}
-              className={`rounded-xl border p-3 ${won ? "border-emerald-500/40 bg-emerald-500/[0.06]" : "border-gray-800 bg-gray-900/40"}`}
+              className={`rounded-xl border p-3 ${won ? "border-[var(--color-accent-cricket)]/40 bg-[var(--color-accent-cricket)]/[0.06]" : "border-border bg-background"}`}
             >
-              <div className="text-[11px] uppercase tracking-wider text-gray-400 truncate">
+              <div className="text-[11px] uppercase tracking-wider text-foreground truncate">
                 {t.name}
               </div>
               <div className="mt-1 text-2xl font-black tabular-nums">
                 {d.kind === "innings" ? (
                   <>
                     {d.runs}
-                    {!d.allOut && <span className="text-base text-gray-500">/{d.wickets}</span>}
+                    {!d.allOut && <span className="text-base text-muted-foreground">/{d.wickets}</span>}
                   </>
                 ) : d.kind === "did-not-bat" ? (
-                  <span className="text-sm text-gray-400 font-semibold">Did not bat</span>
+                  <span className="text-sm text-foreground font-semibold">Did not bat</span>
                 ) : d.kind === "yet-to-bat" ? (
-                  <span className="text-sm text-gray-400 font-semibold">Yet to bat</span>
+                  <span className="text-sm text-foreground font-semibold">Yet to bat</span>
                 ) : (
-                  <span className="text-gray-500">—</span>
+                  <span className="text-muted-foreground">â€”</span>
                 )}
               </div>
               {d.kind === "innings" && d.overs != null && d.overs > 0 && (
-                <div className="text-[10px] text-gray-500 tabular-nums mt-0.5">
-                  {d.overs} ov{d.allOut ? " · all out" : ""}
+                <div className="text-[10px] text-muted-foreground tabular-nums mt-0.5">
+                  {d.overs} ov{d.allOut ? " Â· all out" : ""}
                 </div>
               )}
             </div>
