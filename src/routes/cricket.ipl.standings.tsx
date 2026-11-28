@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate, stripSearchParams } from "@tanstack/react-router";
 import { TeamCrest } from "@/components/cricket/TeamCrest";
 import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
-import { zodValidator } from "@tanstack/zod-adapter";
+import { zodValidator } from "@/lib/zod-validator";
 import { z } from "zod";
 import { IplPageShell } from "@/components/ipl/IplPageShell";
 import { getIplSeason, IPL_SEASON_IDS } from "@/lib/ipl.functions";

@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate, stripSearchParams } from "@tanstack/react-router";
 import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
-import { zodValidator } from "@tanstack/zod-adapter";
+import { zodValidator } from "@/lib/zod-validator";
 import { z } from "zod";
 import { IplPageShell } from "@/components/ipl/IplPageShell";
 import { OrangePurpleCap } from "@/components/ipl/OrangePurpleCap";

@@ -4,7 +4,7 @@ import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { z } from "zod";
-import { zodValidator } from "@tanstack/zod-adapter";
+import { zodValidator } from "@/lib/zod-validator";
 import { SportNav } from "@/components/sports/SportNav";
 import { getCricketMatchDetail } from "@/lib/cricket.functions";
 import { breadcrumbList, sportsEvent, ldScript } from "@/lib/seo/jsonld";

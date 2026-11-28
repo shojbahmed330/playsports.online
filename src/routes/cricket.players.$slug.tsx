@@ -1,7 +1,7 @@
 // Phase 2.1 (cricket) — SSR-friendly player profile.
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { z } from "zod";
-import { zodValidator } from "@tanstack/zod-adapter";
+import { zodValidator } from "@/lib/zod-validator";
 import { SportNav } from "@/components/sports/SportNav";
 import { CricketSubNav } from "@/components/cricket/CricketSubNav";
 import { athlete, breadcrumbList, faqPage, ldScript } from "@/lib/seo/jsonld";

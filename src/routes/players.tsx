@@ -1,6 +1,6 @@
 ﻿import { useMemo, lazy, Suspense } from "react";
 import { createFileRoute, Link, useNavigate, stripSearchParams } from "@tanstack/react-router";
-import { zodValidator } from "@tanstack/zod-adapter";
+import { zodValidator } from "@/lib/zod-validator";
 import { useQuery } from "@tanstack/react-query";
 
 import { Trophy, ShieldCheck, Share2 } from "lucide-react";

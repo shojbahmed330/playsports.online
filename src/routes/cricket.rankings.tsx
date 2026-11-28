@@ -1,6 +1,6 @@
 import { createFileRoute, stripSearchParams } from "@tanstack/react-router";
 import { useState } from "react";
-import { zodValidator, fallback } from "@tanstack/zod-adapter";
+import { zodValidator, fallback } from "@/lib/zod-validator";
 import { z } from "zod";
 import { TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { SportNav } from "@/components/sports/SportNav";

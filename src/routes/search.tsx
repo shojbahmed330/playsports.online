@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { zodValidator, fallback } from "@tanstack/zod-adapter";
+import { zodValidator, fallback } from "@/lib/zod-validator";
 import { z } from "zod";
 import { useMemo } from "react";
 import { Search } from "lucide-react";

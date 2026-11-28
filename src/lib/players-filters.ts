@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { fallback } from "@tanstack/zod-adapter";
+import { fallback } from "@/lib/zod-validator";
 
 export const PLAYER_TABS = [
   "overview",

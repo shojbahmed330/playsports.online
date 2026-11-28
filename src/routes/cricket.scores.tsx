@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, Link, stripSearchParams } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { zodValidator, fallback } from "@tanstack/zod-adapter";
+import { zodValidator, fallback } from "@/lib/zod-validator";
 import { z } from "zod";
 import { Flame, Clock, CheckCircle2, Calendar, ChevronLeft, ChevronRight } from "lucide-react";
 import { SportNav } from "@/components/sports/SportNav";
