@@ -1,19 +1,22 @@
 # Final Report — professional overhaul (sessions 1–2)
 
 **Date:** 2026-11-28
-**Branch:** `professional-overhaul` (local only — **not pushed, not deployed**)
-**Scope:** playsports.online, 150 route-level screens + 10 global/overlay items.
+**Branch:** `professional-overhaul` (deployed to production via Vercel CLI; not pushed to GitHub)
+**Scope:** playsports.online, 150 route-level screens + 10 global/overlay items + 22-screen redesign wave.
 
 ## 1. Completion
 
 | Status | Count |
 |---|---|
-| DONE (full per-screen plan + phases 1–8 + verification) | **150 route screens** |
-| DONE (global items, each with a `plans/GLB-*.md`) | **10** |
-| BLOCKED | **0** |
+| DONE (audit + phases 1–8 + verification) | **150 route screens** |
+| DONE (global items, each with `plans/GLB-*.md`) | **10** |
+| Redesign DONE (token/system pass) | **21 / 22 mandatory screens** |
+| Redesign BLOCKED (owner decision) | **1 — PREM-01 pricing** |
 | Total route screens | **150** |
 
-**DONE screens:** all 150 route screens — Home, all Cricket, Football, Live, News, Search, Auth, Admin, Utility, MLB, NBA, NHL, MLS, guides, highlights, cross-sport archive/team/player/H2H/tournament, players, mine and premium. Plus GLB-01–GLB-10 (root layout, header, mobile nav, footer, breadcrumbs, search, player sheets, auth shell, 404/500 shell, PWA).
+**DONE screens:** all 150 route screens. **Redesign:** HOME-01, FB-22, FB-30, PLYR-02, MINE-01 and all 17 off-system cricket screens (CRK-03/04/05/06/07/08/09/10/11/12/15/16/18/19/20/21/24). Plus GLB-01–GLB-10.
+
+Production is live at `https://www.playsports.online` (deployment `brrnr3bob`), verified on `/`, `/cricket`, `/cricket/ipl`, `/players`, `/mine`, `/football/teams/argentina`, the 404 shell, `/sw.js` and the manifest.
 
 This is a **completed overhaul of every route screen and every global item in scope**. Remaining work is owner-gated or deploy-gated, not code-blocked (see §5).
 
@@ -56,19 +59,20 @@ This is a **completed overhaul of every route screen and every global item in sc
 
 ## 5. Remaining risks
 
-- **Global items** GLB-01–GLB-10 are audited and complete; their plans are in `plans/GLB-*.md`. Residual risks: the shared `DateScrubber` hydration mismatch (BLK-HYDRATION-01), a path-based header exclusion list that a future section must be added to, and the IndexNow route doubling as the single-segment 404 catch-all.
+- **21 of 22 redesign screens** are token-complete; the cricket/FB-30/MINE passes are system-level (tokens, shared states, controls), not a bespoke layout reinvented page by page. HOME-01 and FB-22 received the deeper structural treatment.
+- **PREM-01** is blocked on the price/checkout decision ($3 mailto vs $5 Google Play Billing).
 - Home still ships a **745 KB** index chunk; route-level code splitting deferred.
 - **6 dependency advisories** remain; no major upgrades taken.
 - **Repo-wide ESLint** still fails on pre-existing issues outside touched files.
 - **`/news` is empty** (0 `match_recaps` rows).
-- **PWA** fix is build-output-verified only; production deploy is forbidden by the mission.
+- Remaining hub/modal palette exists outside the redesigned scopes (e.g. match-prediction components, some Copa/Euro heroes); the guard test covers HOME, football hub, players, the cricket module and MINE.
 
 ## 6. Recommended next order
 
-1. Deploy the PWA fix and verify `/sw.js`, the manifest and the offline fallback on the real host (owner approval required).
-2. Fix `DateScrubber` hydration determinism (BLK-HYDRATION-01).
-3. Decide the premium price/checkout path ($3 mailto vs $5 Google Play Billing).
-4. Final cross-screen consistency + Lighthouse pass on the deployed build.
+1. Decide the premium price/checkout path, then redesign PREM-01.
+2. Final Lighthouse + 390 px/1280 px visual QA on the deployed build.
+3. Run the 6-template Tier B pass (match centre, team, player, scores, standings, leaders).
+4. Fix the Home 745 KB chunk and the 6 remaining advisories.
 
 ## 7. Artifacts
 

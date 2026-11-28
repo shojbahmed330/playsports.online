@@ -1,13 +1,15 @@
 # Progress
 
-Updated: 2026-11-28 (session 2 — all route screens + all global items complete)
+Updated: 2026-11-28 (session 2 — redesign pass + production deploy)
 
-- Branch: `professional-overhaul` (never pushed)
-- Current phase: **session 2 — mission complete**
-- Current screen: final cross-screen verification
-- Screens done: **150 / 150 route screens**
+- Branch: `professional-overhaul` (deployed via Vercel CLI, not pushed to GitHub)
+- Current phase: **redesign wave complete (21 / 22 mandatory screens)**
+- Current screen: final verification / PREM-01 owner decision
+- Screens done: **150 / 150 route screens** (audit/fix)
+- Redesign done: **21 / 22 mandatory** (HOME-01, FB-22, FB-30, PLYR-02, MINE-01 + 17 cricket screens)
 - Global items done: **10 / 10 (GLB-01–GLB-10)**
-- Screens blocked: **0**
+- Blocked: **1 (PREM-01, pricing decision)**; 6 templates recommended, not mandatory
+- Production: `www.playsports.online` — deployment `brrnr3bob` (2026-11-28)
 - Screens in progress: 0
 
 ## Completed

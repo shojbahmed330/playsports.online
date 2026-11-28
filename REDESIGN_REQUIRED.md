@@ -141,12 +141,19 @@ Redesigning 22 pages without primitives will produce 22 new dialects. Build firs
 
 ## 7. Execution order
 
-Status: **Wave 0 done · HOME-01 done · FB-22 done (4/4)** · next is PLYR-02.
+Status: **Wave 0 done · 21/22 mandatory screens token-complete · PREM-01 blocked on pricing** · production deploy in progress.
 
 - [x] **Foundation** — type scale, colour roles, primitives (`Card`, `StatTile`, `ScoreRow`, `TableShell`, `Hero`), token guard test.
-- [x] **HOME-01** — hero, ForYou (logic fix: only `recent` rendered before), Pulse, SportCard/LeagueCard/FifaCard, SportChipTabs, StatusBar, LiveTicker, TodayInZoneStrip, HallOfChampions, ShowMore. Guarded token-only; 390 px QA has no horizontal overflow.
-- [x] **FB-22** football hub — full pass: shell/hero/nav/filter, match cards/group table/today view, modal/brackets/date scrubber (hydration fixed), and every hub component (year/timezone pickers, scorers, coachmark, mobile group deck, live match centre, pitch, commentary). Guarded token-only.
-- [ ] **PLYR-02** players hub (930 lines)
+- [x] **HOME-01** — hero, ForYou (logic fix), Pulse, cards, tabs, status bar, ticker, zone strip, champions. Guarded; 390 px QA.
+- [x] **FB-22** football hub — full pass incl. modal, brackets, date scrubber (hydration fixed), every hub component.
+- [x] **FB-30** football team — palette 45 → 0 (token/system pass).
+- [x] **PLYR-02** players hub — palette 34 → 0; tabs extracted to `components/players/PlayersTabs.tsx`; route 930 → 504 lines.
+- [x] **MINE-01** my feed — palette 35 → 0 (token/system pass).
+- [x] **Cricket wave (17)** — CRK-03/04/05/06/07/08/09/10/11/12/15/16/18/19/20/21/24: 51 cricket/IPL files palette → 0; guard now scans the whole module.
+- [ ] **PREM-01** — blocked: price/checkout conflict ($3 mailto vs $5 Google Play Billing); needs owner decision.
+- [ ] **QA pass** — contrast, 44 px, focus order, reduced motion, CLS, screenshots for the mass-tokenised screens.
+
+**What "token-complete" means:** these screens no longer hardcode palette colours; they use the shared type scale, tokens, 44 px controls and shared states where the markup already had controls. It is a system-level pass, not a bespoke layout reinvention for every cricket page. HOME-01 and FB-22 received the deeper structural treatment.
 - [ ] **PLYR-02** players hub (930 lines)
 - [ ] **FB-30** football team
 - [ ] **MINE-01** my feed

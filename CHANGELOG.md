@@ -381,6 +381,14 @@
 - Fixed: shared error/empty/not-found states across MLS, guides/highlights, archive/team/player/H2H, tournament leaderboards/stages, players hub and premium; 44 px links/tabs/controls; `aria-pressed` toggles; UTC dates; privacy-enhanced highlight embeds; `noindex` for missing entities; OG site name/Twitter meta; token surfaces; announced loading.
 - Kept: all MLS content, guides, highlights, personal feed, player stats, tournament pages and premium plans.
 
+## Cricket, players and remaining redesign screens
+
+- Tokenised every cricket and IPL file (51 files, palette → 0) plus FB-30 football team and MINE-01; guard test now scans the whole cricket module dynamically.
+- Cricket player links are now real SEO URLs (`/cricket/players/<name>`) resolved through the historical registry or ESPN, with athlete-id fast path from scorecards; the old loading sheet got a timeout, retry and "Open full profile" link.
+- Extracted the players hub tabs into `components/players/PlayersTabs.tsx` (route 930 → 504 lines).
+- Fixed `DateScrubber` hydration (mount gate + UTC formatting).
+- Production deployed and verified: `/`, `/cricket`, `/cricket/ipl`, `/players`, `/mine`, `/football/teams/argentina`, 404 shell, `/sw.js`, manifest.
+
 ## Foundation
 
 - Added overhaul documentation: `PROJECT_NOTES.md`, `HEALTH_BASELINE.md`, `SCREEN_INVENTORY.md`, `DESIGN_SYSTEM.md`, `PROGRESS.md`, `DECISIONS.md`, `BLOCKERS.md`, `SECURITY_FINDINGS.md`.
