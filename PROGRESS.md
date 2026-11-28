@@ -74,3 +74,9 @@ Updated: 2026-11-28 (session 2 — redesign pass + production deploy)
 - Empty 2026 leaderboard pages are `noindex,follow` (no thin-content indexing).
 - Long player names wrap instead of truncating on mobile.
 - `NEWS_ADMIN_SECRET` rotated; the generator returns 401 without the new secret.
+
+## Dependency + bundle pass (2026-11-28)
+
+- Replaced `@tanstack/zod-adapter` (zod 3 peer) with `src/lib/zod-validator.ts` on zod 4; pinned `zod`, `minimatch` and `glob` via `package.json` overrides. `bun audit`: **0 vulnerabilities**. Vercel/npm compatibility fixed with `$zod`.
+- `manualChunks` now splits react (178 KB), radix (106 KB) and icons (32 KB) from the entry; entry dropped from ~587 KB to **~401 KB** raw.
+- Browser check found an open React #418 text hydration mismatch on `/` and `/cricket` (pages render); logged as BLK-HYDRATION-02.

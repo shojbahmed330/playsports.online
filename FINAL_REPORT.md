@@ -28,7 +28,7 @@ This is a **completed overhaul of every route screen and every global item in sc
 | `bun run test` | 24/24 | **34/34** |
 | `bun run typecheck` | 59 errors | **0 errors** |
 | `bun run lint` | 84,235 problems | ~9,194 (mainly pre-existing formatting/any/hooks outside touched files) |
-| `bun audit` | 66 vulnerabilities | **3** (zod 3 build-time path, glob/minimatch dev tooling) |
+| `bun audit` | 66 vulnerabilities | **0** (local zod 4 validator + zod/minimatch/glob overrides) |
 | Production `/sw.js` | 404 | **200** with `Service-Worker-Allowed: /`; manifest `id` + 4 shortcuts |
 | SSR spot checks (session 2) | — | 200 on every cricket route + 7 football screens; 404 paths return branded states |
 | Source/live encoding | Mojibake in 48 files | **0** corrupted sequences in source or live HTML; `tests/encoding.test.ts` guards it |
@@ -69,8 +69,9 @@ This is a **completed overhaul of every route screen and every global item in sc
 - **Player URLs:** known name mismatches get an alias (`kannaur-lokesh`); canonical is clean when it resolves, otherwise `?athlete=<id>`. No canonical points at a 404.
 - **Route collision:** `/tournaments/fifa-world-cup-2026/<leaderboard>` renders a leaderboard/empty state instead of 404ing; empty boards are `noindex,follow`.
 - **Branch pushed:** `origin/professional-overhaul` (push used the `shojbahmed330` gh account, then switched back).
-- Home entry is **~587 KB raw** (Vercel compresses); deeper lazy loading is deferred.
-- **3 dependency advisories** remain (zod 3 build-time path, glob/minimatch dev tooling).
+- Home entry is **~401 KB raw** after splitting react/radix/icons into cacheable chunks (was ~587 KB); deeper lazy loading is deferred.
+- **0 dependency advisories**; `bun audit` is clean.
+- **Hydration warning remains:** React #418 text mismatch on `/` and `/cricket` (pages render); likely SSR/client time text.
 - **Repo-wide ESLint** still fails on pre-existing issues outside touched files.
 - Remaining hub/modal palette exists outside the redesigned scopes (e.g. match-prediction components, some Copa/Euro heroes); the guard test covers HOME, football hub, players, the cricket module and MINE.
 
@@ -79,7 +80,7 @@ This is a **completed overhaul of every route screen and every global item in sc
 1. Decide the premium price/checkout path ($3 mailto vs $5 Google Play Billing) and wire the chosen flow into PREM-01.
 2. Final Lighthouse + 390 px/1280 px visual QA on the deployed build.
 3. Run the 6-template Tier B pass (match centre, team, player, scores, standings, leaders).
-4. Fix the Home 745 KB chunk and the 6 remaining advisories.
+4. Fix the hydration text mismatch and lazy-load more Home sections.
 
 ## 7. Artifacts
 
