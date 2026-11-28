@@ -4,7 +4,8 @@ import type { SportConfig } from "@/lib/sports-config";
 import type { SportGame } from "@/lib/espn.functions";
 import type { Wc2026Fixture } from "@/lib/wc2026.functions";
 import { flagOf } from "@/lib/flags";
-import { formatLocalTime } from "@/lib/time";
+import { LocalTime } from "@/components/ui/local-time";
+
 
 type Tagged = { sport: SportConfig; game: SportGame };
 type Item = { kind: "wc"; f: Wc2026Fixture } | { kind: "espn"; t: Tagged } | null;
@@ -158,7 +159,7 @@ function Slot({
           <span className="truncate">WC2026 · {f.group}</span>
           <span className="font-semibold text-foreground">
             {f.status === "notstarted"
-              ? formatLocalTime(f.startTs * 1000)
+              ? <LocalTime ts={f.startTs * 1000} />
               : f.status === "inprogress"
                 ? `${f.minute ?? ""}'`
                 : "FT"}
@@ -203,7 +204,7 @@ function Slot({
         </span>
         <span className="font-semibold text-foreground">
           {game.status === "pre"
-            ? formatLocalTime(game.startTs * 1000)
+            ? <LocalTime ts={game.startTs * 1000} />
             : game.statusDetail || (game.status === "in" ? "Live" : "Final")}
           <ArrowRight className="ml-1 inline size-3 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
         </span>

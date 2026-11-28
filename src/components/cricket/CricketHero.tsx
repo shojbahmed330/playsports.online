@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { TeamCrest } from "./TeamCrest";
 import { Flame, Clock, MapPin, ArrowRight, Trophy } from "lucide-react";
 import type { CricketMatch } from "@/lib/cricket.functions";
+import { LocalTime } from "@/components/ui/local-time";
 
 /**
  * CricketHero — spotlight for the next/live featured match.
@@ -167,10 +168,7 @@ function FeaturedCard({ match }: { match: CricketMatch }) {
               {match.city ? `, ${match.city}` : ""}
             </span>
           ) : isPre ? (
-            new Date(match.startTs).toLocaleString(undefined, {
-              dateStyle: "medium",
-              timeStyle: "short",
-            })
+            <LocalTime ts={match.startTs} mode="datetime" />
           ) : (
             match.statusDetail
           )}

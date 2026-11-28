@@ -71,7 +71,7 @@ This is a **completed overhaul of every route screen and every global item in sc
 - **Branch pushed:** `origin/professional-overhaul` (push used the `shojbahmed330` gh account, then switched back).
 - Home entry is **~401 KB raw** after splitting react/radix/icons into cacheable chunks (was ~587 KB); deeper lazy loading is deferred.
 - **0 dependency advisories**; `bun audit` is clean.
-- **Hydration warning remains:** React #418 text mismatch on `/` and `/cricket` (pages render); likely SSR/client time text.
+- **Hydration:** time/count/zone labels are hydration-safe; `/cricket` console is clean. Home still logs one React #418 text mismatch (page renders), likely live score/status text.
 - **Repo-wide ESLint** still fails on pre-existing issues outside touched files.
 - Remaining hub/modal palette exists outside the redesigned scopes (e.g. match-prediction components, some Copa/Euro heroes); the guard test covers HOME, football hub, players, the cricket module and MINE.
 

@@ -80,3 +80,8 @@ Updated: 2026-11-28 (session 2 — redesign pass + production deploy)
 - Replaced `@tanstack/zod-adapter` (zod 3 peer) with `src/lib/zod-validator.ts` on zod 4; pinned `zod`, `minimatch` and `glob` via `package.json` overrides. `bun audit`: **0 vulnerabilities**. Vercel/npm compatibility fixed with `$zod`.
 - `manualChunks` now splits react (178 KB), radix (106 KB) and icons (32 KB) from the entry; entry dropped from ~587 KB to **~401 KB** raw.
 - Browser check found an open React #418 text hydration mismatch on `/` and `/cricket` (pages render); logged as BLK-HYDRATION-02.
+
+## Hydration pass (2026-11-28)
+
+- Added `LocalTime` + `useHydrated`; time/day labels no longer differ between SSR UTC and the viewer's zone. Gated the zone strip, count badges, status bar and cricket slate; removed the unawaited cricket prefetch that raced the dehydrated cache.
+- `/cricket` browser console is clean. Home still reports one React #418 text mismatch (page renders) — likely live score/status text, not layout; logged as open in BLK-HYDRATION-02.

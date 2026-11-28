@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { TeamCrest } from "@/components/cricket/TeamCrest";
 import { ArrowLeft, MapPin, Tv, Trophy, Share2 } from "lucide-react";
 import type { CricketMatch } from "@/lib/cricket.functions";
-import { formatLocalTime, relativeDay } from "@/lib/time";
+import { LocalTime } from "@/components/ui/local-time";
 import { displayScore, type ScoreDisplay } from "@/lib/cricket-score-display";
 import { ScoreFlip } from "@/components/sports/ScoreFlip";
 
@@ -61,7 +61,7 @@ export function MatchHero({ match }: { match: CricketMatch }) {
             </span>
           ) : (
             <span className="text-xs font-bold text-[var(--color-accent-cricket)] shrink-0">
-              {relativeDay(match.startTs)} · {formatLocalTime(match.startTs)}
+              <LocalTime ts={match.startTs} mode="day" /> · <LocalTime ts={match.startTs} />
             </span>
           )}
         </div>

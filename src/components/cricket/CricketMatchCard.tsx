@@ -4,7 +4,7 @@ import { MapPin, Tv, Trophy } from "lucide-react";
 import type { CricketMatch } from "@/lib/cricket.functions";
 import { ScoreFlip } from "@/components/sports/ScoreFlip";
 import { Countdown } from "@/components/sports/Countdown";
-import { formatLocalTime, relativeDay } from "@/lib/time";
+import { LocalTime } from "@/components/ui/local-time";
 import { displayScore, scoreLine, type ScoreDisplay } from "@/lib/cricket-score-display";
 
 function formatChipClass(fmt: string): string {
@@ -68,9 +68,9 @@ export function CricketMatchCard({
             </span>
           ) : (
             <span className="text-foreground font-semibold flex items-center gap-1.5 truncate">
-              <span className="text-[var(--color-gold)]">{relativeDay(match.startTs)}</span>
+              <span className="text-[var(--color-gold)]"><LocalTime ts={match.startTs} mode="day" /></span>
               <span className="text-muted-foreground">·</span>
-              <span>{formatLocalTime(match.startTs)}</span>
+              <span><LocalTime ts={match.startTs} /></span>
             </span>
           )}
         </div>

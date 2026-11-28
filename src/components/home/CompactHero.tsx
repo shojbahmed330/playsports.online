@@ -5,7 +5,7 @@ import type { SportGame } from "@/lib/espn.functions";
 import type { Wc2026Fixture } from "@/lib/wc2026.functions";
 import { flagOf } from "@/lib/flags";
 import { Countdown } from "@/components/sports/Countdown";
-import { formatLocalTime, relativeDay } from "@/lib/time";
+import { LocalTime } from "@/components/ui/local-time";
 
 type Tagged = { sport: SportConfig; game: SportGame };
 
@@ -99,7 +99,7 @@ function WcHero({ f, live }: { f: Wc2026Fixture; live: boolean }) {
           <div className="flex items-center gap-2">
             {!live && f.status !== "finished" && (
               <span className="text-foreground">
-                {relativeDay(startMs)} · <Countdown ts={startMs} />
+                <LocalTime ts={startMs} mode="day" /> · <Countdown ts={startMs} />
               </span>
             )}
             {deepLink ? (
@@ -153,7 +153,7 @@ function HeroScoreBoard({
           </>
         ) : (
           <span className="text-base text-primary/80 sm:text-lg">
-            {formatLocalTime(startMs)}
+            <LocalTime ts={startMs} />
           </span>
         )}
       </div>
@@ -226,7 +226,7 @@ function EspnHero({ t, live }: { t: Tagged; live: boolean }) {
               </>
             ) : (
               <span className="text-base opacity-80 sm:text-lg">
-                {formatLocalTime(startMs)}
+                <LocalTime ts={startMs} />
               </span>
             )}
           </div>
@@ -253,7 +253,7 @@ function EspnHero({ t, live }: { t: Tagged; live: boolean }) {
           <div className="flex items-center gap-2">
             {!live && game.status === "pre" && (
               <span>
-                {relativeDay(startMs)} · <Countdown ts={startMs} />
+                <LocalTime ts={startMs} mode="day" /> · <Countdown ts={startMs} />
               </span>
             )}
             <Link

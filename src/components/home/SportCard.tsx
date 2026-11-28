@@ -3,7 +3,7 @@ import { ArrowRight, Trophy } from "lucide-react";
 import type { SportConfig } from "@/lib/sports-config";
 import type { SportGame } from "@/lib/espn.functions";
 import { Countdown } from "@/components/sports/Countdown";
-import { formatLocalTime } from "@/lib/time";
+import { LocalTime } from "@/components/ui/local-time";
 
 const SHELL =
   "group relative block overflow-hidden rounded-2xl border border-border bg-gradient-to-br transition-all hover:-translate-y-1 hover:border-foreground/20 hover:shadow-[var(--shadow-elevated)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
@@ -55,7 +55,7 @@ export function SportCard({
             <div className="truncate font-semibold text-foreground">
               {next.away.shortName || next.away.abbr} @ {next.home.shortName || next.home.abbr}
             </div>
-            <div>{formatLocalTime(next.startTs)}</div>
+            <div><LocalTime ts={next.startTs} /></div>
           </div>
         ) : recent ? (
           <div className="mt-3 text-caption text-muted-foreground">

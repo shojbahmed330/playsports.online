@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useHydrated } from "@/hooks/use-hydrated";
 
 /**
  * Thin one-line status bar under the hero.
@@ -14,10 +15,9 @@ export function StatusBar({
   totalToday: number;
 }) {
   const [zone, setZone] = useState<string>("");
-  const [mounted, setMounted] = useState(false);
+  const mounted = useHydrated();
 
   useEffect(() => {
-    setMounted(true);
     try {
       const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
       const offset = -new Date().getTimezoneOffset() / 60;

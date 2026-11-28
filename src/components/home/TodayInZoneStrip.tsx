@@ -4,6 +4,7 @@
 // Day-after. Each chip deep-links to its sport/match page.
 
 import { useMemo } from "react";
+import { useHydrated } from "@/hooks/use-hydrated";
 import { Link } from "@tanstack/react-router";
 import { Globe, Flame } from "lucide-react";
 import { dateKeyInTz, fmtTime, getTimezone } from "@/lib/timezone";
@@ -45,6 +46,7 @@ export function TodayInZoneStrip({
   sports: SportConfig[];
 }) {
   const tz = useTimezone();
+  const mounted = useHydrated();
 
   const buckets = useMemo(() => {
     const all: Item[] = [
@@ -91,7 +93,9 @@ export function TodayInZoneStrip({
 
   const total =
     buckets.live.length + buckets.today.length + buckets.tomorrow.length + buckets.dayAfter.length;
-  if (total === 0) return null;
+  // The buckets depend on the viewer's timezone/current date, so render after
+  // mount; SSR and the first client paint must agree.
+  if (!mounted || total === 0) return null;
 
   return (
     <section className="animate-fade-in rounded-2xl border border-border bg-card/60 p-4 motion-reduce:animate-none sm:p-5">

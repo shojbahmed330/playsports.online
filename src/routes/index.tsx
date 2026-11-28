@@ -18,7 +18,7 @@ import { SportNav } from "@/components/sports/SportNav";
 import { LiveTicker } from "@/components/sports/LiveTicker";
 import { Countdown } from "@/components/sports/Countdown";
 import { GameGridSkeleton } from "@/components/sports/Skeletons";
-import { formatLocalTime, relativeDay } from "@/lib/time";
+import { LocalTime } from "@/components/ui/local-time";
 import { AdSlot } from "@/components/ads/AdSlot";
 import { SponsoredHero } from "@/components/affiliates/SponsoredHero";
 import { AffiliateStrip } from "@/components/affiliates/AffiliateStrip";
@@ -58,7 +58,6 @@ export const Route = createFileRoute("/")({
     // SSR prefetch — prime React Query cache so HTML arrives with live scores already rendered.
     // Each prime is independent and never throws (server fns already return {error} shapes).
     const sportsInput = SPORT_LIST.map((s) => ({ path: s.path, league: s.label }));
-    const cricketIds = CRICKET_LEAGUES.map((l) => l.id);
     // The hero and live sections must be in the SSR HTML so the first client
     // render matches and there is no empty-hero layout swap. Cricket is below
     // the fold, so it stays a background prefetch.
@@ -74,13 +73,6 @@ export const Route = createFileRoute("/")({
         staleTime: 20_000,
       }),
     ]);
-    void context.queryClient
-      .prefetchQuery({
-        queryKey: ["cricket", "slate", cricketIds.join(",")],
-        queryFn: () => getMultiCricketToday({ data: { leagueIds: cricketIds } }),
-        staleTime: 30_000,
-      })
-      .catch(() => null);
     return null;
   },
   component: HubPage,
@@ -577,7 +569,7 @@ function Wc2026FixtureCard({ f }: { f: Wc2026Fixture }) {
           <span className="text-micro font-bold text-muted-foreground">FT</span>
         ) : (
           <span className="text-micro font-semibold text-primary">
-            {relativeDay(startMs)} · {formatLocalTime(startMs)}
+            <LocalTime ts={startMs} mode="day" /> · <LocalTime ts={startMs} />
           </span>
         )}
       </div>

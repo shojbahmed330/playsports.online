@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
+import { useHydrated } from "@/hooks/use-hydrated";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { getMultiCricketToday, type CricketMatch } from "@/lib/cricket.functions";
@@ -8,8 +8,7 @@ import { CRICKET_LEAGUES } from "@/lib/cricket-leagues";
 import { CricketMatchCard } from "@/components/cricket/CricketMatchCard";
 
 export function CricketSlate() {
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+  const mounted = useHydrated();
   const fn = useServerFn(getMultiCricketToday);
   const leagueIds = CRICKET_LEAGUES.map((l) => l.id);
   const q = useQuery({
