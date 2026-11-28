@@ -85,3 +85,10 @@ Updated: 2026-11-28 (session 2 — redesign pass + production deploy)
 
 - Added `LocalTime` + `useHydrated`; time/day labels no longer differ between SSR UTC and the viewer's zone. Gated the zone strip, count badges, status bar and cricket slate; removed the unawaited cricket prefetch that raced the dehydrated cache.
 - `/` and `/cricket` browser consoles are clean after fixing the last `GameCard` time labels; BLK-HYDRATION-02 closed.
+
+## Premium USDT checkout (2026-11-29)
+
+- `/premium` now offers 1/3/6/12-month plans with a USDT **BEP20** payment card: admin-configured wallet, exact amount, transaction-hash submission and payment history.
+- Admin → Monetize → **Crypto payments**: enable checkout, save the BEP20 wallet, review pending hashes on BscScan, approve/reject. Approval extends the user's membership from the current expiry.
+- Added `supabase/migrations/20261128190000_crypto_payments.sql` (RLS, unique tx hash, admin review columns). The table is not live until that SQL is applied in the Supabase SQL editor.
+- Price stays $3/month; no Google Play Billing.

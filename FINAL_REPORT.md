@@ -11,7 +11,7 @@
 | DONE (audit + phases 1–8 + verification) | **150 route screens** |
 | DONE (global items, each with `plans/GLB-*.md`) | **10** |
 | Redesign DONE (token/system pass) | **22 / 22 mandatory screens** |
-| Redesign blocked | **0** (PREM-01 pricing/checkout remains an owner decision; visuals shipped, billing unchanged) |
+| Redesign blocked | **0** (premium visuals + crypto checkout shipped; DB migration is an owner action) |
 | Total route screens | **150** |
 
 **DONE screens:** all 150 route screens. **Redesign:** HOME-01, FB-22, FB-30, PLYR-02, MINE-01, PREM-01 and all 17 off-system cricket screens (CRK-03/04/05/06/07/08/09/10/11/12/15/16/18/19/20/21/24). Plus GLB-01–GLB-10.
@@ -61,7 +61,7 @@ This is a **completed overhaul of every route screen and every global item in sc
 ## 5. Remaining risks
 
 - **22 of 22 redesign screens** are token-complete; most cricket/FB-30/MINE/PREM passes are system-level (tokens, shared states, controls), not a bespoke layout reinvented page by page. HOME-01 and FB-22 received the deeper structural treatment.
-- **PREM-01** visuals are done but the price/checkout decision ($3 mailto vs $5 Google Play Billing) is still open; no billing logic changed.
+- **PREM-01** visuals are done, and the owner chose **USDT BEP20 at $3/month**. Crypto checkout + admin manual verification are implemented; the `crypto_payments` migration must be applied in Supabase and the wallet enabled in Admin before payments go live.
 - **Encoding regression fixed:** a bulk class rewrite had corrupted UTF-8 punctuation/emoji in 48 source files; they were rebuilt from the pre-rewrite commit with a UTF-8-safe mapper, docs repaired, and `tests/encoding.test.ts` added. Live HTML now verifies zero `â€`/`ðŸ`/`Γ`.
 - **Player profiles:** ESPN athlete fetch rotates between two hosts and retries 4×, so transient 503s no longer 404 real players; the error state is friendly, and the flag URL renders as an image.
 - **News:** `/news` leads with current completed ESPN matches (`current-...`, 10 min cache), then 20 deterministic archive recaps; DB/AI recaps override both. Aged-out current URLs redirect to `/news`, sections are labelled, and RSS/sitemap are live.
@@ -77,7 +77,7 @@ This is a **completed overhaul of every route screen and every global item in sc
 
 ## 6. Recommended next order
 
-1. Decide the premium price/checkout path ($3 mailto vs $5 Google Play Billing) and wire the chosen flow into PREM-01.
+1. Apply the crypto migration in Supabase, then enable the BEP20 wallet in Admin → Monetize → Crypto payments.
 2. Final Lighthouse + 390 px/1280 px visual QA on the deployed build.
 3. Run the 6-template Tier B pass (match centre, team, player, scores, standings, leaders).
 4. Fix the hydration text mismatch and lazy-load more Home sections.

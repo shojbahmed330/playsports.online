@@ -1,5 +1,12 @@
 # Changelog
 
+## Premium USDT BEP20 checkout (2026-11-29)
+
+- `/premium` now supports 1/3/6/12-month plans paid in **USDT BEP20**: admin-configured wallet, exact USDT amount, transaction-hash submission and per-user payment history.
+- Admin → Monetize → **Crypto payments**: enable checkout, save/change the BEP20 wallet, open each hash on BscScan, approve/reject. Approval extends `memberships.premium_until` (stacking from the current expiry).
+- Added `supabase/migrations/20261128190000_crypto_payments.sql` with RLS (users see their own requests; admins see all), a unique tx-hash constraint and review fields. **Apply this SQL in the Supabase SQL editor before enabling checkout.**
+- Premium stays $3/month; no Google Play Billing.
+
 ## News generator + final hardening (2026-11-28)
 
 - Added protected `GET/POST /api/public/news-generate` (`x-news-secret` / `NEWS_ADMIN_SECRET`) to generate and upsert one recap per call; free-tier AI returned 429 during seeding, so it is optional.
