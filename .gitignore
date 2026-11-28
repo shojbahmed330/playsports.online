@@ -44,3 +44,5 @@ dist-ssr
 /screenshots/
 .vercel
 .env*
+
+supabase/.temp/
