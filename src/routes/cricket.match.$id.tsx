@@ -6,7 +6,6 @@ import { useState } from "react";
 import { z } from "zod";
 import { zodValidator } from "@tanstack/zod-adapter";
 import { SportNav } from "@/components/sports/SportNav";
-import { CricketPlayerSheet } from "@/components/cricket/CricketPlayerSheet";
 import { getCricketMatchDetail } from "@/lib/cricket.functions";
 import { breadcrumbList, sportsEvent, ldScript } from "@/lib/seo/jsonld";
 import { AffiliateStrip } from "@/components/affiliates/AffiliateStrip";
@@ -176,7 +175,6 @@ function MatchPage() {
   const match = q.data?.match ?? null;
   const innings = q.data?.innings ?? [];
   const commentary = q.data?.commentary ?? [];
-  const [playerId, setPlayerId] = useState<string | null>(null);
 
   if (!match) {
     return (
@@ -235,20 +233,14 @@ function MatchPage() {
           tabs={tabs}
           render={(active) => {
             if (active === "summary")
-              return <SummaryTab match={match} innings={innings} onPlayer={setPlayerId} />;
+              return <SummaryTab match={match} innings={innings} />;
             if (active === "scorecard")
-              return <ScorecardTab match={match} innings={innings} onPlayer={setPlayerId} />;
+              return <ScorecardTab match={match} innings={innings} />;
             if (active === "commentary") return <CommentaryTab commentary={commentary} />;
             if (active === "info") return <InfoTab match={match} />;
             if (active === "faqs") return <MatchFaqBlock {...faqProps} />;
             return null;
           }}
-        />
-
-        <CricketPlayerSheet
-          athleteId={playerId}
-          leagueId={leagueId}
-          onClose={() => setPlayerId(null)}
         />
 
         <div className="mt-10 space-y-6">

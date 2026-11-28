@@ -1,4 +1,4 @@
-import { createServerFn } from "@tanstack/react-start";
+﻿import { createServerFn } from "@tanstack/react-start";
 import { setResponseHeader } from "@tanstack/react-start/server";
 import { isCuratedLeague, BILATERAL_SERIES_IDS } from "./cricket-leagues";
 import {
@@ -23,7 +23,7 @@ function setEdgeCache(hasLive: boolean) {
 //   /cricket/{seriesId}/scoreboard
 //   /cricket/{seriesId}/summary?event={eventId}
 //   /cricket/{seriesId}/news
-// No public ICC rankings or per-team roster endpoint — we derive squads
+// No public ICC rankings or per-team roster endpoint â€” we derive squads
 // and recent form from event data itself.
 
 const BASE = "https://site.api.espn.com/apis/site/v2/sports/cricket";
@@ -44,7 +44,7 @@ async function apiGet(path: string, ttlMs: number): Promise<unknown> {
   );
 }
 
-// ───────── DTOs ─────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€ DTOs â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export type CricketInnings = {
   period: number;       // 1..4 (Tests have up to 4)
@@ -82,9 +82,9 @@ export type CricketTeam = {
   scoreSummary: string | null;
   winner: boolean | null;
   innings: CricketInnings[];
-  /** Sum of runs across innings — handy for sort/display fallback */
+  /** Sum of runs across innings â€” handy for sort/display fallback */
   totalRuns: number;
-  /** Parsed from `scoreSummary` — trustworthy top-line (never fabricates /0). */
+  /** Parsed from `scoreSummary` â€” trustworthy top-line (never fabricates /0). */
   parsedScore: ParsedScore;
 };
 
@@ -100,11 +100,11 @@ export type CricketMatch = {
   leagueId: string;
   leagueName: string;
   leagueAbbr: string;
-  /** "league" = curated franchise/tournament (IPL, BBL, T20WC…); "bilateral" = international tour (NZ v ENG…) */
+  /** "league" = curated franchise/tournament (IPL, BBL, T20WCâ€¦); "bilateral" = international tour (NZ v ENGâ€¦) */
   kind: "league" | "bilateral";
   startTs: number;            // ms
   status: "pre" | "in" | "post";
-  statusDetail: string;       // "Stumps · Day 2" / "Live · 12.3 ov" / "FT"
+  statusDetail: string;       // "Stumps Â· Day 2" / "Live Â· 12.3 ov" / "FT"
   shortDetail: string;
   description: string;        // "Final, T20I at Ahmedabad"
   format: "T20" | "ODI" | "Test" | "T10" | "List A" | "FC" | string;
@@ -134,22 +134,22 @@ export type CricketNewsItem = {
   link: string;
 };
 
-// ───────── mappers ─────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€ mappers â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 /**
  * Parse ESPN's compact score string into structured innings.
  * Examples:
- *  "172"              → 1 innings, allOut unknown → treated as allOut when no /w
- *  "172/8"            → 1 innings, 172 for 8
- *  "172/8d"           → 1 innings, declared
- *  "45/0"             → 1 innings, 45 for 0
- *  "172 all out"      → 1 innings, allOut=true, wickets=10
- *  "172 & 210/4d"     → 2 innings (Tests)
- *  "DNB" / ""         → didNotBat=true
+ *  "172"              â†’ 1 innings, allOut unknown â†’ treated as allOut when no /w
+ *  "172/8"            â†’ 1 innings, 172 for 8
+ *  "172/8d"           â†’ 1 innings, declared
+ *  "45/0"             â†’ 1 innings, 45 for 0
+ *  "172 all out"      â†’ 1 innings, allOut=true, wickets=10
+ *  "172 & 210/4d"     â†’ 2 innings (Tests)
+ *  "DNB" / ""         â†’ didNotBat=true
  */
 export function parseScoreSummary(input: string | null | undefined): ParsedScore {
   const raw = (input ?? "").trim();
-  if (!raw || /^(dnb|yet to bat|—|-)$/i.test(raw)) {
+  if (!raw || /^(dnb|yet to bat|â€”|-)$/i.test(raw)) {
     return { innings: [], totalRuns: 0, didNotBat: true, raw: raw || null };
   }
   const parts = raw.split(/\s*&\s*/);
@@ -182,7 +182,7 @@ export function parseScoreSummary(input: string | null | undefined): ParsedScore
       });
       continue;
     }
-    // Bare "172" → in cricket a bare number in a completed match means all out.
+    // Bare "172" â†’ in cricket a bare number in a completed match means all out.
     const bare = /^(\d+)$/.exec(core);
     if (bare) {
       innings.push({
@@ -194,13 +194,13 @@ export function parseScoreSummary(input: string | null | undefined): ParsedScore
       });
       continue;
     }
-    // Unparseable → keep going but don't invent numbers
+    // Unparseable â†’ keep going but don't invent numbers
   }
   const totalRuns = innings.reduce((s, i) => s + i.runs, 0);
   return { innings, totalRuns, didNotBat: innings.length === 0, raw };
 }
 
-/** Merge linescore innings with parsed summary — parsed summary always wins. */
+/** Merge linescore innings with parsed summary â€” parsed summary always wins. */
 function mergeInnings(fromLinescore: CricketInnings[], parsed: ParsedScore): CricketInnings[] {
   const nonEmpty = fromLinescore.filter((l) => l.runs > 0 || l.wickets > 0 || l.overs > 0);
   if (parsed.innings.length > 0) {
@@ -269,7 +269,7 @@ export function deriveResult(args: {
   statusDescription: string | null;
 }): CricketResult | null {
   if (args.status !== "post") return null;
-  const text = [args.note, args.statusDescription].filter(Boolean).join(" · ").trim();
+  const text = [args.note, args.statusDescription].filter(Boolean).join(" Â· ").trim();
   const winnerTeam = args.home.winner === true ? args.home : args.away.winner === true ? args.away : null;
   const winnerAbbr = winnerTeam?.abbr || null;
   const lower = text.toLowerCase();
@@ -371,7 +371,7 @@ function mapMatch(e: any, league: { id: string; name: string; abbr: string }): C
 }
 
 
-// ───────── server functions ─────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€ server functions â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 // Single-series scoreboard
 export const getCricketScoreboard = createServerFn({ method: "GET" })
@@ -503,7 +503,7 @@ function num(v: unknown): number {
   return Number.isFinite(n) ? n : 0;
 }
 
-/** Flatten ESPN's nested `statistics.categories[].stats[]` into a name→value map. */
+/** Flatten ESPN's nested `statistics.categories[].stats[]` into a nameâ†’value map. */
 function flattenStats(node: any): Record<string, number | string> {
   const out: Record<string, number | string> = {};
   const cats: any[] = node?.statistics?.categories ?? [];
@@ -596,7 +596,7 @@ export const getCricketMatchDetail = createServerFn({ method: "GET" })
       };
 
 
-      // Innings detail — ESPN nests per-player stats inside
+      // Innings detail â€” ESPN nests per-player stats inside
       //   roster[i].linescores[periodIdx].linescores[*].statistics.categories[*].stats[*]
       // We flatten per (team, period) and classify batter vs bowler by stat presence.
       type PerPlayer = {
@@ -685,10 +685,10 @@ export const getCricketMatchDetail = createServerFn({ method: "GET" })
               if (card === "caught" || card === "caughtfielder")
                 return `c ${fielderNames[0] ?? "fielder"}${bowlerName ? ` b ${bowlerName}` : ""}`;
               if (card === "caughtkeeper" || card === "caught behind")
-                return `c †${fielderNames[0] ?? "wk"}${bowlerName ? ` b ${bowlerName}` : ""}`;
+                return `c â€ ${fielderNames[0] ?? "wk"}${bowlerName ? ` b ${bowlerName}` : ""}`;
               if (card === "caught and bowled" || card === "caughtandbowled" || card === "caught & bowled")
                 return bowlerName ? `c & b ${bowlerName}` : "c & b";
-              if (card === "stumped") return `st †${fielderNames[0] ?? "wk"}${bowlerName ? ` b ${bowlerName}` : ""}`;
+              if (card === "stumped") return `st â€ ${fielderNames[0] ?? "wk"}${bowlerName ? ` b ${bowlerName}` : ""}`;
               if (card === "run out" || card === "runout")
                 return `run out${fielderNames.length ? ` (${fielderNames.join("/")})` : ""}`;
               if (card === "hit wicket" || card === "hitwicket")
@@ -753,7 +753,7 @@ export const getCricketMatchDetail = createServerFn({ method: "GET" })
           }
         }
 
-        // Totals — prefer the team-line for this period when available
+        // Totals â€” prefer the team-line for this period when available
         const teamComp = competitors.find((c: any) => String(c?.team?.id ?? "") === battingTeamId);
         const line = (teamComp?.linescores ?? []).find((l: any) => num(l.period) === bucket.period);
         innings.push({
@@ -827,14 +827,14 @@ export const getCricketNews = createServerFn({ method: "GET" })
     }
   });
 
-// ═══════════════════════════════════════════════════════════════
-// Batch 1 — extended endpoints
-// ═══════════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// Batch 1 â€” extended endpoints
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
 import rankingsJson from "@/data/cricket/rankings.json";
 import { CRICKET_LEAGUES, CRICKET_LEAGUE_BY_ID } from "./cricket-leagues";
 
-// ───────── Series list / detail ─────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€ Series list / detail â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export type CricketSeriesSummary = {
   id: string;
@@ -935,7 +935,7 @@ export const getCricketSeriesDetail = createServerFn({ method: "GET" })
     }
   });
 
-// ───────── Teams ─────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€ Teams â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export type CricketTeamSummary = {
   id: string;
@@ -977,7 +977,7 @@ export const getCricketTeamsForLeague = createServerFn({ method: "GET" })
     return { teams: Array.from(seen.values()).sort((a, b) => a.name.localeCompare(b.name)) };
   });
 
-// ───────── Player (best-effort: ESPN athlete summary) ─────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€ Player (best-effort: ESPN athlete summary) â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export type CricketCareerStat = {
   format: string;       // "Test" / "ODI" / "T20I" / "IPL"
@@ -1037,7 +1037,7 @@ function parseAthleteStats(raw: any): CricketCareerStat[] {
         ? num(stats.find((x: any) => x?.name === k || x?.abbreviation === k)?.value)
         : num(stats?.[k]);
     out.push({
-      format: s?.displayName ?? s?.name ?? s?.type ?? "—",
+      format: s?.displayName ?? s?.name ?? s?.type ?? "â€”",
       matches: get("matches") ?? get("M") ?? get("games"),
       runs: get("runs") ?? get("R"),
       battingAvg: get("battingAverage") ?? get("Ave") ?? get("avg"),
@@ -1066,8 +1066,8 @@ function ageFromDob(dob: string | null): number | null {
   return Math.floor(diff / (365.25 * 24 * 3600 * 1000));
 }
 
-// Scrape ESPNcricinfo Statsguru "Career averages" tables — free, unlimited, no key.
-// One row per format (Test=1, ODI=2, T20I=3) × type (batting/bowling).
+// Scrape ESPNcricinfo Statsguru "Career averages" tables â€” free, unlimited, no key.
+// One row per format (Test=1, ODI=2, T20I=3) Ã— type (batting/bowling).
 const STATSGURU_UA =
   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0 Safari/537.36";
 
@@ -1158,141 +1158,137 @@ async function fetchStatsguruCareer(playerId: string): Promise<CricketCareerStat
     .sort((a, b) => order.indexOf(a.format) - order.indexOf(b.format));
 }
 
+export async function fetchCricketPlayer(athleteId: string): Promise<{
+  profile: CricketPlayerProfile | null;
+  error: string | null;
+}> {
+  try {
+    const url = `https://site.web.api.espn.com/apis/common/v3/sports/cricket/athletes/${athleteId}`;
+    const [bioRes, career] = await Promise.all([
+      fetch(url, { headers: { accept: "application/json" }, signal: AbortSignal.timeout(15_000) }),
+      Promise.race([
+        fetchStatsguruCareer(athleteId),
+        new Promise<never>((_, reject) =>
+          setTimeout(() => reject(new Error("Career stats timed out")), 15_000),
+        ),
+      ]).catch(() => []),
+    ]);
+    if (!bioRes.ok) {
+      return { profile: null, error: `ESPN ${bioRes.status}` };
+    }
+    const raw = (await bioRes.json()) as any;
+    const a = raw?.athlete ?? raw ?? {};
+    const team = a?.team ?? {};
+    const bat = Array.isArray(a.batStyle) ? a.batStyle[0]?.description : a.batStyle?.description ?? a.batStyle;
+    const bowl = Array.isArray(a.bowlStyle) ? a.bowlStyle[0]?.description : a.bowlStyle?.description ?? a.bowlStyle;
+    let dob: string | null = null;
+    if (typeof a.displayDOB === "string" && /^\d{2}\/\d{2}\/\d{4}$/.test(a.displayDOB)) {
+      const [dd, mm, yy] = a.displayDOB.split("/");
+      dob = `${yy}-${mm}-${dd}`;
+    } else if (a.dateOfBirth) {
+      dob = String(a.dateOfBirth);
+    }
+    const profile: CricketPlayerProfile = {
+      id: String(a.id ?? athleteId),
+      name: a.displayName ?? a.fullName ?? "",
+      shortName: a.shortName ?? a.lastName ?? "",
+      headshot: a.headshot?.href ?? null,
+      team: team.displayName ?? team.name ?? team.location ?? null,
+      teamLogo: team.logos?.[0]?.href ?? team.logo ?? null,
+      country: team.displayName ?? team.location ?? a.citizenship ?? null,
+      flag: a.flag?.href ?? null,
+      position: a.position?.displayName ?? a.position?.name ?? null,
+      batStyle: bat ?? null,
+      bowlStyle: bowl ?? null,
+      dob,
+      age: typeof a.age === "number" ? a.age : ageFromDob(dob),
+      birthPlace: [a.birthPlace?.city, a.birthPlace?.country].filter(Boolean).join(", ") || null,
+      jersey: a.jersey ?? null,
+      description: a.description ?? a.bio ?? null,
+      career,
+      error: null,
+    };
+    return { profile, error: null };
+  } catch (e) {
+    return { profile: null, error: e instanceof Error ? e.message : "Unknown" };
+  }
+}
+
 export const getCricketPlayer = createServerFn({ method: "GET" })
   .inputValidator((d: { athleteId: string; leagueId?: string }) => d)
-  .handler(async ({ data }) => {
-    try {
-      // ESPN's working public athlete endpoint (cricket): site.web.api common/v3
-      const url = `https://site.web.api.espn.com/apis/common/v3/sports/cricket/athletes/${data.athleteId}`;
-      const [bioRes, career] = await Promise.all([
-        fetch(url, { headers: { accept: "application/json" } }),
-        fetchStatsguruCareer(data.athleteId),
-      ]);
-      if (!bioRes.ok) {
-        return {
-          profile: null as CricketPlayerProfile | null,
-          error: `ESPN ${bioRes.status}`,
-        };
-      }
-      const raw = (await bioRes.json()) as any;
-      const a = raw?.athlete ?? raw ?? {};
-      const team = a?.team ?? {};
-      const bat = Array.isArray(a.batStyle) ? a.batStyle[0]?.description : a.batStyle?.description ?? a.batStyle;
-      const bowl = Array.isArray(a.bowlStyle) ? a.bowlStyle[0]?.description : a.bowlStyle?.description ?? a.bowlStyle;
-      // displayDOB is dd/mm/yyyy
-      let dob: string | null = null;
-      if (typeof a.displayDOB === "string" && /^\d{2}\/\d{2}\/\d{4}$/.test(a.displayDOB)) {
-        const [dd, mm, yy] = a.displayDOB.split("/");
-        dob = `${yy}-${mm}-${dd}`;
-      } else if (a.dateOfBirth) {
-        dob = String(a.dateOfBirth);
-      }
+  .handler(async ({ data }) => fetchCricketPlayer(data.athleteId));
 
-
-      const profile: CricketPlayerProfile = {
-        id: String(a.id ?? data.athleteId),
-        name: a.displayName ?? a.fullName ?? "",
-        shortName: a.shortName ?? a.lastName ?? "",
-        headshot: a.headshot?.href ?? null,
-        team: team.displayName ?? team.name ?? team.location ?? null,
-        teamLogo: team.logos?.[0]?.href ?? team.logo ?? null,
-        country: team.displayName ?? team.location ?? a.citizenship ?? null,
-        flag: a.flag?.href ?? null,
-        position: a.position?.displayName ?? a.position?.name ?? null,
-        batStyle: bat ?? null,
-        bowlStyle: bowl ?? null,
-        dob,
-        age: typeof a.age === "number" ? a.age : ageFromDob(dob),
-        birthPlace: [a.birthPlace?.city, a.birthPlace?.country].filter(Boolean).join(", ") || null,
-        jersey: a.jersey ?? null,
-        description: a.description ?? a.bio ?? null,
-        career,
-        error: null,
-      };
-      return { profile };
-    } catch (e) {
-      return {
-        profile: null as CricketPlayerProfile | null,
-        error: e instanceof Error ? e.message : "Unknown",
-      };
-    }
-  });
-
-
-// ───────── Athlete search (name → id) ─────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€ Athlete search (name â†’ id) â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 const athleteSearchCache = new Map<string, { at: number; id: string | null }>();
 
+export async function findCricketAthleteByName(rawName: string): Promise<string | null> {
+  const name = rawName?.trim();
+  if (!name) return null;
+  const key = `v2:${name.toLowerCase()}`;
+  const hit = athleteSearchCache.get(key);
+  if (hit && Date.now() - hit.at < 24 * 60 * 60_000) {
+    return hit.id;
+  }
+
+  async function tryUrl(url: string): Promise<string | null> {
+    try {
+      const r = await fetch(url, {
+        headers: { accept: "application/json" },
+        signal: AbortSignal.timeout(8_000),
+      });
+      if (!r.ok) return null;
+      const j: any = await r.json();
+      const found: string[] = [];
+      const seen = new Set<unknown>();
+      const walk = (node: any, parentSport?: string) => {
+        if (!node || typeof node !== "object" || seen.has(node)) return;
+        seen.add(node);
+        const sport = String(node.sport ?? node.sportSlug ?? parentSport ?? "").toLowerCase();
+        const type = String(node.type ?? node.kind ?? "").toLowerCase();
+        const uid = typeof node.uid === "string" ? node.uid : "";
+        const looksLikeAthlete =
+          type.includes("player") ||
+          type.includes("athlete") ||
+          /~a:\d+/.test(uid);
+        const uidId = uid.match(/~a:(\d+)/)?.[1] ?? null;
+        const rawId = uidId ?? node.id ?? null;
+        if (looksLikeAthlete && rawId && (!sport || sport.includes("cricket"))) {
+          found.push(String(rawId));
+        }
+        for (const k of Object.keys(node)) {
+          const v = (node as any)[k];
+          if (Array.isArray(v)) v.forEach((x) => walk(x, sport || parentSport));
+          else if (v && typeof v === "object") walk(v, sport || parentSport);
+        }
+      };
+      walk(j);
+      return found[0] ?? null;
+    } catch {
+      return null;
+    }
+  }
+
+  const q = encodeURIComponent(name);
+  const urls = [
+    `https://site.web.api.espn.com/apis/search/v2?query=${q}&type=player&sport=cricket&limit=5`,
+    `https://site.web.api.espn.com/apis/search/v2?query=${q}&type=player&limit=10`,
+    `https://site.web.api.espn.com/apis/common/v3/search?query=${q}&limit=10`,
+  ];
+  let id: string | null = null;
+  for (const u of urls) {
+    id = await tryUrl(u);
+    if (id) break;
+  }
+  if (id) athleteSearchCache.set(key, { at: Date.now(), id });
+  return id;
+}
+
 export const findCricketAthlete = createServerFn({ method: "GET" })
   .inputValidator((d: { name: string }) => d)
-  .handler(async ({ data }) => {
-    const name = data.name?.trim();
-    if (!name) return { athleteId: null as string | null };
-    const key = name.toLowerCase();
-    const hit = athleteSearchCache.get(key);
-    if (hit && Date.now() - hit.at < 24 * 60 * 60_000) {
-      return { athleteId: hit.id };
-    }
+  .handler(async ({ data }) => ({ athleteId: await findCricketAthleteByName(data.name) }));
 
-    async function tryUrl(url: string): Promise<string | null> {
-      try {
-        const r = await fetch(url, { headers: { accept: "application/json" } });
-        if (!r.ok) return null;
-        const j: any = await r.json();
-        // Walk the payload to find the first plausible cricket athlete id.
-        const found: string[] = [];
-        const seen = new Set<unknown>();
-        const walk = (node: any, parentSport?: string) => {
-          if (!node || typeof node !== "object" || seen.has(node)) return;
-          seen.add(node);
-          const sport = String(node.sport ?? node.sportSlug ?? parentSport ?? "").toLowerCase();
-          const type = String(node.type ?? node.kind ?? "").toLowerCase();
-          const uid = typeof node.uid === "string" ? node.uid : "";
-          const looksLikeAthlete =
-            type.includes("player") ||
-            type.includes("athlete") ||
-            /~a:\d+/.test(uid);
-          const rawId =
-            node.id ??
-            (uid.match(/~a:(\d+)/)?.[1]) ??
-            null;
-          if (looksLikeAthlete && rawId && (!sport || sport.includes("cricket"))) {
-            found.push(String(rawId));
-          }
-          for (const k of Object.keys(node)) {
-            const v = (node as any)[k];
-            if (Array.isArray(v)) v.forEach((x) => walk(x, sport || parentSport));
-            else if (v && typeof v === "object") walk(v, sport || parentSport);
-          }
-        };
-        walk(j);
-        return found[0] ?? null;
-      } catch {
-        return null;
-      }
-    }
-
-    const q = encodeURIComponent(name);
-    const urls = [
-      `https://site.web.api.espn.com/apis/search/v2?query=${q}&type=player&sport=cricket&limit=5`,
-      `https://site.web.api.espn.com/apis/search/v2?query=${q}&type=player&limit=10`,
-      `https://site.web.api.espn.com/apis/common/v3/search?query=${q}&limit=10`,
-    ];
-    let id: string | null = null;
-    for (const u of urls) {
-      id = await tryUrl(u);
-      if (id) break;
-    }
-    athleteSearchCache.set(key, { at: Date.now(), id });
-    return { athleteId: id };
-  });
-
-
-
-
-
-
-// ───────── Rankings (bundled fallback) ─────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€ Rankings (bundled fallback) â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export type CricketRankings = typeof rankingsJson;
 
@@ -1301,13 +1297,13 @@ export const getCricketRankings = createServerFn({ method: "GET" })
     return { rankings: rankingsJson as CricketRankings };
   });
 
-// ───────── Bilateral / international tours ─────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€ Bilateral / international tours â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Groups uncurated ESPN tour series (e.g. "England in New Zealand 2026")
 // into tour buckets derived from the global cricket scoreboard.
 
 export type BilateralTour = {
   id: string;          // ESPN leagueId
-  name: string;        // "England tour of New Zealand" — best-guess label
+  name: string;        // "England tour of New Zealand" â€” best-guess label
   abbr: string;
   format: string;      // T20I / ODI / Test (most common in the tour)
   teams: { id: string; name: string; abbr: string; logo: string | null; flag: string | null }[];
@@ -1322,7 +1318,7 @@ function deriveTourName(matches: CricketMatch[]): string {
   // Prefer ESPN-provided league name if it doesn't look like a series id
   const lname = matches[0]?.leagueName?.trim();
   if (lname && lname.length > 3 && !/^\d+$/.test(lname)) return lname;
-  // Fallback — derive from teams
+  // Fallback â€” derive from teams
   const teamSet = new Set<string>();
   for (const m of matches) {
     if (m.home.name) teamSet.add(m.home.name);

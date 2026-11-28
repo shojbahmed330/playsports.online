@@ -4,6 +4,17 @@ import { useServerFn } from "@tanstack/react-start";
 import { X, User, Calendar, MapPin, Shirt, Activity, Loader2, AlertCircle } from "lucide-react";
 import { getCricketPlayer, type CricketCareerStat } from "@/lib/cricket.functions";
 import { AffiliateStrip } from "@/components/affiliates/AffiliateStrip";
+import { Link } from "@tanstack/react-router";
+import { cricketPlayerSlug } from "@/lib/cricket-player-slug";
+
+function withTimeout<T>(promise: Promise<T>, ms = 12_000): Promise<T> {
+  return Promise.race([
+    promise,
+    new Promise<T>((_, reject) =>
+      setTimeout(() => reject(new Error("Player profile timed out")), ms),
+    ),
+  ]);
+}
 
 type Props = {
   athleteId: string | null;
@@ -31,8 +42,9 @@ export function CricketPlayerSheet({ athleteId, leagueId, onClose }: Props) {
   const q = useQuery({
     enabled: open,
     queryKey: ["cricket", "player", athleteId, leagueId ?? ""],
-    queryFn: () => fn({ data: { athleteId: String(athleteId), leagueId } }),
+    queryFn: () => withTimeout(fn({ data: { athleteId: String(athleteId), leagueId } })),
     staleTime: 60 * 60_000,
+    retry: 1,
   });
 
   if (!open) return null;
@@ -78,14 +90,30 @@ export function CricketPlayerSheet({ athleteId, leagueId, onClose }: Props) {
           </div>
         )}
 
-        {!q.isLoading && (!p || q.data?.error) && (
+        {!q.isLoading && (!p || q.data?.error || q.isError) && (
           <div className="space-y-3 px-4 py-16 text-center">
             <AlertCircle className="mx-auto size-10 text-amber-400/80" aria-hidden="true" />
-            <div className="text-sm text-amber-200/90 font-semibold">Profile unavailable</div>
-            <p className="text-xs text-muted-foreground max-w-xs mx-auto">
-              ESPN didn't return data for this player. Try another match — bilateral &amp; older
-              series sometimes ship without athlete records.
+            <div className="text-sm font-semibold text-amber-200/90">Profile unavailable</div>
+            <p className="mx-auto max-w-xs text-caption text-muted-foreground">
+              ESPN didn't return data for this player. Bilateral and older series sometimes ship
+              without athlete records.
             </p>
+            <div className="flex flex-wrap items-center justify-center gap-2">
+              <button
+                type="button"
+                onClick={() => void q.refetch()}
+                className="inline-flex min-h-11 items-center rounded-full border border-border px-4 text-caption font-semibold text-foreground hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                Try again
+              </button>
+              <Link
+                to="/cricket/players"
+                onClick={onClose}
+                className="inline-flex min-h-11 items-center rounded-full bg-primary px-4 text-caption font-bold text-primary-foreground hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                Browse players
+              </Link>
+            </div>
           </div>
         )}
 
@@ -141,6 +169,17 @@ export function CricketPlayerSheet({ athleteId, leagueId, onClose }: Props) {
                 </div>
               </div>
             </section>
+
+            <div className="px-5 pb-2">
+              <Link
+                to="/cricket/players/$slug"
+                params={{ slug: cricketPlayerSlug(p.name) }}
+                onClick={onClose}
+                className="inline-flex min-h-11 w-full items-center justify-center rounded-xl bg-primary px-4 text-caption font-bold text-primary-foreground transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                Open full profile →
+              </Link>
+            </div>
 
             {/* Meta */}
             {(p.batStyle || p.bowlStyle || p.birthPlace) && (

@@ -1,11 +1,16 @@
 import { errorMessage } from "@/lib/error-message";
 // Phase 2.1 (cricket) — SSR-friendly player profile.
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { z } from "zod";
+import { zodValidator } from "@tanstack/zod-adapter";
 import { SportNav } from "@/components/sports/SportNav";
 import { CricketSubNav } from "@/components/cricket/CricketSubNav";
 import { athlete, breadcrumbList, faqPage, ldScript } from "@/lib/seo/jsonld";
 import { canonical } from "@/lib/seo/canonical";
 import { getCricketPlayerBySlug, listCricketPlayers } from "@/lib/seo/cricket-entities";
+import { fetchCricketPlayer, findCricketAthleteByName } from "@/lib/cricket.functions";
+import { cricketPlayerNameFromSlug } from "@/lib/cricket-player-slug";
+import { LivePlayerProfile } from "@/components/cricket/LivePlayerProfile";
 import { readCachedFaqs } from "@/lib/ai-faqs.server";
 import { FaqSection } from "@/components/seo/FaqSection";
 import { RelatedLinks } from "@/components/seo/RelatedLinks";
@@ -13,11 +18,31 @@ import { relatedForCricketPlayer } from "@/lib/seo/related";
 import { EmptyState, ErrorState } from "@/components/ui/state";
 
 export const Route = createFileRoute("/cricket/players/$slug")({
-  loader: async ({ params }) => {
+  validateSearch: zodValidator(z.object({ athlete: z.string().optional() })),
+  loaderDeps: ({ search }) => ({ athlete: search.athlete }),
+  loader: async ({ params, deps }) => {
     const player = getCricketPlayerBySlug(params.slug);
-    if (!player) throw notFound();
-    const aiFaqs = await readCachedFaqs("cricket_player", params.slug);
-    return { player, aiFaqs };
+    if (player) {
+      const aiFaqs = await readCachedFaqs("cricket_player", params.slug);
+      return { kind: "static" as const, player, aiFaqs };
+    }
+
+    // Current players are not in the historical registry. Prefer the athlete
+    // id carried by scorecard links; fall back to a name search.
+    if (deps.athlete) {
+      const direct = await fetchCricketPlayer(deps.athlete);
+      if (direct.profile) {
+        return { kind: "live" as const, profile: direct.profile, slug: params.slug };
+      }
+    }
+
+    const name = cricketPlayerNameFromSlug(params.slug);
+    if (!name) throw notFound();
+    const athleteId = await findCricketAthleteByName(name);
+    if (!athleteId) throw notFound();
+    const res = await fetchCricketPlayer(athleteId);
+    if (!res.profile) throw notFound();
+    return { kind: "live" as const, profile: res.profile, slug: params.slug };
   },
   head: ({ params, loaderData }) => {
     if (!loaderData) {
@@ -25,15 +50,50 @@ export const Route = createFileRoute("/cricket/players/$slug")({
         meta: [{ title: "Player not found — Cricket" }, { name: "robots", content: "noindex" }],
       };
     }
-    const p = loaderData.player;
+    const live = loaderData.kind === "live";
+    const name = live ? loaderData.profile.name : loaderData.player.name;
+    const country = live
+      ? (loaderData.profile.country ?? loaderData.profile.team)
+      : loaderData.player.country;
     const url = canonical(`/cricket/players/${params.slug}`);
     const image = "https://www.playsports.online/og-default.png";
-    const title = `${p.name} — cricket career records, stats & history`;
-    const summary = p.records
-      .slice(0, 2)
-      .map((r) => `${r.category} (${r.value})`)
-      .join("; ");
-    const desc = `${p.name}${p.country ? ` (${p.country})` : ""} — records: ${summary || "career cricket profile"}.`;
+    const title = `${name} — cricket profile, stats & career`;
+    const summary = !live
+      ? loaderData.player.records
+          .slice(0, 2)
+          .map((r) => `${r.category} (${r.value})`)
+          .join("; ")
+      : "";
+    const desc = live
+      ? `${name}${country ? ` (${country})` : ""} — cricket bio, career statistics and match records.`
+      : `${name}${country ? ` (${country})` : ""} — records: ${summary || "career cricket profile"}.`;
+
+    const scripts = [
+      ldScript(
+        athlete({
+          name,
+          path: `/cricket/players/${params.slug}`,
+          sport: "Cricket",
+          team: country ?? undefined,
+        }),
+      ),
+      ldScript(
+        breadcrumbList([
+          { name: "Home", path: "/" },
+          { name: "Cricket", path: "/cricket" },
+          { name: "Players", path: "/cricket/players" },
+          { name: name, path: `/cricket/players/${params.slug}` },
+        ]),
+      ),
+    ];
+    if (!live) {
+      const faqs =
+        loaderData.aiFaqs && loaderData.aiFaqs.length
+          ? loaderData.aiFaqs
+          : loaderData.player.faqs;
+      scripts.push(ldScript(faqPage(faqs)));
+    }
+
     return {
       meta: [
         { title },
@@ -49,27 +109,7 @@ export const Route = createFileRoute("/cricket/players/$slug")({
         { name: "twitter:image", content: image },
       ],
       links: [{ rel: "canonical", href: url }],
-      scripts: [
-        ldScript(
-          athlete({
-            name: p.name,
-            path: `/cricket/players/${params.slug}`,
-            sport: "Cricket",
-            team: p.country,
-          }),
-        ),
-        ldScript(
-          breadcrumbList([
-            { name: "Home", path: "/" },
-            { name: "Cricket", path: "/cricket" },
-            { name: "Players", path: "/cricket/players" },
-            { name: p.name, path: `/cricket/players/${params.slug}` },
-          ]),
-        ),
-        ldScript(
-          faqPage(loaderData.aiFaqs && loaderData.aiFaqs.length ? loaderData.aiFaqs : p.faqs),
-        ),
-      ],
+      scripts,
     };
   },
   component: CricketPlayerProfile,
@@ -115,10 +155,19 @@ export const Route = createFileRoute("/cricket/players/$slug")({
 });
 
 function CricketPlayerProfile() {
-  const { player, aiFaqs } = Route.useLoaderData() as {
-    player: import("@/lib/seo/cricket-entities").CricketPlayerEntity;
-    aiFaqs: Array<{ q: string; a: string }> | null;
-  };
+  const data = Route.useLoaderData();
+
+  if (data.kind === "live") {
+    return (
+      <div className="min-h-screen bg-background text-foreground">
+        <SportNav />
+        <CricketSubNav />
+        <LivePlayerProfile profile={data.profile} slug={data.slug} />
+      </div>
+    );
+  }
+
+  const { player, aiFaqs } = data;
   const related = listCricketPlayers()
     .filter((p) => p.slug !== player.slug && (!player.country || p.country === player.country))
     .slice(0, 8);

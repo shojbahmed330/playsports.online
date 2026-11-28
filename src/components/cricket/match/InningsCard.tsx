@@ -1,31 +1,30 @@
 import type { ReactNode } from "react";
+import { Link } from "@tanstack/react-router";
 import type { CricketInningsDetail } from "@/lib/cricket.functions";
+import { cricketPlayerSlug } from "@/lib/cricket-player-slug";
 
 export function InningsCard({
   inn,
-  onPlayer,
   accentColor,
 }: {
   inn: CricketInningsDetail;
-  onPlayer: (id: string) => void;
   accentColor?: string | null;
 }) {
-  const PlayerBtn = ({ id, name, children }: { id: string; name: string; children?: ReactNode }) =>
-    id ? (
-      <button
-        type="button"
-        onClick={() => onPlayer(id)}
-        className="text-left hover:text-emerald-300 hover:underline underline-offset-2 transition truncate min-h-[44px] py-1"
+  const PlayerLinkName = ({ name, athleteId, children }: { name: string; athleteId?: string; children?: ReactNode }) => {
+    const slug = cricketPlayerSlug(name);
+    if (!slug) return <span className="truncate">{name}{children}</span>;
+    return (
+      <Link
+        to="/cricket/players/$slug"
+        params={{ slug }}
+        search={{ athlete: athleteId || undefined }}
+        className="inline-flex min-h-11 max-w-full items-center truncate py-1 text-left underline-offset-2 transition-colors hover:text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       >
         {name}
         {children}
-      </button>
-    ) : (
-      <span className="truncate">
-        {name}
-        {children}
-      </span>
+      </Link>
     );
+  };
 
   const headerStyle = accentColor
     ? { background: `linear-gradient(90deg, ${accentColor}30, transparent 70%)` }
@@ -70,9 +69,9 @@ export function InningsCard({
                 <tr key={b.id || b.name} className="hover:bg-gray-900/40 align-top">
                   <td className="px-3 py-2 font-medium">
                     <div className="min-w-0">
-                      <PlayerBtn id={b.id} name={b.name}>
-                        {b.notOut && <span className="text-emerald-400 ml-1">*</span>}
-                      </PlayerBtn>
+                      <PlayerLinkName name={b.name} athleteId={b.id}>
+                        {b.notOut && <span className="ml-1 text-positive">*</span>}
+                      </PlayerLinkName>
                       <div className="text-[10px] text-gray-500 mt-0.5 truncate">
                         {b.dismissal || (b.notOut ? "not out" : "—")}
                       </div>
@@ -138,7 +137,7 @@ export function InningsCard({
               {inn.bowlers.map((b) => (
                 <tr key={b.id || b.name} className="hover:bg-gray-900/40">
                   <td className="px-3 py-2 font-medium">
-                    <PlayerBtn id={b.id} name={b.name} />
+                    <PlayerLinkName name={b.name} athleteId={b.id} />
                   </td>
                   <td className="px-3 py-2 text-right tabular-nums whitespace-nowrap">{b.overs}</td>
                   <td className="px-3 py-2 text-right tabular-nums hidden xs:table-cell whitespace-nowrap">

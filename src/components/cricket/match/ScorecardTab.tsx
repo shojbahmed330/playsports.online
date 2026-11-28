@@ -4,11 +4,9 @@ import { InningsCard } from "./InningsCard";
 export function ScorecardTab({
   match,
   innings,
-  onPlayer,
 }: {
   match: CricketMatch;
   innings: CricketInningsDetail[];
-  onPlayer: (id: string) => void;
 }) {
   if (innings.length === 0) {
     return <EmptyState label="Scorecard not available yet." />;
@@ -21,7 +19,6 @@ export function ScorecardTab({
           <InningsCard
             key={`${inn.period}-${inn.battingTeamId}`}
             inn={inn}
-            onPlayer={onPlayer}
             accentColor={isHome ? match.home.color : match.away.color}
           />
         );
@@ -32,7 +29,7 @@ export function ScorecardTab({
 
 export function EmptyState({ label }: { label: string }) {
   return (
-    <div className="rounded-xl border border-gray-800 bg-gray-900/40 p-6 text-center text-sm text-gray-400">
+    <div className="rounded-xl border border-border bg-card/40 p-6 text-center text-caption text-muted-foreground">
       {label}
     </div>
   );

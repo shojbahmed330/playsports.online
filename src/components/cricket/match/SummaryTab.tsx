@@ -6,11 +6,9 @@ import { displayScore } from "@/lib/cricket-score-display";
 export function SummaryTab({
   match,
   innings,
-  onPlayer,
 }: {
   match: CricketMatch;
   innings: CricketInningsDetail[];
-  onPlayer: (id: string) => void;
 }) {
   // Show latest innings mini-card + full most-recent innings card.
   const latest = innings[innings.length - 1];
@@ -68,7 +66,6 @@ export function SummaryTab({
       {latest ? (
         <InningsCard
           inn={latest}
-          onPlayer={onPlayer}
           accentColor={latest.battingTeamId === match.home.id ? match.home.color : match.away.color}
         />
       ) : (
